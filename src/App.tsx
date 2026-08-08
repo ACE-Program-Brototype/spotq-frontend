@@ -1,10 +1,9 @@
 import "./App.css";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
   return (
-    <div>
-      <h1>SpotQ Frontend</h1>
-    </div>
+    <AppRouter />
   );
 }
 
