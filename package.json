@@ -10,6 +10,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check --write .",
+    "validate": "pnpm lint && pnpm build",
     "prepare": "husky"
   },
   "dependencies": {
