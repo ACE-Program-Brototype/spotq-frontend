@@ -1,75 +1,115 @@
-# React + TypeScript + Vite
+# spotQ Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend application for the **spotQ** platform, built with React and TypeScript.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* React
+* TypeScript
+* Vite
+* pnpm
+* Biome
+* React Router
+* Zustand
+* Infisical
+* Vercel
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+Make sure you have:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* Node.js
+* pnpm
+* Infisical CLI
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Clone the repository:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+git clone <repository-url>
+cd spotq-frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Install dependencies:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+pnpm install
 ```
+
+### Run Locally
+
+Environment variables are managed using Infisical.
+
+```bash
+infisical run -- pnpm dev
+```
+
+The application will be available at:
+
+```text
+http://localhost:5173
+```
+
+## Available Commands
+
+```bash
+pnpm dev       # Start development server
+pnpm build     # Create production build
+pnpm preview   # Preview production build
+pnpm lint      # Run Biome lint checks
+pnpm format    # Format code using Biome
+pnpm check     # Run Biome checks=
+```
+
+## Project Structure
+
+```text
+src/
+├── api/
+├── assets/
+├── components/
+├── constants/
+├── context/
+├── hooks/
+├── layouts/
+├── pages/
+├── routes/
+├── services/
+├── stores/
+├── styles/
+├── types/
+└── utils/
+```
+
+## Environment Variables
+
+Required environment variables are documented in:
+
+```text
+.env.example
+```
+
+Actual environment values are managed through **Infisical** and should not be committed to the repository.
+
+## Deployment
+
+The application is configured for deployment on **Vercel**.
+
+Production builds are created using:
+
+```bash
+pnpm build
+```
+
+## Branches
+
+```text
+development → staging → main
+```
+
+* `development` — active development
+* `staging` — testing/pre-production
+* `main` — production
