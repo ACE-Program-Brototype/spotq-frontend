@@ -61,8 +61,7 @@ pnpm build     # Create production build
 pnpm preview   # Preview production build
 pnpm lint      # Run Biome lint checks
 pnpm format    # Format code using Biome
-pnpm check     # Run Biome checks
-pnpm fix       # Fix formatting and lint issues
+pnpm check     # Run Biome checks=
 ```
 
 ## Project Structure

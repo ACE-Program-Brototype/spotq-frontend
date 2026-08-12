@@ -1,18 +1,22 @@
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AboutPage from "@/pages/AboutPage";
-import HomePage from "@/pages/HomePage";
-import NotFoundPage from "@/pages/NotFoundPage";
 import { ROUTES } from "@/routes/routes";
+
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path={ROUTES.HOME} element={<HomePage />} />
-        <Route path={ROUTES.ABOUT} element={<AboutPage />} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path={ROUTES.HOME} element={<HomePage />} />
+          <Route path={ROUTES.ABOUT} element={<AboutPage />} />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 };
