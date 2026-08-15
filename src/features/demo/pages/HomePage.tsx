@@ -5,7 +5,7 @@ const HomePage = () => {
     <main>
       <h1 className="bg-red-200">spotQ</h1>
       <p>Welcome to spotQ.</p>
-      <Button />
+      <Button>Click Me</Button>
     </main>
   );
 };

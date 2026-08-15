@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 function DemoLayout() {
   return (
-    <div>
+    <div className="">
       <Outlet />
     </div>
   );
