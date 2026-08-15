@@ -1,5 +1,7 @@
+import AppProviders from "@/app/provider/AppProviders";
+
 function App() {
-  return null;
+  return <AppProviders />;
 }
 
 export default App;
