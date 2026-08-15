@@ -9,10 +9,13 @@ Frontend application for the **spotQ** platform, built with React and TypeScript
 * Vite
 * pnpm
 * Biome
-* React Router
+* React Router v7
 * Zustand
 * Infisical
 * Vercel
+* Ky http - client
+* Tailwind / shadcn
+
 
 ## Getting Started
 
@@ -66,22 +69,94 @@ pnpm check     # Run Biome checks=
 
 ## Project Structure
 
+The frontend follows a feature-based architecture. Business functionality is organized by feature/epic, while application-wide infrastructure and reusable components remain outside the feature folders.
+
 ```text
 src/
-├── api/
-├── assets/
+├── app/
+│   ├── App.tsx
+│   │
+│   ├── providers/
+│   │   ├── AppProviders.tsx
+│   │   └── QueryProvider.tsx
+│   │
+│   └── router/
+│       ├── index.tsx
+│       ├── routes.tsx
+│       └── *.routes.tsx
+│
+├── features/
+│   ├── auth/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── store/
+│   │   ├── types/
+│   │   └── index.ts
+│   │
+│   ├── restaurant/
+│   │   └── ...
+│   │
+│   ├── queue/
+│   │   └── ...
+│   │
+│   ├── order/
+│   │   └── ...
+│   │
+│   └── payment/
+│       └── ...
+│
 ├── components/
-├── constants/
-├── context/
-├── hooks/
+│   ├── ui/
+│   │   └── shadcn-components
+│   │
+│   └── common/
+│       ├── ErrorBoundary.tsx
+│       └── ...
+│
 ├── layouts/
-├── pages/
-├── routes/
-├── services/
-├── stores/
-├── styles/
+│   ├── RootLayout.tsx
+│   ├── AuthLayout.tsx
+│   └── ProtectedLayout.tsx
+│
+├── lib/
+│   ├── api/
+│   │   ├── client.ts
+│   │   └── hooks/
+│   │       ├── beforeRequest.ts
+│   │       ├── afterResponse.ts
+│   │       ├── beforeRetry.ts
+│   │       └── beforeError.ts
+│   │
+│   └── utils/
+│       └── cn.ts
+│
+├── hooks/
+│
+├── constants/
+│
 ├── types/
-└── utils/
+│
+├── assets/
+│   ├── images/
+│   ├── icons/
+│   └── logos/
+│
+└── styles/
+    └── global.css
+
+public/
+│
+├── favicon.ico
+└── ...
+
+components.json
+vite.config.ts
+tsconfig.json
+biome.json
+package.json
 ```
 
 ## Environment Variables
