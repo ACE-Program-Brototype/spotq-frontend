@@ -1,4 +1,8 @@
 import ky from "ky";
+import { afterResponse } from "./hooks/afterResponse";
+import { beforeError } from "./hooks/beforeError";
+import { beforeRequest } from "./hooks/beforeRequest";
+import { beforeRetry } from "./hooks/beforeRetry";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,5 +20,11 @@ export const apiClient = ky.create({
   },
   headers: {
     Accept: "application/json",
+  },
+  hooks: {
+    afterResponse: [afterResponse],
+    beforeRequest: [beforeRequest],
+    beforeError: [beforeError],
+    beforeRetry: [beforeRetry],
   },
 });
