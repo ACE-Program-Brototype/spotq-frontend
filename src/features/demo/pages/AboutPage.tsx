@@ -1,4 +1,4 @@
-import { useAppStore } from "@/features/auth/stores/appStore";
+import { useAppStore } from "@/features/auth/store/auth.store";
 
 const AboutPage = () => {
   const isInitialized = useAppStore((state) => state.isInitialized);
