@@ -1,18 +1,7 @@
-import { useAppStore } from "@/features/auth/store/auth.store";
-
 const AboutPage = () => {
-  const isInitialized = useAppStore((state) => state.isInitialized);
-  const setInitialized = useAppStore((state) => state.setInitialized);
-
   return (
     <main>
       <h1>spotQ About</h1>
-
-      <p>Application initialized: {isInitialized ? "Yes" : "No"}</p>
-
-      <button type="button" onClick={() => setInitialized(!isInitialized)}>
-        Initialize
-      </button>
     </main>
   );
 };
