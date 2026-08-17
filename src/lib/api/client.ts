@@ -11,7 +11,7 @@ if (!API_URL) {
 }
 
 export const apiClient = ky.create({
-  baseUrl: API_URL,
+  prefix: API_URL,
   timeout: 10_000,
   retry: {
     limit: 2,
