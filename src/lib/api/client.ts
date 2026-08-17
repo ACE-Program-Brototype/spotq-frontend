@@ -7,7 +7,7 @@ import { beforeRetry } from "./hooks/beforeRetry";
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!API_URL) {
-  throw new Error("VITE_API_URL is not configured.");
+  throw new Error("VITE_API_BASE_URL is not configured.");
 }
 
 export const apiClient = ky.create({
