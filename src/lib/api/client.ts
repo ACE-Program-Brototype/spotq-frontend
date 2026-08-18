@@ -4,11 +4,13 @@ import { beforeError } from "./hooks/beforeError";
 import { beforeRequest } from "./hooks/beforeRequest";
 import { beforeRetry } from "./hooks/beforeRetry";
 
-const API_URL = import.meta.env.VITE_API_BASE_URL;
+const rawApiUrl = import.meta.env.VITE_API_BASE_URL;
 
-if (!API_URL) {
-  throw new Error("VITE_API_URL is not configured.");
+if (!rawApiUrl) {
+  throw new Error("VITE_API_BASE_URL is not configured.");
 }
+
+const API_URL = /^\d+$/.test(rawApiUrl) ? `http://localhost:${rawApiUrl}` : rawApiUrl;
 
 export const apiClient = ky.create({
   baseUrl: API_URL,
