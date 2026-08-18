@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 const HomePage = () => {
-  const { user, accessToken, clearAuth } = useAuthStore();
+  const { user, clearAuth } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -89,27 +89,9 @@ const HomePage = () => {
             <span className="text-sm text-gray-400 font-medium">Customer Name</span>
             <span className="text-base text-gray-900 font-bold">{user.fullname}</span>
           </div>
-          <div className="flex justify-between items-center border-b border-spotq-border/60 pb-3">
+          <div className="flex justify-between items-center pb-1">
             <span className="text-sm text-gray-400 font-medium">Email Address</span>
             <span className="text-base text-gray-900 font-semibold">{user.email}</span>
-          </div>
-          <div className="flex justify-between items-center border-b border-spotq-border/60 pb-3">
-            <span className="text-sm text-gray-400 font-medium">Account ID</span>
-            <span className="text-xs text-gray-600 font-mono select-all bg-white px-2 py-1 rounded border border-spotq-border/40">
-              {user.id}
-            </span>
-          </div>
-          <div className="flex justify-between items-center border-b border-spotq-border/60 pb-3">
-            <span className="text-sm text-gray-400 font-medium">Status</span>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 capitalize">
-              {user.status || "Active"}
-            </span>
-          </div>
-          <div className="flex flex-col space-y-1.5 pt-1">
-            <span className="text-sm text-gray-400 font-medium">Access Token</span>
-            <div className="text-[10px] text-gray-500 font-mono break-all bg-white p-3 rounded-xl border border-spotq-border/40 select-all max-h-16 overflow-y-auto">
-              {accessToken}
-            </div>
           </div>
         </div>
 
