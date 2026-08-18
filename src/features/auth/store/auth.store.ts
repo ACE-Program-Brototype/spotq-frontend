@@ -8,6 +8,7 @@ type AuthState = {
   accessToken: string | null;
   isAuthenticated: boolean;
   rememberMe: boolean;
+  savedAt: number | null;
 
   setAuth: (user: User, accessToken: string) => void;
   clearAuth: () => void;
@@ -17,8 +18,27 @@ type AuthState = {
 const customStorage = {
   getItem: (name: string): string | null => {
     const local = localStorage.getItem(name);
-    if (local) return local;
-    return sessionStorage.getItem(name);
+    const dataStr = local || sessionStorage.getItem(name);
+    if (!dataStr) return null;
+
+    try {
+      const parsed = JSON.parse(dataStr);
+      const savedAt = parsed.state?.savedAt;
+      const rememberMe = parsed.state?.rememberMe;
+
+      if (rememberMe && savedAt) {
+        const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+        if (Date.now() - savedAt > thirtyDaysMs) {
+          localStorage.removeItem(name);
+          sessionStorage.removeItem(name);
+          return null;
+        }
+      }
+    } catch {
+      // Allow parse fallback
+    }
+
+    return dataStr;
   },
   setItem: (name: string, value: string): void => {
     try {
@@ -48,12 +68,14 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       isAuthenticated: false,
       rememberMe: false,
+      savedAt: null,
 
       setAuth: (user, accessToken) =>
         set({
           user,
           accessToken,
           isAuthenticated: true,
+          savedAt: Date.now(),
         }),
 
       clearAuth: () =>
@@ -61,6 +83,7 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           accessToken: null,
           isAuthenticated: false,
+          savedAt: null,
         }),
 
       setRememberMe: (rememberMe) =>

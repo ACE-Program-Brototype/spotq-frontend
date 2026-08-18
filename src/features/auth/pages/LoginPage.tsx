@@ -374,7 +374,7 @@ export default function LoginPage() {
                 htmlFor="rememberMe"
                 className="text-sm font-medium text-gray-600 cursor-pointer select-none leading-none"
               >
-                Remember me for 30 days
+                Remember me
               </label>
             </div>
 
