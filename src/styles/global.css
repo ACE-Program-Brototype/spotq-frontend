@@ -6,6 +6,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-spotq-orange: #ff6b00;
+  --color-spotq-cream: #fdf5f2;
+  --color-spotq-border: #f5dfd6;
   --font-heading: var(--font-sans);
   --font-sans: "Geist Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
