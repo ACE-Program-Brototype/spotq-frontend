@@ -30,3 +30,18 @@ export type LoginResult = {
     refreshToken: string;
   };
 };
+
+export type GoogleLoginResult = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    user: {
+      id: string;
+      full_name: string;
+      email: string;
+      status: string;
+    };
+    access_token: string;
+  };
+};

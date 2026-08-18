@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import type { LoginInput, LoginResult } from "../types/auth.types";
+import type { GoogleLoginResult, LoginInput, LoginResult } from "../types/auth.types";
 
 const getDeviceInfo = () => {
   if (typeof window === "undefined" || !navigator) {
@@ -46,5 +46,17 @@ export const authService = {
         json: payload,
       })
       .json<LoginResult>();
+  },
+  googleLogin: async (input: { idToken: string }): Promise<GoogleLoginResult> => {
+    const payload = {
+      idToken: input.idToken,
+      device: getDeviceInfo(),
+    };
+
+    return apiClient
+      .post("api/v1/users/oauth/google", {
+        json: payload,
+      })
+      .json<GoogleLoginResult>();
   },
 };
