@@ -99,7 +99,7 @@ const HomePage = () => {
           onClick={handleLogout}
           className="w-full bg-spotq-orange text-white hover:bg-spotq-orange/90 h-12 rounded-xl text-base font-semibold shadow-md cursor-pointer transition-colors"
         >
-          Logout Securely
+          Logout
         </Button>
       </div>
     </main>
