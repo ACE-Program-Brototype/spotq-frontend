@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 const HomePage = () => {
@@ -15,94 +14,30 @@ const HomePage = () => {
 
   if (!user) {
     return (
-      <main className="flex min-h-[80vh] flex-col items-center justify-center p-6 bg-spotq-cream font-sans">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-spotq-border text-center space-y-6">
-          <div className="inline-flex size-16 items-center justify-center rounded-full bg-spotq-orange/10 text-spotq-orange">
-            <svg
-              className="size-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-label="Lock icon"
-              role="img"
-            >
-              <title>Lock Icon</title>
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-              Welcome to SpotQ
-            </h1>
-            <p className="text-sm text-gray-500">
-              Authentication is required to access your account services.
-            </p>
-          </div>
-          <Button
-            onClick={() => navigate("/login")}
-            className="w-full bg-spotq-orange text-white hover:bg-spotq-orange/90 h-12 rounded-xl text-base font-semibold shadow-md cursor-pointer transition-colors"
-          >
-            Go to Login Page
-          </Button>
-        </div>
-      </main>
+      <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+        <h1>Welcome to SpotQ</h1>
+        <p>Please log in to continue.</p>
+        <button type="button" onClick={() => navigate("/login")} style={{ cursor: "pointer" }}>
+          Go to Login
+        </button>
+      </div>
     );
   }
 
   return (
-    <main className="flex min-h-[80vh] flex-col items-center justify-center p-6 bg-spotq-cream font-sans">
-      <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl p-8 border border-spotq-border space-y-6">
-        <div className="text-center space-y-2">
-          <div className="inline-flex size-16 items-center justify-center rounded-full bg-green-100 text-green-600">
-            <svg
-              className="size-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-label="Checked user icon"
-              role="img"
-            >
-              <title>Success Icon</title>
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-            Secure Access Granted
-          </h1>
-          <p className="text-sm text-green-600 font-semibold tracking-wide uppercase">
-            Successfully Authenticated
-          </p>
-        </div>
-
-        <div className="border border-spotq-border rounded-2xl bg-spotq-cream/50 p-6 space-y-4">
-          <div className="flex justify-between items-center border-b border-spotq-border/60 pb-3">
-            <span className="text-sm text-gray-400 font-medium">Customer Name</span>
-            <span className="text-base text-gray-900 font-bold">{user.fullname}</span>
-          </div>
-          <div className="flex justify-between items-center pb-1">
-            <span className="text-sm text-gray-400 font-medium">Email Address</span>
-            <span className="text-base text-gray-900 font-semibold">{user.email}</span>
-          </div>
-        </div>
-
-        <Button
-          onClick={handleLogout}
-          className="w-full bg-spotq-orange text-white hover:bg-spotq-orange/90 h-12 rounded-xl text-base font-semibold shadow-md cursor-pointer transition-colors"
-        >
-          Logout
-        </Button>
+    <div style={{ padding: "20px", fontFamily: "sans-serif", lineHeight: "1.6" }}>
+      <div>
+        <strong>Customer Name:</strong> {user.fullname}
       </div>
-    </main>
+      <div>
+        <strong>Email Address:</strong> {user.email}
+      </div>
+      <div style={{ marginTop: "15px" }}>
+        <button type="button" onClick={handleLogout} style={{ cursor: "pointer" }}>
+          Logout
+        </button>
+      </div>
+    </div>
   );
 };
 
