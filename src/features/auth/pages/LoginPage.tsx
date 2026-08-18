@@ -251,11 +251,6 @@ export default function LoginPage() {
             <div className="size-24 rounded-full bg-white/20 flex items-center justify-center border border-white/30 animate-pulse">
               <User className="size-12 text-white" />
             </div>
-            <div className="absolute bottom-4 left-4 right-4 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 text-center">
-              <span className="text-xs text-white/95 font-medium">
-                Table Booking & Queue Skipper
-              </span>
-            </div>
           </div>
         </div>
 
