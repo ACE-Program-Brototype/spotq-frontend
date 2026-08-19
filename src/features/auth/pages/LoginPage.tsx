@@ -30,29 +30,15 @@ declare global {
 }
 
 import { toast } from "sonner";
-import { z } from "zod";
 // SpotQ Logo Import
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
-
-// Validation schema strictly requiring valid email and password
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Invalid email address" })
-    .trim()
-    .toLowerCase(),
-  password: z.string().min(1, { message: "Password is required" }),
-  rememberMe: z.boolean(),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const navigate = useNavigate();
