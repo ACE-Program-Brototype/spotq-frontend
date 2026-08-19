@@ -33,16 +33,16 @@ import { toast } from "sonner";
 // SpotQ Logo Import
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { isAuthenticated, setAuth, rememberMe, setRememberMe } = useAuthStore();
+  const { isAuthenticated, setAuth, setRememberMe } = useAuthStore();
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -62,7 +62,6 @@ export default function LoginPage() {
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: rememberMe,
     },
   });
 
@@ -70,8 +69,8 @@ export default function LoginPage() {
     if (isLoading) return;
     setIsLoading(true);
 
-    // Save rememberMe selection in store
-    setRememberMe(values.rememberMe);
+    // Save rememberMe selection in store (always remember user)
+    setRememberMe(true);
 
     try {
       const response = await authService.login({
@@ -80,11 +79,11 @@ export default function LoginPage() {
       });
 
       if (response.success && response.data) {
-        toast.success("Login successful!");
+        toast.success(AUTH_MESSAGES.LOGIN_SUCCESS);
         setAuth(response.data.user, response.data.accessToken);
         navigate("/", { replace: true });
       } else {
-        toast.error(response.message || "Something went wrong.");
+        toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }
     } catch (err: unknown) {
       const error = err as Error & { response?: Response };
@@ -98,29 +97,29 @@ export default function LoginPage() {
           const errCode = apiErr.error;
 
           if (errCode === "INVALID_CREDENTIALS") {
-            toast.error("Invalid email or password.");
+            toast.error(AUTH_MESSAGES.INVALID_CREDENTIALS);
           } else if (errCode === "ACCOUNT_BLOCKED") {
-            toast.error("Your account has been blocked.");
+            toast.error(AUTH_MESSAGES.ACCOUNT_BLOCKED);
           } else if (errCode === "ACCOUNT_INACTIVE") {
-            toast.error("Your account is inactive.");
+            toast.error(AUTH_MESSAGES.ACCOUNT_INACTIVE);
           } else {
-            toast.error(apiErr.message || "Login failed. Please try again.");
+            toast.error(apiErr.message || AUTH_MESSAGES.LOGIN_FAILED);
           }
         } catch {
           if (error.response.status === 401) {
-            toast.error("Invalid email or password.");
+            toast.error(AUTH_MESSAGES.INVALID_CREDENTIALS);
           } else if (error.response.status === 403) {
-            toast.error("Your account is suspended/inactive.");
+            toast.error(AUTH_MESSAGES.ACCOUNT_SUSPENDED);
           } else if (error.response.status === 503) {
-            toast.error("Something went wrong. Please try again.");
+            toast.error(AUTH_MESSAGES.GENERIC_ERROR);
           } else {
-            toast.error("An unexpected error occurred. Please try again.");
+            toast.error(AUTH_MESSAGES.UNEXPECTED_ERROR);
           }
         }
       } else if (error.message?.includes("Failed to fetch")) {
-        toast.error("Unable to connect. Please check your connection and try again.");
+        toast.error(AUTH_MESSAGES.CONNECTION_ERROR);
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(AUTH_MESSAGES.GENERIC_ERROR);
       }
     } finally {
       setIsLoading(false);
@@ -142,7 +141,7 @@ export default function LoginPage() {
         });
 
         if (res.success && res.data) {
-          toast.success("Google Authentication successful!");
+          toast.success(AUTH_MESSAGES.GOOGLE_SUCCESS);
 
           const normalizedUser = {
             id: res.data.user.id,
@@ -157,19 +156,19 @@ export default function LoginPage() {
           setAuth(normalizedUser, res.data.access_token);
           navigate("/", { replace: true });
         } else {
-          toast.error(res.message || "Google authentication failed.");
+          toast.error(res.message || AUTH_MESSAGES.GOOGLE_FAILED);
         }
       } catch (err: unknown) {
         const error = err as Error & { response?: Response };
         if (error.response) {
           try {
             const apiErr = (await error.response.json()) as { message?: string };
-            toast.error(apiErr.message || "Google authentication failed.");
+            toast.error(apiErr.message || AUTH_MESSAGES.GOOGLE_FAILED);
           } catch {
-            toast.error("Google authentication failed. Please try again.");
+            toast.error(AUTH_MESSAGES.GOOGLE_TRY_AGAIN);
           }
         } else {
-          toast.error("Unable to connect. Please check your connection and try again.");
+          toast.error(AUTH_MESSAGES.CONNECTION_ERROR);
         }
       } finally {
         setIsLoading(false);
@@ -351,17 +350,6 @@ export default function LoginPage() {
                   {errors.password.message}
                 </p>
               )}
-            </div>
-
-            {/* Remember Me Checkbox */}
-            <div className="flex items-center gap-2.5">
-              <Checkbox id="rememberMe" disabled={isLoading} {...register("rememberMe")} />
-              <label
-                htmlFor="rememberMe"
-                className="text-sm font-medium text-gray-600 cursor-pointer select-none leading-none"
-              >
-                Remember me
-              </label>
             </div>
 
             {/* Submit Button */}

@@ -8,7 +8,6 @@ export const loginSchema = z.object({
     .trim()
     .toLowerCase(),
   password: z.string().min(1, { message: "Password is required" }),
-  rememberMe: z.boolean(),
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
