@@ -1,7 +1,10 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+
 import DemoLayout from "@/layouts/DemoLayout";
 import RootLayout from "@/layouts/RootLayout";
+
 import NotFoundPage from "../pages/NotFoundPage";
+import { adminRoutes } from "./admin.routes";
 import { demoRoutes } from "./demo.routes";
 
 const router = createBrowserRouter([
@@ -13,8 +16,18 @@ const router = createBrowserRouter([
         children: demoRoutes,
       },
       {
+        path: "admin",
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/admin/dashboard" replace />,
+          },
+          ...adminRoutes,
+        ],
+      },
+      {
         path: "*",
-        Component:NotFoundPage
+        Component: NotFoundPage,
       },
     ],
   },

@@ -27,9 +27,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     console.error("Error information:", errorInfo);
   }
 
-  handleReload = (): void => {
+  handleReload(): void {
     window.location.reload();
-  };
+  }
 
   render() {
     if (this.state.hasError) {
@@ -39,7 +39,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
           <p>An unexpected error occurred. Please try again.</p>
 
-          <button type="button" onClick={this.handleReload}>
+          <button type="button" onClick={() => this.handleReload()}>
             Reload
           </button>
         </main>
