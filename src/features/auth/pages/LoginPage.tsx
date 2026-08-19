@@ -385,7 +385,9 @@ export default function LoginPage() {
 
           {/* Google Sign In Button */}
           <div className="w-full flex justify-center items-center h-12">
-            <div id="google-signin-button" className="w-full flex justify-center"></div>
+            <div className="w-[360px] h-[40px] rounded-xl overflow-hidden flex justify-center isolation-isolate [transform:translateZ(0)]">
+              <div id="google-signin-button" className="w-full flex justify-center"></div>
+            </div>
           </div>
 
           {/* Footer link */}
