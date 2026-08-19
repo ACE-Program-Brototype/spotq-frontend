@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api/client";
+import { AUTH_ENDPOINTS } from "../constants/auth.constants";
 import type { GoogleLoginResult, LoginInput, LoginResult } from "../types/auth.types";
 
 const getDeviceInfo = () => {
@@ -42,7 +43,7 @@ export const authService = {
     };
 
     return apiClient
-      .post("api/v1/users/login", {
+      .post(AUTH_ENDPOINTS.LOGIN, {
         json: payload,
       })
       .json<LoginResult>();
@@ -54,7 +55,7 @@ export const authService = {
     };
 
     return apiClient
-      .post("api/v1/users/oauth/google", {
+      .post(AUTH_ENDPOINTS.GOOGLE_LOGIN, {
         json: payload,
       })
       .json<GoogleLoginResult>();

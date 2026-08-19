@@ -13,3 +13,8 @@ export const AUTH_MESSAGES = {
   GOOGLE_FAILED: "Google authentication failed.",
   GOOGLE_TRY_AGAIN: "Google authentication failed. Please try again.",
 } as const;
+
+export const AUTH_ENDPOINTS = {
+  LOGIN: "api/v1/users/login",
+  GOOGLE_LOGIN: "api/v1/users/oauth/google",
+} as const;

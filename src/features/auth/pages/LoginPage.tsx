@@ -36,15 +36,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { useGoogleLoginMutation, useLoginMutation } from "../hooks/use-auth-mutations";
 import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
-import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { isAuthenticated, setAuth, setRememberMe } = useAuthStore();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+
+  const loginMutation = useLoginMutation();
+  const googleLoginMutation = useGoogleLoginMutation();
+  const isLoading = loginMutation.isPending || googleLoginMutation.isPending;
 
   // If already authenticated, redirect to home screen
   React.useEffect(() => {
@@ -67,13 +70,12 @@ export default function LoginPage() {
 
   const onSubmit = async (values: LoginFormValues) => {
     if (isLoading) return;
-    setIsLoading(true);
 
     // Save rememberMe selection in store (always remember user)
     setRememberMe(true);
 
     try {
-      const response = await authService.login({
+      const response = await loginMutation.mutateAsync({
         email: values.email,
         password: values.password,
       });
@@ -121,8 +123,6 @@ export default function LoginPage() {
       } else {
         toast.error(AUTH_MESSAGES.GENERIC_ERROR);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -133,10 +133,9 @@ export default function LoginPage() {
   const handleGoogleCredentialResponse = React.useCallback(
     async (response: { credential: string }) => {
       if (isLoading) return;
-      setIsLoading(true);
 
       try {
-        const res = await authService.googleLogin({
+        const res = await googleLoginMutation.mutateAsync({
           idToken: response.credential,
         });
 
@@ -170,11 +169,9 @@ export default function LoginPage() {
         } else {
           toast.error(AUTH_MESSAGES.CONNECTION_ERROR);
         }
-      } finally {
-        setIsLoading(false);
       }
     },
-    [isLoading, setAuth, navigate],
+    [isLoading, setAuth, navigate, googleLoginMutation],
   );
 
   React.useEffect(() => {
