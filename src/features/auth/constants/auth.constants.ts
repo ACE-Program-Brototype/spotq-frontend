@@ -17,4 +17,5 @@ export const AUTH_MESSAGES = {
 export const AUTH_ENDPOINTS = {
   LOGIN: "api/v1/users/login",
   GOOGLE_LOGIN: "api/v1/users/oauth/google",
+  REFRESH_TOKEN: "api/v1/users/refresh-token",
 } as const;

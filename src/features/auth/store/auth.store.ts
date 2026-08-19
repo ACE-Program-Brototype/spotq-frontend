@@ -7,30 +7,25 @@ type AuthState = {
   user: User | null;
   accessToken: string | null;
   isAuthenticated: boolean;
-  rememberMe: boolean;
   savedAt: number | null;
 
   setAuth: (user: User, accessToken: string) => void;
   clearAuth: () => void;
-  setRememberMe: (rememberMe: boolean) => void;
 };
 
 const customStorage = {
   getItem: (name: string): string | null => {
-    const local = localStorage.getItem(name);
-    const dataStr = local || sessionStorage.getItem(name);
+    const dataStr = localStorage.getItem(name);
     if (!dataStr) return null;
 
     try {
       const parsed = JSON.parse(dataStr);
       const savedAt = parsed.state?.savedAt;
-      const rememberMe = parsed.state?.rememberMe;
 
-      if (rememberMe && savedAt) {
+      if (savedAt) {
         const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
         if (Date.now() - savedAt > thirtyDaysMs) {
           localStorage.removeItem(name);
-          sessionStorage.removeItem(name);
           return null;
         }
       }
@@ -41,23 +36,10 @@ const customStorage = {
     return dataStr;
   },
   setItem: (name: string, value: string): void => {
-    try {
-      const parsed = JSON.parse(value);
-      const rememberMe = parsed.state?.rememberMe;
-      if (rememberMe) {
-        localStorage.setItem(name, value);
-        sessionStorage.removeItem(name);
-      } else {
-        sessionStorage.setItem(name, value);
-        localStorage.removeItem(name);
-      }
-    } catch {
-      sessionStorage.setItem(name, value);
-    }
+    localStorage.setItem(name, value);
   },
   removeItem: (name: string): void => {
     localStorage.removeItem(name);
-    sessionStorage.removeItem(name);
   },
 };
 
@@ -67,7 +49,6 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       accessToken: null,
       isAuthenticated: false,
-      rememberMe: false,
       savedAt: null,
 
       setAuth: (user, accessToken) =>
@@ -84,11 +65,6 @@ export const useAuthStore = create<AuthState>()(
           accessToken: null,
           isAuthenticated: false,
           savedAt: null,
-        }),
-
-      setRememberMe: (rememberMe) =>
-        set({
-          rememberMe,
         }),
     }),
     {

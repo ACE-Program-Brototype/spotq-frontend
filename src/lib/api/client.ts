@@ -15,6 +15,7 @@ const API_URL = /^\d+$/.test(rawApiUrl) ? `http://localhost:${rawApiUrl}` : rawA
 export const apiClient = ky.create({
   baseUrl: API_URL,
   timeout: 10_000,
+  credentials: "include",
   retry: {
     limit: 2,
     methods: ["get", "head", "options"],

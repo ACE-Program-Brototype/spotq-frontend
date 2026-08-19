@@ -10,19 +10,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { useGoogleLoginMutation, useLoginMutation } from "../hooks/use-auth-mutations";
+import { useGoogleLoginMutation } from "../hooks/use-auth-mutations";
+import { useLogin } from "../hooks/use-login";
 import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
 import { useAuthStore } from "../store/auth.store";
 import { handleAuthError } from "../utils/auth-error-handler";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { isAuthenticated, setAuth, setRememberMe } = useAuthStore();
+  const { isAuthenticated, setAuth } = useAuthStore();
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const loginMutation = useLoginMutation();
+  const { handleLogin, isLoading: isLoginLoading } = useLogin();
   const googleLoginMutation = useGoogleLoginMutation();
-  const isLoading = loginMutation.isPending || googleLoginMutation.isPending;
+  const isLoading = isLoginLoading || googleLoginMutation.isPending;
 
   // If already authenticated, redirect to home screen
   React.useEffect(() => {
@@ -45,26 +46,7 @@ export default function LoginPage() {
 
   const onSubmit = async (values: LoginFormValues) => {
     if (isLoading) return;
-
-    // Save rememberMe selection in store (always remember user)
-    setRememberMe(true);
-
-    try {
-      const response = await loginMutation.mutateAsync({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (response.success && response.data) {
-        toast.success(AUTH_MESSAGES.LOGIN_SUCCESS);
-        setAuth(response.data.user, response.data.accessToken);
-        navigate("/", { replace: true });
-      } else {
-        toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
-      }
-    } catch (err: unknown) {
-      handleAuthError(err, "login");
-    }
+    await handleLogin(values);
   };
 
   const handleBack = () => {
@@ -108,17 +90,19 @@ export default function LoginPage() {
   React.useEffect(() => {
     const initGoogleSignIn = () => {
       const google = window.google;
-      if (google?.accounts?.id) {
+      const buttonElem = document.getElementById("google-signin-button");
+      if (google?.accounts?.id && buttonElem) {
+        const parentWidth = Math.min(buttonElem.parentElement?.clientWidth || 360, 400);
         google.accounts.id.initialize({
           client_id:
             import.meta.env.VITE_GOOGLE_CLIENT_ID ||
             "your-google-client-id.apps.googleusercontent.com",
           callback: handleGoogleCredentialResponse,
         });
-        google.accounts.id.renderButton(document.getElementById("google-signin-button"), {
+        google.accounts.id.renderButton(buttonElem, {
           theme: "outline",
           size: "large",
-          width: "360", // matches mobile and desktop form widths
+          width: parentWidth.toString(),
           text: "signup_with",
           shape: "rectangular",
         });
@@ -313,7 +297,7 @@ export default function LoginPage() {
 
           {/* Google Sign In Button */}
           <div className="w-full flex justify-center items-center h-12">
-            <div className="w-[360px] h-[40px] rounded-xl overflow-hidden flex justify-center isolation-isolate [transform:translateZ(0)]">
+            <div className="w-full h-[40px] rounded-xl overflow-hidden flex justify-center isolation-isolate [transform:translateZ(0)]">
               <div id="google-signin-button" className="w-full flex justify-center"></div>
             </div>
           </div>

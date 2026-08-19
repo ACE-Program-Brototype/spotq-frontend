@@ -23,11 +23,9 @@ describe("Auth Store State and Expiration Persistence", () => {
     expect(state.user).toBeNull();
     expect(state.accessToken).toBeNull();
     expect(state.isAuthenticated).toBe(false);
-    expect(state.rememberMe).toBe(false);
   });
 
-  test("should save credentials to localStorage if rememberMe is true", () => {
-    useAuthStore.getState().setRememberMe(true);
+  test("should save credentials to localStorage", () => {
     useAuthStore.getState().setAuth(mockUser, "test-token-value");
 
     const state = useAuthStore.getState();
@@ -36,33 +34,13 @@ describe("Auth Store State and Expiration Persistence", () => {
     expect(state.isAuthenticated).toBe(true);
 
     const localData = localStorage.getItem("spotq-auth-storage");
-    const sessionData = sessionStorage.getItem("spotq-auth-storage");
-
     expect(localData).not.toBeNull();
-    expect(sessionData).toBeNull();
 
     const parsed = JSON.parse(localData as string);
     expect(parsed.state.user).toEqual(mockUser);
-    expect(parsed.state.rememberMe).toBe(true);
-  });
-
-  test("should save credentials to sessionStorage if rememberMe is false", () => {
-    useAuthStore.getState().setRememberMe(false);
-    useAuthStore.getState().setAuth(mockUser, "test-token-value");
-
-    const localData = localStorage.getItem("spotq-auth-storage");
-    const sessionData = sessionStorage.getItem("spotq-auth-storage");
-
-    expect(sessionData).not.toBeNull();
-    expect(localData).toBeNull();
-
-    const parsed = JSON.parse(sessionData as string);
-    expect(parsed.state.user).toEqual(mockUser);
-    expect(parsed.state.rememberMe).toBe(false);
   });
 
   test("should clear storage on clearAuth", () => {
-    useAuthStore.getState().setRememberMe(true);
     useAuthStore.getState().setAuth(mockUser, "test-token-value");
     useAuthStore.getState().clearAuth();
 
@@ -85,7 +63,6 @@ describe("Auth Store State and Expiration Persistence", () => {
         user: mockUser,
         accessToken: "expired-token",
         isAuthenticated: true,
-        rememberMe: true,
         savedAt: expiredTime,
       },
       version: 0,
