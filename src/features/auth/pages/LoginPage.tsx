@@ -3,32 +3,6 @@ import { ArrowLeft, Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react"
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
-declare global {
-  interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (config: {
-            client_id: string;
-            callback: (res: { credential: string }) => void;
-          }) => void;
-          renderButton: (
-            element: HTMLElement | null,
-            options: {
-              theme?: string;
-              size?: string;
-              width?: string;
-              text?: string;
-              shape?: string;
-            },
-          ) => void;
-        };
-      };
-    };
-  }
-}
-
 import { toast } from "sonner";
 // SpotQ Logo Import
 import spotqLogo from "@/assets/logos/spotq-logo.png";
@@ -39,6 +13,7 @@ import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useGoogleLoginMutation, useLoginMutation } from "../hooks/use-auth-mutations";
 import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
 import { useAuthStore } from "../store/auth.store";
+import { handleAuthError } from "../utils/auth-error-handler";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -88,41 +63,7 @@ export default function LoginPage() {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }
     } catch (err: unknown) {
-      const error = err as Error & { response?: Response };
-      // Map API errors to friendly user messages
-      if (error.response) {
-        try {
-          const apiErr = (await error.response.json()) as {
-            error?: string;
-            message?: string;
-          };
-          const errCode = apiErr.error;
-
-          if (errCode === "INVALID_CREDENTIALS") {
-            toast.error(AUTH_MESSAGES.INVALID_CREDENTIALS);
-          } else if (errCode === "ACCOUNT_BLOCKED") {
-            toast.error(AUTH_MESSAGES.ACCOUNT_BLOCKED);
-          } else if (errCode === "ACCOUNT_INACTIVE") {
-            toast.error(AUTH_MESSAGES.ACCOUNT_INACTIVE);
-          } else {
-            toast.error(apiErr.message || AUTH_MESSAGES.LOGIN_FAILED);
-          }
-        } catch {
-          if (error.response.status === 401) {
-            toast.error(AUTH_MESSAGES.INVALID_CREDENTIALS);
-          } else if (error.response.status === 403) {
-            toast.error(AUTH_MESSAGES.ACCOUNT_SUSPENDED);
-          } else if (error.response.status === 503) {
-            toast.error(AUTH_MESSAGES.GENERIC_ERROR);
-          } else {
-            toast.error(AUTH_MESSAGES.UNEXPECTED_ERROR);
-          }
-        }
-      } else if (error.message?.includes("Failed to fetch")) {
-        toast.error(AUTH_MESSAGES.CONNECTION_ERROR);
-      } else {
-        toast.error(AUTH_MESSAGES.GENERIC_ERROR);
-      }
+      handleAuthError(err, "login");
     }
   };
 
@@ -158,17 +99,7 @@ export default function LoginPage() {
           toast.error(res.message || AUTH_MESSAGES.GOOGLE_FAILED);
         }
       } catch (err: unknown) {
-        const error = err as Error & { response?: Response };
-        if (error.response) {
-          try {
-            const apiErr = (await error.response.json()) as { message?: string };
-            toast.error(apiErr.message || AUTH_MESSAGES.GOOGLE_FAILED);
-          } catch {
-            toast.error(AUTH_MESSAGES.GOOGLE_TRY_AGAIN);
-          }
-        } else {
-          toast.error(AUTH_MESSAGES.CONNECTION_ERROR);
-        }
+        handleAuthError(err, "google");
       }
     },
     [isLoading, setAuth, navigate, googleLoginMutation],
