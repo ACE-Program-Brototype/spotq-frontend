@@ -38,6 +38,7 @@ describe("Auth Store State and Expiration Persistence", () => {
 
     const parsed = JSON.parse(localData as string);
     expect(parsed.state.user).toEqual(mockUser);
+    expect(parsed.state.accessToken).toBeUndefined();
   });
 
   test("should clear storage on clearAuth", () => {
@@ -53,7 +54,7 @@ describe("Auth Store State and Expiration Persistence", () => {
     expect(localData).not.toBeNull();
     const parsed = JSON.parse(localData as string);
     expect(parsed.state.user).toBeNull();
-    expect(parsed.state.accessToken).toBeNull();
+    expect(parsed.state.accessToken).toBeUndefined();
   });
 
   test("should automatically expire session if savedAt is older than 30 days", () => {

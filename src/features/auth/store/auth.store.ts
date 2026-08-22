@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 import type { User } from "@/features/auth/types/auth.types";
 
@@ -44,32 +44,58 @@ const customStorage = {
 };
 
 export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      accessToken: null,
-      isAuthenticated: false,
-      savedAt: null,
+  devtools(
+    persist(
+      (set) => ({
+        user: null,
+        accessToken: null,
+        isAuthenticated: false,
+        savedAt: null,
 
-      setAuth: (user, accessToken) =>
-        set({
-          user,
-          accessToken,
-          isAuthenticated: true,
-          savedAt: Date.now(),
-        }),
+        setAuth: (user, accessToken) =>
+          set(
+            {
+              user,
+              accessToken,
+              isAuthenticated: true,
+              savedAt: Date.now(),
+            },
+            false,
+            "auth/setAuth",
+          ),
 
-      clearAuth: () =>
-        set({
-          user: null,
-          accessToken: null,
-          isAuthenticated: false,
-          savedAt: null,
+        clearAuth: () =>
+          set(
+            {
+              user: null,
+              accessToken: null,
+              isAuthenticated: false,
+              savedAt: null,
+            },
+            false,
+            "auth/clearAuth",
+          ),
+      }),
+      {
+        name: "spotq-auth-storage",
+        storage: createJSONStorage(() => customStorage),
+        partialize: (state) => ({
+          user: state.user,
+          isAuthenticated: state.isAuthenticated,
+          savedAt: state.savedAt,
         }),
-    }),
+      },
+    ),
     {
-      name: "spotq-auth-storage",
-      storage: createJSONStorage(() => customStorage),
+      name: "AuthStore",
+      enabled:
+        typeof globalThis !== "undefined" &&
+        (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !==
+          "production",
     },
   ),
 );
+
+if (typeof window !== "undefined") {
+  (window as unknown as { authStore: typeof useAuthStore }).authStore = useAuthStore;
+}
