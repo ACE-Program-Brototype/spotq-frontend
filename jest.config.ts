@@ -18,6 +18,14 @@ const config: Config = {
             tsx: true,
           },
           transform: {
+            optimizer: {
+              globals: {
+                vars: {
+                  "import.meta.env": "{}",
+                  "import.meta.env.VITE_API_BASE_URL": '"http://localhost:3000"',
+                },
+              },
+            },
             react: {
               runtime: "automatic",
             },
@@ -26,6 +34,7 @@ const config: Config = {
       },
     ],
   },
+  transformIgnorePatterns: ["node_modules/(?!ky)/"],
 };
 
 export default config;

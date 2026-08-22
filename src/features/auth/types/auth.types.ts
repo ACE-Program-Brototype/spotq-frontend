@@ -1,11 +1,21 @@
 export type User = {
   id: string;
-  fullname: string;
+  fullName: string;
   email: string;
   phone: string;
   status: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type ApiUser = {
+  id: string;
+  full_name: string;
+  email: string;
+  phone?: string;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
 };
 
 export type DeviceInput = {
@@ -20,28 +30,33 @@ export type LoginInput = {
   device?: DeviceInput;
 };
 
-export type LoginResult = {
+export type ApiAuthResponse = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    user: ApiUser;
+    access_token: string;
+    refresh_token?: string;
+  };
+};
+
+export type AuthResult = {
   success: boolean;
   statusCode: number;
   message: string;
   data: {
     user: User;
-    access_token: string;
-    refresh_token: string;
+    accessToken: string;
   };
 };
 
-export type GoogleLoginResult = {
+// Aliases for compatibility
+export type LoginResult = AuthResult;
+export type GoogleLoginResult = AuthResult;
+
+export type LogoutResult = {
   success: boolean;
   statusCode: number;
   message: string;
-  data: {
-    user: {
-      id: string;
-      full_name: string;
-      email: string;
-      status: string;
-    };
-    access_token: string;
-  };
 };

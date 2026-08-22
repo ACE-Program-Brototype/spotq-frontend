@@ -1,5 +1,6 @@
 export const AUTH_MESSAGES = {
   LOGIN_SUCCESS: "Login successful!",
+  LOGOUT_SUCCESS: "Successfully logged out!",
   INVALID_CREDENTIALS: "Invalid email or password.",
   ACCOUNT_BLOCKED: "Your account has been blocked.",
   ACCOUNT_INACTIVE: "Your account is inactive.",
@@ -17,5 +18,6 @@ export const AUTH_MESSAGES = {
 export const AUTH_ENDPOINTS = {
   LOGIN: "api/v1/users/login",
   GOOGLE_LOGIN: "api/v1/users/oauth/google",
+  LOGOUT: "api/v1/users/logout",
   REFRESH_TOKEN: "api/v1/users/refresh-token",
 } as const;

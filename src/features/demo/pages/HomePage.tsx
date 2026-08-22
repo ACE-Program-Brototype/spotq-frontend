@@ -1,40 +1,26 @@
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 const HomePage = () => {
-  const { user, clearAuth } = useAuthStore();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    clearAuth();
-    toast.success("Successfully logged out!");
-    navigate("/login");
-  };
-
-  if (!user) {
-    return (
-      <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-        <h1>Welcome to SpotQ</h1>
-        <p>Please log in to continue.</p>
-        <button type="button" onClick={() => navigate("/login")} style={{ cursor: "pointer" }}>
-          Go to Login
-        </button>
-      </div>
-    );
-  }
+  const { user } = useAuthStore();
+  const { handleLogout, isLoading: isLoggingOut } = useLogout();
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif", lineHeight: "1.6" }}>
       <div>
-        <strong>Customer Name:</strong> {user.fullname}
+        <strong>Customer Name:</strong> {user?.fullName}
       </div>
       <div>
-        <strong>Email Address:</strong> {user.email}
+        <strong>Email Address:</strong> {user?.email}
       </div>
       <div style={{ marginTop: "15px" }}>
-        <button type="button" onClick={handleLogout} style={{ cursor: "pointer" }}>
-          Logout
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          style={{ cursor: isLoggingOut ? "not-allowed" : "pointer" }}
+        >
+          {isLoggingOut ? "Logging out..." : "Logout"}
         </button>
       </div>
     </div>

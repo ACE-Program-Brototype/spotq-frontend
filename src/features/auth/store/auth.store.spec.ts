@@ -3,7 +3,7 @@ import { useAuthStore } from "./auth.store";
 
 const mockUser: User = {
   id: "test-user-id",
-  fullname: "Test User",
+  fullName: "Test User",
   email: "test@example.com",
   phone: "1234567890",
   status: "Active",

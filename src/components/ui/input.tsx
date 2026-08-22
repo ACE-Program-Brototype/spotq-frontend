@@ -1,13 +1,13 @@
-import * as React from "react";
+import { type ComponentProps, forwardRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils/cn";
 
-export interface InputProps extends React.ComponentProps<"input"> {
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+export interface InputProps extends ComponentProps<"input"> {
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
   error?: boolean;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, leftIcon, rightIcon, error, ...props }, ref) => {
     return (
       <div className="relative flex items-center w-full">

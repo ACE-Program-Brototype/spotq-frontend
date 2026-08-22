@@ -18,8 +18,8 @@ export const apiClient = ky.create({
   credentials: "include",
   retry: {
     limit: 2,
-    methods: ["get", "head", "options"],
-    statusCodes: [408, 429, 500, 502, 503, 504],
+    methods: ["get", "post", "put", "patch", "delete", "head", "options"],
+    statusCodes: [401, 408, 429, 500, 502, 503, 504],
   },
   headers: {
     Accept: "application/json",

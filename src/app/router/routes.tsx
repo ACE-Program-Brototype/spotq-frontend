@@ -1,5 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
+import AuthLayout from "@/layouts/AuthLayout";
 import DemoLayout from "@/layouts/DemoLayout";
+import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RootLayout from "@/layouts/RootLayout";
 import NotFoundPage from "../pages/NotFoundPage";
 import { authRoutes } from "./auth.routes";
@@ -9,10 +11,18 @@ const router = createBrowserRouter([
   {
     Component: RootLayout,
     children: [
-      ...authRoutes,
       {
-        Component: DemoLayout,
-        children: demoRoutes,
+        Component: AuthLayout,
+        children: authRoutes,
+      },
+      {
+        Component: ProtectedLayout,
+        children: [
+          {
+            Component: DemoLayout,
+            children: demoRoutes,
+          },
+        ],
       },
       {
         path: "*",
