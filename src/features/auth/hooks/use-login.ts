@@ -20,13 +20,13 @@ export const useLogin = () => {
 
       if (response.success && response.data) {
         toast.success(AUTH_MESSAGES.LOGIN_SUCCESS);
-        setAuth(response.data.user, response.data.access_token);
+        setAuth(response.data.user, response.data.accessToken);
         navigate("/", { replace: true });
       } else {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }
     } catch (err: unknown) {
-      handleAuthError(err, "login");
+      await handleAuthError(err, "login");
     }
   };
 

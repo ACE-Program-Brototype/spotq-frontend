@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/api/client";
 import { AUTH_ENDPOINTS } from "../constants/auth.constants";
-import type { GoogleLoginResult, LoginInput, LoginResult } from "../types/auth.types";
+import type { ApiAuthResponse, AuthResult, LoginInput, LogoutResult } from "../types/auth.types";
+import { mapApiAuthResponseToAuthResult } from "../utils/auth.mapper";
 
 const getDeviceInfo = () => {
   if (typeof window === "undefined" || !navigator) {
@@ -36,28 +37,39 @@ const getDeviceInfo = () => {
 };
 
 export const authService = {
-  login: async (input: LoginInput): Promise<LoginResult> => {
+  login: async (input: LoginInput): Promise<AuthResult> => {
     const payload = {
       ...input,
       device: input.device || getDeviceInfo(),
     };
 
-    return apiClient
+    const rawResponse = await apiClient
       .post(AUTH_ENDPOINTS.LOGIN, {
         json: payload,
       })
-      .json<LoginResult>();
+      .json<ApiAuthResponse>();
+
+    return mapApiAuthResponseToAuthResult(rawResponse);
   },
-  googleLogin: async (input: { idToken: string }): Promise<GoogleLoginResult> => {
+  googleLogin: async (input: { idToken: string }): Promise<AuthResult> => {
     const payload = {
       idToken: input.idToken,
       device: getDeviceInfo(),
     };
 
-    return apiClient
+    const rawResponse = await apiClient
       .post(AUTH_ENDPOINTS.GOOGLE_LOGIN, {
         json: payload,
       })
-      .json<GoogleLoginResult>();
+      .json<ApiAuthResponse>();
+
+    return mapApiAuthResponseToAuthResult(rawResponse);
+  },
+  logout: async (): Promise<LogoutResult> => {
+    return apiClient
+      .post(AUTH_ENDPOINTS.LOGOUT, {
+        json: {},
+      })
+      .json<LogoutResult>();
   },
 };
