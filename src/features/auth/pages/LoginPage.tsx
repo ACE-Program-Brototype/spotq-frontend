@@ -42,7 +42,7 @@ export default function LoginPage() {
           toast.error(res.message || AUTH_MESSAGES.GOOGLE_FAILED);
         }
       } catch (err: unknown) {
-        await handleAuthError(err, "google");
+        handleAuthError(err, "google");
       }
     },
     [setAuth, navigate, googleLoginMutation, destination],

@@ -1,16 +1,21 @@
-import ky, { type BeforeRetryHook, HTTPError } from "ky";
-import { AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
+import { type BeforeRetryHook, isHTTPError } from "ky";
+import { PUBLIC_AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getOrRefreshAccessToken } from "../auth-refresh";
 
 export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount }) => {
-  const is401 = error instanceof HTTPError && error.response.status === 401;
-  const isAuthEndpoint =
-    request.url.includes(AUTH_ENDPOINTS.LOGIN) ||
-    request.url.includes(AUTH_ENDPOINTS.REFRESH_TOKEN);
+  const is401 = isHTTPError(error) && error.response.status === 401;
+  const isPublicAuthEndpoint = PUBLIC_AUTH_ENDPOINTS.some((endpoint) =>
+    request.url.includes(endpoint),
+  );
 
-  // If unauthorized on a protected endpoint, refresh token on first retry
-  if (is401 && !isAuthEndpoint && retryCount === 1) {
+  if (is401) {
+    // Never retry public auth routes (e.g. login, google login, refresh token) on 401
+    // Throw error to propagate HTTPError with parsed error.data directly to caller
+    if (isPublicAuthEndpoint || retryCount > 1) {
+      throw error;
+    }
+
     try {
       const newAccessToken = await getOrRefreshAccessToken();
       request.headers.set("Authorization", `Bearer ${newAccessToken}`);
@@ -21,7 +26,7 @@ export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount 
         window.location.href = "/login";
       }
 
-      return ky.stop as ReturnType<BeforeRetryHook>;
+      throw error;
     }
   }
 };

@@ -16,8 +16,14 @@ export const AUTH_MESSAGES = {
 } as const;
 
 export const AUTH_ENDPOINTS = {
-  LOGIN: "api/v1/users/login",
-  GOOGLE_LOGIN: "api/v1/users/oauth/google",
-  LOGOUT: "api/v1/users/logout",
-  REFRESH_TOKEN: "api/v1/users/refresh-token",
+  LOGIN: "/users/login",
+  GOOGLE_LOGIN: "/users/oauth/google",
+  LOGOUT: "/users/logout",
+  REFRESH_TOKEN: "/users/refresh-token",
 } as const;
+
+export const PUBLIC_AUTH_ENDPOINTS = [
+  AUTH_ENDPOINTS.LOGIN,
+  AUTH_ENDPOINTS.GOOGLE_LOGIN,
+  AUTH_ENDPOINTS.REFRESH_TOKEN,
+] as const;

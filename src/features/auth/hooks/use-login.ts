@@ -26,7 +26,7 @@ export const useLogin = () => {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }
     } catch (err: unknown) {
-      await handleAuthError(err, "login");
+      handleAuthError(err, "login");
     }
   };
 
