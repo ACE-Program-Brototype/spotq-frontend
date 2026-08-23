@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 
-export const handleAuthError = async (err: unknown, type: "login" | "google" = "login") => {
+export const handleAuthError = async (err: unknown, type: string) => {
   const error = err as Error & { response?: Response };
   const defaultErrorMessage =
     type === "google" ? AUTH_MESSAGES.GOOGLE_FAILED : AUTH_MESSAGES.LOGIN_FAILED;

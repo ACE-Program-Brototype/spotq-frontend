@@ -60,3 +60,12 @@ export type LogoutResult = {
   statusCode: number;
   message: string;
 };
+
+export type RegisterInput = {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+};
+
+export type RegisterResult = AuthResult;

@@ -13,6 +13,8 @@ export const AUTH_MESSAGES = {
   GOOGLE_SUCCESS: "Google Authentication successful!",
   GOOGLE_FAILED: "Google authentication failed.",
   GOOGLE_TRY_AGAIN: "Google authentication failed. Please try again.",
+
+  REGISTER_SUCCESS: "Registration successful",
 } as const;
 
 export const AUTH_ENDPOINTS = {
@@ -20,4 +22,5 @@ export const AUTH_ENDPOINTS = {
   GOOGLE_LOGIN: "api/v1/users/oauth/google",
   LOGOUT: "api/v1/users/logout",
   REFRESH_TOKEN: "api/v1/users/refresh-token",
+  REGISTER: "api/v1/users/register",
 } as const;
