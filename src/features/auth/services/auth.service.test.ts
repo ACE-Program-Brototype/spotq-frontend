@@ -1,4 +1,4 @@
-import { ADMIN_AUTH_ENDPOINTS } from "@/features/auth/constants/auth.endpoints";
+import { ADMIN_AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { apiClient } from "@/lib/api/client";
 import { loginAdmin, logoutAdmin } from "./auth.service";
 

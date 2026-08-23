@@ -4,11 +4,9 @@
     "target": "es2023",
     "lib": ["ES2023", "DOM"],
     "module": "esnext",
-    "types": ["vite/client"],
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
+    "types": ["vite/client", "node", "jest"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,

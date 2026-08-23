@@ -1,32 +1,42 @@
 import type { Config } from "jest";
 
 const config: Config = {
-  preset: "ts-jest",
   testEnvironment: "jsdom",
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   moduleNameMapper: {
     "^@/config/env$": "<rootDir>/__mocks__/env.ts",
     "^@/(.*)$": "<rootDir>/src/$1",
     "^ky$": "<rootDir>/__mocks__/ky.ts",
-    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+    "\\.(css|less|scss|sass)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(gif|ttf|eot|svg|png|jpg|jpeg)$": "<rootDir>/__mocks__/fileMock.js",
   },
   transform: {
-    "^.+\\.tsx?$": [
-      "ts-jest",
+    "^.+\\.(t|j)sx?$": [
+      "@swc/jest",
       {
-        tsconfig: {
-          jsx: "react-jsx",
-          module: "esnext",
-          target: "es2022",
-          moduleResolution: "node",
-          allowSyntheticDefaultImports: true,
-          esModuleInterop: true,
-          skipLibCheck: true,
-          types: ["node", "jest", "@testing-library/jest-dom", "vite/client"],
+        jsc: {
+          parser: {
+            syntax: "typescript",
+            tsx: true,
+          },
+          transform: {
+            optimizer: {
+              globals: {
+                vars: {
+                  "import.meta.env": "{}",
+                  "import.meta.env.VITE_API_BASE_URL": '"http://localhost:3000/api/v1"',
+                },
+              },
+            },
+            react: {
+              runtime: "automatic",
+            },
+          },
         },
       },
     ],
   },
+  transformIgnorePatterns: ["node_modules/(?!ky)/"],
 };
 
 export default config;

@@ -1,23 +1,23 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import { useLogout } from "@/features/auth/hooks/useLogout";
+import { useAdminLogout } from "@/features/auth/hooks/useAdminLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import AdminLayout from "./AdminLayout";
 
-jest.mock("@/features/auth/hooks/useLogout");
+jest.mock("@/features/auth/hooks/useAdminLogout");
 
-const mockUseLogout = useLogout as jest.MockedFunction<typeof useLogout>;
+const mockUseAdminLogout = useAdminLogout as jest.MockedFunction<typeof useAdminLogout>;
 
 describe("AdminLayout Shell", () => {
   const mockLogout = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseLogout.mockReturnValue({
+    mockUseAdminLogout.mockReturnValue({
       mutate: mockLogout,
       isPending: false,
-    } as unknown as ReturnType<typeof useLogout>);
+    } as unknown as ReturnType<typeof useAdminLogout>);
 
     useAuthStore.getState().setUser({
       _id: "admin-1",

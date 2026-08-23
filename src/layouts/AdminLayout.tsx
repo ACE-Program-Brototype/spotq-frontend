@@ -5,12 +5,12 @@ import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useLogout } from "@/features/auth/hooks/useLogout";
+import { useAdminLogout } from "@/features/auth/hooks/useAdminLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 function AdminLayout() {
   const user = useAuthStore((state) => state.user);
-  const { mutate: logout, isPending: isLoggingOut } = useLogout();
+  const { mutate: logout, isPending: isLoggingOut } = useAdminLogout();
 
   const initials =
     user?.name

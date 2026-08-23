@@ -1,45 +1,29 @@
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import ForgotPasswordPage from "./ForgotPasswordPage";
 
-describe("ForgotPasswordPage", () => {
-  it("renders branding hero, key recovery heading, coming soon badge, and back link", () => {
+describe("Customer ForgotPasswordPage", () => {
+  it("renders reset password card and back to login button", async () => {
+    const user = userEvent.setup();
+
     render(
-      <MemoryRouter>
-        <ForgotPasswordPage />
+      <MemoryRouter initialEntries={["/forgot-password"]}>
+        <Routes>
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/login" element={<div>Login Page Mock</div>} />
+        </Routes>
       </MemoryRouter>,
     );
 
-    // Hero branding
-    expect(
-      screen.getByRole("heading", {
-        name: /secure administrative key recovery/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /reset password/i })).toBeInTheDocument();
+    expect(screen.getByText(/password reset flow is coming soon!/i)).toBeInTheDocument();
 
-    // Recovery content & badge
-    expect(screen.getByRole("heading", { name: /^key recovery$/i })).toBeInTheDocument();
-    expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/self-service administrative key reset is currently in development/i),
-    ).toBeInTheDocument();
+    const backBtn = screen.getByRole("button", { name: /back to login/i });
+    expect(backBtn).toBeInTheDocument();
 
-    // Back to Sign In link
-    const backLink = screen.getByRole("link", { name: /back to sign in/i });
-    expect(backLink).toBeInTheDocument();
-    expect(backLink).toHaveAttribute("href", "/admin/login");
-  });
-
-  it("contains accessible landmarks", () => {
-    render(
-      <MemoryRouter>
-        <ForgotPasswordPage />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByRole("main")).toBeInTheDocument();
-    expect(screen.getByLabelText(/spotq platform branding/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/key recovery coming soon/i)).toBeInTheDocument();
+    await user.click(backBtn);
+    expect(screen.getByText("Login Page Mock")).toBeInTheDocument();
   });
 });

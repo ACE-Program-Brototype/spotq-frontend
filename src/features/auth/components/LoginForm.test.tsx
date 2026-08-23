@@ -1,160 +1,73 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
-import { useLogin } from "@/features/auth/hooks/useLogin";
 import LoginForm from "./LoginForm";
 
-jest.mock("@/features/auth/hooks/useLogin");
+describe("Customer LoginForm UI Testing", () => {
+  const mockOnSubmit = jest.fn();
 
-const mockUseLogin = useLogin as jest.MockedFunction<typeof useLogin>;
-
-const renderLoginForm = () =>
-  render(
-    <MemoryRouter>
-      <LoginForm />
-    </MemoryRouter>,
-  );
-
-describe("LoginForm UI & Accessibility Testing", () => {
-  const mockMutate = jest.fn();
+  const renderComponent = (isLoading = false) =>
+    render(
+      <MemoryRouter>
+        <LoginForm onSubmit={mockOnSubmit} isLoading={isLoading} />
+      </MemoryRouter>,
+    );
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseLogin.mockReturnValue({
-      mutate: mockMutate,
-      isPending: false,
-    } as unknown as ReturnType<typeof useLogin>);
   });
 
-  describe("Rendering & Keyboard Accessibility", () => {
-    it("renders all form elements with accessible labels and roles", () => {
-      renderLoginForm();
+  it("renders email, password, and login button", () => {
+    renderComponent();
 
-      const emailInput = screen.getByLabelText(/identity/i);
-      const passwordInput = screen.getByLabelText(/key/i);
-      const submitBtn = screen.getByRole("button", { name: /sign in/i });
-      const forgotKeyLink = screen.getByRole("link", { name: /forgot key\?/i });
+    expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /forgot password\?/i })).toBeInTheDocument();
+  });
 
-      expect(emailInput).toBeInTheDocument();
-      expect(emailInput).toHaveAttribute("type", "email");
-      expect(emailInput).toHaveAttribute("id", "admin-email");
+  it("submits valid credentials", async () => {
+    renderComponent();
 
-      expect(passwordInput).toBeInTheDocument();
-      expect(passwordInput).toHaveAttribute("type", "password");
-      expect(passwordInput).toHaveAttribute("id", "admin-password");
+    const emailInput = screen.getByPlaceholderText("e.g. alex@example.com");
+    const passwordInput = screen.getByPlaceholderText("••••••••");
+    const form = screen.getByRole("button", { name: /login/i }).closest("form");
 
-      expect(forgotKeyLink).toBeInTheDocument();
-      expect(forgotKeyLink).toHaveAttribute("href", "/admin/forgot-password");
+    if (!form) throw new Error("Form not found");
 
-      expect(submitBtn).toBeInTheDocument();
-      expect(submitBtn).toHaveAttribute("type", "submit");
+    await act(async () => {
+      fireEvent.change(emailInput, { target: { value: "alex@example.com" } });
+      fireEvent.change(passwordInput, { target: { value: "password123" } });
+      fireEvent.submit(form);
     });
 
-    it("supports keyboard navigation (Tab through fields and submit via Enter)", async () => {
-      const user = userEvent.setup();
-      renderLoginForm();
-
-      const emailInput = screen.getByLabelText(/identity/i);
-      const passwordInput = screen.getByLabelText(/key/i);
-      const submitBtn = screen.getByRole("button", { name: /sign in/i });
-
-      await user.tab();
-      expect(emailInput).toHaveFocus();
-
-      await user.type(emailInput, "admin@spotq.com");
-      await user.tab(); // Forgot key link
-      await user.tab(); // Password input
-      expect(passwordInput).toHaveFocus();
-
-      await user.type(passwordInput, "securepassword123");
-      await user.tab(); // Toggle password button
-      await user.tab(); // Submit button
-      expect(submitBtn).toHaveFocus();
-
-      await user.keyboard("{Enter}");
-      await waitFor(() => {
-        expect(mockMutate).toHaveBeenCalledWith({
-          email: "admin@spotq.com",
-          password: "securepassword123",
-        });
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith({
+        email: "alex@example.com",
+        password: "password123",
       });
     });
   });
 
-  describe("Validation Testing", () => {
-    it("displays validation error when submitting with empty or invalid email", async () => {
-      renderLoginForm();
+  it("shows validation error on empty submit", async () => {
+    const user = userEvent.setup();
+    renderComponent();
 
-      fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    const submitBtn = screen.getByRole("button", { name: /login/i });
+    await user.click(submitBtn);
 
-      await waitFor(() => {
-        const emailError = screen.getByText(/please enter a valid email address/i);
-        expect(emailError).toBeInTheDocument();
-        expect(emailError).toHaveAttribute("role", "alert");
-      });
-
-      const emailInput = screen.getByLabelText(/identity/i);
-      expect(emailInput).toHaveAttribute("aria-invalid", "true");
-      expect(mockMutate).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
     });
-
-    it("displays validation error when password is less than 8 characters", async () => {
-      const user = userEvent.setup();
-      renderLoginForm();
-
-      const emailInput = screen.getByLabelText(/identity/i);
-      const passwordInput = screen.getByLabelText(/key/i);
-
-      await user.type(emailInput, "admin@spotq.com");
-      await user.type(passwordInput, "short");
-
-      fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
-
-      await waitFor(() => {
-        const passwordError = screen.getByText(/password must be at least 8 characters/i);
-        expect(passwordError).toBeInTheDocument();
-        expect(passwordError).toHaveAttribute("role", "alert");
-      });
-
-      expect(passwordInput).toHaveAttribute("aria-invalid", "true");
-      expect(mockMutate).not.toHaveBeenCalled();
-    });
+    expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
-  describe("Show / Hide Password Functionality", () => {
-    it("toggles password visibility between 'password' and 'text' input types", async () => {
-      const user = userEvent.setup();
-      renderLoginForm();
+  it("shows loading state when isLoading is true", () => {
+    renderComponent(true);
 
-      const passwordInput = screen.getByLabelText(/key/i);
-      const toggleBtn = screen.getByRole("button", { name: /show password/i });
-
-      expect(passwordInput).toHaveAttribute("type", "password");
-
-      // Click to show password
-      await user.click(toggleBtn);
-      expect(passwordInput).toHaveAttribute("type", "text");
-      expect(screen.getByRole("button", { name: /hide password/i })).toBeInTheDocument();
-
-      // Click to hide password again
-      await user.click(screen.getByRole("button", { name: /hide password/i }));
-      expect(passwordInput).toHaveAttribute("type", "password");
-    });
-  });
-
-  describe("Loading State", () => {
-    it("disables submit button and displays loading spinner when mutation is pending", () => {
-      mockUseLogin.mockReturnValue({
-        mutate: mockMutate,
-        isPending: true,
-      } as unknown as ReturnType<typeof useLogin>);
-
-      renderLoginForm();
-
-      const submitBtn = screen.getByRole("button", { name: /sign in/i });
-      expect(submitBtn).toBeDisabled();
-      expect(screen.getByText(/signing in…/i)).toBeInTheDocument();
-    });
+    const submitBtn = screen.getByRole("button", { name: /logging in\.\.\./i });
+    expect(submitBtn).toBeDisabled();
+    expect(screen.getByText(/logging in\.\.\./i)).toBeInTheDocument();
   });
 });

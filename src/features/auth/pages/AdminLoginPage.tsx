@@ -1,4 +1,4 @@
-import LoginForm from "@/features/auth/components/LoginForm";
+import AdminLoginForm from "@/features/auth/components/AdminLoginForm";
 
 function AdminLoginPage() {
   return (
@@ -72,7 +72,7 @@ function AdminLoginPage() {
           </div>
 
           {/* Form */}
-          <LoginForm />
+          <AdminLoginForm />
         </div>
       </section>
     </main>

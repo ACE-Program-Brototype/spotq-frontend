@@ -1,9 +1,71 @@
 export type Role = "ADMIN" | "CUSTOMER" | "RESTAURANT_ADMIN" | "RESTAURANT_STAFF";
 
 export type User = {
-  _id: string;
-  name: string;
+  id?: string;
+  _id?: string;
+  fullName?: string;
+  name?: string;
   email: string;
   role?: Role;
-  created_at: string;
+  phone?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  created_at?: string;
+};
+
+export type ApiUser = {
+  id?: string;
+  _id?: string;
+  full_name?: string;
+  name?: string;
+  email: string;
+  role?: Role;
+  phone?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type DeviceInput = {
+  deviceName?: string;
+  platform?: "ANDROID" | "IOS" | "WEB";
+  fcmToken?: string;
+};
+
+export type LoginInput = {
+  email: string;
+  password?: string;
+  device?: DeviceInput;
+};
+
+export type ApiAuthResponse = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    user: ApiUser;
+    access_token: string;
+    refresh_token?: string;
+  };
+};
+
+export type AuthResult = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    user: User;
+    accessToken: string;
+  };
+};
+
+// Aliases for compatibility
+export type LoginResult = AuthResult;
+export type GoogleLoginResult = AuthResult;
+
+export type LogoutResult = {
+  success: boolean;
+  statusCode: number;
+  message: string;
 };

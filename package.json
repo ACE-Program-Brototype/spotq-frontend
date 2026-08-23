@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:infisical": "infisical run -- vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check --write .",
     "test": "jest",
-    "validate": "pnpm lint && pnpm build",
+    "test:watch": "jest --watch",
+    "validate": "pnpm lint && pnpm test && pnpm build",
     "prepare": "husky"
   },
   "dependencies": {
@@ -39,6 +41,8 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.7",
     "@eslint/js": "^10.0.1",
+    "@swc/core": "^1.16.0",
+    "@swc/jest": "^0.2.39",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.5",

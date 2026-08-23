@@ -2,18 +2,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useLogin } from "@/features/auth/hooks/useLogin";
-import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema";
-import { cn } from "@/lib/utils/index";
+import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
 
-function LoginForm() {
+interface LoginFormProps {
+  onSubmit: (values: LoginFormValues) => Promise<void> | void;
+  isLoading: boolean;
+}
+
+export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { mutate: login, isPending } = useLogin();
 
   const {
     register,
@@ -21,121 +23,107 @@ function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    login(data);
+  const onFormSubmit = (data: LoginFormValues) => {
+    onSubmit(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
-      {/* Email / Identity field */}
-      <div className="flex flex-col gap-2">
-        <Label
-          htmlFor="admin-email"
-          className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase"
-        >
-          Identity
-        </Label>
-        <div
-          className={cn(
-            "relative flex items-center border-b border-border/80 pb-1 transition-colors focus-within:border-foreground",
-            errors.email && "border-destructive focus-within:border-destructive",
-          )}
-        >
-          <Mail className="absolute left-0 size-4 text-muted-foreground" aria-hidden="true" />
-          <Input
-            id="admin-email"
-            type="email"
-            autoComplete="email"
-            placeholder="admin@spotq.com"
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "admin-email-error" : undefined}
-            className="h-9 rounded-none border-0 bg-transparent pl-7 pr-0 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
-            {...register("email")}
-          />
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6" noValidate>
+      {/* Email field */}
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <Label htmlFor="email" error={!!errors.email}>
+            Email Address
+          </Label>
         </div>
+        <Input
+          id="email"
+          type="email"
+          placeholder="e.g. alex@example.com"
+          error={!!errors.email}
+          leftIcon={<Mail className="hidden md:block size-5 text-gray-400" />}
+          rightIcon={
+            <span className="block md:hidden text-gray-400 font-medium text-base select-none">
+              @
+            </span>
+          }
+          disabled={isLoading}
+          {...register("email")}
+        />
         {errors.email && (
-          <p id="admin-email-error" role="alert" className="text-xs text-destructive">
+          <p className="text-xs text-destructive mt-1.5" role="alert">
             {errors.email.message}
           </p>
         )}
       </div>
 
-      {/* Password / Key field */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <Label
-            htmlFor="admin-password"
-            className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase"
-          >
-            Key
+      {/* Password field */}
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <Label htmlFor="password" error={!!errors.password}>
+            Password
           </Label>
-          <Link
-            to="/admin/forgot-password"
-            className="text-[11px] font-normal text-muted-foreground transition-colors hover:text-foreground hover:no-underline"
-          >
-            Forgot key?
-          </Link>
-        </div>
-        <div
-          className={cn(
-            "relative flex items-center border-b border-border/80 pb-1 transition-colors focus-within:border-foreground",
-            errors.password && "border-destructive focus-within:border-destructive",
-          )}
-        >
-          <Lock className="absolute left-0 size-4 text-muted-foreground" aria-hidden="true" />
-          <Input
-            id="admin-password"
-            type={showPassword ? "text" : "password"}
-            autoComplete="current-password"
-            placeholder="••••••••"
-            aria-invalid={!!errors.password}
-            aria-describedby={errors.password ? "admin-password-error" : undefined}
-            className="h-9 rounded-none border-0 bg-transparent pl-7 pr-8 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
-            {...register("password")}
-          />
-          <Button
+          <button
             type="button"
-            variant="ghost"
-            size="icon-xs"
-            onClick={() => setShowPassword((prev) => !prev)}
-            aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute right-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
+            onClick={() => navigate("/forgot-password")}
+            className="text-xs font-semibold text-spotq-orange hover:text-spotq-orange/80 transition-colors"
           >
-            {showPassword ? (
-              <EyeOff className="size-4" aria-hidden="true" />
-            ) : (
-              <Eye className="size-4" aria-hidden="true" />
-            )}
-          </Button>
+            Forgot Password?
+          </button>
         </div>
+        <Input
+          id="password"
+          type={showPassword ? "text" : "password"}
+          placeholder="••••••••"
+          error={!!errors.password}
+          leftIcon={<Lock className="hidden md:block size-5 text-gray-400" />}
+          rightIcon={
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="p-1 -mr-1.5 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+            </button>
+          }
+          disabled={isLoading}
+          {...register("password")}
+        />
         {errors.password && (
-          <p id="admin-password-error" role="alert" className="text-xs text-destructive">
+          <p className="text-xs text-destructive mt-1.5" role="alert">
             {errors.password.message}
           </p>
         )}
       </div>
 
-      {/* Submit button */}
+      {/* Submit Button */}
       <Button
         type="submit"
         size="lg"
-        disabled={isPending}
-        className="mt-4 h-12 w-full rounded-full text-xs font-bold tracking-widest uppercase transition-transform active:scale-[0.99]"
-        aria-label="Sign in to admin dashboard"
+        disabled={isLoading}
+        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
       >
-        {isPending ? (
+        {isLoading ? (
           <>
-            <Loader2 className="mr-2 size-4 animate-spin" aria-hidden="true" />
-            Signing in…
+            <Loader2 className="size-5 animate-spin" />
+            <span>Logging in...</span>
           </>
         ) : (
-          "Sign In"
+          <>
+            <span>Login</span>
+            <span className="text-lg leading-none">→</span>
+          </>
         )}
       </Button>
     </form>
   );
-}
+};
 
 export default LoginForm;

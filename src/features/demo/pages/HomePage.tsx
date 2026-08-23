@@ -1,12 +1,29 @@
-import { Button } from "@/components/ui/button";
+import { useLogout } from "@/features/auth/hooks/use-logout";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 
 const HomePage = () => {
+  const { user } = useAuthStore();
+  const { handleLogout, isLoading: isLoggingOut } = useLogout();
+
   return (
-    <main>
-      <h1 className="bg-red-200">spotQ</h1>
-      <p>Welcome to spotQ.</p>
-      <Button>Click Me</Button>
-    </main>
+    <div style={{ padding: "20px", fontFamily: "sans-serif", lineHeight: "1.6" }}>
+      <div>
+        <strong>Customer Name:</strong> {user?.fullName}
+      </div>
+      <div>
+        <strong>Email Address:</strong> {user?.email}
+      </div>
+      <div style={{ marginTop: "15px" }}>
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          style={{ cursor: isLoggingOut ? "not-allowed" : "pointer" }}
+        >
+          {isLoggingOut ? "Logging out..." : "Logout"}
+        </button>
+      </div>
+    </div>
   );
 };
 
