@@ -5,10 +5,8 @@
     "lib": ["ES2023", "DOM"],
     "module": "esnext",
     "types": ["node", "jest", "@testing-library/jest-dom", "vite/client"],
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
@@ -27,5 +25,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "__mocks__", "jest.setup.ts", "jest.config.ts"]
+  "include": ["src", "__mocks__", "jest.config.ts"]
 }
