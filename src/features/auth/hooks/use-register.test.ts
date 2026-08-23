@@ -1,4 +1,4 @@
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuthStore } from "../store/auth.store";
@@ -49,9 +49,9 @@ describe("useRegister", () => {
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
 
     (useAuthStore as unknown as jest.Mock).mockReturnValue({
-    setAuth: mockSetAuth,
+      setAuth: mockSetAuth,
     });
-    
+
     (useRegisterMutation as jest.Mock).mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
@@ -61,9 +61,7 @@ describe("useRegister", () => {
   it("returns handleRegister and loading state", () => {
     const { result } = renderHook(() => useRegister());
 
-    expect(result.current.handleRegister).toEqual(
-      expect.any(Function),
-    );
+    expect(result.current.handleRegister).toEqual(expect.any(Function));
 
     expect(result.current.isLoading).toBe(false);
   });
@@ -118,14 +116,9 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(toast.success).toHaveBeenCalledWith(
-      "Registration successful",
-    );
+    expect(toast.success).toHaveBeenCalledWith("Registration successful");
 
-    expect(mockSetAuth).toHaveBeenCalledWith(
-      user,
-      accessToken,
-    );
+    expect(mockSetAuth).toHaveBeenCalledWith(user, accessToken);
 
     expect(mockNavigate).toHaveBeenCalledWith("/", {
       replace: true,
@@ -144,9 +137,7 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(toast.error).toHaveBeenCalledWith(
-      "Email already exists",
-    );
+    expect(toast.error).toHaveBeenCalledWith("Email already exists");
 
     expect(mockSetAuth).not.toHaveBeenCalled();
 
@@ -165,9 +156,7 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(toast.error).toHaveBeenCalledWith(
-      "Something went wrong. Please try again.",
-    );
+    expect(toast.error).toHaveBeenCalledWith("Something went wrong. Please try again.");
 
     expect(mockSetAuth).not.toHaveBeenCalled();
 
@@ -185,10 +174,7 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(handleAuthError).toHaveBeenCalledWith(
-      error,
-      "register",
-    );
+    expect(handleAuthError).toHaveBeenCalledWith(error, "register");
 
     expect(mockSetAuth).not.toHaveBeenCalled();
 
