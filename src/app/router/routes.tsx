@@ -1,4 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
+import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
+import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import DemoLayout from "@/layouts/DemoLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -23,6 +25,14 @@ const router = createBrowserRouter([
             children: demoRoutes,
           },
         ],
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermsAndConditionsPage />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicyPage />,
       },
       {
         path: "*",

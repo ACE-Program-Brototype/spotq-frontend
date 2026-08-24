@@ -103,7 +103,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
 
         <div className="flex gap-2">
           {/* Fixed country code */}
-          <div className="flex h-10 shrink-0 items-center rounded-md border border-input bg-muted px-3 text-sm font-medium text-muted-foreground">
+          <div className="flex h-12 shrink-0 items-center rounded-md border border-input bg-muted px-3 text-sm font-medium text-muted-foreground">
             +91
           </div>
 
@@ -224,7 +224,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           <button
             type="button"
             onClick={() => navigate("/terms-and-conditions")}
-            className="font-semibold text-spotq-orange hover:text-spotq-orange/80"
+            className="font-semibold text-spotq-orange hover:text-spotq-orange/80 cursor-pointer"
           >
             Terms and Conditions
           </button>{" "}
@@ -232,7 +232,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           <button
             type="button"
             onClick={() => navigate("/privacy-policy")}
-            className="font-semibold text-spotq-orange hover:text-spotq-orange/80"
+            className="font-semibold text-spotq-orange hover:text-spotq-orange/80 cursor-pointer"
           >
             Privacy Policy
           </button>
