@@ -14,17 +14,12 @@ export const useResendOtp = () => {
       });
 
       if (response.success) {
-        toast.success(
-          AUTH_MESSAGES.OTP_RESEND_SUCCESS,
-        );
+        toast.success(AUTH_MESSAGES.OTP_RESEND_SUCCESS);
 
         return response;
       }
 
-      toast.error(
-        response.message ||
-          AUTH_MESSAGES.GENERIC_ERROR,
-      );
+      toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
 
       return response;
     } catch (err: unknown) {

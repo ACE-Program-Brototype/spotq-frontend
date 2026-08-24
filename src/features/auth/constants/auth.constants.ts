@@ -16,7 +16,7 @@ export const AUTH_MESSAGES = {
 
   REGISTER_SUCCESS: "Registration successful",
   OTP_VERIFIED_SUCCESS: "Email otp verification success",
-  OTP_RESEND_SUCCESS: "OTP resend successful"
+  OTP_RESEND_SUCCESS: "OTP resend successful",
 } as const;
 
 export const AUTH_ENDPOINTS = {
@@ -26,5 +26,5 @@ export const AUTH_ENDPOINTS = {
   REFRESH_TOKEN: "api/v1/users/refresh-token",
   REGISTER: "register",
   VERIFY_OTP: "verify-email",
-  RESEND_EMAIL_OTP: "resend-email-otp"
+  RESEND_EMAIL_OTP: "resend-email-otp",
 } as const;

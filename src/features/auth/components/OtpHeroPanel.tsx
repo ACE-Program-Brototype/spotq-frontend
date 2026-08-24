@@ -1,4 +1,4 @@
-import { ShieldCheck, LockKeyhole } from "lucide-react";
+import { LockKeyhole, ShieldCheck } from "lucide-react";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 
 export const OtpHeroPanel = () => {
@@ -7,28 +7,19 @@ export const OtpHeroPanel = () => {
       {/* Brand */}
       <div className="flex items-center gap-3">
         <div className="bg-white rounded-lg p-2 shadow-md">
-          <img
-            src={spotqLogo}
-            alt="SpotQ Logo"
-            className="h-6 w-auto"
-          />
+          <img src={spotqLogo} alt="SpotQ Logo" className="h-6 w-auto" />
         </div>
 
-        <span className="font-bold text-lg tracking-wide">
-          SpotQ
-        </span>
+        <span className="font-bold text-lg tracking-wide">SpotQ</span>
       </div>
 
       {/* Main content */}
       <div className="flex flex-1 flex-col justify-center max-w-lg">
         <div className="space-y-3">
-          <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight">
-            Secure your spot.
-          </h1>
+          <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight">Secure your spot.</h1>
 
           <p className="text-sm leading-relaxed text-white/85 max-w-md">
-            Connecting your culinary passion with seamless digital
-            protection.
+            Connecting your culinary passion with seamless digital protection.
           </p>
         </div>
 

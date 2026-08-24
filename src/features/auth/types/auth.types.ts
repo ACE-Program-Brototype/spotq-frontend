@@ -75,13 +75,12 @@ export type VerifyOtpInput = {
   otp: string;
 };
 
-
 export type VerifyEmailResult = {
-  success: boolean,
-  statusCode: number,
-  message: string
-}
+  success: boolean;
+  statusCode: number;
+  message: string;
+};
 
 export type ResendOtpInput = {
-  email: string
-}
+  email: string;
+};

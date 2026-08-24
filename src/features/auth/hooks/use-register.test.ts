@@ -1,6 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
+import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useAuthStore } from "../store/auth.store";
 import { handleAuthError } from "../utils/auth-error-handler";
 import { useRegisterMutation } from "./use-auth-mutations";
@@ -73,6 +75,7 @@ describe("useRegister", () => {
         user: {
           id: "user-1",
           name: "Alex Johnson",
+          email: "alex@example.com",
         },
         accessToken: "access-token",
       },
@@ -98,6 +101,7 @@ describe("useRegister", () => {
     const user = {
       id: "user-1",
       name: "Alex Johnson",
+      email: "alex@example.com",
     };
 
     const accessToken = "access-token";
@@ -116,11 +120,15 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(toast.success).toHaveBeenCalledWith("Registration successful");
+    expect(toast.success).toHaveBeenCalledWith(AUTH_MESSAGES.REGISTER_SUCCESS);
+
+    expect(mockSetAuth).toHaveBeenCalledTimes(1);
 
     expect(mockSetAuth).toHaveBeenCalledWith(user, accessToken);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/", {
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+
+    expect(mockNavigate).toHaveBeenCalledWith(`/verify-otp?email=${user.email}`, {
       replace: true,
     });
   });
@@ -156,7 +164,7 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(toast.error).toHaveBeenCalledWith("Something went wrong. Please try again.");
+    expect(toast.error).toHaveBeenCalledWith(AUTH_MESSAGES.GENERIC_ERROR);
 
     expect(mockSetAuth).not.toHaveBeenCalled();
 

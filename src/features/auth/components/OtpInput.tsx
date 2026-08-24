@@ -1,9 +1,4 @@
-import {
-  type ClipboardEvent,
-  type KeyboardEvent,
-  useEffect,
-  useRef,
-} from "react";
+import { type ClipboardEvent, type KeyboardEvent, useEffect, useRef } from "react";
 
 interface OtpInputProps {
   value: string;
@@ -14,6 +9,8 @@ interface OtpInputProps {
   autoFocus?: boolean;
   className?: string;
 }
+
+const OTP_FIELDS = ["otp-1", "otp-2", "otp-3", "otp-4", "otp-5", "otp-6"] as const;
 
 export function OtpInput({
   value,
@@ -59,19 +56,12 @@ export function OtpInput({
     }
 
     // Completed
-    if (
-      digit &&
-      index === length - 1 &&
-      newValue.length === length
-    ) {
+    if (digit && index === length - 1 && newValue.length === length) {
       onComplete?.(newValue);
     }
   };
 
-  const handleChange = (
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value;
 
     // Only allow numbers
@@ -95,10 +85,7 @@ export function OtpInput({
 
       onChange(newValue);
 
-      const nextIndex = Math.min(
-        index + digits.length,
-        length - 1,
-      );
+      const nextIndex = Math.min(index + digits.length, length - 1);
 
       focusInput(nextIndex);
 
@@ -112,10 +99,7 @@ export function OtpInput({
     updateOtp(index, digits);
   };
 
-  const handleKeyDown = (
-    index: number,
-    event: KeyboardEvent<HTMLInputElement>,
-  ) => {
+  const handleKeyDown = (index: number, event: KeyboardEvent<HTMLInputElement>) => {
     switch (event.key) {
       case "Backspace": {
         event.preventDefault();
@@ -178,15 +162,10 @@ export function OtpInput({
     }
   };
 
-  const handlePaste = (
-    index: number,
-    event: ClipboardEvent<HTMLInputElement>,
-  ) => {
+  const handlePaste = (index: number, event: ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault();
 
-    const pastedText = event.clipboardData
-      .getData("text")
-      .replace(/\D/g, "");
+    const pastedText = event.clipboardData.getData("text").replace(/\D/g, "");
 
     if (!pastedText) return;
 
@@ -205,10 +184,7 @@ export function OtpInput({
 
     onChange(newValue);
 
-    const lastIndex = Math.min(
-      index + pastedText.length,
-      length - 1,
-    );
+    const lastIndex = Math.min(index + pastedText.length, length - 1);
 
     focusInput(lastIndex);
 
@@ -218,12 +194,10 @@ export function OtpInput({
   };
 
   return (
-    <div
-      className={`flex items-center justify-center gap-2 sm:gap-3 ${className}`}
-    >
-      {Array.from({ length }).map((_, index) => (
+    <div className={`flex items-center justify-center gap-2 sm:gap-3 ${className}`}>
+      {OTP_FIELDS.map((otpfield, index) => (
         <input
-          key={index}
+          key={otpfield}
           ref={(element) => {
             inputRefs.current[index] = element;
           }}

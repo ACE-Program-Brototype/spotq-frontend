@@ -36,17 +36,14 @@ export const useRegisterMutation = () => {
   });
 };
 
-
 export const useVerifyEmailMutation = () => {
   return useMutation<VerifyEmailResult, Error, VerifyOtpInput>({
-    mutationFn: (input) =>
-      authService.verifyOtp(input),
+    mutationFn: (input) => authService.verifyOtp(input),
   });
 };
 
 export const useResendEmailOtp = () => {
   return useMutation<VerifyEmailResult, Error, ResendOtpInput>({
-    mutationFn: (input) => 
-      authService.resendEmailOtp(input),
-  })
-}
+    mutationFn: (input) => authService.resendEmailOtp(input),
+  });
+};

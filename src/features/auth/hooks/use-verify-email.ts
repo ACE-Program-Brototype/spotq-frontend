@@ -9,26 +9,21 @@ export const useVerifyOtp = () => {
 
   const verifyOtpMutation = useVerifyEmailMutation();
 
-  const handleVerifyOtp = async ( email: string, otp: string ) => {
+  const handleVerifyOtp = async (email: string, otp: string) => {
     try {
       const response = await verifyOtpMutation.mutateAsync({
-          email,
-          otp,
-        });
+        email,
+        otp,
+      });
 
       if (response.success) {
-        toast.success(
-          AUTH_MESSAGES.OTP_VERIFIED_SUCCESS,
-        );
+        toast.success(AUTH_MESSAGES.OTP_VERIFIED_SUCCESS);
 
         navigate("/", {
           replace: true,
         });
       } else {
-        toast.error(
-          response.message ||
-            AUTH_MESSAGES.GENERIC_ERROR,
-        );
+        toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }
     } catch (err: unknown) {
       await handleAuthError(err, "verify-otp");

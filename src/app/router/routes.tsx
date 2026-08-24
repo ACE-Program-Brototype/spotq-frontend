@@ -18,7 +18,7 @@ const router = createBrowserRouter([
       },
       {
         Component: DemoLayout,
-        children: demoRoutes
+        children: demoRoutes,
       },
       {
         path: "/terms-and-conditions",

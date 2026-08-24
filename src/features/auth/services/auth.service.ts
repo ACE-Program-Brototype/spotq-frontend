@@ -94,7 +94,6 @@ export const authService = {
   },
 
   verifyOtp: async (input: VerifyOtpInput): Promise<VerifyEmailResult> => {
-
     const rawResponse = await apiClient
       .post(AUTH_ENDPOINTS.VERIFY_OTP, {
         json: input,
@@ -104,8 +103,8 @@ export const authService = {
     return {
       success: rawResponse.success,
       statusCode: rawResponse.statusCode,
-      message: rawResponse.message
-    }
+      message: rawResponse.message,
+    };
   },
 
   resendEmailOtp: async (input: ResendOtpInput): Promise<VerifyEmailResult> => {
@@ -118,8 +117,7 @@ export const authService = {
     return {
       success: rawResponse.success,
       statusCode: rawResponse.statusCode,
-      message: rawResponse.message
-    }
-  }
-
+      message: rawResponse.message,
+    };
+  },
 };
