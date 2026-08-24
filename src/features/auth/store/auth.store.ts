@@ -10,6 +10,7 @@ type AuthState = {
   savedAt: number | null;
 
   setAuth: (user: User, accessToken: string) => void;
+  setUser: (user: User | null) => void;
   clearAuth: () => void;
 };
 
@@ -62,6 +63,17 @@ export const useAuthStore = create<AuthState>()(
             },
             false,
             "auth/setAuth",
+          ),
+
+        setUser: (user) =>
+          set(
+            {
+              user,
+              isAuthenticated: !!user,
+              savedAt: Date.now(),
+            },
+            false,
+            "auth/setUser",
           ),
 
         clearAuth: () =>

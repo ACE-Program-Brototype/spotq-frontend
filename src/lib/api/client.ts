@@ -1,10 +1,11 @@
 import ky from "ky";
+import env from "@/config/env";
 import { afterResponse } from "./hooks/afterResponse";
 import { beforeError } from "./hooks/beforeError";
 import { beforeRequest } from "./hooks/beforeRequest";
 import { beforeRetry } from "./hooks/beforeRetry";
 
-const API_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = env?.apiUrl || import.meta.env.VITE_API_BASE_URL;
 
 if (!API_URL) {
   throw new Error("VITE_API_BASE_URL is not configured.");

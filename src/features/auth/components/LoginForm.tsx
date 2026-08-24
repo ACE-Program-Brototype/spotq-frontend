@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils/cn";
 import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
 
 interface LoginFormProps {
@@ -29,8 +30,12 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
     },
   });
 
+  const onFormSubmit = (data: LoginFormValues) => {
+    onSubmit(data);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6" noValidate>
       {/* Email field */}
       <div className="space-y-2">
         <div className="flex justify-between items-center">
@@ -38,20 +43,23 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
             Email Address
           </Label>
         </div>
-        <Input
-          id="email"
-          type="email"
-          placeholder="e.g. alex@example.com"
-          error={!!errors.email}
-          leftIcon={<Mail className="hidden md:block size-5 text-gray-400" />}
-          rightIcon={
-            <span className="block md:hidden text-gray-400 font-medium text-base select-none">
-              @
-            </span>
-          }
-          disabled={isLoading}
-          {...register("email")}
-        />
+        <div className="relative flex items-center">
+          <Mail className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="e.g. alex@example.com"
+            disabled={isLoading}
+            className={cn(
+              "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+              errors.email && "border-destructive focus-visible:ring-destructive/30",
+            )}
+            {...register("email")}
+          />
+          <span className="block md:hidden absolute right-3.5 text-gray-400 font-medium text-base select-none pointer-events-none">
+            @
+          </span>
+        </div>
         {errors.email && (
           <p className="text-xs text-destructive mt-1.5" role="alert">
             {errors.email.message}
@@ -73,25 +81,28 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
             Forgot Password?
           </button>
         </div>
-        <Input
-          id="password"
-          type={showPassword ? "text" : "password"}
-          placeholder="••••••••"
-          error={!!errors.password}
-          leftIcon={<Lock className="hidden md:block size-5 text-gray-400" />}
-          rightIcon={
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="p-1 -mr-1.5 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-            </button>
-          }
-          disabled={isLoading}
-          {...register("password")}
-        />
+        <div className="relative flex items-center">
+          <Lock className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            disabled={isLoading}
+            className={cn(
+              "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+              errors.password && "border-destructive focus-visible:ring-destructive/30",
+            )}
+            {...register("password")}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3.5 p-1 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+          </button>
+        </div>
         {errors.password && (
           <p className="text-xs text-destructive mt-1.5" role="alert">
             {errors.password.message}
@@ -121,3 +132,5 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
     </form>
   );
 };
+
+export default LoginForm;

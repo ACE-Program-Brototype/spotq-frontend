@@ -9,6 +9,7 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => {
     id: apiUser.id,
     fullName: apiUser.full_name,
     email: apiUser.email,
+    role: apiUser.role ?? "CUSTOMER",
     phone: apiUser.phone ?? "",
     status: apiUser.status,
     createdAt: apiUser.created_at ?? new Date().toISOString(),

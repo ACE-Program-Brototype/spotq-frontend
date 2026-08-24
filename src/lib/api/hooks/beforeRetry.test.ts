@@ -1,5 +1,5 @@
 import { HTTPError, type NormalizedOptions } from "ky";
-import { AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
+import { ADMIN_AUTH_ENDPOINTS, AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import * as authRefreshModule from "../auth-refresh";
 import { beforeRetry } from "./beforeRetry";
@@ -38,6 +38,24 @@ describe("beforeRetry hook", () => {
 
   test("should throw error on 401 for auth routes (e.g. login) to propagate HTTPError", async () => {
     const request = createMockRequest(`http://localhost:10000/api/v1${AUTH_ENDPOINTS.LOGIN}`);
+    const error = create401Error(401);
+
+    await expect(
+      beforeRetry({
+        request,
+        options: dummyOptions,
+        error,
+        retryCount: 1,
+      }),
+    ).rejects.toBe(error);
+
+    expect(authRefreshModule.getOrRefreshAccessToken).not.toHaveBeenCalled();
+  });
+
+  test("should throw error on 401 for admin login route to propagate HTTPError without redirecting", async () => {
+    const request = createMockRequest(
+      `http://localhost:10000/api/v1/${ADMIN_AUTH_ENDPOINTS.LOGIN}`,
+    );
     const error = create401Error(401);
 
     await expect(

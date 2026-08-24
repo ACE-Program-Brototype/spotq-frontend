@@ -5,10 +5,10 @@ import HomePage from "@/features/demo/pages/HomePage";
 export const demoRoutes: RouteObject[] = [
   {
     path: "/",
-    element: <HomePage />,
+    Component: HomePage,
   },
   {
     path: "/about",
-    element: <AboutPage />,
+    Component: AboutPage,
   },
 ];

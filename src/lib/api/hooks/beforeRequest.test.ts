@@ -25,24 +25,27 @@ describe("beforeRequest hook", () => {
     } as unknown as Request;
   };
 
-  test("should attach Authorization header when accessToken exists in store", async () => {
+  it("attaches Authorization header when accessToken exists in authStore", async () => {
     useAuthStore.setState({
       accessToken: "existing-in-memory-token",
       isAuthenticated: true,
     });
 
-    const request = createMockRequest("http://localhost:10000/api/v1/users/logout");
-    await beforeRequest({ request, options: dummyOptions, retryCount: 0 });
+    const request = createMockRequest("http://localhost:10000/api/v1/protected/data");
+    const result = (await beforeRequest({
+      request,
+      options: dummyOptions,
+      retryCount: 0,
+    })) as Request;
 
-    expect(request.headers.set).toHaveBeenCalledWith(
+    expect(result.headers.set).toHaveBeenCalledWith(
       "Authorization",
       "Bearer existing-in-memory-token",
     );
     expect(authRefreshModule.getOrRefreshAccessToken).not.toHaveBeenCalled();
   });
 
-  test("should silently restore accessToken on page refresh if user is authenticated", async () => {
-    // Simulated state after page refresh: isAuthenticated is true from localStorage, accessToken is null
+  it("silently restores accessToken on page refresh if user was authenticated", async () => {
     useAuthStore.setState({
       accessToken: null,
       isAuthenticated: true,
@@ -52,7 +55,7 @@ describe("beforeRequest hook", () => {
       "restored-token-from-cookie",
     );
 
-    const request = createMockRequest("http://localhost:10000/api/v1/users/logout");
+    const request = createMockRequest("http://localhost:10000/api/v1/protected/data");
     await beforeRequest({ request, options: dummyOptions, retryCount: 0 });
 
     expect(authRefreshModule.getOrRefreshAccessToken).toHaveBeenCalledTimes(1);
@@ -62,7 +65,7 @@ describe("beforeRequest hook", () => {
     );
   });
 
-  test("should not attach Authorization header or refresh token for public auth endpoints (e.g. login)", async () => {
+  it("does not attach Authorization header or refresh token for public auth endpoints (e.g. login)", async () => {
     useAuthStore.setState({
       accessToken: null,
       isAuthenticated: false,

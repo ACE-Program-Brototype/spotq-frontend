@@ -32,6 +32,7 @@ describe("auth-refresh", () => {
     expect(token).toBe("new-jwt-token");
     expect(useAuthStore.getState().accessToken).toBe("new-jwt-token");
     expect(useAuthStore.getState().user?.fullName).toBe("Refreshed User");
+    expect(useAuthStore.getState().user?.role).toBe("CUSTOMER");
     expect(useAuthStore.getState().isAuthenticated).toBe(true);
   });
 
