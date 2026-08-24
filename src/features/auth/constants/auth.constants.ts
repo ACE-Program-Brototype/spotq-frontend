@@ -15,6 +15,8 @@ export const AUTH_MESSAGES = {
   GOOGLE_TRY_AGAIN: "Google authentication failed. Please try again.",
 
   REGISTER_SUCCESS: "Registration successful",
+  OTP_VERIFIED_SUCCESS: "Email otp verification success",
+  OTP_RESEND_SUCCESS: "OTP resend successful"
 } as const;
 
 export const AUTH_ENDPOINTS = {
@@ -22,5 +24,7 @@ export const AUTH_ENDPOINTS = {
   GOOGLE_LOGIN: "api/v1/users/oauth/google",
   LOGOUT: "api/v1/users/logout",
   REFRESH_TOKEN: "api/v1/users/refresh-token",
-  REGISTER: "api/v1/users/register",
+  REGISTER: "register",
+  VERIFY_OTP: "verify-email",
+  RESEND_EMAIL_OTP: "resend-email-otp"
 } as const;

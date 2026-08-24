@@ -7,6 +7,9 @@ import type {
   LogoutResult,
   RegisterInput,
   RegisterResult,
+  ResendOtpInput,
+  VerifyEmailResult,
+  VerifyOtpInput,
 } from "../types/auth.types";
 
 export const useLoginMutation = () => {
@@ -32,3 +35,18 @@ export const useRegisterMutation = () => {
     mutationFn: (input) => authService.register(input),
   });
 };
+
+
+export const useVerifyEmailMutation = () => {
+  return useMutation<VerifyEmailResult, Error, VerifyOtpInput>({
+    mutationFn: (input) =>
+      authService.verifyOtp(input),
+  });
+};
+
+export const useResendEmailOtp = () => {
+  return useMutation<VerifyEmailResult, Error, ResendOtpInput>({
+    mutationFn: (input) => 
+      authService.resendEmailOtp(input),
+  })
+}

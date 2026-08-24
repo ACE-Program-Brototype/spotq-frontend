@@ -7,6 +7,9 @@ import type {
   LogoutResult,
   RegisterInput,
   RegisterResult,
+  ResendOtpInput,
+  VerifyEmailResult,
+  VerifyOtpInput,
 } from "../types/auth.types";
 import { mapApiAuthResponseToAuthResult } from "../utils/auth.mapper";
 
@@ -89,4 +92,34 @@ export const authService = {
 
     return mapApiAuthResponseToAuthResult(rawResponse);
   },
+
+  verifyOtp: async (input: VerifyOtpInput): Promise<VerifyEmailResult> => {
+
+    const rawResponse = await apiClient
+      .post(AUTH_ENDPOINTS.VERIFY_OTP, {
+        json: input,
+      })
+      .json<VerifyEmailResult>();
+
+    return {
+      success: rawResponse.success,
+      statusCode: rawResponse.statusCode,
+      message: rawResponse.message
+    }
+  },
+
+  resendEmailOtp: async (input: ResendOtpInput): Promise<VerifyEmailResult> => {
+    const rawResponse = await apiClient
+      .post(AUTH_ENDPOINTS.RESEND_EMAIL_OTP, {
+        json: input,
+      })
+      .json<VerifyEmailResult>();
+
+    return {
+      success: rawResponse.success,
+      statusCode: rawResponse.statusCode,
+      message: rawResponse.message
+    }
+  }
+
 };

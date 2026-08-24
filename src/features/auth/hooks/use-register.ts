@@ -26,7 +26,7 @@ export const useRegister = () => {
 
         setAuth(response.data.user, response.data.accessToken);
 
-        navigate("/", { replace: true });
+        navigate(`/verify-otp?email=${response.data.user.email}`, { replace: true });
       } else {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }

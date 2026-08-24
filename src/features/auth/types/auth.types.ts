@@ -69,3 +69,19 @@ export type RegisterInput = {
 };
 
 export type RegisterResult = AuthResult;
+
+export type VerifyOtpInput = {
+  email: string;
+  otp: string;
+};
+
+
+export type VerifyEmailResult = {
+  success: boolean,
+  statusCode: number,
+  message: string
+}
+
+export type ResendOtpInput = {
+  email: string
+}
