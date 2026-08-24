@@ -1,5 +1,62 @@
 export type User = {
   id: string;
+  fullName: string;
   email: string;
-  role: string;
+  phone: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ApiUser = {
+  id: string;
+  full_name: string;
+  email: string;
+  phone?: string;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type DeviceInput = {
+  deviceName?: string;
+  platform?: "ANDROID" | "IOS" | "WEB";
+  fcmToken?: string;
+};
+
+export type LoginInput = {
+  email: string;
+  password?: string;
+  device?: DeviceInput;
+};
+
+export type ApiAuthResponse = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    user: ApiUser;
+    access_token: string;
+    refresh_token?: string;
+  };
+};
+
+export type AuthResult = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    user: User;
+    accessToken: string;
+  };
+};
+
+// Aliases for compatibility
+export type LoginResult = AuthResult;
+export type GoogleLoginResult = AuthResult;
+
+export type LogoutResult = {
+  success: boolean;
+  statusCode: number;
+  message: string;
 };

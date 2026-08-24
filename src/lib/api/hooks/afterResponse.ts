@@ -1,7 +1,5 @@
 import type { AfterResponseHook } from "ky";
 
-export const afterResponse: AfterResponseHook = ({ response }) => {
-  // TODO: Handle common response processing.
-
+export const afterResponse: AfterResponseHook = async ({ response }) => {
   return response;
 };
