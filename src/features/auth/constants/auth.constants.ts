@@ -24,7 +24,7 @@ export const AUTH_ENDPOINTS = {
   GOOGLE_LOGIN: "api/v1/users/oauth/google",
   LOGOUT: "api/v1/users/logout",
   REFRESH_TOKEN: "api/v1/users/refresh-token",
-  REGISTER: "register",
-  VERIFY_OTP: "verify-email",
-  RESEND_EMAIL_OTP: "resend-email-otp",
+  REGISTER: "api/v1/users/register",
+  VERIFY_OTP: "api/v1/users/verify-email",
+  RESEND_EMAIL_OTP: "api/v1/users/resend-email-otp",
 } as const;
