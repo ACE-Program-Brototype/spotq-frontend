@@ -22,7 +22,6 @@ export default function RegisterPage() {
   const onSubmit = async (values: RegisterFormValues) => {
     if (isLoading) return;
     values.phoneNumber = `+91 ${values.phoneNumber}`;
-    console.log("---Register data----", values);
     await handleRegister(values);
   };
 

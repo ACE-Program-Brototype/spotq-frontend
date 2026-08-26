@@ -20,11 +20,11 @@ export const AUTH_MESSAGES = {
 } as const;
 
 export const AUTH_ENDPOINTS = {
-  LOGIN: "api/v1/users/login",
-  GOOGLE_LOGIN: "api/v1/users/oauth/google",
-  LOGOUT: "api/v1/users/logout",
-  REFRESH_TOKEN: "api/v1/users/refresh-token",
-  REGISTER: "api/v1/users/register",
-  VERIFY_OTP: "api/v1/users/verify-email",
-  RESEND_EMAIL_OTP: "api/v1/users/resend-email-otp",
+  LOGIN: "users/login",
+  GOOGLE_LOGIN: "users/oauth/google",
+  LOGOUT: "users/logout",
+  REFRESH_TOKEN: "users/refresh-token",
+  REGISTER: "users/register",
+  VERIFY_OTP: "users/verify-email",
+  RESEND_EMAIL_OTP: "users/resend-email-otp",
 } as const;
