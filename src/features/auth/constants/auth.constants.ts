@@ -17,6 +17,9 @@ export const AUTH_MESSAGES = {
   GOOGLE_FAILED: "Google authentication failed.",
   GOOGLE_TRY_AGAIN: "Google authentication failed. Please try again.",
 
+  REGISTER_SUCCESS: "Registration successful",
+  OTP_RESEND_SUCCESS: "OTP resend successful",
+
   // Forgot Password / OTP / Reset Password
   OTP_SENT_SUCCESS: "OTP sent successfully to your email.",
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
@@ -26,22 +29,25 @@ export const AUTH_MESSAGES = {
 
 export const AUTH_ENDPOINTS = {
   // Customer Auth Endpoints
-  LOGIN: "/users/login",
-  GOOGLE_LOGIN: "/users/oauth/google",
-  LOGOUT: "/users/logout",
-  REFRESH_TOKEN: "/users/refresh-token",
-  FORGOT_PASSWORD: "/users/forgot-password",
-  VERIFY_OTP: "/users/forgot-password/verify",
-  RESEND_OTP: "/users/forgot-password/resend-otp",
-  RESET_PASSWORD: "/users/reset-password",
+  LOGIN: "users/login",
+  GOOGLE_LOGIN: "users/oauth/google",
+  LOGOUT: "users/logout",
+  REFRESH_TOKEN: "users/refresh-token",
+  REGISTER: "users/register",
+  VERIFY_OTP: "users/verify-email",
+  RESEND_EMAIL_OTP: "users/resend-email-otp",
+  FORGOT_PASSWORD: "users/forgot-password",
+  FORGOT_PASSWORD_VERIFY: "users/forgot-password/verify",
+  FORGOT_PASSWORD_RESEND_OTP: "users/forgot-password/resend-otp",
+  RESET_PASSWORD: "users/reset-password",
 
   // Admin Auth Endpoints
-  ADMIN_LOGIN: "/admin/auth/login",
-  ADMIN_LOGOUT: "/admin/auth/logout",
-  ADMIN_FORGOT_PASSWORD: "/admin/auth/forgot-password",
-  ADMIN_VERIFY_OTP: "/admin/auth/forgot-password/verify",
-  ADMIN_RESEND_OTP: "/admin/auth/forgot-password/resend-otp",
-  ADMIN_RESET_PASSWORD: "/admin/auth/reset-password",
+  ADMIN_LOGIN: "admin/auth/login",
+  ADMIN_LOGOUT: "admin/auth/logout",
+  ADMIN_FORGOT_PASSWORD: "admin/auth/forgot-password",
+  ADMIN_VERIFY_OTP: "admin/auth/forgot-password/verify",
+  ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
+  ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
 } as const;
 
 export const ADMIN_AUTH_ENDPOINTS = {
@@ -57,9 +63,12 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.LOGIN,
   AUTH_ENDPOINTS.GOOGLE_LOGIN,
   AUTH_ENDPOINTS.REFRESH_TOKEN,
-  AUTH_ENDPOINTS.FORGOT_PASSWORD,
+  AUTH_ENDPOINTS.REGISTER,
   AUTH_ENDPOINTS.VERIFY_OTP,
-  AUTH_ENDPOINTS.RESEND_OTP,
+  AUTH_ENDPOINTS.RESEND_EMAIL_OTP,
+  AUTH_ENDPOINTS.FORGOT_PASSWORD,
+  AUTH_ENDPOINTS.FORGOT_PASSWORD_VERIFY,
+  AUTH_ENDPOINTS.FORGOT_PASSWORD_RESEND_OTP,
   AUTH_ENDPOINTS.RESET_PASSWORD,
   AUTH_ENDPOINTS.ADMIN_LOGIN,
   AUTH_ENDPOINTS.ADMIN_FORGOT_PASSWORD,

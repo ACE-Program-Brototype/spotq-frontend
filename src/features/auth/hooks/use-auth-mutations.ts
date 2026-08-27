@@ -1,6 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "../services/auth.service";
-import type { GoogleLoginResult, LoginInput, LoginResult, LogoutResult } from "../types/auth.types";
+import type {
+  GoogleLoginResult,
+  LoginInput,
+  LoginResult,
+  LogoutResult,
+  RegisterInput,
+  RegisterResult,
+  ResendOtpInput,
+  VerifyEmailResult,
+  VerifyOtpInput,
+} from "../types/auth.types";
 
 export const useLoginMutation = () => {
   return useMutation<LoginResult, Error, LoginInput>({
@@ -17,5 +27,23 @@ export const useGoogleLoginMutation = () => {
 export const useLogoutMutation = () => {
   return useMutation<LogoutResult, Error, void>({
     mutationFn: () => authService.logout(),
+  });
+};
+
+export const useRegisterMutation = () => {
+  return useMutation<RegisterResult, Error, RegisterInput>({
+    mutationFn: (input) => authService.register(input),
+  });
+};
+
+export const useVerifyEmailMutation = () => {
+  return useMutation<VerifyEmailResult, Error, VerifyOtpInput>({
+    mutationFn: (input) => authService.verifyOtp(input),
+  });
+};
+
+export const useResendEmailOtp = () => {
+  return useMutation<VerifyEmailResult, Error, ResendOtpInput>({
+    mutationFn: (input) => authService.resendEmailOtp(input),
   });
 };

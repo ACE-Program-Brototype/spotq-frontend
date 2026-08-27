@@ -111,7 +111,7 @@ describe("auth.service", () => {
       });
 
       const res = await verifyOtp({ email: "user@example.com", otp: "123456" });
-      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.VERIFY_OTP, {
+      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.FORGOT_PASSWORD_VERIFY, {
         json: { email: "user@example.com", otp: "123456" },
       });
       expect(res).toEqual({ success: true, message: "Verified" });
@@ -123,7 +123,7 @@ describe("auth.service", () => {
       });
 
       const res = await resendOtp({ email: "user@example.com" });
-      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.RESEND_OTP, {
+      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.FORGOT_PASSWORD_RESEND_OTP, {
         json: { email: "user@example.com" },
       });
       expect(res).toEqual({ success: true, message: "Resent" });

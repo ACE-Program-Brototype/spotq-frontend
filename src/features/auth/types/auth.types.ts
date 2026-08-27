@@ -69,3 +69,27 @@ export type LogoutResult = {
   statusCode: number;
   message: string;
 };
+
+export type RegisterInput = {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+};
+
+export type RegisterResult = AuthResult;
+
+export type VerifyOtpInput = {
+  email: string;
+  otp: string;
+};
+
+export type VerifyEmailResult = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+};
+
+export type ResendOtpInput = {
+  email: string;
+};
