@@ -17,15 +17,14 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
   }
 
   refreshPromise = (async () => {
-    const rawApiUrl = import.meta.env.VITE_API_BASE_URL;
-    if (!rawApiUrl) {
+    const API_URL = import.meta.env.VITE_API_BASE_URL;
+    if (!API_URL) {
       throw new Error("VITE_API_BASE_URL is not configured.");
     }
 
-    const API_URL = /^\d+$/.test(rawApiUrl) ? `http://localhost:${rawApiUrl}` : rawApiUrl;
-
     const response = await ky
-      .post(`${API_URL}/${AUTH_ENDPOINTS.REFRESH_TOKEN}`, {
+      .post(AUTH_ENDPOINTS.REFRESH_TOKEN, {
+        prefix: API_URL,
         credentials: "include",
       })
       .json<{ data: { access_token: string; user: ApiUser } }>();
