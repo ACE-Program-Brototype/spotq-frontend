@@ -1,7 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
+import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
+import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import DemoLayout from "@/layouts/DemoLayout";
-import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RootLayout from "@/layouts/RootLayout";
 import NotFoundPage from "../pages/NotFoundPage";
 import { authRoutes } from "./auth.routes";
@@ -16,17 +17,20 @@ const router = createBrowserRouter([
         children: authRoutes,
       },
       {
-        Component: ProtectedLayout,
-        children: [
-          {
-            Component: DemoLayout,
-            children: demoRoutes,
-          },
-        ],
+        Component: DemoLayout,
+        children: demoRoutes,
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermsAndConditionsPage />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicyPage />,
       },
       {
         path: "*",
-        element: <NotFoundPage />,
+        Component: NotFoundPage,
       },
     ],
   },

@@ -72,7 +72,7 @@ export const extractErrorMessage = (data: unknown): string | null => {
  * Global authentication error handler that displays tailored Sonner toast messages.
  * Uses official Ky error data and type guards (isHTTPError, isNetworkError, isTimeoutError).
  */
-export const handleAuthError = (err: unknown, type: "login" | "google" = "login") => {
+export const handleAuthError = (err: unknown, type: string) => {
   const defaultErrorMessage =
     type === "google" ? AUTH_MESSAGES.GOOGLE_FAILED : AUTH_MESSAGES.LOGIN_FAILED;
 
