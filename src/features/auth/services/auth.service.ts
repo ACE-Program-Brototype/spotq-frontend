@@ -5,7 +5,12 @@ import type {
   AuthResult,
   LoginInput,
   LogoutResult,
+  RegisterInput,
+  RegisterResult,
+  ResendOtpInput,
   User,
+  VerifyEmailResult,
+  VerifyOtpInput,
 } from "@/features/auth/types/auth.types";
 import { mapApiAuthResponseToAuthResult } from "@/features/auth/utils/auth.mapper";
 import { apiClient } from "@/lib/api/client";
@@ -122,5 +127,43 @@ export const authService = {
         json: {},
       })
       .json<LogoutResult>();
+  },
+
+  register: async (input: RegisterInput): Promise<RegisterResult> => {
+    const rawResponse = await apiClient
+      .post(AUTH_ENDPOINTS.REGISTER, {
+        json: input,
+      })
+      .json<ApiAuthResponse>();
+
+    return mapApiAuthResponseToAuthResult(rawResponse);
+  },
+
+  verifyOtp: async (input: VerifyOtpInput): Promise<VerifyEmailResult> => {
+    const rawResponse = await apiClient
+      .post(AUTH_ENDPOINTS.VERIFY_OTP, {
+        json: input,
+      })
+      .json<VerifyEmailResult>();
+
+    return {
+      success: rawResponse.success,
+      statusCode: rawResponse.statusCode,
+      message: rawResponse.message,
+    };
+  },
+
+  resendEmailOtp: async (input: ResendOtpInput): Promise<VerifyEmailResult> => {
+    const rawResponse = await apiClient
+      .post(AUTH_ENDPOINTS.RESEND_EMAIL_OTP, {
+        json: input,
+      })
+      .json<VerifyEmailResult>();
+
+    return {
+      success: rawResponse.success,
+      statusCode: rawResponse.statusCode,
+      message: rawResponse.message,
+    };
   },
 };
