@@ -1,5 +1,5 @@
 import { ArrowLeft, ShieldCheck } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -7,64 +7,19 @@ import { OtpHeroPanel } from "../components/OtpHeroPanel";
 import { OtpInput } from "../components/OtpInput";
 import { useResendOtp } from "../hooks/use-resend-otp";
 import { useVerifyOtp } from "../hooks/use-verify-email";
-
-const OTP_RESEND_SECONDS = 59;
-
-const getStorageKey = (email: string) => `spotq_otp_expiry_${email.trim().toLowerCase()}`;
-
-const getRemainingSeconds = (key: string) => {
-  const stored = localStorage.getItem(key);
-  if (!stored) return 0;
-
-  const expiry = Number(stored);
-  if (!Number.isFinite(expiry)) {
-    localStorage.removeItem(key);
-    return 0;
-  }
-
-  const remaining = Math.ceil((expiry - Date.now()) / 1000);
-  if (remaining <= 0) {
-    localStorage.removeItem(key);
-    return 0;
-  }
-
-  return remaining;
-};
+import { useOtpTimer } from "../hooks/useOtpTimer";
 
 export default function OtpVerificationPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "sample@gmail.com";
-  const storageKey = useMemo(() => getStorageKey(email), [email]);
 
   const [otp, setOtp] = useState("");
-  const [seconds, setSeconds] = useState(() => getRemainingSeconds(storageKey));
   const [isResending, _setIsResending] = useState(false);
 
+  const { seconds, startTimer } = useOtpTimer({ email, defaultSeconds: 59 });
   const { handleVerifyOtp, isLoading } = useVerifyOtp();
   const { handleResendOtp, isLoading: isResendLoading } = useResendOtp();
-
-  const startTimer = useCallback(() => {
-    const expiry = Date.now() + OTP_RESEND_SECONDS * 1000;
-    localStorage.setItem(storageKey, String(expiry));
-    setSeconds(OTP_RESEND_SECONDS);
-  }, [storageKey]);
-
-  useEffect(() => {
-    // Only create a timer when one doesn't already exist.
-    if (!localStorage.getItem(storageKey)) {
-      startTimer();
-    } else {
-      setSeconds(getRemainingSeconds(storageKey));
-    }
-
-    const interval = window.setInterval(() => {
-      const remaining = getRemainingSeconds(storageKey);
-      setSeconds(remaining);
-    }, 250);
-
-    return () => window.clearInterval(interval);
-  }, [storageKey, startTimer]);
 
   const handleVerify = async () => {
     if (otp.length !== 6 || isLoading) {
@@ -89,12 +44,7 @@ export default function OtpVerificationPage() {
     }
 
     setOtp("");
-
-    const expiry = Date.now() + OTP_RESEND_SECONDS * 1000;
-
-    localStorage.setItem(getStorageKey(email), expiry.toString());
-
-    setSeconds(OTP_RESEND_SECONDS);
+    startTimer(59);
   };
 
   return (

@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useLocation } from "react-router-dom";
 
@@ -9,6 +8,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { Label } from "@/components/ui/label";
 import { useAdminResendOtp } from "@/features/auth/hooks/useAdminResendOtp";
 import { useAdminVerifyOtp } from "@/features/auth/hooks/useAdminVerifyOtp";
+import { useOtpTimer } from "@/features/auth/hooks/useOtpTimer";
 import {
   type VerifyOtpFormValues,
   verifyOtpSchema,
@@ -22,7 +22,7 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
   const location = useLocation();
   const email = initialEmail || (location.state as { email?: string } | null)?.email || "";
 
-  const [timer, setTimer] = useState(60);
+  const { seconds, startTimer } = useOtpTimer({ email, defaultSeconds: 60 });
   const { mutate: verifyOtp, isPending: isVerifying } = useAdminVerifyOtp();
   const { mutate: resendOtp, isPending: isResending } = useAdminResendOtp();
 
@@ -35,23 +35,16 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
     defaultValues: {
       otp: "",
     },
+    mode: "onChange",
   });
 
-  useEffect(() => {
-    if (timer <= 0) return;
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [timer]);
-
   const handleResend = () => {
-    if (timer > 0 || isResending || !email) return;
+    if (seconds > 0 || isResending || !email) return;
     resendOtp(
       { email },
       {
         onSuccess: () => {
-          setTimer(60);
+          startTimer(60);
         },
       },
     );
@@ -126,8 +119,8 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
       {/* Resend Code */}
       <div className="flex items-center justify-center text-xs text-muted-foreground">
         <span>Didn{"'"}t receive code? </span>
-        {timer > 0 ? (
-          <span className="font-medium text-foreground">Resend in {timer}s</span>
+        {seconds > 0 ? (
+          <span className="font-medium text-foreground">Resend in {seconds}s</span>
         ) : (
           <button
             type="button"

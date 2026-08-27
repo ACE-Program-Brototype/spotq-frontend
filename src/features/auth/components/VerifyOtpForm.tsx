@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, ShieldCheck } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { useOtpTimer } from "@/features/auth/hooks/useOtpTimer";
 import { useResendOtp } from "@/features/auth/hooks/useResendOtp";
 import { useVerifyOtp } from "@/features/auth/hooks/useVerifyOtp";
 import {
@@ -21,7 +21,7 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
   const location = useLocation();
   const email = initialEmail || (location.state as { email?: string } | null)?.email || "";
 
-  const [timer, setTimer] = useState(60);
+  const { seconds, startTimer } = useOtpTimer({ email, defaultSeconds: 60 });
   const { mutate: verifyUserOtp, isPending: isVerifying } = useVerifyOtp();
   const { mutate: resendUserOtp, isPending: isResending } = useResendOtp();
 
@@ -34,23 +34,16 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
     defaultValues: {
       otp: "",
     },
+    mode: "onChange",
   });
 
-  useEffect(() => {
-    if (timer <= 0) return;
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [timer]);
-
   const handleResend = () => {
-    if (timer > 0 || isResending || !email) return;
+    if (seconds > 0 || isResending || !email) return;
     resendUserOtp(
       { email },
       {
         onSuccess: () => {
-          setTimer(60);
+          startTimer(60);
         },
       },
     );
@@ -115,8 +108,8 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
       {/* Resend Code Section */}
       <div className="flex items-center justify-center text-sm text-gray-500">
         <span>Didn't receive a code? </span>
-        {timer > 0 ? (
-          <span className="font-semibold text-spotq-orange ml-1">Resend in {timer}s</span>
+        {seconds > 0 ? (
+          <span className="font-semibold text-spotq-orange ml-1">Resend in {seconds}s</span>
         ) : (
           <button
             type="button"
