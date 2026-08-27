@@ -7,18 +7,18 @@ import RegisterPage from "@/features/auth/pages/RegisterPage";
 export const authRoutes: RouteObject[] = [
   {
     path: "/login",
-    element: <LoginPage />,
+    Component: LoginPage,
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    Component: RegisterPage,
   },
   {
     path: "/forgot-password",
-    element: <ForgotPasswordPage />,
+    Component: ForgotPasswordPage,
   },
   {
     path: "/verify-otp",
-    element: <OtpVerificationPage />,
+    Component: OtpVerificationPage,
   },
 ];

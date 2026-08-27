@@ -4,7 +4,6 @@ import { toast } from "sonner";
 
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useAuthStore } from "../store/auth.store";
-import { handleAuthError } from "../utils/auth-error-handler";
 import { useRegisterMutation } from "./use-auth-mutations";
 import { useRegister } from "./use-register";
 
@@ -21,10 +20,6 @@ jest.mock("sonner", () => ({
 
 jest.mock("../store/auth.store", () => ({
   useAuthStore: jest.fn(),
-}));
-
-jest.mock("../utils/auth-error-handler", () => ({
-  handleAuthError: jest.fn(),
 }));
 
 jest.mock("./use-auth-mutations", () => ({
@@ -182,7 +177,7 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(handleAuthError).toHaveBeenCalledWith(error, "register");
+    expect(toast.error).toHaveBeenCalledWith("Network error");
 
     expect(mockSetAuth).not.toHaveBeenCalled();
 

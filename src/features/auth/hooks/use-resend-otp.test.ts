@@ -2,7 +2,6 @@ import { act, renderHook } from "@testing-library/react";
 import { toast } from "sonner";
 
 import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { handleAuthError } from "../utils/auth-error-handler";
 import { useResendEmailOtp } from "./use-auth-mutations";
 import { useResendOtp } from "./use-resend-otp";
 
@@ -11,10 +10,6 @@ jest.mock("sonner", () => ({
     success: jest.fn(),
     error: jest.fn(),
   },
-}));
-
-jest.mock("../utils/auth-error-handler", () => ({
-  handleAuthError: jest.fn(),
 }));
 
 jest.mock("./use-auth-mutations", () => ({
@@ -128,13 +123,11 @@ describe("useResendOtp", () => {
 
     const returnedResponse = await act(async () => result.current.handleResendOtp(validEmail));
 
-    expect(handleAuthError).toHaveBeenCalledWith(error, "resend-otp");
+    expect(toast.error).toHaveBeenCalledWith("Network error");
 
     expect(returnedResponse).toBeNull();
 
     expect(toast.success).not.toHaveBeenCalled();
-
-    expect(toast.error).not.toHaveBeenCalled();
   });
 
   it("returns true for isLoading when resend is pending", () => {

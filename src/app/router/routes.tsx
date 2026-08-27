@@ -1,10 +1,12 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import DemoLayout from "@/layouts/DemoLayout";
 import RootLayout from "@/layouts/RootLayout";
+
 import NotFoundPage from "../pages/NotFoundPage";
+import { adminRoutes } from "./admin.routes";
 import { authRoutes } from "./auth.routes";
 import { demoRoutes } from "./demo.routes";
 
@@ -22,11 +24,21 @@ const router = createBrowserRouter([
       },
       {
         path: "/terms-and-conditions",
-        element: <TermsAndConditionsPage />,
+        Component: TermsAndConditionsPage,
       },
       {
         path: "/privacy-policy",
-        element: <PrivacyPolicyPage />,
+        Component: PrivacyPolicyPage,
+      },
+      {
+        path: "admin",
+        children: [
+          {
+            index: true,
+            Component: () => <Navigate to="/admin/dashboard" replace />,
+          },
+          ...adminRoutes,
+        ],
       },
       {
         path: "*",

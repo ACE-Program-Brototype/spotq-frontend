@@ -30,7 +30,11 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
       .json<{ data: { access_token: string; user: ApiUser } }>();
 
     const newAccessToken = response.data.access_token;
-    const user = mapApiUserToUser(response.data.user);
+    const existingRole = useAuthStore.getState().user?.role ?? "CUSTOMER";
+    const user = {
+      ...mapApiUserToUser(response.data.user),
+      role: response.data.user.role ?? existingRole,
+    };
 
     useAuthStore.getState().setAuth(user, newAccessToken);
     return newAccessToken;

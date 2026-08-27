@@ -1,5 +1,5 @@
-import { apiClient } from "@/lib/api/client";
-import { AUTH_ENDPOINTS } from "../constants/auth.constants";
+import { ADMIN_AUTH_ENDPOINTS, AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
+import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
 import type {
   ApiAuthResponse,
   AuthResult,
@@ -8,10 +8,56 @@ import type {
   RegisterInput,
   RegisterResult,
   ResendOtpInput,
+  User,
   VerifyEmailResult,
   VerifyOtpInput,
-} from "../types/auth.types";
-import { mapApiAuthResponseToAuthResult } from "../utils/auth.mapper";
+} from "@/features/auth/types/auth.types";
+import { mapApiAuthResponseToAuthResult } from "@/features/auth/utils/auth.mapper";
+import { apiClient } from "@/lib/api/client";
+
+export type LoginResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    access_token: string;
+    user: User;
+  };
+};
+
+export type ApiResponse<T = unknown> = {
+  success: boolean;
+  statusCode?: number;
+  message: string;
+  data?: T;
+};
+
+export async function loginAdmin(data: LoginFormValues): Promise<LoginResponse["data"]> {
+  const res = await apiClient
+    .post(ADMIN_AUTH_ENDPOINTS.LOGIN, { json: data })
+    .json<LoginResponse>();
+
+  return res.data;
+}
+
+export async function logoutAdmin(): Promise<void> {
+  await apiClient.post(ADMIN_AUTH_ENDPOINTS.LOGOUT).json();
+}
+
+export async function adminForgotPassword(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(ADMIN_AUTH_ENDPOINTS.FORGOT_PASSWORD, { json: data }).json<ApiResponse>();
+}
+
+export async function adminVerifyOtp(data: { email: string; otp: string }): Promise<ApiResponse> {
+  return apiClient.post(ADMIN_AUTH_ENDPOINTS.VERIFY_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function adminResendOtp(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(ADMIN_AUTH_ENDPOINTS.RESEND_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function adminResetPassword(data: { password: string }): Promise<ApiResponse> {
+  return apiClient.post(ADMIN_AUTH_ENDPOINTS.RESET_PASSWORD, { json: data }).json<ApiResponse>();
+}
 
 const getDeviceInfo = () => {
   if (typeof window === "undefined" || !navigator) {

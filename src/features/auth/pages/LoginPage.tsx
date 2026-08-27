@@ -9,7 +9,6 @@ import { useGoogleLoginMutation } from "../hooks/use-auth-mutations";
 import { useLogin } from "../hooks/use-login";
 import type { LoginFormValues } from "../schemas/login.schema";
 import { useAuthStore } from "../store/auth.store";
-import { handleAuthError } from "../utils/auth-error-handler";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -36,13 +35,14 @@ export default function LoginPage() {
 
         if (res.success && res.data) {
           toast.success(AUTH_MESSAGES.GOOGLE_SUCCESS);
-          setAuth(res.data.user, res.data.accessToken);
+          setAuth({ ...res.data.user, role: "CUSTOMER" }, res.data.accessToken);
           navigate(destination, { replace: true });
         } else {
           toast.error(res.message || AUTH_MESSAGES.GOOGLE_FAILED);
         }
       } catch (err: unknown) {
-        handleAuthError(err, "google");
+        const message = err instanceof Error ? err.message : AUTH_MESSAGES.GOOGLE_FAILED;
+        toast.error(message);
       }
     },
     [setAuth, navigate, googleLoginMutation, destination],

@@ -10,6 +10,7 @@ describe("auth.mapper", () => {
         email: "jane@example.com",
         phone: "+1234567890",
         status: "ACTIVE",
+        role: "CUSTOMER",
         created_at: "2026-08-20T10:00:00.000Z",
         updated_at: "2026-08-20T11:00:00.000Z",
       };
@@ -20,6 +21,7 @@ describe("auth.mapper", () => {
         id: "user-123",
         fullName: "Jane Doe",
         email: "jane@example.com",
+        role: "CUSTOMER",
         phone: "+1234567890",
         status: "ACTIVE",
         createdAt: "2026-08-20T10:00:00.000Z",
@@ -38,6 +40,7 @@ describe("auth.mapper", () => {
       const user = mapApiUserToUser(apiUser);
 
       expect(user.fullName).toBe("John Smith");
+      expect(user.role).toBe("CUSTOMER");
       expect(user.phone).toBe("");
       expect(user.createdAt).toBeDefined();
       expect(user.updatedAt).toBeDefined();
@@ -72,6 +75,7 @@ describe("auth.mapper", () => {
             id: "user-789",
             fullName: "Alex Lee",
             email: "alex@example.com",
+            role: "CUSTOMER",
             phone: "",
             status: "ACTIVE",
             createdAt: expect.any(String),

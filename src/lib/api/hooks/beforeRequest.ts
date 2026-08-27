@@ -5,7 +5,7 @@ import { getOrRefreshAccessToken } from "../auth-refresh";
 
 export const beforeRequest: BeforeRequestHook = async ({ request }) => {
   const isPublicAuthEndpoint = PUBLIC_AUTH_ENDPOINTS.some((endpoint) =>
-    request.url.includes(endpoint),
+    request?.url?.includes(endpoint),
   );
 
   if (isPublicAuthEndpoint) {

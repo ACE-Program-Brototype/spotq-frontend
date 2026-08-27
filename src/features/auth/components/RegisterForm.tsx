@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils/cn";
 import { type RegisterFormValues, registerSchema } from "../schemas/register.schema";
 
 interface RegisterFormProps {
@@ -50,15 +51,20 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           Full Name
         </Label>
 
-        <Input
-          id="fullName"
-          type="text"
-          placeholder="e.g. Alex Johnson"
-          error={!!errors.fullName}
-          leftIcon={<User className="hidden md:block size-5 text-gray-400" />}
-          disabled={isLoading}
-          {...register("fullName")}
-        />
+        <div className="relative flex items-center">
+          <User className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
+          <Input
+            id="fullName"
+            type="text"
+            placeholder="e.g. Alex Johnson"
+            disabled={isLoading}
+            className={cn(
+              "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-4 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+              errors.fullName && "border-destructive focus-visible:ring-destructive/30",
+            )}
+            {...register("fullName")}
+          />
+        </div>
 
         {errors.fullName && (
           <p className="text-xs text-destructive mt-1.5" role="alert">
@@ -73,20 +79,23 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           Email Address
         </Label>
 
-        <Input
-          id="email"
-          type="email"
-          placeholder="e.g. alex@example.com"
-          error={!!errors.email}
-          leftIcon={<Mail className="hidden md:block size-5 text-gray-400" />}
-          rightIcon={
-            <span className="block md:hidden text-gray-400 font-medium text-base select-none">
-              @
-            </span>
-          }
-          disabled={isLoading}
-          {...register("email")}
-        />
+        <div className="relative flex items-center">
+          <Mail className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="e.g. alex@example.com"
+            disabled={isLoading}
+            className={cn(
+              "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+              errors.email && "border-destructive focus-visible:ring-destructive/30",
+            )}
+            {...register("email")}
+          />
+          <span className="block md:hidden absolute right-3.5 text-gray-400 font-medium text-base select-none pointer-events-none">
+            @
+          </span>
+        </div>
 
         {errors.email && (
           <p className="text-xs text-destructive mt-1.5" role="alert">
@@ -103,21 +112,24 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
 
         <div className="flex gap-2">
           {/* Fixed country code */}
-          <div className="flex h-12 shrink-0 items-center rounded-md border border-input bg-muted px-3 text-sm font-medium text-muted-foreground">
+          <div className="flex h-12 shrink-0 items-center rounded-xl border border-spotq-border bg-spotq-cream px-3 text-sm font-medium text-gray-600">
             +91
           </div>
 
           {/* Phone number */}
-          <div className="relative flex-1">
+          <div className="relative flex-1 flex items-center">
+            <Phone className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
             <Input
               id="phoneNumber"
               type="tel"
               inputMode="numeric"
               maxLength={10}
               placeholder="9876543210"
-              error={!!errors.phoneNumber}
-              leftIcon={<Phone className="hidden md:block size-5 text-gray-400" />}
               disabled={isLoading}
+              className={cn(
+                "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-4 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+                errors.phoneNumber && "border-destructive focus-visible:ring-destructive/30",
+              )}
               {...register("phoneNumber", {
                 onChange: (e) => {
                   e.target.value = e.target.value.replace(/\D/g, "");
@@ -140,25 +152,28 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           Password
         </Label>
 
-        <Input
-          id="password"
-          type={showPassword ? "text" : "password"}
-          placeholder="Enter your password"
-          error={!!errors.password}
-          leftIcon={<Lock className="hidden md:block size-5 text-gray-400" />}
-          rightIcon={
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="p-1 -mr-1.5 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-            </button>
-          }
-          disabled={isLoading}
-          {...register("password")}
-        />
+        <div className="relative flex items-center">
+          <Lock className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            disabled={isLoading}
+            className={cn(
+              "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+              errors.password && "border-destructive focus-visible:ring-destructive/30",
+            )}
+            {...register("password")}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3.5 p-1 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+          </button>
+        </div>
 
         {errors.password && (
           <p className="text-xs text-destructive mt-1.5" role="alert">
@@ -173,25 +188,28 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           Confirm Password
         </Label>
 
-        <Input
-          id="confirmPassword"
-          type={showConfirmPassword ? "text" : "password"}
-          placeholder="Confirm your password"
-          error={!!errors.confirmPassword}
-          leftIcon={<Lock className="hidden md:block size-5 text-gray-400" />}
-          rightIcon={
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="p-1 -mr-1.5 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
-              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-            >
-              {showConfirmPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-            </button>
-          }
-          disabled={isLoading}
-          {...register("confirmPassword")}
-        />
+        <div className="relative flex items-center">
+          <Lock className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
+          <Input
+            id="confirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm your password"
+            disabled={isLoading}
+            className={cn(
+              "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+              errors.confirmPassword && "border-destructive focus-visible:ring-destructive/30",
+            )}
+            {...register("confirmPassword")}
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3.5 p-1 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
+            aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+          >
+            {showConfirmPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+          </button>
+        </div>
 
         {/* Password match indicator */}
         {confirmPassword.length > 0 && passwordsMatch && !errors.confirmPassword && (
@@ -210,7 +228,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
       </div>
 
       {/* Terms & Conditions */}
-
       <div className="flex items-start gap-3">
         <input
           id="termsAccepted"
