@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { handleAuthError } from "../utils/auth-error-handler";
 import { useVerifyEmailMutation } from "./use-auth-mutations";
 import { useVerifyOtp } from "./use-verify-email";
 
@@ -16,10 +15,6 @@ jest.mock("sonner", () => ({
     success: jest.fn(),
     error: jest.fn(),
   },
-}));
-
-jest.mock("../utils/auth-error-handler", () => ({
-  handleAuthError: jest.fn(),
 }));
 
 jest.mock("./use-auth-mutations", () => ({
@@ -138,7 +133,7 @@ describe("useVerifyOtp", () => {
       await result.current.handleVerifyOtp(validEmail, validOtp);
     });
 
-    expect(handleAuthError).toHaveBeenCalledWith(error, "verify-otp");
+    expect(toast.error).toHaveBeenCalledWith("Network error");
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });

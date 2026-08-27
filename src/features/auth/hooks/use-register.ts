@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import type { RegisterFormValues } from "../schemas/register.schema";
 import { useAuthStore } from "../store/auth.store";
-import { handleAuthError } from "../utils/auth-error-handler";
 import { useRegisterMutation } from "./use-auth-mutations";
 
 export const useRegister = () => {
@@ -31,7 +30,8 @@ export const useRegister = () => {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }
     } catch (err: unknown) {
-      await handleAuthError(err, "register");
+      const message = err instanceof Error ? err.message : AUTH_MESSAGES.GENERIC_ERROR;
+      toast.error(message);
     }
   };
 

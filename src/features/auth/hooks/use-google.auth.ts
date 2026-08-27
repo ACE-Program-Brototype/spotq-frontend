@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useAuthStore } from "../store/auth.store";
-import { handleAuthError } from "../utils/auth-error-handler";
 import { useGoogleLoginMutation } from "./use-auth-mutations";
 
 export const useGoogleAuth = (destination = "/") => {
@@ -33,7 +32,8 @@ export const useGoogleAuth = (destination = "/") => {
 
         toast.error(res.message || AUTH_MESSAGES.GOOGLE_FAILED);
       } catch (err: unknown) {
-        await handleAuthError(err, "google");
+        const message = err instanceof Error ? err.message : AUTH_MESSAGES.GOOGLE_FAILED;
+        toast.error(message);
       }
     },
     [googleLoginMutation, setAuth, navigate, destination],
