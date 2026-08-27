@@ -9,9 +9,14 @@ import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 
+const AdminAuthLayout = () => <AuthLayout redirectTo="/admin/dashboard" />;
+const AdminProtectedLayout = () => (
+  <ProtectedLayout allowedRoles={["ADMIN"]} redirectTo="/admin/login" />
+);
+
 export const adminRoutes: RouteObject[] = [
   {
-    element: <AuthLayout redirectTo="/admin/dashboard" />,
+    Component: AdminAuthLayout,
     children: [
       {
         path: "login",
@@ -32,7 +37,7 @@ export const adminRoutes: RouteObject[] = [
     ],
   },
   {
-    element: <ProtectedLayout allowedRoles={["ADMIN"]} redirectTo="/admin/login" />,
+    Component: AdminProtectedLayout,
     children: [
       {
         Component: AdminLayout,

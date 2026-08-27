@@ -24,18 +24,18 @@ const router = createBrowserRouter([
       },
       {
         path: "/terms-and-conditions",
-        element: <TermsAndConditionsPage />,
+        Component: TermsAndConditionsPage,
       },
       {
         path: "/privacy-policy",
-        element: <PrivacyPolicyPage />,
+        Component: PrivacyPolicyPage,
       },
       {
         path: "admin",
         children: [
           {
             index: true,
-            element: <Navigate to="/admin/dashboard" replace />,
+            Component: () => <Navigate to="/admin/dashboard" replace />,
           },
           ...adminRoutes,
         ],
