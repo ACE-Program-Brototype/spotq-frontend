@@ -1,10 +1,9 @@
 import ky from "ky";
+import env from "@/config/env";
 import { afterResponse } from "./hooks/afterResponse";
 import { beforeError } from "./hooks/beforeError";
 import { beforeRequest } from "./hooks/beforeRequest";
 import { beforeRetry } from "./hooks/beforeRetry";
-import env from "@/config/env";
-
 
 export const apiClient = ky.create({
   prefix: env.apiUrl,
