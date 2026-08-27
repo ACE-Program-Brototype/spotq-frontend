@@ -29,6 +29,7 @@ export function AdminResetPasswordForm() {
       password: "",
       confirmPassword: "",
     },
+    mode: "onChange",
   });
 
   const onSubmit = (data: ResetPasswordFormValues) => {
