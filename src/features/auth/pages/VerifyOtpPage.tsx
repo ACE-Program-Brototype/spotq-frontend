@@ -1,17 +1,19 @@
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
-import { AuthHeroPanel, ForgotPasswordForm } from "../components";
+import { AuthHeroPanel, VerifyOtpForm } from "../components";
 
-export default function ForgotPasswordPage() {
+export default function VerifyOtpPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = (location.state as { email?: string } | null)?.email || "";
 
   return (
     <div className="flex min-h-screen w-full select-none bg-background text-foreground antialiased font-sans">
       {/* LEFT PANEL: Branding & Hero */}
       <AuthHeroPanel
-        title="Secure your spotQ"
-        description="We take your security seriously. Follow the steps to safely recover your account and protect your culinary journey."
+        title="Secure your spot."
+        description="Connecting your culinary passion with seamless digital protection."
         iconType="shield-lock"
       />
 
@@ -27,7 +29,7 @@ export default function ForgotPasswordPage() {
           >
             <ArrowLeft className="size-6 text-foreground/80" />
           </button>
-          <h2 className="text-lg font-semibold text-foreground">Forgot Password</h2>
+          <h2 className="text-lg font-semibold text-foreground">Verify OTP</h2>
         </header>
 
         {/* Content body container */}
@@ -40,15 +42,16 @@ export default function ForgotPasswordPage() {
           {/* Main titles */}
           <div className="text-center md:text-left space-y-1.5">
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
-              Forgot Password?
+              Enter Verification Code
             </h2>
             <p className="text-sm text-gray-500">
-              Enter your email address and we'll send you a code to reset your password.
+              Please enter the 6-digit code sent to your email{" "}
+              {email ? <span className="font-semibold text-gray-700">{email}</span> : "your email"}
             </p>
           </div>
 
           {/* Form */}
-          <ForgotPasswordForm />
+          <VerifyOtpForm initialEmail={email} />
         </div>
 
         {/* Mobile footer spacing */}

@@ -1,29 +1,37 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 
 import ForgotPasswordPage from "./ForgotPasswordPage";
 
-describe("Customer ForgotPasswordPage", () => {
-  it("renders reset password card and back to login button", async () => {
-    const user = userEvent.setup();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false },
+    mutations: { retry: false },
+  },
+});
 
+describe("Customer ForgotPasswordPage", () => {
+  it("renders branding hero, forgot password form, email input, and back to login link", () => {
     render(
-      <MemoryRouter initialEntries={["/forgot-password"]}>
-        <Routes>
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/login" element={<div>Login Page Mock</div>} />
-        </Routes>
-      </MemoryRouter>,
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ForgotPasswordPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
 
-    expect(screen.getByRole("heading", { name: /reset password/i })).toBeInTheDocument();
-    expect(screen.getByText(/password reset flow is coming soon!/i)).toBeInTheDocument();
+    // Headings
+    expect(screen.getByRole("heading", { name: /secure your spotq/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /forgot password\?/i })).toBeInTheDocument();
 
-    const backBtn = screen.getByRole("button", { name: /back to login/i });
-    expect(backBtn).toBeInTheDocument();
+    // Form elements
+    expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /send reset code/i })).toBeInTheDocument();
 
-    await user.click(backBtn);
-    expect(screen.getByText("Login Page Mock")).toBeInTheDocument();
+    // Back to login link
+    const backLink = screen.getByRole("link", { name: /back to login/i });
+    expect(backLink).toBeInTheDocument();
+    expect(backLink).toHaveAttribute("href", "/login");
   });
 });

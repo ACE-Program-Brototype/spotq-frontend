@@ -54,6 +54,22 @@ export async function adminResetPassword(data: { password: string }): Promise<Ap
   return apiClient.post(ADMIN_AUTH_ENDPOINTS.RESET_PASSWORD, { json: data }).json<ApiResponse>();
 }
 
+export async function forgotPassword(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(AUTH_ENDPOINTS.FORGOT_PASSWORD, { json: data }).json<ApiResponse>();
+}
+
+export async function verifyOtp(data: { email: string; otp: string }): Promise<ApiResponse> {
+  return apiClient.post(AUTH_ENDPOINTS.VERIFY_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function resendOtp(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(AUTH_ENDPOINTS.RESEND_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function resetPassword(data: { password: string }): Promise<ApiResponse> {
+  return apiClient.post(AUTH_ENDPOINTS.RESET_PASSWORD, { json: data }).json<ApiResponse>();
+}
+
 const getDeviceInfo = () => {
   if (typeof window === "undefined" || !navigator) {
     return {

@@ -4,5 +4,8 @@ export * from "./AdminResetPasswordForm";
 export * from "./AdminVerifyOtpForm";
 export * from "./AuthDivider";
 export * from "./AuthHeroPanel";
+export * from "./ForgotPasswordForm";
 export * from "./GoogleLoginButton";
 export * from "./LoginForm";
+export * from "./ResetPasswordForm";
+export * from "./VerifyOtpForm";

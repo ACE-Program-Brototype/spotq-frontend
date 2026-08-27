@@ -1,18 +1,19 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
-import { AuthHeroPanel, ForgotPasswordForm } from "../components";
+import { AuthHeroPanel, ResetPasswordForm } from "../components";
 
-export default function ForgotPasswordPage() {
+export default function ResetPasswordPage() {
   const navigate = useNavigate();
 
   return (
     <div className="flex min-h-screen w-full select-none bg-background text-foreground antialiased font-sans">
       {/* LEFT PANEL: Branding & Hero */}
       <AuthHeroPanel
-        title="Secure your spotQ"
-        description="We take your security seriously. Follow the steps to safely recover your account and protect your culinary journey."
-        iconType="shield-lock"
+        title="Secure your new password"
+        description="Protect your account with a strong, memorable password to continue your culinary journey."
+        iconType="reset-lock"
+        graphicPosition="top"
       />
 
       {/* RIGHT PANEL: Form Area */}
@@ -27,7 +28,7 @@ export default function ForgotPasswordPage() {
           >
             <ArrowLeft className="size-6 text-foreground/80" />
           </button>
-          <h2 className="text-lg font-semibold text-foreground">Forgot Password</h2>
+          <h2 className="text-lg font-semibold text-foreground">Reset Password</h2>
         </header>
 
         {/* Content body container */}
@@ -40,15 +41,13 @@ export default function ForgotPasswordPage() {
           {/* Main titles */}
           <div className="text-center md:text-left space-y-1.5">
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
-              Forgot Password?
+              Reset Password
             </h2>
-            <p className="text-sm text-gray-500">
-              Enter your email address and we'll send you a code to reset your password.
-            </p>
+            <p className="text-sm text-gray-500">Create a new password for your account.</p>
           </div>
 
           {/* Form */}
-          <ForgotPasswordForm />
+          <ResetPasswordForm />
         </div>
 
         {/* Mobile footer spacing */}
