@@ -1,6 +1,17 @@
-import { ADMIN_AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
+import { ADMIN_AUTH_ENDPOINTS, AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { apiClient } from "@/lib/api/client";
-import { loginAdmin, logoutAdmin } from "./auth.service";
+import {
+  adminForgotPassword,
+  adminResendOtp,
+  adminResetPassword,
+  adminVerifyOtp,
+  forgotPassword,
+  loginAdmin,
+  logoutAdmin,
+  resendOtp,
+  resetPassword,
+  verifyOtp,
+} from "./auth.service";
 
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
@@ -78,6 +89,98 @@ describe("auth.service", () => {
       });
 
       await expect(logoutAdmin()).rejects.toThrow("Logout failed on server");
+    });
+  });
+
+  describe("customer forgot password flow", () => {
+    it("forgotPassword calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "OTP sent" }),
+      });
+
+      const res = await forgotPassword({ email: "user@example.com" });
+      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.FORGOT_PASSWORD, {
+        json: { email: "user@example.com" },
+      });
+      expect(res).toEqual({ success: true, message: "OTP sent" });
+    });
+
+    it("verifyOtp calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "Verified" }),
+      });
+
+      const res = await verifyOtp({ email: "user@example.com", otp: "123456" });
+      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.FORGOT_PASSWORD_VERIFY, {
+        json: { email: "user@example.com", otp: "123456" },
+      });
+      expect(res).toEqual({ success: true, message: "Verified" });
+    });
+
+    it("resendOtp calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "Resent" }),
+      });
+
+      const res = await resendOtp({ email: "user@example.com" });
+      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.FORGOT_PASSWORD_RESEND_OTP, {
+        json: { email: "user@example.com" },
+      });
+      expect(res).toEqual({ success: true, message: "Resent" });
+    });
+
+    it("resetPassword calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "Password reset" }),
+      });
+
+      const res = await resetPassword({ password: "NewPassword123!" });
+      expect(mockPost).toHaveBeenCalledWith(AUTH_ENDPOINTS.RESET_PASSWORD, {
+        json: { password: "NewPassword123!" },
+      });
+      expect(res).toEqual({ success: true, message: "Password reset" });
+    });
+  });
+
+  describe("admin forgot password flow", () => {
+    it("adminForgotPassword calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true }),
+      });
+      await adminForgotPassword({ email: "admin@spotq.com" });
+      expect(mockPost).toHaveBeenCalledWith(ADMIN_AUTH_ENDPOINTS.FORGOT_PASSWORD, {
+        json: { email: "admin@spotq.com" },
+      });
+    });
+
+    it("adminVerifyOtp calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true }),
+      });
+      await adminVerifyOtp({ email: "admin@spotq.com", otp: "654321" });
+      expect(mockPost).toHaveBeenCalledWith(ADMIN_AUTH_ENDPOINTS.VERIFY_OTP, {
+        json: { email: "admin@spotq.com", otp: "654321" },
+      });
+    });
+
+    it("adminResendOtp calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true }),
+      });
+      await adminResendOtp({ email: "admin@spotq.com" });
+      expect(mockPost).toHaveBeenCalledWith(ADMIN_AUTH_ENDPOINTS.RESEND_OTP, {
+        json: { email: "admin@spotq.com" },
+      });
+    });
+
+    it("adminResetPassword calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true }),
+      });
+      await adminResetPassword({ password: "AdminPassword123!" });
+      expect(mockPost).toHaveBeenCalledWith(ADMIN_AUTH_ENDPOINTS.RESET_PASSWORD, {
+        json: { password: "AdminPassword123!" },
+      });
     });
   });
 });
