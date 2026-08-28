@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import StaffLoginForm from "../components/StaffLoginForm";
 
-
 export default function StaffLoginPage() {
   const navigate = useNavigate();
 
@@ -20,11 +19,7 @@ export default function StaffLoginPage() {
             className="flex items-center gap-2 rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[#b84b00]/30 cursor-pointer"
             aria-label="Go to SpotQ home"
           >
-            <img
-              src={spotqLogo}
-              alt="SpotQ"
-              className="h-16 w-auto object-contain"
-            />
+            <img src={spotqLogo} alt="SpotQ" className="h-16 w-auto object-contain" />
           </button>
         </div>
       </header>

@@ -9,12 +9,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema";
 import { cn } from "@/lib/utils/cn";
-
-import {
-  type LoginFormValues,
-  loginSchema,
-} from "@/features/auth/schemas/login.schema";
 
 export interface StaffLoginFormProps {
   onSubmit?: (values: LoginFormValues) => Promise<void> | void;
@@ -40,17 +36,10 @@ export default function StaffLoginForm({
   });
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-      className="space-y-5"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
       {/* Email */}
       <div className="space-y-2">
-        <Label
-          htmlFor="staff-email"
-          className="text-xs font-medium text-[#514943]"
-        >
+        <Label htmlFor="staff-email" className="text-xs font-medium text-[#514943]">
           Email Address
         </Label>
 
@@ -66,26 +55,19 @@ export default function StaffLoginForm({
             autoComplete="email"
             placeholder="name@restaurant.com"
             aria-invalid={Boolean(errors.email)}
-            aria-describedby={
-              errors.email ? "staff-email-error" : undefined
-            }
+            aria-describedby={errors.email ? "staff-email-error" : undefined}
             className={cn(
               "h-11 rounded-md border-[#d9cbc2] bg-[#fffdfb] pl-10 pr-3 text-sm",
               "placeholder:text-[#aaa09a]",
               "focus-visible:border-[#b84b00] focus-visible:ring-2 focus-visible:ring-[#b84b00]/15",
-              errors.email &&
-                "border-destructive focus-visible:border-destructive",
+              errors.email && "border-destructive focus-visible:border-destructive",
             )}
             {...register("email")}
           />
         </div>
 
         {errors.email && (
-          <p
-            id="staff-email-error"
-            role="alert"
-            className="text-xs text-destructive"
-          >
+          <p id="staff-email-error" role="alert" className="text-xs text-destructive">
             {errors.email.message}
           </p>
         )}
@@ -94,10 +76,7 @@ export default function StaffLoginForm({
       {/* Password */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label
-            htmlFor="staff-password"
-            className="text-xs font-medium text-[#514943]"
-          >
+          <Label htmlFor="staff-password" className="text-xs font-medium text-[#514943]">
             Password
           </Label>
 
@@ -121,15 +100,12 @@ export default function StaffLoginForm({
             autoComplete="current-password"
             placeholder="••••••••"
             aria-invalid={Boolean(errors.password)}
-            aria-describedby={
-              errors.password ? "staff-password-error" : undefined
-            }
+            aria-describedby={errors.password ? "staff-password-error" : undefined}
             className={cn(
               "h-11 rounded-md border-[#d9cbc2] bg-[#fffdfb] pl-10 pr-11 text-sm",
               "placeholder:text-[#aaa09a]",
               "focus-visible:border-[#b84b00] focus-visible:ring-2 focus-visible:ring-[#b84b00]/15",
-              errors.password &&
-                "border-destructive focus-visible:border-destructive",
+              errors.password && "border-destructive focus-visible:border-destructive",
             )}
             {...register("password")}
           />
@@ -151,11 +127,7 @@ export default function StaffLoginForm({
         </div>
 
         {errors.password && (
-          <p
-            id="staff-password-error"
-            role="alert"
-            className="text-xs text-destructive"
-          >
+          <p id="staff-password-error" role="alert" className="text-xs text-destructive">
             {errors.password.message}
           </p>
         )}
@@ -175,10 +147,7 @@ export default function StaffLoginForm({
       >
         {isLoading ? (
           <>
-            <Loader2
-              className="mr-2 size-4 animate-spin"
-              aria-hidden="true"
-            />
+            <Loader2 className="mr-2 size-4 animate-spin" aria-hidden="true" />
             Signing in...
           </>
         ) : (
