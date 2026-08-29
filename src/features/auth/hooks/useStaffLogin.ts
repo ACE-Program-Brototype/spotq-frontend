@@ -25,7 +25,7 @@ export const useStaffLogin = () => {
             ...response.data.user,
             role: "RESTAURANT_STAFF",
           },
-          response.data.access_token,
+          response.data.accessToken,
         );
 
         toast.success(response.message || "Staff login successful!");

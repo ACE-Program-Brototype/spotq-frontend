@@ -99,8 +99,11 @@ export type StaffLoginInput = {
   password: string;
 };
 
-export type StaffLoginResponse<T> = {
+export type StaffLoginResponse = {
   success: boolean;
   message: string;
-  data: T;
+  data: {
+    user: User;
+    accessToken: string;
+  };
 };

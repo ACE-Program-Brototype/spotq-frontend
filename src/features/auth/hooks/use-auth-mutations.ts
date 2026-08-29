@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { authService, type LoginResponse, loginStaff } from "../services/auth.service";
+import { authService, loginStaff } from "../services/auth.service";
 import type {
   GoogleLoginResult,
   LoginInput,
@@ -9,6 +9,7 @@ import type {
   RegisterResult,
   ResendOtpInput,
   StaffLoginInput,
+  StaffLoginResponse,
   VerifyEmailResult,
   VerifyOtpInput,
 } from "../types/auth.types";
@@ -50,7 +51,7 @@ export const useResendEmailOtp = () => {
 };
 
 export const useStaffLoginMutation = () => {
-  return useMutation<LoginResponse, Error, StaffLoginInput>({
+  return useMutation<StaffLoginResponse, Error, StaffLoginInput>({
     mutationFn: (input) => loginStaff(input),
   });
 };
