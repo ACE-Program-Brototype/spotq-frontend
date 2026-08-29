@@ -50,6 +50,8 @@ export const AUTH_ENDPOINTS = {
   ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
 
   STAFF_LOGIN: "restaurants/staff/login",
+  STAFF_REFRESH_TOKEN: "restaurants/staff/refresh",
+  STAFF_LOGOUT: "restaurants/staff/logout",
 } as const;
 
 export const ADMIN_AUTH_ENDPOINTS = {

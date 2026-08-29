@@ -9,6 +9,7 @@ import type {
   RegisterResult,
   ResendOtpInput,
   StaffLoginResponse,
+  StaffLogoutRes,
   User,
   VerifyEmailResult,
   VerifyOtpInput,
@@ -211,5 +212,17 @@ export async function loginStaff(data: LoginFormValues): Promise<StaffLoginRespo
       user: res.data.staff,
       accessToken: res.data.accessToken,
     },
+  };
+}
+
+export async function logoutStaff(): Promise<StaffLogoutRes> {
+  const res = await apiClient
+    .post(AUTH_ENDPOINTS.STAFF_LOGOUT, {
+      json: {},
+    })
+    .json<ApiAuthResponse>();
+  return {
+    success: res.success,
+    message: res.message,
   };
 }

@@ -107,3 +107,8 @@ export type StaffLoginResponse = {
     accessToken: string;
   };
 };
+
+export type StaffLogoutRes = {
+  success: boolean;
+  message: string;
+};
