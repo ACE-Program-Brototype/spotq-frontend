@@ -15,7 +15,11 @@ describe("StaffResetPasswordPage", () => {
   it("renders set new password title, description, and inputs", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
+        <MemoryRouter
+          initialEntries={[
+            { pathname: "/staff/reset-password", state: { email: "staff@spotq.com" } },
+          ]}
+        >
           <StaffResetPasswordPage />
         </MemoryRouter>
       </QueryClientProvider>,

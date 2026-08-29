@@ -15,7 +15,14 @@ describe("AdminResetPasswordPage", () => {
   it("renders branding hero, key fields, update button, and back link", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
+        <MemoryRouter
+          initialEntries={[
+            {
+              pathname: "/admin/forgot-password/reset-password",
+              state: { email: "admin@spotq.com" },
+            },
+          ]}
+        >
           <AdminResetPasswordPage />
         </MemoryRouter>
       </QueryClientProvider>,

@@ -15,7 +15,14 @@ describe("Customer ResetPasswordPage", () => {
   it("renders reset password headers, inputs, criteria checklist, and submit button", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
+        <MemoryRouter
+          initialEntries={[
+            {
+              pathname: "/forgot-password/reset-password",
+              state: { email: "customer@example.com" },
+            },
+          ]}
+        >
           <ResetPasswordPage />
         </MemoryRouter>
       </QueryClientProvider>,
