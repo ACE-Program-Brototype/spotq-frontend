@@ -8,4 +8,8 @@ export * from "./ForgotPasswordForm";
 export * from "./GoogleLoginButton";
 export * from "./LoginForm";
 export * from "./ResetPasswordForm";
+export * from "./StaffAuthCard";
+export * from "./StaffForgotPasswordForm";
+export * from "./StaffResetPasswordForm";
+export * from "./StaffVerifyOtpForm";
 export * from "./VerifyOtpForm";

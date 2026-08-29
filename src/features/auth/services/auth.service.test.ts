@@ -1,4 +1,8 @@
-import { ADMIN_AUTH_ENDPOINTS, AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
+import {
+  ADMIN_AUTH_ENDPOINTS,
+  AUTH_ENDPOINTS,
+  STAFF_AUTH_ENDPOINTS,
+} from "@/features/auth/constants/auth.constants";
 import { apiClient } from "@/lib/api/client";
 import {
   adminForgotPassword,
@@ -10,6 +14,10 @@ import {
   logoutAdmin,
   resendOtp,
   resetPassword,
+  staffForgotPassword,
+  staffResendOtp,
+  staffResetPassword,
+  staffVerifyOtp,
   verifyOtp,
 } from "./auth.service";
 
@@ -181,6 +189,52 @@ describe("auth.service", () => {
       expect(mockPost).toHaveBeenCalledWith(ADMIN_AUTH_ENDPOINTS.RESET_PASSWORD, {
         json: { password: "AdminPassword123!" },
       });
+    });
+  });
+
+  describe("restaurant staff forgot password flow", () => {
+    it("staffForgotPassword calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "OTP sent" }),
+      });
+      const res = await staffForgotPassword({ email: "staff@spotq.com" });
+      expect(mockPost).toHaveBeenCalledWith(STAFF_AUTH_ENDPOINTS.FORGOT_PASSWORD, {
+        json: { email: "staff@spotq.com" },
+      });
+      expect(res).toEqual({ success: true, message: "OTP sent" });
+    });
+
+    it("staffVerifyOtp calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "Verified" }),
+      });
+      const res = await staffVerifyOtp({ email: "staff@spotq.com", otp: "123456" });
+      expect(mockPost).toHaveBeenCalledWith(STAFF_AUTH_ENDPOINTS.VERIFY_OTP, {
+        json: { email: "staff@spotq.com", otp: "123456" },
+      });
+      expect(res).toEqual({ success: true, message: "Verified" });
+    });
+
+    it("staffResendOtp calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "OTP resent" }),
+      });
+      const res = await staffResendOtp({ email: "staff@spotq.com" });
+      expect(mockPost).toHaveBeenCalledWith(STAFF_AUTH_ENDPOINTS.RESEND_OTP, {
+        json: { email: "staff@spotq.com" },
+      });
+      expect(res).toEqual({ success: true, message: "OTP resent" });
+    });
+
+    it("staffResetPassword calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({ success: true, message: "Password reset" }),
+      });
+      const res = await staffResetPassword({ password: "StaffPassword123!" });
+      expect(mockPost).toHaveBeenCalledWith(STAFF_AUTH_ENDPOINTS.RESET_PASSWORD, {
+        json: { password: "StaffPassword123!" },
+      });
+      expect(res).toEqual({ success: true, message: "Password reset" });
     });
   });
 });
