@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import StaffLoginForm from "../components/StaffLoginForm";
+import { useStaffLogin } from "../hooks/useStaffLogin";
 
 export default function StaffLoginPage() {
   const navigate = useNavigate();
+
+  const { handleStaffLogin, isLoading } = useStaffLogin();
 
   return (
     <main className="min-h-svh bg-[#fcf8f5] text-[#171717]">
@@ -38,7 +41,7 @@ export default function StaffLoginPage() {
               </p>
             </div>
 
-            <StaffLoginForm />
+            <StaffLoginForm onSubmit={handleStaffLogin} isLoading={isLoading} />
           </div>
 
           <p className="mt-5 text-center text-[11px] leading-5 text-[#918780]">

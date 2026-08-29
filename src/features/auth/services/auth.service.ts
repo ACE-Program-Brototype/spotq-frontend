@@ -185,3 +185,13 @@ export const authService = {
     };
   },
 };
+
+export async function loginStaff(data: LoginFormValues): Promise<LoginResponse> {
+  const res = await apiClient
+    .post(AUTH_ENDPOINTS.STAFF_LOGIN, {
+      json: data,
+    })
+    .json<LoginResponse>();
+
+  return res;
+}

@@ -93,3 +93,14 @@ export type VerifyEmailResult = {
 export type ResendOtpInput = {
   email: string;
 };
+
+export type StaffLoginInput = {
+  email: string;
+  password: string;
+};
+
+export type StaffLoginResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
