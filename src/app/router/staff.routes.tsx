@@ -3,6 +3,11 @@
 import type { RouteObject } from "react-router-dom";
 import StaffDashboardPage from "@/features/auth/pages/StaffDashboardPage";
 import StaffLoginPage from "@/features/auth/pages/StaffLoginPage";
+import ProtectedLayout from "@/layouts/ProtectedLayout";
+
+const StaffProtectedLayout = () => (
+  <ProtectedLayout allowedRoles={["RESTAURANT_STAFF"]} redirectTo="/staff/login" />
+);
 
 export const staffRoutes: RouteObject[] = [
   {
@@ -10,7 +15,12 @@ export const staffRoutes: RouteObject[] = [
     Component: StaffLoginPage,
   },
   {
-    path: "dashboard",
-    Component: StaffDashboardPage,
+    Component: StaffProtectedLayout,
+    children: [
+      {
+        path: "dashboard",
+        Component: StaffDashboardPage,
+      },
+    ],
   },
 ];
