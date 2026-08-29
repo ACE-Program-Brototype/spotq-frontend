@@ -36,6 +36,12 @@ const mockToastSuccess = toast.success as jest.MockedFunction<typeof toast.succe
 
 const mockToastError = toast.error as jest.MockedFunction<typeof toast.error>;
 
+const createStaffLoginMutationMock = (isPending: boolean) =>
+  ({
+    mutateAsync: mockMutateAsync,
+    isPending,
+  }) as unknown as ReturnType<typeof useStaffLoginMutation>;
+
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -68,10 +74,7 @@ describe("useStaffLogin Hook", () => {
 
     useAuthStore.getState().clearAuth();
 
-    mockedUseStaffLoginMutation.mockReturnValue({
-      mutateAsync: mockMutateAsync,
-      isPending: false,
-    } as ReturnType<typeof useStaffLoginMutation>);
+    mockedUseStaffLoginMutation.mockReturnValue(createStaffLoginMutationMock(false));
   });
 
   it("successfully logs in staff and redirects to dashboard", async () => {
@@ -218,10 +221,7 @@ describe("useStaffLogin Hook", () => {
   });
 
   it("returns the mutation loading state", () => {
-    mockedUseStaffLoginMutation.mockReturnValue({
-      mutateAsync: mockMutateAsync,
-      isPending: true,
-    } as ReturnType<typeof useStaffLoginMutation>);
+    mockedUseStaffLoginMutation.mockReturnValue(createStaffLoginMutationMock(true));
 
     const { result } = renderHook(() => useStaffLogin(), {
       wrapper: createWrapper(),
