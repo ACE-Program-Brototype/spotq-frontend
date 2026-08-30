@@ -10,6 +10,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import { adminRoutes } from "./admin.routes";
 import { authRoutes } from "./auth.routes";
 import { demoRoutes } from "./demo.routes";
+import { restaurantRoutes } from "./restaurant.routes";
 import { staffRoutes } from "./staff.routes";
 
 const CustomerProtectedLayout = () => (
@@ -51,6 +52,16 @@ const router = createBrowserRouter([
             Component: AdminIndexRedirect,
           },
           ...adminRoutes,
+        ],
+      },
+      {
+        path: "restaurant",
+        children: [
+          {
+            index: true,
+            Component: () => <Navigate to="/restaurant/email/verification" replace />,
+          },
+          ...restaurantRoutes,
         ],
       },
       {

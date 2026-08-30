@@ -32,5 +32,14 @@ export const beforeError: BeforeErrorHook = ({ error }) => {
     }
   }
 
+  if (
+    !isHTTPError(error) &&
+    (error instanceof TypeError ||
+      error.name === "TypeError" ||
+      /failed to fetch|network error|fetch failed/i.test(error.message || ""))
+  ) {
+    error.message = "Unable to connect to the server. Please try again in a moment.";
+  }
+
   return error;
 };

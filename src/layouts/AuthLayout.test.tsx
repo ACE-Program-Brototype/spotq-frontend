@@ -49,7 +49,7 @@ describe("AuthLayout", () => {
     expect(screen.queryByText("Login Page Form")).not.toBeInTheDocument();
   });
 
-  it("redirects admin to '/admin/dashboard' when already authenticated", () => {
+  it("redirects authenticated users to the default home route when no redirect is provided", () => {
     useAuthStore.getState().setUser({
       _id: "1",
       name: "Admin",
@@ -64,12 +64,13 @@ describe("AuthLayout", () => {
           <Route element={<AuthLayout />}>
             <Route path="/admin/login" element={<div>Login Page Form</div>} />
           </Route>
-          <Route path="/admin/dashboard" element={<div>Admin Dashboard Page</div>} />
+          <Route path="/" element={<div>Home Landing Page</div>} />
+          <Route path="/admin/dashboard" element={<div>Admin Dashboard</div>} />
         </Routes>
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Admin Dashboard Page")).toBeInTheDocument();
+    expect(screen.getByText("Admin Dashboard")).toBeInTheDocument();
     expect(screen.queryByText("Login Page Form")).not.toBeInTheDocument();
   });
 
