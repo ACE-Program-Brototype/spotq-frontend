@@ -48,6 +48,10 @@ export const AUTH_ENDPOINTS = {
   ADMIN_VERIFY_OTP: "admin/auth/forgot-password/verify",
   ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
   ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
+
+  STAFF_LOGIN: "restaurants/staff/login",
+  STAFF_REFRESH_TOKEN: "restaurants/staff/refresh-token",
+  STAFF_LOGOUT: "restaurants/staff/logout",
 } as const;
 
 export const ADMIN_AUTH_ENDPOINTS = {
@@ -75,4 +79,7 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.ADMIN_VERIFY_OTP,
   AUTH_ENDPOINTS.ADMIN_RESEND_OTP,
   AUTH_ENDPOINTS.ADMIN_RESET_PASSWORD,
+  AUTH_ENDPOINTS.STAFF_LOGIN,
+  AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN,
+  AUTH_ENDPOINTS.STAFF_LOGOUT,
 ] as const;

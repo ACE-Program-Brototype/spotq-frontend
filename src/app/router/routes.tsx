@@ -9,6 +9,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import { adminRoutes } from "./admin.routes";
 import { authRoutes } from "./auth.routes";
 import { demoRoutes } from "./demo.routes";
+import { staffRoutes } from "./staff.routes";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
           },
           ...adminRoutes,
         ],
+      },
+      {
+        path: "staff",
+        children: staffRoutes,
       },
       {
         path: "*",

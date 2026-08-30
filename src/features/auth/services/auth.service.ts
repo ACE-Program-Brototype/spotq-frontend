@@ -8,6 +8,8 @@ import type {
   RegisterInput,
   RegisterResult,
   ResendOtpInput,
+  StaffLoginResponse,
+  StaffLogoutRes,
   User,
   VerifyEmailResult,
   VerifyOtpInput,
@@ -29,6 +31,16 @@ export type ApiResponse<T = unknown> = {
   statusCode?: number;
   message: string;
   data?: T;
+};
+
+type StaffLoginApiRes = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    staff: User;
+    accessToken: string;
+  };
 };
 
 export async function loginAdmin(data: LoginFormValues): Promise<LoginResponse["data"]> {
@@ -185,3 +197,32 @@ export const authService = {
     };
   },
 };
+
+export async function loginStaff(data: LoginFormValues): Promise<StaffLoginResponse> {
+  const res = await apiClient
+    .post(AUTH_ENDPOINTS.STAFF_LOGIN, {
+      json: data,
+    })
+    .json<StaffLoginApiRes>();
+
+  return {
+    success: res.success,
+    message: res.message,
+    data: {
+      user: res.data.staff,
+      accessToken: res.data.accessToken,
+    },
+  };
+}
+
+export async function logoutStaff(): Promise<StaffLogoutRes> {
+  const res = await apiClient
+    .post(AUTH_ENDPOINTS.STAFF_LOGOUT, {
+      json: {},
+    })
+    .json<ApiAuthResponse>();
+  return {
+    success: res.success,
+    message: res.message,
+  };
+}
