@@ -1,26 +1,10 @@
-import { useEffect } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useAuthStore();
-  const restaurantEmail =
-    user?.email || (location.state as { email?: string } | null)?.email || "restaurant";
-
-  useEffect(() => {
-    const hasVerifiedDashboardAccess =
-      Boolean(user?.email) || Boolean((location.state as { email?: string } | null)?.email);
-
-    if (!hasVerifiedDashboardAccess) {
-      navigate("/restaurant/email/verification", { replace: true });
-    }
-  }, [location.state, navigate, user?.email]);
-
-  if (!user?.email && !(location.state as { email?: string } | null)?.email) {
-    return <Navigate to="/restaurant/email/verification" replace />;
-  }
+  const restaurantEmail = user?.email || "restaurant";
 
   return (
     <div className="min-h-screen bg-neutral-100 px-6 py-12 text-neutral-900">
