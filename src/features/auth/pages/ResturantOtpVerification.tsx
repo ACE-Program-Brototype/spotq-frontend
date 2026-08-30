@@ -10,15 +10,9 @@ import {
   RESTAURANT_RESEND_COOLDOWN_SECONDS as RESEND_COOLDOWN_SECONDS,
 } from "@/features/auth/constants/auth.constants";
 import { useOtpTimer } from "@/features/auth/hooks/useOtpTimer";
-import {
-  resendRestaurantEmailOtp,
-  verifyRestaurantEmailOtp,
-} from "@/features/auth/services/auth.service";
-import type {
-  ApiErrorShape,
-  OtpVerificationProps,
-  VerifyOtpResponse,
-} from "@/features/auth/types/auth.types";
+import { useRestaurantResendOtp } from "@/features/auth/hooks/useRestaurantResendOtp";
+import { useRestaurantVerifyOtp } from "@/features/auth/hooks/useRestaurantVerifyOtp";
+import type { OtpVerificationProps, VerifyOtpResponse } from "@/features/auth/types/auth.types";
 
 /**
  * SpotQ — OTP Verification (Step 2 of restaurant auth)
@@ -29,35 +23,13 @@ import type {
  * copy, 6 separate digit boxes, resend-with-cooldown, and primary CTA.
  */
 
-async function defaultVerifyOtp(email: string, otp: string): Promise<VerifyOtpResponse> {
-  const response = await verifyRestaurantEmailOtp({ email, otp });
-
-  if (!response.success || !response.data) {
-    const message = response.message || "We couldn't verify that code. Please try again.";
-    const error = new Error(message) as Error & { code?: string };
-    error.code = (response as ApiErrorShape)?.code;
-    throw error;
-  }
-
-  return response.data as VerifyOtpResponse;
-}
-
-async function defaultResendOtp(email: string): Promise<void> {
-  const response = await resendRestaurantEmailOtp({ email });
-
-  if (!response.success) {
-    const message = response.message || "Couldn't resend the code. Try again.";
-    throw new Error(message);
-  }
-}
-
 export default function OtpVerification({
   email: emailProp,
   onGoToDashboard,
   onGoToOnboarding,
   onBack,
-  verifyOtp = defaultVerifyOtp,
-  resendOtp = defaultResendOtp,
+  verifyOtp: verifyOtpProp,
+  resendOtp: resendOtpProp,
 }: OtpVerificationProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -65,9 +37,17 @@ export default function OtpVerification({
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [validationError, setValidationError] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isResending, setIsResending] = useState(false);
   const [attemptsExhausted, setAttemptsExhausted] = useState(false);
+
+  const { mutateAsync: verifyOtpMutation, isPending: isVerifying } = useRestaurantVerifyOtp();
+  const { mutateAsync: resendOtpMutation, isPending: isResending } = useRestaurantResendOtp();
+
+  const verifyOtp =
+    verifyOtpProp ??
+    (async (e: string, o: string): Promise<VerifyOtpResponse> =>
+      verifyOtpMutation({ email: e, otp: o }));
+  const resendOtp =
+    resendOtpProp ?? (async (e: string): Promise<void> => resendOtpMutation({ email: e }));
 
   const { seconds: cooldown, startTimer } = useOtpTimer({
     email,
@@ -174,7 +154,6 @@ export default function OtpVerification({
       return;
     }
     setValidationError(null);
-    setIsVerifying(true);
 
     try {
       const result = await verifyOtp(email, otp);
@@ -207,8 +186,6 @@ export default function OtpVerification({
         setApiError(message);
       }
       resetOtpBoxes();
-    } finally {
-      setIsVerifying(false);
     }
   }, [
     email,
@@ -225,7 +202,6 @@ export default function OtpVerification({
     if (!canResend) return;
     setApiError(null);
     setValidationError(null);
-    setIsResending(true);
 
     try {
       await resendOtp(email);
@@ -239,8 +215,6 @@ export default function OtpVerification({
         err instanceof Error ? err.message : "Couldn't resend the code. Please try again.",
       );
       // Do not reset the timer — backend didn't confirm a new OTP was sent.
-    } finally {
-      setIsResending(false);
     }
   }, [canResend, email, focusInput, resendOtp, startTimer]);
 
