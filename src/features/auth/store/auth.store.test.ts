@@ -39,7 +39,7 @@ describe("useAuthStore State and Persistence", () => {
 
     const parsed = JSON.parse(localData as string);
     expect(parsed.state.user).toEqual(mockUser);
-    expect(parsed.state.accessToken).toBe("test-token-value");
+    expect(parsed.state.accessToken).toBeUndefined();
   });
 
   it("clears user and session on clearAuth", () => {
