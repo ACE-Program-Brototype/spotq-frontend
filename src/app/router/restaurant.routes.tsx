@@ -5,8 +5,15 @@ import RestaurantEmailVerificationPage from "@/features/auth/pages/RestaurantEma
 import RestaurantOnboardingPage from "@/features/auth/pages/RestaurantOnboardingPage";
 import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
 import AuthLayout from "@/layouts/AuthLayout";
+import ProtectedLayout from "@/layouts/ProtectedLayout";
 
 const RestaurantAuthLayout = () => <AuthLayout redirectTo="/restaurant/dashboard" />;
+const RestaurantProtectedLayout = () => (
+  <ProtectedLayout
+    allowedRoles={["RESTAURANT_ADMIN", "RESTAURANT_STAFF"]}
+    redirectTo="/restaurant/email/verification"
+  />
+);
 
 export const restaurantRoutes: RouteObject[] = [
   {
@@ -24,6 +31,11 @@ export const restaurantRoutes: RouteObject[] = [
         path: "onboarding",
         Component: RestaurantOnboardingPage,
       },
+    ],
+  },
+  {
+    Component: RestaurantProtectedLayout,
+    children: [
       {
         path: "dashboard",
         Component: RestaurantDashboardPage,
