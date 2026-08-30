@@ -130,3 +130,22 @@ export type OtpVerificationProps = {
   verifyOtp?: (email: string, otp: string) => Promise<VerifyOtpResponse>;
   resendOtp?: (email: string) => Promise<void>;
 };
+
+export type StaffLoginInput = {
+  email: string;
+  password: string;
+};
+
+export type StaffLoginResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    user: User;
+    accessToken: string;
+  };
+};
+
+export type StaffLogoutRes = {
+  success: boolean;
+  message: string;
+};

@@ -26,6 +26,10 @@ export default function ProtectedLayout({
     return <Navigate to="/admin/dashboard" replace />;
   }
 
+  if (user?.role === "RESTAURANT_STAFF" && !location.pathname.startsWith("/staff")) {
+    return <Navigate to="/staff/dashboard" replace />;
+  }
+
   // Check role authorization
   if (allowedRoles && allowedRoles.length > 0 && user?.role) {
     if (!allowedRoles.includes(user.role)) {
