@@ -73,6 +73,21 @@ export async function resendOtp(data: { email: string }): Promise<ApiResponse> {
     .json<ApiResponse>();
 }
 
+export async function sendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_SEND_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function resendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function verifyRestaurantEmailOtp(data: {
+  email: string;
+  otp: string;
+}): Promise<ApiResponse> {
+  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP, { json: data }).json<ApiResponse>();
+}
+
 export async function resetPassword(data: { password: string }): Promise<ApiResponse> {
   return apiClient.post(AUTH_ENDPOINTS.RESET_PASSWORD, { json: data }).json<ApiResponse>();
 }

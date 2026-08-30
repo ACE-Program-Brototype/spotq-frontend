@@ -36,8 +36,8 @@ describe("beforeError hook", () => {
     expect(result.message).toBe(originalMessage);
   });
 
-  it("returns non-HTTPError errors untouched", async () => {
-    const genericError = new Error("Generic network failure");
+  it("converts fetch/network errors into a friendly user message", async () => {
+    const genericError = new TypeError("Failed to fetch");
 
     const result = await beforeError({
       error: genericError as HTTPError,
@@ -46,6 +46,6 @@ describe("beforeError hook", () => {
       retryCount: 0,
     });
 
-    expect(result.message).toBe("Generic network failure");
+    expect(result.message).toBe("Unable to connect to the server. Please try again in a moment.");
   });
 });

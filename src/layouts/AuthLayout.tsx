@@ -6,13 +6,10 @@ export interface AuthLayoutProps {
 }
 
 export default function AuthLayout({ redirectTo }: AuthLayoutProps = {}) {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
 
   if (isAuthenticated) {
-    // If the logged-in user is an ADMIN, send to /admin/dashboard (or admin custom redirect).
-    // If the logged-in user is a CUSTOMER, always redirect to customer home /
-    const destination = user?.role === "ADMIN" ? (redirectTo ?? "/admin/dashboard") : "/";
-    return <Navigate to={destination} replace />;
+    return <Navigate to={redirectTo ?? "/"} replace />;
   }
 
   return <Outlet />;

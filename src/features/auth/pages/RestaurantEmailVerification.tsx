@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import type { FormEvent } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
@@ -13,10 +13,7 @@ interface EmailVerificationProps {
   requestOtp?: (email: string) => Promise<void>;
 }
 
-export default function EmailVerification({
-  onCodeSent,
-  requestOtp,
-}: EmailVerificationProps) {
+export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerificationProps) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [touched, setTouched] = useState(false);
@@ -24,8 +21,7 @@ export default function EmailVerification({
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
 
-  const { mutateAsync: sendRestaurantOtp, isPending: isSendingOtp } =
-    useRestaurantEmailOtp();
+  const { mutateAsync: sendRestaurantOtp, isPending: isSendingOtp } = useRestaurantEmailOtp();
 
   const trimmedEmail = email.trim();
   const isEmpty = trimmedEmail.length === 0;
@@ -66,9 +62,7 @@ export default function EmailVerification({
       });
     } catch (err) {
       setApiError(
-        err instanceof Error
-          ? err.message
-          : "We couldn't send the code. Please try again.",
+        err instanceof Error ? err.message : "We couldn't send the code. Please try again.",
       );
     }
   };
@@ -77,11 +71,7 @@ export default function EmailVerification({
     <div className="relative min-h-screen w-full overflow-hidden bg-neutral-900">
       {/* Background hero image */}
       <div className="absolute inset-0">
-        <img
-          src={restaurantEmailVerificationBg}
-          alt=""
-          className="h-full w-full object-cover"
-        />
+        <img src={restaurantEmailVerificationBg} alt="" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
@@ -111,16 +101,11 @@ export default function EmailVerification({
 
           {/* Right: Get Started card */}
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl sm:p-8">
-            <h2 className="text-2xl font-bold text-neutral-900">
-              Get Started
-            </h2>
+            <h2 className="text-2xl font-bold text-neutral-900">Get Started</h2>
 
             <form onSubmit={handleSubmit} noValidate className="mt-6">
               <div className="mb-2 flex items-start justify-between gap-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm text-neutral-600"
-                >
+                <label htmlFor="email" className="text-sm text-neutral-600">
                   Enter your restaurant email to continue
                 </label>
               </div>
@@ -139,9 +124,7 @@ export default function EmailVerification({
                 }}
                 onBlur={() => setTouched(true)}
                 aria-invalid={showValidationError}
-                aria-describedby={
-                  showValidationError ? "email-error" : "email-hint"
-                }
+                aria-describedby={showValidationError ? "email-error" : "email-hint"}
                 className={`w-full rounded-md border px-4 py-2 text-base text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 disabled:bg-neutral-50 disabled:text-neutral-400 ${
                   showValidationError
                     ? "border-red-400 focus:border-red-400 focus:ring-red-100"
@@ -150,11 +133,7 @@ export default function EmailVerification({
               />
 
               {showValidationError ? (
-                <p
-                  id="email-error"
-                  role="alert"
-                  className="mt-2 text-sm text-red-600"
-                >
+                <p id="email-error" role="alert" className="mt-2 text-sm text-red-600">
                   {isEmpty
                     ? "Please enter your email address."
                     : "Please enter a valid email address."}
@@ -189,6 +168,8 @@ export default function EmailVerification({
                       className="mr-2 h-5 w-5 animate-spin text-white"
                       viewBox="0 0 24 24"
                       fill="none"
+                      role="img"
+                      aria-label="Loading"
                     >
                       <circle
                         className="opacity-25"

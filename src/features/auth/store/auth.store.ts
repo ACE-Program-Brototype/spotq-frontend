@@ -6,10 +6,11 @@ import type { User } from "@/features/auth/types/auth.types";
 type AuthState = {
   user: User | null;
   accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   savedAt: number | null;
 
-  setAuth: (user: User, accessToken: string) => void;
+  setAuth: (user: User, accessToken: string, refreshToken?: string) => void;
   setUser: (user: User | null) => void;
   clearAuth: () => void;
 };
@@ -50,14 +51,16 @@ export const useAuthStore = create<AuthState>()(
       (set) => ({
         user: null,
         accessToken: null,
+        refreshToken: null,
         isAuthenticated: false,
         savedAt: null,
 
-        setAuth: (user, accessToken) =>
+        setAuth: (user, accessToken, refreshToken) =>
           set(
             {
               user,
               accessToken,
+              refreshToken: refreshToken ?? null,
               isAuthenticated: true,
               savedAt: Date.now(),
             },
@@ -81,6 +84,7 @@ export const useAuthStore = create<AuthState>()(
             {
               user: null,
               accessToken: null,
+              refreshToken: null,
               isAuthenticated: false,
               savedAt: null,
             },
@@ -93,6 +97,8 @@ export const useAuthStore = create<AuthState>()(
         storage: createJSONStorage(() => customStorage),
         partialize: (state) => ({
           user: state.user,
+          accessToken: state.accessToken,
+          refreshToken: state.refreshToken,
           isAuthenticated: state.isAuthenticated,
           savedAt: state.savedAt,
         }),

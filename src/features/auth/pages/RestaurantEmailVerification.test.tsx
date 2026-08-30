@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
 import EmailVerification from "./RestaurantEmailVerification";
 
@@ -13,16 +14,16 @@ const queryClient = new QueryClient({
 describe("RestaurantEmailVerification", () => {
   it("renders the restaurant email entry form and branding copy", () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <EmailVerification />
-      </QueryClientProvider>,
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <EmailVerification />
+        </QueryClientProvider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(/partner with spotq!/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /get started/i })).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(/enter your restaurant email to continue/i),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/enter your restaurant email to continue/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /continue/i })).toBeInTheDocument();
   });
 
@@ -31,22 +32,20 @@ describe("RestaurantEmailVerification", () => {
     const onCodeSent = jest.fn();
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <EmailVerification requestOtp={requestOtp} onCodeSent={onCodeSent} />
-      </QueryClientProvider>,
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <EmailVerification requestOtp={requestOtp} onCodeSent={onCodeSent} />
+        </QueryClientProvider>
+      </MemoryRouter>,
     );
 
-    const emailInput = screen.getByLabelText(
-      /enter your restaurant email to continue/i,
-    );
+    const emailInput = screen.getByLabelText(/enter your restaurant email to continue/i);
 
     fireEvent.change(emailInput, { target: { value: "invalid-email" } });
     fireEvent.blur(emailInput);
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
 
-    expect(
-      screen.getByText(/please enter a valid email address\./i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/please enter a valid email address\./i)).toBeInTheDocument();
     expect(requestOtp).not.toHaveBeenCalled();
 
     fireEvent.change(emailInput, { target: { value: "owner@restaurant.com" } });

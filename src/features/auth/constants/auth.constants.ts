@@ -48,6 +48,12 @@ export const AUTH_ENDPOINTS = {
   ADMIN_VERIFY_OTP: "admin/auth/forgot-password/verify",
   ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
   ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
+
+  // Restaurant Auth Endpoints
+  RESTAURANT_SEND_OTP: "restaurants/registration/email-otp",
+  RESTAURANT_RESEND_OTP: "restaurants/registration/resend-email-otp",
+  RESTAURANT_VERIFY_OTP: "restaurants/registration/email-otp/verify",
+  RESTAURANT_ONBOARD: "restaurants/onboard",
 } as const;
 
 export const ADMIN_AUTH_ENDPOINTS = {
