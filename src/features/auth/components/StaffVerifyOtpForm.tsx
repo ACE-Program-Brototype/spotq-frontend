@@ -54,6 +54,7 @@ export function StaffVerifyOtpForm({ initialEmail }: StaffVerifyOtpFormProps) {
   };
 
   const onSubmit = (data: VerifyOtpFormValues) => {
+    if (!email) return;
     verifyOtp({ email, otp: data.otp });
   };
 

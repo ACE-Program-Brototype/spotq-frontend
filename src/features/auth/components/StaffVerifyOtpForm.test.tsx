@@ -64,4 +64,35 @@ describe("StaffVerifyOtpForm", () => {
     });
     expect(mockVerify).not.toHaveBeenCalled();
   });
+
+  it("does not call verifyOtp when email is missing", async () => {
+    render(<StaffVerifyOtpForm initialEmail="" />, {
+      wrapper: ({ children }) => (
+        <MemoryRouter
+          initialEntries={[{ pathname: "/staff/forgot-password/verify-otp", state: null }]}
+        >
+          <QueryClientProvider
+            client={
+              new QueryClient({
+                defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+              })
+            }
+          >
+            {children}
+          </QueryClientProvider>
+        </MemoryRouter>
+      ),
+    });
+
+    const inputs = screen.getAllByRole("textbox");
+    for (const input of inputs) {
+      fireEvent.change(input, { target: { value: "123456" } });
+    }
+
+    fireEvent.click(screen.getByRole("button", { name: /verify code/i }));
+
+    await waitFor(() => {
+      expect(mockVerify).not.toHaveBeenCalled();
+    });
+  });
 });
