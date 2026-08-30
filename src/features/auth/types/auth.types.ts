@@ -93,3 +93,40 @@ export type VerifyEmailResult = {
 export type ResendOtpInput = {
   email: string;
 };
+
+// Restaurant Auth Types
+export type EmailVerificationProps = {
+  onCodeSent?: (email: string) => void;
+  requestOtp?: (email: string) => Promise<void>;
+};
+
+export type VerifyOtpSuccessDashboard = {
+  nextStep: "DASHBOARD";
+};
+
+export type VerifyOtpSuccessOnboarding = {
+  nextStep: "ONBOARDING";
+  verificationToken: string;
+};
+
+export type VerifyOtpResponse = VerifyOtpSuccessDashboard | VerifyOtpSuccessOnboarding;
+
+export type ApiErrorShape = {
+  code?: string;
+  message?: string;
+};
+
+export type OtpVerificationProps = {
+  /** Email the OTP was sent to (masked or full — display copy assumes
+   * the caller has already formatted it, e.g. "ow****@gmail.com"). */
+  email?: string;
+  /** Called when the backend confirms the restaurant already onboarded. */
+  onGoToDashboard?: () => void;
+  /** Called when the backend says onboarding is still pending. */
+  onGoToOnboarding?: (verificationToken: string) => void;
+  /** Called when the user taps the back arrow (e.g. return to email step). */
+  onBack?: () => void;
+  /** Replace with your real API calls. */
+  verifyOtp?: (email: string, otp: string) => Promise<VerifyOtpResponse>;
+  resendOtp?: (email: string) => Promise<void>;
+};

@@ -5,9 +5,19 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import restaurantOtpVerificationBg from "@/features/auth/assets/restaurant-otp-verification-bg.avif";
 
 import {
+  RESTAURANT_MAX_ATTEMPTS_ERROR_CODE as MAX_ATTEMPTS_ERROR_CODE,
+  RESTAURANT_OTP_LENGTH as OTP_LENGTH,
+  RESTAURANT_RESEND_COOLDOWN_SECONDS as RESEND_COOLDOWN_SECONDS,
+} from "@/features/auth/constants/auth.constants";
+import {
   resendRestaurantEmailOtp,
   verifyRestaurantEmailOtp,
 } from "@/features/auth/services/auth.service";
+import type {
+  ApiErrorShape,
+  OtpVerificationProps,
+  VerifyOtpResponse,
+} from "@/features/auth/types/auth.types";
 
 /**
  * SpotQ — OTP Verification (Step 2 of restaurant auth)
@@ -17,41 +27,6 @@ import {
  * page, with a back arrow, "Enter OTP" heading, masked-destination
  * copy, 6 separate digit boxes, resend-with-cooldown, and primary CTA.
  */
-
-const OTP_LENGTH = 6;
-const RESEND_COOLDOWN_SECONDS = 60;
-const MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
-
-interface VerifyOtpSuccessDashboard {
-  nextStep: "DASHBOARD";
-}
-
-interface VerifyOtpSuccessOnboarding {
-  nextStep: "ONBOARDING";
-  verificationToken: string;
-}
-
-type VerifyOtpResponse = VerifyOtpSuccessDashboard | VerifyOtpSuccessOnboarding;
-
-interface ApiErrorShape {
-  code?: string;
-  message?: string;
-}
-
-interface OtpVerificationProps {
-  /** Email the OTP was sent to (masked or full — display copy assumes
-   * the caller has already formatted it, e.g. "ow****@gmail.com"). */
-  email?: string;
-  /** Called when the backend confirms the restaurant already onboarded. */
-  onGoToDashboard?: () => void;
-  /** Called when the backend says onboarding is still pending. */
-  onGoToOnboarding?: (verificationToken: string) => void;
-  /** Called when the user taps the back arrow (e.g. return to email step). */
-  onBack?: () => void;
-  /** Replace with your real API calls. */
-  verifyOtp?: (email: string, otp: string) => Promise<VerifyOtpResponse>;
-  resendOtp?: (email: string) => Promise<void>;
-}
 
 async function defaultVerifyOtp(email: string, otp: string): Promise<VerifyOtpResponse> {
   const response = await verifyRestaurantEmailOtp({ email, otp });
