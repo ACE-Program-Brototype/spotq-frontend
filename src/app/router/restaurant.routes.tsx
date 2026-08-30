@@ -3,6 +3,7 @@ import type { RouteObject } from "react-router-dom";
 import RestaurantDashboardPage from "@/features/auth/pages/RestaurantDashboardPage";
 import RestaurantEmailVerificationPage from "@/features/auth/pages/RestaurantEmailVerification";
 import RestaurantOnboardingPage from "@/features/auth/pages/RestaurantOnboardingPage";
+import RestaurantTermsPage from "@/features/auth/pages/RestaurantTermsPage";
 import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -16,6 +17,14 @@ const RestaurantProtectedLayout = () => (
 );
 
 export const restaurantRoutes: RouteObject[] = [
+  {
+    path: "terms",
+    Component: RestaurantTermsPage,
+  },
+  {
+    path: "terms-and-conditions",
+    Component: RestaurantTermsPage,
+  },
   {
     Component: RestaurantAuthLayout,
     children: [

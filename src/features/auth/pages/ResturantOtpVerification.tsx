@@ -1,6 +1,6 @@
 import type { ClipboardEvent, KeyboardEvent } from "react";
 import { useCallback, useRef, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import restaurantOtpVerificationBg from "@/features/auth/assets/restaurant-otp-verification-bg.avif";
 
@@ -393,12 +393,12 @@ export default function OtpVerification({
 
             <p className="mt-6 text-center text-xs text-neutral-500">
               By continuing, I agree to SpotQ's{" "}
-              <a
-                href="/terms"
+              <Link
+                to="/restaurant/terms"
                 className="font-medium text-neutral-700 underline underline-offset-2 hover:text-orange-600"
               >
                 terms &amp; conditions
-              </a>
+              </Link>
             </p>
           </div>
         </div>

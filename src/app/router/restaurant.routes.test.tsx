@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import type { ComponentType } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -10,18 +11,22 @@ describe("restaurantRoutes structure and protection", () => {
     useAuthStore.getState().clearAuth();
   });
 
-  it("defines unauthenticated auth routes under RestaurantAuthLayout and protected routes under RestaurantProtectedLayout", () => {
-    expect(restaurantRoutes).toHaveLength(2);
-    // Unauthenticated group (index 0)
-    const authGroup = restaurantRoutes[0];
+  it("defines terms routes, auth layout routes, and protected layout routes", () => {
+    expect(restaurantRoutes).toHaveLength(4);
+
+    expect(restaurantRoutes[0].path).toBe("terms");
+    expect(restaurantRoutes[1].path).toBe("terms-and-conditions");
+
+    // Unauthenticated group (index 2)
+    const authGroup = restaurantRoutes[2];
     expect(authGroup.children?.map((child) => child.path)).toEqual([
       "email/verification",
       "otp/verification",
       "onboarding",
     ]);
 
-    // Protected group (index 1)
-    const protectedGroup = restaurantRoutes[1];
+    // Protected group (index 3)
+    const protectedGroup = restaurantRoutes[3];
     expect(protectedGroup.children?.map((child) => child.path)).toEqual(["dashboard"]);
   });
 
@@ -32,12 +37,19 @@ describe("restaurantRoutes structure and protection", () => {
           <Route path="/restaurant">
             <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
             {restaurantRoutes.map((route) => {
-              const Layout = route.Component;
-              const groupKey = route.children?.[0]?.path ?? "layout";
-              return (
-                <Route key={groupKey} element={Layout ? <Layout /> : null}>
+              const Layout = route.Component as ComponentType | undefined;
+              const groupKey = route.path ?? route.children?.[0]?.path ?? "layout";
+
+              if (!route.children) {
+                return Layout ? (
+                  <Route key={groupKey} path={route.path} element={<Layout />} />
+                ) : null;
+              }
+
+              return Layout ? (
+                <Route key={groupKey} element={<Layout />}>
                   {route.children?.map((child) => {
-                    const ChildComp = child.Component;
+                    const ChildComp = child.Component as ComponentType | undefined;
                     return (
                       <Route
                         key={child.path}
@@ -47,7 +59,7 @@ describe("restaurantRoutes structure and protection", () => {
                     );
                   })}
                 </Route>
-              );
+              ) : null;
             })}
           </Route>
         </Routes>
@@ -73,12 +85,19 @@ describe("restaurantRoutes structure and protection", () => {
           <Route path="/restaurant">
             <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
             {restaurantRoutes.map((route) => {
-              const Layout = route.Component;
-              const groupKey = route.children?.[0]?.path ?? "layout";
-              return (
-                <Route key={groupKey} element={Layout ? <Layout /> : null}>
+              const Layout = route.Component as ComponentType | undefined;
+              const groupKey = route.path ?? route.children?.[0]?.path ?? "layout";
+
+              if (!route.children) {
+                return Layout ? (
+                  <Route key={groupKey} path={route.path} element={<Layout />} />
+                ) : null;
+              }
+
+              return Layout ? (
+                <Route key={groupKey} element={<Layout />}>
                   {route.children?.map((child) => {
-                    const ChildComp = child.Component;
+                    const ChildComp = child.Component as ComponentType | undefined;
                     return (
                       <Route
                         key={child.path}
@@ -88,7 +107,7 @@ describe("restaurantRoutes structure and protection", () => {
                     );
                   })}
                 </Route>
-              );
+              ) : null;
             })}
           </Route>
         </Routes>
