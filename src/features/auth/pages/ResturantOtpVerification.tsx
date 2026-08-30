@@ -1,6 +1,6 @@
 import type { ClipboardEvent, KeyboardEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import {
   resendRestaurantEmailOtp,
@@ -88,6 +88,11 @@ export default function OtpVerification({
   const location = useLocation();
   const { setAuth } = useAuthStore();
   const email = emailProp || (location.state as { email?: string } | null)?.email || "";
+
+  if (!email) {
+    return <Navigate to="/restaurant/email/verification" replace />;
+  }
+
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [validationError, setValidationError] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
