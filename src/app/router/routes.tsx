@@ -12,6 +12,12 @@ import { authRoutes } from "./auth.routes";
 import { demoRoutes } from "./demo.routes";
 import { staffRoutes } from "./staff.routes";
 
+const CustomerProtectedLayout = () => (
+  <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo="/login" />
+);
+
+const AdminIndexRedirect = () => <Navigate to="/admin/dashboard" replace />;
+
 const router = createBrowserRouter([
   {
     Component: RootLayout,
@@ -21,7 +27,7 @@ const router = createBrowserRouter([
         children: authRoutes,
       },
       {
-        Component: () => <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo="/login" />,
+        Component: CustomerProtectedLayout,
         children: [
           {
             Component: DemoLayout,
@@ -42,7 +48,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: () => <Navigate to="/admin/dashboard" replace />,
+            Component: AdminIndexRedirect,
           },
           ...adminRoutes,
         ],
