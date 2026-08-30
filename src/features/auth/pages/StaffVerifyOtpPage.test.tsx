@@ -17,7 +17,7 @@ describe("StaffVerifyOtpPage", () => {
       <QueryClientProvider client={queryClient}>
         <MemoryRouter
           initialEntries={[
-            { pathname: "/staff/forgot-password/verify-otp", state: { email: "staff@spotq.com" } },
+            { pathname: "/staff/forgot-password/verify", state: { email: "staff@spotq.com" } },
           ]}
         >
           <StaffVerifyOtpPage />

@@ -13,7 +13,7 @@ export function useStaffForgotPassword() {
     mutationFn: (data: ForgotPasswordFormValues) => staffForgotPassword(data),
     onSuccess: (_, variables) => {
       toast.success(AUTH_MESSAGES.OTP_SENT_SUCCESS);
-      navigate("/staff/forgot-password/verify-otp", {
+      navigate("/staff/forgot-password/verify", {
         state: { email: variables.email },
       });
     },

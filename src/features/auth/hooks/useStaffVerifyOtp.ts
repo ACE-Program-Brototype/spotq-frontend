@@ -12,7 +12,7 @@ export function useStaffVerifyOtp() {
     mutationFn: (data: { email: string; otp: string }) => staffVerifyOtp(data),
     onSuccess: (_, variables) => {
       toast.success(AUTH_MESSAGES.OTP_VERIFIED_SUCCESS);
-      navigate("/staff/reset-password", {
+      navigate("/staff/forgot-password/reset-password", {
         state: { email: variables.email },
       });
     },

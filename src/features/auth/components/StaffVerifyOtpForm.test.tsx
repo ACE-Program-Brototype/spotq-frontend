@@ -23,7 +23,7 @@ const createWrapper = () => {
   return ({ children }: { children: React.ReactNode }) => (
     <MemoryRouter
       initialEntries={[
-        { pathname: "/staff/forgot-password/verify-otp", state: { email: "staff@spotq.com" } },
+        { pathname: "/staff/forgot-password/verify", state: { email: "staff@spotq.com" } },
       ]}
     >
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -68,9 +68,7 @@ describe("StaffVerifyOtpForm", () => {
   it("does not call verifyOtp when email is missing", async () => {
     render(<StaffVerifyOtpForm initialEmail="" />, {
       wrapper: ({ children }) => (
-        <MemoryRouter
-          initialEntries={[{ pathname: "/staff/forgot-password/verify-otp", state: null }]}
-        >
+        <MemoryRouter initialEntries={[{ pathname: "/staff/forgot-password/verify", state: null }]}>
           <QueryClientProvider
             client={
               new QueryClient({

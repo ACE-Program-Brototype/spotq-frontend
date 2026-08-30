@@ -19,11 +19,11 @@ export const staffRoutes: RouteObject[] = [
             Component: StaffForgotPasswordPage,
           },
           {
-            path: "forgot-password/verify-otp",
+            path: "forgot-password/verify",
             Component: StaffVerifyOtpPage,
           },
           {
-            path: "reset-password",
+            path: "forgot-password/reset-password",
             Component: StaffResetPasswordPage,
           },
         ],

@@ -17,7 +17,10 @@ describe("StaffResetPasswordPage", () => {
       <QueryClientProvider client={queryClient}>
         <MemoryRouter
           initialEntries={[
-            { pathname: "/staff/reset-password", state: { email: "staff@spotq.com" } },
+            {
+              pathname: "/staff/forgot-password/reset-password",
+              state: { email: "staff@spotq.com" },
+            },
           ]}
         >
           <StaffResetPasswordPage />

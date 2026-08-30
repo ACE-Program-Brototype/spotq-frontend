@@ -58,7 +58,7 @@ describe("useStaffVerifyOtp Hook", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(mockToastSuccess).toHaveBeenCalledWith(AUTH_MESSAGES.OTP_VERIFIED_SUCCESS);
-    expect(mockNavigate).toHaveBeenCalledWith("/staff/reset-password", {
+    expect(mockNavigate).toHaveBeenCalledWith("/staff/forgot-password/reset-password", {
       state: { email: "staff@spotq.com" },
     });
   });
