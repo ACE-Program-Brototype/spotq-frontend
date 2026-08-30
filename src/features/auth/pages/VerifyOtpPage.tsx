@@ -1,12 +1,16 @@
 import { ArrowLeft } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { AuthHeroPanel, VerifyOtpForm } from "../components";
 
 export default function VerifyOtpPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = (location.state as { email?: string } | null)?.email || "";
+  const email = (location.state as { email?: string } | null)?.email;
+
+  if (!email) {
+    return <Navigate to="/forgot-password" replace />;
+  }
 
   return (
     <div className="flex min-h-screen w-full select-none bg-background text-foreground antialiased font-sans">

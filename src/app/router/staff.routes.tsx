@@ -1,12 +1,14 @@
-// src/app/router/staff.routes.tsx
-
 import type { RouteObject } from "react-router-dom";
 import StaffDashboardPage from "@/features/auth/pages/StaffDashboardPage";
+import StaffForgotPasswordPage from "@/features/auth/pages/StaffForgotPasswordPage";
 import StaffLoginPage from "@/features/auth/pages/StaffLoginPage";
+import StaffResetPasswordPage from "@/features/auth/pages/StaffResetPasswordPage";
+import StaffVerifyOtpPage from "@/features/auth/pages/StaffVerifyOtpPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
+import StaffAuthLayout from "@/layouts/StaffAuthLayout";
 
-const StaffAuthLayout = () => <AuthLayout redirectTo="/staff/dashboard" />;
+const StaffAuthGuard = () => <AuthLayout redirectTo="/staff/dashboard" />;
 
 const StaffProtectedLayout = () => (
   <ProtectedLayout allowedRoles={["RESTAURANT_STAFF"]} redirectTo="/staff/login" />
@@ -14,11 +16,28 @@ const StaffProtectedLayout = () => (
 
 export const staffRoutes: RouteObject[] = [
   {
-    Component: StaffAuthLayout,
+    Component: StaffAuthGuard,
     children: [
       {
         path: "login",
         Component: StaffLoginPage,
+      },
+      {
+        Component: StaffAuthLayout,
+        children: [
+          {
+            path: "forgot-password",
+            Component: StaffForgotPasswordPage,
+          },
+          {
+            path: "forgot-password/verify",
+            Component: StaffVerifyOtpPage,
+          },
+          {
+            path: "forgot-password/reset-password",
+            Component: StaffResetPasswordPage,
+          },
+        ],
       },
     ],
   },

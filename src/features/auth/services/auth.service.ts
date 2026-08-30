@@ -1,4 +1,8 @@
-import { ADMIN_AUTH_ENDPOINTS, AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
+import {
+  ADMIN_AUTH_ENDPOINTS,
+  AUTH_ENDPOINTS,
+  STAFF_AUTH_ENDPOINTS,
+} from "@/features/auth/constants/auth.constants";
 import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
 import type {
   ApiAuthResponse,
@@ -69,6 +73,22 @@ export async function adminResendOtp(data: { email: string }): Promise<ApiRespon
 
 export async function adminResetPassword(data: { password: string }): Promise<ApiResponse> {
   return apiClient.post(ADMIN_AUTH_ENDPOINTS.RESET_PASSWORD, { json: data }).json<ApiResponse>();
+}
+
+export async function staffForgotPassword(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(STAFF_AUTH_ENDPOINTS.FORGOT_PASSWORD, { json: data }).json<ApiResponse>();
+}
+
+export async function staffVerifyOtp(data: { email: string; otp: string }): Promise<ApiResponse> {
+  return apiClient.post(STAFF_AUTH_ENDPOINTS.VERIFY_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function staffResendOtp(data: { email: string }): Promise<ApiResponse> {
+  return apiClient.post(STAFF_AUTH_ENDPOINTS.RESEND_OTP, { json: data }).json<ApiResponse>();
+}
+
+export async function staffResetPassword(data: { password: string }): Promise<ApiResponse> {
+  return apiClient.post(STAFF_AUTH_ENDPOINTS.RESET_PASSWORD, { json: data }).json<ApiResponse>();
 }
 
 export async function forgotPassword(data: { email: string }): Promise<ApiResponse> {

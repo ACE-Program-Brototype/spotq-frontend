@@ -95,4 +95,52 @@ describe("AuthLayout", () => {
 
     expect(screen.getByText("Admin Dashboard Page")).toBeInTheDocument();
   });
+
+  it("redirects RESTAURANT_STAFF to /staff/dashboard or redirectTo destination", () => {
+    useAuthStore.getState().setUser({
+      _id: "2",
+      name: "Staff",
+      email: "staff@spotq.com",
+      role: "RESTAURANT_STAFF",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/staff/forgot-password"]}>
+        <Routes>
+          <Route element={<AuthLayout redirectTo="/staff/dashboard" />}>
+            <Route path="/staff/forgot-password" element={<div>Forgot Password</div>} />
+          </Route>
+          <Route path="/staff/dashboard" element={<div>Staff Dashboard</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Staff Dashboard")).toBeInTheDocument();
+    expect(screen.queryByText("Forgot Password")).not.toBeInTheDocument();
+  });
+
+  it("redirects RESTAURANT_ADMIN to /restaurant/dashboard", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Admin",
+      email: "resadmin@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <Routes>
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<div>Login Page</div>} />
+          </Route>
+          <Route path="/restaurant/dashboard" element={<div>Restaurant Dashboard</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Restaurant Dashboard")).toBeInTheDocument();
+    expect(screen.queryByText("Login Page")).not.toBeInTheDocument();
+  });
 });

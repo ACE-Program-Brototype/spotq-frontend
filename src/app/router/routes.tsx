@@ -3,6 +3,7 @@ import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import DemoLayout from "@/layouts/DemoLayout";
+import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RootLayout from "@/layouts/RootLayout";
 
 import NotFoundPage from "../pages/NotFoundPage";
@@ -10,6 +11,12 @@ import { adminRoutes } from "./admin.routes";
 import { authRoutes } from "./auth.routes";
 import { demoRoutes } from "./demo.routes";
 import { staffRoutes } from "./staff.routes";
+
+const CustomerProtectedLayout = () => (
+  <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo="/login" />
+);
+
+const AdminIndexRedirect = () => <Navigate to="/admin/dashboard" replace />;
 
 const router = createBrowserRouter([
   {
@@ -20,8 +27,13 @@ const router = createBrowserRouter([
         children: authRoutes,
       },
       {
-        Component: DemoLayout,
-        children: demoRoutes,
+        Component: CustomerProtectedLayout,
+        children: [
+          {
+            Component: DemoLayout,
+            children: demoRoutes,
+          },
+        ],
       },
       {
         path: "/terms-and-conditions",
@@ -36,7 +48,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: () => <Navigate to="/admin/dashboard" replace />,
+            Component: AdminIndexRedirect,
           },
           ...adminRoutes,
         ],

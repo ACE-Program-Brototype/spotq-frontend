@@ -1,6 +1,13 @@
+import { Navigate, useLocation } from "react-router-dom";
 import AdminVerifyOtpForm from "@/features/auth/components/AdminVerifyOtpForm";
 
 function AdminVerifyOtpPage() {
+  const location = useLocation();
+  const email = (location.state as { email?: string } | null)?.email;
+
+  if (!email) {
+    return <Navigate to="/admin/forgot-password" replace />;
+  }
   return (
     <main className="grid min-h-svh lg:grid-cols-2">
       {/* ── Left panel: branding ── */}
