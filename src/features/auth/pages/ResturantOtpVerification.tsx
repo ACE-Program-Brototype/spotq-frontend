@@ -208,7 +208,10 @@ export default function OtpVerification({
       const result = await verifyOtp(email, otp);
       if (result.nextStep === "DASHBOARD") {
         onGoToDashboard?.();
-        navigate("/restaurant/dashboard", { replace: true });
+        navigate("/restaurant/dashboard", {
+          replace: true,
+          state: { email },
+        });
       } else {
         onGoToOnboarding?.(result.verificationToken);
         navigate("/restaurant/onboarding", {

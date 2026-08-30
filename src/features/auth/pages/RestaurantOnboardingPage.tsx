@@ -12,10 +12,6 @@ export default function RestaurantOnboardingPage() {
   const email = state.email ?? "your restaurant email";
   const verificationToken = state.verificationToken ?? "verification-token";
 
-  const handleContinue = () => {
-    navigate("/restaurant/dashboard", { replace: true });
-  };
-
   return (
     <div className="min-h-screen bg-neutral-100 px-6 py-12 text-neutral-900">
       <div className="mx-auto max-w-3xl rounded-2xl bg-white p-8 shadow-lg sm:p-10">
@@ -35,13 +31,6 @@ export default function RestaurantOnboardingPage() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-4">
-          <button
-            type="button"
-            onClick={handleContinue}
-            className="rounded-lg bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-600"
-          >
-            Continue to dashboard
-          </button>
           <button
             type="button"
             onClick={() => navigate("/restaurant/email/verification", { replace: false })}

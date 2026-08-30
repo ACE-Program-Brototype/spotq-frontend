@@ -1,9 +1,26 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
-  const { user, accessToken, refreshToken } = useAuthStore();
+  const location = useLocation();
+  const { user } = useAuthStore();
+  const restaurantEmail =
+    user?.email || (location.state as { email?: string } | null)?.email || "restaurant";
+
+  useEffect(() => {
+    const hasVerifiedDashboardAccess =
+      Boolean(user?.email) || Boolean((location.state as { email?: string } | null)?.email);
+
+    if (!hasVerifiedDashboardAccess) {
+      navigate("/restaurant/email/verification", { replace: true });
+    }
+  }, [location.state, navigate, user?.email]);
+
+  if (!user?.email && !(location.state as { email?: string } | null)?.email) {
+    return <Navigate to="/restaurant/email/verification" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-neutral-100 px-6 py-12 text-neutral-900">
@@ -13,9 +30,7 @@ export default function RestaurantDashboardPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">
               Restaurant dashboard
             </p>
-            <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
-              Welcome back{user?.email ? `, ${user.email}` : ""}
-            </h1>
+            <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Welcome, {restaurantEmail}</h1>
           </div>
           <button
             type="button"
@@ -37,20 +52,6 @@ export default function RestaurantDashboardPage() {
               {user?.role ?? "RESTAURANT_ADMIN"}
             </p>
           </div>
-        </div>
-
-        <div className="mt-8 rounded-xl border border-neutral-200 bg-neutral-50 p-5">
-          <p className="text-sm text-neutral-500">Access token</p>
-          <p className="mt-2 break-all font-mono text-xs text-neutral-700">
-            {accessToken ?? "Not available"}
-          </p>
-        </div>
-
-        <div className="mt-4 rounded-xl border border-neutral-200 bg-neutral-50 p-5">
-          <p className="text-sm text-neutral-500">Refresh token</p>
-          <p className="mt-2 break-all font-mono text-xs text-neutral-700">
-            {refreshToken ?? "Not available"}
-          </p>
         </div>
       </div>
     </div>
