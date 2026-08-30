@@ -1,5 +1,5 @@
 import type { ClipboardEvent, KeyboardEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import restaurantOtpVerificationBg from "@/features/auth/assets/restaurant-otp-verification-bg.avif";
@@ -9,6 +9,7 @@ import {
   RESTAURANT_OTP_LENGTH as OTP_LENGTH,
   RESTAURANT_RESEND_COOLDOWN_SECONDS as RESEND_COOLDOWN_SECONDS,
 } from "@/features/auth/constants/auth.constants";
+import { useOtpTimer } from "@/features/auth/hooks/useOtpTimer";
 import {
   resendRestaurantEmailOtp,
   verifyRestaurantEmailOtp,
@@ -66,19 +67,15 @@ export default function OtpVerification({
   const [apiError, setApiError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
   const [attemptsExhausted, setAttemptsExhausted] = useState(false);
 
-  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const { seconds: cooldown, startTimer } = useOtpTimer({
+    email,
+    defaultSeconds: RESEND_COOLDOWN_SECONDS,
+    prefix: "restaurant_otp_expiry",
+  });
 
-  // Countdown timer for resend cooldown.
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const id = setInterval(() => {
-      setCooldown((prev) => (prev <= 1 ? 0 : prev - 1));
-    }, 1000);
-    return () => clearInterval(id);
-  }, [cooldown]);
+  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   const otp = digits.join("");
   const isComplete = otp.length === OTP_LENGTH;
@@ -233,7 +230,7 @@ export default function OtpVerification({
     try {
       await resendOtp(email);
       // Only reset cooldown/attempts/boxes once the backend confirms success.
-      setCooldown(RESEND_COOLDOWN_SECONDS);
+      startTimer(RESEND_COOLDOWN_SECONDS);
       setAttemptsExhausted(false);
       setDigits(Array(OTP_LENGTH).fill(""));
       focusInput(0);
@@ -245,7 +242,7 @@ export default function OtpVerification({
     } finally {
       setIsResending(false);
     }
-  }, [canResend, email, focusInput, resendOtp]);
+  }, [canResend, email, focusInput, resendOtp, startTimer]);
 
   const handleBack = useCallback(() => {
     onBack?.();
