@@ -2,11 +2,12 @@ import type { ClipboardEvent, KeyboardEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
+import restaurantOtpVerificationBg from "@/features/auth/assets/restaurant-otp-verification-bg.avif";
+
 import {
   resendRestaurantEmailOtp,
   verifyRestaurantEmailOtp,
 } from "@/features/auth/services/auth.service";
-import { useAuthStore } from "@/features/auth/store/auth.store";
 
 /**
  * SpotQ — OTP Verification (Step 2 of restaurant auth)
@@ -23,8 +24,6 @@ const MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
 
 interface VerifyOtpSuccessDashboard {
   nextStep: "DASHBOARD";
-  accessToken: string;
-  refreshToken: string;
 }
 
 interface VerifyOtpSuccessOnboarding {
@@ -44,7 +43,7 @@ interface OtpVerificationProps {
    * the caller has already formatted it, e.g. "ow****@gmail.com"). */
   email?: string;
   /** Called when the backend confirms the restaurant already onboarded. */
-  onGoToDashboard?: (tokens: { accessToken: string; refreshToken: string }) => void;
+  onGoToDashboard?: () => void;
   /** Called when the backend says onboarding is still pending. */
   onGoToOnboarding?: (verificationToken: string) => void;
   /** Called when the user taps the back arrow (e.g. return to email step). */
@@ -86,13 +85,7 @@ export default function OtpVerification({
 }: OtpVerificationProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setAuth } = useAuthStore();
   const email = emailProp || (location.state as { email?: string } | null)?.email || "";
-
-  if (!email) {
-    return <Navigate to="/restaurant/email/verification" replace />;
-  }
-
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [validationError, setValidationError] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -214,11 +207,7 @@ export default function OtpVerification({
     try {
       const result = await verifyOtp(email, otp);
       if (result.nextStep === "DASHBOARD") {
-        setAuth({ email, role: "RESTAURANT_ADMIN" }, result.accessToken, result.refreshToken);
-        onGoToDashboard?.({
-          accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
-        });
+        onGoToDashboard?.();
         navigate("/restaurant/dashboard", { replace: true });
       } else {
         onGoToOnboarding?.(result.verificationToken);
@@ -255,7 +244,6 @@ export default function OtpVerification({
     onGoToDashboard,
     onGoToOnboarding,
     resetOtpBoxes,
-    setAuth,
   ]);
 
   const handleResend = useCallback(async () => {
@@ -281,22 +269,27 @@ export default function OtpVerification({
     }
   }, [canResend, email, focusInput, resendOtp]);
 
+  const handleBack = useCallback(() => {
+    onBack?.();
+    navigate("/restaurant/email/verification", { replace: false });
+  }, [navigate, onBack]);
+
+  if (!email) {
+    return <Navigate to="/restaurant/email/verification" replace />;
+  }
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-neutral-900">
       {/* Background hero image */}
       <div className="absolute inset-0">
-        <img
-          src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?q=80&w=2400&auto=format&fit=crop"
-          alt=""
-          className="h-full w-full object-cover"
-        />
+        <img src={restaurantOtpVerificationBg} alt="" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Back arrow */}
       <button
         type="button"
-        onClick={() => onBack?.()}
+        onClick={handleBack}
         aria-label="Go back"
         className="absolute left-6 top-6 z-10 text-white/90 transition-opacity hover:opacity-75 sm:left-8 sm:top-8"
       >
@@ -336,15 +329,15 @@ export default function OtpVerification({
           </div>
 
           {/* Right: Enter OTP card */}
-          <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl sm:p-10">
-            <h2 className="text-3xl font-bold text-neutral-900">Enter OTP</h2>
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl sm:p-8">
+            <h2 className="text-2xl font-bold text-neutral-900">Enter OTP</h2>
 
-            <p className="mt-6 text-sm text-neutral-600">
+            <p className="mt-4 text-sm text-neutral-600">
               Enter OTP sent on email <span className="font-medium text-neutral-800">{email}</span>
             </p>
 
             {/* OTP boxes */}
-            <div className="mt-4 flex justify-between gap-2" onPaste={handlePaste}>
+            <div className="mt-5 flex justify-between gap-2" onPaste={handlePaste}>
               {otpSlotIds.map((slotId) => {
                 const index = Number(slotId.replace("otp-digit-", "")) - 1;
                 const digit = digits[index] ?? "";
@@ -364,7 +357,7 @@ export default function OtpVerification({
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     aria-label={`Digit ${index + 1} of OTP`}
                     aria-invalid={!!validationError}
-                    className={`h-16 w-full rounded-xl border text-center text-xl font-semibold text-neutral-900 focus:outline-none focus:ring-2 disabled:bg-neutral-50 disabled:text-neutral-400 ${
+                    className={`h-11 w-full rounded-md border text-center text-lg font-semibold text-neutral-900 focus:outline-none focus:ring-2 disabled:bg-neutral-50 disabled:text-neutral-400 ${
                       validationError || apiError
                         ? "border-red-400 focus:border-red-400 focus:ring-red-100"
                         : "border-neutral-300 focus:border-orange-500 focus:ring-orange-100"
