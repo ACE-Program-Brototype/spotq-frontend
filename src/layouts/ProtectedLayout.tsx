@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { Role } from "@/features/auth/types/auth.types";
+import { getRoleHome } from "@/features/auth/utils/auth.helpers";
 
 export interface ProtectedLayoutProps {
   allowedRoles?: Role[];
@@ -21,24 +22,43 @@ export default function ProtectedLayout({
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  // If a logged-in admin accesses customer-protected routes (like /), redirect directly to /admin/dashboard
+  const roleHome = getRoleHome(user?.role);
+
+  // Role domain isolation for RESTAURANT_ADMIN (cannot access /admin, /staff, or customer / without logout)
+  if (user?.role === "RESTAURANT_ADMIN" && !location.pathname.startsWith("/restaurant")) {
+    if (location.pathname === roleHome) {
+      return null;
+    }
+    return <Navigate to={roleHome} replace />;
+  }
+
+  // Role domain isolation for ADMIN
   if (user?.role === "ADMIN" && !location.pathname.startsWith("/admin")) {
-    return <Navigate to="/admin/dashboard" replace />;
+    if (location.pathname === roleHome) {
+      return null;
+    }
+    return <Navigate to={roleHome} replace />;
   }
 
-  if (user?.role === "RESTAURANT_STAFF" && !location.pathname.startsWith("/staff")) {
-    return <Navigate to="/staff/dashboard" replace />;
+  // Role domain isolation for RESTAURANT_STAFF
+  if (
+    user?.role === "RESTAURANT_STAFF" &&
+    !location.pathname.startsWith("/staff") &&
+    !location.pathname.startsWith("/restaurant")
+  ) {
+    if (location.pathname === roleHome) {
+      return null;
+    }
+    return <Navigate to={roleHome} replace />;
   }
 
-  // Check role authorization
+  // Check explicit allowedRoles authorization requirement
   if (allowedRoles && allowedRoles.length > 0 && user?.role) {
     if (!allowedRoles.includes(user.role)) {
-      // If customer tries to access admin-only routes, redirect to customer home /
-      const fallback = user.role === "CUSTOMER" ? "/" : redirectTo;
-      if (location.pathname === fallback) {
+      if (location.pathname === roleHome) {
         return null;
       }
-      return <Navigate to={fallback} state={{ from: location }} replace />;
+      return <Navigate to={roleHome} state={{ from: location }} replace />;
     }
   }
 

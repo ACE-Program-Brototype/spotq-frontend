@@ -12,6 +12,7 @@ import {
 import { useOtpTimer } from "@/features/auth/hooks/useOtpTimer";
 import { useRestaurantResendOtp } from "@/features/auth/hooks/useRestaurantResendOtp";
 import { useRestaurantVerifyOtp } from "@/features/auth/hooks/useRestaurantVerifyOtp";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { OtpVerificationProps, VerifyOtpResponse } from "@/features/auth/types/auth.types";
 
 /**
@@ -159,6 +160,18 @@ export default function OtpVerification({
       const result = await verifyOtp(email, otp);
       if (result.nextStep === "DASHBOARD") {
         onGoToDashboard?.();
+        const token =
+          (result as unknown as { accessToken?: string; access_token?: string }).accessToken ??
+          (result as unknown as { accessToken?: string; access_token?: string }).access_token ??
+          "";
+        useAuthStore.getState().setAuth(
+          {
+            email,
+            role: "RESTAURANT_ADMIN",
+            status: "ACTIVE",
+          },
+          token,
+        );
         navigate("/restaurant/dashboard", {
           replace: true,
           state: { email },

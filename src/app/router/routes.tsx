@@ -66,7 +66,13 @@ const router = createBrowserRouter([
       },
       {
         path: "staff",
-        children: staffRoutes,
+        children: [
+          {
+            index: true,
+            Component: () => <Navigate to="/staff/dashboard" replace />,
+          },
+          ...staffRoutes,
+        ],
       },
       {
         path: "*",
