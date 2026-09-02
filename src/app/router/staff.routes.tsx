@@ -6,6 +6,7 @@ import StaffResetPasswordPage from "@/features/auth/pages/StaffResetPasswordPage
 import StaffVerifyOtpPage from "@/features/auth/pages/StaffVerifyOtpPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
+import RestaurantLayout from "@/layouts/RestaurantLayout";
 import StaffAuthLayout from "@/layouts/StaffAuthLayout";
 
 const StaffAuthGuard = () => <AuthLayout redirectTo="/staff/dashboard" />;
@@ -45,8 +46,13 @@ export const staffRoutes: RouteObject[] = [
     Component: StaffProtectedLayout,
     children: [
       {
-        path: "dashboard",
-        Component: StaffDashboardPage,
+        Component: RestaurantLayout,
+        children: [
+          {
+            path: "dashboard",
+            Component: StaffDashboardPage,
+          },
+        ],
       },
     ],
   },
