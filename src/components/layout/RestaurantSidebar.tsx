@@ -153,4 +153,63 @@ export function RestaurantSidebar({
   );
 }
 
+/**
+ * Mobile Bottom Navigation (Without floating '+' button)
+ */
+export function RestaurantMobileNav({
+  basePath = "/restaurant",
+  className,
+}: {
+  basePath?: "/restaurant" | "/staff";
+  className?: string;
+}) {
+  const location = useLocation();
+
+  const mobileTabs = [
+    { label: "Dashboard", href: `${basePath}/dashboard`, icon: LayoutDashboard },
+    { label: "Queue", href: `${basePath}/queue`, icon: UsersRound },
+    { label: "Tables", href: `${basePath}/tables`, icon: TableIcon },
+    { label: "Orders", href: `${basePath}/orders`, icon: Receipt },
+  ];
+
+  return (
+    <nav
+      aria-label="Mobile Navigation"
+      className={cn(
+        "fixed bottom-0 left-0 right-0 z-40 flex h-16 w-full max-w-full items-center justify-around border-t border-[#eddcd4] bg-white px-2 shadow-lg lg:hidden box-border",
+        className,
+      )}
+    >
+      {mobileTabs.map((tab) => {
+        const Icon = tab.icon;
+        const isActive =
+          location.pathname === tab.href ||
+          (tab.href.endsWith("/dashboard") &&
+            (location.pathname === basePath || location.pathname === `${basePath}/`));
+
+        return (
+          <Link
+            key={tab.label}
+            to={tab.href}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-all",
+              isActive ? "text-[#9a3412] font-bold" : "text-neutral-500 hover:text-neutral-800",
+            )}
+          >
+            <div
+              className={cn(
+                "flex size-7 items-center justify-center rounded-xl transition-colors",
+                isActive ? "bg-[#fed7aa]/60" : "bg-transparent",
+              )}
+            >
+              <Icon className="size-4.5" />
+            </div>
+            <span className="text-[10px] leading-none">{tab.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default RestaurantSidebar;
