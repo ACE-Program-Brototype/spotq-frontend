@@ -27,8 +27,16 @@ const router = createBrowserRouter([
         children: demoRoutes,
       },
       {
+        path: "/terms",
+        Component: TermsAndConditionsPage,
+      },
+      {
         path: "/terms-and-conditions",
         Component: TermsAndConditionsPage,
+      },
+      {
+        path: "/privacy",
+        Component: PrivacyPolicyPage,
       },
       {
         path: "/privacy-policy",
