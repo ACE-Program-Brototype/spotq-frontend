@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { useAuthStore } from "../store/auth.store";
 import { useVerifyEmailMutation } from "./use-auth-mutations";
 
 export const useVerifyOtp = () => {
   const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
 
   const verifyOtpMutation = useVerifyEmailMutation();
 
@@ -16,7 +18,11 @@ export const useVerifyOtp = () => {
       });
 
       if (response.success) {
-        toast.success(AUTH_MESSAGES.OTP_VERIFIED_SUCCESS);
+        toast.success(response.message || AUTH_MESSAGES.OTP_VERIFIED_SUCCESS);
+
+        if (response.data?.user && response.data?.accessToken) {
+          setAuth(response.data.user, response.data.accessToken);
+        }
 
         navigate("/", {
           replace: true,

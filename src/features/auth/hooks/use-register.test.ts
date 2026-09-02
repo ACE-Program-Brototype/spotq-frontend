@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { useAuthStore } from "../store/auth.store";
 import { useRegisterMutation } from "./use-auth-mutations";
 import { useRegister } from "./use-register";
 
@@ -18,17 +17,12 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("../store/auth.store", () => ({
-  useAuthStore: jest.fn(),
-}));
-
 jest.mock("./use-auth-mutations", () => ({
   useRegisterMutation: jest.fn(),
 }));
 
 describe("useRegister", () => {
   const mockNavigate = jest.fn();
-  const mockSetAuth = jest.fn();
   const mockMutateAsync = jest.fn();
 
   const validValues = {
@@ -45,10 +39,6 @@ describe("useRegister", () => {
 
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
 
-    (useAuthStore as unknown as jest.Mock).mockReturnValue({
-      setAuth: mockSetAuth,
-    });
-
     (useRegisterMutation as jest.Mock).mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
@@ -59,21 +49,13 @@ describe("useRegister", () => {
     const { result } = renderHook(() => useRegister());
 
     expect(result.current.handleRegister).toEqual(expect.any(Function));
-
     expect(result.current.isLoading).toBe(false);
   });
 
   it("calls registration mutation with the correct data", async () => {
     mockMutateAsync.mockResolvedValue({
       success: true,
-      data: {
-        user: {
-          id: "user-1",
-          name: "Alex Johnson",
-          email: "alex@example.com",
-        },
-        accessToken: "access-token",
-      },
+      message: "OTP sent successfully",
     });
 
     const { result } = renderHook(() => useRegister());
@@ -83,7 +65,6 @@ describe("useRegister", () => {
     });
 
     expect(mockMutateAsync).toHaveBeenCalledTimes(1);
-
     expect(mockMutateAsync).toHaveBeenCalledWith({
       fullName: "Alex Johnson",
       email: "alex@example.com",
@@ -92,21 +73,10 @@ describe("useRegister", () => {
     });
   });
 
-  it("handles successful registration", async () => {
-    const user = {
-      id: "user-1",
-      name: "Alex Johnson",
-      email: "alex@example.com",
-    };
-
-    const accessToken = "access-token";
-
+  it("handles successful registration by notifying and redirecting to OTP without setting auth state", async () => {
     mockMutateAsync.mockResolvedValue({
       success: true,
-      data: {
-        user,
-        accessToken,
-      },
+      message: "OTP sent successfully",
     });
 
     const { result } = renderHook(() => useRegister());
@@ -115,17 +85,14 @@ describe("useRegister", () => {
       await result.current.handleRegister(validValues);
     });
 
-    expect(toast.success).toHaveBeenCalledWith(AUTH_MESSAGES.REGISTER_SUCCESS);
-
-    expect(mockSetAuth).toHaveBeenCalledTimes(1);
-
-    expect(mockSetAuth).toHaveBeenCalledWith(user, accessToken);
-
+    expect(toast.success).toHaveBeenCalledWith("OTP sent successfully");
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-
-    expect(mockNavigate).toHaveBeenCalledWith(`/verify-otp?email=${user.email}`, {
-      replace: true,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      `/verify-otp?email=${encodeURIComponent(validValues.email)}`,
+      {
+        replace: true,
+      },
+    );
   });
 
   it("shows an error when registration fails", async () => {
@@ -141,9 +108,6 @@ describe("useRegister", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith("Email already exists");
-
-    expect(mockSetAuth).not.toHaveBeenCalled();
-
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
@@ -160,15 +124,11 @@ describe("useRegister", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith(AUTH_MESSAGES.GENERIC_ERROR);
-
-    expect(mockSetAuth).not.toHaveBeenCalled();
-
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it("handles registration errors thrown by the mutation", async () => {
     const error = new Error("Network error");
-
     mockMutateAsync.mockRejectedValue(error);
 
     const { result } = renderHook(() => useRegister());
@@ -178,9 +138,6 @@ describe("useRegister", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith("Network error");
-
-    expect(mockSetAuth).not.toHaveBeenCalled();
-
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 

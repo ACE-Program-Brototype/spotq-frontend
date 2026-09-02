@@ -77,18 +77,18 @@ export type RegisterInput = {
   password: string;
 };
 
-export type RegisterResult = AuthResult;
+export type RegisterResult = {
+  success: boolean;
+  statusCode?: number;
+  message: string;
+};
 
 export type VerifyOtpInput = {
   email: string;
   otp: string;
 };
 
-export type VerifyEmailResult = {
-  success: boolean;
-  statusCode: number;
-  message: string;
-};
+export type VerifyEmailResult = AuthResult;
 
 export type ResendOtpInput = {
   email: string;
