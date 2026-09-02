@@ -1,3 +1,3 @@
 export * from "./AdminSidebar";
-export * from "./RestaurantNavbar";
-export * from "./RestaurantSidebar";
+export * from "./StaffNavbar";
+export * from "./StaffSidebar";

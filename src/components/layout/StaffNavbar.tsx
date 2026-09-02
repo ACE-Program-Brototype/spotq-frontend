@@ -8,15 +8,11 @@ import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
 
-export interface RestaurantNavbarProps extends HTMLAttributes<HTMLElement> {
+export interface StaffNavbarProps extends HTMLAttributes<HTMLElement> {
   unreadNotifications?: number;
 }
 
-export function RestaurantNavbar({
-  unreadNotifications = 1,
-  className,
-  ...props
-}: RestaurantNavbarProps) {
+export function StaffNavbar({ unreadNotifications = 1, className, ...props }: StaffNavbarProps) {
   const user = useAuthStore((state) => state.user);
   const { handleStaffLogout, isLoading } = useStaffLogout();
 
@@ -36,7 +32,7 @@ export function RestaurantNavbar({
       )}
       {...props}
     >
-      {/* Left: User Profile */}
+      {/* Left: Staff Profile */}
       <div className="flex items-center gap-2.5 min-w-0 overflow-hidden pr-2">
         <Avatar className="size-8.5 sm:size-9 bg-[#9a3412] text-white font-bold shrink-0 shadow-xs border border-[#eddcd4]">
           <AvatarFallback className="bg-[#9a3412] text-white text-xs font-bold">
@@ -103,4 +99,4 @@ export function RestaurantNavbar({
   );
 }
 
-export default RestaurantNavbar;
+export default StaffNavbar;

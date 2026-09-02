@@ -16,43 +16,43 @@ import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
 
-export interface RestaurantSidebarProps {
+export interface StaffSidebarProps {
   className?: string;
   onNavigate?: () => void;
-  basePath?: "/restaurant" | "/staff";
+  basePath?: string;
 }
 
-export function RestaurantSidebar({
-  className,
-  onNavigate,
-  basePath = "/restaurant",
-}: RestaurantSidebarProps) {
+const staffNavItems = [
+  {
+    title: "Dashboard",
+    path: "/dashboard",
+    icon: LayoutDashboard,
+    mobileLabel: "Dashboard",
+  },
+  {
+    title: "Queue Management",
+    path: "/queue",
+    icon: UsersRound,
+    mobileLabel: "Queue",
+  },
+  {
+    title: "Table Management",
+    path: "/tables",
+    icon: TableIcon,
+    mobileLabel: "Tables",
+  },
+  {
+    title: "Order Management",
+    path: "/orders",
+    icon: Receipt,
+    mobileLabel: "Orders",
+  },
+];
+
+export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: StaffSidebarProps) {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const { handleStaffLogout, isLoading } = useStaffLogout();
-
-  const navItems = [
-    {
-      title: "Dashboard",
-      href: `${basePath}/dashboard`,
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Queue Management",
-      href: `${basePath}/queue`,
-      icon: UsersRound,
-    },
-    {
-      title: "Table Management",
-      href: `${basePath}/tables`,
-      icon: TableIcon,
-    },
-    {
-      title: "Order Management",
-      href: `${basePath}/orders`,
-      icon: Receipt,
-    },
-  ];
 
   return (
     <aside
@@ -75,17 +75,18 @@ export function RestaurantSidebar({
 
         {/* Primary nav links */}
         <nav className="flex flex-col gap-1.5" aria-label="Restaurant Staff Navigation">
-          {navItems.map((item) => {
+          {staffNavItems.map((item) => {
             const Icon = item.icon;
+            const fullHref = `${basePath}${item.path}`;
             const isActive =
-              location.pathname === item.href ||
-              (item.href.endsWith("/dashboard") &&
+              location.pathname === fullHref ||
+              (item.path === "/dashboard" &&
                 (location.pathname === basePath || location.pathname === `${basePath}/`));
 
             return (
               <Link
                 key={item.title}
-                to={item.href}
+                to={fullHref}
                 onClick={onNavigate}
                 className={cn(
                   "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all shadow-2xs",
@@ -156,21 +157,14 @@ export function RestaurantSidebar({
 /**
  * Mobile Bottom Navigation (Without floating '+' button)
  */
-export function RestaurantMobileNav({
-  basePath = "/restaurant",
+export function StaffMobileNav({
+  basePath = "/staff",
   className,
 }: {
-  basePath?: "/restaurant" | "/staff";
+  basePath?: string;
   className?: string;
 }) {
   const location = useLocation();
-
-  const mobileTabs = [
-    { label: "Dashboard", href: `${basePath}/dashboard`, icon: LayoutDashboard },
-    { label: "Queue", href: `${basePath}/queue`, icon: UsersRound },
-    { label: "Tables", href: `${basePath}/tables`, icon: TableIcon },
-    { label: "Orders", href: `${basePath}/orders`, icon: Receipt },
-  ];
 
   return (
     <nav
@@ -180,17 +174,18 @@ export function RestaurantMobileNav({
         className,
       )}
     >
-      {mobileTabs.map((tab) => {
-        const Icon = tab.icon;
+      {staffNavItems.map((item) => {
+        const Icon = item.icon;
+        const fullHref = `${basePath}${item.path}`;
         const isActive =
-          location.pathname === tab.href ||
-          (tab.href.endsWith("/dashboard") &&
+          location.pathname === fullHref ||
+          (item.path === "/dashboard" &&
             (location.pathname === basePath || location.pathname === `${basePath}/`));
 
         return (
           <Link
-            key={tab.label}
-            to={tab.href}
+            key={item.mobileLabel}
+            to={fullHref}
             className={cn(
               "flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-all",
               isActive ? "text-[#9a3412] font-bold" : "text-neutral-500 hover:text-neutral-800",
@@ -204,7 +199,7 @@ export function RestaurantMobileNav({
             >
               <Icon className="size-4.5" />
             </div>
-            <span className="text-[10px] leading-none">{tab.label}</span>
+            <span className="text-[10px] leading-none">{item.mobileLabel}</span>
           </Link>
         );
       })}
@@ -212,4 +207,4 @@ export function RestaurantMobileNav({
   );
 }
 
-export default RestaurantSidebar;
+export default StaffSidebar;
