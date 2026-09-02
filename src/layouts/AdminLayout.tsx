@@ -1,99 +1,67 @@
-import { Bell, LogOut } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { useAdminLogout } from "@/features/auth/hooks/useAdminLogout";
-import { useAuthStore } from "@/features/auth/store/auth.store";
 
 function AdminLayout() {
-  const user = useAuthStore((state) => state.user);
-  const { mutate: logout, isPending: isLoggingOut } = useAdminLogout();
-
-  const initials =
-    user?.name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2) ?? "A";
-
-  const handleLogout = () => {
-    logout();
-  };
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-svh bg-background">
-      {/* ── Top nav header ── */}
-      <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
-          {/* Brand */}
-          <div className="flex items-center gap-3">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-foreground">
-              <span className="text-sm font-bold text-background">S</span>
+    <div className="flex min-h-svh bg-[#f8fafc] text-foreground">
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block lg:shrink-0 sticky top-0 h-svh">
+        <AdminSidebar />
+      </div>
+
+      {/* Mobile Drawer Backdrop and Sidebar */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          <button
+            type="button"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+            onKeyDown={(e) => e.key === "Escape" && setMobileMenuOpen(false)}
+            aria-label="Close sidebar overlay"
+          />
+          <div className="relative z-10 flex w-72 max-w-[85vw] flex-1 flex-col bg-white shadow-2xl">
+            <div className="absolute right-3 top-3">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Close menu"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <X className="size-5" />
+              </Button>
             </div>
-            <Separator orientation="vertical" className="h-5" />
-            <div>
-              <p className="text-sm font-semibold leading-none text-foreground">Admin Console</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">spotQ Platform</p>
-            </div>
-          </div>
-
-          {/* User Controls & Logout */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Notifications"
-              className="text-muted-foreground"
-            >
-              <Bell className="size-4" />
-            </Button>
-
-            <Separator orientation="vertical" className="mx-1 h-5" />
-
-            <div className="flex items-center gap-2.5">
-              <Avatar className="size-7">
-                <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
-              </Avatar>
-              <div className="hidden sm:block">
-                <p className="text-xs font-medium leading-none text-foreground">
-                  {user?.name ?? "Admin"}
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{user?.email}</p>
-              </div>
-            </div>
-
-            <ConfirmDialog
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  disabled={isLoggingOut}
-                  aria-label="Log out"
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <LogOut className="size-4" />
-                </Button>
-              }
-              title="Sign Out"
-              description="Are you sure you want to end your current session? You will need to sign in again to access the admin console."
-              confirmText="Sign Out"
-              loadingText="Signing out…"
-              confirmVariant="destructive"
-              isLoading={isLoggingOut}
-              onConfirm={handleLogout}
-            />
+            <AdminSidebar onNavigate={() => setMobileMenuOpen(false)} className="w-full" />
           </div>
         </div>
-      </header>
+      )}
 
-      {/* ── Child Pages Outlet ── */}
-      <main className="mx-auto max-w-7xl px-6 py-10">
-        <Outlet />
-      </main>
+      {/* Main Container */}
+      <div className="flex flex-1 flex-col min-w-0">
+        {/* Mobile-only toggle header */}
+        <div className="flex items-center justify-between p-4 border-b border-slate-200/80 bg-white lg:hidden">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open sidebar menu"
+          >
+            <Menu className="size-5 text-slate-700" />
+          </Button>
+          <span className="text-sm font-bold text-[#1e3a5f]">spotQ Console</span>
+          <div className="size-8" />
+        </div>
+
+        {/* Child Pages Content */}
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
