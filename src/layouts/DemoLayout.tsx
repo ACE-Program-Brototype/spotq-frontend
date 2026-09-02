@@ -1,11 +1,5 @@
-import { Outlet } from "react-router-dom";
+import CustomerLayout from "./CustomerLayout";
 
-function DemoLayout() {
-  return (
-    <div className="">
-      <Outlet />
-    </div>
-  );
+export default function DemoLayout() {
+  return <CustomerLayout />;
 }
-
-export default DemoLayout;

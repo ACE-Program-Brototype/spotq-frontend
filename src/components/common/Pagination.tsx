@@ -2,16 +2,16 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-r
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils/cn";
 
-export interface PaginationProps extends HTMLAttributes<HTMLDivElement> {
+export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {
   /**
    * Current active page (1-based index)
    */
   currentPage: number;
 
   /**
-   * Total number of pages
+   * Total number of pages (optional if totalItems is provided)
    */
-  totalPages: number;
+  totalPages?: number;
 
   /**
    * Page change event handler
@@ -19,14 +19,20 @@ export interface PaginationProps extends HTMLAttributes<HTMLDivElement> {
   onPageChange: (page: number) => void;
 
   /**
-   * Optional total items count to display entry details (e.g. "Showing 1 to 10 of 45 entries")
+   * Total items count to display entry details (e.g. "Showing 1 to 10 of 45 entries")
    */
   totalItems?: number;
 
   /**
-   * Items per page (used when calculating "Showing X to Y of Z entries")
+   * Items per page
+   * @default 10
    */
   pageSize?: number;
+
+  /**
+   * Alias for pageSize
+   */
+  itemsPerPage?: number;
 
   /**
    * Number of adjacent page numbers to show on each side of active page
@@ -51,6 +57,11 @@ export interface PaginationProps extends HTMLAttributes<HTMLDivElement> {
   colorTheme?: "admin" | "restaurant" | "customer" | "brand" | "dark";
 
   /**
+   * Alias for colorTheme
+   */
+  theme?: "admin" | "restaurant" | "customer" | "brand" | "dark";
+
+  /**
    * Whether the pagination controls are disabled (e.g. while data is fetching)
    */
   disabled?: boolean;
@@ -64,17 +75,32 @@ export function Pagination({
   totalPages,
   onPageChange,
   totalItems,
-  pageSize = 10,
+  pageSize,
+  itemsPerPage,
   siblingCount = 1,
   showFirstLast = false,
-  colorTheme = "admin",
+  colorTheme,
+  theme,
   disabled = false,
   className,
   ...props
 }: PaginationProps) {
-  // Ensure safe bounds
-  const safeCurrent = Math.max(1, Math.min(currentPage, Math.max(1, totalPages)));
-  const safeTotal = Math.max(1, totalPages);
+  // Normalize pageSize / itemsPerPage
+  const effectivePageSize = Math.max(1, pageSize ?? itemsPerPage ?? 10);
+
+  // Calculate total pages safely
+  const effectiveTotalPages =
+    typeof totalPages === "number"
+      ? totalPages
+      : typeof totalItems === "number"
+        ? Math.ceil(totalItems / effectivePageSize)
+        : 1;
+
+  const safeTotal = Math.max(1, effectiveTotalPages || 1);
+  const safeCurrent = Math.max(1, Math.min(currentPage || 1, safeTotal));
+
+  // Determine active theme
+  const activeTheme = theme ?? colorTheme ?? "admin";
 
   // Generate page numbers array with ellipsis
   const getPageNumbers = (): (number | "dots")[] => {
@@ -111,11 +137,11 @@ export function Pagination({
   // Active theme styles
   const activeStyles = {
     admin: "bg-[#0052cc] text-white hover:bg-[#0052cc]/90 shadow-sm",
-    restaurant: "bg-spotq-orange text-white hover:bg-spotq-orange/90 shadow-sm",
-    customer: "bg-spotq-orange text-white hover:bg-spotq-orange/90 shadow-sm",
-    brand: "bg-spotq-orange text-white hover:bg-spotq-orange/90 shadow-sm",
+    restaurant: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
+    customer: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
+    brand: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
     dark: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
-  }[colorTheme];
+  }[activeTheme];
 
   // Entry range text calculation
   let entriesText: string | null = null;
@@ -123,8 +149,8 @@ export function Pagination({
     if (totalItems === 0) {
       entriesText = "Showing 0 to 0 of 0 entries";
     } else {
-      const from = (safeCurrent - 1) * pageSize + 1;
-      const to = Math.min(safeCurrent * pageSize, totalItems);
+      const from = (safeCurrent - 1) * effectivePageSize + 1;
+      const to = Math.min(safeCurrent * effectivePageSize, totalItems);
       entriesText = `Showing ${from} to ${to} of ${totalItems} entries`;
     }
   }
