@@ -1,6 +1,4 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
-import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import DemoLayout from "@/layouts/DemoLayout";
 import RootLayout from "@/layouts/RootLayout";
@@ -8,6 +6,7 @@ import RootLayout from "@/layouts/RootLayout";
 import NotFoundPage from "../pages/NotFoundPage";
 import { adminRoutes } from "./admin.routes";
 import { authRoutes } from "./auth.routes";
+import { customerRoutes } from "./customer.routes";
 import { demoRoutes } from "./demo.routes";
 import { restaurantRoutes } from "./restaurant.routes";
 import { staffRoutes } from "./staff.routes";
@@ -26,22 +25,7 @@ const router = createBrowserRouter([
         Component: DemoLayout,
         children: demoRoutes,
       },
-      {
-        path: "/terms",
-        Component: TermsAndConditionsPage,
-      },
-      {
-        path: "/terms-and-conditions",
-        Component: TermsAndConditionsPage,
-      },
-      {
-        path: "/privacy",
-        Component: PrivacyPolicyPage,
-      },
-      {
-        path: "/privacy-policy",
-        Component: PrivacyPolicyPage,
-      },
+      ...customerRoutes,
       {
         path: "admin",
         children: [
