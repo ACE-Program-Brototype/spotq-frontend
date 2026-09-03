@@ -14,14 +14,14 @@ export interface LoadingIndicatorProps extends HTMLAttributes<HTMLDivElement> {
   variant?: "spinner" | "dots" | "skeleton" | "card-skeleton" | "table-skeleton";
 
   /**
-   * Color theme:
+   * Theme:
    * - 'brand': SpotQ Orange (#ff6b00) - For Customers & Restaurant portals
    * - 'admin': Navy Blue (#1e3a5f) - For Admin console
    * - 'primary': Default foreground color
    * - 'muted': Subtle gray
    * - 'white': White for dark overlays/buttons
    */
-  colorTheme?: "brand" | "admin" | "primary" | "muted" | "white";
+  theme?: "brand" | "admin" | "primary" | "muted" | "white";
 
   /**
    * Size of the indicator: 'sm' | 'md' | 'lg' | 'xl'
@@ -64,7 +64,7 @@ const spinnerColorClasses = {
  */
 export function LoadingIndicator({
   variant = "spinner",
-  colorTheme = "brand",
+  theme = "brand",
   size = "md",
   text,
   fullPage = false,
@@ -81,9 +81,9 @@ export function LoadingIndicator({
               className={cn(
                 "rounded-full animate-bounce [animation-delay:-0.3s]",
                 size === "sm" ? "size-1.5" : size === "lg" ? "size-3" : "size-2",
-                colorTheme === "brand"
+                theme === "brand"
                   ? "bg-spotq-orange"
-                  : colorTheme === "admin"
+                  : theme === "admin"
                     ? "bg-[#1e3a5f]"
                     : "bg-current",
               )}
@@ -92,9 +92,9 @@ export function LoadingIndicator({
               className={cn(
                 "rounded-full animate-bounce [animation-delay:-0.15s]",
                 size === "sm" ? "size-1.5" : size === "lg" ? "size-3" : "size-2",
-                colorTheme === "brand"
+                theme === "brand"
                   ? "bg-spotq-orange"
-                  : colorTheme === "admin"
+                  : theme === "admin"
                     ? "bg-[#1e3a5f]"
                     : "bg-current",
               )}
@@ -103,9 +103,9 @@ export function LoadingIndicator({
               className={cn(
                 "rounded-full animate-bounce",
                 size === "sm" ? "size-1.5" : size === "lg" ? "size-3" : "size-2",
-                colorTheme === "brand"
+                theme === "brand"
                   ? "bg-spotq-orange"
-                  : colorTheme === "admin"
+                  : theme === "admin"
                     ? "bg-[#1e3a5f]"
                     : "bg-current",
               )}
@@ -154,7 +154,7 @@ export function LoadingIndicator({
       default:
         return (
           <Loader2
-            className={cn("animate-spin", sizeClasses[size], spinnerColorClasses[colorTheme])}
+            className={cn("animate-spin", sizeClasses[size], spinnerColorClasses[theme])}
             aria-hidden="true"
           />
         );
@@ -197,7 +197,7 @@ export function LoadingIndicator({
  * Convenient full-screen page loader shortcut
  */
 export function PageLoader({ text = "Loading..." }: { text?: string }) {
-  return <LoadingIndicator fullPage text={text} size="lg" colorTheme="brand" />;
+  return <LoadingIndicator fullPage text={text} size="lg" theme="brand" />;
 }
 
 /**
@@ -205,16 +205,14 @@ export function PageLoader({ text = "Loading..." }: { text?: string }) {
  */
 export function Spinner({
   size = "sm",
-  colorTheme = "brand",
+  theme = "brand",
   className,
 }: {
   size?: "sm" | "md" | "lg" | "xl";
-  colorTheme?: "brand" | "admin" | "primary" | "muted" | "white";
+  theme?: "brand" | "admin" | "primary" | "muted" | "white";
   className?: string;
 }) {
-  return (
-    <LoadingIndicator variant="spinner" size={size} colorTheme={colorTheme} className={className} />
-  );
+  return <LoadingIndicator variant="spinner" size={size} theme={theme} className={className} />;
 }
 
 export default LoadingIndicator;

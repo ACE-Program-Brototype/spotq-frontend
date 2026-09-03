@@ -258,7 +258,7 @@ export default function HomePage() {
       <div className="pt-4">
         <Pagination
           totalItems={64}
-          itemsPerPage={8}
+          pageSize={8}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
           theme="brand"

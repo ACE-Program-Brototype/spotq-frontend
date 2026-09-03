@@ -30,11 +30,6 @@ export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onCh
   pageSize?: number;
 
   /**
-   * Alias for pageSize
-   */
-  itemsPerPage?: number;
-
-  /**
    * Number of adjacent page numbers to show on each side of active page
    * @default 1
    */
@@ -47,17 +42,13 @@ export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onCh
   showFirstLast?: boolean;
 
   /**
-   * Color theme for active page button
+   * Theme for active page button
    * - 'admin': Blue (#0052cc)
    * - 'restaurant': SpotQ Orange (#ff6b00)
    * - 'customer': SpotQ Orange (#ff6b00)
    * - 'brand': SpotQ Orange (#ff6b00)
    * - 'dark': Dark slate (#1e293b)
-   */
-  colorTheme?: "admin" | "restaurant" | "customer" | "brand" | "dark";
-
-  /**
-   * Alias for colorTheme
+   * @default 'admin'
    */
   theme?: "admin" | "restaurant" | "customer" | "brand" | "dark";
 
@@ -75,18 +66,16 @@ export function Pagination({
   totalPages,
   onPageChange,
   totalItems,
-  pageSize,
-  itemsPerPage,
+  pageSize = 10,
   siblingCount = 1,
   showFirstLast = false,
-  colorTheme,
-  theme,
+  theme = "admin",
   disabled = false,
   className,
   ...props
 }: PaginationProps) {
-  // Normalize pageSize / itemsPerPage
-  const effectivePageSize = Math.max(1, pageSize ?? itemsPerPage ?? 10);
+  // Normalize pageSize
+  const effectivePageSize = Math.max(1, pageSize);
 
   // Calculate total pages safely
   const effectiveTotalPages =
@@ -99,8 +88,8 @@ export function Pagination({
   const safeTotal = Math.max(1, effectiveTotalPages || 1);
   const safeCurrent = Math.max(1, Math.min(currentPage || 1, safeTotal));
 
-  // Determine active theme
-  const activeTheme = theme ?? colorTheme ?? "admin";
+  // Active theme
+  const activeTheme = theme;
 
   // Generate page numbers array with ellipsis
   const getPageNumbers = (): (number | "dots")[] => {

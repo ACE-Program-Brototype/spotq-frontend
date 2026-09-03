@@ -177,7 +177,7 @@ function AdminDashboardPage() {
               totalPages={totalPages}
               totalItems={totalEntries}
               pageSize={5}
-              colorTheme="admin"
+              theme="admin"
               onPageChange={handlePageChange}
             />
           </div>
