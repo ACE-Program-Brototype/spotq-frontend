@@ -4,10 +4,15 @@
  */
 
 import type { RouteObject } from "react-router-dom";
+import AboutPage from "@/features/demo/pages/AboutPage";
 import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
 
 export const customerRoutes: RouteObject[] = [
+  {
+    path: "/about-us",
+    Component: AboutPage,
+  },
   {
     path: "/terms",
     Component: TermsAndConditionsPage,
