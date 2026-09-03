@@ -1,3 +1,8 @@
+/**
+ * Staff Sidebar Navigation Component
+ * Provides primary shift navigation, brand details, settings, and staff clock-out actions.
+ */
+
 import {
   HelpCircle,
   LayoutDashboard,
@@ -58,7 +63,6 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
         className,
       )}
     >
-      {/* Top Section: Brand & Navigation */}
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3 px-2">
           <div className="flex size-11 items-center justify-center rounded-2xl bg-white shadow-xs border border-[#eddcd4]">
@@ -70,7 +74,6 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
           </div>
         </div>
 
-        {/* Primary nav links */}
         <nav className="flex flex-col gap-1.5" aria-label="Restaurant Staff Navigation">
           {staffNavItems.map((item) => {
             const Icon = item.icon;
@@ -102,7 +105,6 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
         </nav>
       </div>
 
-      {/* Bottom Section: Settings, Support & Clock Out */}
       <div className="flex flex-col gap-3 pt-4 border-t border-[#eddcd4]">
         <Link
           to={`${basePath}/settings`}
@@ -151,9 +153,6 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
   );
 }
 
-/**
- * Mobile Bottom Navigation (Without floating '+' button)
- */
 export function StaffMobileNav({
   basePath = "/staff",
   className,

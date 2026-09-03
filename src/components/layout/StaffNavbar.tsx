@@ -1,3 +1,8 @@
+/**
+ * Staff Navbar Header Component
+ * Provides staff shift identity display, active notifications, and quick clock-out trigger.
+ */
+
 import { Bell, LogOut } from "lucide-react";
 
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
@@ -30,7 +35,6 @@ export function StaffNavbar({ unreadNotifications = 1, className, ...props }: St
       )}
       {...props}
     >
-      {/* Left: Staff Profile */}
       <div className="flex items-center gap-2.5 min-w-0 overflow-hidden pr-2">
         <Avatar className="size-8.5 sm:size-9 bg-[#9a3412] text-white font-bold shrink-0 shadow-xs border border-[#eddcd4]">
           <AvatarFallback className="bg-[#9a3412] text-white text-xs font-bold">
@@ -53,9 +57,7 @@ export function StaffNavbar({ unreadNotifications = 1, className, ...props }: St
         </div>
       </div>
 
-      {/* Right: Notifications & Clock Out / Logout Action */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-        {/* Notification Bell */}
         <Button
           type="button"
           variant="ghost"
@@ -72,7 +74,6 @@ export function StaffNavbar({ unreadNotifications = 1, className, ...props }: St
           )}
         </Button>
 
-        {/* Clock Out / Logout */}
         <ConfirmDialog
           trigger={
             <Button

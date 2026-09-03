@@ -1,3 +1,8 @@
+/**
+ * Admin Sidebar Navigation Component
+ * Provides desktop and responsive drawer navigation, portal branding, and admin session management.
+ */
+
 import {
   Bell,
   ChevronDown,
@@ -72,7 +77,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
   const user = useAuthStore((state) => state.user);
   const { mutate: logout, isPending: isLoggingOut } = useAdminLogout();
 
-  // Keep dropdowns expanded if a child route is active or default open for Restaurants & Payments
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Restaurants: true,
     Payments: false,
@@ -97,7 +101,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
         className,
       )}
     >
-      {/* Top Header & Brand */}
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3 px-2">
           <div className="flex size-11 items-center justify-center rounded-2xl bg-white shadow-sm border border-slate-100">
@@ -112,7 +115,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
           </div>
         </div>
 
-        {/* Navigation links */}
         <nav className="flex flex-col gap-1.5" aria-label="Admin Navigation">
           {adminNavItems.map((item) => {
             const Icon = item.icon;
@@ -201,7 +203,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
         </nav>
       </div>
 
-      {/* Bottom User info & Logout */}
       <div className="flex flex-col gap-3 pt-6 border-t border-slate-200/80">
         <div className="flex items-center justify-between rounded-2xl bg-white p-2.5 shadow-xs border border-slate-100">
           <div className="flex items-center gap-2.5 min-w-0">

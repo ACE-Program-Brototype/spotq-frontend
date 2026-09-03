@@ -1,3 +1,8 @@
+/**
+ * Customer Footer Navigation Component
+ * Provides platform branding, social links, company/legal navigation, app store links, and copyright info.
+ */
+
 import { Globe, Mail, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -18,9 +23,7 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
       )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-        {/* Desktop 4-Column Layout / Mobile Collapsed Layout */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Column 1: Brand & Socials */}
           <div className="flex flex-col gap-4">
             <Link to="/" className="flex items-center gap-2.5 select-none">
               <div className="flex size-9 items-center justify-center rounded-xl bg-white shadow-xs border border-neutral-100">
@@ -34,7 +37,6 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
               delivered with care.
             </p>
 
-            {/* Social Icons */}
             <div className="flex items-center gap-2.5 pt-1">
               <a
                 href="https://spotq.com"
@@ -67,7 +69,6 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
             </div>
           </div>
 
-          {/* Column 2: Company (Hidden on mobile 2-col view, shown on sm+) */}
           <div className="hidden sm:flex flex-col gap-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">Company</h2>
             <ul className="flex flex-col gap-2 text-xs">
@@ -94,9 +95,7 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
             </ul>
           </div>
 
-          {/* Mobile 2-column group: Legal & Support on small screens */}
           <div className="grid grid-cols-2 gap-4 sm:hidden">
-            {/* Legal */}
             <div className="flex flex-col gap-2.5">
               <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">Legal</h2>
               <ul className="flex flex-col gap-2 text-xs">
@@ -113,7 +112,6 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
               </ul>
             </div>
 
-            {/* Support */}
             <div className="flex flex-col gap-2.5">
               <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
                 Support
@@ -133,7 +131,6 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
             </div>
           </div>
 
-          {/* Column 3: Support (Desktop sm+) */}
           <div className="hidden sm:flex flex-col gap-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">Support</h2>
             <ul className="flex flex-col gap-2 text-xs">
@@ -160,14 +157,12 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
             </ul>
           </div>
 
-          {/* Column 4: Install App */}
           <div className="hidden lg:flex flex-col gap-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
               Install App
             </h2>
             <p className="text-xs text-neutral-500">Available on Google Play and the App Store</p>
             <div className="flex flex-col gap-2.5 pt-1">
-              {/* App Store Badge */}
               <div className="flex h-10 w-36 items-center gap-2 rounded-xl bg-black px-3 text-white shadow-xs select-none">
                 <span className="text-lg font-bold leading-none"></span>
                 <div className="leading-none">
@@ -178,7 +173,6 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
                 </div>
               </div>
 
-              {/* Google Play Badge */}
               <div className="flex h-10 w-36 items-center gap-2 rounded-xl bg-black px-3 text-white shadow-xs select-none">
                 <span className="text-sm font-black leading-none text-[#ff6b00]">▶</span>
                 <div className="leading-none">
@@ -192,7 +186,6 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
           </div>
         </div>
 
-        {/* Bottom Copyright & Footer Links */}
         <div className="mt-8 pt-6 border-t border-neutral-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-400">
           <p>© {currentYear} SpotQ. All rights reserved.</p>
 

@@ -1,3 +1,8 @@
+/**
+ * Customer Navigation Bar & Mobile Bottom Navigation Components
+ * Provides branding, global search, shopping cart access, notifications, and customer authentication links.
+ */
+
 import { Bell, Home, Search, ShoppingCart, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -11,9 +16,6 @@ import type { CustomerMobileNavProps, CustomerNavbarProps } from "./types";
 
 export type { CustomerMobileNavProps, CustomerNavbarProps };
 
-/**
- * Top Customer Navbar (Responsive across Desktop and Mobile)
- */
 export function CustomerNavbar({
   cartItemCount = 0,
   unreadNotifications = 1,
@@ -48,7 +50,6 @@ export function CustomerNavbar({
       {...props}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Left: Brand Logo & Title */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0 select-none">
           <div className="flex size-10 items-center justify-center rounded-xl bg-white shadow-xs border border-neutral-100">
             <img src={spotqLogo} alt="spotQ" className="size-5.5 object-contain" />
@@ -56,7 +57,6 @@ export function CustomerNavbar({
           <span className="text-xl font-extrabold tracking-tight text-[#ff6b00]">spotQ</span>
         </Link>
 
-        {/* Center: Desktop Search Bar */}
         <div className="mx-6 hidden max-w-lg flex-1 md:block">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-neutral-400" />
@@ -70,9 +70,7 @@ export function CustomerNavbar({
           </div>
         </div>
 
-        {/* Right: Actions */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          {/* Mobile Search Toggle */}
           <Button
             type="button"
             variant="ghost"
@@ -84,7 +82,6 @@ export function CustomerNavbar({
             <Search className="size-5" />
           </Button>
 
-          {/* Cart Icon */}
           <Link
             to="/cart"
             aria-label="Shopping Cart"
@@ -98,7 +95,6 @@ export function CustomerNavbar({
             )}
           </Link>
 
-          {/* Notification Bell */}
           <Link
             to="/notifications"
             aria-label="Notifications"
@@ -110,7 +106,6 @@ export function CustomerNavbar({
             )}
           </Link>
 
-          {/* User Profile / Login */}
           {user ? (
             <Link to="/profile" aria-label="My Profile" className="flex items-center gap-2 pl-1">
               <Avatar className="size-8.5 bg-[#1c1714] text-white font-bold border border-neutral-200">
@@ -132,7 +127,6 @@ export function CustomerNavbar({
         </div>
       </div>
 
-      {/* Expandable Mobile Search Input */}
       {mobileSearchOpen && (
         <div className="border-t border-neutral-100 bg-neutral-50 px-4 py-2.5 md:hidden">
           <div className="relative">
@@ -151,9 +145,6 @@ export function CustomerNavbar({
   );
 }
 
-/**
- * Mobile Bottom Navigation Tabs (Fixed at bottom on mobile screens)
- */
 export function CustomerMobileNav({
   cartItemCount = 0,
   unreadNotifications = 0,

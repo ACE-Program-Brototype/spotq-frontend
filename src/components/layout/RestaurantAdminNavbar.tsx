@@ -1,3 +1,8 @@
+/**
+ * Restaurant Admin Navbar Component
+ * Displays restaurant identification, global search, notifications indicator, and profile initials.
+ */
+
 import { Bell, Menu, Search, Utensils } from "lucide-react";
 import { useState } from "react";
 
@@ -41,7 +46,6 @@ export function RestaurantAdminNavbar({
       )}
       {...props}
     >
-      {/* Left: Mobile Toggle / Brand / Restaurant Name & Search */}
       <div className="flex items-center gap-3 sm:gap-6 flex-1 min-w-0 pr-2">
         {onToggleSidebar && (
           <Button
@@ -56,7 +60,6 @@ export function RestaurantAdminNavbar({
           </Button>
         )}
 
-        {/* Brand info (visible when sidebar is closed or on mobile) */}
         <div className="flex items-center gap-2.5 lg:hidden shrink-0">
           <div className="flex size-9 items-center justify-center rounded-xl bg-[#e8631b] text-white shadow-xs">
             <Utensils className="size-4.5" />
@@ -67,14 +70,12 @@ export function RestaurantAdminNavbar({
           </div>
         </div>
 
-        {/* Restaurant Name */}
         <div className="hidden sm:block shrink-0">
           <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#8a3b14]">
             {restaurantName}
           </h2>
         </div>
 
-        {/* Search Input */}
         <div className="relative max-w-md flex-1 hidden md:block">
           <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-400" />
           <input
@@ -87,9 +88,7 @@ export function RestaurantAdminNavbar({
         </div>
       </div>
 
-      {/* Right: Notifications & Profile */}
       <div className="flex items-center gap-3 shrink-0">
-        {/* Notification Bell */}
         <Button
           type="button"
           variant="ghost"
@@ -105,7 +104,6 @@ export function RestaurantAdminNavbar({
 
         <span className="h-4 w-px bg-[#eddcd4] hidden sm:block" />
 
-        {/* Profile */}
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-neutral-800 hidden sm:inline">Profile</span>
           <Avatar className="size-8 rounded-full bg-[#3d271d] text-white shadow-xs border border-[#eddcd4]">

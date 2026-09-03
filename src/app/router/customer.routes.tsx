@@ -1,3 +1,8 @@
+/**
+ * Customer Routes Configuration
+ * Defines public routes for customer terms of service, privacy policies, and general customer pages.
+ */
+
 import type { RouteObject } from "react-router-dom";
 import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";

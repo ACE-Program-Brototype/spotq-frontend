@@ -1,3 +1,8 @@
+/**
+ * Restaurant Admin Sidebar Navigation Component
+ * Provides collapsible navigation sections, restaurant branding, and admin profile overview.
+ */
+
 import {
   Briefcase,
   ChevronDown,
@@ -130,7 +135,6 @@ export function RestaurantAdminSidebar({
     },
   ];
 
-  // Open default section or section with active route
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Restaurant: true,
   });
@@ -154,14 +158,12 @@ export function RestaurantAdminSidebar({
         className,
       )}
     >
-      {/* Top Section: Brand & Nav Links */}
       <div className="flex flex-col gap-6">
         <div className="px-3 pt-1">
           <h1 className="text-xl font-bold tracking-tight text-[#8a3b14]">SpotQ</h1>
           <p className="text-xs font-medium text-neutral-400">Admin Portal</p>
         </div>
 
-        {/* Navigation Items */}
         <nav className="flex flex-col gap-1" aria-label="Restaurant Admin Navigation">
           {adminNavItems.map((item) => {
             const Icon = item.icon;
@@ -188,7 +190,6 @@ export function RestaurantAdminSidebar({
                         : "text-neutral-700 hover:bg-[#faf0e8]/60 hover:text-neutral-900",
                     )}
                   >
-                    {/* Active Left Vertical Accent Bar */}
                     {isParentActive && (
                       <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#9a3412]" />
                     )}
@@ -211,7 +212,6 @@ export function RestaurantAdminSidebar({
                     />
                   </button>
 
-                  {/* Submenu links */}
                   {isOpen && (
                     <div className="ml-7 mt-1 flex flex-col gap-1 border-l border-[#eddcd4] pl-3 py-1">
                       {item.children.map((sub) => {
@@ -274,7 +274,6 @@ export function RestaurantAdminSidebar({
         </nav>
       </div>
 
-      {/* Bottom User Pill */}
       <div className="pt-4 mt-6 border-t border-[#f3e6de]">
         <div className="flex items-center justify-between rounded-2xl bg-[#fef3ec] p-2.5 shadow-2xs border border-[#fae2d3]">
           <div className="flex items-center gap-2.5 min-w-0">
