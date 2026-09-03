@@ -1,5 +1,4 @@
 import { Bell, LogOut } from "lucide-react";
-import type { HTMLAttributes } from "react";
 
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -7,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
+import type { StaffNavbarProps } from "./types";
 
-export interface StaffNavbarProps extends HTMLAttributes<HTMLElement> {
-  unreadNotifications?: number;
-}
+export type { StaffNavbarProps };
 
 export function StaffNavbar({ unreadNotifications = 1, className, ...props }: StaffNavbarProps) {
   const user = useAuthStore((state) => state.user);

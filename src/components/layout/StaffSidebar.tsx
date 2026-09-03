@@ -15,14 +15,11 @@ import { Button } from "@/components/ui/button";
 import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
+import type { StaffNavItem, StaffSidebarProps } from "./types";
 
-export interface StaffSidebarProps {
-  className?: string;
-  onNavigate?: () => void;
-  basePath?: string;
-}
+export type { StaffSidebarProps };
 
-const staffNavItems = [
+const staffNavItems: StaffNavItem[] = [
   {
     title: "Dashboard",
     path: "/dashboard",

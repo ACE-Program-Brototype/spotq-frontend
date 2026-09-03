@@ -3,7 +3,6 @@ import {
   ChevronDown,
   CreditCard,
   Grid,
-  type LayoutDashboard,
   LogOut,
   Megaphone,
   Store,
@@ -20,23 +19,9 @@ import { Button } from "@/components/ui/button";
 import { useAdminLogout } from "@/features/auth/hooks/useAdminLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
+import type { AdminSidebarProps, NavItem } from "./types";
 
-export interface AdminSidebarProps {
-  className?: string;
-  onNavigate?: () => void;
-}
-
-interface NavSubItem {
-  title: string;
-  href: string;
-}
-
-interface NavItem {
-  title: string;
-  href?: string;
-  icon: typeof LayoutDashboard;
-  children?: NavSubItem[];
-}
+export type { AdminSidebarProps };
 
 const adminNavItems: NavItem[] = [
   {

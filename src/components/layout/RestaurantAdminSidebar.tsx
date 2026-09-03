@@ -4,7 +4,6 @@ import {
   CreditCard,
   DollarSign,
   Grid,
-  type LayoutDashboard,
   LogOut,
   Megaphone,
   Receipt,
@@ -20,25 +19,9 @@ import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
+import type { NavItem, RestaurantAdminSidebarProps } from "./types";
 
-export interface RestaurantAdminSidebarProps {
-  className?: string;
-  onNavigate?: () => void;
-  basePath?: string;
-  onLogout?: () => void;
-}
-
-interface NavSubItem {
-  title: string;
-  href: string;
-}
-
-interface NavItem {
-  title: string;
-  href?: string;
-  icon: typeof LayoutDashboard;
-  children?: NavSubItem[];
-}
+export type { RestaurantAdminSidebarProps };
 
 export function RestaurantAdminSidebar({
   className,

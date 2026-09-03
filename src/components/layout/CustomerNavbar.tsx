@@ -1,5 +1,4 @@
 import { Bell, Home, Search, ShoppingCart, User } from "lucide-react";
-import type { HTMLAttributes } from "react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -8,12 +7,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
+import type { CustomerMobileNavProps, CustomerNavbarProps } from "./types";
 
-export interface CustomerNavbarProps extends HTMLAttributes<HTMLElement> {
-  cartItemCount?: number;
-  unreadNotifications?: number;
-  onSearch?: (query: string) => void;
-}
+export type { CustomerMobileNavProps, CustomerNavbarProps };
 
 /**
  * Top Customer Navbar (Responsive across Desktop and Mobile)
@@ -153,12 +149,6 @@ export function CustomerNavbar({
       )}
     </header>
   );
-}
-
-export interface CustomerMobileNavProps {
-  cartItemCount?: number;
-  unreadNotifications?: number;
-  className?: string;
 }
 
 /**

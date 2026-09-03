@@ -3,10 +3,9 @@ import { Link } from "react-router-dom";
 
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { cn } from "@/lib/utils/cn";
+import type { CustomerFooterProps } from "./types";
 
-export interface CustomerFooterProps {
-  className?: string;
-}
+export type { CustomerFooterProps };
 
 export function CustomerFooter({ className }: CustomerFooterProps) {
   const currentYear = new Date().getFullYear();

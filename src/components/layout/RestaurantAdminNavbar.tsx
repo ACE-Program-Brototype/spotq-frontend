@@ -1,18 +1,13 @@
 import { Bell, Menu, Search, Utensils } from "lucide-react";
-import type { HTMLAttributes } from "react";
 import { useState } from "react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
+import type { RestaurantAdminNavbarProps } from "./types";
 
-export interface RestaurantAdminNavbarProps extends HTMLAttributes<HTMLElement> {
-  restaurantName?: string;
-  onToggleSidebar?: () => void;
-  onSearch?: (query: string) => void;
-  unreadNotifications?: number;
-}
+export type { RestaurantAdminNavbarProps };
 
 export function RestaurantAdminNavbar({
   restaurantName = "Basil Mandi",
