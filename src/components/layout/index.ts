@@ -1,7 +1,3 @@
-/**
- * Layout Components & Types Re-exports
- */
-
 export * from "./AdminSidebar";
 export * from "./CustomerFooter";
 export * from "./CustomerNavbar";

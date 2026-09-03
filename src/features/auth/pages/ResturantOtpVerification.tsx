@@ -15,15 +15,6 @@ import { useRestaurantVerifyOtp } from "@/features/auth/hooks/useRestaurantVerif
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { OtpVerificationProps, VerifyOtpResponse } from "@/features/auth/types/auth.types";
 
-/**
- * SpotQ — OTP Verification (Step 2 of restaurant auth)
- *
- * Layout/visual design mirrors the provided reference screenshot:
- * same full-bleed hero + white card shell as the Email Verification
- * page, with a back arrow, "Enter OTP" heading, masked-destination
- * copy, 6 separate digit boxes, resend-with-cooldown, and primary CTA.
- */
-
 export default function OtpVerification({
   email: emailProp,
   onGoToDashboard,

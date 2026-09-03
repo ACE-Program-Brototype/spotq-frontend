@@ -115,16 +115,10 @@ export type ApiErrorShape = {
 };
 
 export type OtpVerificationProps = {
-  /** Email the OTP was sent to (masked or full — display copy assumes
-   * the caller has already formatted it, e.g. "ow****@gmail.com"). */
   email?: string;
-  /** Called when the backend confirms the restaurant already onboarded. */
   onGoToDashboard?: () => void;
-  /** Called when the backend says onboarding is still pending. */
   onGoToOnboarding?: (verificationToken: string) => void;
-  /** Called when the user taps the back arrow (e.g. return to email step). */
   onBack?: () => void;
-  /** Replace with your real API calls. */
   verifyOtp?: (email: string, otp: string) => Promise<VerifyOtpResponse>;
   resendOtp?: (email: string) => Promise<void>;
 };

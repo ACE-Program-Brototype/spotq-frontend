@@ -1,3 +1,8 @@
+/**
+ * Application Error Boundary Component
+ * Catches unhandled React render errors and displays a recovery interface.
+ */
+
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
 interface ErrorBoundaryProps {

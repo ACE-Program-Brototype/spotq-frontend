@@ -1,66 +1,14 @@
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import type { HTMLAttributes } from "react";
-import { cn } from "@/lib/utils/cn";
-
-export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {
-  /**
-   * Current active page (1-based index)
-   */
-  currentPage: number;
-
-  /**
-   * Total number of pages (optional if totalItems is provided)
-   */
-  totalPages?: number;
-
-  /**
-   * Page change event handler
-   */
-  onPageChange: (page: number) => void;
-
-  /**
-   * Total items count to display entry details (e.g. "Showing 1 to 10 of 45 entries")
-   */
-  totalItems?: number;
-
-  /**
-   * Items per page
-   * @default 10
-   */
-  pageSize?: number;
-
-  /**
-   * Number of adjacent page numbers to show on each side of active page
-   * @default 1
-   */
-  siblingCount?: number;
-
-  /**
-   * Whether to show First and Last page jump buttons (<< and >>)
-   * @default false
-   */
-  showFirstLast?: boolean;
-
-  /**
-   * Theme for active page button
-   * - 'admin': Blue (#0052cc)
-   * - 'restaurant': SpotQ Orange (#ff6b00)
-   * - 'customer': SpotQ Orange (#ff6b00)
-   * - 'brand': SpotQ Orange (#ff6b00)
-   * - 'dark': Dark slate (#1e293b)
-   * @default 'admin'
-   */
-  theme?: "admin" | "restaurant" | "customer" | "brand" | "dark";
-
-  /**
-   * Whether the pagination controls are disabled (e.g. while data is fetching)
-   */
-  disabled?: boolean;
-}
-
 /**
- * Universal Reusable Pagination component for Admin, Restaurant, Customer, and Staff tables/lists
+ * Universal Reusable Pagination Component
+ * Supports page jumping, ellipsis truncation, items-per-page summaries, and theme variants across portals.
  */
+
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { cn } from "@/lib/utils/cn";
+import type { PaginationProps } from "./types";
+
+export type { PaginationProps };
+
 export function Pagination({
   currentPage,
   totalPages,

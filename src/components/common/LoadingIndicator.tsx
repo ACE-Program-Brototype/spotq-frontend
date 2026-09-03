@@ -1,48 +1,13 @@
+/**
+ * Universal Loading Indicator Component
+ * Provides spinners, pulsing dots, skeleton loaders, and full-page overlay variants.
+ */
+
 import { Loader2 } from "lucide-react";
-import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils/cn";
+import type { LoadingIndicatorProps } from "./types";
 
-export interface LoadingIndicatorProps extends HTMLAttributes<HTMLDivElement> {
-  /**
-   * Visual variant
-   * - 'spinner': Circular animated icon
-   * - 'dots': Pulsing dots loader
-   * - 'skeleton': Generic pulsing placeholder block
-   * - 'card-skeleton': Preset card loading skeleton
-   * - 'table-skeleton': Preset table rows loading skeleton
-   */
-  variant?: "spinner" | "dots" | "skeleton" | "card-skeleton" | "table-skeleton";
-
-  /**
-   * Theme:
-   * - 'brand': SpotQ Orange (#ff6b00) - For Customers & Restaurant portals
-   * - 'admin': Navy Blue (#1e3a5f) - For Admin console
-   * - 'primary': Default foreground color
-   * - 'muted': Subtle gray
-   * - 'white': White for dark overlays/buttons
-   */
-  theme?: "brand" | "admin" | "primary" | "muted" | "white";
-
-  /**
-   * Size of the indicator: 'sm' | 'md' | 'lg' | 'xl'
-   */
-  size?: "sm" | "md" | "lg" | "xl";
-
-  /**
-   * Optional loading message displayed below/beside the indicator
-   */
-  text?: string;
-
-  /**
-   * When true, renders a full-screen or full-container backdrop overlay
-   */
-  fullPage?: boolean;
-
-  /**
-   * When true, centers the loader inside its parent container with padding
-   */
-  center?: boolean;
-}
+export type { LoadingIndicatorProps };
 
 const sizeClasses = {
   sm: "size-4 text-xs",
@@ -59,9 +24,6 @@ const spinnerColorClasses = {
   white: "text-white",
 };
 
-/**
- * Universal Loading component for Admin, Restaurant, Customer, and Staff portals
- */
 export function LoadingIndicator({
   variant = "spinner",
   theme = "brand",
@@ -193,16 +155,10 @@ export function LoadingIndicator({
   return wrapper;
 }
 
-/**
- * Convenient full-screen page loader shortcut
- */
 export function PageLoader({ text = "Loading..." }: { text?: string }) {
   return <LoadingIndicator fullPage text={text} size="lg" theme="brand" />;
 }
 
-/**
- * Convenient inline spinner shortcut
- */
 export function Spinner({
   size = "sm",
   theme = "brand",
