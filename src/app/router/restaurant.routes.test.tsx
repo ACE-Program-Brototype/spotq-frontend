@@ -17,7 +17,6 @@ describe("restaurantRoutes structure and protection", () => {
     expect(restaurantRoutes[0].path).toBe("terms");
     expect(restaurantRoutes[1].path).toBe("terms-and-conditions");
 
-    // Unauthenticated group (index 2)
     const authGroup = restaurantRoutes[2];
     expect(authGroup.children?.map((child) => child.path)).toEqual([
       "email/verification",
@@ -25,7 +24,6 @@ describe("restaurantRoutes structure and protection", () => {
       "onboarding",
     ]);
 
-    // Protected group (index 3)
     const protectedGroup = restaurantRoutes[3];
     expect(protectedGroup).toBeDefined();
   });
@@ -83,7 +81,6 @@ describe("restaurantRoutes structure and protection", () => {
       </MemoryRouter>,
     );
 
-    // Unauthenticated user attempting to access /restaurant/dashboard should be redirected to /restaurant/email/verification
     expect(screen.getByText("Restaurant Email Verification")).toBeInTheDocument();
   });
 

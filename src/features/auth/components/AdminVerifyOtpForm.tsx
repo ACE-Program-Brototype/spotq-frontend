@@ -56,7 +56,6 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
-      {/* Security Code Field */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <Label
@@ -98,7 +97,6 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
         )}
       </div>
 
-      {/* Verify Button */}
       <Button
         type="submit"
         size="lg"
@@ -116,7 +114,6 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
         )}
       </Button>
 
-      {/* Resend Code */}
       <div className="flex items-center justify-center text-xs text-muted-foreground">
         <span>Didn{"'"}t receive code? </span>
         {seconds > 0 ? (
@@ -133,7 +130,6 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
         )}
       </div>
 
-      {/* Back link */}
       <div className="pt-2 text-center">
         <Link
           to="/admin/forgot-password"

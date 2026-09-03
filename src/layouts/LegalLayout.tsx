@@ -44,7 +44,6 @@ export const LegalPageLayout = ({
 
   return (
     <div className="min-h-screen bg-[#fffdfb] text-neutral-900 flex flex-col justify-between">
-      {/* Top Navbar: Customer Navbar for customers, Clean Partner Header for restaurants */}
       {isCustomer ? (
         <CustomerNavbar />
       ) : (
@@ -73,9 +72,7 @@ export const LegalPageLayout = ({
         </header>
       )}
 
-      {/* Main Content */}
       <main className="flex-1 w-full">
-        {/* Hero Section */}
         <section className="border-b border-[#f3e6de] bg-white">
           <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
             <div className="flex items-center justify-between gap-4 mb-4">
@@ -111,7 +108,6 @@ export const LegalPageLayout = ({
           </div>
         </section>
 
-        {/* Content Section */}
         <section className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <article className="rounded-2xl border border-[#f3e6de] bg-white p-6 shadow-2xs sm:p-10">
             <div
@@ -134,7 +130,6 @@ export const LegalPageLayout = ({
         </section>
       </main>
 
-      {/* Footer: Customer Footer only for customers, clean minimal footer for restaurant partners */}
       {isCustomer ? (
         <CustomerFooter />
       ) : (

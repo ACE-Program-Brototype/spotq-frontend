@@ -66,7 +66,7 @@ describe("useAuthStore State and Persistence", () => {
   });
 
   it("automatically expires session if savedAt is older than 30 days", () => {
-    const expiredTime = Date.now() - 31 * 24 * 60 * 60 * 1000; // 31 days ago
+    const expiredTime = Date.now() - 31 * 24 * 60 * 60 * 1000;
     const expiredState = {
       state: {
         user: mockUser,

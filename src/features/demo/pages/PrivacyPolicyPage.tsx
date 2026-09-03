@@ -7,7 +7,6 @@ const PrivacyPolicyPage = () => {
       description="This Privacy Policy explains how SpotQ collects, uses, stores, and protects information when you use our services."
       lastUpdated="August 24, 2026"
     >
-      {/* Introduction */}
       <div className="space-y-4">
         <p>
           At SpotQ, we respect your privacy and are committed to protecting your personal
@@ -16,11 +15,9 @@ const PrivacyPolicyPage = () => {
         </p>
       </div>
 
-      {/* 1. Information We Collect */}
       <section className="mt-12">
         <h2>1. Information We Collect</h2>
 
-        {/* Account Information */}
         <div className="mt-6">
           <h3>Account Information</h3>
 
@@ -30,7 +27,6 @@ const PrivacyPolicyPage = () => {
           </p>
         </div>
 
-        {/* Restaurant and Waitlist Information */}
         <div className="mt-7">
           <h3>Restaurant and Waitlist Information</h3>
 
@@ -41,7 +37,6 @@ const PrivacyPolicyPage = () => {
           </p>
         </div>
 
-        {/* Device and Technical Information */}
         <div className="mt-7">
           <h3>Device and Technical Information</h3>
 
@@ -52,7 +47,6 @@ const PrivacyPolicyPage = () => {
           </p>
         </div>
 
-        {/* Support Information */}
         <div className="mt-7">
           <h3>Information You Provide to Support</h3>
 
@@ -63,7 +57,6 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      {/* 2. How We Use Information */}
       <section className="mt-12">
         <h2>2. How We Use Information</h2>
 
@@ -80,7 +73,6 @@ const PrivacyPolicyPage = () => {
         </ul>
       </section>
 
-      {/* 3. Location Information */}
       <section className="mt-12">
         <h2>3. Location Information</h2>
 
@@ -97,7 +89,6 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      {/* 4. Cookies */}
       <section className="mt-12">
         <h2>4. Cookies and Similar Technologies</h2>
 
@@ -114,7 +105,6 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      {/* 5. Sharing Information */}
       <section className="mt-12">
         <h2>5. Sharing Information</h2>
 
@@ -142,7 +132,6 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      {/* 6. Data Security */}
       <section className="mt-12">
         <h2>6. Data Security</h2>
 
@@ -156,7 +145,6 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      {/* 7. Data Retention */}
       <section className="mt-12">
         <h2>7. Data Retention</h2>
 
@@ -167,7 +155,6 @@ const PrivacyPolicyPage = () => {
         </p>
       </section>
 
-      {/* 8. Privacy Rights */}
       <section className="mt-12">
         <h2>8. Your Privacy Rights</h2>
 
@@ -182,7 +169,6 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      {/* 9. Children's Privacy */}
       <section className="mt-12">
         <h2>9. Children's Privacy</h2>
 
@@ -193,7 +179,6 @@ const PrivacyPolicyPage = () => {
         </p>
       </section>
 
-      {/* 10. Third-Party Services */}
       <section className="mt-12">
         <h2>10. Third-Party Services</h2>
 
@@ -204,7 +189,6 @@ const PrivacyPolicyPage = () => {
         </p>
       </section>
 
-      {/* 11. Changes to Privacy Policy */}
       <section className="mt-12">
         <h2>11. Changes to This Privacy Policy</h2>
 
@@ -221,7 +205,6 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      {/* 12. Contact Us */}
       <section className="mt-12">
         <h2>12. Contact Us</h2>
 
@@ -238,7 +221,6 @@ const PrivacyPolicyPage = () => {
         </p>
       </section>
 
-      {/* Important Notice */}
       <div className="mt-14 rounded-xl border border-spotq-orange/20 bg-spotq-orange/5 p-5 sm:p-6">
         <p className="!m-0 text-sm !leading-6 !text-gray-600">
           <strong className="text-gray-800">Important:</strong> This Privacy Policy is a

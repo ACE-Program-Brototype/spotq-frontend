@@ -10,12 +10,10 @@ function AdminLayout() {
 
   return (
     <div className="flex min-h-svh bg-[#f8fafc] text-foreground">
-      {/* Desktop Sidebar */}
       <div className="hidden lg:block lg:shrink-0 sticky top-0 h-svh">
         <AdminSidebar />
       </div>
 
-      {/* Mobile Drawer Backdrop and Sidebar */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <button
@@ -41,9 +39,7 @@ function AdminLayout() {
         </div>
       )}
 
-      {/* Main Container */}
       <div className="flex flex-1 flex-col min-w-0">
-        {/* Mobile-only toggle header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-200/80 bg-white lg:hidden">
           <Button
             variant="ghost"
@@ -57,7 +53,6 @@ function AdminLayout() {
           <div className="size-8" />
         </div>
 
-        {/* Child Pages Content */}
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Outlet />
         </main>

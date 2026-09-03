@@ -74,10 +74,8 @@ export function Pagination({
   className,
   ...props
 }: PaginationProps) {
-  // Normalize pageSize
   const effectivePageSize = Math.max(1, pageSize);
 
-  // Calculate total pages safely
   const effectiveTotalPages =
     typeof totalPages === "number"
       ? totalPages
@@ -88,13 +86,11 @@ export function Pagination({
   const safeTotal = Math.max(1, effectiveTotalPages || 1);
   const safeCurrent = Math.max(1, Math.min(currentPage || 1, safeTotal));
 
-  // Active theme
   const activeTheme = theme;
 
-  // Generate page numbers array with ellipsis
   const getPageNumbers = (): (number | "dots")[] => {
-    const totalNumbers = siblingCount * 2 + 3; // current + siblings + first + last
-    const totalBlocks = totalNumbers + 2; // + 2 ellipsis
+    const totalNumbers = siblingCount * 2 + 3;
+    const totalBlocks = totalNumbers + 2;
 
     if (safeTotal <= totalBlocks) {
       return Array.from({ length: safeTotal }, (_, i) => i + 1);
@@ -123,7 +119,6 @@ export function Pagination({
 
   const pages = getPageNumbers();
 
-  // Active theme styles
   const activeStyles = {
     admin: "bg-[#0052cc] text-white hover:bg-[#0052cc]/90 shadow-sm",
     restaurant: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
@@ -132,7 +127,6 @@ export function Pagination({
     dark: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
   }[activeTheme];
 
-  // Entry range text calculation
   let entriesText: string | null = null;
   if (typeof totalItems === "number") {
     if (totalItems === 0) {
@@ -156,7 +150,6 @@ export function Pagination({
       )}
       {...props}
     >
-      {/* Entries Info on Left */}
       <div className="text-xs text-muted-foreground">
         {entriesText ? (
           <span>{entriesText}</span>
@@ -168,7 +161,6 @@ export function Pagination({
         )}
       </div>
 
-      {/* Pagination Controls on Right */}
       <div className="flex items-center gap-1">
         {showFirstLast && (
           <button
@@ -182,7 +174,6 @@ export function Pagination({
           </button>
         )}
 
-        {/* Previous button */}
         <button
           type="button"
           onClick={() => onPageChange(safeCurrent - 1)}
@@ -193,7 +184,6 @@ export function Pagination({
           <ChevronLeft className="size-4" />
         </button>
 
-        {/* Page numbers */}
         {pages.map((p, idx) => {
           if (p === "dots") {
             return (
@@ -230,7 +220,6 @@ export function Pagination({
           );
         })}
 
-        {/* Next button */}
         <button
           type="button"
           onClick={() => onPageChange(safeCurrent + 1)}

@@ -82,7 +82,6 @@ export default function OtpVerification({
       return;
     }
 
-    // Handle paste-into-single-box or fast typing that yields multiple chars.
     const chars = value.split("");
     setDigits((prev) => {
       const next = [...prev];
@@ -218,7 +217,6 @@ export default function OtpVerification({
 
     try {
       await resendOtp(email);
-      // Only reset cooldown/attempts/boxes once the backend confirms success.
       startTimer(RESEND_COOLDOWN_SECONDS);
       setAttemptsExhausted(false);
       setDigits(Array(OTP_LENGTH).fill(""));
@@ -227,7 +225,6 @@ export default function OtpVerification({
       setApiError(
         err instanceof Error ? err.message : "Couldn't resend the code. Please try again.",
       );
-      // Do not reset the timer — backend didn't confirm a new OTP was sent.
     }
   }, [canResend, email, focusInput, resendOtp, startTimer]);
 
@@ -242,13 +239,11 @@ export default function OtpVerification({
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-neutral-900">
-      {/* Background hero image */}
       <div className="absolute inset-0">
         <img src={restaurantOtpVerificationBg} alt="" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* Back arrow */}
       <button
         type="button"
         onClick={handleBack}
@@ -269,10 +264,8 @@ export default function OtpVerification({
         </svg>
       </button>
 
-      {/* Content */}
       <div className="relative flex min-h-screen flex-col justify-center px-6 py-16 sm:px-12 lg:px-24">
         <div className="flex w-full flex-col items-start justify-between gap-12 lg:flex-row lg:items-center">
-          {/* Left: brand lockup + headline */}
           <div className="max-w-xl text-white">
             <div className="mb-6 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
@@ -290,7 +283,6 @@ export default function OtpVerification({
             </h1>
           </div>
 
-          {/* Right: Enter OTP card */}
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl sm:p-8">
             <h2 className="text-2xl font-bold text-neutral-900">Enter OTP</h2>
 
@@ -298,7 +290,6 @@ export default function OtpVerification({
               Enter OTP sent on email <span className="font-medium text-neutral-800">{email}</span>
             </p>
 
-            {/* OTP boxes */}
             <div className="mt-5 flex justify-between gap-2" onPaste={handlePaste}>
               {otpSlotIds.map((slotId) => {
                 const index = Number(slotId.replace("otp-digit-", "")) - 1;
@@ -344,7 +335,6 @@ export default function OtpVerification({
               </div>
             )}
 
-            {/* Resend */}
             <div className="mt-5 text-center">
               {cooldown > 0 ? (
                 <p className="text-sm text-neutral-500">Resend code in {cooldown}s</p>

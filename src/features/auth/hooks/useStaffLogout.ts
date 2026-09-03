@@ -16,7 +16,6 @@ export const useStaffLogout = () => {
     try {
       const response = await staffLogoutMutation.mutateAsync();
 
-      // Always clear local authentication after successful logout
       clearAuth();
 
       toast.success(response.message || AUTH_MESSAGES.LOGOUT_SUCCESS);
@@ -25,7 +24,6 @@ export const useStaffLogout = () => {
         replace: true,
       });
     } catch (error: unknown) {
-      // Even if backend logout fails, remove the local session
       clearAuth();
 
       const message = error instanceof Error ? error.message : AUTH_MESSAGES.LOGOUT_FAILED;

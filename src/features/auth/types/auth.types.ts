@@ -60,7 +60,6 @@ export type AuthResult = {
   };
 };
 
-// Aliases for compatibility
 export type LoginResult = AuthResult;
 export type GoogleLoginResult = AuthResult;
 
@@ -94,7 +93,6 @@ export type ResendOtpInput = {
   email: string;
 };
 
-// Restaurant Auth Types
 export type EmailVerificationProps = {
   onCodeSent?: (email: string) => void;
   requestOtp?: (email: string) => Promise<void>;

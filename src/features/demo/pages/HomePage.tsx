@@ -114,7 +114,6 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
-      {/* Session / Authentication Demo Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-neutral-200/80 bg-neutral-50/80 p-4 sm:p-5 shadow-2xs">
         <div className="flex items-center gap-3">
           <Avatar className="size-10 bg-[#ff6b00] text-white font-bold border border-neutral-200">
@@ -137,7 +136,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Action Buttons: Sign Out or Sign In */}
         <div className="flex items-center gap-2 self-end sm:self-center">
           {user ? (
             <ConfirmDialog
@@ -181,13 +179,11 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Title & Filter Pills Header */}
       <div className="space-y-4">
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
           Find your next favorite restaurant
         </h1>
 
-        {/* Categories Carousel / Badges */}
         <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat;
@@ -210,14 +206,12 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* 4-Column Restaurant Grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {sampleRestaurants.map((res) => (
           <div
             key={res.id}
             className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all hover:shadow-md hover:border-neutral-300"
           >
-            {/* Card Image */}
             <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
               <img
                 src={res.image}
@@ -227,7 +221,6 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Card Content */}
             <div className="flex flex-1 flex-col justify-between p-4">
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -239,7 +232,6 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* View Details Link */}
               <div className="pt-4">
                 <Link
                   to={`/restaurant/${res.id}`}
@@ -254,7 +246,6 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Pagination component matching mockup */}
       <div className="pt-4">
         <Pagination
           totalItems={64}

@@ -38,7 +38,6 @@ export function AdminResetPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
-      {/* New Key field */}
       <div className="flex flex-col gap-2">
         <Label
           htmlFor="admin-new-password"
@@ -85,7 +84,6 @@ export function AdminResetPasswordForm() {
         )}
       </div>
 
-      {/* Confirm New Key field */}
       <div className="flex flex-col gap-2">
         <Label
           htmlFor="admin-confirm-password"
@@ -132,7 +130,6 @@ export function AdminResetPasswordForm() {
         )}
       </div>
 
-      {/* Submit button */}
       <Button
         type="submit"
         size="lg"
@@ -150,7 +147,6 @@ export function AdminResetPasswordForm() {
         )}
       </Button>
 
-      {/* Back to Sign In */}
       <div className="pt-2 text-center">
         <Link
           to="/admin/login"

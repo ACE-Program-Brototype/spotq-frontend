@@ -83,7 +83,6 @@ function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Page header */}
       <div>
         <div className="flex items-center gap-2.5">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
@@ -96,7 +95,6 @@ function AdminDashboardPage() {
         </p>
       </div>
 
-      {/* Stat cards (skeleton) */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map(({ label, icon: Icon, description }) => (
           <Card key={label} className="border-slate-200/80 shadow-xs">
@@ -112,7 +110,6 @@ function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* Restaurants Table with Reusable Pagination & LoadingIndicator */}
       <Card className="border-slate-200/80 shadow-xs">
         <CardHeader className="flex flex-row items-center justify-between pb-4">
           <div>
@@ -170,7 +167,6 @@ function AdminDashboardPage() {
             </div>
           )}
 
-          {/* Reusable Pagination Component */}
           <div className="border-t border-slate-200/80">
             <Pagination
               currentPage={currentPage}
@@ -184,9 +180,7 @@ function AdminDashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Analytics Overview & Quick Actions */}
       <div className="grid gap-4 lg:grid-cols-3">
-        {/* Main area */}
         <Card className="lg:col-span-2 border-slate-200/80 shadow-xs">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -212,7 +206,6 @@ function AdminDashboardPage() {
                 Real-time order tracking, revenue charts, and user growth metrics will be displayed
                 here.
               </p>
-              {/* Skeleton chart placeholder */}
               <div className="mt-6 flex w-full max-w-sm items-end justify-center gap-2">
                 {[40, 65, 45, 80, 55, 70, 50].map((h, i) => (
                   <Skeleton
@@ -227,7 +220,6 @@ function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Side panel */}
         <div className="flex flex-col gap-4">
           <Card className="border-slate-200/80 shadow-xs">
             <CardHeader>

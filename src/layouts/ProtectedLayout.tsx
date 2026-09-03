@@ -24,7 +24,6 @@ export default function ProtectedLayout({
 
   const roleHome = getRoleHome(user?.role);
 
-  // Role domain isolation for RESTAURANT_ADMIN (cannot access /admin, /staff, or customer / without logout)
   if (user?.role === "RESTAURANT_ADMIN" && !location.pathname.startsWith("/restaurant")) {
     if (location.pathname === roleHome) {
       return null;
@@ -32,7 +31,6 @@ export default function ProtectedLayout({
     return <Navigate to={roleHome} replace />;
   }
 
-  // Role domain isolation for ADMIN
   if (user?.role === "ADMIN" && !location.pathname.startsWith("/admin")) {
     if (location.pathname === roleHome) {
       return null;
@@ -40,7 +38,6 @@ export default function ProtectedLayout({
     return <Navigate to={roleHome} replace />;
   }
 
-  // Role domain isolation for RESTAURANT_STAFF
   if (
     user?.role === "RESTAURANT_STAFF" &&
     !location.pathname.startsWith("/staff") &&
@@ -52,7 +49,6 @@ export default function ProtectedLayout({
     return <Navigate to={roleHome} replace />;
   }
 
-  // Check explicit allowedRoles authorization requirement
   if (allowedRoles && allowedRoles.length > 0 && user?.role) {
     if (!allowedRoles.includes(user.role)) {
       if (location.pathname === roleHome) {

@@ -11,12 +11,10 @@ export function RestaurantAdminLayout() {
 
   return (
     <div className="flex min-h-svh w-full max-w-full overflow-x-hidden bg-[#fffdfb] text-neutral-900">
-      {/* Desktop Sidebar (hidden on mobile) */}
       <div className="hidden lg:block lg:shrink-0 sticky top-0 h-svh">
         <RestaurantAdminSidebar />
       </div>
 
-      {/* Mobile Drawer */}
       {mobileDrawerOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <button
@@ -45,15 +43,12 @@ export function RestaurantAdminLayout() {
         </div>
       )}
 
-      {/* Main Content Area */}
       <div className="flex flex-1 flex-col min-w-0 w-full max-w-full overflow-x-hidden">
-        {/* Top Restaurant Admin Navbar */}
         <RestaurantAdminNavbar
           restaurantName="Basil Mandi"
           onToggleSidebar={() => setMobileDrawerOpen(true)}
         />
 
-        {/* Content Outlet */}
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 box-border">
           <Outlet />
         </main>
