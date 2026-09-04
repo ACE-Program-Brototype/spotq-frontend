@@ -45,7 +45,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-      {/* Full Name */}
       <div className="space-y-2">
         <Label htmlFor="fullName" error={!!errors.fullName}>
           Full Name
@@ -73,7 +72,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
         )}
       </div>
 
-      {/* Email */}
       <div className="space-y-2">
         <Label htmlFor="email" error={!!errors.email}>
           Email Address
@@ -104,19 +102,16 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
         )}
       </div>
 
-      {/* Phone Number */}
       <div className="space-y-2">
         <Label htmlFor="phoneNumber" error={!!errors.phoneNumber}>
           Phone Number
         </Label>
 
         <div className="flex gap-2">
-          {/* Fixed country code */}
           <div className="flex h-12 shrink-0 items-center rounded-xl border border-spotq-border bg-spotq-cream px-3 text-sm font-medium text-gray-600">
             +91
           </div>
 
-          {/* Phone number */}
           <div className="relative flex-1 flex items-center">
             <Phone className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
             <Input
@@ -146,7 +141,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
         )}
       </div>
 
-      {/* Password */}
       <div className="space-y-2">
         <Label htmlFor="password" error={!!errors.password}>
           Password
@@ -182,7 +176,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
         )}
       </div>
 
-      {/* Confirm Password */}
       <div className="space-y-2">
         <Label htmlFor="confirmPassword" error={!!errors.confirmPassword}>
           Confirm Password
@@ -211,7 +204,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           </button>
         </div>
 
-        {/* Password match indicator */}
         {confirmPassword.length > 0 && passwordsMatch && !errors.confirmPassword && (
           <div className="flex items-center gap-1.5 text-xs text-green-600">
             <Check className="size-3.5" />
@@ -219,7 +211,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           </div>
         )}
 
-        {/* Validation error */}
         {errors.confirmPassword && (
           <p className="text-xs text-destructive mt-1.5" role="alert">
             {errors.confirmPassword.message}
@@ -227,7 +218,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
         )}
       </div>
 
-      {/* Terms & Conditions */}
       <div className="flex items-start gap-3">
         <input
           id="termsAccepted"
@@ -261,7 +251,6 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
         <p className="text-sm text-red-500">{errors.termsAccepted.message}</p>
       )}
 
-      {/* Submit Button */}
       <Button
         type="submit"
         size="lg"

@@ -28,19 +28,16 @@ describe("AdminResetPasswordPage", () => {
       </QueryClientProvider>,
     );
 
-    // Headline
     expect(
       screen.getByRole("heading", {
         name: /set your new administrative key\./i,
       }),
     ).toBeInTheDocument();
 
-    // Inputs & Button
     expect(screen.getByLabelText(/^new key$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^confirm key$/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /update key/i })).toBeInTheDocument();
 
-    // Back to Sign In link
     const backLink = screen.getByRole("link", { name: /back to sign in/i });
     expect(backLink).toBeInTheDocument();
     expect(backLink).toHaveAttribute("href", "/admin/login");

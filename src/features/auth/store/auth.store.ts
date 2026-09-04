@@ -30,9 +30,7 @@ const customStorage = {
           return null;
         }
       }
-    } catch {
-      // Allow parse fallback
-    }
+    } catch {}
 
     return dataStr;
   },

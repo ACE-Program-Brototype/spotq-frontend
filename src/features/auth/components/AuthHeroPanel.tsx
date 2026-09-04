@@ -37,7 +37,6 @@ export const AuthHeroPanel = ({
       );
     }
 
-    // Default "user"
     return (
       <div className="w-full aspect-[4/3] rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl relative group/card transition-all duration-300 hover:scale-[1.02]">
         <div className="size-24 rounded-full bg-white/20 flex items-center justify-center border border-white/30 animate-pulse">
@@ -49,7 +48,6 @@ export const AuthHeroPanel = ({
 
   return (
     <div className="hidden md:flex md:w-1/2 bg-spotq-orange text-white p-12 flex-col justify-between relative overflow-hidden select-none">
-      {/* Brand Logo & Name Header */}
       <div className="flex items-center gap-3">
         <div className="bg-white rounded-xl p-2 shadow-md">
           <img src={spotqLogo} alt="SpotQ Logo" className="h-6 w-auto" />
@@ -57,7 +55,6 @@ export const AuthHeroPanel = ({
         <span className="font-bold text-xl tracking-wide">SpotQ</span>
       </div>
 
-      {/* Center content and graphics */}
       <div className="space-y-8 max-w-md my-auto">
         {graphicPosition === "top" && (
           <div className="flex justify-start">{renderIconGraphic()}</div>
@@ -73,7 +70,6 @@ export const AuthHeroPanel = ({
         {graphicPosition === "bottom" && renderIconGraphic()}
       </div>
 
-      {/* Footer info */}
       <div className="text-xs text-white/60">
         © {new Date().getFullYear()} SpotQ Platform. All rights reserved.
       </div>

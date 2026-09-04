@@ -50,12 +50,9 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen w-full select-none bg-background text-foreground antialiased font-sans">
-      {/* LEFT PANEL: Branding & Hero */}
       <AuthHeroPanel />
 
-      {/* RIGHT PANEL: Form Area */}
       <div className="w-full md:w-1/2 flex flex-col justify-between bg-white relative">
-        {/* Mobile top bar navigation header */}
         <header className="flex items-center px-4 h-14 border-b border-gray-100 md:hidden select-none">
           <button
             type="button"
@@ -68,14 +65,11 @@ export default function LoginPage() {
           <h2 className="text-lg font-semibold text-foreground">Login</h2>
         </header>
 
-        {/* Content body container */}
         <div className="w-full max-w-md mx-auto px-6 py-12 md:py-16 my-auto flex flex-col justify-center gap-8">
-          {/* Mobile brand logo block */}
           <div className="flex justify-center md:hidden">
             <img src={spotqLogo} alt="SpotQ Logo" className="h-12 w-auto object-contain" />
           </div>
 
-          {/* Main titles */}
           <div className="text-center md:text-left space-y-1.5">
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
               Login to your account
@@ -86,16 +80,12 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Form */}
           <LoginForm onSubmit={onSubmit} isLoading={isLoading} />
 
-          {/* Social login separator */}
           <AuthDivider />
 
-          {/* Google Sign In Button */}
           <GoogleLoginButton onSuccess={handleGoogleSuccess} disabled={isLoading} />
 
-          {/* Footer link */}
           <p className="text-center text-sm text-gray-500">
             Don't have an account?{" "}
             <button
@@ -109,7 +99,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Mobile footer spacing */}
         <div className="h-6 md:hidden" />
       </div>
     </div>
