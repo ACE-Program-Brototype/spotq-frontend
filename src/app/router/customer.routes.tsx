@@ -24,10 +24,6 @@ export const customerRoutes: RouteObject[] = [
         path: "/about",
         Component: AboutPage,
       },
-      {
-        path: "/about-us",
-        Component: AboutPage,
-      },
     ],
   },
   {
