@@ -66,7 +66,6 @@ export const AUTH_ENDPOINTS = {
   STAFF_VERIFY_OTP: "auth/restaurants/staff/forgot-password/verify",
   STAFF_RESEND_OTP: "auth/restaurants/staff/forgot-password/resend-otp",
   STAFF_RESET_PASSWORD: "auth/restaurants/staff/reset-password",
-
   STAFF_INVITATION_VALIDATE: "auth/restaurants/staff/invitations/validate",
   STAFF_INVITATION_ACCEPT: "auth/restaurants/staff/invitations/accept",
 } as const;
