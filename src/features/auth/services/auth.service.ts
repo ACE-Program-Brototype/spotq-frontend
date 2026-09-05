@@ -1,6 +1,7 @@
 import {
   ADMIN_AUTH_ENDPOINTS,
   AUTH_ENDPOINTS,
+  RESTAURANT_AUTH_ENDPOINTS,
   STAFF_AUTH_ENDPOINTS,
 } from "@/features/auth/constants/auth.constants";
 import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
@@ -106,18 +107,18 @@ export async function resendOtp(data: { email: string }): Promise<ApiResponse> {
 }
 
 export async function sendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_SEND_OTP, { json: data }).json<ApiResponse>();
+  return apiClient.post(RESTAURANT_AUTH_ENDPOINTS.SEND_OTP, { json: data }).json<ApiResponse>();
 }
 
 export async function resendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP, { json: data }).json<ApiResponse>();
+  return apiClient.post(RESTAURANT_AUTH_ENDPOINTS.RESEND_OTP, { json: data }).json<ApiResponse>();
 }
 
 export async function verifyRestaurantEmailOtp(data: {
   email: string;
   otp: string;
 }): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP, { json: data }).json<ApiResponse>();
+  return apiClient.post(RESTAURANT_AUTH_ENDPOINTS.VERIFY_OTP, { json: data }).json<ApiResponse>();
 }
 
 export async function resetPassword(data: { password: string }): Promise<ApiResponse> {
