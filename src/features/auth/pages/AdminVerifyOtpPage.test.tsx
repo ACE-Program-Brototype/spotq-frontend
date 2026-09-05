@@ -25,18 +25,15 @@ describe("AdminVerifyOtpPage", () => {
       </QueryClientProvider>,
     );
 
-    // Headline
     expect(
       screen.getByRole("heading", {
         name: /security first\./i,
       }),
     ).toBeInTheDocument();
 
-    // Security code label & Verify button
     expect(screen.getByText(/security code/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /verify code/i })).toBeInTheDocument();
 
-    // Back link
     const backLink = screen.getByRole("link", { name: /back to forgot key/i });
     expect(backLink).toBeInTheDocument();
     expect(backLink).toHaveAttribute("href", "/admin/forgot-password");

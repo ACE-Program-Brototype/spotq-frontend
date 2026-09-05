@@ -37,7 +37,6 @@ export function StaffResetPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4 text-left">
-      {/* New Password */}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="staff-new-password" className="text-xs font-semibold text-gray-700">
           New Password
@@ -79,7 +78,6 @@ export function StaffResetPasswordForm() {
         )}
       </div>
 
-      {/* Confirm New Password */}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="staff-confirm-password" className="text-xs font-semibold text-gray-700">
           Confirm New Password
@@ -118,7 +116,6 @@ export function StaffResetPasswordForm() {
         )}
       </div>
 
-      {/* Submit Button */}
       <Button
         type="submit"
         disabled={isPending}

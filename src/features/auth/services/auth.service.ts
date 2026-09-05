@@ -1,6 +1,7 @@
 import {
   ADMIN_AUTH_ENDPOINTS,
   AUTH_ENDPOINTS,
+  RESTAURANT_AUTH_ENDPOINTS,
   STAFF_AUTH_ENDPOINTS,
 } from "@/features/auth/constants/auth.constants";
 import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
@@ -17,6 +18,7 @@ import type {
   User,
   VerifyEmailResult,
   VerifyOtpInput,
+  VerifyOtpResponse,
 } from "@/features/auth/types/auth.types";
 import { mapApiAuthResponseToAuthResult } from "@/features/auth/utils/auth.mapper";
 import { apiClient } from "@/lib/api/client";
@@ -106,18 +108,40 @@ export async function resendOtp(data: { email: string }): Promise<ApiResponse> {
 }
 
 export async function sendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_SEND_OTP, { json: data }).json<ApiResponse>();
+  return apiClient.post(RESTAURANT_AUTH_ENDPOINTS.SEND_OTP, { json: data }).json<ApiResponse>();
 }
 
 export async function resendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP, { json: data }).json<ApiResponse>();
+  return apiClient.post(RESTAURANT_AUTH_ENDPOINTS.RESEND_OTP, { json: data }).json<ApiResponse>();
 }
 
 export async function verifyRestaurantEmailOtp(data: {
   email: string;
   otp: string;
-}): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP, { json: data }).json<ApiResponse>();
+}): Promise<ApiResponse<VerifyOtpResponse>> {
+  const res = await apiClient
+    .post(RESTAURANT_AUTH_ENDPOINTS.VERIFY_OTP, { json: data })
+    .json<
+      ApiResponse<
+        VerifyOtpResponse & {
+          accessToken?: string;
+        }
+      >
+    >();
+
+  return {
+    success: res.success,
+    statusCode: res.statusCode,
+    message: res.message,
+    data: res.data
+      ? {
+          ...res.data,
+          ...(res.data.nextStep === "DASHBOARD" && res.data.accessToken
+            ? { accessToken: res.data.accessToken }
+            : {}),
+        }
+      : undefined,
+  };
 }
 
 export async function resetPassword(data: { password: string }): Promise<ApiResponse> {
@@ -199,17 +223,7 @@ export const authService = {
       .post(AUTH_ENDPOINTS.REGISTER, {
         json: input,
       })
-      .json<ApiAuthResponse>();
-
-    return mapApiAuthResponseToAuthResult(rawResponse);
-  },
-
-  verifyOtp: async (input: VerifyOtpInput): Promise<VerifyEmailResult> => {
-    const rawResponse = await apiClient
-      .post(AUTH_ENDPOINTS.VERIFY_OTP, {
-        json: input,
-      })
-      .json<VerifyEmailResult>();
+      .json<ApiResponse>();
 
     return {
       success: rawResponse.success,
@@ -218,12 +232,22 @@ export const authService = {
     };
   },
 
-  resendEmailOtp: async (input: ResendOtpInput): Promise<VerifyEmailResult> => {
+  verifyOtp: async (input: VerifyOtpInput): Promise<VerifyEmailResult> => {
+    const rawResponse = await apiClient
+      .post(AUTH_ENDPOINTS.VERIFY_OTP, {
+        json: input,
+      })
+      .json<ApiAuthResponse>();
+
+    return mapApiAuthResponseToAuthResult(rawResponse);
+  },
+
+  resendEmailOtp: async (input: ResendOtpInput): Promise<ApiResponse> => {
     const rawResponse = await apiClient
       .post(AUTH_ENDPOINTS.RESEND_EMAIL_OTP, {
         json: input,
       })
-      .json<VerifyEmailResult>();
+      .json<ApiResponse>();
 
     return {
       success: rawResponse.success,

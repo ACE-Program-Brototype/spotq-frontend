@@ -20,7 +20,6 @@ export const AUTH_MESSAGES = {
   REGISTER_SUCCESS: "Registration successful",
   OTP_RESEND_SUCCESS: "OTP resend successful",
 
-  // Forgot Password / OTP / Reset Password
   OTP_SENT_SUCCESS: "OTP sent successfully to your email.",
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
@@ -28,41 +27,37 @@ export const AUTH_MESSAGES = {
 } as const;
 
 export const AUTH_ENDPOINTS = {
-  // Customer Auth Endpoints
-  LOGIN: "users/login",
-  GOOGLE_LOGIN: "users/oauth/google",
-  LOGOUT: "users/logout",
-  REFRESH_TOKEN: "users/refresh-token",
-  REGISTER: "users/register",
-  VERIFY_OTP: "users/verify-email",
-  RESEND_EMAIL_OTP: "users/resend-email-otp",
-  FORGOT_PASSWORD: "users/forgot-password",
-  FORGOT_PASSWORD_VERIFY: "users/forgot-password/verify",
-  FORGOT_PASSWORD_RESEND_OTP: "users/forgot-password/resend-otp",
-  RESET_PASSWORD: "users/reset-password",
+  LOGIN: "auth/users/login",
+  GOOGLE_LOGIN: "auth/users/oauth/google",
+  LOGOUT: "auth/users/logout",
+  REFRESH_TOKEN: "auth/users/refresh-token",
+  REGISTER: "auth/users/register",
+  VERIFY_OTP: "auth/users/verify-otp",
+  RESEND_EMAIL_OTP: "auth/users/resend-email-otp",
+  FORGOT_PASSWORD: "auth/users/forgot-password",
+  FORGOT_PASSWORD_VERIFY: "auth/users/forgot-password/verify",
+  FORGOT_PASSWORD_RESEND_OTP: "auth/users/forgot-password/resend-otp",
+  RESET_PASSWORD: "auth/users/reset-password",
 
-  // Admin Auth Endpoints
-  ADMIN_LOGIN: "admin/auth/login",
-  ADMIN_LOGOUT: "admin/auth/logout",
-  ADMIN_FORGOT_PASSWORD: "admin/auth/forgot-password",
-  ADMIN_VERIFY_OTP: "admin/auth/forgot-password/verify",
-  ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
-  ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
+  ADMIN_LOGIN: "auth/users/admin/login",
+  ADMIN_LOGOUT: "auth/users/admin/logout",
+  ADMIN_FORGOT_PASSWORD: "auth/users/admin/forgot-password",
+  ADMIN_VERIFY_OTP: "auth/users/admin/forgot-password/verify",
+  ADMIN_RESEND_OTP: "auth/users/admin/forgot-password/resend-otp",
+  ADMIN_RESET_PASSWORD: "auth/users/admin/reset-password",
 
-  // Restaurant Auth Endpoints
-  RESTAURANT_SEND_OTP: "restaurants/registration/email-otp",
-  RESTAURANT_RESEND_OTP: "restaurants/registration/resend-email-otp",
-  RESTAURANT_VERIFY_OTP: "restaurants/registration/email-otp/verify",
-  RESTAURANT_ONBOARD: "restaurants/onboard",
+  RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
+  RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
+  RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
+  RESTAURANT_ONBOARD: "auth/restaurants/onboard",
 
-  // Staff Auth Endpoints
-  STAFF_LOGIN: "restaurants/staff/login",
-  STAFF_REFRESH_TOKEN: "restaurants/staff/refresh-token",
-  STAFF_LOGOUT: "restaurants/staff/logout",
-  STAFF_FORGOT_PASSWORD: "restaurants/staff/forgot-password",
-  STAFF_VERIFY_OTP: "restaurants/staff/forgot-password/verify",
-  STAFF_RESEND_OTP: "restaurants/staff/forgot-password/resend-otp",
-  STAFF_RESET_PASSWORD: "restaurants/staff/reset-password",
+  STAFF_LOGIN: "auth/restaurants/staff/login",
+  STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
+  STAFF_LOGOUT: "auth/restaurants/staff/logout",
+  STAFF_FORGOT_PASSWORD: "auth/restaurants/staff/forgot-password",
+  STAFF_VERIFY_OTP: "auth/restaurants/staff/forgot-password/verify",
+  STAFF_RESEND_OTP: "auth/restaurants/staff/forgot-password/resend-otp",
+  STAFF_RESET_PASSWORD: "auth/restaurants/staff/reset-password",
 } as const;
 
 export const ADMIN_AUTH_ENDPOINTS = {
@@ -72,6 +67,13 @@ export const ADMIN_AUTH_ENDPOINTS = {
   VERIFY_OTP: AUTH_ENDPOINTS.ADMIN_VERIFY_OTP,
   RESEND_OTP: AUTH_ENDPOINTS.ADMIN_RESEND_OTP,
   RESET_PASSWORD: AUTH_ENDPOINTS.ADMIN_RESET_PASSWORD,
+} as const;
+
+export const RESTAURANT_AUTH_ENDPOINTS = {
+  SEND_OTP: AUTH_ENDPOINTS.RESTAURANT_SEND_OTP,
+  RESEND_OTP: AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP,
+  VERIFY_OTP: AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP,
+  ONBOARD: AUTH_ENDPOINTS.RESTAURANT_ONBOARD,
 } as const;
 
 export const STAFF_AUTH_ENDPOINTS = {

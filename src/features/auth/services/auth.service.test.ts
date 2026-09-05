@@ -1,6 +1,7 @@
 import {
   ADMIN_AUTH_ENDPOINTS,
   AUTH_ENDPOINTS,
+  RESTAURANT_AUTH_ENDPOINTS,
   STAFF_AUTH_ENDPOINTS,
 } from "@/features/auth/constants/auth.constants";
 import { apiClient } from "@/lib/api/client";
@@ -18,6 +19,7 @@ import {
   staffResendOtp,
   staffResetPassword,
   staffVerifyOtp,
+  verifyRestaurantEmailOtp,
   verifyOtp,
 } from "./auth.service";
 
@@ -235,6 +237,34 @@ describe("auth.service", () => {
         json: { password: "StaffPassword123!" },
       });
       expect(res).toEqual({ success: true, message: "Password reset" });
+    });
+  });
+
+  describe("restaurant registration flow", () => {
+    it("verifyRestaurantEmailOtp preserves the dashboard access token", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          message: "Email verified",
+          data: {
+            nextStep: "DASHBOARD",
+            accessToken: "restaurant-jwt-token",
+          },
+        }),
+      });
+
+      const res = await verifyRestaurantEmailOtp({
+        email: "restaurant@spotq.com",
+        otp: "123456",
+      });
+
+      expect(mockPost).toHaveBeenCalledWith(RESTAURANT_AUTH_ENDPOINTS.VERIFY_OTP, {
+        json: { email: "restaurant@spotq.com", otp: "123456" },
+      });
+      expect(res.data).toEqual({
+        nextStep: "DASHBOARD",
+        accessToken: "restaurant-jwt-token",
+      });
     });
   });
 });
