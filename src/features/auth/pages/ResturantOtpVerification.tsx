@@ -150,17 +150,13 @@ export default function OtpVerification({
       const result = await verifyOtp(email, otp);
       if (result.nextStep === "DASHBOARD") {
         onGoToDashboard?.();
-        const token =
-          (result as unknown as { accessToken?: string; access_token?: string }).accessToken ??
-          (result as unknown as { accessToken?: string; access_token?: string }).access_token ??
-          "";
         useAuthStore.getState().setAuth(
           {
             email,
             role: "RESTAURANT_ADMIN",
             status: "ACTIVE",
           },
-          token,
+          result.accessToken,
         );
         navigate("/restaurant/dashboard", {
           replace: true,

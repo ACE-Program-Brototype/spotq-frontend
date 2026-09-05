@@ -100,6 +100,7 @@ export type EmailVerificationProps = {
 
 export type VerifyOtpSuccessDashboard = {
   nextStep: "DASHBOARD";
+  accessToken: string;
 };
 
 export type VerifyOtpSuccessOnboarding = {
