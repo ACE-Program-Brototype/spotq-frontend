@@ -7,8 +7,7 @@ export const AUTH_MESSAGES = {
   ACCOUNT_BLOCKED: "Your account has been blocked.",
   ACCOUNT_INACTIVE: "Your account is inactive.",
   ACCOUNT_SUSPENDED: "Your account is suspended/inactive.",
-  CONNECTION_ERROR:
-    "Unable to connect. Please check your connection and try again.",
+  CONNECTION_ERROR: "Unable to connect. Please check your connection and try again.",
   GENERIC_ERROR: "Something went wrong. Please try again.",
   UNEXPECTED_ERROR: "An unexpected error occurred. Please try again.",
   LOGIN_FAILED: "Login failed. Please try again.",
@@ -25,7 +24,6 @@ export const AUTH_MESSAGES = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
   PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
-
   STAFF_INVITATION_INVALID: "Invalid or expired invitation token.",
   STAFF_INVITATION_ACCEPT_SUCCESS: "Invitation accepted successfully. Welcome to the team!",
   STAFF_REGISTRATION_SUCCESS: "Registration successful! Welcome to SpotQ.",
@@ -38,38 +36,28 @@ export const AUTH_MESSAGES = {
 
 export const AUTH_ENDPOINTS = {
   LOGIN: "auth/users/login",
-
   GOOGLE_LOGIN: "auth/users/oauth/google",
-
   LOGOUT: "auth/users/logout",
-
   REFRESH_TOKEN: "auth/users/refresh-token",
-
   REGISTER: "auth/users/register",
-
   VERIFY_OTP: "auth/users/verify-otp",
-
   RESEND_EMAIL_OTP: "auth/users/resend-email-otp",
-
   FORGOT_PASSWORD: "auth/users/forgot-password",
-
   FORGOT_PASSWORD_VERIFY: "auth/users/forgot-password/verify",
-
   FORGOT_PASSWORD_RESEND_OTP: "auth/users/forgot-password/resend-otp",
-
   RESET_PASSWORD: "auth/users/reset-password",
 
-  ADMIN_LOGIN: "admin/auth/login",
-  ADMIN_LOGOUT: "admin/auth/logout",
-  ADMIN_FORGOT_PASSWORD: "admin/auth/forgot-password",
-  ADMIN_VERIFY_OTP: "admin/auth/forgot-password/verify",
-  ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
-  ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
+  ADMIN_LOGIN: "auth/admin/login",
+  ADMIN_LOGOUT: "auth/admin/logout",
+  ADMIN_FORGOT_PASSWORD: "auth/admin/forgot-password",
+  ADMIN_VERIFY_OTP: "auth/admin/forgot-password/verify",
+  ADMIN_RESEND_OTP: "auth/admin/forgot-password/resend-otp",
+  ADMIN_RESET_PASSWORD: "auth/admin/reset-password",
 
   RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
-  RESTAURANT_RESEND_OTP: "restaurants/registration/resend-email-otp",
+  RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
   RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
-  RESTAURANT_ONBOARD: "restaurants/onboard",
+  RESTAURANT_ONBOARD: "auth/restaurants/onboard",
 
   STAFF_LOGIN: "auth/restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
