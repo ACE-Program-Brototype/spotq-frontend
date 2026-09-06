@@ -7,8 +7,8 @@ import type { ApiAuthResponse, ApiUser, AuthResult, User } from "../types/auth.t
 
 export const mapApiUserToUser = (apiUser: ApiUser): User => {
   return {
-    id: apiUser.id,
-    fullName: apiUser.full_name,
+    id: apiUser.id || apiUser._id,
+    fullName: apiUser.full_name || apiUser.name,
     email: apiUser.email,
     role: apiUser.role ?? "CUSTOMER",
     phone: apiUser.phone ?? "",
@@ -19,13 +19,18 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => {
 };
 
 export const mapApiAuthResponseToAuthResult = (response: ApiAuthResponse): AuthResult => {
+  const data = response?.data;
+
   return {
     success: response.success,
     statusCode: response.statusCode,
     message: response.message,
-    data: {
-      user: mapApiUserToUser(response.data.user),
-      accessToken: response.data.access_token,
-    },
+    data:
+      data?.user && data?.access_token
+        ? {
+            user: mapApiUserToUser(data.user),
+            accessToken: data.access_token,
+          }
+        : undefined,
   };
 };
