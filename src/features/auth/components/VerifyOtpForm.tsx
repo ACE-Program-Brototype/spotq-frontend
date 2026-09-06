@@ -55,7 +55,6 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
-      {/* OTP Input Group */}
       <div className="space-y-3">
         <Controller
           name="otp"
@@ -105,7 +104,6 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
         )}
       </div>
 
-      {/* Resend Code Section */}
       <div className="flex items-center justify-center text-sm text-gray-500">
         <span>Didn't receive a code? </span>
         {seconds > 0 ? (
@@ -122,7 +120,6 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
         )}
       </div>
 
-      {/* Verify Account Button */}
       <Button
         type="submit"
         size="lg"

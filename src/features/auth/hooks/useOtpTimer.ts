@@ -56,9 +56,7 @@ export function useOtpTimer({
         try {
           const expiry = Date.now() + duration * 1000;
           localStorage.setItem(storageKey, String(expiry));
-        } catch {
-          // Ignore localStorage errors
-        }
+        } catch {}
       }
       setSeconds(duration);
     },
@@ -69,9 +67,7 @@ export function useOtpTimer({
     if (storageKey && typeof window !== "undefined" && window.localStorage) {
       try {
         localStorage.removeItem(storageKey);
-      } catch {
-        // Ignore localStorage errors
-      }
+      } catch {}
     }
     setSeconds(0);
   }, [storageKey]);

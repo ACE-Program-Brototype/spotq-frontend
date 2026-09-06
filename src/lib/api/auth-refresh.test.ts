@@ -113,7 +113,6 @@ describe("auth-refresh", () => {
     expect(authState.user?.fullName).toBe("Refreshed Staff");
     expect(authState.user?.email).toBe("refreshed-staff@example.com");
 
-    // Important: staff must remain RESTAURANT_STAFF
     expect(authState.user?.role).toBe("RESTAURANT_STAFF");
 
     expect(authState.isAuthenticated).toBe(true);
@@ -146,12 +145,10 @@ describe("auth-refresh", () => {
 
     (ky.post as jest.Mock) = mockPost;
 
-    // Trigger 3 concurrent refresh calls
     const call1 = getOrRefreshAccessToken();
     const call2 = getOrRefreshAccessToken();
     const call3 = getOrRefreshAccessToken();
 
-    // Only one refresh request should be made
     expect(mockPost).toHaveBeenCalledTimes(1);
 
     expect(mockPost).toHaveBeenCalledWith(
@@ -216,7 +213,6 @@ describe("auth-refresh", () => {
     const call2 = getOrRefreshAccessToken();
     const call3 = getOrRefreshAccessToken();
 
-    // Only one staff refresh request should be made
     expect(mockPost).toHaveBeenCalledTimes(1);
 
     expect(mockPost).toHaveBeenCalledWith(

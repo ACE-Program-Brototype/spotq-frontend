@@ -7,6 +7,7 @@ import RestaurantTermsPage from "@/features/auth/pages/RestaurantTermsPage";
 import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
+import RestaurantAdminLayout from "@/layouts/RestaurantAdminLayout";
 
 const RestaurantAuthLayout = () => <AuthLayout redirectTo="/restaurant/dashboard" />;
 const RestaurantProtectedLayout = () => (
@@ -46,8 +47,13 @@ export const restaurantRoutes: RouteObject[] = [
     Component: RestaurantProtectedLayout,
     children: [
       {
-        path: "dashboard",
-        Component: RestaurantDashboardPage,
+        Component: RestaurantAdminLayout,
+        children: [
+          {
+            path: "dashboard",
+            Component: RestaurantDashboardPage,
+          },
+        ],
       },
     ],
   },

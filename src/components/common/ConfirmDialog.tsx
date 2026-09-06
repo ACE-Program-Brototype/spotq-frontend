@@ -1,5 +1,7 @@
-import type { VariantProps } from "class-variance-authority";
-import type * as React from "react";
+/**
+ * Confirmation Dialog Component
+ * Reusable modal for confirming destructive or critical actions across portals.
+ */
 
 import {
   AlertDialog,
@@ -12,22 +14,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import type { buttonVariants } from "@/components/ui/button";
+import type { ConfirmDialogProps } from "./types";
 
-export interface ConfirmDialogProps {
-  trigger?: React.ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  title: React.ReactNode;
-  description: React.ReactNode;
-  confirmText?: string;
-  cancelText?: string;
-  confirmVariant?: VariantProps<typeof buttonVariants>["variant"];
-  isLoading?: boolean;
-  loadingText?: string;
-  onConfirm: () => void;
-  onCancel?: () => void;
-}
+export type { ConfirmDialogProps };
 
 export function ConfirmDialog({
   trigger,

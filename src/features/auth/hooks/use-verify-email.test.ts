@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { useAuthStore } from "../store/auth.store";
 import { useVerifyEmailMutation } from "./use-auth-mutations";
 import { useVerifyOtp } from "./use-verify-email";
 
@@ -17,12 +18,17 @@ jest.mock("sonner", () => ({
   },
 }));
 
+jest.mock("../store/auth.store", () => ({
+  useAuthStore: jest.fn(),
+}));
+
 jest.mock("./use-auth-mutations", () => ({
   useVerifyEmailMutation: jest.fn(),
 }));
 
 describe("useVerifyOtp", () => {
   const mockNavigate = jest.fn();
+  const mockSetAuth = jest.fn();
   const mockMutateAsync = jest.fn();
 
   const validEmail = "alex@example.com";
@@ -32,6 +38,9 @@ describe("useVerifyOtp", () => {
     jest.clearAllMocks();
 
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+    (useAuthStore as unknown as jest.Mock).mockReturnValue({
+      setAuth: mockSetAuth,
+    });
 
     (useVerifyEmailMutation as jest.Mock).mockReturnValue({
       mutateAsync: mockMutateAsync,
@@ -43,14 +52,18 @@ describe("useVerifyOtp", () => {
     const { result } = renderHook(() => useVerifyOtp());
 
     expect(result.current.handleVerifyOtp).toEqual(expect.any(Function));
-
     expect(result.current.isLoading).toBe(false);
   });
 
   it("calls verify OTP mutation with email and OTP", async () => {
     mockMutateAsync.mockResolvedValue({
       success: true,
+      statusCode: 200,
       message: "OTP verified successfully",
+      data: {
+        user: { id: "u-1", email: validEmail, fullName: "Alex" },
+        accessToken: "access-token-123",
+      },
     });
 
     const { result } = renderHook(() => useVerifyOtp());
@@ -60,17 +73,24 @@ describe("useVerifyOtp", () => {
     });
 
     expect(mockMutateAsync).toHaveBeenCalledTimes(1);
-
     expect(mockMutateAsync).toHaveBeenCalledWith({
       email: validEmail,
       otp: validOtp,
     });
   });
 
-  it("handles successful OTP verification", async () => {
+  it("handles successful OTP verification by storing auth state and navigating", async () => {
+    const user = { id: "u-1", email: validEmail, fullName: "Alex" };
+    const accessToken = "access-token-123";
+
     mockMutateAsync.mockResolvedValue({
       success: true,
+      statusCode: 200,
       message: "OTP verified successfully",
+      data: {
+        user,
+        accessToken,
+      },
     });
 
     const { result } = renderHook(() => useVerifyOtp());
@@ -79,10 +99,10 @@ describe("useVerifyOtp", () => {
       await result.current.handleVerifyOtp(validEmail, validOtp);
     });
 
-    expect(toast.success).toHaveBeenCalledWith(AUTH_MESSAGES.OTP_VERIFIED_SUCCESS);
-
+    expect(toast.success).toHaveBeenCalledWith("OTP verified successfully");
+    expect(mockSetAuth).toHaveBeenCalledTimes(1);
+    expect(mockSetAuth).toHaveBeenCalledWith(user, accessToken);
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-
     expect(mockNavigate).toHaveBeenCalledWith("/", {
       replace: true,
     });
@@ -101,7 +121,7 @@ describe("useVerifyOtp", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith("Invalid OTP");
-
+    expect(mockSetAuth).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
@@ -118,13 +138,12 @@ describe("useVerifyOtp", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith(AUTH_MESSAGES.GENERIC_ERROR);
-
+    expect(mockSetAuth).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it("handles OTP verification errors thrown by the mutation", async () => {
     const error = new Error("Network error");
-
     mockMutateAsync.mockRejectedValue(error);
 
     const { result } = renderHook(() => useVerifyOtp());
@@ -134,7 +153,7 @@ describe("useVerifyOtp", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith("Network error");
-
+    expect(mockSetAuth).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 

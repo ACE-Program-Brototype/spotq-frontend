@@ -1,5 +1,3 @@
-// src/features/auth/pages/StaffLoginPage.tsx
-
 import { useNavigate } from "react-router-dom";
 
 import spotqLogo from "@/assets/logos/spotq-logo.png";
@@ -13,7 +11,6 @@ export default function StaffLoginPage() {
 
   return (
     <main className="min-h-svh bg-[#fcf8f5] text-[#171717]">
-      {/* Header */}
       <header className="h-14 border-b border-[#eadfd8] bg-white">
         <div className="mx-auto flex h-full w-full max-w-[1440px] items-center px-4 sm:px-6 lg:px-8">
           <button
@@ -27,7 +24,6 @@ export default function StaffLoginPage() {
         </div>
       </header>
 
-      {/* Login area */}
       <section className="flex min-h-[calc(100svh-3.5rem)] items-start justify-center px-4 py-12 sm:px-6 sm:py-16 md:items-center">
         <div className="w-full max-w-[430px]">
           <div className="rounded-xl border border-[#eadfd8] bg-white p-6 shadow-[0_8px_30px_rgba(45,30,20,0.04)] sm:p-8">

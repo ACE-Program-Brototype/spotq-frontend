@@ -20,7 +20,6 @@ export const AUTH_MESSAGES = {
   REGISTER_SUCCESS: "Registration successful",
   OTP_RESEND_SUCCESS: "OTP resend successful",
 
-  // Forgot Password / OTP / Reset Password
   OTP_SENT_SUCCESS: "OTP sent successfully to your email.",
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
@@ -28,7 +27,6 @@ export const AUTH_MESSAGES = {
 } as const;
 
 export const AUTH_ENDPOINTS = {
-  // Customer Auth Endpoints
   LOGIN: "users/login",
   GOOGLE_LOGIN: "users/oauth/google",
   LOGOUT: "users/logout",
@@ -41,7 +39,6 @@ export const AUTH_ENDPOINTS = {
   FORGOT_PASSWORD_RESEND_OTP: "users/forgot-password/resend-otp",
   RESET_PASSWORD: "users/reset-password",
 
-  // Admin Auth Endpoints
   ADMIN_LOGIN: "admin/auth/login",
   ADMIN_LOGOUT: "admin/auth/logout",
   ADMIN_FORGOT_PASSWORD: "admin/auth/forgot-password",
@@ -49,13 +46,11 @@ export const AUTH_ENDPOINTS = {
   ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
   ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
 
-  // Restaurant Auth Endpoints
   RESTAURANT_SEND_OTP: "restaurants/registration/email-otp",
   RESTAURANT_RESEND_OTP: "restaurants/registration/resend-email-otp",
   RESTAURANT_VERIFY_OTP: "restaurants/registration/email-otp/verify",
   RESTAURANT_ONBOARD: "restaurants/onboard",
 
-  // Staff Auth Endpoints
   STAFF_LOGIN: "restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "restaurants/staff/refresh-token",
   STAFF_LOGOUT: "restaurants/staff/logout",

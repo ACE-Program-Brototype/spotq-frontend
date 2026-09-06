@@ -28,7 +28,6 @@ describe("StaffResetPasswordPage", () => {
       </QueryClientProvider>,
     );
 
-    // Headings
     expect(screen.getByRole("heading", { name: /set new password/i })).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -36,7 +35,6 @@ describe("StaffResetPasswordPage", () => {
       ),
     ).toBeInTheDocument();
 
-    // Form inputs
     expect(screen.getByLabelText(/^new password$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^confirm new password$/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /reset password/i })).toBeInTheDocument();

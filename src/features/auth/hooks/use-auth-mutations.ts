@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import type { ApiResponse } from "../services/auth.service";
 import { authService, loginStaff, logoutStaff } from "../services/auth.service";
 import type {
   GoogleLoginResult,
@@ -46,7 +47,7 @@ export const useVerifyEmailMutation = () => {
 };
 
 export const useResendEmailOtp = () => {
-  return useMutation<VerifyEmailResult, Error, ResendOtpInput>({
+  return useMutation<ApiResponse, Error, ResendOtpInput>({
     mutationFn: (input) => authService.resendEmailOtp(input),
   });
 };

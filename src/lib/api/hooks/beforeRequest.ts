@@ -14,7 +14,6 @@ export const beforeRequest: BeforeRequestHook = async ({ request }) => {
 
   let token = useAuthStore.getState().accessToken;
 
-  // If token is missing after page refresh but user was authenticated, restore token silently
   if (!token && useAuthStore.getState().isAuthenticated) {
     try {
       token = await getOrRefreshAccessToken();

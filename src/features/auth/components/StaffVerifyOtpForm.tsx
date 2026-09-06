@@ -60,7 +60,6 @@ export function StaffVerifyOtpForm({ initialEmail }: StaffVerifyOtpFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
-      {/* 6-Digit OTP Group */}
       <div className="flex flex-col items-center gap-3">
         <Controller
           name="otp"
@@ -93,7 +92,6 @@ export function StaffVerifyOtpForm({ initialEmail }: StaffVerifyOtpFormProps) {
         )}
       </div>
 
-      {/* Verify Button */}
       <Button
         type="submit"
         disabled={isVerifying}
@@ -110,7 +108,6 @@ export function StaffVerifyOtpForm({ initialEmail }: StaffVerifyOtpFormProps) {
         )}
       </Button>
 
-      {/* Resend OTP */}
       <div className="text-center text-xs text-gray-500">
         <span>Didn't receive the code? </span>
         {seconds > 0 ? (

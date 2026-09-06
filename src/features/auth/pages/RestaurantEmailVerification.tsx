@@ -64,16 +64,13 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-neutral-900">
-      {/* Background hero image */}
       <div className="absolute inset-0">
         <img src={restaurantEmailVerificationBg} alt="" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* Content */}
       <div className="relative flex min-h-screen flex-col justify-center px-6 py-16 sm:px-12 lg:px-24">
         <div className="flex w-full flex-col items-start justify-between gap-12 lg:flex-row lg:items-center">
-          {/* Left: brand lockup + headline */}
           <div className="max-w-xl text-white">
             <div className="mb-6 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
@@ -94,7 +91,6 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
             </p>
           </div>
 
-          {/* Right: Get Started card */}
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl sm:p-8">
             <h2 className="text-2xl font-bold text-neutral-900">Get Started</h2>
 

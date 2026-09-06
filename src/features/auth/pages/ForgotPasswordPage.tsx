@@ -8,16 +8,13 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="flex min-h-screen w-full select-none bg-background text-foreground antialiased font-sans">
-      {/* LEFT PANEL: Branding & Hero */}
       <AuthHeroPanel
         title="Secure your spotQ"
         description="We take your security seriously. Follow the steps to safely recover your account and protect your culinary journey."
         iconType="shield-lock"
       />
 
-      {/* RIGHT PANEL: Form Area */}
       <div className="w-full md:w-1/2 flex flex-col justify-between bg-white relative">
-        {/* Mobile top bar navigation header */}
         <header className="flex items-center px-4 h-14 border-b border-gray-100 md:hidden select-none">
           <button
             type="button"
@@ -30,14 +27,11 @@ export default function ForgotPasswordPage() {
           <h2 className="text-lg font-semibold text-foreground">Forgot Password</h2>
         </header>
 
-        {/* Content body container */}
         <div className="w-full max-w-md mx-auto px-6 py-12 md:py-16 my-auto flex flex-col justify-center gap-8">
-          {/* Mobile brand logo block */}
           <div className="flex justify-center md:hidden">
             <img src={spotqLogo} alt="SpotQ Logo" className="h-12 w-auto object-contain" />
           </div>
 
-          {/* Main titles */}
           <div className="text-center md:text-left space-y-1.5">
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
               Forgot Password?
@@ -47,11 +41,9 @@ export default function ForgotPasswordPage() {
             </p>
           </div>
 
-          {/* Form */}
           <ForgotPasswordForm />
         </div>
 
-        {/* Mobile footer spacing */}
         <div className="h-6 md:hidden" />
       </div>
     </div>

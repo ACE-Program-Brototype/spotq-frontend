@@ -46,7 +46,6 @@ export function ResetPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
-      {/* New Password field */}
       <div className="space-y-2">
         <Label
           htmlFor="customer-new-password"
@@ -84,7 +83,6 @@ export function ResetPasswordForm() {
         )}
       </div>
 
-      {/* Confirm Password field */}
       <div className="space-y-2">
         <Label
           htmlFor="customer-confirm-password"
@@ -122,7 +120,6 @@ export function ResetPasswordForm() {
         )}
       </div>
 
-      {/* Live Password Rules / Validation Checklist */}
       <div className="space-y-2 py-1 text-xs sm:text-sm text-gray-600">
         <div className="flex items-center gap-2">
           {hasMinLength ? (
@@ -164,7 +161,6 @@ export function ResetPasswordForm() {
         </div>
       </div>
 
-      {/* Submit Button */}
       <Button
         type="submit"
         size="lg"

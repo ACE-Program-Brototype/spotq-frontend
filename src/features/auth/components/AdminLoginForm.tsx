@@ -29,7 +29,6 @@ export function AdminLoginForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
-      {/* Email / Identity field */}
       <div className="flex flex-col gap-2">
         <Label
           htmlFor="admin-email"
@@ -62,7 +61,6 @@ export function AdminLoginForm() {
         )}
       </div>
 
-      {/* Password / Key field */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <Label
@@ -117,7 +115,6 @@ export function AdminLoginForm() {
         )}
       </div>
 
-      {/* Submit button */}
       <Button
         type="submit"
         size="lg"

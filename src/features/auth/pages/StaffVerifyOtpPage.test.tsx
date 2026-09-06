@@ -25,7 +25,6 @@ describe("StaffVerifyOtpPage", () => {
       </QueryClientProvider>,
     );
 
-    // Headings
     expect(screen.getByRole("heading", { name: /verify reset code/i })).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -33,7 +32,6 @@ describe("StaffVerifyOtpPage", () => {
       ),
     ).toBeInTheDocument();
 
-    // Verify button
     expect(screen.getByRole("button", { name: /verify code/i })).toBeInTheDocument();
   });
 });

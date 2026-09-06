@@ -13,7 +13,6 @@ export const useLogout = () => {
     try {
       await logoutMutation.mutateAsync();
     } catch {
-      // Ignore network/server errors on logout and still clear local session
     } finally {
       clearAuth();
       toast.success(AUTH_MESSAGES.LOGOUT_SUCCESS);

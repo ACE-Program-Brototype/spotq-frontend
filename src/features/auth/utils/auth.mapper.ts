@@ -1,9 +1,10 @@
+/**
+ * Authentication Response Data Mappers
+ * Maps raw backend API models to frontend domain models.
+ */
+
 import type { ApiAuthResponse, ApiUser, AuthResult, User } from "../types/auth.types";
 
-/**
- * Maps raw backend ApiUser (which may have snake_case fields like full_name, created_at)
- * to our clean frontend User domain model (camelCase).
- */
 export const mapApiUserToUser = (apiUser: ApiUser): User => {
   return {
     id: apiUser.id,
@@ -17,9 +18,6 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => {
   };
 };
 
-/**
- * Maps raw API authentication response to normalized frontend AuthResult.
- */
 export const mapApiAuthResponseToAuthResult = (response: ApiAuthResponse): AuthResult => {
   return {
     success: response.success,

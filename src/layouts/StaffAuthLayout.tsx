@@ -3,7 +3,6 @@ import { Link, Outlet } from "react-router-dom";
 export default function StaffAuthLayout() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-[#FAF7F5] font-sans antialiased text-foreground">
-      {/* Top Header */}
       <header className="flex h-16 w-full items-center border-b border-[#EFE8E2] bg-transparent px-6 sm:px-10">
         <Link
           to="/staff/login"
@@ -16,7 +15,6 @@ export default function StaffAuthLayout() {
         </Link>
       </header>
 
-      {/* Centered Content Area */}
       <main className="flex flex-1 items-center justify-center px-4 py-10 sm:py-16">
         <Outlet />
       </main>

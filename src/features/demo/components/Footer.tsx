@@ -11,7 +11,6 @@ const Footer = () => {
     <footer className="border-t border-spotq-border bg-white">
       <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
-          {/* Brand */}
           <div className="max-w-sm">
             <Link to="/" className="inline-flex items-center gap-2.5" aria-label="SpotQ home">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white">
@@ -55,7 +54,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Company */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">Company</h3>
 
@@ -90,7 +88,6 @@ const Footer = () => {
             </nav>
           </div>
 
-          {/* Support + Legal */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">Support</h3>
 
@@ -136,7 +133,6 @@ const Footer = () => {
             </nav>
           </div>
 
-          {/* App / Contact */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">Get SpotQ</h3>
 
@@ -156,7 +152,6 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* App badges */}
             <div className="mt-6 flex flex-wrap gap-2">
               <button
                 type="button"
@@ -177,7 +172,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom */}
         <div className="mt-10 flex flex-col gap-3 border-t border-spotq-border pt-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-gray-400">© {currentYear} SpotQ. All rights reserved.</p>
 

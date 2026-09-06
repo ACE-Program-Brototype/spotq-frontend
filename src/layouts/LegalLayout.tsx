@@ -1,71 +1,128 @@
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
-import Footer from "@/features/demo/components/Footer";
+import { CustomerFooter } from "@/components/layout/CustomerFooter";
+import { CustomerNavbar } from "@/components/layout/CustomerNavbar";
 
 interface LegalPageLayoutProps {
   title: string;
   description: string;
   lastUpdated: string;
+  backTo?: string;
+  backLabel?: string;
+  variant?: "customer" | "restaurant";
   children: React.ReactNode;
 }
 
-const LegalPageLayout = ({ title, description, lastUpdated, children }: LegalPageLayoutProps) => {
+export const LegalPageLayout = ({
+  title,
+  description,
+  lastUpdated,
+  backTo,
+  backLabel,
+  variant = "customer",
+  children,
+}: LegalPageLayoutProps) => {
+  const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
+
+  const isCustomer = variant === "customer";
+  const defaultBackLabel = isCustomer ? "Back" : "Back to Restaurant Portal";
+  const effectiveBackLabel = backLabel ?? defaultBackLabel;
+
+  const handleBack = () => {
+    if (backTo) {
+      navigate(backTo);
+    } else if (isCustomer && window.history.length > 1) {
+      navigate(-1);
+    } else if (!isCustomer) {
+      navigate("/restaurant/email/verification");
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-spotq-cream text-gray-900">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-spotq-border bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-          <Link to="/" className="flex items-center gap-2.5" aria-label="SpotQ home">
-            <img src={spotqLogo} alt="SpotQ" className="h-7 w-auto object-contain" />
-
-            <span className="text-lg font-extrabold tracking-tight">spotQ</span>
-          </Link>
-
+    <div className="min-h-screen bg-[#fffdfb] text-neutral-900 flex flex-col justify-between">
+      {isCustomer ? (
+        <CustomerNavbar />
+      ) : (
+        <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#eddcd4] bg-white/95 px-4 sm:px-8 backdrop-blur shadow-2xs">
           <Link
-            to="/"
-            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-spotq-cream hover:text-spotq-orange"
+            to="/restaurant/email/verification"
+            className="flex items-center gap-2.5 select-none"
           >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Back to Home</span>
-            <span className="sm:hidden">Home</span>
+            <div className="flex size-9 items-center justify-center rounded-xl bg-white shadow-xs border border-[#eddcd4]">
+              <img src={spotqLogo} alt="spotQ" className="size-5 object-contain" />
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-black tracking-tight text-[#9a3412]">spotQ</span>
+              <span className="text-xs font-semibold text-neutral-500">Partner Legal</span>
+            </div>
           </Link>
-        </div>
-      </header>
 
-      {/* Hero */}
-      <main>
-        <section className="border-b border-spotq-border bg-white">
-          <div className="mx-auto w-full max-w-4xl px-5 py-14 sm:px-8 sm:py-20">
-            <div className="mb-4 inline-flex rounded-full bg-spotq-orange/10 px-3 py-1 text-xs font-semibold text-spotq-orange">
-              SpotQ Legal
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-[#9a3412] transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>{effectiveBackLabel}</span>
+          </button>
+        </header>
+      )}
+
+      <main className="flex-1 w-full">
+        <section className="border-b border-[#f3e6de] bg-white">
+          <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <div
+                className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${
+                  isCustomer ? "bg-[#ff6b00]/10 text-[#ff6b00]" : "bg-[#9a3412]/10 text-[#9a3412]"
+                }`}
+              >
+                {isCustomer ? "SpotQ Legal" : "Restaurant Partner Agreement"}
+              </div>
+
+              {isCustomer && (
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-[#ff6b00] transition-colors cursor-pointer"
+                >
+                  <ArrowLeft className="size-3.5" />
+                  <span>{effectiveBackLabel}</span>
+                </button>
+              )}
             </div>
 
-            <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-900">
               {title}
             </h1>
 
-            <p className="mt-4 max-w-2xl text-base leading-7 text-gray-500">{description}</p>
+            <p className="mt-3 max-w-2xl text-sm sm:text-base leading-relaxed text-neutral-500">
+              {description}
+            </p>
 
-            <p className="mt-5 text-xs font-medium text-gray-400">Last updated: {lastUpdated}</p>
+            <p className="mt-4 text-xs font-medium text-neutral-400">Last updated: {lastUpdated}</p>
           </div>
         </section>
 
-        {/* Content */}
-        <section className="mx-auto w-full max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
-          <article className="rounded-2xl border border-spotq-border bg-white p-6 shadow-sm sm:p-10 lg:p-12">
+        <section className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <article className="rounded-2xl border border-[#f3e6de] bg-white p-6 shadow-2xs sm:p-10">
             <div
-              className="
-                prose prose-gray max-w-none
-                prose-headings:font-extrabold
+              className={`
+                prose prose-neutral max-w-none
+                prose-headings:font-bold
                 prose-headings:tracking-tight
-                prose-h2:mb-3 prose-h2:mt-10 prose-h2:text-xl
-                prose-h3:mb-2 prose-h3:mt-7 prose-h3:text-base
-                prose-p:text-sm prose-p:leading-7 prose-p:text-gray-600
-                prose-li:text-sm prose-li:leading-7 prose-li:text-gray-600
-                prose-strong:text-gray-800
-                prose-a:text-spotq-orange
-              "
+                prose-headings:text-neutral-900
+                prose-h2:mb-3 prose-h2:mt-8 prose-h2:text-lg
+                prose-h3:mb-2 prose-h3:mt-6 prose-h3:text-sm
+                prose-p:text-xs sm:prose-p:text-sm prose-p:leading-relaxed prose-p:text-neutral-600
+                prose-li:text-xs sm:prose-li:text-sm prose-li:leading-relaxed prose-li:text-neutral-600
+                prose-strong:text-neutral-900
+                ${isCustomer ? "prose-a:text-[#ff6b00]" : "prose-a:text-[#9a3412]"} hover:prose-a:underline
+              `}
             >
               {children}
             </div>
@@ -73,7 +130,15 @@ const LegalPageLayout = ({ title, description, lastUpdated, children }: LegalPag
         </section>
       </main>
 
-      <Footer />
+      {isCustomer ? (
+        <CustomerFooter />
+      ) : (
+        <footer className="border-t border-[#eddcd4] bg-white py-6 text-center text-xs text-neutral-500">
+          <div className="mx-auto max-w-7xl px-4">
+            <p>© {currentYear} SpotQ Hospitality Network. All rights reserved.</p>
+          </div>
+        </footer>
+      )}
     </div>
   );
 };
