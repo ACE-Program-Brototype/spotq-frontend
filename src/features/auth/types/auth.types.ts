@@ -43,10 +43,9 @@ export type ApiAuthResponse = {
   success: boolean;
   statusCode: number;
   message: string;
-  data: {
+  data?: {
     user: ApiUser;
     access_token: string;
-    refresh_token?: string;
   };
 };
 
@@ -54,7 +53,7 @@ export type AuthResult = {
   success: boolean;
   statusCode: number;
   message: string;
-  data: {
+  data?: {
     user: User;
     accessToken: string;
   };
