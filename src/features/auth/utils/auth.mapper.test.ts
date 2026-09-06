@@ -1,4 +1,4 @@
-import type { ApiUser } from "../types/auth.types";
+import type { ApiAuthResponse, ApiUser } from "../types/auth.types";
 import { mapApiAuthResponseToAuthResult, mapApiUserToUser } from "./auth.mapper";
 
 describe("auth.mapper", () => {
@@ -84,6 +84,19 @@ describe("auth.mapper", () => {
           accessToken: "jwt-token-123",
         },
       });
+    });
+
+    test("should handle missing data gracefully without throwing error", () => {
+      const rawApiResponse = {
+        success: true,
+        statusCode: 200,
+        message: "OTP verified",
+      } as unknown as ApiAuthResponse;
+
+      const result = mapApiAuthResponseToAuthResult(rawApiResponse);
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeUndefined();
     });
   });
 });

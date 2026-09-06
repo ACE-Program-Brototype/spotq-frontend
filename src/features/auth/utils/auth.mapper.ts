@@ -5,10 +5,17 @@
 
 import type { ApiAuthResponse, ApiUser, AuthResult, User } from "../types/auth.types";
 
-export const mapApiUserToUser = (apiUser: ApiUser): User => {
+export const mapApiUserToUser = (apiUser?: ApiUser | null): User => {
+  if (!apiUser) {
+    return {
+      email: "",
+      role: "CUSTOMER",
+    };
+  }
+
   return {
-    id: apiUser.id,
-    fullName: apiUser.full_name,
+    id: apiUser.id || apiUser._id,
+    fullName: apiUser.full_name || apiUser.name,
     email: apiUser.email,
     role: apiUser.role ?? "CUSTOMER",
     phone: apiUser.phone ?? "",
@@ -19,13 +26,17 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => {
 };
 
 export const mapApiAuthResponseToAuthResult = (response: ApiAuthResponse): AuthResult => {
+  const data = response?.data;
+
   return {
     success: response.success,
     statusCode: response.statusCode,
     message: response.message,
-    data: {
-      user: mapApiUserToUser(response.data.user),
-      accessToken: response.data.access_token,
-    },
+    data: data
+      ? {
+          user: mapApiUserToUser(data.user),
+          accessToken: data.access_token || "",
+        }
+      : (undefined as unknown as AuthResult["data"]),
   };
 };
