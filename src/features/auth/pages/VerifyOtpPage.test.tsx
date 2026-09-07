@@ -25,17 +25,13 @@ describe("Customer VerifyOtpPage", () => {
       </QueryClientProvider>,
     );
 
-    // Headings
     expect(screen.getByRole("heading", { name: /secure your spot\./i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /enter verification code/i })).toBeInTheDocument();
 
-    // Email displayed in copy
     expect(screen.getByText(/customer@example\.com/i)).toBeInTheDocument();
 
-    // Resend section
     expect(screen.getByText(/didn't receive a code\?/i)).toBeInTheDocument();
 
-    // Verify button
     expect(screen.getByRole("button", { name: /verify account/i })).toBeInTheDocument();
   });
 });

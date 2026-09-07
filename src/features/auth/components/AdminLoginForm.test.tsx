@@ -63,13 +63,13 @@ describe("AdminLoginForm UI & Accessibility Testing", () => {
       expect(emailInput).toHaveFocus();
 
       await user.type(emailInput, "admin@spotq.com");
-      await user.tab(); // Forgot key link
-      await user.tab(); // Password input
+      await user.tab();
+      await user.tab();
       expect(passwordInput).toHaveFocus();
 
       await user.type(passwordInput, "securepassword123");
-      await user.tab(); // Toggle password button
-      await user.tab(); // Submit button
+      await user.tab();
+      await user.tab();
       expect(submitBtn).toHaveFocus();
 
       await user.keyboard("{Enter}");
@@ -132,12 +132,10 @@ describe("AdminLoginForm UI & Accessibility Testing", () => {
 
       expect(passwordInput).toHaveAttribute("type", "password");
 
-      // Click to show password
       await user.click(toggleBtn);
       expect(passwordInput).toHaveAttribute("type", "text");
       expect(screen.getByRole("button", { name: /hide password/i })).toBeInTheDocument();
 
-      // Click to hide password again
       await user.click(screen.getByRole("button", { name: /hide password/i }));
       expect(passwordInput).toHaveAttribute("type", "password");
     });

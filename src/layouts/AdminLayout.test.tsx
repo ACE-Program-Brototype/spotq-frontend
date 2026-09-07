@@ -38,14 +38,15 @@ describe("AdminLayout Shell", () => {
       </MemoryRouter>,
     );
 
-  it("renders header with branding, user info, and child outlet content", () => {
+  it("renders sidebar with branding, navigation links, and child outlet content", () => {
     renderWithRouter();
 
-    expect(screen.getByText("Admin Console")).toBeInTheDocument();
-    expect(screen.getByText("spotQ Platform")).toBeInTheDocument();
+    expect(screen.getByText("Console")).toBeInTheDocument();
+    expect(screen.getByText("Admin Portal")).toBeInTheDocument();
     expect(screen.getByText("Admin User")).toBeInTheDocument();
-    expect(screen.getByText("admin@spotq.com")).toBeInTheDocument();
     expect(screen.getByText("AU")).toBeInTheDocument();
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Restaurants")).toBeInTheDocument();
     expect(screen.getByText("Admin Child Content")).toBeInTheDocument();
   });
 

@@ -33,7 +33,6 @@ export function AdminForgotPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
-      {/* Email / Identity field */}
       <div className="flex flex-col gap-2">
         <Label
           htmlFor="admin-forgot-email"
@@ -66,7 +65,6 @@ export function AdminForgotPasswordForm() {
         )}
       </div>
 
-      {/* Submit button */}
       <Button
         type="submit"
         size="lg"
@@ -84,7 +82,6 @@ export function AdminForgotPasswordForm() {
         )}
       </Button>
 
-      {/* Back to sign in */}
       <div className="pt-2 text-center">
         <Link
           to="/admin/login"

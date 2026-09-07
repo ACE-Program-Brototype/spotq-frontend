@@ -1,5 +1,3 @@
-// src/features/auth/components/StaffLoginForm.tsx
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useState } from "react";
@@ -37,7 +35,6 @@ export default function StaffLoginForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-      {/* Email */}
       <div className="space-y-2">
         <Label htmlFor="staff-email" className="text-xs font-medium text-[#514943]">
           Email Address
@@ -73,7 +70,6 @@ export default function StaffLoginForm({
         )}
       </div>
 
-      {/* Password */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="staff-password" className="text-xs font-medium text-[#514943]">
@@ -133,7 +129,6 @@ export default function StaffLoginForm({
         )}
       </div>
 
-      {/* Submit */}
       <Button
         type="submit"
         disabled={isLoading}

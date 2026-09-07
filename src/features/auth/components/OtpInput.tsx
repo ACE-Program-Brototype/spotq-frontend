@@ -25,7 +25,6 @@ export function OtpInput({
 
   const otp = value.padEnd(length, "").slice(0, length);
 
-  // Focus first input
   useEffect(() => {
     if (autoFocus && !disabled) {
       inputRefs.current[0]?.focus();
@@ -50,12 +49,10 @@ export function OtpInput({
 
     onChange(newValue);
 
-    // Move forward
     if (digit && index < length - 1) {
       focusInput(index + 1);
     }
 
-    // Completed
     if (digit && index === length - 1 && newValue.length === length) {
       onComplete?.(newValue);
     }
@@ -64,13 +61,10 @@ export function OtpInput({
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value;
 
-    // Only allow numbers
     const digits = input.replace(/\D/g, "");
 
     if (!digits) return;
 
-    // If browser gives us multiple characters,
-    // distribute them across the inputs.
     if (digits.length > 1) {
       const nextDigits = otp.split("");
 
@@ -106,7 +100,6 @@ export function OtpInput({
 
         const digits = otp.split("");
 
-        // If current input has a value, clear it first
         if (digits[index]) {
           digits[index] = "";
 
@@ -114,7 +107,6 @@ export function OtpInput({
           return;
         }
 
-        // Otherwise move backward and clear previous
         if (index > 0) {
           digits[index - 1] = "";
 

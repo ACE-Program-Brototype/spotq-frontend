@@ -33,7 +33,6 @@ export function StaffForgotPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
-      {/* Email Address */}
       <div className="flex flex-col gap-1.5 text-left">
         <Label htmlFor="staff-forgot-email" className="text-xs font-semibold text-gray-700">
           Email Address
@@ -64,7 +63,6 @@ export function StaffForgotPasswordForm() {
         )}
       </div>
 
-      {/* Submit Button */}
       <Button
         type="submit"
         disabled={isPending}
@@ -81,7 +79,6 @@ export function StaffForgotPasswordForm() {
         )}
       </Button>
 
-      {/* Back to login */}
       <div className="pt-1 text-center">
         <Link
           to="/staff/login"

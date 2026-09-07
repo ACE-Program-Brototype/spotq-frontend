@@ -6,6 +6,9 @@ export default function RestaurantTermsPage() {
       title="Restaurant Partner Terms & Conditions"
       description="Please read these terms carefully before registering and operating your restaurant on the SpotQ platform."
       lastUpdated="August 30, 2026"
+      variant="restaurant"
+      backTo="/restaurant/email/verification"
+      backLabel="Back to Restaurant Portal"
     >
       <div className="space-y-4">
         <p>

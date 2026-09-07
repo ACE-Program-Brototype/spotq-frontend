@@ -2,13 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import type { RegisterFormValues } from "../schemas/register.schema";
-import { useAuthStore } from "../store/auth.store";
 import { useRegisterMutation } from "./use-auth-mutations";
 
 export const useRegister = () => {
   const navigate = useNavigate();
-  const { setAuth } = useAuthStore();
-
   const registerMutation = useRegisterMutation();
 
   const handleRegister = async (values: RegisterFormValues) => {
@@ -20,12 +17,10 @@ export const useRegister = () => {
         password: values.password,
       });
 
-      if (response.success && response.data) {
-        toast.success(AUTH_MESSAGES.REGISTER_SUCCESS);
+      if (response.success) {
+        toast.success(response.message || AUTH_MESSAGES.OTP_SENT_SUCCESS);
 
-        setAuth(response.data.user, response.data.accessToken);
-
-        navigate(`/verify-otp?email=${response.data.user.email}`, { replace: true });
+        navigate(`/verify-otp?email=${encodeURIComponent(values.email)}`, { replace: true });
       } else {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }

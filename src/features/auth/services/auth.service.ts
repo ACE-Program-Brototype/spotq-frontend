@@ -199,17 +199,7 @@ export const authService = {
       .post(AUTH_ENDPOINTS.REGISTER, {
         json: input,
       })
-      .json<ApiAuthResponse>();
-
-    return mapApiAuthResponseToAuthResult(rawResponse);
-  },
-
-  verifyOtp: async (input: VerifyOtpInput): Promise<VerifyEmailResult> => {
-    const rawResponse = await apiClient
-      .post(AUTH_ENDPOINTS.VERIFY_OTP, {
-        json: input,
-      })
-      .json<VerifyEmailResult>();
+      .json<ApiResponse>();
 
     return {
       success: rawResponse.success,
@@ -218,12 +208,22 @@ export const authService = {
     };
   },
 
-  resendEmailOtp: async (input: ResendOtpInput): Promise<VerifyEmailResult> => {
+  verifyOtp: async (input: VerifyOtpInput): Promise<VerifyEmailResult> => {
+    const rawResponse = await apiClient
+      .post(AUTH_ENDPOINTS.VERIFY_OTP, {
+        json: input,
+      })
+      .json<ApiAuthResponse>();
+
+    return mapApiAuthResponseToAuthResult(rawResponse);
+  },
+
+  resendEmailOtp: async (input: ResendOtpInput): Promise<ApiResponse> => {
     const rawResponse = await apiClient
       .post(AUTH_ENDPOINTS.RESEND_EMAIL_OTP, {
         json: input,
       })
-      .json<VerifyEmailResult>();
+      .json<ApiResponse>();
 
     return {
       success: rawResponse.success,

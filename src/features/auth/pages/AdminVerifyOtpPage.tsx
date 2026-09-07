@@ -10,12 +10,10 @@ function AdminVerifyOtpPage() {
   }
   return (
     <main className="grid min-h-svh lg:grid-cols-2">
-      {/* ── Left panel: branding ── */}
       <section
         className="relative hidden flex-col justify-between overflow-hidden bg-foreground px-12 py-16 lg:flex"
         aria-label="spotQ platform branding"
       >
-        {/* Subtle grid texture */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.04]"
           style={{
@@ -25,7 +23,6 @@ function AdminVerifyOtpPage() {
           aria-hidden="true"
         />
 
-        {/* Logo / brand mark */}
         <div className="relative z-10 flex items-center gap-2.5">
           <div className="flex size-8 items-center justify-center rounded-lg bg-background/10 backdrop-blur-sm">
             <span className="text-sm font-bold text-background">S</span>
@@ -33,7 +30,6 @@ function AdminVerifyOtpPage() {
           <span className="text-sm font-semibold tracking-wide text-background/70">spotQ</span>
         </div>
 
-        {/* Hero copy */}
         <div className="relative z-10 space-y-6">
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-background xl:text-5xl">
             Security first.
@@ -46,7 +42,6 @@ function AdminVerifyOtpPage() {
           </blockquote>
         </div>
 
-        {/* Footer note */}
         <div className="relative z-10">
           <p className="text-xs text-background/30">
             © {new Date().getFullYear()} spotQ. All rights reserved.
@@ -54,12 +49,10 @@ function AdminVerifyOtpPage() {
         </div>
       </section>
 
-      {/* ── Right panel: form ── */}
       <section
         className="flex flex-col items-center justify-center px-6 py-16 sm:px-12 lg:px-16"
         aria-label="Verify identity form"
       >
-        {/* Mobile logo */}
         <div className="mb-10 flex items-center gap-2 lg:hidden">
           <div className="flex size-8 items-center justify-center rounded-lg bg-foreground">
             <span className="text-sm font-bold text-background">S</span>
@@ -68,7 +61,6 @@ function AdminVerifyOtpPage() {
         </div>
 
         <div className="w-full max-w-sm space-y-10">
-          {/* Header */}
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground">
               Verify identity
@@ -78,7 +70,6 @@ function AdminVerifyOtpPage() {
             </p>
           </div>
 
-          {/* Form */}
           <AdminVerifyOtpForm />
         </div>
       </section>

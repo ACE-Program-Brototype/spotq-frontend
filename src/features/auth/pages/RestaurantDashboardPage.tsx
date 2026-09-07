@@ -21,21 +21,21 @@ export default function RestaurantDashboardPage() {
   const needsSubscription = isApproved && !isSubscriptionActive;
 
   return (
-    <div className="min-h-screen bg-neutral-100 px-6 py-12 text-neutral-900">
-      <div className="mx-auto max-w-4xl rounded-2xl bg-white p-8 shadow-lg sm:p-10">
-        <div className="flex items-center justify-between gap-4">
+    <div className="space-y-6 max-w-full">
+      <div className="rounded-2xl border border-[#eddcd4] bg-white p-6 sm:p-8 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">
+            <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#9a3412]">
               Restaurant dashboard
             </p>
-            <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+            <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-neutral-900">
               Welcome, {statusData?.restaurantName || restaurantEmail}
             </h1>
           </div>
           <button
             type="button"
             onClick={() => navigate("/restaurant/email/verification", { replace: false })}
-            className="rounded-lg border border-neutral-300 px-4 py-2 font-medium text-neutral-700 hover:bg-neutral-100"
+            className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
           >
             Back to email
           </button>
@@ -69,19 +69,19 @@ export default function RestaurantDashboardPage() {
           </div>
         )}
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-5">
-            <p className="text-sm text-neutral-500">Account status</p>
-            <p className="mt-2 text-xl font-semibold text-neutral-900">
+        <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
+          <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
+            <p className="text-xs font-medium text-neutral-500">Account status</p>
+            <p className="mt-2 text-xl font-bold text-neutral-900">
               {statusData?.verificationStatus ?? "Active"}
             </p>
           </div>
-          <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-5">
-            <p className="text-sm text-neutral-500">Subscription</p>
+          <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
+            <p className="text-xs font-medium text-neutral-500">Subscription</p>
             {isSubscriptionActive ? (
               <div className="mt-2 flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                <span className="text-xl font-semibold text-neutral-900">
+                <span className="text-xl font-bold text-neutral-900">
                   {statusData?.subscriptionPlanCode?.replace("_", " ") || "Active"}
                 </span>
               </div>

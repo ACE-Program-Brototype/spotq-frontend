@@ -10,8 +10,6 @@ export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount 
   );
 
   if (is401) {
-    // Never retry public auth routes (e.g. customer login, admin login, google login, refresh token) on 401
-    // Throw error to propagate HTTPError directly to caller
     if (isPublicAuthEndpoint || retryCount > 1) {
       throw error;
     }

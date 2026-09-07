@@ -23,26 +23,19 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
     const currentRole = currentUser?.role;
 
     let refreshEndpoint: string;
-    let role: "CUSTOMER" | "RESTAURANT_STAFF" | "RESTAURANT_ADMIN";
 
     switch (currentRole) {
       case "RESTAURANT_ADMIN":
         refreshEndpoint = AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN;
-        role = "RESTAURANT_ADMIN";
         break;
 
       case "RESTAURANT_STAFF":
         refreshEndpoint = AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN;
-        role = "RESTAURANT_STAFF";
-        break;
-
-      case "CUSTOMER":
-        refreshEndpoint = AUTH_ENDPOINTS.REFRESH_TOKEN;
-        role = "CUSTOMER";
         break;
 
       default:
-        throw new Error("Cannot refresh token: unknown user role.");
+        refreshEndpoint = AUTH_ENDPOINTS.REFRESH_TOKEN;
+        break;
     }
 
     const response = await ky
@@ -59,9 +52,10 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
 
     const newAccessToken = response.data.access_token;
 
+    const mappedUser = mapApiUserToUser(response.data.user);
     const user = {
-      ...mapApiUserToUser(response.data.user),
-      role,
+      ...mappedUser,
+      role: currentRole ?? mappedUser.role,
     };
 
     useAuthStore.getState().setAuth(user, newAccessToken);

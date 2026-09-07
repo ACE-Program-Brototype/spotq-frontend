@@ -113,7 +113,6 @@ describe("auth-refresh", () => {
     expect(authState.user?.fullName).toBe("Refreshed Staff");
     expect(authState.user?.email).toBe("refreshed-staff@example.com");
 
-    // Important: staff must remain RESTAURANT_STAFF
     expect(authState.user?.role).toBe("RESTAURANT_STAFF");
 
     expect(authState.isAuthenticated).toBe(true);
@@ -146,12 +145,10 @@ describe("auth-refresh", () => {
 
     (ky.post as jest.Mock) = mockPost;
 
-    // Trigger 3 concurrent refresh calls
     const call1 = getOrRefreshAccessToken();
     const call2 = getOrRefreshAccessToken();
     const call3 = getOrRefreshAccessToken();
 
-    // Only one refresh request should be made
     expect(mockPost).toHaveBeenCalledTimes(1);
 
     expect(mockPost).toHaveBeenCalledWith(
@@ -216,7 +213,6 @@ describe("auth-refresh", () => {
     const call2 = getOrRefreshAccessToken();
     const call3 = getOrRefreshAccessToken();
 
-    // Only one staff refresh request should be made
     expect(mockPost).toHaveBeenCalledTimes(1);
 
     expect(mockPost).toHaveBeenCalledWith(
@@ -253,11 +249,72 @@ describe("auth-refresh", () => {
     expect(authState.isAuthenticated).toBe(true);
   });
 
-  test("should throw when there is no authenticated user role", async () => {
-    await expect(getOrRefreshAccessToken()).rejects.toThrow(
-      "Cannot refresh token: unknown user role.",
+  test("should refresh restaurant admin token and preserve RESTAURANT_ADMIN role", async () => {
+    useAuthStore.getState().setAuth(
+      {
+        id: "res-admin-123",
+        fullName: "Restaurant Admin",
+        email: "resadmin@example.com",
+        role: "RESTAURANT_ADMIN",
+        phone: "",
+        status: "Active",
+        createdAt: "",
+        updatedAt: "",
+      },
+      "old-res-admin-token",
     );
 
-    expect(ky.post).not.toHaveBeenCalled();
+    const mockPost = jest.fn().mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        data: {
+          access_token: "new-res-admin-token",
+          user: {
+            id: "res-admin-123",
+            full_name: "Refreshed Restaurant Admin",
+            email: "refreshed-resadmin@example.com",
+            status: "ACTIVE",
+          },
+        },
+      }),
+    });
+
+    (ky.post as jest.Mock) = mockPost;
+
+    const token = await getOrRefreshAccessToken();
+
+    expect(token).toBe("new-res-admin-token");
+    expect(mockPost).toHaveBeenCalledTimes(1);
+
+    const authState = useAuthStore.getState();
+
+    expect(authState.accessToken).toBe("new-res-admin-token");
+    expect(authState.user?.role).toBe("RESTAURANT_ADMIN");
+    expect(authState.isAuthenticated).toBe(true);
+  });
+
+  test("should use default refresh endpoint when unauthenticated or unknown user role", async () => {
+    const mockPost = jest.fn().mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        data: {
+          access_token: "fallback-token",
+          user: {
+            id: "anon-1",
+            full_name: "Anon",
+            email: "anon@example.com",
+            role: "CUSTOMER",
+          },
+        },
+      }),
+    });
+
+    (ky.post as jest.Mock) = mockPost;
+
+    const token = await getOrRefreshAccessToken();
+
+    expect(token).toBe("fallback-token");
+    expect(mockPost).toHaveBeenCalledWith(
+      AUTH_ENDPOINTS.REFRESH_TOKEN,
+      expect.objectContaining({ credentials: "include" }),
+    );
   });
 });

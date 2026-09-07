@@ -36,7 +36,6 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6" noValidate>
-      {/* Email field */}
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <Label htmlFor="email" error={!!errors.email}>
@@ -67,7 +66,6 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
         )}
       </div>
 
-      {/* Password field */}
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <Label htmlFor="password" error={!!errors.password}>
@@ -110,7 +108,6 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
         )}
       </div>
 
-      {/* Submit Button */}
       <Button
         type="submit"
         size="lg"

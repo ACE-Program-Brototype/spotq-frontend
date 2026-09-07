@@ -21,7 +21,6 @@ describe("StaffForgotPasswordPage", () => {
       </QueryClientProvider>,
     );
 
-    // Headings
     expect(screen.getByRole("heading", { name: /forgot your password\?/i })).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -29,11 +28,9 @@ describe("StaffForgotPasswordPage", () => {
       ),
     ).toBeInTheDocument();
 
-    // Form elements
     expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /send reset code/i })).toBeInTheDocument();
 
-    // Back to login link
     const backLink = screen.getByRole("link", { name: /back to login/i });
     expect(backLink).toBeInTheDocument();
     expect(backLink).toHaveAttribute("href", "/staff/login");

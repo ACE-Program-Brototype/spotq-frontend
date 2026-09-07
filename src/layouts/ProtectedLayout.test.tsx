@@ -135,4 +135,80 @@ describe("ProtectedLayout", () => {
 
     expect(screen.getByText("Admin Allowed")).toBeInTheDocument();
   });
+
+  it("redirects logged-in RESTAURANT_ADMIN to '/restaurant/dashboard' when accessing customer routes like '/'", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Owner",
+      email: "restaurant@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <Routes>
+          <Route element={<ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo="/login" />}>
+            <Route path="/" element={<div>Customer Home Page</div>} />
+          </Route>
+          <Route path="/restaurant/dashboard" element={<div>Restaurant Dashboard Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Restaurant Dashboard Page")).toBeInTheDocument();
+    expect(screen.queryByText("Customer Home Page")).not.toBeInTheDocument();
+  });
+
+  it("redirects logged-in RESTAURANT_ADMIN to '/restaurant/dashboard' when accessing admin routes like '/admin/dashboard'", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Owner",
+      email: "restaurant@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/admin/dashboard"]}>
+        <Routes>
+          <Route element={<ProtectedLayout allowedRoles={["ADMIN"]} redirectTo="/admin/login" />}>
+            <Route path="/admin/dashboard" element={<div>Admin Dashboard Page</div>} />
+          </Route>
+          <Route path="/restaurant/dashboard" element={<div>Restaurant Dashboard Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Restaurant Dashboard Page")).toBeInTheDocument();
+    expect(screen.queryByText("Admin Dashboard Page")).not.toBeInTheDocument();
+  });
+
+  it("redirects logged-in RESTAURANT_ADMIN to '/restaurant/dashboard' when accessing staff routes like '/staff/dashboard'", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Owner",
+      email: "restaurant@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/staff/dashboard"]}>
+        <Routes>
+          <Route
+            element={
+              <ProtectedLayout allowedRoles={["RESTAURANT_STAFF"]} redirectTo="/staff/login" />
+            }
+          >
+            <Route path="/staff/dashboard" element={<div>Staff Dashboard Page</div>} />
+          </Route>
+          <Route path="/restaurant/dashboard" element={<div>Restaurant Dashboard Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Restaurant Dashboard Page")).toBeInTheDocument();
+    expect(screen.queryByText("Staff Dashboard Page")).not.toBeInTheDocument();
+  });
 });

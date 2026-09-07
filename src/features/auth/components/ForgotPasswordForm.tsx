@@ -33,7 +33,6 @@ export function ForgotPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
-      {/* Email Address field */}
       <div className="space-y-2">
         <Label
           htmlFor="forgot-email"
@@ -67,7 +66,6 @@ export function ForgotPasswordForm() {
         )}
       </div>
 
-      {/* Submit Button */}
       <Button
         type="submit"
         size="lg"
@@ -87,7 +85,6 @@ export function ForgotPasswordForm() {
         )}
       </Button>
 
-      {/* Back to Login */}
       <div className="pt-2 text-center">
         <Link
           to="/login"

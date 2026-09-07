@@ -7,7 +7,6 @@ const TermsAndConditionsPage = () => {
       description="Please read these terms carefully before using SpotQ and its restaurant discovery and waitlist services."
       lastUpdated="August 24, 2026"
     >
-      {/* Introduction */}
       <div className="space-y-4">
         <p>
           Welcome to SpotQ. These Terms and Conditions govern your access to and use of the SpotQ
@@ -21,7 +20,6 @@ const TermsAndConditionsPage = () => {
         </p>
       </div>
 
-      {/* 1. About SpotQ */}
       <section className="mt-12">
         <h2>1. About SpotQ</h2>
 
@@ -39,7 +37,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 2. Eligibility */}
       <section className="mt-12">
         <h2>2. Eligibility</h2>
 
@@ -57,7 +54,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 3. Using SpotQ */}
       <section className="mt-12">
         <h2>3. Using SpotQ</h2>
 
@@ -75,7 +71,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 4. Restaurant Availability */}
       <section className="mt-12">
         <h2>4. Restaurant Availability</h2>
 
@@ -94,7 +89,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 5. User Responsibilities */}
       <section className="mt-12">
         <h2>5. User Responsibilities</h2>
 
@@ -110,7 +104,6 @@ const TermsAndConditionsPage = () => {
         </ul>
       </section>
 
-      {/* 6. Account Suspension or Termination */}
       <section className="mt-12">
         <h2>6. Account Suspension or Termination</h2>
 
@@ -127,7 +120,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 7. Intellectual Property */}
       <section className="mt-12">
         <h2>7. Intellectual Property</h2>
 
@@ -145,7 +137,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 8. Third-Party Services */}
       <section className="mt-12">
         <h2>8. Third-Party Services</h2>
 
@@ -162,7 +153,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 9. Disclaimer */}
       <section className="mt-12">
         <h2>9. Disclaimer</h2>
 
@@ -180,7 +170,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 10. Limitation of Liability */}
       <section className="mt-12">
         <h2>10. Limitation of Liability</h2>
 
@@ -193,7 +182,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 11. Changes to These Terms */}
       <section className="mt-12">
         <h2>11. Changes to These Terms</h2>
 
@@ -210,7 +198,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* 12. Contact Us */}
       <section className="mt-12">
         <h2>12. Contact Us</h2>
 
@@ -228,7 +215,6 @@ const TermsAndConditionsPage = () => {
         </div>
       </section>
 
-      {/* Important Notice */}
       <div className="mt-14 rounded-xl border border-spotq-orange/20 bg-spotq-orange/5 p-5 sm:p-6">
         <p className="!m-0 text-sm !leading-6 !text-gray-600">
           <strong className="text-gray-800">Important:</strong> This page is a product-ready
