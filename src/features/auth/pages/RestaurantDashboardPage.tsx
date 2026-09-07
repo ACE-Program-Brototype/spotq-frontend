@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -19,6 +20,12 @@ export default function RestaurantDashboardPage() {
   const isSubscriptionActive = statusData?.isSubscriptionActive ?? false;
   const isApproved = statusData?.verificationStatus === "APPROVED";
   const needsSubscription = isApproved && !isSubscriptionActive;
+
+  useEffect(() => {
+    if (!isLoadingStatus && needsSubscription) {
+      navigate("/restaurant/subscription", { replace: true });
+    }
+  }, [isLoadingStatus, needsSubscription, navigate]);
 
   return (
     <div className="space-y-6 max-w-full">
