@@ -5,6 +5,7 @@ import RestaurantEmailVerificationPage from "@/features/auth/pages/RestaurantEma
 import RestaurantOnboardingPage from "@/features/auth/pages/RestaurantOnboardingPage";
 import RestaurantTermsPage from "@/features/auth/pages/RestaurantTermsPage";
 import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
+import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 
@@ -48,6 +49,10 @@ export const restaurantRoutes: RouteObject[] = [
       {
         path: "dashboard",
         Component: RestaurantDashboardPage,
+      },
+      {
+        path: "subscription",
+        Component: RestaurantSubscriptionPage,
       },
     ],
   },

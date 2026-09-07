@@ -32,6 +32,10 @@ export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount 
           if (path !== "/staff/login") {
             window.location.href = "/staff/login";
           }
+        } else if (path.startsWith("/restaurant")) {
+          if (path !== "/restaurant/email/verification") {
+            window.location.href = "/restaurant/email/verification";
+          }
         } else if (!isAdminRoute && path !== "/login") {
           window.location.href = "/login";
         }

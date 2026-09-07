@@ -23,9 +23,14 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
     const currentRole = currentUser?.role;
 
     let refreshEndpoint: string;
-    let role: "CUSTOMER" | "RESTAURANT_STAFF";
+    let role: "CUSTOMER" | "RESTAURANT_STAFF" | "RESTAURANT_ADMIN";
 
     switch (currentRole) {
+      case "RESTAURANT_ADMIN":
+        refreshEndpoint = AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN;
+        role = "RESTAURANT_ADMIN";
+        break;
+
       case "RESTAURANT_STAFF":
         refreshEndpoint = AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN;
         role = "RESTAURANT_STAFF";

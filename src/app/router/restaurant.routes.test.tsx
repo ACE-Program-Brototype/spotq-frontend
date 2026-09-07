@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import type { ComponentType } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -6,8 +7,31 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 
 import { restaurantRoutes } from "./restaurant.routes";
 
+jest.mock("@/features/subscription/api/subscription.api", () => ({
+  subscriptionApi: {
+    fetchRestaurantStatus: jest.fn().mockResolvedValue({
+      restaurantId: "res-1",
+      restaurantName: "Owner Restaurant",
+      verificationStatus: "APPROVED",
+      isSubscriptionActive: true,
+      subscriptionPlanCode: "QUEUE_PRO",
+      subscriptionEndsAt: null,
+      navigationTarget: "/restaurant/dashboard",
+    }),
+  },
+}));
+
 describe("restaurantRoutes structure and protection", () => {
+  let queryClient: QueryClient;
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
     useAuthStore.getState().clearAuth();
   });
 
@@ -27,43 +51,48 @@ describe("restaurantRoutes structure and protection", () => {
 
     // Protected group (index 3)
     const protectedGroup = restaurantRoutes[3];
-    expect(protectedGroup.children?.map((child) => child.path)).toEqual(["dashboard"]);
+    expect(protectedGroup.children?.map((child) => child.path)).toEqual([
+      "dashboard",
+      "subscription",
+    ]);
   });
 
   it("redirects unauthenticated user accessing protected restaurant route", () => {
     render(
-      <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
-        <Routes>
-          <Route path="/restaurant">
-            <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
-            {restaurantRoutes.map((route) => {
-              const Layout = route.Component as ComponentType | undefined;
-              const groupKey = route.path ?? route.children?.[0]?.path ?? "layout";
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey = route.path ?? route.children?.[0]?.path ?? "layout";
 
-              if (!route.children) {
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
                 return Layout ? (
-                  <Route key={groupKey} path={route.path} element={<Layout />} />
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      return (
+                        <Route
+                          key={child.path}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
                 ) : null;
-              }
-
-              return Layout ? (
-                <Route key={groupKey} element={<Layout />}>
-                  {route.children?.map((child) => {
-                    const ChildComp = child.Component as ComponentType | undefined;
-                    return (
-                      <Route
-                        key={child.path}
-                        path={child.path}
-                        element={ChildComp ? <ChildComp /> : null}
-                      />
-                    );
-                  })}
-                </Route>
-              ) : null;
-            })}
-          </Route>
-        </Routes>
-      </MemoryRouter>,
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
 
     // Unauthenticated user attempting to access /restaurant/dashboard should be redirected to /restaurant/email/verification
@@ -80,38 +109,40 @@ describe("restaurantRoutes structure and protection", () => {
     });
 
     render(
-      <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
-        <Routes>
-          <Route path="/restaurant">
-            <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
-            {restaurantRoutes.map((route) => {
-              const Layout = route.Component as ComponentType | undefined;
-              const groupKey = route.path ?? route.children?.[0]?.path ?? "layout";
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey = route.path ?? route.children?.[0]?.path ?? "layout";
 
-              if (!route.children) {
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
                 return Layout ? (
-                  <Route key={groupKey} path={route.path} element={<Layout />} />
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      return (
+                        <Route
+                          key={child.path}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
                 ) : null;
-              }
-
-              return Layout ? (
-                <Route key={groupKey} element={<Layout />}>
-                  {route.children?.map((child) => {
-                    const ChildComp = child.Component as ComponentType | undefined;
-                    return (
-                      <Route
-                        key={child.path}
-                        path={child.path}
-                        element={ChildComp ? <ChildComp /> : null}
-                      />
-                    );
-                  })}
-                </Route>
-              ) : null;
-            })}
-          </Route>
-        </Routes>
-      </MemoryRouter>,
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByText(/Welcome, owner@restaurant.com/i)).toBeInTheDocument();
