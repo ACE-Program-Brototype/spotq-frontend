@@ -53,18 +53,22 @@ export async function loadRazorpayScript(src = RAZORPAY_SCRIPT_URL): Promise<boo
 
   const existingScript = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
   if (existingScript) {
-    return new Promise((resolve) => {
-      existingScript.addEventListener("load", () => resolve(true));
-      existingScript.addEventListener("error", () => resolve(false));
-    });
+    if (existingScript.dataset.loaded === "true") return true;
+    existingScript.remove();
   }
 
   return new Promise((resolve) => {
     const script = document.createElement("script");
     script.src = src;
     script.async = true;
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
+    script.onload = () => {
+      script.dataset.loaded = "true";
+      resolve(true);
+    };
+    script.onerror = () => {
+      script.remove();
+      resolve(false);
+    };
     document.body.appendChild(script);
   });
 }

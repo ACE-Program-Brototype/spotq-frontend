@@ -142,4 +142,32 @@ describe("useRazorpayCheckout", () => {
     expect(toast.info).toHaveBeenCalledWith(expect.stringContaining("closed"));
     expect(result.current.isProcessing).toBe(false);
   });
+
+  it("handles script load failure gracefully", async () => {
+    delete (window as { Razorpay?: unknown }).Razorpay;
+    const onError = jest.fn();
+    const { result } = renderHook(() => useRazorpayCheckout({ onError }));
+
+    // Mock document.createElement to trigger onerror on script
+    const originalCreateElement = document.createElement.bind(document);
+    jest.spyOn(document, "createElement").mockImplementation((tagName: string) => {
+      const el = originalCreateElement(tagName);
+      if (tagName === "script") {
+        setTimeout(() => {
+          el.onerror?.(new Event("error") as unknown as Event);
+        }, 0);
+      }
+      return el;
+    });
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    expect(toast.error).toHaveBeenCalled();
+    expect(onError).toHaveBeenCalled();
+    expect(result.current.isProcessing).toBe(false);
+
+    (document.createElement as unknown as jest.Mock).mockRestore();
+  });
 });
