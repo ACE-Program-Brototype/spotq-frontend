@@ -66,4 +66,27 @@ describe("RestaurantDashboardPage", () => {
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  it("renders expiring soon warning banner when subscription ends within 7 days", async () => {
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 3);
+
+    (subscriptionApi.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
+      restaurantId: "123",
+      restaurantName: "Test Kitchen",
+      email: "test@spotq.com",
+      verificationStatus: "APPROVED",
+      isSubscriptionActive: true,
+      subscriptionPlanCode: "QUEUE_PRO",
+      subscriptionEndsAt: futureDate.toISOString(),
+    });
+
+    renderWithClient(<RestaurantDashboardPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Subscription Expiring Soon")).toBeInTheDocument();
+      expect(screen.getByText(/expires in 3 days/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Renew Plan/i })).toBeInTheDocument();
+    });
+  });
 });

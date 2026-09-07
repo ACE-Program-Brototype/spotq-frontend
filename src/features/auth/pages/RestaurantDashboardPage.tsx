@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
+import { AlertCircle, ArrowRight, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,16 @@ export default function RestaurantDashboardPage() {
   const isSubscriptionActive = statusData?.isSubscriptionActive ?? false;
   const isApproved = statusData?.verificationStatus === "APPROVED";
   const needsSubscription = isApproved && !isSubscriptionActive;
+
+  const subscriptionEndsAt = statusData?.subscriptionEndsAt
+    ? new Date(statusData.subscriptionEndsAt)
+    : null;
+  const now = new Date();
+  const daysRemaining = subscriptionEndsAt
+    ? Math.ceil((subscriptionEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+  const isExpiringSoon =
+    isSubscriptionActive && daysRemaining !== null && daysRemaining <= 7 && daysRemaining >= 0;
 
   useEffect(() => {
     if (!isLoadingStatus && needsSubscription) {
@@ -47,6 +57,38 @@ export default function RestaurantDashboardPage() {
             Back to email
           </button>
         </div>
+
+        {/* Subscription Expiring Soon Warning Banner */}
+        {isExpiringSoon && (
+          <div className="mt-8 overflow-hidden rounded-2xl border border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 p-6 shadow-sm">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="rounded-full bg-amber-100 p-2 text-amber-700">
+                  <AlertCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-amber-950">Subscription Expiring Soon</h3>
+                  <p className="mt-0.5 text-sm text-amber-800">
+                    Your {statusData?.subscriptionPlanCode?.replace("_", " ") || "current"} plan
+                    expires in{" "}
+                    {daysRemaining === 0
+                      ? "today"
+                      : `${daysRemaining} day${daysRemaining === 1 ? "" : "s"}`}
+                    . Renew now to avoid service interruption.
+                  </p>
+                </div>
+              </div>
+              <Button
+                type="button"
+                onClick={() => navigate("/restaurant/subscription")}
+                className="gap-2 bg-amber-600 text-white hover:bg-amber-700 shrink-0"
+              >
+                Renew Plan
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Subscription Alert for Verified Restaurant Admins */}
         {needsSubscription && !isLoadingStatus && (
