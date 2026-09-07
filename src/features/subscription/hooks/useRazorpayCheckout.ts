@@ -103,7 +103,7 @@ export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutO
           contact: orderData.restaurant.phone || "",
         },
         theme: {
-          color: "#ea580c", // SpotQ Orange
+          color: "#ea580c",
         },
         handler: async (paymentResponse: RazorpayPaymentSuccessResponse) => {
           try {
