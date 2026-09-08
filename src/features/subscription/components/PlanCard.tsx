@@ -1,14 +1,7 @@
 import { Check, Loader2, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { SubscriptionPlan } from "@/features/subscription/types/subscription.types";
-
-interface PlanCardProps {
-  plan: SubscriptionPlan;
-  isPopular?: boolean;
-  isLoading?: boolean;
-  onSelect: (planId: string) => void;
-}
+import type { PlanCardProps } from "@/features/subscription/types/subscription.types";
 
 export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps) {
   const isHighlighted = isPopular || plan.code === "QUEUE_PRO";
