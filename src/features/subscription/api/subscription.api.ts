@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { SUBSCRIPTION_ENDPOINTS } from "@/features/subscription/constants/subscription.constants";
 import type {
+  ApiResponse,
   CreateSubscriptionOrderResponse,
   RestaurantStatusData,
   SubscriptionPlan,
@@ -8,13 +9,6 @@ import type {
   VerifyPaymentResponse,
 } from "@/features/subscription/types/subscription.types";
 import { apiClient } from "@/lib/api/client";
-
-interface ApiResponse<T> {
-  success: boolean;
-  statusCode?: number;
-  message: string;
-  data: T;
-}
 
 export const subscriptionApi = {
   async fetchPlans(): Promise<SubscriptionPlan[]> {
