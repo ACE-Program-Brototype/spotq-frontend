@@ -87,12 +87,7 @@ export const staffInvitationService = {
           data?:
             | {
                 invitations?: StaffInvitation[];
-                pagination?: {
-                  page: number;
-                  limit: number;
-                  total: number;
-                  totalPages: number;
-                };
+                pagination?: StaffInvitationPagination;
               }
             | StaffInvitation[];
         }>();

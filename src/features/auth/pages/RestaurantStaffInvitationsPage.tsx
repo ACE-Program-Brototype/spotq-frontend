@@ -535,17 +535,17 @@ export default function RestaurantStaffInvitationsPage() {
               &lt;
             </button>
 
-            {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-              let pageNum = i + 1;
-              if (pagination.totalPages > 5 && page > 3) {
-                pageNum = page - 2 + i;
-                if (pageNum > pagination.totalPages) {
-                  pageNum = pagination.totalPages - 4 + i;
-                }
+            {(() => {
+              const maxButtons = 5;
+              const totalPages = pagination.totalPages;
+              let startPage = Math.max(1, page - Math.floor(maxButtons / 2));
+              if (startPage + maxButtons - 1 > totalPages) {
+                startPage = Math.max(1, totalPages - maxButtons + 1);
               }
-              if (pageNum < 1 || pageNum > pagination.totalPages) return null;
+              const pageCount = Math.min(maxButtons, Math.max(0, totalPages - startPage + 1));
+              const pageNumbers = Array.from({ length: pageCount }, (_, i) => startPage + i);
 
-              return (
+              return pageNumbers.map((pageNum) => (
                 <button
                   key={pageNum}
                   type="button"
@@ -559,8 +559,8 @@ export default function RestaurantStaffInvitationsPage() {
                 >
                   {pageNum}
                 </button>
-              );
-            })}
+              ));
+            })()}
 
             <button
               type="button"

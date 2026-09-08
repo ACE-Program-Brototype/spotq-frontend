@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useDebounce } from "@/features/auth/hooks/use-debounce";
 import { staffInvitationService } from "@/features/auth/services/staff-invitation.service";
@@ -7,6 +7,7 @@ import type {
   StaffInvitationPagination,
   StaffInvitationSortBy,
   StaffInvitationSortOrder,
+  StaffInvitationStats,
   StaffInvitationStatus,
 } from "@/features/auth/types/staff-invitation.types";
 
@@ -31,6 +32,16 @@ export function useStaffInvitations() {
     hasNextPage: false,
     hasPrevPage: false,
   });
+
+  const stats: StaffInvitationStats = useMemo(() => {
+    return {
+      total: pagination.total || invitations.length,
+      pending: invitations.filter((i) => i.status === "PENDING").length,
+      accepted: invitations.filter((i) => i.status === "ACCEPTED").length,
+      expired: invitations.filter((i) => i.status === "EXPIRED").length,
+      revoked: invitations.filter((i) => i.status === "REVOKED").length,
+    };
+  }, [pagination.total, invitations]);
 
   const fetchInvitations = useCallback(async () => {
     setIsLoading(true);
@@ -180,28 +191,8 @@ export function useStaffInvitations() {
     }
   };
 
-  const filteredInvitations = invitations.filter((inv) => {
-    const matchesSearch =
-      searchQuery.trim() === "" ||
-      inv.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      inv.id.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesStatus =
-      statusFilter === "ALL" || inv.status.toUpperCase() === statusFilter.toUpperCase();
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const stats = {
-    total: invitations.length,
-    pending: invitations.filter((i) => i.status === "PENDING").length,
-    accepted: invitations.filter((i) => i.status === "ACCEPTED").length,
-    expired: invitations.filter((i) => i.status === "EXPIRED").length,
-    revoked: invitations.filter((i) => i.status === "REVOKED").length,
-  };
-
   return {
-    invitations: filteredInvitations,
+    invitations,
     allInvitations: invitations,
     stats,
     isLoading,

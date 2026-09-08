@@ -23,6 +23,14 @@ export type StaffInvitationPagination = {
   hasPrevPage?: boolean;
 };
 
+export type StaffInvitationStats = {
+  total: number;
+  pending: number;
+  accepted: number;
+  expired: number;
+  revoked: number;
+};
+
 export type SendStaffInvitationInput = {
   email: string;
 };
