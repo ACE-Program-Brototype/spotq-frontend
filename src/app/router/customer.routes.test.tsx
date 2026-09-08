@@ -3,7 +3,9 @@ import { customerRoutes } from "./customer.routes";
 describe("customerRoutes structure", () => {
   it("defines customer layout routes, auth routes, and legal routes", () => {
     const layoutGroup = customerRoutes[0];
-    expect(layoutGroup.children?.map((child) => child.path)).toEqual(["/", "/about"]);
+    expect(layoutGroup.children?.[0].path).toBe("/");
+    expect(layoutGroup.children?.[1].path).toBe("/about");
+    expect(layoutGroup.children?.[2].children?.[0].path).toBe("/profile");
 
     const authGroup = customerRoutes[1];
     expect(authGroup.children?.map((child) => child.path)).toEqual([

@@ -9,8 +9,14 @@ import AboutPage from "@/features/demo/pages/AboutPage";
 import HomePage from "@/features/demo/pages/HomePage";
 import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
+import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
+import ProtectedLayout from "@/layouts/ProtectedLayout";
+
+const CustomerProtectedLayout = () => (
+  <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo="/login" />
+);
 
 export const customerRoutes: RouteObject[] = [
   {
@@ -23,6 +29,15 @@ export const customerRoutes: RouteObject[] = [
       {
         path: "/about",
         Component: AboutPage,
+      },
+      {
+        Component: CustomerProtectedLayout,
+        children: [
+          {
+            path: "/profile",
+            Component: ViewProfilePage,
+          },
+        ],
       },
     ],
   },
