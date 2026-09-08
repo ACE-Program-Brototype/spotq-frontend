@@ -75,9 +75,14 @@ export function useAcceptInvitation() {
       if (res.success) {
         if (res.data?.staff && res.data?.accessToken) {
           useAuthStore.getState().setAuth(res.data.staff, res.data.accessToken);
+          toast.success(res.message || "Registration successful! Welcome to SpotQ.");
+          navigate("/staff/dashboard", { replace: true });
+        } else {
+          toast.success(
+            res.message || "Registration completed successfully! Please sign in to your account.",
+          );
+          navigate("/staff/login", { replace: true });
         }
-        toast.success(res.message || "Registration successful! Welcome to SpotQ.");
-        navigate("/staff/dashboard", { replace: true });
       } else {
         toast.error(res.message || "Failed to complete registration.");
       }
