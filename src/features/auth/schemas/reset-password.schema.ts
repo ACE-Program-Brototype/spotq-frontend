@@ -20,11 +20,9 @@ export const adminResetPasswordSchema = z
   .object({
     password: z
       .string()
+      .trim()
       .min(15, { message: "Password must be at least 15 characters" })
-      .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
-      .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
-      .regex(/\d/, { message: "Password must contain at least one number" })
-      .regex(/[^A-Za-z0-9]/, { message: "Password must contain at least one special character" }),
+      .max(100, { message: "Password must be at most 100 characters" }),
     confirmPassword: z.string().min(1, { message: "Please confirm your password" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
