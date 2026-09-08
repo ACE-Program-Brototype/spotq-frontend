@@ -1,4 +1,4 @@
-import { Camera, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import type { CustomerProfile } from "../types/profile.types";
 
 interface ProfileHeroCardProps {
@@ -6,16 +6,14 @@ interface ProfileHeroCardProps {
 }
 
 export function ProfileHeroCard({ profile }: ProfileHeroCardProps) {
-  const displayName = profile.full_name || "Customer";
+  const displayName = profile.full_name?.trim() || "Customer";
+  const nameParts = displayName.split(/\s+/).filter(Boolean);
   const initials =
-    profile.first_name && profile.last_name
-      ? `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase()
-      : displayName
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2) || "JD";
+    nameParts.length >= 2
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : nameParts.length === 1
+        ? nameParts[0].slice(0, 2).toUpperCase()
+        : "CU";
 
   const formattedDob = profile.dob
     ? (() => {
@@ -43,9 +41,6 @@ export function ProfileHeroCard({ profile }: ProfileHeroCardProps) {
       <div className="relative shrink-0">
         <div className="flex size-28 sm:size-32 items-center justify-center rounded-full bg-[#fde1cb] text-[#3d2314] text-3xl sm:text-4xl font-black tracking-tight select-none ring-4 ring-[#fae4d4]">
           {initials}
-        </div>
-        <div className="absolute bottom-1 right-1 flex size-8 items-center justify-center rounded-full bg-[#8c522f] text-white shadow-md border-2 border-white">
-          <Camera className="size-4" />
         </div>
       </div>
 

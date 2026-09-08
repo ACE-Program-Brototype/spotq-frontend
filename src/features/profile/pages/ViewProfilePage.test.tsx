@@ -11,8 +11,6 @@ const mockUseCustomerProfile = useCustomerProfile as jest.MockedFunction<typeof 
 
 const mockProfile: CustomerProfile = {
   id: "cust-123",
-  first_name: "Jane",
-  last_name: "Doe",
   full_name: "Jane Doe",
   email: "jane@example.com",
   phone: "+919876543210",
@@ -112,8 +110,8 @@ describe("ViewProfilePage", () => {
     expect(screen.getByText("Female")).toBeInTheDocument();
 
     // Verify Delivery card
+    expect(screen.getByText("DELIVERY ADDRESS")).toBeInTheDocument();
     expect(screen.getByText("Current Location: Kochi, IN")).toBeInTheDocument();
-    expect(screen.getByText("Set as default delivery address")).toBeInTheDocument();
 
     // Verify Edit button link
     const editLink = screen.getByLabelText("Edit Profile");
@@ -123,8 +121,6 @@ describe("ViewProfilePage", () => {
   it("handles null optional fields gracefully", () => {
     const minimalProfile: CustomerProfile = {
       id: "cust-456",
-      first_name: "Alex",
-      last_name: null,
       full_name: "Alex",
       email: "alex@example.com",
       phone: null,

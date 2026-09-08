@@ -15,16 +15,14 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   const authUser = useAuthStore((state) => state.user);
   const { handleLogout, isLoading: isLoggingOut } = useLogout();
 
-  const displayName = profile?.full_name || authUser?.name || "Customer";
+  const displayName = profile?.full_name?.trim() || authUser?.name?.trim() || "Customer";
+  const nameParts = displayName.split(/\s+/).filter(Boolean);
   const initials =
-    profile?.first_name && profile?.last_name
-      ? `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase()
-      : displayName
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2) || "U";
+    nameParts.length >= 2
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : nameParts.length === 1
+        ? nameParts[0].slice(0, 2).toUpperCase()
+        : "CU";
 
   const navItems = [
     {
