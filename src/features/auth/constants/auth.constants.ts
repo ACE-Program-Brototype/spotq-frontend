@@ -27,17 +27,17 @@ export const AUTH_MESSAGES = {
 } as const;
 
 export const AUTH_ENDPOINTS = {
-  LOGIN: "users/login",
-  GOOGLE_LOGIN: "users/oauth/google",
-  LOGOUT: "users/logout",
-  REFRESH_TOKEN: "users/refresh-token",
-  REGISTER: "users/register",
-  VERIFY_OTP: "users/verify-email",
-  RESEND_EMAIL_OTP: "users/resend-email-otp",
-  FORGOT_PASSWORD: "users/forgot-password",
-  FORGOT_PASSWORD_VERIFY: "users/forgot-password/verify",
-  FORGOT_PASSWORD_RESEND_OTP: "users/forgot-password/resend-otp",
-  RESET_PASSWORD: "users/reset-password",
+  LOGIN: "auth/users/login",
+  GOOGLE_LOGIN: "auth/users/oauth/google",
+  LOGOUT: "auth/users/logout",
+  REFRESH_TOKEN: "auth/users/refresh-token",
+  REGISTER: "auth/users/register",
+  VERIFY_OTP: "auth/users/verify-email",
+  RESEND_EMAIL_OTP: "auth/users/resend-email-otp",
+  FORGOT_PASSWORD: "auth/users/forgot-password",
+  FORGOT_PASSWORD_VERIFY: "auth/users/forgot-password/verify",
+  FORGOT_PASSWORD_RESEND_OTP: "auth/users/forgot-password/resend-otp",
+  RESET_PASSWORD: "auth/users/reset-password",
 
   ADMIN_LOGIN: "admin/auth/login",
   ADMIN_LOGOUT: "admin/auth/logout",
