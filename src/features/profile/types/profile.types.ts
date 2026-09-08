@@ -10,8 +10,6 @@ export interface CustomerProfile {
   status: string;
   gender: "MALE" | "FEMALE" | "OTHER" | null;
   dob: string | null;
-  location: string | null;
-  default_address: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -21,4 +19,11 @@ export interface CustomerProfileApiResponse {
   statusCode: number;
   message: string;
   data: CustomerProfile;
+}
+
+export interface UpdateCustomerProfileDto {
+  first_name: string;
+  last_name?: string | null;
+  gender?: "MALE" | "FEMALE" | "OTHER" | null;
+  dob?: string | null;
 }

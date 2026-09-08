@@ -5,7 +5,10 @@ describe("customerRoutes structure", () => {
     const layoutGroup = customerRoutes[0];
     expect(layoutGroup.children?.[0].path).toBe("/");
     expect(layoutGroup.children?.[1].path).toBe("/about");
-    expect(layoutGroup.children?.[2].children?.[0].path).toBe("/profile");
+    const profileGroup = layoutGroup.children?.[2];
+    expect(profileGroup?.path).toBe("/profile");
+    expect(profileGroup?.children?.[0].index).toBe(true);
+    expect(profileGroup?.children?.[1].path).toBe("edit");
 
     const authGroup = customerRoutes[1];
     expect(authGroup.children?.map((child) => child.path)).toEqual([

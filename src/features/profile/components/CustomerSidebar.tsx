@@ -1,8 +1,15 @@
+/**
+ * CustomerSidebar Component
+ * Sidebar navigation for authenticated customers with active link indicator,
+ * profile initials avatar, and logout button.
+ */
+
 import { CreditCard, LogOut, ShoppingBag, Star, User as UserIcon, Users } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import type { CustomerProfile } from "../types/profile.types";
 
 interface CustomerSidebarProps {
@@ -61,7 +68,6 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
       )}
       style={{ minHeight: "calc(100vh - 8rem)" }}
     >
-      {/* Navigation items */}
       <nav className="flex flex-col gap-1.5" aria-label="Customer Account Navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -89,7 +95,6 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
         })}
       </nav>
 
-      {/* Bottom User Info & Logout */}
       <div className="mt-8 flex flex-col gap-3 pt-4 border-t border-neutral-200/60">
         <div className="flex items-center gap-3 px-2">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#fde1cb] text-[#4a2e18] text-xs font-bold ring-1 ring-[#f7cbb1]">
@@ -97,7 +102,9 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
           </div>
           <div className="flex min-w-0 flex-col">
             <span className="truncate text-sm font-bold text-neutral-900">{displayName}</span>
-            <span className="truncate text-xs font-medium text-neutral-500">Customer Account</span>
+            <span className="truncate text-xs font-medium text-neutral-500">
+              {PROFILE_MESSAGES.CUSTOMER_ACCOUNT}
+            </span>
           </div>
         </div>
 

@@ -1,4 +1,10 @@
+/**
+ * ProfileInfoCards Component
+ * Displays 4 information cards: Email, Phone, Gender, and Birth Date.
+ */
+
 import { Calendar, Mail, Phone, User as UserIcon } from "lucide-react";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import type { CustomerProfile } from "../types/profile.types";
 
 interface ProfileInfoCardsProps {
@@ -6,7 +12,6 @@ interface ProfileInfoCardsProps {
 }
 
 export function ProfileInfoCards({ profile }: ProfileInfoCardsProps) {
-  // Format Date of Birth
   const formattedDob = profile.dob
     ? (() => {
         try {
@@ -25,25 +30,23 @@ export function ProfileInfoCards({ profile }: ProfileInfoCardsProps) {
           return profile.dob;
         }
       })()
-    : "Not specified";
+    : PROFILE_MESSAGES.NOT_SPECIFIED;
 
-  // Format Gender
   const formattedGender = profile.gender
     ? profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1).toLowerCase()
-    : "Not specified";
+    : PROFILE_MESSAGES.NOT_SPECIFIED;
 
-  // Format Phone Number
   const formattedPhone = profile.phone
     ? profile.phone.startsWith("+91") && profile.phone.length === 13
       ? `+91 ${profile.phone.slice(3, 8)} ${profile.phone.slice(8)}`
       : profile.phone
-    : "Not provided";
+    : PROFILE_MESSAGES.NOT_PROVIDED;
 
   const cards = [
     {
       id: "email",
       label: "EMAIL ADDRESS",
-      value: profile.email || "Not provided",
+      value: profile.email || PROFILE_MESSAGES.NOT_PROVIDED,
       icon: Mail,
     },
     {

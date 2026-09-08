@@ -9,6 +9,7 @@ import AboutPage from "@/features/demo/pages/AboutPage";
 import HomePage from "@/features/demo/pages/HomePage";
 import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
+import EditProfilePage from "@/features/profile/pages/EditProfilePage";
 import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
@@ -31,11 +32,16 @@ export const customerRoutes: RouteObject[] = [
         Component: AboutPage,
       },
       {
+        path: "/profile",
         Component: CustomerProtectedLayout,
         children: [
           {
-            path: "/profile",
+            index: true,
             Component: ViewProfilePage,
+          },
+          {
+            path: "edit",
+            Component: EditProfilePage,
           },
         ],
       },
