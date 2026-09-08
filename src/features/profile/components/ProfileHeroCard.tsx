@@ -1,4 +1,3 @@
-import { CheckCircle2 } from "lucide-react";
 import type { CustomerProfile } from "../types/profile.types";
 
 interface ProfileHeroCardProps {
@@ -49,11 +48,6 @@ export function ProfileHeroCard({ profile }: ProfileHeroCardProps) {
         <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
           {displayName}
         </h2>
-
-        <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#a85c2b]">
-          <CheckCircle2 className="size-4 text-[#a85c2b] shrink-0" />
-          <span>{profile.status === "ACTIVE" ? "Verified Customer" : "Registered Customer"}</span>
-        </div>
 
         {/* Location & DOB Chips */}
         <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">

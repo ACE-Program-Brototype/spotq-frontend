@@ -100,7 +100,6 @@ describe("ViewProfilePage", () => {
 
     // Verify Hero card
     expect(screen.getAllByText("Jane Doe")[0]).toBeInTheDocument();
-    expect(screen.getAllByText("Verified Customer")[0]).toBeInTheDocument();
     expect(screen.getAllByText("April 12, 1995").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Kochi, IN").length).toBeGreaterThan(0);
 

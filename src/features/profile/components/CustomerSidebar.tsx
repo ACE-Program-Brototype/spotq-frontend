@@ -97,9 +97,7 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
           </div>
           <div className="flex min-w-0 flex-col">
             <span className="truncate text-sm font-bold text-neutral-900">{displayName}</span>
-            <span className="truncate text-xs font-medium text-neutral-500">
-              {profile?.status === "ACTIVE" ? "Verified Customer" : "Premium Member"}
-            </span>
+            <span className="truncate text-xs font-medium text-neutral-500">Customer Account</span>
           </div>
         </div>
 
