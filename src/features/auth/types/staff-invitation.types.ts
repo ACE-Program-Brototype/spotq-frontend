@@ -14,6 +14,15 @@ export type StaffInvitation = {
   createdAt: string;
 };
 
+export type StaffInvitationPagination = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+};
+
 export type SendStaffInvitationInput = {
   email: string;
 };

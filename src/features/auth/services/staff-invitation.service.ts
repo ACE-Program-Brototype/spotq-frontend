@@ -8,6 +8,7 @@ import type {
   RevokeStaffInvitationInput,
   SendStaffInvitationInput,
   StaffInvitation,
+  StaffInvitationPagination,
   StaffInvitationSortBy,
   StaffInvitationSortOrder,
   ValidateInvitationResponse,
@@ -64,12 +65,7 @@ export const staffInvitationService = {
   }): Promise<
     ApiResponse<{
       invitations: StaffInvitation[];
-      pagination?: {
-        page: number;
-        limit: number;
-        total: number;
-        totalPages: number;
-      };
+      pagination?: StaffInvitationPagination;
     }>
   > {
     try {

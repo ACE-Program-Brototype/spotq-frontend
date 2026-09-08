@@ -5,7 +5,6 @@ import {
   Clock,
   Eye,
   Mail,
-  RefreshCw,
   RotateCw,
   Search,
   Send,
@@ -16,6 +15,7 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InvitationDetailsModal } from "@/features/auth/components/InvitationDetailsModal";
@@ -44,6 +44,11 @@ export default function RestaurantStaffInvitationsPage() {
     setSortBy,
     sortOrder,
     setSortOrder,
+    page,
+    setPage,
+    limit,
+    setLimit,
+    pagination,
     sendInvitation,
     resendInvitation,
     revokeInvitation,
@@ -255,7 +260,14 @@ export default function RestaurantStaffInvitationsPage() {
               disabled={isSending || !quickEmail}
               className="h-9.5 rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white text-xs font-semibold px-4 shrink-0"
             >
-              {isSending ? <RefreshCw className="size-3.5 animate-spin" /> : "Send Link"}
+              {isSending ? (
+                <div className="flex items-center gap-1.5">
+                  <Spinner size="sm" theme="white" />
+                  <span>Sending...</span>
+                </div>
+              ) : (
+                "Send Link"
+              )}
             </Button>
           </div>
         </form>
@@ -341,7 +353,35 @@ export default function RestaurantStaffInvitationsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#f3e6de]">
-              {invitations.length === 0 ? (
+              {isLoading ? (
+                ["sk-1", "sk-2", "sk-3", "sk-4", "sk-5"]
+                  .slice(0, Math.min(limit, 5))
+                  .map((skId) => (
+                    <tr key={skId} className="animate-pulse">
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="size-7 rounded-lg bg-[#f3e6de]/70" />
+                          <div className="space-y-1.5">
+                            <div className="h-3.5 w-36 bg-[#f3e6de]/70 rounded-md" />
+                            <div className="h-2.5 w-20 bg-[#f3e6de]/40 rounded-md" />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="h-5 w-20 bg-[#f3e6de]/70 rounded-full" />
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="h-3.5 w-24 bg-[#f3e6de]/60 rounded-md" />
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="h-3.5 w-24 bg-[#f3e6de]/60 rounded-md" />
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="h-6 w-16 bg-[#f3e6de]/50 rounded-lg ml-auto" />
+                      </td>
+                    </tr>
+                  ))
+              ) : invitations.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-neutral-400">
                     <Mail className="size-8 mx-auto text-neutral-300 mb-2" />
@@ -455,15 +495,83 @@ export default function RestaurantStaffInvitationsPage() {
           </table>
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between px-4 py-3 border-t border-[#eddcd4] bg-[#faf7f5]/40 text-xs text-neutral-500">
-          <span>
-            Showing <strong>{invitations.length}</strong> invitation
-            {invitations.length === 1 ? "" : "s"}
-          </span>
-          <span className="text-[11px] text-neutral-400">
-            Invitations expire automatically after 48 hours
-          </span>
+        {/* Pagination Footer */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-[#eddcd4] bg-[#faf7f5]/40 text-xs text-neutral-600">
+          <div className="flex items-center gap-2">
+            <span>
+              Showing{" "}
+              <strong>
+                {pagination.total === 0 ? 0 : (page - 1) * limit + 1}-
+                {Math.min(page * limit, pagination.total)}
+              </strong>{" "}
+              of <strong>{pagination.total}</strong> invitations
+            </span>
+
+            {/* Page Size Select */}
+            <div className="flex items-center gap-1.5 ml-2">
+              <span className="text-neutral-400">|</span>
+              <span className="text-neutral-500 text-[11px]">Rows:</span>
+              <select
+                value={limit}
+                onChange={(e) => setLimit(Number(e.target.value))}
+                className="h-7 rounded-lg border border-[#eddcd4] bg-white px-2 text-xs text-neutral-700 focus:outline-none focus:border-[#e8631b]"
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              disabled={page <= 1 || isLoading}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="size-7 rounded-lg border border-[#eddcd4] bg-white flex items-center justify-center text-neutral-600 hover:bg-[#faf7f5] disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              title="Previous page"
+            >
+              &lt;
+            </button>
+
+            {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+              let pageNum = i + 1;
+              if (pagination.totalPages > 5 && page > 3) {
+                pageNum = page - 2 + i;
+                if (pageNum > pagination.totalPages) {
+                  pageNum = pagination.totalPages - 4 + i;
+                }
+              }
+              if (pageNum < 1 || pageNum > pagination.totalPages) return null;
+
+              return (
+                <button
+                  key={pageNum}
+                  type="button"
+                  onClick={() => setPage(pageNum)}
+                  className={cn(
+                    "size-7 rounded-lg text-xs font-semibold transition-colors",
+                    page === pageNum
+                      ? "bg-[#e8631b] text-white shadow-2xs"
+                      : "border border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5]",
+                  )}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              disabled={page >= pagination.totalPages || isLoading}
+              onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
+              className="size-7 rounded-lg border border-[#eddcd4] bg-white flex items-center justify-center text-neutral-600 hover:bg-[#faf7f5] disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              title="Next page"
+            >
+              &gt;
+            </button>
+          </div>
         </div>
       </div>
 

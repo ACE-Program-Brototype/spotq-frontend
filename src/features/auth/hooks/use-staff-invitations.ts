@@ -4,6 +4,7 @@ import { useDebounce } from "@/features/auth/hooks/use-debounce";
 import { staffInvitationService } from "@/features/auth/services/staff-invitation.service";
 import type {
   StaffInvitation,
+  StaffInvitationPagination,
   StaffInvitationSortBy,
   StaffInvitationSortOrder,
   StaffInvitationStatus,
@@ -20,30 +21,73 @@ export function useStaffInvitations() {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [sortBy, setSortBy] = useState<StaffInvitationSortBy>("createdAt");
   const [sortOrder, setSortOrder] = useState<StaffInvitationSortOrder>("desc");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [pagination, setPagination] = useState<StaffInvitationPagination>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
 
   const fetchInvitations = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await staffInvitationService.getInvitations({
+        page,
+        limit,
         status: statusFilter !== "ALL" ? statusFilter : undefined,
         search: debouncedSearch.trim() || undefined,
         sortBy,
         sortOrder,
       });
 
-      if (res.success && res.data?.invitations) {
-        setInvitations(res.data.invitations);
+      if (res.success && res.data) {
+        setInvitations(res.data.invitations || []);
+        if (res.data.pagination) {
+          setPagination(res.data.pagination);
+        } else {
+          setPagination((prev) => ({
+            ...prev,
+            page,
+            limit,
+            total: res.data?.invitations?.length || 0,
+            totalPages: Math.max(1, Math.ceil((res.data?.invitations?.length || 0) / limit)),
+          }));
+        }
       }
     } catch {
       // Keep existing items if network error
     } finally {
       setIsLoading(false);
     }
-  }, [statusFilter, debouncedSearch, sortBy, sortOrder]);
+  }, [page, limit, statusFilter, debouncedSearch, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchInvitations();
   }, [fetchInvitations]);
+
+  const handleSetSearchQuery = (query: string) => {
+    setSearchQuery(query);
+    setPage(1);
+  };
+
+  const handleSetStatusFilter = (status: string) => {
+    setStatusFilter(status);
+    setPage(1);
+  };
+
+  const handleSetSortBy = (newSortBy: StaffInvitationSortBy) => {
+    setSortBy(newSortBy);
+    setPage(1);
+  };
+
+  const handleSetSortOrder = (newSortOrder: StaffInvitationSortOrder) => {
+    setSortOrder(newSortOrder);
+    setPage(1);
+  };
 
   const sendInvitation = async (email: string) => {
     setIsSending(true);
@@ -165,13 +209,18 @@ export function useStaffInvitations() {
     isResending,
     isRevoking,
     searchQuery,
-    setSearchQuery,
+    setSearchQuery: handleSetSearchQuery,
     statusFilter,
-    setStatusFilter,
+    setStatusFilter: handleSetStatusFilter,
     sortBy,
-    setSortBy,
+    setSortBy: handleSetSortBy,
     sortOrder,
-    setSortOrder,
+    setSortOrder: handleSetSortOrder,
+    page,
+    setPage,
+    limit,
+    setLimit,
+    pagination,
     sendInvitation,
     resendInvitation,
     revokeInvitation,

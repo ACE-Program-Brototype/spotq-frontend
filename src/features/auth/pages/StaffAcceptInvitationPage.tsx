@@ -6,7 +6,6 @@ import {
   Eye,
   EyeOff,
   KeyRound,
-  Loader2,
   Lock,
   Mail,
   Phone,
@@ -17,6 +16,7 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { LoadingIndicator, Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAcceptInvitation } from "@/features/auth/hooks/use-accept-invitation";
@@ -94,8 +94,8 @@ export default function StaffAcceptInvitationPage() {
           {/* State 1: Validating Token */}
           {isValidating && (
             <div className="rounded-3xl border border-[#eddcd4] bg-white p-8 sm:p-10 shadow-xl text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
-              <div className="size-16 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center mx-auto text-[#e8631b]">
-                <Loader2 className="size-8 animate-spin" />
+              <div className="size-16 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center mx-auto">
+                <LoadingIndicator size="lg" theme="brand" />
               </div>
               <div className="space-y-1">
                 <h2 className="text-xl font-bold text-neutral-900">Validating Invitation</h2>
@@ -340,10 +340,10 @@ export default function StaffAcceptInvitationPage() {
                   className="w-full h-11 rounded-xl bg-gradient-to-r from-[#e8631b] to-[#ff6b00] hover:from-[#d45614] hover:to-[#ea580c] text-white font-bold text-xs shadow-md mt-4 transition-all"
                 >
                   {isSubmitting ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin mr-2" />
-                      Activating Account...
-                    </>
+                    <div className="flex items-center justify-center gap-2">
+                      <Spinner size="sm" theme="white" />
+                      <span>Activating Account...</span>
+                    </div>
                   ) : (
                     <>
                       <Sparkles className="size-4 mr-2" />

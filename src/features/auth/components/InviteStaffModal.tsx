@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Mail, Send, UserPlus, X } from "lucide-react";
+import { Mail, Send, UserPlus, X } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -130,10 +131,10 @@ export function InviteStaffModal({
               className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs"
             >
               {isLoading ? (
-                <>
-                  <Loader2 className="size-4 animate-spin mr-1.5" />
-                  Sending...
-                </>
+                <div className="flex items-center gap-1.5">
+                  <Spinner size="sm" theme="white" />
+                  <span>Sending...</span>
+                </div>
               ) : (
                 <>
                   <Send className="size-3.5 mr-1.5" />
