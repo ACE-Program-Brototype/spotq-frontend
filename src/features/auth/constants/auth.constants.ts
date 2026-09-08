@@ -46,18 +46,24 @@ export const AUTH_ENDPOINTS = {
   ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
   ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
 
-  RESTAURANT_SEND_OTP: "restaurants/registration/email-otp",
+  RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
   RESTAURANT_RESEND_OTP: "restaurants/registration/resend-email-otp",
-  RESTAURANT_VERIFY_OTP: "restaurants/registration/email-otp/verify",
+  RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
   RESTAURANT_ONBOARD: "restaurants/onboard",
 
-  STAFF_LOGIN: "restaurants/staff/login",
+  STAFF_LOGIN: "auth/restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "restaurants/staff/refresh-token",
   STAFF_LOGOUT: "restaurants/staff/logout",
   STAFF_FORGOT_PASSWORD: "restaurants/staff/forgot-password",
   STAFF_VERIFY_OTP: "restaurants/staff/forgot-password/verify",
   STAFF_RESEND_OTP: "restaurants/staff/forgot-password/resend-otp",
   STAFF_RESET_PASSWORD: "restaurants/staff/reset-password",
+
+  STAFF_INVITATIONS: "restaurants/staff/invitations",
+  STAFF_INVITATIONS_RESEND: "restaurants/staff/invitations/resend",
+  STAFF_INVITATIONS_REVOKE: "restaurants/staff/invitations/revoke",
+  STAFF_INVITATION_VALIDATE: "auth/restaurants/staff/invitations/validate",
+  STAFF_INVITATION_ACCEPT: "auth/restaurants/staff/invitations/accept",
 } as const;
 
 export const ADMIN_AUTH_ENDPOINTS = {
@@ -77,6 +83,11 @@ export const STAFF_AUTH_ENDPOINTS = {
   VERIFY_OTP: AUTH_ENDPOINTS.STAFF_VERIFY_OTP,
   RESEND_OTP: AUTH_ENDPOINTS.STAFF_RESEND_OTP,
   RESET_PASSWORD: AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
+  INVITATIONS: AUTH_ENDPOINTS.STAFF_INVITATIONS,
+  INVITATIONS_RESEND: AUTH_ENDPOINTS.STAFF_INVITATIONS_RESEND,
+  INVITATIONS_REVOKE: AUTH_ENDPOINTS.STAFF_INVITATIONS_REVOKE,
+  INVITATION_VALIDATE: AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
+  INVITATION_ACCEPT: AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
 } as const;
 
 export const PUBLIC_AUTH_ENDPOINTS = [
@@ -106,6 +117,8 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.STAFF_VERIFY_OTP,
   AUTH_ENDPOINTS.STAFF_RESEND_OTP,
   AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
+  AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
+  AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
 ] as const;
 
 export const RESTAURANT_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

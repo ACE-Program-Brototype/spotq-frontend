@@ -16,11 +16,6 @@ describe("customerRoutes structure", () => {
     ]);
 
     const standalonePaths = customerRoutes.slice(2).map((route) => route.path);
-    expect(standalonePaths).toEqual([
-      "/terms",
-      "/terms-and-conditions",
-      "/privacy",
-      "/privacy-policy",
-    ]);
+    expect(standalonePaths).toEqual(["/terms", "/privacy"]);
   });
 });

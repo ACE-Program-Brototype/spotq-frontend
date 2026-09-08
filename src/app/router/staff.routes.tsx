@@ -10,7 +10,6 @@ import StaffAuthLayout from "@/layouts/StaffAuthLayout";
 import StaffLayout from "@/layouts/StaffLayout";
 
 const StaffAuthGuard = () => <AuthLayout redirectTo="/staff/dashboard" />;
-
 const StaffProtectedLayout = () => (
   <ProtectedLayout allowedRoles={["RESTAURANT_STAFF"]} redirectTo="/staff/login" />
 );

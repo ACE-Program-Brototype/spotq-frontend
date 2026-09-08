@@ -23,14 +23,21 @@ export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount 
       if (typeof window !== "undefined") {
         const path = window.location.pathname;
         const isAdminRoute = path.startsWith("/admin");
+        const isStaffRoute = path.startsWith("/staff");
+        const isRestaurantRoute = path.startsWith("/restaurant");
 
         if (isAdminRoute && path !== "/admin/login") {
           window.location.href = "/admin/login";
-        } else if (path.startsWith("/staff")) {
-          if (path !== "/staff/login") {
-            window.location.href = "/staff/login";
-          }
-        } else if (!isAdminRoute && path !== "/login") {
+        } else if (isStaffRoute && path !== "/staff/login") {
+          window.location.href = "/staff/login";
+        } else if (
+          isRestaurantRoute &&
+          !path.startsWith("/restaurant/email") &&
+          !path.startsWith("/restaurant/otp") &&
+          !path.startsWith("/restaurant/onboarding")
+        ) {
+          window.location.href = "/restaurant/email/verification";
+        } else if (!isAdminRoute && !isStaffRoute && !isRestaurantRoute && path !== "/login") {
           window.location.href = "/login";
         }
       }
