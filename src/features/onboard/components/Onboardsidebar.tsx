@@ -17,9 +17,7 @@ const STEPS: OnboardStep[] = [
 type StepState = "completed" | "active" | "upcoming";
 
 function getActiveStepIndex(pathname: string): number {
-  const index = STEPS.findIndex((step) =>
-    pathname.includes(`${ONBOARD_BASE_PATH}/${step.path}`)
-  );
+  const index = STEPS.findIndex((step) => pathname.includes(`${ONBOARD_BASE_PATH}/${step.path}`));
   return index === -1 ? 0 : index;
 }
 
@@ -53,17 +51,12 @@ export default function OnboardSidebar() {
           fill="none"
           stroke="currentColor"
           strokeWidth={2}
+          aria-hidden="true"
           className="h-4 w-4"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 19.5 8.25 12l7.5-7.5"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
         </svg>
-        <span className="font-semibold underline underline-offset-2">
-          Back
-        </span>
+        <span className="font-semibold underline underline-offset-2 cursor-pointer">Back</span>
       </button>
 
       <ol>
@@ -88,6 +81,7 @@ export default function OnboardSidebar() {
                       fill="none"
                       stroke="currentColor"
                       strokeWidth={2.5}
+                      aria-hidden="true"
                       className="h-4 w-4 text-emerald-600"
                     >
                       <path
