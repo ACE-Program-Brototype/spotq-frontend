@@ -61,10 +61,6 @@ export const customerRoutes: RouteObject[] = [
     Component: TermsAndConditionsPage,
   },
   {
-    path: "/terms-and-conditions",
-    Component: TermsAndConditionsPage,
-  },
-  {
     path: "/privacy",
     Component: PrivacyPolicyPage,
   },
