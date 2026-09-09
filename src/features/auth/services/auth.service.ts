@@ -294,23 +294,17 @@ export async function validateStaffInvitation(
       .post(STAFF_AUTH_ENDPOINTS.INVITATION_VALIDATE, {
         json: { token },
       })
-      .json<{
-        success?: boolean;
-        valid?: boolean;
-        email?: string;
-        restaurantName?: string;
-        data?: {
+      .json<
+        ApiResponse<{
           valid?: boolean;
           email?: string;
           restaurantName?: string;
-        };
-        message?: string;
-      }>();
+        }>
+      >();
 
-    const valid = response.valid ?? response.data?.valid ?? response.success ?? true;
-    const email = response.email ?? response.data?.email ?? "";
-    const restaurantName =
-      response.restaurantName ?? response.data?.restaurantName ?? "SpotQ Restaurant";
+    const valid = response.data?.valid ?? response.success ?? true;
+    const email = response.data?.email ?? "";
+    const restaurantName = response.data?.restaurantName ?? "SpotQ Restaurant";
 
     return {
       valid,
@@ -342,25 +336,21 @@ export async function acceptStaffInvitation(
         password: input.password,
       },
     })
-    .json<{
-      success?: boolean;
-      message?: string;
-      staff?: User;
-      accessToken?: string;
-      data?: {
+    .json<
+      ApiResponse<{
         staff: User;
         accessToken: string;
-      };
-    }>();
+      }>
+    >();
 
-  const rawStaff = rawRes.staff || rawRes.data?.staff;
+  const rawStaff = rawRes.data?.staff;
   const staff: User | undefined = rawStaff
     ? {
         ...rawStaff,
         role: (rawStaff.role || "RESTAURANT_STAFF") as User["role"],
       }
     : undefined;
-  const accessToken = rawRes.accessToken || rawRes.data?.accessToken;
+  const accessToken = rawRes.data?.accessToken;
 
   return {
     success: rawRes.success ?? true,

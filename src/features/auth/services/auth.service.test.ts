@@ -242,9 +242,12 @@ describe("auth.service", () => {
     it("validateStaffInvitation calls correct endpoint and payload", async () => {
       mockPost.mockReturnValueOnce({
         json: jest.fn().mockResolvedValueOnce({
-          valid: true,
-          email: "invited@spotq.com",
-          restaurantName: "Basil Mandi",
+          success: true,
+          data: {
+            valid: true,
+            email: "invited@spotq.com",
+            restaurantName: "Basil Mandi",
+          },
         }),
       });
 
@@ -279,8 +282,10 @@ describe("auth.service", () => {
         json: jest.fn().mockResolvedValueOnce({
           success: true,
           message: "Account activated",
-          staff: mockStaff,
-          accessToken: "jwt-token-xyz",
+          data: {
+            staff: mockStaff,
+            accessToken: "jwt-token-xyz",
+          },
         }),
       });
 
