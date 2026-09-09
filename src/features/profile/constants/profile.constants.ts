@@ -40,6 +40,21 @@ export const PROFILE_ENDPOINTS = {
   UPDATE_PROFILE: "users/profile",
 } as const;
 
+export const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
+
 export const Gender = {
   MALE: "MALE",
   FEMALE: "FEMALE",

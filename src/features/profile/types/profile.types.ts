@@ -26,3 +26,23 @@ export interface UpdateCustomerProfileDto {
   gender?: Gender | null;
   dob?: string | null;
 }
+
+export interface ProfileHeroCardProps {
+  profile: CustomerProfile;
+}
+
+export interface ProfileInfoCardsProps {
+  profile: CustomerProfile;
+}
+
+export interface EditProfileFormProps {
+  profile: CustomerProfile;
+  onSubmit: (payload: UpdateCustomerProfileDto) => Promise<void> | void;
+  onCancel: () => void;
+  isSubmitting?: boolean;
+}
+
+export interface CustomerSidebarProps {
+  profile?: CustomerProfile | null;
+  className?: string;
+}

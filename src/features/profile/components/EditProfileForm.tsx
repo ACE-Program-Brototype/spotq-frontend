@@ -21,14 +21,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
 import { type EditProfileFormData, editProfileSchema } from "../schemas/edit-profile.schema";
-import type { CustomerProfile, UpdateCustomerProfileDto } from "../types/profile.types";
-
-interface EditProfileFormProps {
-  profile: CustomerProfile;
-  onSubmit: (payload: UpdateCustomerProfileDto) => Promise<void> | void;
-  onCancel: () => void;
-  isSubmitting?: boolean;
-}
+import type { EditProfileFormProps, UpdateCustomerProfileDto } from "../types/profile.types";
 
 export function EditProfileForm({
   profile,
