@@ -21,6 +21,8 @@ describe("customerRoutes structure", () => {
       "/terms-and-conditions",
       "/privacy",
       "/privacy-policy",
+      "/cookies",
+      "/cookie-policy",
     ]);
   });
 });

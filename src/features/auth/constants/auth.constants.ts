@@ -24,6 +24,15 @@ export const AUTH_MESSAGES = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
   PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
+
+  STAFF_INVITATION_INVALID: "Invalid or expired invitation token.",
+  STAFF_INVITATION_ACCEPT_SUCCESS: "Invitation accepted successfully. Welcome to the team!",
+  STAFF_REGISTRATION_SUCCESS: "Registration successful! Welcome to SpotQ.",
+  STAFF_REGISTRATION_LOGIN_PROMPT:
+    "Registration completed successfully! Please sign in to your account.",
+  STAFF_REGISTRATION_FAILED: "Failed to accept invitation. Please try again.",
+  STAFF_INVITATION_MISSING_TOKEN: "No invitation token was provided in the URL.",
+  STAFF_INVITATION_VALIDATE_ERROR: "Could not validate the invitation link.",
 } as const;
 
 export const AUTH_ENDPOINTS = {
@@ -46,9 +55,9 @@ export const AUTH_ENDPOINTS = {
   ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
   ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
 
-  RESTAURANT_SEND_OTP: "restaurants/registration/email-otp",
+  RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
   RESTAURANT_RESEND_OTP: "restaurants/registration/resend-email-otp",
-  RESTAURANT_VERIFY_OTP: "restaurants/registration/email-otp/verify",
+  RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
   RESTAURANT_ONBOARD: "restaurants/onboard",
 
   STAFF_LOGIN: "auth/restaurants/staff/login",
@@ -58,6 +67,9 @@ export const AUTH_ENDPOINTS = {
   STAFF_VERIFY_OTP: "auth/restaurants/staff/forgot-password/verify",
   STAFF_RESEND_OTP: "auth/restaurants/staff/forgot-password/resend-otp",
   STAFF_RESET_PASSWORD: "auth/restaurants/staff/reset-password",
+
+  STAFF_INVITATION_VALIDATE: "auth/restaurants/staff/invitations/validate",
+  STAFF_INVITATION_ACCEPT: "auth/restaurants/staff/invitations/accept",
 } as const;
 
 export const ADMIN_AUTH_ENDPOINTS = {
@@ -77,6 +89,8 @@ export const STAFF_AUTH_ENDPOINTS = {
   VERIFY_OTP: AUTH_ENDPOINTS.STAFF_VERIFY_OTP,
   RESEND_OTP: AUTH_ENDPOINTS.STAFF_RESEND_OTP,
   RESET_PASSWORD: AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
+  INVITATION_VALIDATE: AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
+  INVITATION_ACCEPT: AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
 } as const;
 
 export const PUBLIC_AUTH_ENDPOINTS = [
@@ -106,6 +120,8 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.STAFF_VERIFY_OTP,
   AUTH_ENDPOINTS.STAFF_RESEND_OTP,
   AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
+  AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
+  AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
 ] as const;
 
 export const RESTAURANT_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

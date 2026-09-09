@@ -5,6 +5,7 @@ import {
 } from "@/features/auth/constants/auth.constants";
 import { apiClient } from "@/lib/api/client";
 import {
+  acceptStaffInvitation,
   adminForgotPassword,
   adminResendOtp,
   adminResetPassword,
@@ -18,6 +19,7 @@ import {
   staffResendOtp,
   staffResetPassword,
   staffVerifyOtp,
+  validateStaffInvitation,
   verifyOtp,
 } from "./auth.service";
 
@@ -235,6 +237,76 @@ describe("auth.service", () => {
         json: { password: "StaffPassword123!" },
       });
       expect(res).toEqual({ success: true, message: "Password reset" });
+    });
+
+    it("validateStaffInvitation calls correct endpoint and payload", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          data: {
+            valid: true,
+            email: "invited@spotq.com",
+            restaurantName: "Basil Mandi",
+          },
+        }),
+      });
+
+      const res = await validateStaffInvitation("token-123");
+
+      expect(mockPost).toHaveBeenCalledWith(STAFF_AUTH_ENDPOINTS.INVITATION_VALIDATE, {
+        json: { token: "token-123" },
+      });
+      expect(res.valid).toBe(true);
+      expect(res.email).toBe("invited@spotq.com");
+      expect(res.restaurantName).toBe("Basil Mandi");
+    });
+
+    it("validateStaffInvitation returns valid false on error", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockRejectedValueOnce(new Error("Expired token")),
+      });
+
+      const res = await validateStaffInvitation("bad-token");
+      expect(res.valid).toBe(false);
+    });
+
+    it("acceptStaffInvitation calls correct endpoint and payload", async () => {
+      const mockStaff = {
+        _id: "staff-1",
+        name: "Chef Ramsey",
+        email: "chef@spotq.com",
+        role: "RESTAURANT_STAFF" as const,
+      };
+
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          message: "Account activated",
+          data: {
+            staff: mockStaff,
+            accessToken: "jwt-token-xyz",
+          },
+        }),
+      });
+
+      const res = await acceptStaffInvitation({
+        token: "token-123",
+        fullname: "Chef Ramsey",
+        phone: "+919876543210",
+        password: "Password@123",
+      });
+
+      expect(mockPost).toHaveBeenCalledWith(STAFF_AUTH_ENDPOINTS.INVITATION_ACCEPT, {
+        json: {
+          token: "token-123",
+          fullname: "Chef Ramsey",
+          phone: "+919876543210",
+          password: "Password@123",
+        },
+      });
+      expect(res.success).toBe(true);
+      expect(res.data?.staff).toEqual(mockStaff);
+      expect(res.data?.accessToken).toBe("jwt-token-xyz");
     });
   });
 });
