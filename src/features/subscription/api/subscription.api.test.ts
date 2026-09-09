@@ -129,7 +129,9 @@ describe("subscriptionApi", () => {
         }),
       });
 
-      const result = await subscriptionApi.fetchRestaurantStatus();
+      const result = await subscriptionApi.fetchRestaurantStatus(
+        "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      );
 
       expect(apiClient.get).toHaveBeenCalledWith(
         "payments/subscriptions/status/a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",

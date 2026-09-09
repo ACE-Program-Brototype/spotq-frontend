@@ -13,7 +13,7 @@ export default function RestaurantDashboardPage() {
 
   const { data: statusData, isLoading: isLoadingStatus } = useQuery({
     queryKey: ["restaurant-status"],
-    queryFn: subscriptionApi.fetchRestaurantStatus,
+    queryFn: () => subscriptionApi.fetchRestaurantStatus(),
     retry: 1,
   });
 

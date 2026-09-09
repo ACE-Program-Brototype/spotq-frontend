@@ -60,10 +60,6 @@ export const restaurantRoutes: RouteObject[] = [
           },
         ],
       },
-      {
-        path: "subscription",
-        Component: RestaurantSubscriptionPage,
-      },
     ],
   },
 ];

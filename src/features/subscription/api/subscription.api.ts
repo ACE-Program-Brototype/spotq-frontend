@@ -55,14 +55,26 @@ export const subscriptionApi = {
     return response.data;
   },
 
-  async fetchRestaurantStatus(): Promise<RestaurantStatusData> {
+  async fetchRestaurantStatus(restaurantIdOverride?: string): Promise<RestaurantStatusData> {
     const user = useAuthStore.getState().user as {
       id?: string;
       restaurantId?: string;
       name?: string;
       email?: string;
     } | null;
-    const restaurantId = user?.restaurantId || user?.id || "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+    const restaurantId = restaurantIdOverride || user?.restaurantId || user?.id;
+
+    if (!restaurantId) {
+      return {
+        restaurantId: "guest",
+        restaurantName: "SpotQ Partner Restaurant",
+        verificationStatus: "APPROVED",
+        isSubscriptionActive: false,
+        subscriptionPlanCode: null,
+        subscriptionEndsAt: null,
+        navigationTarget: "/restaurant/subscription",
+      };
+    }
 
     try {
       const response = await apiClient.get(`payments/subscriptions/status/${restaurantId}`).json<{

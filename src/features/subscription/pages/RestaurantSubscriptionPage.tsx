@@ -39,19 +39,8 @@ export default function RestaurantSubscriptionPage() {
   });
 
   useEffect(() => {
-    if (restaurantStatus?.isSubscriptionActive) {
-      const currentUser = useAuthStore.getState().user;
-      if (!currentUser) {
-        useAuthStore.getState().setAuth(
-          {
-            id: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-            email: "sooryanarayanan1082004@gmail.com",
-            name: "SpotQ Restaurant Admin",
-            role: "RESTAURANT_ADMIN",
-          },
-          "mock-access-token",
-        );
-      }
+    const currentUser = useAuthStore.getState().user;
+    if (currentUser && restaurantStatus?.isSubscriptionActive) {
       navigate("/restaurant/dashboard", { replace: true });
     }
   }, [restaurantStatus, navigate]);
