@@ -24,7 +24,6 @@ export const AUTH_MESSAGES = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
   PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
-
   STAFF_INVITATION_INVALID: "Invalid or expired invitation token.",
   STAFF_INVITATION_ACCEPT_SUCCESS: "Invitation accepted successfully. Welcome to the team!",
   STAFF_REGISTRATION_SUCCESS: "Registration successful! Welcome to SpotQ.",
@@ -36,29 +35,29 @@ export const AUTH_MESSAGES = {
 } as const;
 
 export const AUTH_ENDPOINTS = {
-  LOGIN: "users/login",
-  GOOGLE_LOGIN: "users/oauth/google",
-  LOGOUT: "users/logout",
-  REFRESH_TOKEN: "users/refresh-token",
-  REGISTER: "users/register",
-  VERIFY_OTP: "users/verify-email",
-  RESEND_EMAIL_OTP: "users/resend-email-otp",
-  FORGOT_PASSWORD: "users/forgot-password",
-  FORGOT_PASSWORD_VERIFY: "users/forgot-password/verify",
-  FORGOT_PASSWORD_RESEND_OTP: "users/forgot-password/resend-otp",
-  RESET_PASSWORD: "users/reset-password",
+  LOGIN: "auth/users/login",
+  GOOGLE_LOGIN: "auth/users/oauth/google",
+  LOGOUT: "auth/users/logout",
+  REFRESH_TOKEN: "auth/users/refresh-token",
+  REGISTER: "auth/users/register",
+  VERIFY_OTP: "auth/users/verify-otp",
+  RESEND_EMAIL_OTP: "auth/users/resend-email-otp",
+  FORGOT_PASSWORD: "auth/users/forgot-password",
+  FORGOT_PASSWORD_VERIFY: "auth/users/forgot-password/verify",
+  FORGOT_PASSWORD_RESEND_OTP: "auth/users/forgot-password/resend-otp",
+  RESET_PASSWORD: "auth/users/reset-password",
 
-  ADMIN_LOGIN: "admin/auth/login",
-  ADMIN_LOGOUT: "admin/auth/logout",
-  ADMIN_FORGOT_PASSWORD: "admin/auth/forgot-password",
-  ADMIN_VERIFY_OTP: "admin/auth/forgot-password/verify",
-  ADMIN_RESEND_OTP: "admin/auth/forgot-password/resend-otp",
-  ADMIN_RESET_PASSWORD: "admin/auth/reset-password",
+  ADMIN_LOGIN: "auth/admin/login",
+  ADMIN_LOGOUT: "auth/admin/logout",
+  ADMIN_FORGOT_PASSWORD: "auth/admin/forgot-password",
+  ADMIN_VERIFY_OTP: "auth/admin/forgot-password/verify",
+  ADMIN_RESEND_OTP: "auth/admin/forgot-password/resend-otp",
+  ADMIN_RESET_PASSWORD: "auth/admin/reset-password",
 
   RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
-  RESTAURANT_RESEND_OTP: "restaurants/registration/resend-email-otp",
+  RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
   RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
-  RESTAURANT_ONBOARD: "restaurants/onboard",
+  RESTAURANT_ONBOARD: "auth/restaurants/onboard",
 
   STAFF_LOGIN: "auth/restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
@@ -67,7 +66,6 @@ export const AUTH_ENDPOINTS = {
   STAFF_VERIFY_OTP: "auth/restaurants/staff/forgot-password/verify",
   STAFF_RESEND_OTP: "auth/restaurants/staff/forgot-password/resend-otp",
   STAFF_RESET_PASSWORD: "auth/restaurants/staff/reset-password",
-
   STAFF_INVITATION_VALIDATE: "auth/restaurants/staff/invitations/validate",
   STAFF_INVITATION_ACCEPT: "auth/restaurants/staff/invitations/accept",
 } as const;
@@ -79,6 +77,13 @@ export const ADMIN_AUTH_ENDPOINTS = {
   VERIFY_OTP: AUTH_ENDPOINTS.ADMIN_VERIFY_OTP,
   RESEND_OTP: AUTH_ENDPOINTS.ADMIN_RESEND_OTP,
   RESET_PASSWORD: AUTH_ENDPOINTS.ADMIN_RESET_PASSWORD,
+} as const;
+
+export const RESTAURANT_AUTH_ENDPOINTS = {
+  SEND_OTP: AUTH_ENDPOINTS.RESTAURANT_SEND_OTP,
+  RESEND_OTP: AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP,
+  VERIFY_OTP: AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP,
+  ONBOARD: AUTH_ENDPOINTS.RESTAURANT_ONBOARD,
 } as const;
 
 export const STAFF_AUTH_ENDPOINTS = {
