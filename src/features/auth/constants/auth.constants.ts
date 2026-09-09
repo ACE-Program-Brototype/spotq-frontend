@@ -61,12 +61,12 @@ export const AUTH_ENDPOINTS = {
   RESTAURANT_ONBOARD: "restaurants/onboard",
 
   STAFF_LOGIN: "auth/restaurants/staff/login",
-  STAFF_REFRESH_TOKEN: "restaurants/staff/refresh-token",
-  STAFF_LOGOUT: "restaurants/staff/logout",
-  STAFF_FORGOT_PASSWORD: "restaurants/staff/forgot-password",
-  STAFF_VERIFY_OTP: "restaurants/staff/forgot-password/verify",
-  STAFF_RESEND_OTP: "restaurants/staff/forgot-password/resend-otp",
-  STAFF_RESET_PASSWORD: "restaurants/staff/reset-password",
+  STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
+  STAFF_LOGOUT: "auth/restaurants/staff/logout",
+  STAFF_FORGOT_PASSWORD: "auth/restaurants/staff/forgot-password",
+  STAFF_VERIFY_OTP: "auth/restaurants/staff/forgot-password/verify",
+  STAFF_RESEND_OTP: "auth/restaurants/staff/forgot-password/resend-otp",
+  STAFF_RESET_PASSWORD: "auth/restaurants/staff/reset-password",
 
   STAFF_INVITATION_VALIDATE: "auth/restaurants/staff/invitations/validate",
   STAFF_INVITATION_ACCEPT: "auth/restaurants/staff/invitations/accept",
