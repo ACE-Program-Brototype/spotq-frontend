@@ -4,6 +4,7 @@ import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
 import type { CustomerSidebarProps } from "../types/profile.types";
+import { getProfileInitials } from "../utils/profile.utils";
 
 export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   const location = useLocation();
@@ -11,13 +12,7 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   const { handleLogout, isLoading: isLoggingOut } = useLogout();
 
   const displayName = profile?.full_name?.trim() || authUser?.name?.trim() || "Customer";
-  const nameParts = displayName.split(/\s+/).filter(Boolean);
-  const initials =
-    nameParts.length >= 2
-      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
-      : nameParts.length === 1
-        ? nameParts[0].slice(0, 2).toUpperCase()
-        : "CU";
+  const initials = getProfileInitials(displayName);
 
   const navItems = [
     {

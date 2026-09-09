@@ -1,34 +1,10 @@
 import type { ProfileHeroCardProps } from "../types/profile.types";
+import { formatDateOfBirth, getProfileInitials } from "../utils/profile.utils";
 
 export function ProfileHeroCard({ profile }: ProfileHeroCardProps) {
   const displayName = profile.full_name?.trim() || "Customer";
-  const nameParts = displayName.split(/\s+/).filter(Boolean);
-  const initials =
-    nameParts.length >= 2
-      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
-      : nameParts.length === 1
-        ? nameParts[0].slice(0, 2).toUpperCase()
-        : "CU";
-
-  const formattedDob = profile.dob
-    ? (() => {
-        try {
-          const [year, month, day] = profile.dob.split("-").map(Number);
-          if (year && month && day) {
-            const date = new Date(Date.UTC(year, month - 1, day));
-            return new Intl.DateTimeFormat("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-              timeZone: "UTC",
-            }).format(date);
-          }
-          return profile.dob;
-        } catch {
-          return profile.dob;
-        }
-      })()
-    : null;
+  const initials = getProfileInitials(displayName);
+  const formattedDob = formatDateOfBirth(profile.dob, null);
 
   return (
     <div className="relative flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 rounded-3xl bg-white p-6 sm:p-8 border border-neutral-200/80 shadow-xs">

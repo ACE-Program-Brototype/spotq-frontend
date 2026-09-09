@@ -1,39 +1,11 @@
 import { Calendar, Mail, Phone, User as UserIcon } from "lucide-react";
 import type { ProfileInfoCardsProps } from "../types/profile.types";
+import { formatDateOfBirth, formatGender, formatPhoneNumber } from "../utils/profile.utils";
 
 export function ProfileInfoCards({ profile }: ProfileInfoCardsProps) {
-  // Format Date of Birth
-  const formattedDob = profile.dob
-    ? (() => {
-        try {
-          const [year, month, day] = profile.dob.split("-").map(Number);
-          if (year && month && day) {
-            const date = new Date(Date.UTC(year, month - 1, day));
-            return new Intl.DateTimeFormat("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-              timeZone: "UTC",
-            }).format(date);
-          }
-          return profile.dob;
-        } catch {
-          return profile.dob;
-        }
-      })()
-    : "Not specified";
-
-  // Format Gender
-  const formattedGender = profile.gender
-    ? profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1).toLowerCase()
-    : "Not specified";
-
-  // Format Phone Number
-  const formattedPhone = profile.phone
-    ? profile.phone.startsWith("+91") && profile.phone.length === 13
-      ? `+91 ${profile.phone.slice(3, 8)} ${profile.phone.slice(8)}`
-      : profile.phone
-    : "Not provided";
+  const formattedDob = formatDateOfBirth(profile.dob, "Not specified");
+  const formattedGender = formatGender(profile.gender, "Not specified");
+  const formattedPhone = formatPhoneNumber(profile.phone, "Not provided");
 
   const cards = [
     {
