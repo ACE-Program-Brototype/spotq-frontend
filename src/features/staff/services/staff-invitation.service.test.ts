@@ -118,5 +118,13 @@ describe("staffInvitationService", () => {
       expect(res.success).toBe(true);
       expect(res.data?.invitations).toEqual(mockInvitations);
     });
+
+    it("propagates error when apiClient.get fails", async () => {
+      mockGet.mockReturnValueOnce({
+        json: jest.fn().mockRejectedValueOnce(new Error("Network Error")),
+      });
+
+      await expect(staffInvitationService.getInvitations()).rejects.toThrow("Network Error");
+    });
   });
 });

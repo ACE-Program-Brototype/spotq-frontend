@@ -46,6 +46,8 @@ export function useStaffInvitations() {
   const {
     data: queryResult,
     isLoading,
+    isError,
+    error,
     refetch,
   } = useQuery({
     queryKey,
@@ -199,6 +201,8 @@ export function useStaffInvitations() {
     allInvitations: invitations,
     stats,
     isLoading,
+    isError,
+    error,
     isSending: sendMutation.isPending,
     isResending: isResendingEmail,
     isRevoking: isRevokingId,

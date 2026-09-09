@@ -64,52 +64,42 @@ export const staffInvitationService = {
       pagination?: StaffInvitationPagination;
     }>
   > {
-    try {
-      const searchParams: Record<string, string | number> = {};
-      if (params?.page) searchParams.page = params.page;
-      if (params?.limit) searchParams.limit = params.limit;
-      if (params?.status && params.status !== "ALL") searchParams.status = params.status;
-      if (params?.search) searchParams.search = params.search;
-      if (params?.sortBy) searchParams.sortBy = params.sortBy;
-      if (params?.sortOrder) searchParams.sortOrder = params.sortOrder;
+    const searchParams: Record<string, string | number> = {};
+    if (params?.page) searchParams.page = params.page;
+    if (params?.limit) searchParams.limit = params.limit;
+    if (params?.status && params.status !== "ALL") searchParams.status = params.status;
+    if (params?.search) searchParams.search = params.search;
+    if (params?.sortBy) searchParams.sortBy = params.sortBy;
+    if (params?.sortOrder) searchParams.sortOrder = params.sortOrder;
 
-      const raw = await apiClient
-        .get(STAFF_ENDPOINTS.INVITATIONS, {
-          searchParams: Object.keys(searchParams).length > 0 ? searchParams : undefined,
-        })
-        .json<{
-          success?: boolean;
-          message?: string;
-          data?:
-            | {
-                invitations?: StaffInvitation[];
-                pagination?: StaffInvitationPagination;
-              }
-            | StaffInvitation[];
-        }>();
+    const raw = await apiClient
+      .get(STAFF_ENDPOINTS.INVITATIONS, {
+        searchParams: Object.keys(searchParams).length > 0 ? searchParams : undefined,
+      })
+      .json<{
+        success?: boolean;
+        message?: string;
+        data?:
+          | {
+              invitations?: StaffInvitation[];
+              pagination?: StaffInvitationPagination;
+            }
+          | StaffInvitation[];
+      }>();
 
-      const invitations: StaffInvitation[] = Array.isArray(raw.data)
-        ? raw.data
-        : raw.data?.invitations || [];
+    const invitations: StaffInvitation[] = Array.isArray(raw.data)
+      ? raw.data
+      : raw.data?.invitations || [];
 
-      const pagination = Array.isArray(raw.data) ? undefined : raw.data?.pagination;
+    const pagination = Array.isArray(raw.data) ? undefined : raw.data?.pagination;
 
-      return {
-        success: raw.success ?? true,
-        message: raw.message ?? STAFF_MESSAGES.FETCH_INVITATIONS_SUCCESS,
-        data: {
-          invitations,
-          pagination,
-        },
-      };
-    } catch {
-      return {
-        success: false,
-        message: STAFF_MESSAGES.FETCH_INVITATIONS_ERROR,
-        data: {
-          invitations: [],
-        },
-      };
-    }
+    return {
+      success: raw.success ?? true,
+      message: raw.message ?? STAFF_MESSAGES.FETCH_INVITATIONS_SUCCESS,
+      data: {
+        invitations,
+        pagination,
+      },
+    };
   },
 };
