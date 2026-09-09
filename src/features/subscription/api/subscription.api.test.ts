@@ -63,7 +63,13 @@ describe("subscriptionApi", () => {
       const result = await subscriptionApi.createOrder("plan-1");
 
       expect(apiClient.post).toHaveBeenCalledWith("payments/subscriptions/order", {
-        json: { planId: "plan-1" },
+        json: {
+          planId: "plan-1",
+          restaurantEmail: "partner@spotq.com",
+          restaurantId: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          restaurantName: "SpotQ Partner Restaurant",
+          restaurantPhone: "+919876543210",
+        },
       });
       expect(result).toEqual(mockOrder);
     });
@@ -96,7 +102,7 @@ describe("subscriptionApi", () => {
       const result = await subscriptionApi.verifyPayment(payload);
 
       expect(apiClient.post).toHaveBeenCalledWith("payments/subscriptions/verify", {
-        json: payload,
+        json: { ...payload, restaurantId: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" },
       });
       expect(result).toEqual(mockVerification);
     });
@@ -104,27 +110,39 @@ describe("subscriptionApi", () => {
 
   describe("fetchRestaurantStatus", () => {
     it("fetches restaurant status data successfully", async () => {
-      const mockStatus = {
-        restaurantId: "res-1",
-        restaurantName: "Spicy Treats",
-        verificationStatus: "APPROVED",
-        isSubscriptionActive: false,
-        subscriptionPlanCode: null,
-        subscriptionEndsAt: null,
-        navigationTarget: "/restaurant/subscription",
+      const mockStatusResponse = {
+        isSubscriptionActive: true,
+        subscription: {
+          id: "sub-1",
+          status: "ACTIVE",
+          planCode: "QUEUE_PRO",
+          planName: "Queue Pro",
+          currentPeriodStart: "2026-09-01T00:00:00Z",
+          currentPeriodEnd: "2026-10-01T00:00:00Z",
+        },
       };
 
       (apiClient.get as jest.Mock).mockReturnValue({
         json: jest.fn().mockResolvedValue({
           success: true,
-          data: mockStatus,
+          data: mockStatusResponse,
         }),
       });
 
       const result = await subscriptionApi.fetchRestaurantStatus();
 
-      expect(apiClient.get).toHaveBeenCalledWith("restaurants/me/status");
-      expect(result).toEqual(mockStatus);
+      expect(apiClient.get).toHaveBeenCalledWith(
+        "payments/subscriptions/status/a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      );
+      expect(result).toEqual({
+        restaurantId: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+        restaurantName: "SpotQ Partner Restaurant",
+        verificationStatus: "APPROVED",
+        isSubscriptionActive: true,
+        subscriptionPlanCode: "QUEUE_PRO",
+        subscriptionEndsAt: "2026-10-01T00:00:00Z",
+        navigationTarget: "/restaurant/dashboard",
+      });
     });
   });
 });

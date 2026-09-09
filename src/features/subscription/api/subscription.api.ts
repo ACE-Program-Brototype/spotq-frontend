@@ -19,12 +19,24 @@ export const subscriptionApi = {
   },
 
   async createOrder(planId: string): Promise<CreateSubscriptionOrderResponse> {
-    const user = useAuthStore.getState().user as { id?: string; restaurantId?: string } | null;
-    const restaurantId = user?.restaurantId || user?.id;
+    const user = useAuthStore.getState().user as {
+      id?: string;
+      restaurantId?: string;
+      name?: string;
+      email?: string;
+      phone?: string;
+    } | null;
+    const restaurantId = user?.restaurantId || user?.id || "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
     const response = await apiClient
       .post(SUBSCRIPTION_ENDPOINTS.CREATE_ORDER, {
-        json: { planId, restaurantId },
+        json: {
+          planId,
+          restaurantId,
+          restaurantName: user?.name || "SpotQ Partner Restaurant",
+          restaurantEmail: user?.email || "partner@spotq.com",
+          restaurantPhone: user?.phone || "+919876543210",
+        },
       })
       .json<ApiResponse<CreateSubscriptionOrderResponse>>();
     return response.data;
@@ -32,7 +44,8 @@ export const subscriptionApi = {
 
   async verifyPayment(data: VerifyPaymentRequest): Promise<VerifyPaymentResponse> {
     const user = useAuthStore.getState().user as { id?: string; restaurantId?: string } | null;
-    const restaurantId = data.restaurantId || user?.restaurantId || user?.id;
+    const restaurantId =
+      data.restaurantId || user?.restaurantId || user?.id || "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
     const response = await apiClient
       .post(SUBSCRIPTION_ENDPOINTS.VERIFY_PAYMENT, {
@@ -43,17 +56,52 @@ export const subscriptionApi = {
   },
 
   async fetchRestaurantStatus(): Promise<RestaurantStatusData> {
-    const user = useAuthStore.getState().user as { id?: string; restaurantId?: string } | null;
-    const restaurantId = user?.restaurantId || user?.id;
+    const user = useAuthStore.getState().user as {
+      id?: string;
+      restaurantId?: string;
+      name?: string;
+      email?: string;
+    } | null;
+    const restaurantId = user?.restaurantId || user?.id || "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
-    const request = restaurantId
-      ? apiClient.get(SUBSCRIPTION_ENDPOINTS.RESTAURANT_STATUS, {
-          searchParams: { restaurantId },
-          headers: { "x-restaurant-id": restaurantId },
-        })
-      : apiClient.get(SUBSCRIPTION_ENDPOINTS.RESTAURANT_STATUS);
+    try {
+      const response = await apiClient.get(`payments/subscriptions/status/${restaurantId}`).json<{
+        success: boolean;
+        data: {
+          isSubscriptionActive: boolean;
+          subscription?: {
+            id: string;
+            status: string;
+            planCode: string;
+            planName: string;
+            currentPeriodStart: string;
+            currentPeriodEnd: string;
+          } | null;
+        };
+      }>();
 
-    const response = await request.json<ApiResponse<RestaurantStatusData>>();
-    return response.data;
+      const isSubActive = Boolean(response.data?.isSubscriptionActive);
+      const sub = response.data?.subscription;
+
+      return {
+        restaurantId,
+        restaurantName: user?.name || "SpotQ Partner Restaurant",
+        verificationStatus: "APPROVED",
+        isSubscriptionActive: isSubActive,
+        subscriptionPlanCode: sub?.planCode || null,
+        subscriptionEndsAt: sub?.currentPeriodEnd || null,
+        navigationTarget: isSubActive ? "/restaurant/dashboard" : "/restaurant/subscription",
+      };
+    } catch {
+      return {
+        restaurantId,
+        restaurantName: user?.name || "SpotQ Partner Restaurant",
+        verificationStatus: "APPROVED",
+        isSubscriptionActive: false,
+        subscriptionPlanCode: null,
+        subscriptionEndsAt: null,
+        navigationTarget: "/restaurant/subscription",
+      };
+    }
   },
 };

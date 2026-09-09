@@ -25,17 +25,40 @@ export default defineConfig(({ mode }) => {
       module: "users",
       target: env.VITE_USER_SERVICE_URL || env.USER_SERVICE_URL || "http://localhost:3000",
     },
+    {
+      module: "admin/auth",
+      target: env.VITE_USER_SERVICE_URL || env.USER_SERVICE_URL || "http://localhost:3000",
+      customRewrite: (p: string) => p.replace(/^\/api\/v1\/admin\/auth/, "/admin"),
+    },
+    {
+      module: "admin",
+      target: env.VITE_USER_SERVICE_URL || env.USER_SERVICE_URL || "http://localhost:3000",
+      preservePrefix: true,
+    },
+    {
+      module: "orders",
+      target: env.VITE_ORDER_SERVICE_URL || env.ORDER_SERVICE_URL || "http://localhost:3002",
+    },
+    {
+      module: "queues",
+      target: env.VITE_QUEUE_SERVICE_URL || env.QUEUE_SERVICE_URL || "http://localhost:3004",
+    },
   ];
 
   const proxyConfig = serviceEndpoints.reduce<
     Record<string, { target: string; changeOrigin: boolean; rewrite: (p: string) => string }>
-  >((acc, { module, target }) => {
+  >((acc, { module, target, preservePrefix, customRewrite }) => {
     const route = `${apiBase}/${module}`;
     const pattern = new RegExp(`^${route}`);
     acc[route] = {
       target,
       changeOrigin: true,
-      rewrite: (requestPath: string) => requestPath.replace(pattern, ""),
+      rewrite: (requestPath: string) => {
+        if (customRewrite) return customRewrite(requestPath);
+        return preservePrefix
+          ? requestPath.replace(new RegExp(`^${apiBase}`), "")
+          : requestPath.replace(pattern, "");
+      },
     };
     return acc;
   }, {});

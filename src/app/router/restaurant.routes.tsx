@@ -28,6 +28,10 @@ export const restaurantRoutes: RouteObject[] = [
     Component: RestaurantTermsPage,
   },
   {
+    path: "subscription",
+    Component: RestaurantSubscriptionPage,
+  },
+  {
     Component: RestaurantAuthLayout,
     children: [
       {

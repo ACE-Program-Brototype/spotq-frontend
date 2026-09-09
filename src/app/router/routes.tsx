@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
 import RootLayout from "@/layouts/RootLayout";
-
 import NotFoundPage from "../pages/NotFoundPage";
 import { adminRoutes } from "./admin.routes";
 import { customerRoutes } from "./customer.routes";
@@ -13,6 +13,10 @@ const router = createBrowserRouter([
   {
     Component: RootLayout,
     children: [
+      {
+        path: "subscription",
+        Component: RestaurantSubscriptionPage,
+      },
       ...customerRoutes,
       {
         path: "admin",
