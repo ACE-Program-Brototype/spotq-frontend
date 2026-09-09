@@ -1,6 +1,7 @@
 import {
   ADMIN_AUTH_ENDPOINTS,
   AUTH_ENDPOINTS,
+  AUTH_MESSAGES,
   STAFF_AUTH_ENDPOINTS,
 } from "@/features/auth/constants/auth.constants";
 import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
@@ -259,5 +260,101 @@ export async function logoutStaff(): Promise<StaffLogoutRes> {
   return {
     success: res.success,
     message: res.message,
+  };
+}
+
+export type ValidateStaffInvitationResponse = {
+  valid: boolean;
+  email?: string;
+  restaurantName?: string;
+  message?: string;
+};
+
+export type AcceptStaffInvitationInput = {
+  token: string;
+  fullname: string;
+  phone: string;
+  password: string;
+};
+
+export type AcceptStaffInvitationResponse = {
+  success: boolean;
+  message: string;
+  data?: {
+    staff: User;
+    accessToken: string;
+  };
+};
+
+export async function validateStaffInvitation(
+  token: string,
+): Promise<ValidateStaffInvitationResponse> {
+  try {
+    const response = await apiClient
+      .post(STAFF_AUTH_ENDPOINTS.INVITATION_VALIDATE, {
+        json: { token },
+      })
+      .json<
+        ApiResponse<{
+          valid?: boolean;
+          email?: string;
+          restaurantName?: string;
+        }>
+      >();
+
+    const valid = response.data?.valid ?? response.success ?? true;
+    const email = response.data?.email ?? "";
+    const restaurantName = response.data?.restaurantName ?? "SpotQ Restaurant";
+
+    return {
+      valid,
+      email,
+      restaurantName,
+      message: response.message,
+    };
+  } catch (err: unknown) {
+    const errorMsg =
+      (err as { response?: { message?: string } })?.response?.message ||
+      (err as Error)?.message ||
+      AUTH_MESSAGES.STAFF_INVITATION_INVALID;
+    return {
+      valid: false,
+      message: errorMsg,
+    };
+  }
+}
+
+export async function acceptStaffInvitation(
+  input: AcceptStaffInvitationInput,
+): Promise<AcceptStaffInvitationResponse> {
+  const rawRes = await apiClient
+    .post(STAFF_AUTH_ENDPOINTS.INVITATION_ACCEPT, {
+      json: {
+        token: input.token,
+        fullname: input.fullname,
+        phone: input.phone,
+        password: input.password,
+      },
+    })
+    .json<
+      ApiResponse<{
+        staff: User;
+        accessToken: string;
+      }>
+    >();
+
+  const rawStaff = rawRes.data?.staff;
+  const staff: User | undefined = rawStaff
+    ? {
+        ...rawStaff,
+        role: (rawStaff.role || "RESTAURANT_STAFF") as User["role"],
+      }
+    : undefined;
+  const accessToken = rawRes.data?.accessToken;
+
+  return {
+    success: rawRes.success ?? true,
+    message: rawRes.message ?? AUTH_MESSAGES.STAFF_INVITATION_ACCEPT_SUCCESS,
+    data: staff && accessToken ? { staff, accessToken } : undefined,
   };
 }

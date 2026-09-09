@@ -1,11 +1,11 @@
 import LegalPageLayout from "@/layouts/LegalLayout";
 
-const PrivacyPolicyPage = () => {
+export default function PrivacyPolicyPage() {
   return (
     <LegalPageLayout
       title="Privacy Policy"
       description="This Privacy Policy explains how SpotQ collects, uses, stores, and protects information when you use our services."
-      lastUpdated="August 24, 2026"
+      lastUpdated="September 9, 2026"
     >
       <div className="space-y-4">
         <p>
@@ -212,7 +212,7 @@ const PrivacyPolicyPage = () => {
           If you have questions, concerns, or requests regarding this Privacy Policy, please contact
           us at{" "}
           <a
-            href="spotqofficial@gmail.com"
+            href="mailto:spotqofficial@gmail.com"
             className="font-semibold text-spotq-orange transition-colors hover:text-spotq-orange/80"
           >
             spotqofficial@gmail.com
@@ -220,17 +220,6 @@ const PrivacyPolicyPage = () => {
           .
         </p>
       </section>
-
-      <div className="mt-14 rounded-xl border border-spotq-orange/20 bg-spotq-orange/5 p-5 sm:p-6">
-        <p className="!m-0 text-sm !leading-6 !text-gray-600">
-          <strong className="text-gray-800">Important:</strong> This Privacy Policy is a
-          product-ready template and should be reviewed by your legal/privacy team before production
-          use. Add your actual legal entity name, jurisdiction, data-controller information,
-          retention periods, vendors, and applicable regional privacy rights.
-        </p>
-      </div>
     </LegalPageLayout>
   );
-};
-
-export default PrivacyPolicyPage;
+}

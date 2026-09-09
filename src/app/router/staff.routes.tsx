@@ -1,16 +1,15 @@
 import type { RouteObject } from "react-router-dom";
-import StaffDashboardPage from "@/features/auth/pages/StaffDashboardPage";
 import StaffForgotPasswordPage from "@/features/auth/pages/StaffForgotPasswordPage";
 import StaffLoginPage from "@/features/auth/pages/StaffLoginPage";
 import StaffResetPasswordPage from "@/features/auth/pages/StaffResetPasswordPage";
 import StaffVerifyOtpPage from "@/features/auth/pages/StaffVerifyOtpPage";
+import StaffDashboardPage from "@/features/dashboard/pages/StaffDashboardPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import StaffAuthLayout from "@/layouts/StaffAuthLayout";
 import StaffLayout from "@/layouts/StaffLayout";
 
 const StaffAuthGuard = () => <AuthLayout redirectTo="/staff/dashboard" />;
-
 const StaffProtectedLayout = () => (
   <ProtectedLayout allowedRoles={["RESTAURANT_STAFF"]} redirectTo="/staff/login" />
 );

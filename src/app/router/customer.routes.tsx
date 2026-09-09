@@ -7,8 +7,9 @@ import ResetPasswordPage from "@/features/auth/pages/ResetPasswordPage";
 import VerifyOtpPage from "@/features/auth/pages/VerifyOtpPage";
 import AboutPage from "@/features/demo/pages/AboutPage";
 import HomePage from "@/features/demo/pages/HomePage";
-import PrivacyPolicyPage from "@/features/demo/pages/PrivacyPolicyPage";
-import TermsAndConditionsPage from "@/features/demo/pages/TermsAndConditionsPage";
+import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
+import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
+import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
 
@@ -70,5 +71,13 @@ export const customerRoutes: RouteObject[] = [
   {
     path: "/privacy-policy",
     Component: PrivacyPolicyPage,
+  },
+  {
+    path: "/cookies",
+    Component: CookiePolicyPage,
+  },
+  {
+    path: "/cookie-policy",
+    Component: CookiePolicyPage,
   },
 ];
