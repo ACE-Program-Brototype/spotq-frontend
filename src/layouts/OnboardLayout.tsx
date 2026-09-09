@@ -1,18 +1,7 @@
-import OnboardSidebar from "@/features/onboard/components/Onboardsidebar";
 import { Outlet } from "react-router-dom";
+import OnboardSidebar from "@/features/onboard/components/Onboardsidebar";
 
-/**
- * OnboardLayout
- *
- * Shell for the restaurant onboarding flow. Purely structural:
- * - A minimal top navbar with only the SpotQ brand mark (no app-level
- *   navigation, menus, or profile controls).
- * - A two-column body: onboarding sidebar (step list) + main content
- *   area where the active onboarding step renders via <Outlet />.
- *
- * All step content, form fields, validation, API calls, and state
- * management live in the routed child pages / OnboardSidebar, not here.
- */
+
 export default function OnboardLayout() {
   return (
     <div className="min-h-screen bg-neutral-100">
@@ -31,7 +20,7 @@ export default function OnboardLayout() {
         </div>
       </header>
 
-      {/* Onboarding body: sidebar + main content */}
+    
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10 sm:px-10 lg:flex-row">
         <OnboardSidebar />
 
