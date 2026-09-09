@@ -41,21 +41,31 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
         credentials: "include",
       })
       .json<{
-        data: {
-          access_token: string;
-          user: ApiUser;
+        data?: {
+          access_token?: string;
+          accessToken?: string;
+          user?: ApiUser;
         };
       }>();
 
-    const newAccessToken = response.data.access_token;
+    const newAccessToken =
+      response.data?.accessToken || response.data?.access_token;
 
-    const mappedUser = mapApiUserToUser(response.data.user);
-    const user = {
-      ...mappedUser,
-      role: currentRole ?? mappedUser.role,
-    };
+    if (!newAccessToken) {
+      throw new Error("No access token returned from refresh endpoint.");
+    }
 
-    useAuthStore.getState().setAuth(user, newAccessToken);
+    const mappedUser = response.data?.user ? mapApiUserToUser(response.data.user) : null;
+    const user = mappedUser
+      ? {
+          ...mappedUser,
+          role: currentRole ?? mappedUser.role,
+        }
+      : currentUser;
+
+    if (user) {
+      useAuthStore.getState().setAuth(user, newAccessToken);
+    }
 
     return newAccessToken;
   })().finally(() => {
