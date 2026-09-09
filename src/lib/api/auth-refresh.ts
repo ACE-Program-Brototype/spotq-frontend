@@ -48,8 +48,7 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
         };
       }>();
 
-    const newAccessToken =
-      response.data?.accessToken || response.data?.access_token;
+    const newAccessToken = response.data?.accessToken || response.data?.access_token;
 
     if (!newAccessToken) {
       throw new Error("No access token returned from refresh endpoint.");

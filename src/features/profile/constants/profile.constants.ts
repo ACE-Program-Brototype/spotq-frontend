@@ -22,4 +22,3 @@ export const PROFILE_MESSAGES = {
   UNAUTHORIZED: "Your session has expired. Please sign in again.",
   NO_DATA: "No profile data available.",
 } as const;
-

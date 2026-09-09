@@ -1,9 +1,4 @@
-import {
-  Calendar,
-  Info,
-  Mail,
-  User as UserIcon,
-} from "lucide-react";
+import { Calendar, Info, Mail, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,9 +42,7 @@ export function StaffProfileOverviewCard({ profile }: ProfileCardProps) {
           <h2 className="text-lg sm:text-xl font-bold text-neutral-900 leading-tight">
             {profile.fullName}
           </h2>
-          <p className="text-xs text-neutral-500 font-medium">
-            {profile.email}
-          </p>
+          <p className="text-xs text-neutral-500 font-medium">{profile.email}</p>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
@@ -116,10 +109,7 @@ export function StaffPersonalDetailsCard({ profile }: ProfileCardProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Full Name */}
           <div className="space-y-1.5">
-            <Label
-              htmlFor="profile-full-name"
-              className="text-xs font-semibold text-neutral-600"
-            >
+            <Label htmlFor="profile-full-name" className="text-xs font-semibold text-neutral-600">
               Full Name
             </Label>
             <Input
@@ -133,10 +123,7 @@ export function StaffPersonalDetailsCard({ profile }: ProfileCardProps) {
 
           {/* Phone Number */}
           <div className="space-y-1.5">
-            <Label
-              htmlFor="profile-phone"
-              className="text-xs font-semibold text-neutral-600"
-            >
+            <Label htmlFor="profile-phone" className="text-xs font-semibold text-neutral-600">
               Phone Number
             </Label>
             <Input
@@ -152,10 +139,7 @@ export function StaffPersonalDetailsCard({ profile }: ProfileCardProps) {
 
           {/* Email Address */}
           <div className="space-y-1.5">
-            <Label
-              htmlFor="profile-email"
-              className="text-xs font-semibold text-neutral-600"
-            >
+            <Label htmlFor="profile-email" className="text-xs font-semibold text-neutral-600">
               Email Address
             </Label>
             <div className="relative">
@@ -174,10 +158,7 @@ export function StaffPersonalDetailsCard({ profile }: ProfileCardProps) {
 
           {/* Staff Since (Created At Date) */}
           <div className="space-y-1.5">
-            <Label
-              htmlFor="profile-staff-since"
-              className="text-xs font-semibold text-neutral-600"
-            >
+            <Label htmlFor="profile-staff-since" className="text-xs font-semibold text-neutral-600">
               Staff Since
             </Label>
             <div className="relative">

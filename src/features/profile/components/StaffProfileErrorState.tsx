@@ -28,9 +28,7 @@ export function StaffProfileErrorState({
           <h3 className="text-base sm:text-lg font-bold text-neutral-900">
             {PROFILE_MESSAGES.UNABLE_TO_LOAD}
           </h3>
-          <p className="text-xs sm:text-sm text-neutral-600 max-w-md mx-auto">
-            {message}
-          </p>
+          <p className="text-xs sm:text-sm text-neutral-600 max-w-md mx-auto">{message}</p>
         </div>
 
         <div className="pt-2">

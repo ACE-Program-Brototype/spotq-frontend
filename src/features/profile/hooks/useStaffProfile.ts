@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { HTTPError } from "ky";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { PROFILE_QUERY_KEYS } from "../constants/profile.constants";

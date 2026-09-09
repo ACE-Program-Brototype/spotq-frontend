@@ -101,4 +101,3 @@ export function normalizeStaffProfile(raw: StaffProfileRawData): StaffProfile {
     createdAt: raw.created_at || raw.createdAt || null,
   };
 }
-

@@ -37,10 +37,7 @@ function StaffProfileContent() {
             aria-label="Breadcrumbs"
             className="flex items-center gap-1.5 text-xs text-neutral-500 mb-1.5"
           >
-            <Link
-              to="/staff/dashboard"
-              className="hover:text-neutral-900 transition-colors"
-            >
+            <Link to="/staff/dashboard" className="hover:text-neutral-900 transition-colors">
               Dashboard
             </Link>
             <ChevronRight className="size-3 text-neutral-400" />

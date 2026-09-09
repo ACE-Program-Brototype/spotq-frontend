@@ -44,18 +44,14 @@ describe("StaffProfilePage", () => {
 
   it("AC1: renders skeleton loading state while fetching profile data", () => {
     // Keep promise pending
-    (profileService.getStaffProfile as jest.Mock).mockReturnValue(
-      new Promise(() => {}),
-    );
+    (profileService.getStaffProfile as jest.Mock).mockReturnValue(new Promise(() => {}));
 
     renderWithProviders();
 
     // Skeletons are rendered with data-slot="skeleton"
     const skeletons = document.querySelectorAll('[data-slot="skeleton"]');
     expect(skeletons.length).toBeGreaterThan(0);
-    expect(
-      screen.getByRole("heading", { name: /^staff profile$/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /^staff profile$/i })).toBeInTheDocument();
   });
 
   it("AC2: displays profile information accurately when API returns success", async () => {
@@ -132,7 +128,9 @@ describe("StaffProfilePage", () => {
   });
 
   it("AC4: displays error message with a 'Retry' button when network/500 error occurs", async () => {
-    const networkError = new Error("Unable to connect to the server. Please try again in a moment.");
+    const networkError = new Error(
+      "Unable to connect to the server. Please try again in a moment.",
+    );
     (profileService.getStaffProfile as jest.Mock).mockRejectedValue(networkError);
 
     renderWithProviders();
