@@ -110,6 +110,8 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   "payments/plans",
   "payments/subscriptions/order",
   "payments/subscriptions/verify",
+  "payments/subscriptions/status",
+  "payments/subscriptions",
   "restaurants/me/status",
   AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN,
 ] as const;
