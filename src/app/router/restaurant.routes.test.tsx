@@ -11,19 +11,20 @@ describe("restaurantRoutes structure and protection", () => {
     useAuthStore.getState().clearAuth();
   });
 
-  it("defines terms routes, auth layout routes, and protected layout routes", () => {
-    expect(restaurantRoutes).toHaveLength(3);
+  it("defines terms routes, privacy routes, auth layout routes, and protected layout routes", () => {
+    expect(restaurantRoutes).toHaveLength(4);
 
     expect(restaurantRoutes[0].path).toBe("terms");
+    expect(restaurantRoutes[1].path).toBe("privacy");
 
-    const authGroup = restaurantRoutes[1];
+    const authGroup = restaurantRoutes[2];
     expect(authGroup.children?.map((child) => child.path)).toEqual([
       "email/verification",
       "otp/verification",
       "onboarding",
     ]);
 
-    const protectedGroup = restaurantRoutes[2];
+    const protectedGroup = restaurantRoutes[3];
     expect(protectedGroup).toBeDefined();
   });
 

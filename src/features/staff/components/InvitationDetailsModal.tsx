@@ -1,6 +1,6 @@
 import { Calendar, CheckCircle2, Clock, Mail, ShieldAlert, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { StaffInvitation } from "@/features/auth/types/staff-invitation.types";
+import type { StaffInvitation } from "@/features/staff/types/staff-invitation.types";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
 

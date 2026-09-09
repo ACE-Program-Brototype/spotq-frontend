@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { useDebounce } from "@/features/auth/hooks/use-debounce";
-import { staffInvitationService } from "@/features/auth/services/staff-invitation.service";
+import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
+import { staffInvitationService } from "@/features/staff/services/staff-invitation.service";
 import type {
   StaffInvitation,
   StaffInvitationPagination,
@@ -9,7 +9,8 @@ import type {
   StaffInvitationSortOrder,
   StaffInvitationStats,
   StaffInvitationStatus,
-} from "@/features/auth/types/staff-invitation.types";
+} from "@/features/staff/types/staff-invitation.types";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 
 export function useStaffInvitations() {
   const [invitations, setInvitations] = useState<StaffInvitation[]>([]);
@@ -124,7 +125,7 @@ export function useStaffInvitations() {
       const message =
         (err as { response?: { message?: string } })?.response?.message ||
         (err as Error)?.message ||
-        "Failed to send invitation. Please try again.";
+        STAFF_MESSAGES.SEND_INVITATION_ERROR;
       toast.error(message);
       return false;
     } finally {
@@ -154,7 +155,7 @@ export function useStaffInvitations() {
       const message =
         (err as { response?: { message?: string } })?.response?.message ||
         (err as Error)?.message ||
-        "Failed to resend invitation.";
+        STAFF_MESSAGES.RESEND_INVITATION_ERROR;
       toast.error(message);
       return false;
     } finally {
@@ -169,7 +170,7 @@ export function useStaffInvitations() {
         invitationId,
         email,
       });
-      toast.success(res.message || "Invitation revoked successfully");
+      toast.success(res.message || STAFF_MESSAGES.INVITE_REVOKED_SUCCESS);
 
       setInvitations((prev) =>
         prev.map((item) =>
@@ -183,7 +184,7 @@ export function useStaffInvitations() {
       const message =
         (err as { response?: { message?: string } })?.response?.message ||
         (err as Error)?.message ||
-        "Failed to revoke invitation.";
+        STAFF_MESSAGES.REVOKE_INVITATION_ERROR;
       toast.error(message);
       return false;
     } finally {

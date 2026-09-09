@@ -23,7 +23,7 @@ import { useAcceptInvitation } from "@/features/auth/hooks/use-accept-invitation
 import {
   type AcceptInvitationFormValues,
   acceptInvitationSchema,
-} from "@/features/auth/schemas/staff-invitation.schema";
+} from "@/features/auth/schemas/accept-invitation.schema";
 
 export default function StaffAcceptInvitationPage() {
   const {

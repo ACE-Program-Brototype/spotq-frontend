@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import type { AcceptInvitationFormValues } from "@/features/auth/schemas/staff-invitation.schema";
-import { staffInvitationService } from "@/features/auth/services/staff-invitation.service";
+import type { AcceptInvitationFormValues } from "@/features/auth/schemas/accept-invitation.schema";
+import {
+  acceptStaffInvitation,
+  validateStaffInvitation,
+} from "@/features/auth/services/auth.service";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 export function useAcceptInvitation() {
@@ -29,7 +32,7 @@ export function useAcceptInvitation() {
     setErrorMessage("");
 
     try {
-      const res = await staffInvitationService.validateInvitation(token);
+      const res = await validateStaffInvitation(token);
       if (res.valid) {
         setIsValid(true);
         setEmail(res.email || "");
@@ -65,7 +68,7 @@ export function useAcceptInvitation() {
       const cleanPhone = values.phone.replace(/\D/g, "");
       const formattedPhone = `+91${cleanPhone.slice(-10)}`;
 
-      const res = await staffInvitationService.acceptInvitation({
+      const res = await acceptStaffInvitation({
         token,
         fullname: values.fullname,
         phone: formattedPhone,

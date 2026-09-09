@@ -1,5 +1,3 @@
-import type { User } from "./auth.types";
-
 export type StaffInvitationStatus = "PENDING" | "ACCEPTED" | "EXPIRED" | "REVOKED";
 
 export type StaffInvitationSortBy = "createdAt" | "expiresAt" | "email" | "status";
@@ -42,29 +40,6 @@ export type ResendStaffInvitationInput = {
 export type RevokeStaffInvitationInput = {
   invitationId?: string;
   email?: string;
-};
-
-export type ValidateInvitationResponse = {
-  valid: boolean;
-  email?: string;
-  restaurantName?: string;
-  message?: string;
-};
-
-export type AcceptInvitationInput = {
-  token: string;
-  fullname: string;
-  phone: string;
-  password: string;
-};
-
-export type AcceptInvitationResponse = {
-  success: boolean;
-  message: string;
-  data?: {
-    staff: User;
-    accessToken: string;
-  };
 };
 
 export type StaffMember = {

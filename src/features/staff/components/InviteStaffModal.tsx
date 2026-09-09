@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import {
   type InviteStaffFormValues,
   inviteStaffSchema,
-} from "@/features/auth/schemas/staff-invitation.schema";
+} from "@/features/staff/schemas/staff-invitation.schema";
 
 type InviteStaffModalProps = {
   isOpen: boolean;
@@ -57,7 +57,6 @@ export function InviteStaffModal({
         aria-modal="true"
         aria-labelledby="invite-modal-title"
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#f3e6de] bg-[#fffcf9]">
           <div className="flex items-center gap-2.5">
             <div className="size-8 rounded-xl bg-[#fef3ec] flex items-center justify-center text-[#9a3412] border border-[#fae2d3]">
@@ -83,7 +82,6 @@ export function InviteStaffModal({
           </button>
         </div>
 
-        {/* Form Body */}
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="staff-email" className="block text-xs font-semibold text-neutral-700">
@@ -114,7 +112,6 @@ export function InviteStaffModal({
             </p>
           </div>
 
-          {/* Footer actions */}
           <div className="flex items-center justify-end gap-2.5 pt-2">
             <Button
               type="button"

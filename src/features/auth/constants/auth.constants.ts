@@ -24,6 +24,9 @@ export const AUTH_MESSAGES = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
   PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
+
+  STAFF_INVITATION_INVALID: "Invalid or expired invitation token.",
+  STAFF_INVITATION_ACCEPT_SUCCESS: "Invitation accepted successfully. Welcome to the team!",
 } as const;
 
 export const AUTH_ENDPOINTS = {
@@ -59,9 +62,6 @@ export const AUTH_ENDPOINTS = {
   STAFF_RESEND_OTP: "restaurants/staff/forgot-password/resend-otp",
   STAFF_RESET_PASSWORD: "restaurants/staff/reset-password",
 
-  STAFF_INVITATIONS: "restaurants/staff/invitations",
-  STAFF_INVITATIONS_RESEND: "restaurants/staff/invitations/resend",
-  STAFF_INVITATIONS_REVOKE: "restaurants/staff/invitations/revoke",
   STAFF_INVITATION_VALIDATE: "auth/restaurants/staff/invitations/validate",
   STAFF_INVITATION_ACCEPT: "auth/restaurants/staff/invitations/accept",
 } as const;
@@ -83,9 +83,6 @@ export const STAFF_AUTH_ENDPOINTS = {
   VERIFY_OTP: AUTH_ENDPOINTS.STAFF_VERIFY_OTP,
   RESEND_OTP: AUTH_ENDPOINTS.STAFF_RESEND_OTP,
   RESET_PASSWORD: AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
-  INVITATIONS: AUTH_ENDPOINTS.STAFF_INVITATIONS,
-  INVITATIONS_RESEND: AUTH_ENDPOINTS.STAFF_INVITATIONS_RESEND,
-  INVITATIONS_REVOKE: AUTH_ENDPOINTS.STAFF_INVITATIONS_REVOKE,
   INVITATION_VALIDATE: AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
   INVITATION_ACCEPT: AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
 } as const;
