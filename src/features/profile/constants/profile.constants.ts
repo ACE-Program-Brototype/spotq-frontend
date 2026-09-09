@@ -31,6 +31,7 @@ export const PROFILE_MESSAGES = {
     NAME_MAX_LENGTH: "Full name cannot exceed 100 characters.",
     NAME_INVALID_CHARS: "Full name can only contain letters, spaces, and hyphens.",
     DOB_FUTURE: "Date of birth cannot be in the future.",
+    PHONE_INVALID: "Phone number must be exactly 10 digits.",
   },
 } as const;
 

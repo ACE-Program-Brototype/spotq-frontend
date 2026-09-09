@@ -18,7 +18,14 @@ export const editProfileSchema = z.object({
       message: PROFILE_MESSAGES.VALIDATION.NAME_INVALID_CHARS,
     }),
   email: z.string().email(),
-  phone: z.string().nullable().optional(),
+  phone: z
+    .string()
+    .trim()
+    .refine((val) => !val || /^(?:\+91)?[0-9]{10}$/.test(val), {
+      message: PROFILE_MESSAGES.VALIDATION.PHONE_INVALID,
+    })
+    .nullable()
+    .optional(),
   dob: z
     .string()
     .refine(
