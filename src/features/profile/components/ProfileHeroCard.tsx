@@ -1,8 +1,4 @@
-import type { CustomerProfile } from "../types/profile.types";
-
-interface ProfileHeroCardProps {
-  profile: CustomerProfile;
-}
+import type { ProfileHeroCardProps } from "../types/profile.types";
 
 export function ProfileHeroCard({ profile }: ProfileHeroCardProps) {
   const displayName = profile.full_name?.trim() || "Customer";

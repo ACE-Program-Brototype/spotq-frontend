@@ -27,3 +27,15 @@ export interface CustomerSidebarProps {
   profile?: CustomerProfile | null;
   className?: string;
 }
+
+export interface ProfileDeliveryAddressCardProps {
+  profile: CustomerProfile;
+}
+
+export interface ProfileHeroCardProps {
+  profile: CustomerProfile;
+}
+
+export interface ProfileInfoCardsProps {
+  profile: CustomerProfile;
+}

@@ -1,9 +1,5 @@
 import { Calendar, Mail, Phone, User as UserIcon } from "lucide-react";
-import type { CustomerProfile } from "../types/profile.types";
-
-interface ProfileInfoCardsProps {
-  profile: CustomerProfile;
-}
+import type { ProfileInfoCardsProps } from "../types/profile.types";
 
 export function ProfileInfoCards({ profile }: ProfileInfoCardsProps) {
   // Format Date of Birth

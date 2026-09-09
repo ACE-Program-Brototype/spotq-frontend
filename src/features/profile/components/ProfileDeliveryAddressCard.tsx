@@ -1,9 +1,5 @@
 import { MapPin } from "lucide-react";
-import type { CustomerProfile } from "../types/profile.types";
-
-interface ProfileDeliveryAddressCardProps {
-  profile: CustomerProfile;
-}
+import type { ProfileDeliveryAddressCardProps } from "../types/profile.types";
 
 export function ProfileDeliveryAddressCard({ profile }: ProfileDeliveryAddressCardProps) {
   const currentLocation = profile.location || profile.default_address || null;
