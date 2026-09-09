@@ -122,6 +122,7 @@ export default function RestaurantSubscriptionPage() {
                 plan={plan}
                 isPopular={plan.isPopular || plan.code === "QUEUE_PRO"}
                 isLoading={isProcessing && selectedPlanId === plan.id}
+                disabled={isProcessing}
                 onSelect={(id) => startCheckout(id)}
               />
             ))}

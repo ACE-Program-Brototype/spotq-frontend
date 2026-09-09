@@ -43,4 +43,12 @@ describe("PlanCard", () => {
     expect(button).toBeDisabled();
     expect(screen.getByText("Processing Order...")).toBeInTheDocument();
   });
+
+  it("disables button when disabled prop is true", () => {
+    render(<PlanCard plan={mockPlan} disabled={true} onSelect={jest.fn()} />);
+
+    const button = screen.getByTestId("btn-select-plan-queue_pro");
+    expect(button).toBeDisabled();
+    expect(screen.getByText("Get Started with Queue Pro")).toBeInTheDocument();
+  });
 });

@@ -170,4 +170,43 @@ describe("useRazorpayCheckout", () => {
 
     (document.createElement as unknown as jest.Mock).mockRestore();
   });
+
+  it("does not trigger another checkout when already processing", async () => {
+    let resolveOrder: (value: unknown) => void;
+    const orderPromise = new Promise((resolve) => {
+      resolveOrder = resolve;
+    });
+
+    (subscriptionApi.createOrder as jest.Mock).mockReturnValue(orderPromise);
+
+    const { result } = renderHook(() => useRazorpayCheckout());
+
+    // First checkout call
+    act(() => {
+      result.current.startCheckout("plan-1");
+    });
+
+    expect(result.current.isProcessing).toBe(true);
+
+    // Second checkout call while processing
+    await act(async () => {
+      await result.current.startCheckout("plan-2");
+    });
+
+    // Verify createOrder was called only once with the first plan
+    expect(subscriptionApi.createOrder).toHaveBeenCalledTimes(1);
+    expect(subscriptionApi.createOrder).toHaveBeenCalledWith("plan-1");
+
+    // Clean up in-flight promise
+    await act(async () => {
+      resolveOrder?.({
+        orderId: "order_xyz",
+        amount: 149900,
+        currency: "INR",
+        keyId: "rzp_test_123",
+        plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+        restaurant: { name: "Tasty Restaurant" },
+      });
+    });
+  });
 });

@@ -18,30 +18,50 @@ declare global {
   }
 }
 
-export async function loadRazorpayScript(src = RAZORPAY_SCRIPT_URL): Promise<boolean> {
-  if (typeof window === "undefined") return false;
-  if (window.Razorpay) return true;
+let razorpayScriptPromise: Promise<boolean> | null = null;
 
-  const existingScript = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
-  if (existingScript) {
-    if (existingScript.dataset.loaded === "true") return true;
-    existingScript.remove();
+export function loadRazorpayScript(src = RAZORPAY_SCRIPT_URL): Promise<boolean> {
+  if (typeof window === "undefined") return Promise.resolve(false);
+  if (window.Razorpay) return Promise.resolve(true);
+
+  if (razorpayScriptPromise) {
+    return razorpayScriptPromise;
   }
 
-  return new Promise((resolve) => {
-    const script = document.createElement("script");
+  const existingScript = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
+  if (existingScript?.dataset.loaded === "true" && window.Razorpay) {
+    return Promise.resolve(true);
+  }
+
+  razorpayScriptPromise = new Promise<boolean>((resolve) => {
+    const script = existingScript || document.createElement("script");
     script.src = src;
     script.async = true;
+
+    const cleanup = () => {
+      script.onload = null;
+      script.onerror = null;
+    };
+
     script.onload = () => {
+      cleanup();
       script.dataset.loaded = "true";
       resolve(true);
     };
+
     script.onerror = () => {
+      cleanup();
       script.remove();
+      razorpayScriptPromise = null;
       resolve(false);
     };
-    document.body.appendChild(script);
+
+    if (!existingScript) {
+      document.body.appendChild(script);
+    }
   });
+
+  return razorpayScriptPromise;
 }
 
 export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutOptions = {}) {
@@ -49,6 +69,8 @@ export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutO
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const startCheckout = async (planId: string) => {
+    if (isProcessing) return;
+
     try {
       setIsProcessing(true);
       setSelectedPlanId(planId);

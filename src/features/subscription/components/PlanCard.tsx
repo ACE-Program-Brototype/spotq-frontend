@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { PlanCardProps } from "@/features/subscription/types/subscription.types";
 
-export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps) {
+export function PlanCard({ plan, isPopular, isLoading, disabled, onSelect }: PlanCardProps) {
   const isHighlighted = isPopular || plan.code === "QUEUE_PRO";
 
   return (
@@ -65,7 +65,7 @@ export function PlanCard({ plan, isPopular, isLoading, onSelect }: PlanCardProps
       <Button
         type="button"
         data-testid={`btn-select-plan-${plan.code.toLowerCase()}`}
-        disabled={isLoading}
+        disabled={disabled || isLoading}
         onClick={() => onSelect(plan.id)}
         className={`w-full py-6 text-base font-semibold transition-all ${
           isHighlighted

@@ -65,6 +65,7 @@ export interface PlanCardProps {
   plan: SubscriptionPlan;
   isPopular?: boolean;
   isLoading?: boolean;
+  disabled?: boolean;
   onSelect: (planId: string) => void;
 }
 
