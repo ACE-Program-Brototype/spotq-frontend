@@ -19,7 +19,7 @@ import {
 import { useId } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
 import { type EditProfileFormData, editProfileSchema } from "../schemas/edit-profile.schema";
 import type { CustomerProfile, UpdateCustomerProfileDto } from "../types/profile.types";
 
@@ -64,7 +64,7 @@ export function EditProfileForm({
   const handleFormSubmit = (data: EditProfileFormData) => {
     const payload: UpdateCustomerProfileDto = {
       full_name: data.fullName.trim(),
-      gender: (data.gender as "MALE" | "FEMALE" | "OTHER") || null,
+      gender: (data.gender as Gender) || null,
       dob: data.dob || null,
     };
 
@@ -215,9 +215,9 @@ export function EditProfileForm({
               className="h-12 w-full appearance-none rounded-2xl border border-[#f0e3d6] bg-[#fdf8f4] px-4 pr-10 text-sm font-medium text-neutral-900 focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff6b00]/20 transition-all disabled:opacity-60 cursor-pointer"
             >
               <option value="">Select Gender</option>
-              <option value="FEMALE">Female</option>
-              <option value="MALE">Male</option>
-              <option value="OTHER">Other</option>
+              <option value={Gender.FEMALE}>Female</option>
+              <option value={Gender.MALE}>Male</option>
+              <option value={Gender.OTHER}>Other</option>
             </select>
             <div className="pointer-events-none absolute right-4 text-neutral-500">
               <ChevronDown className="size-4" />

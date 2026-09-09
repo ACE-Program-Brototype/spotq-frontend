@@ -6,7 +6,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useCustomerProfile } from "../hooks/use-customer-profile";
 import type { CustomerProfile } from "../types/profile.types";
 import { ViewProfilePage } from "./ViewProfilePage";
@@ -21,7 +21,7 @@ const mockProfile: CustomerProfile = {
   email: "jane@example.com",
   phone: "+919876543210",
   status: "ACTIVE",
-  gender: "FEMALE",
+  gender: Gender.FEMALE,
   dob: "1995-04-12",
   created_at: "2026-09-02T00:00:00.000Z",
   updated_at: "2026-09-02T00:00:00.000Z",

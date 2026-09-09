@@ -1,6 +1,6 @@
-/**
- * Customer Profile Types
- */
+import type { Gender } from "../constants/profile.constants";
+
+export type { Gender };
 
 export interface CustomerProfile {
   id: string;
@@ -8,7 +8,7 @@ export interface CustomerProfile {
   email: string;
   phone: string | null;
   status: string;
-  gender: "MALE" | "FEMALE" | "OTHER" | null;
+  gender: Gender | null;
   dob: string | null;
   created_at: string;
   updated_at: string;
@@ -23,6 +23,6 @@ export interface CustomerProfileApiResponse {
 
 export interface UpdateCustomerProfileDto {
   full_name?: string;
-  gender?: "MALE" | "FEMALE" | "OTHER" | null;
+  gender?: Gender | null;
   dob?: string | null;
 }

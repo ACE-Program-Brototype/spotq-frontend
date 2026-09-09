@@ -4,7 +4,7 @@
  */
 
 import { z } from "zod";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
 
 const nameRegex = /^[\p{L}\p{M}]+(?:[' -][\p{L}\p{M}]+)*$/u;
 
@@ -36,7 +36,7 @@ export const editProfileSchema = z.object({
     )
     .nullable()
     .optional(),
-  gender: z.enum(["MALE", "FEMALE", "OTHER", ""]).nullable().optional(),
+  gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER, ""]).nullable().optional(),
 });
 
 export type EditProfileFormData = z.infer<typeof editProfileSchema>;

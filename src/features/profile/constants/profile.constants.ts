@@ -38,3 +38,11 @@ export const PROFILE_ENDPOINTS = {
   GET_PROFILE: "users/profile",
   UPDATE_PROFILE: "users/profile",
 } as const;
+
+export const Gender = {
+  MALE: "MALE",
+  FEMALE: "FEMALE",
+  OTHER: "OTHER",
+} as const;
+
+export type Gender = (typeof Gender)[keyof typeof Gender];

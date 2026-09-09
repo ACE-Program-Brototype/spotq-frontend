@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { toast } from "sonner";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useCustomerProfile } from "../hooks/use-customer-profile";
 import { useUpdateCustomerProfile } from "../hooks/use-update-customer-profile";
 import type { CustomerProfile } from "../types/profile.types";
@@ -35,7 +35,7 @@ const mockProfile: CustomerProfile = {
   email: "jane@example.com",
   phone: "+919876543210",
   status: "ACTIVE",
-  gender: "FEMALE",
+  gender: Gender.FEMALE,
   dob: "1995-04-12",
   created_at: "2026-01-01T00:00:00.000Z",
   updated_at: "2026-01-01T00:00:00.000Z",
@@ -173,7 +173,7 @@ describe("EditProfilePage", () => {
     mockMutateAsync.mockResolvedValueOnce({
       ...mockProfile,
       full_name: "Ajex Joshy",
-      gender: "MALE",
+      gender: Gender.MALE,
     });
 
     mockUseCustomerProfile.mockReturnValue({
@@ -191,7 +191,7 @@ describe("EditProfilePage", () => {
     fireEvent.change(nameInput, { target: { value: "Ajex Joshy" } });
 
     const genderSelect = screen.getByRole("combobox");
-    fireEvent.change(genderSelect, { target: { value: "MALE" } });
+    fireEvent.change(genderSelect, { target: { value: Gender.MALE } });
 
     const saveButton = screen.getByRole("button", { name: PROFILE_MESSAGES.SAVE_CHANGES });
     fireEvent.click(saveButton);
@@ -199,7 +199,7 @@ describe("EditProfilePage", () => {
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalledWith({
         full_name: "Ajex Joshy",
-        gender: "MALE",
+        gender: Gender.MALE,
         dob: "1995-04-12",
       });
     });
@@ -234,7 +234,7 @@ describe("EditProfilePage", () => {
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalledWith({
         full_name: "Cheran",
-        gender: "FEMALE",
+        gender: Gender.FEMALE,
         dob: "1995-04-12",
       });
     });
