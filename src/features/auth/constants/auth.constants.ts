@@ -27,6 +27,12 @@ export const AUTH_MESSAGES = {
 
   STAFF_INVITATION_INVALID: "Invalid or expired invitation token.",
   STAFF_INVITATION_ACCEPT_SUCCESS: "Invitation accepted successfully. Welcome to the team!",
+  STAFF_REGISTRATION_SUCCESS: "Registration successful! Welcome to SpotQ.",
+  STAFF_REGISTRATION_LOGIN_PROMPT:
+    "Registration completed successfully! Please sign in to your account.",
+  STAFF_REGISTRATION_FAILED: "Failed to accept invitation. Please try again.",
+  STAFF_INVITATION_MISSING_TOKEN: "No invitation token was provided in the URL.",
+  STAFF_INVITATION_VALIDATE_ERROR: "Could not validate the invitation link.",
 } as const;
 
 export const AUTH_ENDPOINTS = {

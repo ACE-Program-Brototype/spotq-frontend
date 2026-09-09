@@ -1,6 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+/**
+ * Hook for managing the restaurant staff invitation acceptance flow.
+ * Leverages TanStack Query for token validation and invitation acceptance mutations,
+ * synchronizing auth credentials with Zustand upon successful registration.
+ */
+
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import env from "@/config/env";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import type { AcceptInvitationFormValues } from "@/features/auth/schemas/accept-invitation.schema";
 import {
   acceptStaffInvitation,
@@ -12,92 +20,66 @@ export function useAcceptInvitation() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token") || "";
+  const setAuth = useAuthStore((state) => state.setAuth);
 
-  const [isValidating, setIsValidating] = useState(true);
-  const [isValid, setIsValid] = useState(false);
-  const [email, setEmail] = useState("");
-  const [restaurantName, setRestaurantName] = useState("SpotQ Restaurant");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const validationQuery = useQuery({
+    queryKey: ["staff-invitation-validation", token],
+    queryFn: () => validateStaffInvitation(token),
+    enabled: Boolean(token),
+    retry: false,
+    staleTime: env.staffInvitationStaleTimeMs,
+  });
 
-  const validateToken = useCallback(async () => {
-    if (!token) {
-      setIsValidating(false);
-      setIsValid(false);
-      setErrorMessage("No invitation token was provided in the URL.");
-      return;
-    }
-
-    setIsValidating(true);
-    setErrorMessage("");
-
-    try {
-      const res = await validateStaffInvitation(token);
-      if (res.valid) {
-        setIsValid(true);
-        setEmail(res.email || "");
-        setRestaurantName(res.restaurantName || "Restaurant");
+  const acceptMutation = useMutation({
+    mutationFn: (payload: { token: string; fullname: string; phone: string; password: string }) =>
+      acceptStaffInvitation(payload),
+    onSuccess: (res) => {
+      if (res.data?.staff && res.data?.accessToken) {
+        setAuth(res.data.staff, res.data.accessToken);
+        toast.success(res.message || AUTH_MESSAGES.STAFF_REGISTRATION_SUCCESS);
+        navigate("/staff/dashboard", { replace: true });
       } else {
-        setIsValid(false);
-        setErrorMessage(res.message || "This invitation link has expired or is invalid.");
+        toast.success(res.message || AUTH_MESSAGES.STAFF_REGISTRATION_LOGIN_PROMPT);
+        navigate("/staff/login", { replace: true });
       }
-    } catch (err: unknown) {
-      setIsValid(false);
+    },
+    onError: (err: unknown) => {
       const msg =
         (err as { response?: { message?: string } })?.response?.message ||
         (err as Error)?.message ||
-        "Could not validate the invitation link.";
-      setErrorMessage(msg);
-    } finally {
-      setIsValidating(false);
-    }
-  }, [token]);
+        AUTH_MESSAGES.STAFF_REGISTRATION_FAILED;
+      toast.error(msg);
+    },
+  });
 
-  useEffect(() => {
-    validateToken();
-  }, [validateToken]);
+  const isValidating = Boolean(token) && (validationQuery.isLoading || validationQuery.isFetching);
+  const isValid = Boolean(token && validationQuery.data?.valid);
+  const email = validationQuery.data?.email || "";
+  const restaurantName = validationQuery.data?.restaurantName || "Restaurant";
+
+  const errorMessage = !token
+    ? AUTH_MESSAGES.STAFF_INVITATION_MISSING_TOKEN
+    : validationQuery.data && !validationQuery.data.valid
+      ? validationQuery.data.message || AUTH_MESSAGES.STAFF_INVITATION_INVALID
+      : validationQuery.error
+        ? (validationQuery.error as Error)?.message || AUTH_MESSAGES.STAFF_INVITATION_VALIDATE_ERROR
+        : "";
 
   const handleAccept = async (values: AcceptInvitationFormValues) => {
     if (!token) {
-      toast.error("Missing invitation token.");
+      toast.error(AUTH_MESSAGES.STAFF_INVITATION_MISSING_TOKEN);
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      const cleanPhone = values.phone.replace(/\D/g, "");
-      const formattedPhone = `+91${cleanPhone.slice(-10)}`;
+    const cleanPhone = values.phone.replace(/\D/g, "");
+    const formattedPhone = `+91${cleanPhone.slice(-10)}`;
 
-      const res = await acceptStaffInvitation({
-        token,
-        fullname: values.fullname,
-        phone: formattedPhone,
-        password: values.password,
-      });
-
-      if (res.success) {
-        if (res.data?.staff && res.data?.accessToken) {
-          useAuthStore.getState().setAuth(res.data.staff, res.data.accessToken);
-          toast.success(res.message || "Registration successful! Welcome to SpotQ.");
-          navigate("/staff/dashboard", { replace: true });
-        } else {
-          toast.success(
-            res.message || "Registration completed successfully! Please sign in to your account.",
-          );
-          navigate("/staff/login", { replace: true });
-        }
-      } else {
-        toast.error(res.message || "Failed to complete registration.");
-      }
-    } catch (err: unknown) {
-      const msg =
-        (err as { response?: { message?: string } })?.response?.message ||
-        (err as Error)?.message ||
-        "Failed to accept invitation. Please try again.";
-      toast.error(msg);
-    } finally {
-      setIsSubmitting(false);
-    }
+    await acceptMutation.mutateAsync({
+      token,
+      fullname: values.fullname,
+      phone: formattedPhone,
+      password: values.password,
+    });
   };
 
   return {
@@ -107,8 +89,8 @@ export function useAcceptInvitation() {
     email,
     restaurantName,
     errorMessage,
-    isSubmitting,
+    isSubmitting: acceptMutation.isPending,
     handleAccept,
-    retryValidation: validateToken,
+    retryValidation: () => validationQuery.refetch(),
   };
 }

@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+/**
+ * Hook for managing restaurant staff invitations using TanStack Query.
+ * Provides synchronized querying, pagination, filtering, searching,
+ * statistics calculation, and mutations (send, resend, revoke) with automatic cache invalidation.
+ */
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import { staffInvitationService } from "@/features/staff/services/staff-invitation.service";
@@ -8,16 +15,14 @@ import type {
   StaffInvitationSortBy,
   StaffInvitationSortOrder,
   StaffInvitationStats,
-  StaffInvitationStatus,
 } from "@/features/staff/types/staff-invitation.types";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 
+export const STAFF_INVITATIONS_QUERY_KEY = "staff-invitations" as const;
+
 export function useStaffInvitations() {
-  const [invitations, setInvitations] = useState<StaffInvitation[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [isResending, setIsResending] = useState<string | null>(null);
-  const [isRevoking, setIsRevoking] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 400);
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -25,14 +30,58 @@ export function useStaffInvitations() {
   const [sortOrder, setSortOrder] = useState<StaffInvitationSortOrder>("desc");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [pagination, setPagination] = useState<StaffInvitationPagination>({
-    page: 1,
-    limit: 10,
-    total: 0,
-    totalPages: 1,
-    hasNextPage: false,
-    hasPrevPage: false,
+  const [isResendingEmail, setIsResendingEmail] = useState<string | null>(null);
+  const [isRevokingId, setIsRevokingId] = useState<string | null>(null);
+
+  const queryKey = [
+    STAFF_INVITATIONS_QUERY_KEY,
+    page,
+    limit,
+    statusFilter,
+    debouncedSearch,
+    sortBy,
+    sortOrder,
+  ];
+
+  const {
+    data: queryResult,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      const res = await staffInvitationService.getInvitations({
+        page,
+        limit,
+        status: statusFilter !== "ALL" ? statusFilter : undefined,
+        search: debouncedSearch.trim() || undefined,
+        sortBy,
+        sortOrder,
+      });
+      return res.data;
+    },
+    placeholderData: (previousData) => previousData,
   });
+
+  const invitations: StaffInvitation[] = useMemo(
+    () => queryResult?.invitations || [],
+    [queryResult?.invitations],
+  );
+
+  const pagination: StaffInvitationPagination = useMemo(() => {
+    if (queryResult?.pagination) {
+      return queryResult.pagination;
+    }
+    const total = invitations.length;
+    return {
+      page,
+      limit,
+      total,
+      totalPages: Math.max(1, Math.ceil(total / limit)),
+      hasNextPage: false,
+      hasPrevPage: false,
+    };
+  }, [queryResult?.pagination, invitations.length, page, limit]);
 
   const stats: StaffInvitationStats = useMemo(() => {
     return {
@@ -44,42 +93,57 @@ export function useStaffInvitations() {
     };
   }, [pagination.total, invitations]);
 
-  const fetchInvitations = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const res = await staffInvitationService.getInvitations({
-        page,
-        limit,
-        status: statusFilter !== "ALL" ? statusFilter : undefined,
-        search: debouncedSearch.trim() || undefined,
-        sortBy,
-        sortOrder,
-      });
+  const sendMutation = useMutation({
+    mutationFn: (email: string) => staffInvitationService.sendInvitation({ email }),
+    onSuccess: (res, email) => {
+      queryClient.invalidateQueries({ queryKey: [STAFF_INVITATIONS_QUERY_KEY] });
+      toast.success(res.message || `Invitation link sent to ${email}`);
+    },
+    onError: (err: unknown) => {
+      const message =
+        (err as { response?: { message?: string } })?.response?.message ||
+        (err as Error)?.message ||
+        STAFF_MESSAGES.SEND_INVITATION_ERROR;
+      toast.error(message);
+    },
+  });
 
-      if (res.success && res.data) {
-        setInvitations(res.data.invitations || []);
-        if (res.data.pagination) {
-          setPagination(res.data.pagination);
-        } else {
-          setPagination((prev) => ({
-            ...prev,
-            page,
-            limit,
-            total: res.data?.invitations?.length || 0,
-            totalPages: Math.max(1, Math.ceil((res.data?.invitations?.length || 0) / limit)),
-          }));
-        }
-      }
-    } catch {
-      // Keep existing items if network error
-    } finally {
-      setIsLoading(false);
-    }
-  }, [page, limit, statusFilter, debouncedSearch, sortBy, sortOrder]);
+  const resendMutation = useMutation({
+    mutationFn: (email: string) => staffInvitationService.resendInvitation({ email }),
+    onSuccess: (res, email) => {
+      queryClient.invalidateQueries({ queryKey: [STAFF_INVITATIONS_QUERY_KEY] });
+      toast.success(res.message || `Invitation resent to ${email}`);
+    },
+    onError: (err: unknown) => {
+      const message =
+        (err as { response?: { message?: string } })?.response?.message ||
+        (err as Error)?.message ||
+        STAFF_MESSAGES.RESEND_INVITATION_ERROR;
+      toast.error(message);
+    },
+    onSettled: () => {
+      setIsResendingEmail(null);
+    },
+  });
 
-  useEffect(() => {
-    fetchInvitations();
-  }, [fetchInvitations]);
+  const revokeMutation = useMutation({
+    mutationFn: (payload: { invitationId: string; email?: string }) =>
+      staffInvitationService.revokeInvitation(payload),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: [STAFF_INVITATIONS_QUERY_KEY] });
+      toast.success(res.message || STAFF_MESSAGES.INVITE_REVOKED_SUCCESS);
+    },
+    onError: (err: unknown) => {
+      const message =
+        (err as { response?: { message?: string } })?.response?.message ||
+        (err as Error)?.message ||
+        STAFF_MESSAGES.REVOKE_INVITATION_ERROR;
+      toast.error(message);
+    },
+    onSettled: () => {
+      setIsRevokingId(null);
+    },
+  });
 
   const handleSetSearchQuery = (query: string) => {
     setSearchQuery(query);
@@ -101,94 +165,32 @@ export function useStaffInvitations() {
     setPage(1);
   };
 
-  const sendInvitation = async (email: string) => {
-    setIsSending(true);
+  const sendInvitation = async (email: string): Promise<boolean> => {
     try {
-      const res = await staffInvitationService.sendInvitation({ email });
-      const newInv: StaffInvitation = res.data || {
-        id: `inv-${Date.now()}`,
-        email,
-        restaurantId: "rest-001",
-        status: "PENDING",
-        expiresAt: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
-        createdAt: new Date().toISOString(),
-      };
-
-      setInvitations((prev) => [
-        newInv,
-        ...prev.filter((i) => i.email.toLowerCase() !== email.toLowerCase()),
-      ]);
-
-      toast.success(res.message || `Invitation link sent to ${email}`);
+      await sendMutation.mutateAsync(email);
       return true;
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { message?: string } })?.response?.message ||
-        (err as Error)?.message ||
-        STAFF_MESSAGES.SEND_INVITATION_ERROR;
-      toast.error(message);
+    } catch {
       return false;
-    } finally {
-      setIsSending(false);
     }
   };
 
-  const resendInvitation = async (email: string) => {
-    setIsResending(email);
+  const resendInvitation = async (email: string): Promise<boolean> => {
+    setIsResendingEmail(email);
     try {
-      const res = await staffInvitationService.resendInvitation({ email });
-      toast.success(res.message || `Invitation resent to ${email}`);
-
-      setInvitations((prev) =>
-        prev.map((item) =>
-          item.email.toLowerCase() === email.toLowerCase()
-            ? {
-                ...item,
-                status: "PENDING" as StaffInvitationStatus,
-                expiresAt: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
-              }
-            : item,
-        ),
-      );
+      await resendMutation.mutateAsync(email);
       return true;
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { message?: string } })?.response?.message ||
-        (err as Error)?.message ||
-        STAFF_MESSAGES.RESEND_INVITATION_ERROR;
-      toast.error(message);
+    } catch {
       return false;
-    } finally {
-      setIsResending(null);
     }
   };
 
-  const revokeInvitation = async (invitationId: string, email?: string) => {
-    setIsRevoking(invitationId);
+  const revokeInvitation = async (invitationId: string, email?: string): Promise<boolean> => {
+    setIsRevokingId(invitationId);
     try {
-      const res = await staffInvitationService.revokeInvitation({
-        invitationId,
-        email,
-      });
-      toast.success(res.message || STAFF_MESSAGES.INVITE_REVOKED_SUCCESS);
-
-      setInvitations((prev) =>
-        prev.map((item) =>
-          item.id === invitationId || (email && item.email.toLowerCase() === email.toLowerCase())
-            ? { ...item, status: "REVOKED" as StaffInvitationStatus }
-            : item,
-        ),
-      );
+      await revokeMutation.mutateAsync({ invitationId, email });
       return true;
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { message?: string } })?.response?.message ||
-        (err as Error)?.message ||
-        STAFF_MESSAGES.REVOKE_INVITATION_ERROR;
-      toast.error(message);
+    } catch {
       return false;
-    } finally {
-      setIsRevoking(null);
     }
   };
 
@@ -197,9 +199,9 @@ export function useStaffInvitations() {
     allInvitations: invitations,
     stats,
     isLoading,
-    isSending,
-    isResending,
-    isRevoking,
+    isSending: sendMutation.isPending,
+    isResending: isResendingEmail,
+    isRevoking: isRevokingId,
     searchQuery,
     setSearchQuery: handleSetSearchQuery,
     statusFilter,
@@ -216,6 +218,6 @@ export function useStaffInvitations() {
     sendInvitation,
     resendInvitation,
     revokeInvitation,
-    refreshInvitations: fetchInvitations,
+    refreshInvitations: () => refetch(),
   };
 }
