@@ -1,3 +1,4 @@
+import OnboardSidebar from "@/features/onboard/components/Onboardsidebar";
 import { Outlet } from "react-router-dom";
 
 /**
@@ -32,7 +33,7 @@ export default function OnboardLayout() {
 
       {/* Onboarding body: sidebar + main content */}
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10 sm:px-10 lg:flex-row">
-        {/* <OnboardSidebar /> */}
+        <OnboardSidebar />
 
         <main className="flex-1">
           <Outlet />
