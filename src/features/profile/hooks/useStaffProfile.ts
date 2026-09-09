@@ -3,7 +3,7 @@ import { HTTPError } from "ky";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { PROFILE_QUERY_KEYS } from "../constants/profile.constants";
+import { PROFILE_QUERY_KEYS, profileHooks } from "../constants/profile.constants";
 import { profileService } from "../services/profile.service";
 import type { StaffProfile } from "../types/profile.types";
 
@@ -18,7 +18,7 @@ export function useStaffProfile(options?: {
   const query = useQuery<StaffProfile, Error>({
     queryKey: PROFILE_QUERY_KEYS.STAFF_PROFILE,
     queryFn: profileService.getStaffProfile,
-    staleTime: 5 * 60 * 1000,
+    staleTime: profileHooks.STAFF_PROFILE_STALE_TIME,
     retry: (failureCount, error) => {
       const isUnauthorized =
         (error instanceof HTTPError && error.response?.status === 401) ||

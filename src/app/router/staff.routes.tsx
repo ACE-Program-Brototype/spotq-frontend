@@ -56,15 +56,7 @@ export const staffRoutes: RouteObject[] = [
           {
             path: "profile",
             Component: StaffProfilePage,
-          },
-          {
-            path: "settings",
-            Component: StaffProfilePage,
-          },
-          {
-            path: "settings/profile",
-            Component: StaffProfilePage,
-          },
+          }
         ],
       },
     ],
