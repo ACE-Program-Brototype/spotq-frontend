@@ -7,8 +7,8 @@ export const PROFILE_QUERY_KEYS = {
 };
 
 export const profileHooks = {
-  STAFF_PROFILE_STALE_TIME : 5 * 60 * 1000, 
-}
+  STAFF_PROFILE_STALE_TIME: 5 * 60 * 1000,
+};
 
 export const PROFILE_MESSAGES = {
   PAGE_SUBTITLE: "View and verify your staff account details and restaurant role.",
