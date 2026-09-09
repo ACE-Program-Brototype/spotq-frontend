@@ -120,15 +120,13 @@ export async function verifyRestaurantEmailOtp(data: {
   email: string;
   otp: string;
 }): Promise<ApiResponse<VerifyOtpResponse>> {
-  const res = await apiClient
-    .post(RESTAURANT_AUTH_ENDPOINTS.VERIFY_OTP, { json: data })
-    .json<
-      ApiResponse<
-        VerifyOtpResponse & {
-          accessToken?: string;
-        }
-      >
-    >();
+  const res = await apiClient.post(RESTAURANT_AUTH_ENDPOINTS.VERIFY_OTP, { json: data }).json<
+    ApiResponse<
+      VerifyOtpResponse & {
+        accessToken?: string;
+      }
+    >
+  >();
 
   return {
     success: res.success,

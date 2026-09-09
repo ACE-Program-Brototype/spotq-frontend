@@ -21,8 +21,8 @@ import {
   staffResetPassword,
   staffVerifyOtp,
   validateStaffInvitation,
-  verifyRestaurantEmailOtp,
   verifyOtp,
+  verifyRestaurantEmailOtp,
 } from "./auth.service";
 
 jest.mock("@/lib/api/client", () => ({
