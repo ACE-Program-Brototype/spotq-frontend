@@ -22,3 +22,8 @@ export interface CustomerProfileApiResponse {
   message: string;
   data: CustomerProfile;
 }
+
+export interface CustomerSidebarProps {
+  profile?: CustomerProfile | null;
+  className?: string;
+}

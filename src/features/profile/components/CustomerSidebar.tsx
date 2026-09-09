@@ -3,12 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import type { CustomerProfile } from "../types/profile.types";
-
-interface CustomerSidebarProps {
-  profile?: CustomerProfile | null;
-  className?: string;
-}
+import type { CustomerSidebarProps } from "../types/profile.types";
 
 export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   const location = useLocation();
