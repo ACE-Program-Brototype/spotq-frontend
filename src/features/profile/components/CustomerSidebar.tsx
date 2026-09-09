@@ -31,7 +31,6 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
       label: "Profile",
       href: "/profile",
       icon: UserIcon,
-      matchExact: true,
     },
     {
       label: "Orders",
@@ -55,6 +54,10 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
     },
   ];
 
+  const isRouteActive = (href: string) => {
+    return location.pathname === href || location.pathname.startsWith(`${href}/`);
+  };
+
   return (
     <aside
       className={cn(
@@ -66,9 +69,7 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
       <nav className="flex flex-col gap-1.5" aria-label="Customer Account Navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = item.matchExact
-            ? location.pathname === item.href || location.pathname.startsWith("/profile")
-            : location.pathname.startsWith(item.href);
+          const isActive = isRouteActive(item.href);
 
           return (
             <Link
