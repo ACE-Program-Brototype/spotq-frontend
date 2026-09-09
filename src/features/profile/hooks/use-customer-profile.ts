@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCustomerProfile } from "../api/profile.api";
+import { getCustomerProfile } from "../services/profile.service";
 import type { CustomerProfile } from "../types/profile.types";
 
 export const CUSTOMER_PROFILE_QUERY_KEY = ["customer-profile"] as const;
