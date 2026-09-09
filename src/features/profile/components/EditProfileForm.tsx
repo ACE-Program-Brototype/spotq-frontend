@@ -62,14 +62,8 @@ export function EditProfileForm({
   const todayStr = new Date().toISOString().split("T")[0];
 
   const handleFormSubmit = (data: EditProfileFormData) => {
-    const trimmed = data.fullName.trim();
-    const parts = trimmed.split(/\s+/);
-    const first_name = parts[0];
-    const last_name = parts.length > 1 ? parts.slice(1).join(" ") : null;
-
     const payload: UpdateCustomerProfileDto = {
-      first_name,
-      last_name,
+      full_name: data.fullName.trim(),
       gender: (data.gender as "MALE" | "FEMALE" | "OTHER") || null,
       dob: data.dob || null,
     };

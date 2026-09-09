@@ -169,7 +169,7 @@ describe("EditProfilePage", () => {
     expect(mockMutateAsync).not.toHaveBeenCalled();
   });
 
-  it("submits mapped first_name and last_name on valid form submission", async () => {
+  it("submits full_name on valid form submission", async () => {
     mockMutateAsync.mockResolvedValueOnce({
       ...mockProfile,
       full_name: "Ajex Joshy",
@@ -198,8 +198,7 @@ describe("EditProfilePage", () => {
 
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalledWith({
-        first_name: "Ajex",
-        last_name: "Joshy",
+        full_name: "Ajex Joshy",
         gender: "MALE",
         dob: "1995-04-12",
       });
@@ -209,7 +208,7 @@ describe("EditProfilePage", () => {
     expect(await screen.findByText("Profile View Page Target")).toBeInTheDocument();
   });
 
-  it("handles single-word full name properly with null last_name", async () => {
+  it("handles single-word full name properly without splitting", async () => {
     mockMutateAsync.mockResolvedValueOnce({
       ...mockProfile,
       full_name: "Cheran",
@@ -234,8 +233,7 @@ describe("EditProfilePage", () => {
 
     await waitFor(() => {
       expect(mockMutateAsync).toHaveBeenCalledWith({
-        first_name: "Cheran",
-        last_name: null,
+        full_name: "Cheran",
         gender: "FEMALE",
         dob: "1995-04-12",
       });

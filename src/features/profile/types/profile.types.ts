@@ -22,8 +22,7 @@ export interface CustomerProfileApiResponse {
 }
 
 export interface UpdateCustomerProfileDto {
-  first_name: string;
-  last_name?: string | null;
+  full_name?: string;
   gender?: "MALE" | "FEMALE" | "OTHER" | null;
   dob?: string | null;
 }
