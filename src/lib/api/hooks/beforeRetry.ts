@@ -4,7 +4,28 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getOrRefreshAccessToken } from "../auth-refresh";
 
 export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount }) => {
-  const is401 = isHTTPError(error) && error.response.status === 401;
+  const isHTTP = isHTTPError(error);
+  if (!isHTTP) return;
+
+  const status = error.response.status;
+  const is401 = status === 401;
+
+  // Immediate session revocation on account block (403 or 401 with USER_BLOCKED / blocked message)
+  const errorData = error.data as { code?: string; message?: string; error?: string } | undefined;
+  const isBlocked =
+    errorData?.code === "USER_BLOCKED" ||
+    errorData?.code === "ACCOUNT_BLOCKED" ||
+    (typeof errorData?.message === "string" && /blocked|suspended/i.test(errorData.message)) ||
+    (typeof errorData?.error === "string" && /blocked|suspended/i.test(errorData.error));
+
+  if (isBlocked) {
+    useAuthStore.getState().clearAuth();
+    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
+    throw error;
+  }
+
   const isPublicAuthEndpoint = PUBLIC_AUTH_ENDPOINTS.some((endpoint) =>
     request?.url?.includes(endpoint),
   );
