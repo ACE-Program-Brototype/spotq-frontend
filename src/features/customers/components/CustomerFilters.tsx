@@ -1,8 +1,9 @@
-import { Search, X } from "lucide-react";
+import { ArrowUpDown, Search, X } from "lucide-react";
 import {
   CUSTOMER_FILTER_STATUS,
   CUSTOMER_MESSAGES,
   type CustomerFilterStatusType,
+  type CustomerSortOrderType,
 } from "../constants/customer.constants";
 
 export interface CustomerFiltersProps {
@@ -10,6 +11,8 @@ export interface CustomerFiltersProps {
   onSearchChange: (value: string) => void;
   status: CustomerFilterStatusType;
   onStatusChange: (status: CustomerFilterStatusType) => void;
+  sortOrder?: CustomerSortOrderType;
+  onToggleSort?: () => void;
   disabled?: boolean;
 }
 
@@ -28,6 +31,8 @@ export function CustomerFilters({
   onSearchChange,
   status,
   onStatusChange,
+  sortOrder = "DESC",
+  onToggleSort,
   disabled = false,
 }: CustomerFiltersProps) {
   return (
@@ -65,32 +70,62 @@ export function CustomerFilters({
         </div>
       </div>
 
-      {/* Search Input Box */}
-      <div className="relative w-full sm:w-72">
-        <label htmlFor="customer-search-input" className="sr-only">
-          {CUSTOMER_MESSAGES.SEARCH_PLACEHOLDER}
-        </label>
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <Search className="size-4 text-slate-400" />
+      {/* Search and Sort Actions */}
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        {/* Search Input Box */}
+        <div className="relative w-full sm:w-72">
+          <label htmlFor="customer-search-input" className="sr-only">
+            {CUSTOMER_MESSAGES.SEARCH_PLACEHOLDER}
+          </label>
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <Search className="size-4 text-slate-400" />
+          </div>
+          <input
+            id="customer-search-input"
+            type="text"
+            value={search}
+            disabled={disabled}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder={CUSTOMER_MESSAGES.SEARCH_PLACEHOLDER}
+            className="w-full rounded-xl bg-slate-100/90 border border-transparent py-2 pl-9 pr-9 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 transition-all"
+          />
+          {search && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              disabled={disabled}
+              onClick={() => onSearchChange("")}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
         </div>
-        <input
-          id="customer-search-input"
-          type="text"
-          value={search}
-          disabled={disabled}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder={CUSTOMER_MESSAGES.SEARCH_PLACEHOLDER}
-          className="w-full rounded-xl bg-slate-100/90 border border-transparent py-2 pl-9 pr-9 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/20 transition-all"
-        />
-        {search && (
+
+        {/* Sort Order Toggle */}
+        {onToggleSort && (
           <button
             type="button"
-            aria-label="Clear search"
+            onClick={onToggleSort}
             disabled={disabled}
-            onClick={() => onSearchChange("")}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+            title={
+              sortOrder === "DESC"
+                ? CUSTOMER_MESSAGES.SORT_NEWEST_FIRST
+                : CUSTOMER_MESSAGES.SORT_OLDEST_FIRST
+            }
+            aria-label={
+              sortOrder === "DESC"
+                ? CUSTOMER_MESSAGES.SORT_NEWEST_FIRST
+                : CUSTOMER_MESSAGES.SORT_OLDEST_FIRST
+            }
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 transition-colors shrink-0 disabled:opacity-50"
           >
-            <X className="size-3.5" />
+            <ArrowUpDown className="size-3.5 text-slate-500" />
+            <span>
+              {sortOrder === "DESC"
+                ? CUSTOMER_MESSAGES.SORT_NEWEST_FIRST
+                : CUSTOMER_MESSAGES.SORT_OLDEST_FIRST}
+            </span>
           </button>
         )}
       </div>

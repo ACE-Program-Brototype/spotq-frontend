@@ -31,6 +31,8 @@ export function AdminCustomersPage() {
     setStatus,
     search,
     setSearch,
+    sortOrder,
+    toggleSortOrder,
     resetFilters,
     isFiltered,
   } = useCustomers();
@@ -79,12 +81,14 @@ export function AdminCustomersPage() {
         <p className="mt-1 text-sm text-slate-500">{CUSTOMER_MESSAGES.PAGE_SUBTITLE}</p>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Filter, Search and Sort Bar */}
       <CustomerFilters
         search={search}
         onSearchChange={setSearch}
         status={status}
         onStatusChange={setStatus}
+        sortOrder={sortOrder}
+        onToggleSort={toggleSortOrder}
         disabled={isLoading}
       />
 
@@ -126,6 +130,8 @@ export function AdminCustomersPage() {
           ) : (
             <CustomerTable
               customers={customers}
+              sortOrder={sortOrder}
+              onToggleSort={toggleSortOrder}
               onStatusAction={handleStatusAction}
               isActionLoading={isUpdatingStatus}
               actionTargetId={statusTarget?.customer.id}

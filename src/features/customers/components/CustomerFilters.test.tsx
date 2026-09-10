@@ -48,4 +48,14 @@ describe("CustomerFilters", () => {
     fireEvent.click(clearButton);
     expect(defaultProps.onSearchChange).toHaveBeenCalledWith("");
   });
+  it("should render sort toggle button and trigger onToggleSort", () => {
+    const onToggleSort = jest.fn();
+    render(<CustomerFilters {...defaultProps} sortOrder="DESC" onToggleSort={onToggleSort} />);
+
+    const sortButton = screen.getByRole("button", { name: "Newest First" });
+    expect(sortButton).toBeInTheDocument();
+
+    fireEvent.click(sortButton);
+    expect(onToggleSort).toHaveBeenCalledTimes(1);
+  });
 });

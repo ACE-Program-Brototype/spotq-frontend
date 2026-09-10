@@ -1,8 +1,9 @@
-import { Ban, CheckCircle2, Loader2, MapPin } from "lucide-react";
+import { ArrowDown, ArrowUp, Ban, CheckCircle2, Loader2, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   CUSTOMER_MESSAGES,
   CUSTOMER_STATUS,
+  type CustomerSortOrderType,
   type CustomerStatusType,
 } from "../constants/customer.constants";
 import type { Customer } from "../types/customer.types";
@@ -10,6 +11,8 @@ import { formatMemberSince, getCustomerInitials } from "../utils/customer.utils"
 
 export interface CustomerTableProps {
   customers: Customer[];
+  sortOrder?: CustomerSortOrderType;
+  onToggleSort?: () => void;
   onStatusAction?: (customer: Customer, nextStatus: CustomerStatusType) => void;
   isActionLoading?: boolean;
   actionTargetId?: string | null;
@@ -17,6 +20,8 @@ export interface CustomerTableProps {
 
 export function CustomerTable({
   customers,
+  sortOrder = "DESC",
+  onToggleSort,
   onStatusAction,
   isActionLoading = false,
   actionTargetId = null,
@@ -27,7 +32,25 @@ export function CustomerTable({
         <table className="w-full text-left text-xs">
           <thead className="bg-[#f0edf1]/80 text-slate-600 font-bold border-b border-slate-200/80 uppercase tracking-wider">
             <tr>
-              <th className="py-3.5 px-6">{CUSTOMER_MESSAGES.COL_USER_PROFILE}</th>
+              <th className="py-3.5 px-6">
+                {onToggleSort ? (
+                  <button
+                    type="button"
+                    onClick={onToggleSort}
+                    title={CUSTOMER_MESSAGES.SORT_BY_MEMBER_SINCE}
+                    className="inline-flex items-center gap-1.5 font-bold uppercase hover:text-slate-900 transition-colors group cursor-pointer"
+                  >
+                    <span>{CUSTOMER_MESSAGES.COL_USER_PROFILE}</span>
+                    {sortOrder === "DESC" ? (
+                      <ArrowDown className="size-3.5 text-slate-700 group-hover:text-slate-900 transition-transform" />
+                    ) : (
+                      <ArrowUp className="size-3.5 text-slate-700 group-hover:text-slate-900 transition-transform" />
+                    )}
+                  </button>
+                ) : (
+                  <span>{CUSTOMER_MESSAGES.COL_USER_PROFILE}</span>
+                )}
+              </th>
               <th className="py-3.5 px-6">{CUSTOMER_MESSAGES.COL_CONTACT_INFO}</th>
               <th className="py-3.5 px-6">{CUSTOMER_MESSAGES.COL_LOCATION}</th>
               <th className="py-3.5 px-6">{CUSTOMER_MESSAGES.COL_STATUS}</th>
