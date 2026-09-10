@@ -175,12 +175,12 @@ export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutO
           );
         }
 
-        toast.info("Restaurant already has an active subscription. Redirecting to dashboard...");
+        toast.info(SUBSCRIPTION_MESSAGES.ALREADY_ACTIVE_REDIRECT);
         onSuccess?.({
           subscriptionId: "",
           restaurantId: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-          planCode: "QUEUE_PRO",
-          status: "ACTIVE",
+          planCode: SUBSCRIPTION_MESSAGES.DEFAULT_PRO_PLAN_CODE,
+          status: SUBSCRIPTION_MESSAGES.ACTIVE_STATUS,
           currentPeriodStart: new Date().toISOString(),
           currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         });

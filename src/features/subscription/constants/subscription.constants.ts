@@ -14,6 +14,11 @@ export const SUBSCRIPTION_MESSAGES = {
     "Payment verification failed. If money was debited, please contact support.",
   PAYMENT_CANCELLED: "Payment window closed without completing payment.",
   SCRIPT_LOAD_ERROR: "Failed to load payment gateway. Please check your internet connection.",
+  ALREADY_ACTIVE_REDIRECT:
+    "Restaurant already has an active subscription. Redirecting to dashboard...",
+  PLANS_RETRY_BUTTON: "Retry Loading Plans",
+  ACTIVE_STATUS: "ACTIVE",
+  DEFAULT_PRO_PLAN_CODE: "QUEUE_PRO",
 } as const;
 
 export const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";
