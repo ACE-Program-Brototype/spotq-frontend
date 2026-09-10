@@ -62,7 +62,7 @@ export default function DocumentsPage() {
       return;
     }
 
-    navigate("/restaurant/onboarding/review");
+    navigate("/restaurant/onboarding/location");
   };
 
   const handleBack = () => {

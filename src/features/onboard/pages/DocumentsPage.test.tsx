@@ -57,7 +57,7 @@ describe("DocumentsPage", () => {
     expect(
       await screen.findByText(/please upload all required business documents before proceeding/i),
     ).toBeInTheDocument();
-    expect(mockNavigate).not.toHaveBeenCalledWith("/restaurant/onboarding/review");
+    expect(mockNavigate).not.toHaveBeenCalledWith("/restaurant/onboarding/location");
   });
 
   it("validates invalid file type for document upload", async () => {
@@ -130,7 +130,7 @@ describe("DocumentsPage", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/restaurant/onboarding/business-information");
   });
 
-  it("navigates to review page when all documents and photo are uploaded", async () => {
+  it("navigates to location page when all documents and photo are uploaded", async () => {
     useOnboardStore.setState({
       documents: {
         fssai: { documentName: "fssai.pdf", documentKey: "key/fssai.pdf" },
@@ -147,6 +147,6 @@ describe("DocumentsPage", () => {
     const continueButton = screen.getByRole("button", { name: /continue/i });
     await userEvent.click(continueButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/restaurant/onboarding/review");
+    expect(mockNavigate).toHaveBeenCalledWith("/restaurant/onboarding/location");
   });
 });
