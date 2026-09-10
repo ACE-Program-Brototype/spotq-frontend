@@ -51,7 +51,7 @@ describe("customerService", () => {
       const result = await customerService.getCustomers();
 
       expect(apiClient.get).toHaveBeenCalledWith(
-        "api/v1/users",
+        "users",
         expect.objectContaining({
           searchParams: {
             page: 1,
@@ -97,7 +97,7 @@ describe("customerService", () => {
       });
 
       expect(apiClient.get).toHaveBeenCalledWith(
-        "api/v1/users",
+        "users",
         expect.objectContaining({
           searchParams: {
             page: 2,
@@ -134,7 +134,7 @@ describe("customerService", () => {
         status: "BLOCKED",
       });
 
-      expect(apiClient.patch).toHaveBeenCalledWith("api/v1/users/user-123/status", {
+      expect(apiClient.patch).toHaveBeenCalledWith("users/user-123/status", {
         json: { status: "BLOCKED" },
       });
       expect(result.status).toBe("BLOCKED");
