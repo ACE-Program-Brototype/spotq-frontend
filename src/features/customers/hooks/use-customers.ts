@@ -9,7 +9,7 @@ import {
   type CustomerSortOrderType,
 } from "../constants/customer.constants";
 import { customerService } from "../services/customer.service";
-import type { UpdateCustomerStatusInput } from "../types/customer.types";
+import type { CustomersListData, UpdateCustomerStatusInput } from "../types/customer.types";
 
 export interface UseCustomersOptions {
   initialPage?: number;
@@ -120,8 +120,21 @@ export function useUpdateCustomerStatus() {
 
   return useMutation({
     mutationFn: (input: UpdateCustomerStatusInput) => customerService.updateCustomerStatus(input),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "customers"] });
+    onSuccess: (_data, variables) => {
+      queryClient.setQueriesData<CustomersListData>(
+        { queryKey: ["admin", "customers"] },
+        (oldData) => {
+          if (!oldData || !Array.isArray(oldData.users)) return oldData;
+          return {
+            ...oldData,
+            users: oldData.users.map((customer) =>
+              customer.id === variables.userId
+                ? { ...customer, status: variables.status }
+                : customer,
+            ),
+          };
+        },
+      );
     },
   });
 }
