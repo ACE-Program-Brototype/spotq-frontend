@@ -1,4 +1,5 @@
 import { type BeforeErrorHook, isHTTPError } from "ky";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 
 export interface NormalizedApiErrorData {
   success?: boolean;
@@ -26,6 +27,20 @@ export const beforeError: BeforeErrorHook = ({ error }) => {
 
       if (serverMessage && typeof serverMessage === "string") {
         error.message = serverMessage;
+      }
+
+      const isBlocked =
+        data.code === "USER_BLOCKED" ||
+        data.code === "ACCOUNT_BLOCKED" ||
+        (typeof data.error === "object" &&
+          (data.error?.code === "USER_BLOCKED" || data.error?.code === "ACCOUNT_BLOCKED")) ||
+        (typeof serverMessage === "string" && /blocked|suspended/i.test(serverMessage));
+
+      if (isBlocked) {
+        useAuthStore.getState().clearAuth();
+        if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
       }
     } else if (typeof data === "string" && data.trim()) {
       error.message = data.trim();
