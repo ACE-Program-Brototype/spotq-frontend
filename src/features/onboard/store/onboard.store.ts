@@ -17,6 +17,7 @@ export const useOnboardStore = create<OnboardState>()(
         businessInformation: null,
         documents: initialDocuments,
         restaurantImages: [],
+        location: null,
 
         setBusinessInformation: (data) =>
           set({ businessInformation: data }, false, "onboard/setBusinessInformation"),
@@ -75,12 +76,16 @@ export const useOnboardStore = create<OnboardState>()(
             "onboard/removeRestaurantImage",
           ),
 
+        setLocation: (locationData) =>
+          set({ location: locationData }, false, "onboard/setLocation"),
+
         resetOnboardStore: () =>
           set(
             {
               businessInformation: null,
               documents: initialDocuments,
               restaurantImages: [],
+              location: null,
             },
             false,
             "onboard/resetOnboardStore",

@@ -21,14 +21,27 @@ export interface RestaurantImageItem {
   displayOrder: number;
 }
 
+export interface RestaurantAddress {
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  latitude: number;
+  longitude: number;
+}
+
 export interface OnboardState {
   businessInformation: BusinessInformation | null;
   documents: DocumentsState;
   restaurantImages: RestaurantImageItem[];
+  location: RestaurantAddress | null;
   setBusinessInformation: (data: BusinessInformation) => void;
   setDocument: (type: keyof DocumentsState, doc: DocumentItem | null) => void;
   setRestaurantImages: (images: RestaurantImageItem[]) => void;
   addRestaurantImage: (image: Omit<RestaurantImageItem, "displayOrder">) => void;
   removeRestaurantImage: (index: number) => void;
+  setLocation: (location: RestaurantAddress | null) => void;
   resetOnboardStore: () => void;
 }
