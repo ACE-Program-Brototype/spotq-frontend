@@ -33,13 +33,14 @@ export function CustomerNavbar({
     onSearch?.(e.target.value);
   };
 
+  const displayName = user?.fullName || user?.name || user?.email?.split("@")[0] || "";
+  const nameParts = displayName.trim().split(/\s+/).filter(Boolean);
   const initials =
-    user?.name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2) ?? "";
+    nameParts.length >= 2
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : nameParts.length === 1 && nameParts[0].length >= 2
+        ? nameParts[0].slice(0, 2).toUpperCase()
+        : nameParts[0]?.[0]?.toUpperCase() || "AJ";
 
   return (
     <header
@@ -110,7 +111,7 @@ export function CustomerNavbar({
             <Link to="/profile" aria-label="My Profile" className="flex items-center gap-2 pl-1">
               <Avatar className="size-8.5 bg-[#1c1714] text-white font-bold border border-neutral-200">
                 <AvatarFallback className="bg-[#1c1714] text-white text-xs font-bold">
-                  {initials || "U"}
+                  {initials}
                 </AvatarFallback>
               </Avatar>
             </Link>

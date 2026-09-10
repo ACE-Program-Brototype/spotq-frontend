@@ -35,11 +35,11 @@ describe("restaurantRoutes structure and protection", () => {
     useAuthStore.getState().clearAuth();
   });
 
-  it("defines terms routes, auth layout routes, and protected layout routes", () => {
+  it("defines terms routes, privacy routes, subscription routes, auth layout routes, and protected layout routes", () => {
     expect(restaurantRoutes).toHaveLength(5);
 
     expect(restaurantRoutes[0].path).toBe("terms");
-    expect(restaurantRoutes[1].path).toBe("terms-and-conditions");
+    expect(restaurantRoutes[1].path).toBe("privacy");
     expect(restaurantRoutes[2].path).toBe("subscription");
 
     const authGroup = restaurantRoutes[3];
