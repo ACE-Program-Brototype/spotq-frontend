@@ -3,8 +3,6 @@ import { PROFILE_QUERY_KEYS, profileHooks } from "../constants/profile.constants
 import { getCustomerProfile } from "../services/profile.service";
 import type { CustomerProfile } from "../types/profile.types";
 
-export const CUSTOMER_PROFILE_QUERY_KEY = PROFILE_QUERY_KEYS.CUSTOMER_PROFILE;
-
 /**
  * React Query hook to retrieve and cache the authenticated customer's profile.
  */
