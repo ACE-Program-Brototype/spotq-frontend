@@ -51,10 +51,13 @@ export default function RestaurantDashboardPage() {
           </div>
           <button
             type="button"
-            onClick={() => navigate("/restaurant/email/verification", { replace: false })}
+            onClick={() => {
+              useAuthStore.getState().clearAuth();
+              navigate("/restaurant/email/verification", { replace: true });
+            }}
             className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
           >
-            Back to email
+            Sign out
           </button>
         </div>
 

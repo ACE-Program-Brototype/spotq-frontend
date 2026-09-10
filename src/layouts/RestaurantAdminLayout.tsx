@@ -1,18 +1,25 @@
 import { X } from "lucide-react";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
-
+import { Outlet, useNavigate } from "react-router-dom";
 import { RestaurantAdminNavbar } from "@/components/layout/RestaurantAdminNavbar";
 import { RestaurantAdminSidebar } from "@/components/layout/RestaurantAdminSidebar";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 
 export function RestaurantAdminLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  const handleLogout = () => {
+    clearAuth();
+    navigate("/restaurant/email/verification", { replace: true });
+  };
 
   return (
     <div className="flex min-h-svh w-full max-w-full overflow-x-hidden bg-[#fffdfb] text-neutral-900">
       <div className="hidden lg:block lg:shrink-0 sticky top-0 h-svh">
-        <RestaurantAdminSidebar />
+        <RestaurantAdminSidebar onLogout={handleLogout} />
       </div>
 
       {mobileDrawerOpen && (
@@ -37,6 +44,7 @@ export function RestaurantAdminLayout() {
             </div>
             <RestaurantAdminSidebar
               onNavigate={() => setMobileDrawerOpen(false)}
+              onLogout={handleLogout}
               className="w-full"
             />
           </div>

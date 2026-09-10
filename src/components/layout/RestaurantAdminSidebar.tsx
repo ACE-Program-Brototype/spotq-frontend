@@ -18,7 +18,7 @@ import {
   Utensils,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -35,7 +35,18 @@ export function RestaurantAdminSidebar({
   onLogout,
 }: RestaurantAdminSidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      clearAuth();
+      navigate("/restaurant/email/verification", { replace: true });
+    }
+  };
 
   const adminNavItems: NavItem[] = [
     {
@@ -308,7 +319,7 @@ export function RestaurantAdminSidebar({
             description="Are you sure you want to end your session?"
             confirmText="Sign Out"
             confirmVariant="destructive"
-            onConfirm={() => onLogout?.()}
+            onConfirm={handleLogout}
           />
         </div>
       </div>
