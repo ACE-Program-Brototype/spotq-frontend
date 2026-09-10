@@ -5,7 +5,7 @@ import {
   RAZORPAY_SCRIPT_URL,
   SUBSCRIPTION_MESSAGES,
 } from "@/features/subscription/constants/subscription.constants";
-import { subscriptionApi } from "@/features/subscription/services/subscription.service";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import type {
   RazorpayInstance,
   RazorpayOptions,
@@ -81,7 +81,7 @@ export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutO
         throw new Error(SUBSCRIPTION_MESSAGES.SCRIPT_LOAD_ERROR);
       }
 
-      const orderData = await subscriptionApi.createOrder(planId);
+      const orderData = await subscriptionService.createOrder(planId);
 
       const options: RazorpayOptions = {
         key: orderData.keyId,
@@ -100,7 +100,7 @@ export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutO
         },
         handler: async (paymentResponse: RazorpayPaymentSuccessResponse) => {
           try {
-            const verificationResult = await subscriptionApi.verifyPayment({
+            const verificationResult = await subscriptionService.verifyPayment({
               razorpayOrderId: paymentResponse.razorpay_order_id,
               razorpayPaymentId: paymentResponse.razorpay_payment_id,
               razorpaySignature: paymentResponse.razorpay_signature,
@@ -163,22 +163,10 @@ export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutO
 
       if (isAlreadyActive) {
         const currentUser = useAuthStore.getState().user;
-        if (!currentUser) {
-          useAuthStore.getState().setAuth(
-            {
-              id: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-              email: "sooryanarayanan1082004@gmail.com",
-              name: "SpotQ Restaurant Admin",
-              role: "RESTAURANT_ADMIN",
-            },
-            "mock-access-token",
-          );
-        }
-
         toast.info(SUBSCRIPTION_MESSAGES.ALREADY_ACTIVE_REDIRECT);
         onSuccess?.({
           subscriptionId: "",
-          restaurantId: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          restaurantId: currentUser?.restaurantId || currentUser?.id || "",
           planCode: SUBSCRIPTION_MESSAGES.DEFAULT_PRO_PLAN_CODE,
           status: SUBSCRIPTION_MESSAGES.ACTIVE_STATUS,
           currentPeriodStart: new Date().toISOString(),

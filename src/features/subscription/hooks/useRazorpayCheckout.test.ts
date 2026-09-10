@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { toast } from "sonner";
-import { subscriptionApi } from "@/features/subscription/services/subscription.service";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import { useRazorpayCheckout } from "./useRazorpayCheckout";
 
 jest.mock("sonner", () => ({
@@ -12,6 +12,10 @@ jest.mock("sonner", () => ({
 }));
 
 jest.mock("@/features/subscription/services/subscription.service", () => ({
+  subscriptionService: {
+    createOrder: jest.fn(),
+    verifyPayment: jest.fn(),
+  },
   subscriptionApi: {
     createOrder: jest.fn(),
     verifyPayment: jest.fn(),
@@ -46,7 +50,7 @@ describe("useRazorpayCheckout", () => {
       restaurant: { name: "Tasty Restaurant", email: "test@res.com", phone: "9876543210" },
     };
 
-    (subscriptionApi.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
 
     const { result } = renderHook(() => useRazorpayCheckout());
 
@@ -54,7 +58,7 @@ describe("useRazorpayCheckout", () => {
       await result.current.startCheckout("plan-1");
     });
 
-    expect(subscriptionApi.createOrder).toHaveBeenCalledWith("plan-1");
+    expect(subscriptionService.createOrder).toHaveBeenCalledWith("plan-1");
     expect(mockRazorpayConstructor).toHaveBeenCalledWith(
       expect.objectContaining({
         key: "rzp_test_123",
@@ -85,8 +89,8 @@ describe("useRazorpayCheckout", () => {
       currentPeriodEnd: "2026-10-01T00:00:00Z",
     };
 
-    (subscriptionApi.createOrder as jest.Mock).mockResolvedValue(mockOrder);
-    (subscriptionApi.verifyPayment as jest.Mock).mockResolvedValue(mockVerification);
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+    (subscriptionService.verifyPayment as jest.Mock).mockResolvedValue(mockVerification);
 
     const onSuccess = jest.fn();
     const { result } = renderHook(() => useRazorpayCheckout({ onSuccess }));
@@ -106,7 +110,7 @@ describe("useRazorpayCheckout", () => {
       });
     });
 
-    expect(subscriptionApi.verifyPayment).toHaveBeenCalledWith({
+    expect(subscriptionService.verifyPayment).toHaveBeenCalledWith({
       razorpayOrderId: "order_xyz",
       razorpayPaymentId: "pay_xyz",
       razorpaySignature: "sig_xyz",
@@ -125,7 +129,7 @@ describe("useRazorpayCheckout", () => {
       restaurant: { name: "Tasty Restaurant" },
     };
 
-    (subscriptionApi.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
 
     const { result } = renderHook(() => useRazorpayCheckout());
 
@@ -177,7 +181,7 @@ describe("useRazorpayCheckout", () => {
       resolveOrder = resolve;
     });
 
-    (subscriptionApi.createOrder as jest.Mock).mockReturnValue(orderPromise);
+    (subscriptionService.createOrder as jest.Mock).mockReturnValue(orderPromise);
 
     const { result } = renderHook(() => useRazorpayCheckout());
 
@@ -194,8 +198,8 @@ describe("useRazorpayCheckout", () => {
     });
 
     // Verify createOrder was called only once with the first plan
-    expect(subscriptionApi.createOrder).toHaveBeenCalledTimes(1);
-    expect(subscriptionApi.createOrder).toHaveBeenCalledWith("plan-1");
+    expect(subscriptionService.createOrder).toHaveBeenCalledTimes(1);
+    expect(subscriptionService.createOrder).toHaveBeenCalledWith("plan-1");
 
     // Clean up in-flight promise
     await act(async () => {

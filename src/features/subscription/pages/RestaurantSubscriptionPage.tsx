@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { PlanCard } from "@/features/subscription/components/PlanCard";
 import { useRazorpayCheckout } from "@/features/subscription/hooks/useRazorpayCheckout";
-import { subscriptionApi } from "@/features/subscription/services/subscription.service";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export default function RestaurantSubscriptionPage() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function RestaurantSubscriptionPage() {
     refetch,
   } = useQuery({
     queryKey: ["subscription-plans"],
-    queryFn: subscriptionApi.fetchPlans,
+    queryFn: subscriptionService.fetchPlans,
     staleTime: 5 * 60 * 1000,
   });
 
@@ -30,7 +30,7 @@ export default function RestaurantSubscriptionPage() {
     queryKey: ["restaurant-status"],
     queryFn: async () => {
       try {
-        return await subscriptionApi.fetchRestaurantStatus();
+        return await subscriptionService.fetchRestaurantStatus();
       } catch {
         return null;
       }
@@ -47,20 +47,6 @@ export default function RestaurantSubscriptionPage() {
 
   const { startCheckout, isProcessing, selectedPlanId } = useRazorpayCheckout({
     onSuccess: (verificationResult) => {
-      // Optimistically authenticate as restaurant admin if testing standalone so protected dashboard is accessible
-      const currentUser = useAuthStore.getState().user;
-      if (!currentUser) {
-        useAuthStore.getState().setAuth(
-          {
-            id: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-            email: "sooryanarayanan1082004@gmail.com",
-            name: "SpotQ Restaurant Admin",
-            role: "RESTAURANT_ADMIN",
-          },
-          "mock-access-token",
-        );
-      }
-
       // Optimistically seed cache so restaurant dashboard renders active subscription immediately without flicker
       queryClient.setQueryData(
         ["restaurant-status"],
@@ -70,6 +56,10 @@ export default function RestaurantSubscriptionPage() {
           subscriptionPlanCode: verificationResult.planCode,
         }),
       );
+
+      // Invalidate to fetch fresh authoritative state from backend
+      queryClient.invalidateQueries({ queryKey: ["restaurant-status"] });
+
       // Direct the restaurant admin to dashboard upon successful verification
       navigate("/restaurant/dashboard", { replace: true });
     },
