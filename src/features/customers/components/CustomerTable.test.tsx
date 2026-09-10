@@ -35,13 +35,12 @@ describe("CustomerTable", () => {
 
     expect(screen.getByText("USER PROFILE")).toBeInTheDocument();
     expect(screen.getByText("CONTACT INFO")).toBeInTheDocument();
-    expect(screen.getByText("LOCATION")).toBeInTheDocument();
+    expect(screen.queryByText("LOCATION")).not.toBeInTheDocument();
     expect(screen.getByText("STATUS")).toBeInTheDocument();
     expect(screen.getByText("ACTIONS")).toBeInTheDocument();
 
     expect(screen.getByText("Rahul Sharma")).toBeInTheDocument();
     expect(screen.getByText("rahul.sharma@example.com")).toBeInTheDocument();
-    expect(screen.getByText("New Delhi, India")).toBeInTheDocument();
     expect(screen.getByText("ACTIVE")).toBeInTheDocument();
 
     expect(screen.getByText("Sneha Reddy")).toBeInTheDocument();

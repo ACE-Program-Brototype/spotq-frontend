@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Ban, CheckCircle2, Loader2, MapPin } from "lucide-react";
+import { ArrowDown, ArrowUp, Ban, CheckCircle2, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   CUSTOMER_MESSAGES,
@@ -52,7 +52,6 @@ export function CustomerTable({
                 )}
               </th>
               <th className="py-3.5 px-6">{CUSTOMER_MESSAGES.COL_CONTACT_INFO}</th>
-              <th className="py-3.5 px-6">{CUSTOMER_MESSAGES.COL_LOCATION}</th>
               <th className="py-3.5 px-6">{CUSTOMER_MESSAGES.COL_STATUS}</th>
               <th className="py-3.5 px-6 text-right">{CUSTOMER_MESSAGES.COL_ACTIONS}</th>
             </tr>
@@ -95,16 +94,6 @@ export function CustomerTable({
                       <p className="text-[11px] text-slate-500 font-medium mt-0.5">
                         {customer.phone || CUSTOMER_MESSAGES.LOCATION_NOT_AVAILABLE}
                       </p>
-                    </div>
-                  </td>
-
-                  {/* LOCATION */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-1.5 text-slate-600 font-medium">
-                      <MapPin className="size-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate">
-                        {customer.location || CUSTOMER_MESSAGES.LOCATION_NOT_AVAILABLE}
-                      </span>
                     </div>
                   </td>
 

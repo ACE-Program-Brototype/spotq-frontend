@@ -7,7 +7,6 @@ export function CustomerTableSkeleton({ rowCount = 5 }: { rowCount?: number }) {
             <tr>
               <th className="py-3.5 px-6">USER PROFILE</th>
               <th className="py-3.5 px-6">CONTACT INFO</th>
-              <th className="py-3.5 px-6">LOCATION</th>
               <th className="py-3.5 px-6">STATUS</th>
               <th className="py-3.5 px-6 text-right">ACTIONS</th>
             </tr>
@@ -32,14 +31,6 @@ export function CustomerTableSkeleton({ rowCount = 5 }: { rowCount?: number }) {
                   <div className="space-y-1.5">
                     <div className="h-3.5 w-40 rounded bg-slate-200" />
                     <div className="h-2.5 w-24 rounded bg-slate-100" />
-                  </div>
-                </td>
-
-                {/* Location */}
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-1.5">
-                    <div className="size-3.5 rounded-full bg-slate-200" />
-                    <div className="h-3 w-24 rounded bg-slate-200" />
                   </div>
                 </td>
 
