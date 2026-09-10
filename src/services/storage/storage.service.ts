@@ -84,7 +84,11 @@ export function uploadFileToS3(
     };
 
     xhr.onerror = () => {
-      reject(new Error("Network error occurred during direct S3 file upload."));
+      reject(
+        new Error(
+          "Network error occurred during direct S3 file upload. Please verify AWS S3 bucket existence and CORS permissions (AllowedOrigins & PUT method).",
+        ),
+      );
     };
 
     xhr.onabort = () => {

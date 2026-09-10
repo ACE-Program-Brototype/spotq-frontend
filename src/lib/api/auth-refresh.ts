@@ -26,8 +26,11 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
 
     switch (currentRole) {
       case "RESTAURANT_STAFF":
-      case "RESTAURANT_ADMIN":
         refreshEndpoint = AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN;
+        break;
+
+      case "RESTAURANT_ADMIN":
+        refreshEndpoint = "auth/restaurants/auth/refresh";
         break;
 
       default:
