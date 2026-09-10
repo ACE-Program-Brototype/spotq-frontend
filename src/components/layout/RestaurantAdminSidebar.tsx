@@ -3,6 +3,7 @@
  * Provides collapsible navigation sections, restaurant branding, and admin profile overview.
  */
 
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Briefcase,
   ChevronDown,
@@ -37,6 +38,7 @@ export function RestaurantAdminSidebar({
   const location = useLocation();
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
   const clearAuth = useAuthStore((state) => state.clearAuth);
 
   const handleLogout = () => {
@@ -44,6 +46,7 @@ export function RestaurantAdminSidebar({
       onLogout();
     } else {
       clearAuth();
+      queryClient.clear();
       navigate("/restaurant/email/verification", { replace: true });
     }
   };

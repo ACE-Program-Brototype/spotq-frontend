@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -9,10 +10,12 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 export function RestaurantAdminLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const clearAuth = useAuthStore((state) => state.clearAuth);
 
   const handleLogout = () => {
     clearAuth();
+    queryClient.clear();
     navigate("/restaurant/email/verification", { replace: true });
   };
 

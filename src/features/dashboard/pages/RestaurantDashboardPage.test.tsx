@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { subscriptionApi } from "@/features/subscription/services/subscription.service";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import RestaurantDashboardPage from "./RestaurantDashboardPage";
 
 const mockNavigate = jest.fn();
@@ -11,6 +11,9 @@ jest.mock("react-router-dom", () => ({
 }));
 
 jest.mock("@/features/subscription/services/subscription.service", () => ({
+  subscriptionService: {
+    fetchRestaurantStatus: jest.fn(),
+  },
   subscriptionApi: {
     fetchRestaurantStatus: jest.fn(),
   },
@@ -33,7 +36,7 @@ describe("RestaurantDashboardPage", () => {
   });
 
   it("redirects to subscription page when approved but subscription is inactive", async () => {
-    (subscriptionApi.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
+    (subscriptionService.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
       restaurantId: "123",
       restaurantName: "Test Kitchen",
       email: "test@spotq.com",
@@ -49,7 +52,7 @@ describe("RestaurantDashboardPage", () => {
   });
 
   it("renders active dashboard without redirect when subscription is active", async () => {
-    (subscriptionApi.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
+    (subscriptionService.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
       restaurantId: "123",
       restaurantName: "Test Kitchen",
       email: "test@spotq.com",
@@ -71,7 +74,7 @@ describe("RestaurantDashboardPage", () => {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 3);
 
-    (subscriptionApi.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
+    (subscriptionService.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
       restaurantId: "123",
       restaurantName: "Test Kitchen",
       email: "test@spotq.com",

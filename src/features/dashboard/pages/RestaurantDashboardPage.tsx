@@ -1,19 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, ArrowRight, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { subscriptionApi } from "@/features/subscription/services/subscription.service";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const restaurantEmail = user?.email || "restaurant";
 
   const { data: statusData, isLoading: isLoadingStatus } = useQuery({
     queryKey: ["restaurant-status"],
-    queryFn: () => subscriptionApi.fetchRestaurantStatus(),
+    queryFn: () => subscriptionService.fetchRestaurantStatus(),
     retry: 1,
   });
 
@@ -53,6 +54,7 @@ export default function RestaurantDashboardPage() {
             type="button"
             onClick={() => {
               useAuthStore.getState().clearAuth();
+              queryClient.clear();
               navigate("/restaurant/email/verification", { replace: true });
             }}
             className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
