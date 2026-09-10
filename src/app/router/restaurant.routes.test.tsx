@@ -7,7 +7,7 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 
 import { restaurantRoutes } from "./restaurant.routes";
 
-jest.mock("@/features/subscription/api/subscription.api", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionApi: {
     fetchRestaurantStatus: jest.fn().mockResolvedValue({
       restaurantId: "res-1",

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { subscriptionApi } from "@/features/subscription/api/subscription.api";
 import {
   RAZORPAY_SCRIPT_URL,
   SUBSCRIPTION_MESSAGES,
 } from "@/features/subscription/constants/subscription.constants";
+import { subscriptionApi } from "@/features/subscription/services/subscription.service";
 import type {
   RazorpayInstance,
   RazorpayOptions,

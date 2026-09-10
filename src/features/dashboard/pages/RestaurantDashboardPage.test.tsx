@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { subscriptionApi } from "@/features/subscription/api/subscription.api";
+import { subscriptionApi } from "@/features/subscription/services/subscription.service";
 import RestaurantDashboardPage from "./RestaurantDashboardPage";
 
 const mockNavigate = jest.fn();
@@ -10,7 +10,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("@/features/subscription/api/subscription.api", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionApi: {
     fetchRestaurantStatus: jest.fn(),
   },

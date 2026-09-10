@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { subscriptionApi } from "@/features/subscription/api/subscription.api";
+import { subscriptionApi } from "@/features/subscription/services/subscription.service";
 import RestaurantSubscriptionPage from "./RestaurantSubscriptionPage";
 
-jest.mock("@/features/subscription/api/subscription.api", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionApi: {
     fetchPlans: jest.fn(),
     createOrder: jest.fn(),

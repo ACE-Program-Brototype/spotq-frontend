@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { toast } from "sonner";
-import { subscriptionApi } from "@/features/subscription/api/subscription.api";
+import { subscriptionApi } from "@/features/subscription/services/subscription.service";
 import { useRazorpayCheckout } from "./useRazorpayCheckout";
 
 jest.mock("sonner", () => ({
@@ -11,7 +11,7 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("@/features/subscription/api/subscription.api", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionApi: {
     createOrder: jest.fn(),
     verifyPayment: jest.fn(),

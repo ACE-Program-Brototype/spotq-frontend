@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { subscriptionApi } from "@/features/subscription/api/subscription.api";
 import { PlanCard } from "@/features/subscription/components/PlanCard";
 import { useRazorpayCheckout } from "@/features/subscription/hooks/useRazorpayCheckout";
+import { subscriptionApi } from "@/features/subscription/services/subscription.service";
 
 export default function RestaurantSubscriptionPage() {
   const navigate = useNavigate();

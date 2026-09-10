@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { subscriptionApi } from "@/features/subscription/api/subscription.api";
+import { subscriptionApi } from "@/features/subscription/services/subscription.service";
 
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
