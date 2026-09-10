@@ -163,11 +163,6 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
   AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
   "payments/plans",
-  "payments/subscriptions/order",
-  "payments/subscriptions/verify",
-  "payments/subscriptions/status",
-  "payments/subscriptions",
-  "restaurants/me/status",
 ] as const;
 
 export const RESTAURANT_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

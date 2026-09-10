@@ -35,26 +35,84 @@ describe("restaurantRoutes structure and protection", () => {
     useAuthStore.getState().clearAuth();
   });
 
-  it("defines terms routes, privacy routes, subscription routes, auth layout routes, and protected layout routes", () => {
-    expect(restaurantRoutes).toHaveLength(5);
+  it("defines terms routes, privacy routes, auth layout routes, and protected layout routes", () => {
+    expect(restaurantRoutes).toHaveLength(4);
 
     expect(restaurantRoutes[0].path).toBe("terms");
     expect(restaurantRoutes[1].path).toBe("privacy");
-    expect(restaurantRoutes[2].path).toBe("subscription");
 
-    const authGroup = restaurantRoutes[3];
+    const authGroup = restaurantRoutes[2];
     expect(authGroup.children?.map((child) => child.path)).toEqual([
       "email/verification",
       "otp/verification",
       "onboarding",
     ]);
 
-    const protectedGroup = restaurantRoutes[4];
+    const protectedGroup = restaurantRoutes[3];
     expect(protectedGroup).toBeDefined();
     expect(protectedGroup.children).toBeDefined();
+    expect(protectedGroup.children?.[0].path).toBe("subscription");
   });
 
-  it("redirects unauthenticated user accessing protected restaurant route", () => {
+  it("redirects unauthenticated user accessing protected restaurant subscription route", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/subscription"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route, i) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey = route.path ?? `group-${i}`;
+
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
+                return Layout ? (
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child, j) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      const childKey = child.path ?? `child-${j}`;
+                      if (child.children) {
+                        return (
+                          <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
+                            {child.children.map((nested) => {
+                              const NestedComp = nested.Component as ComponentType | undefined;
+                              return (
+                                <Route
+                                  key={nested.path}
+                                  path={nested.path}
+                                  element={NestedComp ? <NestedComp /> : null}
+                                />
+                              );
+                            })}
+                          </Route>
+                        );
+                      }
+                      return (
+                        <Route
+                          key={childKey}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
+                ) : null;
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Restaurant Email Verification")).toBeInTheDocument();
+  });
+
+  it("redirects unauthenticated user accessing protected restaurant dashboard route", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter initialEntries={["/restaurant/dashboard"]}>

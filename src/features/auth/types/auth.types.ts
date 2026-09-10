@@ -2,6 +2,7 @@ export type Role = "ADMIN" | "CUSTOMER" | "RESTAURANT_ADMIN" | "RESTAURANT_STAFF
 
 export type User = {
   id?: string;
+  restaurantId?: string;
   _id?: string;
   fullName?: string;
   name?: string;
@@ -100,6 +101,7 @@ export type EmailVerificationProps = {
 export type VerifyOtpSuccessDashboard = {
   nextStep: "DASHBOARD";
   accessToken: string;
+  restaurantId?: string;
 };
 
 export type VerifyOtpSuccessOnboarding = {

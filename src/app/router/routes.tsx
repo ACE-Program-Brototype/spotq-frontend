@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import StaffAcceptInvitationPage from "@/features/auth/pages/StaffAcceptInvitationPage";
-import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
 import RootLayout from "@/layouts/RootLayout";
 import NotFoundPage from "../pages/NotFoundPage";
 import { adminRoutes } from "./admin.routes";
@@ -15,7 +14,7 @@ const router = createBrowserRouter(
       children: [
         {
           path: "subscription",
-          Component: RestaurantSubscriptionPage,
+          element: <Navigate to="/restaurant/subscription" replace />,
         },
         ...customerRoutes,
         {

@@ -31,10 +31,6 @@ export const restaurantRoutes: RouteObject[] = [
     Component: RestaurantPrivacyPage,
   },
   {
-    path: "subscription",
-    Component: RestaurantSubscriptionPage,
-  },
-  {
     Component: RestaurantAuthGuard,
     children: [
       {
@@ -54,6 +50,10 @@ export const restaurantRoutes: RouteObject[] = [
   {
     Component: RestaurantProtectedLayout,
     children: [
+      {
+        path: "subscription",
+        Component: RestaurantSubscriptionPage,
+      },
       {
         Component: RestaurantAdminLayout,
         children: [

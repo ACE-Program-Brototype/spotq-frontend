@@ -152,6 +152,8 @@ export default function OtpVerification({
         onGoToDashboard?.();
         useAuthStore.getState().setAuth(
           {
+            id: result.restaurantId,
+            restaurantId: result.restaurantId,
             email,
             role: "RESTAURANT_ADMIN",
             status: "ACTIVE",
