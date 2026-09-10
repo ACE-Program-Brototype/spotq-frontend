@@ -16,4 +16,20 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
+export const adminResetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .trim()
+      .min(15, { message: "Password must be at least 15 characters" })
+      .max(100, { message: "Password must be at most 100 characters" }),
+    confirmPassword: z.string().min(1, { message: "Please confirm your password" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+
+export type AdminResetPasswordFormValues = z.infer<typeof adminResetPasswordSchema>;

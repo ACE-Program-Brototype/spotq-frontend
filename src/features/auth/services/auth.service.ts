@@ -1,6 +1,8 @@
 import {
   ADMIN_AUTH_ENDPOINTS,
   AUTH_ENDPOINTS,
+  AUTH_MESSAGES,
+  RESTAURANT_AUTH_ENDPOINTS,
   STAFF_AUTH_ENDPOINTS,
 } from "@/features/auth/constants/auth.constants";
 import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
@@ -17,6 +19,7 @@ import type {
   User,
   VerifyEmailResult,
   VerifyOtpInput,
+  VerifyOtpResponse,
 } from "@/features/auth/types/auth.types";
 import { mapApiAuthResponseToAuthResult } from "@/features/auth/utils/auth.mapper";
 import { apiClient } from "@/lib/api/client";
@@ -106,18 +109,38 @@ export async function resendOtp(data: { email: string }): Promise<ApiResponse> {
 }
 
 export async function sendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_SEND_OTP, { json: data }).json<ApiResponse>();
+  return apiClient.post(RESTAURANT_AUTH_ENDPOINTS.SEND_OTP, { json: data }).json<ApiResponse>();
 }
 
 export async function resendRestaurantEmailOtp(data: { email: string }): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP, { json: data }).json<ApiResponse>();
+  return apiClient.post(RESTAURANT_AUTH_ENDPOINTS.RESEND_OTP, { json: data }).json<ApiResponse>();
 }
 
 export async function verifyRestaurantEmailOtp(data: {
   email: string;
   otp: string;
-}): Promise<ApiResponse> {
-  return apiClient.post(AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP, { json: data }).json<ApiResponse>();
+}): Promise<ApiResponse<VerifyOtpResponse>> {
+  const res = await apiClient.post(RESTAURANT_AUTH_ENDPOINTS.VERIFY_OTP, { json: data }).json<
+    ApiResponse<
+      VerifyOtpResponse & {
+        accessToken?: string;
+      }
+    >
+  >();
+
+  return {
+    success: res.success,
+    statusCode: res.statusCode,
+    message: res.message,
+    data: res.data
+      ? {
+          ...res.data,
+          ...(res.data.nextStep === "DASHBOARD" && res.data.accessToken
+            ? { accessToken: res.data.accessToken }
+            : {}),
+        }
+      : undefined,
+  };
 }
 
 export async function resetPassword(data: { password: string }): Promise<ApiResponse> {
@@ -259,5 +282,101 @@ export async function logoutStaff(): Promise<StaffLogoutRes> {
   return {
     success: res.success,
     message: res.message,
+  };
+}
+
+export type ValidateStaffInvitationResponse = {
+  valid: boolean;
+  email?: string;
+  restaurantName?: string;
+  message?: string;
+};
+
+export type AcceptStaffInvitationInput = {
+  token: string;
+  fullname: string;
+  phone: string;
+  password: string;
+};
+
+export type AcceptStaffInvitationResponse = {
+  success: boolean;
+  message: string;
+  data?: {
+    staff: User;
+    accessToken: string;
+  };
+};
+
+export async function validateStaffInvitation(
+  token: string,
+): Promise<ValidateStaffInvitationResponse> {
+  try {
+    const response = await apiClient
+      .post(STAFF_AUTH_ENDPOINTS.INVITATION_VALIDATE, {
+        json: { token },
+      })
+      .json<
+        ApiResponse<{
+          valid?: boolean;
+          email?: string;
+          restaurantName?: string;
+        }>
+      >();
+
+    const valid = response.data?.valid ?? response.success ?? true;
+    const email = response.data?.email ?? "";
+    const restaurantName = response.data?.restaurantName ?? "SpotQ Restaurant";
+
+    return {
+      valid,
+      email,
+      restaurantName,
+      message: response.message,
+    };
+  } catch (err: unknown) {
+    const errorMsg =
+      (err as { response?: { message?: string } })?.response?.message ||
+      (err as Error)?.message ||
+      AUTH_MESSAGES.STAFF_INVITATION_INVALID;
+    return {
+      valid: false,
+      message: errorMsg,
+    };
+  }
+}
+
+export async function acceptStaffInvitation(
+  input: AcceptStaffInvitationInput,
+): Promise<AcceptStaffInvitationResponse> {
+  const rawRes = await apiClient
+    .post(STAFF_AUTH_ENDPOINTS.INVITATION_ACCEPT, {
+      json: {
+        token: input.token,
+        fullname: input.fullname,
+        phone: input.phone,
+        password: input.password,
+      },
+    })
+    .json<
+      ApiResponse<{
+        staff: User;
+        accessToken: string;
+      }>
+    >();
+
+  const rawStaff = rawRes.data?.staff;
+  const staff: User | undefined = rawStaff
+    ? {
+        ...rawStaff,
+        role: (rawStaff.role || "RESTAURANT_STAFF") as User["role"],
+      }
+    : undefined;
+  const accessToken = rawRes.data?.accessToken;
+
+  return {
+    success: rawRes.success ?? true,
+    message: rawRes.message ?? AUTH_MESSAGES.STAFF_INVITATION_ACCEPT_SUCCESS,
+    data: staff && accessToken ? { staff, accessToken } : undefined,
   };
 }

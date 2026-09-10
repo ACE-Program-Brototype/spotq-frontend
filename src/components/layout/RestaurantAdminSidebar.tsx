@@ -80,6 +80,10 @@ export function RestaurantAdminSidebar({
       title: "Staff",
       href: `${basePath}/staff`,
       icon: Briefcase,
+      children: [
+        { title: "Directory", href: `${basePath}/staff` },
+        { title: "Invitations", href: `${basePath}/staff/invitations` },
+      ],
     },
     {
       title: "Payments",
