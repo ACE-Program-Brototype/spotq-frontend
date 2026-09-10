@@ -21,11 +21,13 @@ describe("restaurantRoutes structure and protection", () => {
     expect(authGroup.children?.map((child) => child.path)).toEqual([
       "email/verification",
       "otp/verification",
-      "onboarding",
     ]);
 
     const protectedGroup = restaurantRoutes[3];
     expect(protectedGroup).toBeDefined();
+    expect(protectedGroup.children?.map((child) => child.path ?? "admin-layout")).toContain(
+      "onboarding",
+    );
   });
 
   it("redirects unauthenticated user accessing protected restaurant route", () => {

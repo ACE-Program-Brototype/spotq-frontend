@@ -5,6 +5,8 @@ import RestaurantTermsPage from "@/features/auth/pages/RestaurantTermsPage";
 import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
 import BusinessInformationPage from "@/features/onboard/pages/BusinessInformationPage";
 import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
+import LocationPage from "@/features/onboard/pages/LocationPage";
+import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -38,7 +40,11 @@ export const restaurantRoutes: RouteObject[] = [
         path: "otp/verification",
         Component: OtpVerificationPage,
       },
-
+    ],
+  },
+  {
+    Component: RestaurantProtectedLayout,
+    children: [
       {
         path: "onboarding",
         Component: OnboardLayout,
@@ -55,13 +61,16 @@ export const restaurantRoutes: RouteObject[] = [
             path: "documents",
             Component: DocumentsPage,
           },
+          {
+            path: "location",
+            Component: LocationPage,
+          },
+          {
+            path: "review",
+            Component: ReviewPage,
+          },
         ],
       },
-    ],
-  },
-  {
-    Component: RestaurantProtectedLayout,
-    children: [
       {
         Component: RestaurantAdminLayout,
         children: [

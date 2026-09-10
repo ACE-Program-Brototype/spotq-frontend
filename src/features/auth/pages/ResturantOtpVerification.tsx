@@ -148,33 +148,25 @@ export default function OtpVerification({
 
     try {
       const result = await verifyOtp(email, otp);
+      const token = result.accessToken ?? result.access_token ?? "";
+      const restaurantId = result.restaurantId;
+
+      useAuthStore.getState().setAuth(
+        {
+          email,
+          role: "RESTAURANT_ADMIN",
+          status: result.nextStep === "DASHBOARD" ? "ACTIVE" : "PENDING",
+          restaurantId,
+        },
+        token,
+      );
+
       if (result.nextStep === "DASHBOARD") {
         onGoToDashboard?.();
-        const token =
-          (result as unknown as { accessToken?: string; access_token?: string }).accessToken ??
-          (result as unknown as { accessToken?: string; access_token?: string }).access_token ??
-          "";
-        useAuthStore.getState().setAuth(
-          {
-            email,
-            role: "RESTAURANT_ADMIN",
-            status: "ACTIVE",
-          },
-          token,
-        );
-        navigate("/restaurant/dashboard", {
-          replace: true,
-          state: { email },
-        });
+        navigate("/restaurant/dashboard", { replace: true });
       } else {
-        onGoToOnboarding?.(result.verificationToken);
-        navigate("/restaurant/onboarding", {
-          replace: true,
-          state: {
-            email,
-            verificationToken: result.verificationToken,
-          },
-        });
+        onGoToOnboarding?.();
+        navigate("/restaurant/onboarding/business-information", { replace: true });
       }
     } catch (err) {
       const code = (err as { code?: string })?.code;
