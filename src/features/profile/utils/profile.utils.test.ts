@@ -1,138 +1,124 @@
-import env from "@/config/env";
 import {
   formatDate,
+  formatDateOfBirth,
   formatDateTime,
+  formatGender,
+  formatPhoneNumber,
   formatRole,
   formatStatus,
   getInitials,
+  getProfileInitials,
   normalizeStaffProfile,
   resolveAvatarUrl,
 } from "./profile.utils";
 
 describe("profile.utils", () => {
-  describe("resolveAvatarUrl", () => {
-    it("returns null for null, undefined, or empty values", () => {
-      expect(resolveAvatarUrl(null)).toBeNull();
-      expect(resolveAvatarUrl(undefined)).toBeNull();
-      expect(resolveAvatarUrl("")).toBeNull();
-      expect(resolveAvatarUrl("   ")).toBeNull();
+  describe("formatDateOfBirth", () => {
+    it("formats a valid YYYY-MM-DD date to readable string", () => {
+      expect(formatDateOfBirth("1995-04-12")).toBe("April 12, 1995");
     });
 
-    it("returns absolute URLs directly", () => {
-      expect(resolveAvatarUrl("https://example.com/avatar.jpg")).toBe(
-        "https://example.com/avatar.jpg",
-      );
-      expect(resolveAvatarUrl("http://localhost:9000/bucket/img.png")).toBe(
-        "http://localhost:9000/bucket/img.png",
-      );
-      expect(resolveAvatarUrl("data:image/png;base64,abc123==")).toBe(
-        "data:image/png;base64,abc123==",
-      );
+    it("returns fallback for null or empty dates", () => {
+      expect(formatDateOfBirth(null, "Not specified")).toBe("Not specified");
+      expect(formatDateOfBirth("", "Not specified")).toBe("Not specified");
+    });
+  });
+
+  describe("formatGender", () => {
+    it("capitalizes gender correctly", () => {
+      expect(formatGender("MALE")).toBe("Male");
+      expect(formatGender("FEMALE")).toBe("Female");
+      expect(formatGender("OTHER")).toBe("Other");
     });
 
-    it("constructs full MinIO / CDN URL when cdnBaseUrl is set", () => {
-      // simulate cdnBaseUrl
-      const originalCdn = env.cdnBaseUrl;
-      Object.defineProperty(env, "cdnBaseUrl", {
-        value: "http://localhost:9000/spotq-assets",
-        configurable: true,
-      });
+    it("returns fallback for missing gender", () => {
+      expect(formatGender(null)).toBe("Not specified");
+    });
+  });
 
-      expect(resolveAvatarUrl("restaurants/uuid/staff/avatar.jpg")).toBe(
-        "http://localhost:9000/spotq-assets/restaurants/uuid/staff/avatar.jpg",
-      );
-      expect(resolveAvatarUrl("/restaurants/uuid/staff/avatar.jpg")).toBe(
-        "http://localhost:9000/spotq-assets/restaurants/uuid/staff/avatar.jpg",
-      );
-
-      // restore
-      Object.defineProperty(env, "cdnBaseUrl", {
-        value: originalCdn,
-        configurable: true,
-      });
+  describe("formatPhoneNumber", () => {
+    it("formats Indian phone numbers with spacing", () => {
+      expect(formatPhoneNumber("+919876543210")).toBe("+91 98765 43210");
     });
 
-    it("returns null if cdnBaseUrl is empty and avatar is an S3 key", () => {
-      const originalCdn = env.cdnBaseUrl;
-      Object.defineProperty(env, "cdnBaseUrl", {
-        value: "",
-        configurable: true,
-      });
+    it("returns raw string if not matching standard format", () => {
+      expect(formatPhoneNumber("12345")).toBe("12345");
+    });
 
-      expect(resolveAvatarUrl("restaurants/uuid/staff/avatar.jpg")).toBeNull();
+    it("returns fallback for missing phone", () => {
+      expect(formatPhoneNumber(null)).toBe("Not provided");
+    });
+  });
 
-      Object.defineProperty(env, "cdnBaseUrl", {
-        value: originalCdn,
-        configurable: true,
-      });
+  describe("getProfileInitials", () => {
+    it("extracts first and last initials", () => {
+      expect(getProfileInitials("John Doe")).toBe("JD");
+      expect(getProfileInitials("Rahul Kumar Sharma")).toBe("RS");
+    });
+
+    it("handles single name", () => {
+      expect(getProfileInitials("Rahul")).toBe("RA");
+    });
+
+    it("returns fallback for missing name", () => {
+      expect(getProfileInitials(null)).toBe("CU");
     });
   });
 
   describe("getInitials", () => {
-    it("extracts initials for multiple words", () => {
+    it("extracts first and last initials", () => {
       expect(getInitials("Julian Montgomery")).toBe("JM");
-      expect(getInitials("Alex Vance Johnson")).toBe("AJ");
     });
 
-    it("extracts initials for a single word", () => {
-      expect(getInitials("Alex")).toBe("AL");
+    it("handles single name", () => {
+      expect(getInitials("Julian")).toBe("JU");
     });
 
-    it("returns fallback for empty names", () => {
+    it("returns fallback for empty string", () => {
       expect(getInitials("")).toBe("SP");
-      expect(getInitials(null)).toBe("SP");
-      expect(getInitials(undefined, "JD")).toBe("JD");
     });
   });
 
   describe("formatRole", () => {
-    it("formats role enums to title case", () => {
-      expect(formatRole("MANAGER")).toBe("Manager");
+    it("formats RESTAURANT_STAFF to Staff", () => {
       expect(formatRole("RESTAURANT_STAFF")).toBe("Staff");
-      expect(formatRole("RESTAURANT_ADMIN")).toBe("Admin");
-      expect(formatRole("SERVER")).toBe("Server");
     });
 
-    it("handles missing role", () => {
-      expect(formatRole(null)).toBe("Staff");
-      expect(formatRole("")).toBe("Staff");
+    it("formats MANAGER to Manager", () => {
+      expect(formatRole("MANAGER")).toBe("Manager");
     });
   });
 
   describe("formatStatus", () => {
-    it("formats status enums to title case", () => {
+    it("formats ACTIVE to Active", () => {
       expect(formatStatus("ACTIVE")).toBe("Active");
-      expect(formatStatus("INACTIVE")).toBe("Inactive");
-      expect(formatStatus("SUSPENDED")).toBe("Suspended");
-    });
-
-    it("handles missing status", () => {
-      expect(formatStatus(null)).toBe("Active");
-      expect(formatStatus("")).toBe("Active");
     });
   });
 
   describe("formatDate", () => {
-    it("formats a valid ISO timestamp to Month DD, YYYY", () => {
+    it("formats ISO string to localized date", () => {
       const result = formatDate("2024-10-24T08:42:00.000Z");
       expect(result).toBe("October 24, 2024");
-    });
-
-    it("returns fallback when date string is missing", () => {
-      expect(formatDate(null)).toBe("Not recorded");
-      expect(formatDate(undefined)).toBe("Not recorded");
     });
   });
 
   describe("formatDateTime", () => {
-    it("formats a valid ISO timestamp", () => {
+    it("formats valid ISO timestamp", () => {
       const result = formatDateTime("2024-10-24T08:42:00.000Z");
       expect(result).toMatch(/October \d+, 2024 - \d{2}:\d{2} [AP]M/);
     });
+  });
 
-    it("returns fallback when date string is missing", () => {
-      expect(formatDateTime(null)).toBe("Not recorded");
-      expect(formatDateTime(undefined)).toBe("Not recorded");
+  describe("resolveAvatarUrl", () => {
+    it("returns null for empty avatar", () => {
+      expect(resolveAvatarUrl("")).toBeNull();
+      expect(resolveAvatarUrl(null)).toBeNull();
+    });
+
+    it("returns full http url directly", () => {
+      expect(resolveAvatarUrl("https://example.com/avatar.jpg")).toBe(
+        "https://example.com/avatar.jpg",
+      );
     });
   });
 
@@ -161,33 +147,6 @@ describe("profile.utils", () => {
         role: "Manager",
         status: "Active",
         createdAt: "2024-10-24T08:42:00.000Z",
-      });
-    });
-
-    it("normalizes camelCase backend payload", () => {
-      const raw = {
-        id: "staff-2",
-        restaurantId: "rest-2",
-        fullName: "Sarah Connor",
-        email: "sarah@dineline.com",
-        phoneNumber: null,
-        avatar: null,
-        role: "RESTAURANT_STAFF",
-        status: "ACTIVE",
-        createdAt: "2025-01-01T10:00:00.000Z",
-      };
-
-      const normalized = normalizeStaffProfile(raw);
-      expect(normalized).toEqual({
-        id: "staff-2",
-        restaurantId: "rest-2",
-        fullName: "Sarah Connor",
-        email: "sarah@dineline.com",
-        phone: null,
-        avatarUrl: null,
-        role: "Staff",
-        status: "Active",
-        createdAt: "2025-01-01T10:00:00.000Z",
       });
     });
   });

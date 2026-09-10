@@ -10,8 +10,15 @@ import HomePage from "@/features/demo/pages/HomePage";
 import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
 import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
+import EditProfilePage from "@/features/profile/pages/EditProfilePage";
+import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
+import ProtectedLayout from "@/layouts/ProtectedLayout";
+
+const CustomerProtectedLayout = () => (
+  <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo="/login" />
+);
 
 export const customerRoutes: RouteObject[] = [
   {
@@ -24,6 +31,20 @@ export const customerRoutes: RouteObject[] = [
       {
         path: "/about",
         Component: AboutPage,
+      },
+      {
+        path: "/profile",
+        Component: CustomerProtectedLayout,
+        children: [
+          {
+            index: true,
+            Component: ViewProfilePage,
+          },
+          {
+            path: "edit",
+            Component: EditProfilePage,
+          },
+        ],
       },
     ],
   },

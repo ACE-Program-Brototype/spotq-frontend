@@ -1,3 +1,37 @@
+export const AUTH_STORAGE_KEYS = {
+  ACCESS_TOKEN: "access_token",
+  USER_DATA: "user_data",
+  IS_AUTHENTICATED: "is_authenticated",
+  REDIRECT_AFTER_LOGIN: "redirect_after_login",
+} as const;
+
+export const AUTH_ROLES = {
+  ADMIN: "PLATFORM_ADMIN",
+  RESTAURANT_ADMIN: "RESTAURANT_ADMIN",
+  STAFF: "STAFF",
+  CUSTOMER: "CUSTOMER",
+} as const;
+
+export const AUTH_ROUTES = {
+  LOGIN: "/login",
+  REGISTER: "/register",
+  VERIFY_OTP: "/verify-otp",
+  FORGOT_PASSWORD: "/forgot-password",
+  RESET_PASSWORD: "/reset-password",
+  ADMIN_LOGIN: "/admin/login",
+  ADMIN_FORGOT_PASSWORD: "/admin/forgot-password",
+  ADMIN_RESET_PASSWORD: "/admin/reset-password",
+  RESTAURANT_LOGIN: "/restaurant/login",
+  RESTAURANT_REGISTER: "/restaurant/register",
+  RESTAURANT_VERIFY_OTP: "/restaurant/verify-otp",
+  RESTAURANT_FORGOT_PASSWORD: "/restaurant/forgot-password",
+  RESTAURANT_RESET_PASSWORD: "/restaurant/reset-password",
+  STAFF_LOGIN: "/staff/login",
+  STAFF_FORGOT_PASSWORD: "/staff/forgot-password",
+  STAFF_RESET_PASSWORD: "/staff/reset-password",
+  STAFF_ACCEPT_INVITATION: "/staff/accept-invitation",
+} as const;
+
 export const AUTH_MESSAGES = {
   LOGIN_SUCCESS: "Login successful!",
   ADMIN_LOGIN_SUCCESS: "Welcome back! Redirecting to dashboard…",
@@ -129,7 +163,7 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
 ] as const;
 
-export const RESTAURANT_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const RESTAURANT_EMAIL_REGEX = /^[^s@]+@[^s@]+.[^s@]+$/;
 export const RESTAURANT_OTP_LENGTH = 6;
 export const RESTAURANT_RESEND_COOLDOWN_SECONDS = 60;
 export const RESTAURANT_MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
