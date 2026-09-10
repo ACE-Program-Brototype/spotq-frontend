@@ -1,3 +1,3 @@
 export const STORAGE_ENDPOINTS = {
-  PRESIGNED_URL: "storage/presigned-url",
+  PRESIGNED_URL: "restaurants/storage/presigned-url",
 } as const;

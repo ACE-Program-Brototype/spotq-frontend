@@ -22,13 +22,19 @@ export default function ProtectedLayout({
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  const roleHome = getRoleHome(user?.role);
+  const roleHome = getRoleHome(user?.role, user?.status);
 
-  if (user?.role === "RESTAURANT_ADMIN" && !location.pathname.startsWith("/restaurant")) {
-    if (location.pathname === roleHome) {
-      return null;
+  if (user?.role === "RESTAURANT_ADMIN") {
+    if (user.status === "PENDING" && !location.pathname.startsWith("/restaurant/onboarding")) {
+      return <Navigate to="/restaurant/onboarding/business-information" replace />;
     }
-    return <Navigate to={roleHome} replace />;
+
+    if (!location.pathname.startsWith("/restaurant")) {
+      if (location.pathname === roleHome) {
+        return null;
+      }
+      return <Navigate to={roleHome} replace />;
+    }
   }
 
   if (user?.role === "ADMIN" && !location.pathname.startsWith("/admin")) {
