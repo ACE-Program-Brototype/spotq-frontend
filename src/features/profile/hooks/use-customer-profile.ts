@@ -1,12 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCustomerProfile } from "../api/profile.api";
-import {
-  CUSTOMER_PROFILE_QUERY_KEY,
-  CUSTOMER_PROFILE_STALE_TIME_MS,
-} from "../constants/profile.constants";
+import { getCustomerProfile } from "../services/profile.service";
 import type { CustomerProfile } from "../types/profile.types";
 
-export { CUSTOMER_PROFILE_QUERY_KEY };
+export const CUSTOMER_PROFILE_QUERY_KEY = ["customer-profile"] as const;
 
 /**
  * React Query hook to retrieve and cache the authenticated customer's profile.
@@ -15,6 +11,6 @@ export function useCustomerProfile() {
   return useQuery<CustomerProfile, Error>({
     queryKey: CUSTOMER_PROFILE_QUERY_KEY,
     queryFn: getCustomerProfile,
-    staleTime: CUSTOMER_PROFILE_STALE_TIME_MS,
+    staleTime: 5 * 60 * 1000,
   });
 }

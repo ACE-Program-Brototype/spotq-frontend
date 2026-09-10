@@ -1,17 +1,48 @@
+/**
+ * ProfileInfoCards Component
+ * Displays 4 information cards: Email, Phone, Gender, and Birth Date.
+ */
+
 import { Calendar, Mail, Phone, User as UserIcon } from "lucide-react";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import type { ProfileInfoCardsProps } from "../types/profile.types";
-import { formatDateOfBirth, formatGender, formatPhoneNumber } from "../utils/profile.utils";
 
 export function ProfileInfoCards({ profile }: ProfileInfoCardsProps) {
-  const formattedDob = formatDateOfBirth(profile.dob, "Not specified");
-  const formattedGender = formatGender(profile.gender, "Not specified");
-  const formattedPhone = formatPhoneNumber(profile.phone, "Not provided");
+  const formattedDob = profile.dob
+    ? (() => {
+        try {
+          const [year, month, day] = profile.dob.split("-").map(Number);
+          if (year && month && day) {
+            const date = new Date(Date.UTC(year, month - 1, day));
+            return new Intl.DateTimeFormat("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              timeZone: "UTC",
+            }).format(date);
+          }
+          return profile.dob;
+        } catch {
+          return profile.dob;
+        }
+      })()
+    : PROFILE_MESSAGES.NOT_SPECIFIED;
+
+  const formattedGender = profile.gender
+    ? profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1).toLowerCase()
+    : PROFILE_MESSAGES.NOT_SPECIFIED;
+
+  const formattedPhone = profile.phone
+    ? profile.phone.startsWith("+91") && profile.phone.length === 13
+      ? `+91 ${profile.phone.slice(3, 8)} ${profile.phone.slice(8)}`
+      : profile.phone
+    : PROFILE_MESSAGES.NOT_PROVIDED;
 
   const cards = [
     {
       id: "email",
       label: "EMAIL ADDRESS",
-      value: profile.email || "Not provided",
+      value: profile.email || PROFILE_MESSAGES.NOT_PROVIDED,
       icon: Mail,
     },
     {

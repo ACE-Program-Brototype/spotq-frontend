@@ -1,6 +1,6 @@
-/**
- * Customer Profile Types
- */
+import type { Gender } from "../constants/profile.constants";
+
+export type { Gender };
 
 export interface CustomerProfile {
   id: string;
@@ -8,10 +8,8 @@ export interface CustomerProfile {
   email: string;
   phone: string | null;
   status: string;
-  gender: "MALE" | "FEMALE" | "OTHER" | null;
+  gender: Gender | null;
   dob: string | null;
-  location: string | null;
-  default_address: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -23,13 +21,10 @@ export interface CustomerProfileApiResponse {
   data: CustomerProfile;
 }
 
-export interface CustomerSidebarProps {
-  profile?: CustomerProfile | null;
-  className?: string;
-}
-
-export interface ProfileDeliveryAddressCardProps {
-  profile: CustomerProfile;
+export interface UpdateCustomerProfileDto {
+  full_name?: string;
+  gender?: Gender | null;
+  dob?: string | null;
 }
 
 export interface ProfileHeroCardProps {
@@ -38,4 +33,23 @@ export interface ProfileHeroCardProps {
 
 export interface ProfileInfoCardsProps {
   profile: CustomerProfile;
+}
+
+export interface EditProfileFormProps {
+  profile: CustomerProfile;
+  onSubmit: (payload: UpdateCustomerProfileDto) => Promise<void> | void;
+  onCancel: () => void;
+  isSubmitting?: boolean;
+}
+
+export interface CustomerSidebarProps {
+  profile?: CustomerProfile | null;
+  className?: string;
+}
+
+export interface ProfileDeliveryAddressCardProps {
+  profile: CustomerProfile & {
+    location?: string | null;
+    default_address?: string | null;
+  };
 }

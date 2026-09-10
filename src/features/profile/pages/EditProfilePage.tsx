@@ -1,21 +1,40 @@
 /**
- * ViewProfilePage Component
- * Displays the authenticated customer's profile details including hero card,
- * personal details, and contact info.
+ * EditProfilePage Component
+ * Provides an interface for authenticated customers to edit their profile details.
+ * Connects to CustomerSidebar, View Customer Profile query, and Update Customer Profile mutation.
  */
 
-import { AlertCircle, Edit3, RefreshCw } from "lucide-react";
-import { Link } from "react-router-dom";
+import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CustomerSidebar } from "../components/CustomerSidebar";
-import { ProfileHeroCard } from "../components/ProfileHeroCard";
-import { ProfileInfoCards } from "../components/ProfileInfoCards";
+import { EditProfileForm } from "../components/EditProfileForm";
 import { ProfileSkeleton } from "../components/ProfileSkeleton";
 import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useCustomerProfile } from "../hooks/use-customer-profile";
+import { useUpdateCustomerProfile } from "../hooks/use-update-customer-profile";
+import type { UpdateCustomerProfileDto } from "../types/profile.types";
 
-export function ViewProfilePage() {
+export function EditProfilePage() {
+  const navigate = useNavigate();
   const { data: profile, isLoading, isError, error, refetch, isFetching } = useCustomerProfile();
+  const updateProfileMutation = useUpdateCustomerProfile();
+
+  const handleUpdate = async (payload: UpdateCustomerProfileDto) => {
+    try {
+      await updateProfileMutation.mutateAsync(payload);
+      toast.success(PROFILE_MESSAGES.UPDATE_SUCCESS);
+      navigate("/profile");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : PROFILE_MESSAGES.UPDATE_FAILED;
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate("/profile");
+  };
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -23,24 +42,23 @@ export function ViewProfilePage() {
         <CustomerSidebar profile={profile} />
 
         <div className="flex flex-1 w-full flex-col gap-6 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col gap-3">
+            <Link
+              to="/profile"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors self-start"
+            >
+              <ArrowLeft className="size-4" />
+              <span>{PROFILE_MESSAGES.BACK_TO_PROFILE}</span>
+            </Link>
+
             <div className="flex flex-col gap-1">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
-                {PROFILE_MESSAGES.MY_PROFILE}
+                {PROFILE_MESSAGES.EDIT_PROFILE}
               </h1>
               <p className="text-xs sm:text-sm font-medium text-neutral-500">
-                {PROFILE_MESSAGES.PROFILE_HEADER_SUBTITLE}
+                {PROFILE_MESSAGES.EDIT_PROFILE_SUBTITLE}
               </p>
             </div>
-
-            <Link
-              to="/profile/edit"
-              aria-label={PROFILE_MESSAGES.EDIT_PROFILE}
-              className="inline-flex items-center self-start sm:self-auto bg-[#ff6b00] hover:bg-[#e86100] text-white rounded-2xl font-bold gap-2 px-5 py-2.5 shadow-xs transition-all active:scale-98 text-sm"
-            >
-              <Edit3 className="size-4" />
-              <span>{PROFILE_MESSAGES.EDIT_PROFILE}</span>
-            </Link>
           </div>
 
           {isLoading ? (
@@ -69,10 +87,12 @@ export function ViewProfilePage() {
               </Button>
             </div>
           ) : profile ? (
-            <div className="flex flex-col gap-6">
-              <ProfileHeroCard profile={profile} />
-              <ProfileInfoCards profile={profile} />
-            </div>
+            <EditProfileForm
+              profile={profile}
+              onSubmit={handleUpdate}
+              onCancel={handleCancel}
+              isSubmitting={updateProfileMutation.isPending}
+            />
           ) : null}
         </div>
       </div>
@@ -80,4 +100,4 @@ export function ViewProfilePage() {
   );
 }
 
-export default ViewProfilePage;
+export default EditProfilePage;
