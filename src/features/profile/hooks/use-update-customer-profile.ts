@@ -4,9 +4,9 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { PROFILE_QUERY_KEYS } from "../constants/profile.constants";
 import { updateCustomerProfile } from "../services/profile.service";
 import type { CustomerProfile, UpdateCustomerProfileDto } from "../types/profile.types";
-import { CUSTOMER_PROFILE_QUERY_KEY } from "./use-customer-profile";
 
 export function useUpdateCustomerProfile() {
   const queryClient = useQueryClient();
@@ -16,7 +16,7 @@ export function useUpdateCustomerProfile() {
   return useMutation<CustomerProfile, Error, UpdateCustomerProfileDto>({
     mutationFn: updateCustomerProfile,
     onSuccess: (updatedProfile) => {
-      queryClient.setQueryData(CUSTOMER_PROFILE_QUERY_KEY, updatedProfile);
+      queryClient.setQueryData(PROFILE_QUERY_KEYS.CUSTOMER_PROFILE, updatedProfile);
 
       if (currentUser) {
         setUser({

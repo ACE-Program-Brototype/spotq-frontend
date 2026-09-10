@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAdminResetPassword } from "@/features/auth/hooks/useAdminResetPassword";
 import {
-  type ResetPasswordFormValues,
-  resetPasswordSchema,
+  type AdminResetPasswordFormValues,
+  adminResetPasswordSchema,
 } from "@/features/auth/schemas/reset-password.schema";
 import { cn } from "@/lib/utils/cn";
 
@@ -23,8 +23,8 @@ export function AdminResetPasswordForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ResetPasswordFormValues>({
-    resolver: zodResolver(resetPasswordSchema),
+  } = useForm<AdminResetPasswordFormValues>({
+    resolver: zodResolver(adminResetPasswordSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -32,7 +32,7 @@ export function AdminResetPasswordForm() {
     mode: "onChange",
   });
 
-  const onSubmit = (data: ResetPasswordFormValues) => {
+  const onSubmit = (data: AdminResetPasswordFormValues) => {
     resetPassword({ password: data.password });
   };
 
