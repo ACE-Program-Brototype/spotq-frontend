@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuthStore } from "@/features/auth/store/auth.store";
 import {
   RAZORPAY_SCRIPT_URL,
   SUBSCRIPTION_MESSAGES,
@@ -65,7 +64,11 @@ export function loadRazorpayScript(src = RAZORPAY_SCRIPT_URL): Promise<boolean> 
   return razorpayScriptPromise;
 }
 
-export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutOptions = {}) {
+export function useRazorpayCheckout({
+  onSuccess,
+  onError,
+  onAlreadyActive,
+}: UseRazorpayCheckoutOptions = {}) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
@@ -162,16 +165,12 @@ export function useRazorpayCheckout({ onSuccess, onError }: UseRazorpayCheckoutO
       }
 
       if (isAlreadyActive) {
-        const currentUser = useAuthStore.getState().user;
         toast.info(SUBSCRIPTION_MESSAGES.ALREADY_ACTIVE_REDIRECT);
-        onSuccess?.({
-          subscriptionId: "",
-          restaurantId: currentUser?.restaurantId || currentUser?.id || "",
-          planCode: SUBSCRIPTION_MESSAGES.DEFAULT_PRO_PLAN_CODE,
-          status: SUBSCRIPTION_MESSAGES.ACTIVE_STATUS,
-          currentPeriodStart: new Date().toISOString(),
-          currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        });
+        if (onAlreadyActive) {
+          onAlreadyActive();
+        } else {
+          window.location.assign("/restaurant/dashboard");
+        }
         return;
       }
 

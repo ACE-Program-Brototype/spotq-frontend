@@ -106,4 +106,5 @@ export interface RazorpayInstance {
 export interface UseRazorpayCheckoutOptions {
   onSuccess?: (result: VerifyPaymentResponse) => void;
   onError?: (error: Error) => void;
+  onAlreadyActive?: () => void;
 }

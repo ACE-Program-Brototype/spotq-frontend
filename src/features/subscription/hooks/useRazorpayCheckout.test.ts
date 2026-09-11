@@ -213,4 +213,30 @@ describe("useRazorpayCheckout", () => {
       });
     });
   });
+
+  it("handles already active subscription conflict without fabrications", async () => {
+    const conflictError = new Error("Restaurant already has an active subscription");
+    (subscriptionService.createOrder as jest.Mock).mockRejectedValueOnce(conflictError);
+
+    const onAlreadyActive = jest.fn();
+    const onSuccess = jest.fn();
+
+    const { result } = renderHook(() =>
+      useRazorpayCheckout({
+        onSuccess,
+        onAlreadyActive,
+      }),
+    );
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    expect(toast.info).toHaveBeenCalledWith(
+      expect.stringContaining("already has an active subscription"),
+    );
+    expect(onAlreadyActive).toHaveBeenCalledTimes(1);
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(result.current.isProcessing).toBe(false);
+  });
 });

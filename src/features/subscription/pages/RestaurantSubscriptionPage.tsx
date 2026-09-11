@@ -63,6 +63,11 @@ export default function RestaurantSubscriptionPage() {
       // Direct the restaurant admin to dashboard upon successful verification
       navigate("/restaurant/dashboard", { replace: true });
     },
+    onAlreadyActive: () => {
+      // Invalidate query to pull real authoritative subscription from backend without injecting synthetic data
+      queryClient.invalidateQueries({ queryKey: ["restaurant-status"] });
+      navigate("/restaurant/dashboard", { replace: true });
+    },
   });
 
   return (
