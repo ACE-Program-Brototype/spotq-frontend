@@ -7,6 +7,7 @@ import BusinessInformationPage from "@/features/onboard/pages/BusinessInformatio
 import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
 import ReviewPage from "@/features/onboard/pages/ReviewPage";
+import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -68,6 +69,10 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "review",
             Component: ReviewPage,
+          },
+          {
+            path: "status",
+            Component: VerificationStatusPage,
           },
         ],
       },
