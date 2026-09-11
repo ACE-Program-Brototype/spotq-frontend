@@ -261,3 +261,42 @@ export async function logoutStaff(): Promise<StaffLogoutRes> {
     message: res.message,
   };
 }
+
+export interface CompleteRestaurantOnboardingPayload {
+  restaurantName: string;
+  phone: string;
+  ownerName: string;
+  seatingCapacity?: number;
+  documents?: {
+    fssai: { documentName: string; documentKey: string };
+    businessRegistration: { documentName: string; documentKey: string };
+    ownerIdentity: { documentName: string; documentKey: string };
+    gst: { documentName: string; documentKey: string };
+    businessPan: { documentName: string; documentKey: string };
+  };
+  restaurantImages?: Array<{
+    objectKey: string;
+    fileName?: string;
+    displayOrder?: number;
+  }>;
+  location?: {
+    addressLine1: string;
+    addressLine2?: string | null;
+    city: string;
+    state: string;
+    country: string;
+    pincode: string;
+    latitude: number;
+    longitude: number;
+  };
+}
+
+export async function completeRestaurantOnboarding(
+  payload: CompleteRestaurantOnboardingPayload,
+): Promise<ApiResponse> {
+  return apiClient
+    .post(AUTH_ENDPOINTS.RESTAURANT_ONBOARD, {
+      json: payload,
+    })
+    .json<ApiResponse>();
+}
