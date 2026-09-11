@@ -24,6 +24,8 @@ export const AUTH_MESSAGES = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
   PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
+  RESTAURANT_ONBOARD_SUCCESS:
+    "Restaurant onboarding submitted successfully! Your application is now under verification.",
 } as const;
 
 export const AUTH_ENDPOINTS = {
@@ -49,7 +51,7 @@ export const AUTH_ENDPOINTS = {
   RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
   RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
   RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
-  RESTAURANT_ONBOARD: "restaurants/onboard",
+  RESTAURANT_ONBOARD: "auth/restaurants/onboard",
 
   STAFF_LOGIN: "restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "restaurants/staff/refresh-token",
