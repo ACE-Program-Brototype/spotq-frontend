@@ -10,6 +10,10 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock("@/features/auth/services/auth.service", () => ({
+  completeRestaurantOnboarding: jest.fn().mockResolvedValue({ success: true, message: "Success" }),
+}));
+
 describe("ReviewPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -103,13 +107,41 @@ describe("ReviewPage", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/restaurant/onboarding/location");
   });
 
-  it("handles submit button click without error", () => {
-    window.alert = jest.fn();
+  it("handles submit button click successfully", async () => {
+    const { completeRestaurantOnboarding } = require("@/features/auth/services/auth.service");
+
+    useOnboardStore.setState({
+      businessInformation: {
+        restaurant_name: "Spice Garden",
+        phone: "9876543210",
+        owner_name: "Rahul Sharma",
+        seating_capacity: 45,
+      },
+      documents: {
+        fssai: { documentName: "fssai_cert.pdf", documentKey: "key/fssai.pdf" },
+        businessRegistration: { documentName: "business_reg.pdf", documentKey: "key/reg.pdf" },
+        ownerIdentity: { documentName: "owner_id.pdf", documentKey: "key/id.pdf" },
+        gst: { documentName: "gst_cert.pdf", documentKey: "key/gst.pdf" },
+        businessPan: { documentName: "pan_card.pdf", documentKey: "key/pan.pdf" },
+      },
+      restaurantImages: [{ fileName: "photo1.jpg", objectKey: "key/photo1.jpg", displayOrder: 1 }],
+      location: {
+        address_line1: "100 Indiranagar 10th Main",
+        address_line2: "Near Metro",
+        city: "Bengaluru",
+        state: "Karnataka",
+        country: "India",
+        pincode: "560038",
+        latitude: 12.9716,
+        longitude: 77.5946,
+      },
+    });
+
     renderComponent();
 
     const submitButton = screen.getByRole("button", { name: /submit application/i });
     fireEvent.click(submitButton);
 
-    expect(window.alert).toHaveBeenCalled();
+    expect(completeRestaurantOnboarding).toHaveBeenCalled();
   });
 });
