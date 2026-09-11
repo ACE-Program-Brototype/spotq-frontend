@@ -10,7 +10,8 @@ export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
-  const restaurantEmail = user?.email || "restaurant";
+  const restaurantUser = user as { email?: string; status?: string } | null;
+  const restaurantEmail = restaurantUser?.email || "restaurant";
 
   const { data: statusData, isLoading: isLoadingStatus } = useQuery({
     queryKey: ["restaurant-status"],
@@ -19,7 +20,7 @@ export default function RestaurantDashboardPage() {
   });
 
   const isSubscriptionActive = statusData?.isSubscriptionActive ?? false;
-  const isApproved = statusData?.verificationStatus === "APPROVED";
+  const isApproved = (restaurantUser?.status ?? statusData?.verificationStatus) === "APPROVED";
   const needsSubscription = isApproved && !isSubscriptionActive;
 
   const subscriptionEndsAt = statusData?.subscriptionEndsAt
@@ -127,7 +128,7 @@ export default function RestaurantDashboardPage() {
           <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
             <p className="text-xs font-medium text-neutral-500">Account status</p>
             <p className="mt-2 text-xl font-bold text-neutral-900">
-              {statusData?.verificationStatus ?? "Active"}
+              {restaurantUser?.status ?? statusData?.verificationStatus ?? "Active"}
             </p>
           </div>
           <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">

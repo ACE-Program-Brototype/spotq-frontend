@@ -70,6 +70,7 @@ export const subscriptionService = {
       fullName?: string;
       name?: string;
       email?: string;
+      status?: "PENDING" | "APPROVED" | "REJECTED" | "ACTIVE" | "INACTIVE";
     } | null;
     const restaurantId = restaurantIdOverride || user?.restaurantId || user?.id;
 
@@ -98,7 +99,7 @@ export const subscriptionService = {
     return {
       restaurantId,
       restaurantName: user?.fullName || user?.name || "Restaurant",
-      verificationStatus: "APPROVED",
+      verificationStatus: user?.status || "PENDING",
       isSubscriptionActive: isSubActive,
       subscriptionPlanCode: sub?.planCode || null,
       subscriptionEndsAt: sub?.currentPeriodEnd || null,
