@@ -21,6 +21,28 @@ const RestaurantProtectedLayout = () => (
   />
 );
 
+const VerificationStatusLayout = () => (
+  <div className="min-h-screen bg-neutral-100">
+    <header className="border-b border-neutral-200 bg-white">
+      <div className="flex h-16 items-center px-6 sm:px-10">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500">
+            <span className="text-sm font-bold text-white">S</span>
+          </div>
+          <span className="text-lg">
+            <span className="font-bold text-neutral-900">SpotQ</span>{" "}
+            <span className="text-neutral-500">for restaurants</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <div className="mx-auto flex max-w-4xl justify-center px-6 py-10 sm:px-10">
+      <VerificationStatusPage />
+    </div>
+  </div>
+);
+
 export const restaurantRoutes: RouteObject[] = [
   {
     path: "terms",
@@ -48,31 +70,35 @@ export const restaurantRoutes: RouteObject[] = [
     children: [
       {
         path: "onboarding",
-        Component: OnboardLayout,
         children: [
           {
             index: true,
             Component: () => <Navigate to="business-information" replace />,
           },
           {
-            path: "business-information",
-            Component: BusinessInformationPage,
-          },
-          {
-            path: "documents",
-            Component: DocumentsPage,
-          },
-          {
-            path: "location",
-            Component: LocationPage,
-          },
-          {
-            path: "review",
-            Component: ReviewPage,
-          },
-          {
             path: "status",
-            Component: VerificationStatusPage,
+            Component: VerificationStatusLayout,
+          },
+          {
+            Component: OnboardLayout,
+            children: [
+              {
+                path: "business-information",
+                Component: BusinessInformationPage,
+              },
+              {
+                path: "documents",
+                Component: DocumentsPage,
+              },
+              {
+                path: "location",
+                Component: LocationPage,
+              },
+              {
+                path: "review",
+                Component: ReviewPage,
+              },
+            ],
           },
         ],
       },
