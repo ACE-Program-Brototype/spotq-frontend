@@ -5,6 +5,7 @@ import AdminLoginPage from "@/features/auth/pages/AdminLoginPage";
 import AdminResetPasswordPage from "@/features/auth/pages/AdminResetPasswordPage";
 import AdminVerifyOtpPage from "@/features/auth/pages/AdminVerifyOtpPage";
 import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
+import AdminRestaurantsPage from "@/features/restaurants/pages/AdminRestaurantsPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -45,6 +46,14 @@ export const adminRoutes: RouteObject[] = [
           {
             path: "dashboard",
             Component: AdminDashboardPage,
+          },
+          {
+            path: "restaurants",
+            Component: AdminRestaurantsPage,
+          },
+          {
+            path: "restaurants/management",
+            Component: AdminRestaurantsPage,
           },
         ],
       },

@@ -11,7 +11,7 @@ export const getRoleHome = (role?: Role): string => {
       return "/admin/dashboard";
     case "RESTAURANT_ADMIN":
       return "/restaurant/dashboard";
-    case "RESTAURANT_STAFF":
+    case "STAFF":
       return "/staff/dashboard";
     default:
       return "/";

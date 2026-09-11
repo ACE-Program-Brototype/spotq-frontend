@@ -97,12 +97,12 @@ describe("AuthLayout", () => {
     expect(screen.getByText("Admin Dashboard Page")).toBeInTheDocument();
   });
 
-  it("redirects RESTAURANT_STAFF to /staff/dashboard or redirectTo destination", () => {
+  it("redirects STAFF to /staff/dashboard or redirectTo destination", () => {
     useAuthStore.getState().setUser({
       _id: "2",
       name: "Staff",
       email: "staff@spotq.com",
-      role: "RESTAURANT_STAFF",
+      role: "STAFF",
       created_at: "2026-08-18T21:59:52.665Z",
     });
 

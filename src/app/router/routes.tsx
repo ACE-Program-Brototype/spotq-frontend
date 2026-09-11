@@ -9,6 +9,8 @@ import { restaurantRoutes } from "./restaurant.routes";
 import { staffRoutes } from "./staff.routes";
 
 const AdminIndexRedirect = () => <Navigate to="/admin/dashboard" replace />;
+const RestaurantIndexRedirect = () => <Navigate to="/restaurant/dashboard" replace />;
+const StaffIndexRedirect = () => <Navigate to="/staff/dashboard" replace />;
 
 const router = createBrowserRouter([
   {
@@ -39,7 +41,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: () => <Navigate to="/restaurant/email/verification" replace />,
+            Component: RestaurantIndexRedirect,
           },
           ...restaurantRoutes,
         ],
@@ -49,7 +51,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: () => <Navigate to="/staff/dashboard" replace />,
+            Component: StaffIndexRedirect,
           },
           ...staffRoutes,
         ],

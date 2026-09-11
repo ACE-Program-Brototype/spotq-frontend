@@ -28,7 +28,7 @@ describe("StaffProfilePage", () => {
     useAuthStore.getState().setUser({
       _id: "staff-1",
       email: "staff@example.com",
-      role: "RESTAURANT_STAFF",
+      role: "STAFF",
     });
   });
 

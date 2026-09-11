@@ -86,13 +86,15 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
   };
 
+  const displayName = user?.fullName || user?.name || user?.email?.split("@")[0] || "Administrator";
+
   const initials =
-    user?.name
+    displayName
       ?.split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2) ?? "SN";
+      .slice(0, 2) ?? "AD";
 
   return (
     <aside
@@ -213,7 +215,7 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-bold text-slate-900 leading-tight">
-                {user?.name ?? "Soorya Narayanan"}
+                {displayName}
               </p>
               <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                 {user?.role ?? "ADMINISTRATOR"}

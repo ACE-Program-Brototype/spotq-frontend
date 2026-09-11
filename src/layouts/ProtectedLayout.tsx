@@ -39,7 +39,7 @@ export default function ProtectedLayout({
   }
 
   if (
-    user?.role === "RESTAURANT_STAFF" &&
+    user?.role === "STAFF" &&
     !location.pathname.startsWith("/staff") &&
     !location.pathname.startsWith("/restaurant")
   ) {

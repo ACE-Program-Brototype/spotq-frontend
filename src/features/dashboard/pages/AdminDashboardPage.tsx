@@ -91,7 +91,8 @@ function AdminDashboardPage() {
           </Badge>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          Welcome back, {user?.name ?? "Admin"}. Your platform overview will appear here.
+          Welcome back, {user?.fullName || user?.name || "Admin"}. Your platform overview will
+          appear here.
         </p>
       </div>
 

@@ -80,6 +80,10 @@ describe("profile.utils", () => {
   });
 
   describe("formatRole", () => {
+    it("formats STAFF to Staff", () => {
+      expect(formatRole("STAFF")).toBe("Staff");
+    });
+
     it("formats RESTAURANT_STAFF to Staff", () => {
       expect(formatRole("RESTAURANT_STAFF")).toBe("Staff");
     });

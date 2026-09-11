@@ -20,13 +20,31 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
     }
 
     const currentUser = useAuthStore.getState().user;
-    const currentRole = currentUser?.role;
+    let currentRole = currentUser?.role;
+
+    if (!currentRole && typeof window !== "undefined") {
+      const path = window.location.pathname;
+      if (path.startsWith("/admin")) {
+        currentRole = "ADMIN";
+      } else if (path.startsWith("/restaurant")) {
+        currentRole = "RESTAURANT_ADMIN";
+      } else if (path.startsWith("/staff")) {
+        currentRole = "STAFF";
+      }
+    }
 
     let refreshEndpoint: string;
 
     switch (currentRole) {
-      case "RESTAURANT_STAFF":
+      case "ADMIN":
+        refreshEndpoint = AUTH_ENDPOINTS.ADMIN_REFRESH_TOKEN;
+        break;
+
       case "RESTAURANT_ADMIN":
+        refreshEndpoint = AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN;
+        break;
+
+      case "STAFF":
         refreshEndpoint = AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN;
         break;
 

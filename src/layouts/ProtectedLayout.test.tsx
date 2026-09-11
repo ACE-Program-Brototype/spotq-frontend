@@ -196,11 +196,7 @@ describe("ProtectedLayout", () => {
     render(
       <MemoryRouter initialEntries={["/staff/dashboard"]}>
         <Routes>
-          <Route
-            element={
-              <ProtectedLayout allowedRoles={["RESTAURANT_STAFF"]} redirectTo="/staff/login" />
-            }
-          >
+          <Route element={<ProtectedLayout allowedRoles={["STAFF"]} redirectTo="/staff/login" />}>
             <Route path="/staff/dashboard" element={<div>Staff Dashboard Page</div>} />
           </Route>
           <Route path="/restaurant/dashboard" element={<div>Restaurant Dashboard Page</div>} />

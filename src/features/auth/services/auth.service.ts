@@ -369,7 +369,7 @@ export async function acceptStaffInvitation(
   const staff: User | undefined = rawStaff
     ? {
         ...rawStaff,
-        role: (rawStaff.role || "RESTAURANT_STAFF") as User["role"],
+        role: (rawStaff.role || "STAFF") as User["role"],
       }
     : undefined;
   const accessToken = rawRes.data?.accessToken;
