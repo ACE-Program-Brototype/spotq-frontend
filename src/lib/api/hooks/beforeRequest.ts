@@ -26,5 +26,10 @@ export const beforeRequest: BeforeRequestHook = async ({ request }) => {
     request.headers.set("Authorization", `Bearer ${token}`);
   }
 
+  const restaurantId = useAuthStore.getState().user?.restaurantId;
+  if (restaurantId) {
+    request.headers.set("x-restaurant-id", restaurantId);
+  }
+
   return request;
 };
