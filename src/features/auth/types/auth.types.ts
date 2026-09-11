@@ -100,7 +100,7 @@ export type EmailVerificationProps = {
 };
 
 export type VerifyOtpResponse = {
-  nextStep: "ONBOARDING" | "DASHBOARD";
+  nextStep: "ONBOARDING" | "VERIFICATION_STATUS" | "SUBSCRIPTION" | "DASHBOARD";
   accessToken?: string;
   access_token?: string;
   restaurantId?: string;

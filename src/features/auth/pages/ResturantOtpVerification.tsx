@@ -155,13 +155,22 @@ export default function OtpVerification({
         {
           email,
           role: "RESTAURANT_ADMIN",
-          status: result.nextStep === "DASHBOARD" ? "ACTIVE" : "PENDING",
+          status:
+            result.nextStep === "DASHBOARD" || result.nextStep === "SUBSCRIPTION"
+              ? "ACTIVE"
+              : "PENDING",
           restaurantId,
         },
         token,
       );
 
-      if (result.nextStep === "DASHBOARD") {
+      if (result.nextStep === "VERIFICATION_STATUS") {
+        onGoToOnboarding?.();
+        navigate("/restaurant/onboarding/status", { replace: true });
+      } else if (result.nextStep === "SUBSCRIPTION") {
+        onGoToDashboard?.();
+        navigate("/restaurant/subscription", { replace: true });
+      } else if (result.nextStep === "DASHBOARD") {
         onGoToDashboard?.();
         navigate("/restaurant/dashboard", { replace: true });
       } else {
