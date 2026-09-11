@@ -57,6 +57,7 @@ describe("RestaurantSubscriptionPage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (subscriptionService.fetchRestaurantStatus as jest.Mock).mockResolvedValue(null);
     queryClient = new QueryClient({
       defaultOptions: {
         queries: {
