@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
 import { customerService } from "../services/customer.service";
-import type { CustomersListData } from "../types/customer.types";
 import { useCustomers, useUpdateCustomerStatus } from "./use-customers";
 
 jest.mock("../services/customer.service", () => ({
@@ -108,38 +107,14 @@ describe("useCustomers hook", () => {
 });
 
 describe("useUpdateCustomerStatus mutation hook", () => {
-  it("should call customerService.updateCustomerStatus and update TanStack Query cache directly", async () => {
+  it("should call customerService.updateCustomerStatus and invalidate queries on success", async () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
       },
     });
 
-    const initialData: CustomersListData = {
-      users: [
-        {
-          id: "user-1",
-          email: "user@example.com",
-          fullName: "Test User",
-          phone: null,
-          status: "ACTIVE",
-          isEmailVerified: true,
-          avatarUrl: null,
-          createdAt: "2026-09-01T00:00:00.000Z",
-          updatedAt: "2026-09-01T00:00:00.000Z",
-        },
-      ],
-      pagination: {
-        page: 1,
-        limit: 20,
-        total: 1,
-        totalPages: 1,
-        hasNextPage: false,
-        hasPrevPage: false,
-      },
-    };
-
-    queryClient.setQueryData(["admin", "customers", { page: 1 }], initialData);
+    const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
 
     (customerService.updateCustomerStatus as jest.Mock).mockResolvedValue({
       id: "user-1",
@@ -163,7 +138,8 @@ describe("useUpdateCustomerStatus mutation hook", () => {
       status: "BLOCKED",
     });
 
-    const cached = queryClient.getQueryData<CustomersListData>(["admin", "customers", { page: 1 }]);
-    expect(cached?.users[0].status).toBe("BLOCKED");
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ["admin", "customers"],
+    });
   });
 });

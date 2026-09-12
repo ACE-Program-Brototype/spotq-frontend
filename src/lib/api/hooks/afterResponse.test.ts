@@ -17,7 +17,7 @@ describe("afterResponse hook", () => {
     } as unknown as Response;
   };
 
-  it("should clear auth state when response is 403 USER_BLOCKED", async () => {
+  it("should clear auth state when response is 403 USER_BLOCKED code", async () => {
     useAuthStore.getState().setAuth(
       {
         id: "user-1",
@@ -44,6 +44,34 @@ describe("afterResponse hook", () => {
     expect(result).toBe(mockResponse);
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
     expect(useAuthStore.getState().user).toBeNull();
+  });
+
+  it("should NOT clear auth state on 403 when error message mentions blocked but code is not USER_BLOCKED", async () => {
+    useAuthStore.getState().setAuth(
+      {
+        id: "admin-1",
+        email: "admin@example.com",
+        fullName: "Admin User",
+        role: "ADMIN",
+      },
+      "dummy-token",
+    );
+
+    const mockResponse = createMockResponse(403, {
+      success: false,
+      message: "Customer account is blocked and cannot be modified.",
+    });
+
+    const result = await afterResponse({
+      request: {} as Request,
+      options: {} as NormalizedOptions,
+      response: mockResponse,
+      retryCount: 0,
+    });
+
+    expect(result).toBe(mockResponse);
+    expect(useAuthStore.getState().isAuthenticated).toBe(true);
+    expect(useAuthStore.getState().user?.id).toBe("admin-1");
   });
 
   it("should retain auth state on normal 200 response", async () => {

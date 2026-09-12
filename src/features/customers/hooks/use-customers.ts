@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
   CUSTOMER_DEFAULTS,
@@ -9,7 +9,7 @@ import {
   type CustomerSortOrderType,
 } from "../constants/customer.constants";
 import { customerService } from "../services/customer.service";
-import type { CustomersListData, UpdateCustomerStatusInput } from "../types/customer.types";
+import type { UpdateCustomerStatusInput } from "../types/customer.types";
 
 export interface UseCustomersOptions {
   initialPage?: number;
@@ -35,6 +35,14 @@ export function useCustomers(options?: UseCustomersOptions) {
   );
 
   const debouncedSearch = useDebounce(search, CUSTOMER_DEFAULTS.SEARCH_DEBOUNCE_MS);
+
+  const prevDebouncedSearchRef = useRef(debouncedSearch);
+  useEffect(() => {
+    if (prevDebouncedSearchRef.current !== debouncedSearch) {
+      prevDebouncedSearchRef.current = debouncedSearch;
+      setPage(1);
+    }
+  }, [debouncedSearch]);
 
   const queryKey = [
     "admin",
@@ -64,7 +72,6 @@ export function useCustomers(options?: UseCustomersOptions) {
 
   const handleSearchChange = (newSearch: string) => {
     setSearch(newSearch);
-    setPage(1);
   };
 
   const handleStatusChange = (newStatus: CustomerFilterStatusType) => {
@@ -120,21 +127,8 @@ export function useUpdateCustomerStatus() {
 
   return useMutation({
     mutationFn: (input: UpdateCustomerStatusInput) => customerService.updateCustomerStatus(input),
-    onSuccess: (_data, variables) => {
-      queryClient.setQueriesData<CustomersListData>(
-        { queryKey: ["admin", "customers"] },
-        (oldData) => {
-          if (!oldData || !Array.isArray(oldData.users)) return oldData;
-          return {
-            ...oldData,
-            users: oldData.users.map((customer) =>
-              customer.id === variables.userId
-                ? { ...customer, status: variables.status }
-                : customer,
-            ),
-          };
-        },
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "customers"] });
     },
   });
 }

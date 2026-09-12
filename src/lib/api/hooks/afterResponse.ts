@@ -1,5 +1,6 @@
 import type { AfterResponseHook } from "ky";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { redirectToPortalLogin } from "../portal-redirect";
 
 export const afterResponse: AfterResponseHook = async ({ response }) => {
   if (response.status === 403 || response.status === 401) {
@@ -14,20 +15,12 @@ export const afterResponse: AfterResponseHook = async ({ response }) => {
         | undefined;
 
       const code = data?.code || (typeof data?.error === "object" ? data?.error?.code : undefined);
-      const message =
-        data?.message || (typeof data?.error === "string" ? data?.error : data?.error?.message);
 
-      const isBlocked =
-        code === "USER_BLOCKED" ||
-        code === "ACCOUNT_BLOCKED" ||
-        (typeof message === "string" && /blocked|suspended/i.test(message));
+      const isBlocked = code === "USER_BLOCKED" || code === "ACCOUNT_BLOCKED";
 
       if (isBlocked) {
         useAuthStore.getState().clearAuth();
-
-        if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+        redirectToPortalLogin();
       }
     } catch {
       // Non-JSON responses safely ignored

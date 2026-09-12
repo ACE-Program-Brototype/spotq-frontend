@@ -65,6 +65,76 @@ describe("customerService", () => {
       expect(result.users[0].fullName).toBe("Rahul Sharma");
     });
 
+    it("should handle response when data is directly an array of customers", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Customers retrieved successfully.",
+        data: [
+          {
+            id: "user-2",
+            fullname: "Al Ameen",
+            email: "alameen@example.com",
+            phone: "+919876543211",
+            status: "ACTIVE",
+          },
+        ],
+        pagination: {
+          page: 1,
+          limit: 20,
+          total: 1,
+          totalPages: 1,
+          hasNextPage: false,
+          hasPrevPage: false,
+        },
+        statusCode: 200,
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await customerService.getCustomers();
+
+      expect(result.users).toHaveLength(1);
+      expect(result.users[0].id).toBe("user-2");
+      expect(result.users[0].fullName).toBe("Al Ameen");
+      expect(result.pagination.total).toBe(1);
+    });
+
+    it("should handle response when data contains items array", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Customers retrieved successfully.",
+        data: {
+          items: [
+            {
+              id: "user-3",
+              fullname: "Jane Doe",
+              email: "jane@example.com",
+              phone: null,
+              status: "BLOCKED",
+            },
+          ],
+          total: 1,
+          page: 1,
+          limit: 20,
+          totalPages: 1,
+        },
+        statusCode: 200,
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await customerService.getCustomers();
+
+      expect(result.users).toHaveLength(1);
+      expect(result.users[0].id).toBe("user-3");
+      expect(result.users[0].status).toBe("BLOCKED");
+      expect(result.pagination.total).toBe(1);
+    });
+
     it("should append search and status filter when provided", async () => {
       const mockResponse = {
         success: true,

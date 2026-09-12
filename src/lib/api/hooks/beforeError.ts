@@ -1,5 +1,6 @@
 import { type BeforeErrorHook, isHTTPError } from "ky";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { redirectToPortalLogin } from "../portal-redirect";
 
 export interface NormalizedApiErrorData {
   success?: boolean;
@@ -33,14 +34,11 @@ export const beforeError: BeforeErrorHook = ({ error }) => {
         data.code === "USER_BLOCKED" ||
         data.code === "ACCOUNT_BLOCKED" ||
         (typeof data.error === "object" &&
-          (data.error?.code === "USER_BLOCKED" || data.error?.code === "ACCOUNT_BLOCKED")) ||
-        (typeof serverMessage === "string" && /blocked|suspended/i.test(serverMessage));
+          (data.error?.code === "USER_BLOCKED" || data.error?.code === "ACCOUNT_BLOCKED"));
 
       if (isBlocked) {
         useAuthStore.getState().clearAuth();
-        if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+        redirectToPortalLogin();
       }
     } else if (typeof data === "string" && data.trim()) {
       error.message = data.trim();

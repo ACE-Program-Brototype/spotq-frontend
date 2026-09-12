@@ -23,8 +23,8 @@ interface RawCustomerItem {
   status: Customer["status"];
   isEmailVerified?: boolean;
   avatarUrl?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   location?: string | null;
 }
 
@@ -64,8 +64,10 @@ export const customerService = {
       })
       .json<CustomersApiResponse>();
 
-    const rawData = response.data as unknown as RawApiResponseData;
-    const rawList = rawData?.users || rawData?.items || [];
+    const rawData = response.data as unknown as RawApiResponseData | RawCustomerItem[];
+    const rawList: RawCustomerItem[] = Array.isArray(rawData)
+      ? rawData
+      : rawData?.users || rawData?.items || [];
 
     const users: Customer[] = rawList.map((item) => ({
       id: item.id,
@@ -75,19 +77,38 @@ export const customerService = {
       status: item.status,
       isEmailVerified: item.isEmailVerified ?? true,
       avatarUrl: item.avatarUrl ?? null,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
+      createdAt: item.createdAt || new Date().toISOString(),
+      updatedAt: item.updatedAt || new Date().toISOString(),
       location: item.location ?? null,
     }));
 
-    const total = rawData?.pagination?.total ?? rawData?.total ?? users.length;
+    const rootPagination = (response as unknown as { pagination?: CustomerPagination }).pagination;
+    const paginationSource = !Array.isArray(rawData) ? rawData?.pagination : undefined;
+
+    const total =
+      paginationSource?.total ??
+      rootPagination?.total ??
+      (!Array.isArray(rawData) ? rawData?.total : undefined) ??
+      users.length;
+
     const page =
-      rawData?.pagination?.page ?? rawData?.page ?? params?.page ?? CUSTOMER_DEFAULTS.PAGE;
+      paginationSource?.page ??
+      rootPagination?.page ??
+      (!Array.isArray(rawData) ? rawData?.page : undefined) ??
+      params?.page ??
+      CUSTOMER_DEFAULTS.PAGE;
+
     const limit =
-      rawData?.pagination?.limit ?? rawData?.limit ?? params?.limit ?? CUSTOMER_DEFAULTS.LIMIT;
+      paginationSource?.limit ??
+      rootPagination?.limit ??
+      (!Array.isArray(rawData) ? rawData?.limit : undefined) ??
+      params?.limit ??
+      CUSTOMER_DEFAULTS.LIMIT;
+
     const totalPages =
-      rawData?.pagination?.totalPages ??
-      rawData?.totalPages ??
+      paginationSource?.totalPages ??
+      rootPagination?.totalPages ??
+      (!Array.isArray(rawData) ? rawData?.totalPages : undefined) ??
       (Math.ceil(total / limit) || (users.length > 0 ? 1 : 0));
 
     return {
