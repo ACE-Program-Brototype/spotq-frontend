@@ -3,6 +3,7 @@ export type Role = "ADMIN" | "CUSTOMER" | "RESTAURANT_ADMIN" | "RESTAURANT_STAFF
 export type User = {
   id?: string;
   _id?: string;
+  restaurantId?: string;
   fullName?: string;
   name?: string;
   email: string;
@@ -17,6 +18,7 @@ export type User = {
 export type ApiUser = {
   id?: string;
   _id?: string;
+  restaurantId?: string;
   full_name?: string;
   name?: string;
   email: string;

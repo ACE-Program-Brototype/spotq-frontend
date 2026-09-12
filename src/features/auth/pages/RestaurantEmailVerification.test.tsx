@@ -60,4 +60,22 @@ describe("RestaurantEmailVerification", () => {
 
     expect(onCodeSent).toHaveBeenCalledWith("owner@restaurant.com");
   });
+
+  it("enables the continue button for valid emails containing 's' like owner@spotq.com", () => {
+    render(
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <EmailVerification />
+        </QueryClientProvider>
+      </MemoryRouter>,
+    );
+
+    const emailInput = screen.getByLabelText(/enter your restaurant email to continue/i);
+    const continueBtn = screen.getByRole("button", { name: /continue/i });
+
+    expect(continueBtn).toBeDisabled();
+
+    fireEvent.change(emailInput, { target: { value: "owner@spotq.com" } });
+    expect(continueBtn).not.toBeDisabled();
+  });
 });

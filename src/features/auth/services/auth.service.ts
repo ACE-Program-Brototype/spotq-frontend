@@ -134,11 +134,11 @@ export async function verifyRestaurantEmailOtp(data: {
     message: res.message,
     data: res.data
       ? {
-          ...res.data,
-          ...(res.data.nextStep === "DASHBOARD" && res.data.accessToken
-            ? { accessToken: res.data.accessToken }
-            : {}),
-        }
+        ...res.data,
+        ...(res.data.nextStep === "DASHBOARD" && res.data.accessToken
+          ? { accessToken: res.data.accessToken }
+          : {}),
+      }
       : undefined,
   };
 }
@@ -368,9 +368,9 @@ export async function acceptStaffInvitation(
   const rawStaff = rawRes.data?.staff;
   const staff: User | undefined = rawStaff
     ? {
-        ...rawStaff,
-        role: (rawStaff.role || "RESTAURANT_STAFF") as User["role"],
-      }
+      ...rawStaff,
+      role: (rawStaff.role || "RESTAURANT_STAFF") as User["role"],
+    }
     : undefined;
   const accessToken = rawRes.data?.accessToken;
 
