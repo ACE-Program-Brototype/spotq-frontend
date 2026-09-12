@@ -72,16 +72,29 @@ export default function DocumentsPage() {
 
   const isUploadingActive = activeUploadsCount > 0;
 
+  // Calculate required completed count for helpful header badge
+  const requiredUploadedCount =
+    (documents.fssai ? 1 : 0) +
+    (documents.businessRegistration ? 1 : 0) +
+    (documents.ownerIdentity ? 1 : 0);
+
   return (
     <div className="w-full max-w-xl">
-      <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 shadow-sm sm:p-8">
-        <div className="border-b border-neutral-100 pb-5">
-          <h2 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl">
-            Documents &amp; Photos
-          </h2>
-          <p className="mt-1.5 text-sm text-neutral-600">
-            Upload required registration certificates and restaurant images to complete onboarding.
-          </p>
+      <div className="rounded-3xl border border-neutral-200/90 bg-white p-6 shadow-xs sm:p-8">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-neutral-100 pb-5">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl">
+              Documents &amp; Photos
+            </h2>
+            <p className="mt-1 text-sm text-neutral-600">
+              Upload required registration certificates and restaurant images to complete
+              onboarding.
+            </p>
+          </div>
+          <div className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-700 border border-orange-200/80 self-start sm:self-center">
+            <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
+            <span>{requiredUploadedCount}/3 Required Docs</span>
+          </div>
         </div>
 
         {validationError && (
