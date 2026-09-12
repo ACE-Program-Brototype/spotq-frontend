@@ -297,10 +297,11 @@ export default function OtpVerification({
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     aria-label={`Digit ${index + 1} of OTP`}
                     aria-invalid={!!validationError}
-                    className={`h-11 w-full rounded-md border text-center text-lg font-semibold text-neutral-900 focus:outline-none focus:ring-2 disabled:bg-neutral-50 disabled:text-neutral-400 ${validationError || apiError
+                    className={`h-11 w-full rounded-md border text-center text-lg font-semibold text-neutral-900 focus:outline-none focus:ring-2 disabled:bg-neutral-50 disabled:text-neutral-400 ${
+                      validationError || apiError
                         ? "border-red-400 focus:border-red-400 focus:ring-red-100"
                         : "border-neutral-300 focus:border-orange-500 focus:ring-orange-100"
-                      }`}
+                    }`}
                   />
                 );
               })}
@@ -329,10 +330,11 @@ export default function OtpVerification({
                   type="button"
                   onClick={handleResend}
                   disabled={!canResend}
-                  className={`text-sm font-semibold ${canResend
+                  className={`text-sm font-semibold ${
+                    canResend
                       ? "text-orange-600 hover:text-orange-700"
                       : "cursor-not-allowed text-neutral-400"
-                    }`}
+                  }`}
                 >
                   {isResending ? "Sending new code..." : "Resend OTP"}
                 </button>
@@ -343,10 +345,11 @@ export default function OtpVerification({
               type="button"
               onClick={handleVerify}
               disabled={!canVerify}
-              className={`mt-6 flex w-full items-center justify-center rounded-lg py-3.5 text-base font-semibold text-white transition-colors ${canVerify
+              className={`mt-6 flex w-full items-center justify-center rounded-lg py-3.5 text-base font-semibold text-white transition-colors ${
+                canVerify
                   ? "bg-orange-500 hover:bg-orange-600"
                   : "cursor-not-allowed bg-neutral-300"
-                }`}
+              }`}
             >
               {isVerifying ? (
                 <>

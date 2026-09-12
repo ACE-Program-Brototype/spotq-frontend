@@ -3,7 +3,6 @@ import type {
   StaffDetail,
   StaffDetailApiResponse,
   StaffDetailRawData,
-  StaffStatus,
 } from "@/features/staff/types/staff-detail.types";
 import { apiClient } from "@/lib/api/client";
 
