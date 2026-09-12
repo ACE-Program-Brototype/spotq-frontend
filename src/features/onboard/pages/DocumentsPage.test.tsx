@@ -130,14 +130,14 @@ describe("DocumentsPage", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/restaurant/onboarding/business-information");
   });
 
-  it("navigates to review page when all documents and photo are uploaded", async () => {
+  it("navigates to review page when required documents and photo are uploaded without optional ones", async () => {
     useOnboardStore.setState({
       documents: {
         fssai: { documentName: "fssai.pdf", documentKey: "key/fssai.pdf" },
         businessRegistration: { documentName: "reg.pdf", documentKey: "key/reg.pdf" },
         ownerIdentity: { documentName: "identity.pdf", documentKey: "key/identity.pdf" },
-        gst: { documentName: "gst.pdf", documentKey: "key/gst.pdf" },
-        businessPan: { documentName: "pan.pdf", documentKey: "key/pan.pdf" },
+        gst: null,
+        businessPan: null,
       },
       restaurantImages: [{ fileName: "photo1.jpg", objectKey: "key/photo1.jpg", displayOrder: 1 }],
     });
@@ -148,5 +148,20 @@ describe("DocumentsPage", () => {
     await userEvent.click(continueButton);
 
     expect(mockNavigate).toHaveBeenCalledWith("/restaurant/onboarding/review");
+  });
+
+  it("disables Add Photo button and prevents uploading when 5 photos exist", () => {
+    useOnboardStore.setState({
+      restaurantImages: Array.from({ length: 5 }, (_, i) => ({
+        fileName: `photo${i + 1}.jpg`,
+        objectKey: `key/photo${i + 1}.jpg`,
+        displayOrder: i + 1,
+      })),
+    });
+
+    renderComponent();
+
+    const addPhotoButton = screen.getByRole("button", { name: /limit reached/i });
+    expect(addPhotoButton).toBeDisabled();
   });
 });

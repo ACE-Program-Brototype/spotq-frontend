@@ -42,7 +42,7 @@ export default function OnboardSidebar() {
     <aside className="w-full lg:w-[280px] lg:shrink-0">
       <button
         type="button"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/restaurant/email/verification")}
         className="mb-10 flex items-center gap-1 text-neutral-700 hover:text-neutral-900"
       >
         <svg

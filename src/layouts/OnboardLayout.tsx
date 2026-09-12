@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import OnboardSidebar from "@/features/onboard/components/Onboardsidebar";
+import OnboardSidebar from "@/features/onboard/components/OnboardSidebar";
 
 export default function OnboardLayout() {
   return (

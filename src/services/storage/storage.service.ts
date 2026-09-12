@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { STORAGE_ENDPOINTS } from "./storage.constants";
+import { STORAGE_ENDPOINTS, STORAGE_ERRORS } from "./storage.constants";
 
 export interface PresignedUrlRequest {
   entity_type: string;
@@ -46,7 +46,7 @@ export async function getPresignedUrl(request: PresignedUrlRequest): Promise<Pre
     .json<ApiResponse<PresignedUrlResponse>>();
 
   if (!response.success || !response.data) {
-    throw new Error(response.message || "Failed to generate presigned upload URL.");
+    throw new Error(response.message || STORAGE_ERRORS.PRESIGNED_URL_FAILED);
   }
 
   return response.data;
@@ -79,20 +79,16 @@ export function uploadFileToS3(
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve();
       } else {
-        reject(new Error(`S3 upload failed with status ${xhr.status}: ${xhr.statusText}`));
+        reject(new Error(STORAGE_ERRORS.S3_UPLOAD_FAILED(xhr.status, xhr.statusText)));
       }
     };
 
     xhr.onerror = () => {
-      reject(
-        new Error(
-          "Network error occurred during direct S3 file upload. Please verify AWS S3 bucket existence and CORS permissions (AllowedOrigins & PUT method).",
-        ),
-      );
+      reject(new Error(STORAGE_ERRORS.S3_NETWORK_ERROR));
     };
 
     xhr.onabort = () => {
-      reject(new Error("Direct S3 upload was aborted."));
+      reject(new Error(STORAGE_ERRORS.S3_UPLOAD_ABORTED));
     };
 
     xhr.send(file);

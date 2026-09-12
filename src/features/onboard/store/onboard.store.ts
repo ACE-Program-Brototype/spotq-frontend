@@ -93,10 +93,7 @@ export const useOnboardStore = create<OnboardState>()(
     ),
     {
       name: "OnboardStore",
-      enabled:
-        typeof globalThis !== "undefined" &&
-        (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !==
-          "production",
+      enabled: import.meta.env.DEV,
     },
   ),
 );
