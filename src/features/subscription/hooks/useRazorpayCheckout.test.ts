@@ -1,0 +1,242 @@
+import { act, renderHook } from "@testing-library/react";
+import { toast } from "sonner";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
+import { useRazorpayCheckout } from "./useRazorpayCheckout";
+
+jest.mock("sonner", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+  },
+}));
+
+jest.mock("@/features/subscription/services/subscription.service", () => ({
+  subscriptionService: {
+    createOrder: jest.fn(),
+    verifyPayment: jest.fn(),
+  },
+  subscriptionApi: {
+    createOrder: jest.fn(),
+    verifyPayment: jest.fn(),
+  },
+}));
+
+describe("useRazorpayCheckout", () => {
+  let mockOpen: jest.Mock;
+  let mockRazorpayConstructor: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockOpen = jest.fn();
+    mockRazorpayConstructor = jest.fn().mockImplementation((options) => ({
+      open: mockOpen,
+      options,
+    }));
+    window.Razorpay = mockRazorpayConstructor as unknown as typeof window.Razorpay;
+  });
+
+  afterEach(() => {
+    delete (window as { Razorpay?: unknown }).Razorpay;
+  });
+
+  it("initiates Razorpay checkout when startCheckout is called", async () => {
+    const mockOrder = {
+      orderId: "order_xyz",
+      amount: 149900,
+      currency: "INR",
+      keyId: "rzp_test_123",
+      plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+      restaurant: { name: "Tasty Restaurant", email: "test@res.com", phone: "9876543210" },
+    };
+
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+
+    const { result } = renderHook(() => useRazorpayCheckout());
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    expect(subscriptionService.createOrder).toHaveBeenCalledWith("plan-1");
+    expect(mockRazorpayConstructor).toHaveBeenCalledWith(
+      expect.objectContaining({
+        key: "rzp_test_123",
+        amount: 149900,
+        currency: "INR",
+        order_id: "order_xyz",
+      }),
+    );
+    expect(mockOpen).toHaveBeenCalled();
+  });
+
+  it("handles payment success and verifies signature", async () => {
+    const mockOrder = {
+      orderId: "order_xyz",
+      amount: 149900,
+      currency: "INR",
+      keyId: "rzp_test_123",
+      plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+      restaurant: { name: "Tasty Restaurant", email: "test@res.com", phone: "9876543210" },
+    };
+
+    const mockVerification = {
+      subscriptionId: "sub_1",
+      restaurantId: "res_1",
+      planCode: "QUEUE_PRO",
+      status: "ACTIVE",
+      currentPeriodStart: "2026-09-01T00:00:00Z",
+      currentPeriodEnd: "2026-10-01T00:00:00Z",
+    };
+
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+    (subscriptionService.verifyPayment as jest.Mock).mockResolvedValue(mockVerification);
+
+    const onSuccess = jest.fn();
+    const { result } = renderHook(() => useRazorpayCheckout({ onSuccess }));
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    const passedOptions = mockRazorpayConstructor.mock.calls[0][0];
+
+    // Simulate Razorpay calling the success handler
+    await act(async () => {
+      await passedOptions.handler({
+        razorpay_order_id: "order_xyz",
+        razorpay_payment_id: "pay_xyz",
+        razorpay_signature: "sig_xyz",
+      });
+    });
+
+    expect(subscriptionService.verifyPayment).toHaveBeenCalledWith({
+      razorpayOrderId: "order_xyz",
+      razorpayPaymentId: "pay_xyz",
+      razorpaySignature: "sig_xyz",
+    });
+    expect(toast.success).toHaveBeenCalledWith(expect.stringContaining("Subscription activated"));
+    expect(onSuccess).toHaveBeenCalledWith(mockVerification);
+  });
+
+  it("handles modal ondismiss", async () => {
+    const mockOrder = {
+      orderId: "order_xyz",
+      amount: 149900,
+      currency: "INR",
+      keyId: "rzp_test_123",
+      plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+      restaurant: { name: "Tasty Restaurant" },
+    };
+
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+
+    const { result } = renderHook(() => useRazorpayCheckout());
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    const passedOptions = mockRazorpayConstructor.mock.calls[0][0];
+
+    act(() => {
+      passedOptions.modal.ondismiss();
+    });
+
+    expect(toast.info).toHaveBeenCalledWith(expect.stringContaining("closed"));
+    expect(result.current.isProcessing).toBe(false);
+  });
+
+  it("handles script load failure gracefully", async () => {
+    delete (window as { Razorpay?: unknown }).Razorpay;
+    const onError = jest.fn();
+    const { result } = renderHook(() => useRazorpayCheckout({ onError }));
+
+    // Mock document.createElement to trigger onerror on script
+    const originalCreateElement = document.createElement.bind(document);
+    jest.spyOn(document, "createElement").mockImplementation((tagName: string) => {
+      const el = originalCreateElement(tagName);
+      if (tagName === "script") {
+        setTimeout(() => {
+          el.onerror?.(new Event("error") as unknown as Event);
+        }, 0);
+      }
+      return el;
+    });
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    expect(toast.error).toHaveBeenCalled();
+    expect(onError).toHaveBeenCalled();
+    expect(result.current.isProcessing).toBe(false);
+
+    (document.createElement as unknown as jest.Mock).mockRestore();
+  });
+
+  it("does not trigger another checkout when already processing", async () => {
+    let resolveOrder: (value: unknown) => void;
+    const orderPromise = new Promise((resolve) => {
+      resolveOrder = resolve;
+    });
+
+    (subscriptionService.createOrder as jest.Mock).mockReturnValue(orderPromise);
+
+    const { result } = renderHook(() => useRazorpayCheckout());
+
+    // First checkout call
+    act(() => {
+      result.current.startCheckout("plan-1");
+    });
+
+    expect(result.current.isProcessing).toBe(true);
+
+    // Second checkout call while processing
+    await act(async () => {
+      await result.current.startCheckout("plan-2");
+    });
+
+    // Verify createOrder was called only once with the first plan
+    expect(subscriptionService.createOrder).toHaveBeenCalledTimes(1);
+    expect(subscriptionService.createOrder).toHaveBeenCalledWith("plan-1");
+
+    // Clean up in-flight promise
+    await act(async () => {
+      resolveOrder?.({
+        orderId: "order_xyz",
+        amount: 149900,
+        currency: "INR",
+        keyId: "rzp_test_123",
+        plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+        restaurant: { name: "Tasty Restaurant" },
+      });
+    });
+  });
+
+  it("handles already active subscription conflict without fabrications", async () => {
+    const conflictError = new Error("Restaurant already has an active subscription");
+    (subscriptionService.createOrder as jest.Mock).mockRejectedValueOnce(conflictError);
+
+    const onAlreadyActive = jest.fn();
+    const onSuccess = jest.fn();
+
+    const { result } = renderHook(() =>
+      useRazorpayCheckout({
+        onSuccess,
+        onAlreadyActive,
+      }),
+    );
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    expect(toast.info).toHaveBeenCalledWith(
+      expect.stringContaining("already has an active subscription"),
+    );
+    expect(onAlreadyActive).toHaveBeenCalledTimes(1);
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(result.current.isProcessing).toBe(false);
+  });
+});

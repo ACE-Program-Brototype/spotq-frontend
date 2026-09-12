@@ -92,6 +92,7 @@ export const AUTH_ENDPOINTS = {
   RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
   RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
   RESTAURANT_ONBOARD: "auth/restaurants/onboard",
+  RESTAURANT_REFRESH_TOKEN: "auth/restaurants/registration/refresh-token",
 
   STAFF_LOGIN: "auth/restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
@@ -161,9 +162,10 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
   AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
   AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
+  "payments/plans",
 ] as const;
 
-export const RESTAURANT_EMAIL_REGEX = /^[^s@]+@[^s@]+.[^s@]+$/;
+export const RESTAURANT_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const RESTAURANT_OTP_LENGTH = 6;
 export const RESTAURANT_RESEND_COOLDOWN_SECONDS = 60;
 export const RESTAURANT_MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
