@@ -20,8 +20,9 @@ export default function RestaurantDashboardPage() {
   });
 
   const isSubscriptionActive = statusData?.isSubscriptionActive ?? false;
-  const isApproved = (restaurantUser?.status ?? statusData?.verificationStatus) === "APPROVED";
-  const needsSubscription = isApproved && !isSubscriptionActive;
+  const userStatus = restaurantUser?.status ?? statusData?.verificationStatus;
+  const isApprovedOrActive = userStatus === "APPROVED" || userStatus === "ACTIVE";
+  const needsSubscription = isApprovedOrActive && !isSubscriptionActive;
 
   const subscriptionEndsAt = statusData?.subscriptionEndsAt
     ? new Date(statusData.subscriptionEndsAt)

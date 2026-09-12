@@ -51,6 +51,28 @@ describe("RestaurantDashboardPage", () => {
     });
   });
 
+  it("redirects to subscription page when account status is ACTIVE in auth store but subscription is inactive", async () => {
+    const { useAuthStore } = require("@/features/auth/store/auth.store");
+    useAuthStore.setState({
+      user: { email: "test@spotq.com", status: "ACTIVE" },
+      isAuthenticated: true,
+    });
+
+    (subscriptionService.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
+      restaurantId: "123",
+      restaurantName: "Test Kitchen",
+      email: "test@spotq.com",
+      verificationStatus: "PENDING",
+      isSubscriptionActive: false,
+    });
+
+    renderWithClient(<RestaurantDashboardPage />);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/restaurant/subscription", { replace: true });
+    });
+  });
+
   it("renders active dashboard without redirect when subscription is active", async () => {
     (subscriptionService.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
       restaurantId: "123",
