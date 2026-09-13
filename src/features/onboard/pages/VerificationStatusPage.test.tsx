@@ -65,7 +65,7 @@ describe("VerificationStatusPage", () => {
     expect(screen.getAllByText("Application Submitted").length).toBeGreaterThan(0);
   });
 
-  it("renders VERIFIED state and offers navigation to dashboard", async () => {
+  it("renders VERIFIED state and offers navigation to subscription", async () => {
     jest.useFakeTimers();
     (getRestaurantVerificationStatus as jest.Mock).mockResolvedValue({
       success: true,
@@ -79,11 +79,11 @@ describe("VerificationStatusPage", () => {
     });
 
     expect(screen.getByText("Verified & Approved")).toBeInTheDocument();
-    const dashboardBtn = screen.getByRole("button", { name: /go to restaurant dashboard/i });
-    expect(dashboardBtn).toBeInTheDocument();
+    const subBtn = screen.getByRole("button", { name: /proceed to subscription/i });
+    expect(subBtn).toBeInTheDocument();
 
-    fireEvent.click(dashboardBtn);
-    expect(mockNavigate).toHaveBeenCalledWith("/restaurant/dashboard", { replace: true });
+    fireEvent.click(subBtn);
+    expect(mockNavigate).toHaveBeenCalledWith("/restaurant/subscription", { replace: true });
 
     act(() => {
       jest.runAllTimers();

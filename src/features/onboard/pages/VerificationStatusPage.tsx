@@ -35,9 +35,9 @@ export default function VerificationStatusPage() {
             setRejectionReason(response.data.rejectionReason);
           }
           if (fetchedStatus === "VERIFIED") {
-            toast.success("Application approved! Redirecting to dashboard...");
+            toast.success("Application approved! Redirecting to subscription...");
             setTimeout(() => {
-              navigate("/restaurant/dashboard", { replace: true });
+              navigate("/restaurant/subscription", { replace: true });
             }, 1200);
           } else if (isManualRefresh) {
             toast.info(
@@ -69,8 +69,8 @@ export default function VerificationStatusPage() {
     navigate("/restaurant/onboarding/business-information");
   };
 
-  const handleGoToDashboard = () => {
-    navigate("/restaurant/dashboard", { replace: true });
+  const handleGoToSubscription = () => {
+    navigate("/restaurant/subscription", { replace: true });
   };
 
   const handleSignOut = () => {
@@ -138,17 +138,17 @@ export default function VerificationStatusPage() {
               Application Approved!
             </h1>
             <p className="mt-2 max-w-md text-sm text-neutral-600">
-              Congratulations! Your restaurant account has been verified. You can now access your
-              partner dashboard and start managing your restaurant.
+              Congratulations! Your restaurant account has been verified. You can now select your
+              subscription plan to get started.
             </p>
 
             <div className="mt-8 w-full flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="button"
-                onClick={handleGoToDashboard}
+                onClick={handleGoToSubscription}
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 py-3.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
-                Go to Restaurant Dashboard
+                Proceed to Subscription
               </button>
             </div>
           </div>
