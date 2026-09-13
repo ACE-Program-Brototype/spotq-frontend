@@ -101,5 +101,16 @@ describe("locationiq.service", () => {
       const result = await searchLocationIQ("NonexistentPlace");
       expect(result).toEqual([]);
     });
+
+    it("throws rate limit error when status is 429", async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: false,
+        status: 429,
+      });
+
+      await expect(searchLocationIQ("RateLimitedPlace")).rejects.toThrow(
+        "Search rate limit reached. Please wait a moment and try again.",
+      );
+    });
   });
 });

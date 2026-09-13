@@ -170,19 +170,6 @@ export default function LocationAutocomplete({
                 <span className="text-neutral-500 truncate w-full mt-0.5">{item.display_name}</span>
               </button>
             ))}
-
-          {/* LocationIQ Mandatory Attribution */}
-          <div className="mt-2 border-t border-neutral-100 pt-2 text-center text-[10px] font-medium text-neutral-400">
-            Search powered by{" "}
-            <a
-              href="https://locationiq.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-neutral-600"
-            >
-              LocationIQ
-            </a>
-          </div>
         </div>
       )}
     </div>

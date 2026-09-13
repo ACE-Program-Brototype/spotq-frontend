@@ -76,6 +76,9 @@ export async function searchLocationIQ(
 
   if (!response.ok) {
     if (response.status === 404) return [];
+    if (response.status === 429) {
+      throw new Error("Search rate limit reached. Please wait a moment and try again.");
+    }
     throw new Error(`Location search failed with status ${response.status}`);
   }
 
