@@ -1,26 +1,30 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 
-const queryClient = new QueryClient({
+export const shouldRetryQuery = (failureCount: number, error: unknown): boolean => {
+  if (
+    error &&
+    typeof error === "object" &&
+    "response" in error &&
+    (error as { response?: { status?: number } }).response
+  ) {
+    const status = (error as { response: { status: number } }).response.status;
+    if (status === 401 || status === 403 || status === 404 || status === 422) {
+      return false;
+    }
+  }
+  return failureCount < 2;
+};
+
+export const queryClientConfig = {
   defaultOptions: {
     queries: {
-      retry: (failureCount, error) => {
-        if (
-          error &&
-          typeof error === "object" &&
-          "response" in error &&
-          (error as { response?: { status?: number } }).response
-        ) {
-          const status = (error as { response: { status: number } }).response.status;
-          if (status === 401 || status === 403 || status === 404 || status === 422) {
-            return false;
-          }
-        }
-        return failureCount < 2;
-      },
+      retry: shouldRetryQuery,
     },
   },
-});
+};
+
+const queryClient = new QueryClient(queryClientConfig);
 
 type QueryProviderProps = {
   children: ReactNode;
