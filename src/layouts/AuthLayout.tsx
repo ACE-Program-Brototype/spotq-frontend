@@ -10,7 +10,7 @@ export default function AuthLayout({ redirectTo }: AuthLayoutProps = {}) {
   const { isAuthenticated, user } = useAuthStore();
 
   if (isAuthenticated) {
-    const roleHome = getRoleHome(user?.role, user?.status);
+    const roleHome = getRoleHome(user?.role, user?.status, user?.onboardingStatus);
     return <Navigate to={redirectTo && user?.role === "ADMIN" ? redirectTo : roleHome} replace />;
   }
 
