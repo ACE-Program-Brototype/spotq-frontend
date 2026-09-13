@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { Role } from "@/features/auth/types/auth.types";
@@ -14,6 +15,28 @@ export default function ProtectedLayout({
 }: ProtectedLayoutProps = {}) {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
+  const [isHydrated, setIsHydrated] = useState(() => useAuthStore.persist?.hasHydrated?.() ?? true);
+
+  useEffect(() => {
+    if (useAuthStore.persist?.hasHydrated?.()) {
+      setIsHydrated(true);
+      return;
+    }
+    const unsub = useAuthStore.persist?.onFinishHydration?.(() => {
+      setIsHydrated(true);
+    });
+    return () => {
+      unsub?.();
+    };
+  }, []);
+
+  if (!isHydrated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-100">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     if (location.pathname === redirectTo) {
@@ -28,6 +51,7 @@ export default function ProtectedLayout({
     if (user.onboardingStatus === "COMPLETED" || user.status === "UNDER_REVIEW") {
       if (
         !location.pathname.startsWith("/restaurant/onboarding/status") &&
+        !location.pathname.startsWith("/restaurant/onboarding/verification-status") &&
         !location.pathname.startsWith("/restaurant/dashboard") &&
         !location.pathname.startsWith("/restaurant/subscription")
       ) {

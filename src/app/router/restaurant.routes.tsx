@@ -80,6 +80,10 @@ export const restaurantRoutes: RouteObject[] = [
             Component: VerificationStatusLayout,
           },
           {
+            path: "verification-status",
+            Component: VerificationStatusLayout,
+          },
+          {
             Component: OnboardLayout,
             children: [
               {
