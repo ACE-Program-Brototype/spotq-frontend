@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import StaffAcceptInvitationPage from "@/features/auth/pages/StaffAcceptInvitationPage";
 import RootLayout from "@/layouts/RootLayout";
 
 import NotFoundPage from "../pages/NotFoundPage";
@@ -14,6 +15,15 @@ const router = createBrowserRouter([
     Component: RootLayout,
     children: [
       ...customerRoutes,
+      {
+        path: "invitations",
+        children: [
+          {
+            path: "accept",
+            Component: StaffAcceptInvitationPage,
+          },
+        ],
+      },
       {
         path: "admin",
         children: [

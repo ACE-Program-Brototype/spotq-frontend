@@ -1,11 +1,11 @@
 import LegalPageLayout from "@/layouts/LegalLayout";
 
-const TermsAndConditionsPage = () => {
+export default function TermsAndConditionsPage() {
   return (
     <LegalPageLayout
       title="Terms & Conditions"
       description="Please read these terms carefully before using SpotQ and its restaurant discovery and waitlist services."
-      lastUpdated="August 24, 2026"
+      lastUpdated="September 9, 2026"
     >
       <div className="space-y-4">
         <p>
@@ -205,7 +205,7 @@ const TermsAndConditionsPage = () => {
           <p>
             If you have questions about these Terms and Conditions, please contact us at{" "}
             <a
-              href="spotqofficial@gmail.com"
+              href="mailto:spotqofficial@gmail.com"
               className="font-semibold text-spotq-orange transition-colors hover:text-spotq-orange/80"
             >
               spotqofficial@gmail.com
@@ -214,16 +214,6 @@ const TermsAndConditionsPage = () => {
           </p>
         </div>
       </section>
-
-      <div className="mt-14 rounded-xl border border-spotq-orange/20 bg-spotq-orange/5 p-5 sm:p-6">
-        <p className="!m-0 text-sm !leading-6 !text-gray-600">
-          <strong className="text-gray-800">Important:</strong> This page is a product-ready
-          legal-page template. Before publishing, replace any placeholder business, jurisdiction,
-          contact, payment, and liability details with the legally approved terms for your company.
-        </p>
-      </div>
     </LegalPageLayout>
   );
-};
-
-export default TermsAndConditionsPage;
+}

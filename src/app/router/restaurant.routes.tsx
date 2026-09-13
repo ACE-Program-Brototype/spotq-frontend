@@ -1,22 +1,26 @@
 import { Navigate, type RouteObject } from "react-router-dom";
-import RestaurantDashboardPage from "@/features/auth/pages/RestaurantDashboardPage";
+
 import RestaurantEmailVerificationPage from "@/features/auth/pages/RestaurantEmailVerification";
-import RestaurantTermsPage from "@/features/auth/pages/RestaurantTermsPage";
 import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
+import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
+import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
+import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
 import BusinessInformationPage from "@/features/onboard/pages/BusinessInformationPage";
 import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
 import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
+import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
+import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RestaurantAdminLayout from "@/layouts/RestaurantAdminLayout";
 
-const RestaurantAuthLayout = () => <AuthLayout redirectTo="/restaurant/dashboard" />;
+const RestaurantAuthGuard = () => <AuthLayout redirectTo="/restaurant/dashboard" />;
 const RestaurantProtectedLayout = () => (
   <ProtectedLayout
-    allowedRoles={["RESTAURANT_ADMIN", "RESTAURANT_STAFF"]}
+    allowedRoles={["RESTAURANT_ADMIN"]}
     redirectTo="/restaurant/email/verification"
   />
 );
@@ -49,11 +53,11 @@ export const restaurantRoutes: RouteObject[] = [
     Component: RestaurantTermsPage,
   },
   {
-    path: "terms-and-conditions",
-    Component: RestaurantTermsPage,
+    path: "privacy",
+    Component: RestaurantPrivacyPage,
   },
   {
-    Component: RestaurantAuthLayout,
+    Component: RestaurantAuthGuard,
     children: [
       {
         path: "email/verification",
@@ -112,6 +116,14 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "dashboard",
             Component: RestaurantDashboardPage,
+          },
+          {
+            path: "staff",
+            Component: RestaurantStaffPage,
+          },
+          {
+            path: "staff/invitations",
+            Component: RestaurantStaffInvitationsPage,
           },
         ],
       },

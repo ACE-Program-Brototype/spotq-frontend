@@ -1,10 +1,10 @@
 import type { RouteObject } from "react-router-dom";
 
-import AdminDashboardPage from "@/features/auth/pages/AdminDashboardPage";
 import AdminForgotPasswordPage from "@/features/auth/pages/AdminForgotPasswordPage";
 import AdminLoginPage from "@/features/auth/pages/AdminLoginPage";
 import AdminResetPasswordPage from "@/features/auth/pages/AdminResetPasswordPage";
 import AdminVerifyOtpPage from "@/features/auth/pages/AdminVerifyOtpPage";
+import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";

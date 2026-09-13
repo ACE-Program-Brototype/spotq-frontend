@@ -8,8 +8,8 @@ import {
   LayoutDashboard,
   LogOut,
   Receipt,
-  Settings,
   Table as TableIcon,
+  User,
   UsersRound,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -107,15 +107,16 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
 
       <div className="flex flex-col gap-3 pt-4 border-t border-[#eddcd4]">
         <Link
-          to={`${basePath}/settings`}
+          to={`${basePath}/profile`}
           onClick={onNavigate}
           className={cn(
             "flex items-center gap-3 rounded-xl px-3.5 py-2 text-xs font-medium text-neutral-600 hover:bg-[#eddcd4]/50 hover:text-neutral-900 transition-colors",
-            location.pathname.startsWith(`${basePath}/settings`) && "font-bold text-neutral-900",
+            location.pathname.startsWith(`${basePath}/profile`) &&
+              "font-bold text-[#9a3412] bg-[#fed7aa]/50 shadow-2xs",
           )}
         >
-          <Settings className="size-4 text-neutral-500" />
-          <span>Settings</span>
+          <User className="size-4 text-neutral-500" />
+          <span>Profile</span>
         </Link>
 
         <Link
