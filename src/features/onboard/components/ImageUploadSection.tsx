@@ -93,15 +93,15 @@ export default function ImageUploadSection({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border transition-all duration-200 ${
+      className={`group relative overflow-hidden rounded-2xl border p-5 transition-all duration-200 ${
         images.length > 0
-          ? "border-orange-200/80 bg-gradient-to-r from-orange-50/30 via-white to-white shadow-xs"
+          ? "border-orange-200/90 bg-gradient-to-br from-orange-50/40 via-white to-white shadow-xs"
           : "border-neutral-200/90 bg-white hover:border-neutral-300 hover:shadow-xs"
-      } p-4.5 sm:p-5`}
+      }`}
     >
-      <div className="flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-100/80 text-orange-600">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3.5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -120,11 +120,11 @@ export default function ImageUploadSection({
           </div>
 
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-sm font-bold tracking-tight text-neutral-900 sm:text-base">
                 Restaurant Photos
               </h3>
-              <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold text-red-600 border border-red-200">
+              <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold text-red-600 border border-red-200/80">
                 Required
               </span>
               <span
@@ -137,8 +137,8 @@ export default function ImageUploadSection({
                 {images.length}/5 photos
               </span>
             </div>
-            <p className="mt-0.5 text-xs text-neutral-500">
-              Accepted formats: JPG, PNG, WEBP • Max size: {maxSizeMB}MB • Up to 5 photos
+            <p className="mt-1 text-xs text-neutral-500">
+              JPG, PNG, WEBP • Max {maxSizeMB}MB each • At least 1 photo required
             </p>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function ImageUploadSection({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading || isMaxReached}
-          className="flex items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-xs font-semibold text-white shadow-xs transition-all hover:bg-orange-600 hover:shadow-md active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer self-start sm:self-center"
+          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-orange-500 px-4 py-2.5 text-xs font-semibold text-white shadow-2xs transition-all hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer self-start sm:self-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +179,7 @@ export default function ImageUploadSection({
             <span className="font-medium animate-pulse">Uploading photo...</span>
             <span className="font-bold text-orange-600">{progress}%</span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
             <div
               className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-300 rounded-full"
               style={{ width: `${progress}%` }}
@@ -213,14 +213,14 @@ export default function ImageUploadSection({
       )}
 
       {images.length > 0 && (
-        <div className="mt-4 space-y-2">
+        <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {images.map((img, index) => (
             <div
               key={img.objectKey || index}
-              className="flex items-center justify-between rounded-xl border border-neutral-200/80 bg-white px-3.5 py-2 text-xs shadow-2xs transition-colors hover:border-neutral-300"
+              className="flex items-center justify-between rounded-xl border border-neutral-200/90 bg-white p-3 text-xs shadow-2xs transition-colors hover:border-neutral-300"
             >
               <div className="flex items-center gap-2.5 truncate">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-100 text-[10px] font-bold text-orange-700">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-orange-100/90 text-xs font-bold text-orange-700">
                   {img.displayOrder}
                 </span>
                 <span className="truncate font-semibold text-neutral-800">{img.fileName}</span>
