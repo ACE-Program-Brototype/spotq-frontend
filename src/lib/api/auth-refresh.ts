@@ -45,20 +45,35 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
       })
       .json<{
         data: {
-          access_token: string;
-          user: ApiUser;
+          access_token?: string;
+          accessToken?: string;
+          user?: ApiUser;
         };
       }>();
 
-    const newAccessToken = response.data.access_token;
+    const newAccessToken = response.data.access_token || response.data.accessToken;
 
-    const mappedUser = mapApiUserToUser(response.data.user);
-    const user = {
-      ...mappedUser,
-      role: currentRole ?? mappedUser.role,
-    };
+    if (!newAccessToken) {
+      throw new Error("No access token returned from refresh endpoint.");
+    }
 
-    useAuthStore.getState().setAuth(user, newAccessToken);
+    let user = currentUser;
+
+    if (response.data.user) {
+      const mappedUser = mapApiUserToUser(response.data.user);
+      user = {
+        ...mappedUser,
+        role: currentRole ?? mappedUser.role,
+      };
+    }
+
+    if (user) {
+      useAuthStore.getState().setAuth(user, newAccessToken);
+    } else {
+      useAuthStore
+        .getState()
+        .setAuth({ email: "", role: currentRole || "RESTAURANT_ADMIN" }, newAccessToken);
+    }
 
     return newAccessToken;
   })().finally(() => {
