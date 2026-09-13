@@ -6,6 +6,7 @@ import {
   type CompleteRestaurantOnboardingPayload,
   completeRestaurantOnboarding,
 } from "@/features/auth/services/auth.service";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useOnboardStore } from "../store/onboard.store";
 
 const DOCUMENT_LABELS: Record<string, string> = {
@@ -101,6 +102,14 @@ export default function ReviewPage() {
       await completeRestaurantOnboarding(payload);
 
       useOnboardStore.getState().resetOnboardStore();
+
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser) {
+        useAuthStore.getState().setUser({
+          ...currentUser,
+          onboardingStatus: "COMPLETED",
+        });
+      }
 
       toast.success(AUTH_MESSAGES.RESTAURANT_ONBOARD_SUCCESS);
 

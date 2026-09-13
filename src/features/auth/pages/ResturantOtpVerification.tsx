@@ -159,6 +159,7 @@ export default function OtpVerification({
             result.nextStep === "DASHBOARD" || result.nextStep === "SUBSCRIPTION"
               ? "ACTIVE"
               : "PENDING",
+          onboardingStatus: result.nextStep === "ONBOARDING" ? "PENDING" : "COMPLETED",
           restaurantId,
         },
         token,

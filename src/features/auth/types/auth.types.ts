@@ -10,6 +10,7 @@ export type User = {
   role?: Role;
   phone?: string;
   status?: string;
+  onboardingStatus?: string;
   createdAt?: string;
   updatedAt?: string;
   created_at?: string;
@@ -25,6 +26,8 @@ export type ApiUser = {
   role?: Role;
   phone?: string;
   status?: string;
+  onboardingStatus?: string;
+  onboarding_status?: string;
   created_at?: string;
   updated_at?: string;
 };
