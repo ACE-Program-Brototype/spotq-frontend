@@ -7,6 +7,7 @@ import restaurantEmailVerificationBg from "@/features/auth/assets/restaurant-ema
 import { RESTAURANT_EMAIL_REGEX } from "@/features/auth/constants/auth.constants";
 import { useRestaurantEmailOtp } from "@/features/auth/hooks/useRestaurantEmailOtp";
 import type { EmailVerificationProps } from "@/features/auth/types/auth.types";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 
 export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerificationProps) {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
 
   const handleConfirmSendOtp = async () => {
     setIsConfirmOpen(false);
+    useOnboardStore.getState().resetOnboardStore();
 
     try {
       await executeRequestOtp(pendingEmail);

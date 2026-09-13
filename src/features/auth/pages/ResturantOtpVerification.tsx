@@ -14,6 +14,7 @@ import { useRestaurantResendOtp } from "@/features/auth/hooks/useRestaurantResen
 import { useRestaurantVerifyOtp } from "@/features/auth/hooks/useRestaurantVerifyOtp";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { OtpVerificationProps, VerifyOtpResponse } from "@/features/auth/types/auth.types";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 
 export default function OtpVerification({
   email: emailProp,
@@ -151,6 +152,7 @@ export default function OtpVerification({
       const token = result.accessToken ?? result.access_token ?? "";
       const restaurantId = result.restaurantId;
 
+      useOnboardStore.getState().resetOnboardStore();
       useAuthStore.getState().setAuth(
         {
           email,
