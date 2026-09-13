@@ -114,6 +114,30 @@ describe("storage.service", () => {
 
       await expect(uploadPromise).rejects.toThrow("S3 upload failed with status 403: Forbidden");
     });
+
+    it("rejects with sanitized message on network error", async () => {
+      const mockXHRNetworkError = {
+        open: jest.fn(),
+        setRequestHeader: jest.fn(),
+        send: jest.fn(),
+        upload: {},
+        status: 0,
+        statusText: "",
+        onerror: () => {},
+      };
+
+      // @ts-expect-error Mocking global XMLHttpRequest
+      global.XMLHttpRequest = jest.fn(() => mockXHRNetworkError);
+
+      const file = new File(["dummy content"], "test.pdf", { type: "application/pdf" });
+      const uploadPromise = uploadFileToS3("https://s3.amazonaws.com/upload", file);
+
+      mockXHRNetworkError.onerror();
+
+      await expect(uploadPromise).rejects.toThrow(
+        "Network error occurred during file upload. Please check your network connection and try again.",
+      );
+    });
   });
 
   describe("uploadFile", () => {

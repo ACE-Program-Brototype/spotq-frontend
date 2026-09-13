@@ -300,3 +300,27 @@ export async function completeRestaurantOnboarding(
     })
     .json<ApiResponse>();
 }
+
+export type VerificationStatus = "SUBMITTED" | "UNDER_REVIEW" | "VERIFIED" | "REJECTED";
+
+export interface RestaurantVerificationStatusData {
+  status: VerificationStatus;
+  rejectionReason?: string;
+  submittedAt?: string;
+  updatedAt?: string;
+}
+
+export interface VerificationStatusResponse {
+  success: boolean;
+  message: string;
+  data: RestaurantVerificationStatusData;
+}
+
+export async function getRestaurantVerificationStatus(
+  restaurantId?: string,
+): Promise<VerificationStatusResponse> {
+  const endpoint = restaurantId
+    ? `restaurants/${restaurantId}/verification-status`
+    : AUTH_ENDPOINTS.RESTAURANT_VERIFICATION_STATUS;
+  return apiClient.get(endpoint).json<VerificationStatusResponse>();
+}

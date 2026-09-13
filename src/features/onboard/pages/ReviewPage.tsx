@@ -100,6 +100,8 @@ export default function ReviewPage() {
 
       await completeRestaurantOnboarding(payload);
 
+      useOnboardStore.getState().resetOnboardStore();
+
       toast.success(AUTH_MESSAGES.RESTAURANT_ONBOARD_SUCCESS);
 
       navigate("/restaurant/onboarding/status", { replace: true });

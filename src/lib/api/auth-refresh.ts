@@ -30,7 +30,7 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
         break;
 
       case "RESTAURANT_ADMIN":
-        refreshEndpoint = "auth/restaurants/auth/refresh";
+        refreshEndpoint = AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN;
         break;
 
       default:

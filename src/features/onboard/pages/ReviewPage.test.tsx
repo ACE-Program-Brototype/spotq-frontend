@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { useOnboardStore } from "../store/onboard.store";
 import ReviewPage from "./ReviewPage";
@@ -143,5 +143,8 @@ describe("ReviewPage", () => {
     fireEvent.click(submitButton);
 
     expect(completeRestaurantOnboarding).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(useOnboardStore.getState().businessInformation).toBeNull();
+    });
   });
 });
