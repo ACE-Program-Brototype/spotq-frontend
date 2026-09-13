@@ -21,4 +21,21 @@ export const SUBSCRIPTION_MESSAGES = {
   DEFAULT_PRO_PLAN_CODE: "QUEUE_PRO",
 } as const;
 
+export const SUBSCRIPTION_SUCCESS_TEXTS = {
+  TITLE: "Subscription Activated!",
+  SUBTITLE: "Your restaurant account is now fully active with SpotQ Pro features.",
+  PLAN_LABEL: "Current Plan",
+  STATUS_LABEL: "Status",
+  ACTIVE_BADGE: "Active",
+  VALID_UNTIL_LABEL: "Valid Until",
+  DASHBOARD_BUTTON: "Go to Dashboard",
+  STAFF_BUTTON: "Manage Staff",
+  FEATURES_TITLE: "Unlocked Features",
+  DEFAULT_PLAN_NAME: "SpotQ Pro Plan",
+  FEATURE_QUEUE: "Real-time queue and table management",
+  FEATURE_QR: "Contactless digital QR ordering and menus",
+  FEATURE_ANALYTICS: "Performance analytics and customer insights",
+  FEATURE_SUPPORT: "24/7 priority onboarding and technical support",
+} as const;
+
 export const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";

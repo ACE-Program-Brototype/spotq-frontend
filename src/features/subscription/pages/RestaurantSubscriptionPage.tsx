@@ -54,14 +54,22 @@ export default function RestaurantSubscriptionPage() {
           ...old,
           isSubscriptionActive: true,
           subscriptionPlanCode: verificationResult.planCode,
+          subscriptionEndsAt: verificationResult.currentPeriodEnd,
         }),
       );
 
       // Invalidate to fetch fresh authoritative state from backend
       queryClient.invalidateQueries({ queryKey: ["restaurant-status"] });
 
-      // Direct the restaurant admin to dashboard upon successful verification
-      navigate("/restaurant/dashboard", { replace: true });
+      // Direct the restaurant admin to subscription success page upon successful verification
+      navigate("/restaurant/subscription/success", {
+        replace: true,
+        state: {
+          planCode: verificationResult.planCode,
+          subscriptionId: verificationResult.subscriptionId,
+          periodEnd: verificationResult.currentPeriodEnd,
+        },
+      });
     },
     onAlreadyActive: () => {
       // Invalidate query to pull real authoritative subscription from backend without injecting synthetic data

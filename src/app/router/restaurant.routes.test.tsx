@@ -2,31 +2,35 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import type { ComponentType } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-
 import { useAuthStore } from "@/features/auth/store/auth.store";
-
 import { restaurantRoutes } from "./restaurant.routes";
 
 jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionService: {
+    fetchPlans: jest.fn().mockResolvedValue([]),
+    createOrder: jest.fn(),
+    verifyPayment: jest.fn(),
     fetchRestaurantStatus: jest.fn().mockResolvedValue({
       restaurantId: "res-1",
-      restaurantName: "Owner Restaurant",
+      restaurantName: "Test Restaurant",
       verificationStatus: "APPROVED",
       isSubscriptionActive: true,
       subscriptionPlanCode: "QUEUE_PRO",
-      subscriptionEndsAt: null,
+      subscriptionEndsAt: "2027-09-10T00:00:00.000Z",
       navigationTarget: "/restaurant/dashboard",
     }),
   },
   subscriptionApi: {
+    fetchPlans: jest.fn().mockResolvedValue([]),
+    createOrder: jest.fn(),
+    verifyPayment: jest.fn(),
     fetchRestaurantStatus: jest.fn().mockResolvedValue({
       restaurantId: "res-1",
-      restaurantName: "Owner Restaurant",
+      restaurantName: "Test Restaurant",
       verificationStatus: "APPROVED",
       isSubscriptionActive: true,
       subscriptionPlanCode: "QUEUE_PRO",
-      subscriptionEndsAt: null,
+      subscriptionEndsAt: "2027-09-10T00:00:00.000Z",
       navigationTarget: "/restaurant/dashboard",
     }),
   },
@@ -36,6 +40,7 @@ describe("restaurantRoutes structure and protection", () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -63,6 +68,7 @@ describe("restaurantRoutes structure and protection", () => {
     expect(protectedGroup).toBeDefined();
     expect(protectedGroup.children).toBeDefined();
     expect(protectedGroup.children?.[0].path).toBe("subscription");
+    expect(protectedGroup.children?.[1].path).toBe("subscription/success");
   });
 
   it("redirects unauthenticated user accessing protected restaurant subscription route", () => {

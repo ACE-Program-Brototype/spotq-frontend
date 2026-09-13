@@ -9,6 +9,7 @@ import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
 import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
+import SubscriptionSuccessPage from "@/features/subscription/pages/SubscriptionSuccessPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RestaurantAdminLayout from "@/layouts/RestaurantAdminLayout";
@@ -53,6 +54,10 @@ export const restaurantRoutes: RouteObject[] = [
       {
         path: "subscription",
         Component: RestaurantSubscriptionPage,
+      },
+      {
+        path: "subscription/success",
+        Component: SubscriptionSuccessPage,
       },
       {
         Component: RestaurantAdminLayout,
