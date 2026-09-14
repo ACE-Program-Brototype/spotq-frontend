@@ -62,8 +62,8 @@ describe("RestaurantSubscriptionPage", () => {
     },
     {
       id: "plan-2",
-      code: "SELF_SERVICE_PRO",
-      name: "Self-Service Pro",
+      code: "SELF_PRO",
+      name: "Self Pro",
       description: "Complete digital dining & QR ordering",
       pricePaise: 250000,
       priceInRupees: 2500,
@@ -113,7 +113,7 @@ describe("RestaurantSubscriptionPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Queue Pro")).toBeInTheDocument();
-      expect(screen.getByText("Self-Service Pro")).toBeInTheDocument();
+      expect(screen.getByText("Self Pro")).toBeInTheDocument();
       expect(screen.getByText("₹1,499")).toBeInTheDocument();
       expect(screen.getByText("₹2,500")).toBeInTheDocument();
     });

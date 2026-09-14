@@ -67,14 +67,14 @@ describe("SubscriptionSuccessPage", () => {
 
   it("renders success title, plan details, and active status from location state", () => {
     renderComponentWithState({
-      planCode: "SELF_SERVICE_PRO",
-      planName: "Self-Service Pro",
+      planCode: "SELF_PRO",
+      planName: "Self Pro",
       periodEnd: "2027-10-01T00:00:00.000Z",
     });
 
     expect(screen.getByText(SUBSCRIPTION_SUCCESS_TEXTS.TITLE)).toBeInTheDocument();
     expect(screen.getByText(SUBSCRIPTION_SUCCESS_TEXTS.SUBTITLE)).toBeInTheDocument();
-    expect(screen.getByText("Self-Service Pro")).toBeInTheDocument();
+    expect(screen.getByText("Self Pro")).toBeInTheDocument();
     expect(
       screen.getAllByText(SUBSCRIPTION_SUCCESS_TEXTS.ACTIVE_BADGE).length,
     ).toBeGreaterThanOrEqual(1);
