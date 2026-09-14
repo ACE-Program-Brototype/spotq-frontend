@@ -3,12 +3,14 @@ export type Role = "ADMIN" | "CUSTOMER" | "RESTAURANT_ADMIN" | "RESTAURANT_STAFF
 export type User = {
   id?: string;
   _id?: string;
+  restaurantId?: string;
   fullName?: string;
   name?: string;
   email: string;
   role?: Role;
   phone?: string;
   status?: string;
+  onboardingStatus?: string;
   createdAt?: string;
   updatedAt?: string;
   created_at?: string;
@@ -17,12 +19,15 @@ export type User = {
 export type ApiUser = {
   id?: string;
   _id?: string;
+  restaurantId?: string;
   full_name?: string;
   name?: string;
   email: string;
   role?: Role;
   phone?: string;
   status?: string;
+  onboardingStatus?: string;
+  onboarding_status?: string;
   created_at?: string;
   updated_at?: string;
 };
@@ -97,17 +102,17 @@ export type EmailVerificationProps = {
   requestOtp?: (email: string) => Promise<void>;
 };
 
+export type VerifyOtpResponse = {
+  nextStep: "ONBOARDING" | "VERIFICATION_STATUS" | "SUBSCRIPTION" | "DASHBOARD";
+  accessToken?: string;
+  access_token?: string;
+  restaurantId?: string;
+};
+
 export type VerifyOtpSuccessDashboard = {
   nextStep: "DASHBOARD";
   accessToken: string;
 };
-
-export type VerifyOtpSuccessOnboarding = {
-  nextStep: "ONBOARDING";
-  verificationToken: string;
-};
-
-export type VerifyOtpResponse = VerifyOtpSuccessDashboard | VerifyOtpSuccessOnboarding;
 
 export type ApiErrorShape = {
   code?: string;
@@ -117,7 +122,7 @@ export type ApiErrorShape = {
 export type OtpVerificationProps = {
   email?: string;
   onGoToDashboard?: () => void;
-  onGoToOnboarding?: (verificationToken: string) => void;
+  onGoToOnboarding?: () => void;
   onBack?: () => void;
   verifyOtp?: (email: string, otp: string) => Promise<VerifyOtpResponse>;
   resendOtp?: (email: string) => Promise<void>;

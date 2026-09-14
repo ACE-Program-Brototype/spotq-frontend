@@ -42,6 +42,7 @@ export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount 
     } catch {
       useAuthStore.getState().clearAuth();
       redirectToPortalLogin();
+
       throw error;
     }
   }

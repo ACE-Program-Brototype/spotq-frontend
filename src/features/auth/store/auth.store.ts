@@ -3,6 +3,8 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 import type { User } from "@/features/auth/types/auth.types";
 
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
+
 type AuthState = {
   user: User | null;
   accessToken: string | null;
@@ -53,11 +55,20 @@ export const useAuthStore = create<AuthState>()(
 
         setAuth: (user, accessToken) =>
           set(
-            {
-              user,
-              accessToken,
-              isAuthenticated: true,
-              savedAt: Date.now(),
+            (state) => {
+              if (
+                state.user?.email &&
+                user.email &&
+                state.user.email.toLowerCase() !== user.email.toLowerCase()
+              ) {
+                useOnboardStore.getState().resetOnboardStore();
+              }
+              return {
+                user,
+                accessToken,
+                isAuthenticated: true,
+                savedAt: Date.now(),
+              };
             },
             false,
             "auth/setAuth",
@@ -65,17 +76,27 @@ export const useAuthStore = create<AuthState>()(
 
         setUser: (user) =>
           set(
-            {
-              user,
-              isAuthenticated: !!user,
-              savedAt: Date.now(),
+            (state) => {
+              if (
+                state.user?.email &&
+                user?.email &&
+                state.user.email.toLowerCase() !== user.email.toLowerCase()
+              ) {
+                useOnboardStore.getState().resetOnboardStore();
+              }
+              return {
+                user,
+                isAuthenticated: !!user,
+                savedAt: Date.now(),
+              };
             },
             false,
             "auth/setUser",
           ),
 
-        clearAuth: () =>
-          set(
+        clearAuth: () => {
+          useOnboardStore.getState().resetOnboardStore();
+          return set(
             {
               user: null,
               accessToken: null,
@@ -84,7 +105,8 @@ export const useAuthStore = create<AuthState>()(
             },
             false,
             "auth/clearAuth",
-          ),
+          );
+        },
       }),
       {
         name: "spotq-auth-storage",
