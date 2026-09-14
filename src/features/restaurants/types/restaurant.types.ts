@@ -1,10 +1,4 @@
-export type RestaurantStatusType =
-  | "PENDING"
-  | "APPROVED"
-  | "REJECTED"
-  | "SUSPENDED"
-  | "ACTIVE"
-  | "INACTIVE";
+export type RestaurantStatusType = "APPROVED" | "REJECTED" | "SUSPENDED" | "ACTIVE" | "INACTIVE";
 
 export type RestaurantPlanType = "QUEUE_PRO" | "SELF_SERVICE_PRO";
 

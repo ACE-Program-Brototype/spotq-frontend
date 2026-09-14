@@ -29,7 +29,7 @@ const mockRestaurants: RestaurantListItem[] = [
       owner_email: "sarah@cafe.com",
     },
     plan: "SELF_SERVICE_PRO",
-    status: "PENDING",
+    status: "REJECTED",
     is_subscription_active: false,
     is_blocked: false,
     created_at: "2026-09-11T09:00:00.000Z",
@@ -53,7 +53,7 @@ describe("RestaurantTable", () => {
     expect(screen.getByText("Sarah Connor")).toBeInTheDocument();
     expect(screen.getByText("sarah@cafe.com")).toBeInTheDocument();
     expect(screen.getByText("Self Service Pro")).toBeInTheDocument();
-    expect(screen.getByText("PENDING")).toBeInTheDocument();
+    expect(screen.getByText("REJECTED")).toBeInTheDocument();
     expect(screen.getByText("Inactive")).toBeInTheDocument();
   });
 

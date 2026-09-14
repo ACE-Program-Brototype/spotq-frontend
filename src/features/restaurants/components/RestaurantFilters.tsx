@@ -114,7 +114,6 @@ export function RestaurantFilters({
               <option value={RESTAURANT_FILTER_STATUS.ALL}>Status: All</option>
               <option value={RESTAURANT_FILTER_STATUS.ACTIVE}>Status: Active</option>
               <option value={RESTAURANT_FILTER_STATUS.APPROVED}>Status: Approved</option>
-              <option value={RESTAURANT_FILTER_STATUS.PENDING}>Status: Pending</option>
               <option value={RESTAURANT_FILTER_STATUS.REJECTED}>Status: Rejected</option>
               <option value={RESTAURANT_FILTER_STATUS.SUSPENDED}>Status: Suspended</option>
               <option value={RESTAURANT_FILTER_STATUS.INACTIVE}>Status: Inactive</option>

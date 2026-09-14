@@ -43,13 +43,6 @@ function renderStatusBadge(status: RestaurantStatusType) {
           {status}
         </span>
       );
-    case RESTAURANT_STATUS.PENDING:
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100/70 text-amber-800 border border-amber-200/50">
-          <span className="size-1.5 rounded-full bg-amber-600" />
-          PENDING
-        </span>
-      );
     case RESTAURANT_STATUS.REJECTED:
     case RESTAURANT_STATUS.SUSPENDED:
       return (
