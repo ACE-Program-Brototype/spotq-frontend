@@ -58,6 +58,8 @@ export const AUTH_MESSAGES = {
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
   PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
+  RESTAURANT_ONBOARD_SUCCESS:
+    "Restaurant onboarding submitted successfully! Your application is now under verification.",
   STAFF_INVITATION_INVALID: "Invalid or expired invitation token.",
   STAFF_INVITATION_ACCEPT_SUCCESS: "Invitation accepted successfully. Welcome to the team!",
   STAFF_REGISTRATION_SUCCESS: "Registration successful! Welcome to SpotQ.",
@@ -91,8 +93,9 @@ export const AUTH_ENDPOINTS = {
   RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
   RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
   RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
+  RESTAURANT_REFRESH_TOKEN: "auth/restaurants/auth/refresh",
   RESTAURANT_ONBOARD: "auth/restaurants/onboard",
-  RESTAURANT_REFRESH_TOKEN: "auth/restaurants/registration/refresh-token",
+  RESTAURANT_VERIFICATION_STATUS: "auth/restaurants/verification-status",
 
   STAFF_LOGIN: "auth/restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
@@ -152,7 +155,7 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.RESTAURANT_SEND_OTP,
   AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP,
   AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP,
-  AUTH_ENDPOINTS.RESTAURANT_ONBOARD,
+  AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN,
   AUTH_ENDPOINTS.STAFF_LOGIN,
   AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN,
   AUTH_ENDPOINTS.STAFF_LOGOUT,

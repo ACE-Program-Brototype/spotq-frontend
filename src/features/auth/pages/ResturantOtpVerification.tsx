@@ -14,6 +14,7 @@ import { useRestaurantResendOtp } from "@/features/auth/hooks/useRestaurantResen
 import { useRestaurantVerifyOtp } from "@/features/auth/hooks/useRestaurantVerifyOtp";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { OtpVerificationProps, VerifyOtpResponse } from "@/features/auth/types/auth.types";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 
 export default function OtpVerification({
   email: emailProp,
@@ -148,31 +149,36 @@ export default function OtpVerification({
 
     try {
       const result = await verifyOtp(email, otp);
-      if (result.nextStep === "DASHBOARD") {
+      const token = result.accessToken ?? result.access_token ?? "";
+      const restaurantId = result.restaurantId;
+
+      useOnboardStore.getState().resetOnboardStore();
+      useAuthStore.getState().setAuth(
+        {
+          email,
+          role: "RESTAURANT_ADMIN",
+          status:
+            result.nextStep === "DASHBOARD" || result.nextStep === "SUBSCRIPTION"
+              ? "ACTIVE"
+              : "PENDING",
+          onboardingStatus: result.nextStep === "ONBOARDING" ? "PENDING" : "COMPLETED",
+          restaurantId,
+        },
+        token,
+      );
+
+      if (result.nextStep === "VERIFICATION_STATUS") {
+        onGoToOnboarding?.();
+        navigate("/restaurant/onboarding/status", { replace: true });
+      } else if (result.nextStep === "SUBSCRIPTION") {
         onGoToDashboard?.();
-        useAuthStore.getState().setAuth(
-          {
-            id: result.restaurantId,
-            restaurantId: result.restaurantId,
-            email,
-            role: "RESTAURANT_ADMIN",
-            status: "ACTIVE",
-          },
-          result.accessToken,
-        );
-        navigate("/restaurant/dashboard", {
-          replace: true,
-          state: { email },
-        });
+        navigate("/restaurant/subscription", { replace: true });
+      } else if (result.nextStep === "DASHBOARD") {
+        onGoToDashboard?.();
+        navigate("/restaurant/dashboard", { replace: true });
       } else {
-        onGoToOnboarding?.(result.verificationToken);
-        navigate("/restaurant/onboarding", {
-          replace: true,
-          state: {
-            email,
-            verificationToken: result.verificationToken,
-          },
-        });
+        onGoToOnboarding?.();
+        navigate("/restaurant/onboarding/business-information", { replace: true });
       }
     } catch (err) {
       const code = (err as { code?: string })?.code;
