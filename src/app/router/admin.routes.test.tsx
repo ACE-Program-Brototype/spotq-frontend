@@ -19,5 +19,6 @@ describe("adminRoutes", () => {
     const protectedPaths = layoutWrapper?.children?.map((r) => r.path);
     expect(protectedPaths).toContain("dashboard");
     expect(protectedPaths).toContain("customers");
+    expect(protectedPaths).toContain("customers/:id");
   });
 });

@@ -64,4 +64,18 @@ describe("CustomerTable", () => {
     fireEvent.click(unblockButton);
     expect(handleStatusAction).toHaveBeenCalledWith(mockCustomers[1], "ACTIVE");
   });
+
+  it("should render details button and call onViewDetails when clicked", () => {
+    const handleViewDetails = jest.fn();
+    render(<CustomerTable customers={mockCustomers} onViewDetails={handleViewDetails} />);
+
+    const detailsButton = screen.getByRole("button", {
+      name: "View Details for Rahul Sharma",
+    });
+    expect(detailsButton).toBeInTheDocument();
+
+    fireEvent.click(detailsButton);
+    expect(handleViewDetails).toHaveBeenCalledTimes(1);
+    expect(handleViewDetails).toHaveBeenCalledWith(mockCustomers[0]);
+  });
 });

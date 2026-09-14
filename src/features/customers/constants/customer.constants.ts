@@ -83,4 +83,11 @@ export const CUSTOMER_MESSAGES = {
   BLOCK_SUCCESS: "Customer account has been blocked successfully.",
   UNBLOCK_SUCCESS: "Customer account has been unblocked successfully.",
   STATUS_UPDATE_ERROR: "Failed to update customer status. Please try again.",
+  DETAILS_ACTION_TOOLTIP: "View Details",
+  DETAILS_PAGE_TITLE: "Customer Details",
+  DETAILS_PAGE_SUBTITLE: "Detailed profile and activity information for the selected customer.",
+  DETAILS_PAGE_BACK_BUTTON: "Back to Customer Directory",
+  DETAILS_PAGE_DUMMY_TEXT: "This is a dummy customer details page.",
+  DETAILS_PAGE_CUSTOMER_ID_LABEL: "Customer ID",
+  DETAILS_PAGE_STATUS_BADGE: "In Development",
 } as const;

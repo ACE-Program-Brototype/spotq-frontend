@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Ban, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Ban, CheckCircle2, Eye, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   CUSTOMER_MESSAGES,
@@ -14,6 +14,7 @@ export interface CustomerTableProps {
   sortOrder?: CustomerSortOrderType;
   onToggleSort?: () => void;
   onStatusAction?: (customer: Customer, nextStatus: CustomerStatusType) => void;
+  onViewDetails?: (customer: Customer) => void;
   isActionLoading?: boolean;
   actionTargetId?: string | null;
 }
@@ -23,6 +24,7 @@ export function CustomerTable({
   sortOrder = "DESC",
   onToggleSort,
   onStatusAction,
+  onViewDetails,
   isActionLoading = false,
   actionTargetId = null,
 }: CustomerTableProps) {
@@ -119,37 +121,49 @@ export function CustomerTable({
 
                   {/* ACTIONS */}
                   <td className="py-4 px-6 text-right">
-                    {isBlocked ? (
+                    <div className="flex items-center justify-end gap-2">
                       <button
                         type="button"
-                        onClick={() => onStatusAction?.(customer, CUSTOMER_STATUS.ACTIVE)}
-                        disabled={isActionLoading}
-                        title={CUSTOMER_MESSAGES.UNBLOCK_ACTION_TOOLTIP}
-                        aria-label={`${CUSTOMER_MESSAGES.UNBLOCK_ACTION_TOOLTIP} for ${customer.fullName}`}
-                        className="inline-flex size-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors disabled:opacity-50"
+                        onClick={() => onViewDetails?.(customer)}
+                        title={CUSTOMER_MESSAGES.DETAILS_ACTION_TOOLTIP}
+                        aria-label={`${CUSTOMER_MESSAGES.DETAILS_ACTION_TOOLTIP} for ${customer.fullName}`}
+                        className="inline-flex size-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors"
+                        data-testid={`customer-details-btn-${customer.id}`}
                       >
-                        {isCurrentRowLoading ? (
-                          <Loader2 className="size-4 animate-spin text-emerald-600" />
-                        ) : (
-                          <CheckCircle2 className="size-4" />
-                        )}
+                        <Eye className="size-4" />
                       </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => onStatusAction?.(customer, CUSTOMER_STATUS.BLOCKED)}
-                        disabled={isActionLoading}
-                        title={CUSTOMER_MESSAGES.BLOCK_ACTION_TOOLTIP}
-                        aria-label={`${CUSTOMER_MESSAGES.BLOCK_ACTION_TOOLTIP} for ${customer.fullName}`}
-                        className="inline-flex size-8 items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors disabled:opacity-50"
-                      >
-                        {isCurrentRowLoading ? (
-                          <Loader2 className="size-4 animate-spin text-rose-500" />
-                        ) : (
-                          <Ban className="size-4" />
-                        )}
-                      </button>
-                    )}
+                      {isBlocked ? (
+                        <button
+                          type="button"
+                          onClick={() => onStatusAction?.(customer, CUSTOMER_STATUS.ACTIVE)}
+                          disabled={isActionLoading}
+                          title={CUSTOMER_MESSAGES.UNBLOCK_ACTION_TOOLTIP}
+                          aria-label={`${CUSTOMER_MESSAGES.UNBLOCK_ACTION_TOOLTIP} for ${customer.fullName}`}
+                          className="inline-flex size-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors disabled:opacity-50"
+                        >
+                          {isCurrentRowLoading ? (
+                            <Loader2 className="size-4 animate-spin text-emerald-600" />
+                          ) : (
+                            <CheckCircle2 className="size-4" />
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => onStatusAction?.(customer, CUSTOMER_STATUS.BLOCKED)}
+                          disabled={isActionLoading}
+                          title={CUSTOMER_MESSAGES.BLOCK_ACTION_TOOLTIP}
+                          aria-label={`${CUSTOMER_MESSAGES.BLOCK_ACTION_TOOLTIP} for ${customer.fullName}`}
+                          className="inline-flex size-8 items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors disabled:opacity-50"
+                        >
+                          {isCurrentRowLoading ? (
+                            <Loader2 className="size-4 animate-spin text-rose-500" />
+                          ) : (
+                            <Ban className="size-4" />
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );

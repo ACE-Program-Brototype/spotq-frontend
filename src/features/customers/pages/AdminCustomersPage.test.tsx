@@ -4,6 +4,12 @@ import type React from "react";
 import { apiClient } from "@/lib/api/client";
 import { AdminCustomersPage } from "./AdminCustomersPage";
 
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
+
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
@@ -206,5 +212,24 @@ describe("AdminCustomersPage (Page-to-Service Integration)", () => {
         json: { status: "BLOCKED" },
       });
     });
+  });
+
+  it("should navigate to customer details page when details button is clicked", async () => {
+    (apiClient.get as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue(mockRawArrayResponse),
+    });
+
+    render(<AdminCustomersPage />, { wrapper: createWrapper() });
+
+    await waitFor(() => {
+      expect(screen.getByText("Rahul Sharma")).toBeInTheDocument();
+    });
+
+    const detailsBtn = screen.getByRole("button", {
+      name: "View Details for Rahul Sharma",
+    });
+    fireEvent.click(detailsBtn);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/admin/customers/user-1");
   });
 });

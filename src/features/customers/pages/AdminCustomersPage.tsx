@@ -1,5 +1,6 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Pagination } from "@/components/common/Pagination";
@@ -38,6 +39,11 @@ export function AdminCustomersPage() {
   } = useCustomers();
 
   const { mutateAsync: updateStatus, isPending: isUpdatingStatus } = useUpdateCustomerStatus();
+  const navigate = useNavigate();
+
+  const handleViewDetails = (customer: Customer) => {
+    navigate(`/admin/customers/${customer.id}`);
+  };
 
   // Action Confirmation state
   const [statusTarget, setStatusTarget] = useState<{
@@ -133,6 +139,7 @@ export function AdminCustomersPage() {
               sortOrder={sortOrder}
               onToggleSort={toggleSortOrder}
               onStatusAction={handleStatusAction}
+              onViewDetails={handleViewDetails}
               isActionLoading={isUpdatingStatus}
               actionTargetId={statusTarget?.customer.id}
             />
