@@ -122,6 +122,17 @@ export function useCustomers(options?: UseCustomersOptions) {
   };
 }
 
+export function useCustomerDetails(id: string | undefined) {
+  return useQuery({
+    queryKey: ["admin", "customers", id],
+    queryFn: () => {
+      if (!id) throw new Error("Customer ID is required");
+      return customerService.getCustomerDetails(id);
+    },
+    enabled: Boolean(id),
+  });
+}
+
 export function useUpdateCustomerStatus() {
   const queryClient = useQueryClient();
 
