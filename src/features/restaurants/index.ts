@@ -1,3 +1,4 @@
+export * from "./components/details/BlockRestaurantModal";
 export * from "./components/details/RestaurantDetailsHeader";
 export * from "./components/details/RestaurantDocumentsTab";
 export * from "./components/details/RestaurantImagesTab";
@@ -10,6 +11,7 @@ export * from "./constants/restaurant.constants";
 export * from "./hooks/useAdminRestaurantDetails";
 export * from "./hooks/useAdminRestaurants";
 export * from "./hooks/usePresignedUrl";
+export * from "./hooks/useRestaurantStatusMutation";
 export * from "./pages/AdminRestaurantDetailsPage";
 export * from "./pages/AdminRestaurantsPage";
 export * from "./services/restaurant.service";

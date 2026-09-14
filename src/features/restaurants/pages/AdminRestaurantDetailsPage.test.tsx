@@ -9,6 +9,8 @@ import { AdminRestaurantDetailsPage } from "./AdminRestaurantDetailsPage";
 jest.mock("../services/restaurant.service", () => ({
   restaurantService: {
     getAdminRestaurantById: jest.fn(),
+    blockRestaurant: jest.fn(),
+    unblockRestaurant: jest.fn(),
   },
 }));
 
@@ -20,7 +22,7 @@ const mockRestaurantDetails: RestaurantDetails = {
   phone: "+15551234567",
   owner_name: "John Doe",
   owner_email: "owner@example.com",
-  status: "PENDING",
+  status: "APPROVED",
   onboarding_status: "COMPLETED",
   is_blocked: false,
   is_subscription_active: true,
@@ -207,5 +209,98 @@ describe("AdminRestaurantDetailsPage", () => {
       expect(screen.getByTestId("restaurant-images-tab")).toBeInTheDocument();
     });
     expect(screen.getByTestId("image-card-img-1")).toBeInTheDocument();
+  });
+
+  it("opens block modal when block button is clicked, validates reason, and submits block request", async () => {
+    (restaurantService.getAdminRestaurantById as jest.Mock).mockResolvedValue(
+      mockRestaurantDetails,
+    );
+    (restaurantService.blockRestaurant as jest.Mock).mockResolvedValue({
+      success: true,
+      message: "Restaurant has been blocked successfully.",
+      data: { ...mockRestaurantDetails, is_blocked: true, status: "SUSPENDED" },
+    });
+
+    renderWithProviders(<AdminRestaurantDetailsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("block-restaurant-btn")).toBeInTheDocument();
+    });
+
+    // 1. Click Block Restaurant button
+    fireEvent.click(screen.getByTestId("block-restaurant-btn"));
+
+    expect(screen.getByTestId("block-restaurant-modal")).toBeInTheDocument();
+    expect(screen.getByText(/reason for blocking/i)).toBeInTheDocument();
+
+    const textarea = screen.getByTestId("block-reason-input");
+    const confirmBtn = screen.getByTestId("block-confirm-btn");
+
+    // 2. Submit without text - button disabled or triggers validation
+    fireEvent.change(textarea, { target: { value: "abc" } }); // Less than min length 5
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText(/reason must be at least 5 characters long/i)).toBeInTheDocument();
+    });
+
+    expect(restaurantService.blockRestaurant).not.toHaveBeenCalled();
+
+    // 3. Enter valid reason and submit
+    fireEvent.change(textarea, {
+      target: { value: "Repeated food safety violations and expired license." },
+    });
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(restaurantService.blockRestaurant).toHaveBeenCalledWith({
+        restaurantId: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+        reason: "Repeated food safety violations and expired license.",
+      });
+    });
+  });
+
+  it("renders unblock button when restaurant is blocked and submits unblock request after confirmation", async () => {
+    const blockedRestaurant: RestaurantDetails = {
+      ...mockRestaurantDetails,
+      is_blocked: true,
+      status: "SUSPENDED",
+      block_reason: "Violated platform policy",
+    };
+
+    (restaurantService.getAdminRestaurantById as jest.Mock).mockResolvedValue(blockedRestaurant);
+    (restaurantService.unblockRestaurant as jest.Mock).mockResolvedValue({
+      success: true,
+      message: "Restaurant has been unblocked successfully.",
+      data: { ...blockedRestaurant, is_blocked: false, status: "ACTIVE", block_reason: null },
+    });
+
+    renderWithProviders(<AdminRestaurantDetailsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("unblock-restaurant-btn")).toBeInTheDocument();
+    });
+
+    expect(screen.getAllByText("SUSPENDED (BLOCKED)")[0]).toBeInTheDocument();
+    expect(screen.getByText("Violated platform policy")).toBeInTheDocument();
+
+    // Click Unblock Restaurant button
+    fireEvent.click(screen.getByTestId("unblock-restaurant-btn"));
+
+    // Confirm dialog should open
+    await waitFor(() => {
+      expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+    });
+
+    const confirmBtn = screen.getByRole("button", {
+      name: /confirm & unblock restaurant/i,
+    });
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(restaurantService.unblockRestaurant).toHaveBeenCalledWith({
+        restaurantId: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      });
+    });
   });
 });

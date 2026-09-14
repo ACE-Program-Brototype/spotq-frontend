@@ -10,9 +10,13 @@ import type {
   AdminRestaurantDetailsApiResponse,
   AdminRestaurantsApiResponse,
   AdminRestaurantsListData,
+  BlockRestaurantInput,
+  BlockRestaurantResponse,
   GetAdminRestaurantsParams,
   RestaurantDetails,
   RestaurantListItem,
+  UnblockRestaurantInput,
+  UnblockRestaurantResponse,
 } from "../types/restaurant.types";
 
 export const restaurantService = {
@@ -97,7 +101,45 @@ export const restaurantService = {
 
     return response.data;
   },
+
+  /**
+   * Block an active restaurant with an administrative reason
+   */
+  async blockRestaurant(input: BlockRestaurantInput): Promise<BlockRestaurantResponse> {
+    if (!input.restaurantId?.trim()) {
+      throw new Error("Restaurant ID is required");
+    }
+    const trimmedReason = input.reason?.trim();
+    if (!trimmedReason) {
+      throw new Error("A reason is required to block a restaurant");
+    }
+
+    const response = await apiClient
+      .patch(RESTAURANT_ENDPOINTS.ADMIN_BLOCK(input.restaurantId.trim()), {
+        json: { reason: trimmedReason },
+      })
+      .json<BlockRestaurantResponse>();
+
+    return response;
+  },
+
+  /**
+   * Unblock a blocked / suspended restaurant
+   */
+  async unblockRestaurant(input: UnblockRestaurantInput): Promise<UnblockRestaurantResponse> {
+    if (!input.restaurantId?.trim()) {
+      throw new Error("Restaurant ID is required");
+    }
+
+    const response = await apiClient
+      .patch(RESTAURANT_ENDPOINTS.ADMIN_UNBLOCK(input.restaurantId.trim()))
+      .json<UnblockRestaurantResponse>();
+
+    return response;
+  },
 };
 
 export const getAdminRestaurants = restaurantService.getAdminRestaurants;
 export const getAdminRestaurantById = restaurantService.getAdminRestaurantById;
+export const blockRestaurant = restaurantService.blockRestaurant;
+export const unblockRestaurant = restaurantService.unblockRestaurant;
