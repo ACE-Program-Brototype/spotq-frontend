@@ -23,7 +23,7 @@ export const useStaffLogin = () => {
         setAuth(
           {
             ...response.data.user,
-            role: "RESTAURANT_STAFF",
+            role: "STAFF",
           },
           response.data.accessToken,
         );
