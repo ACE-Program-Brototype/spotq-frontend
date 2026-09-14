@@ -366,4 +366,39 @@ describe("auth-refresh", () => {
       expect.objectContaining({ credentials: "include" }),
     );
   });
+
+  test("should refresh restaurant admin token successfully when response contains no user object", async () => {
+    useAuthStore.getState().setAuth(
+      {
+        id: "res-admin-123",
+        fullName: "Restaurant Admin",
+        email: "resadmin@example.com",
+        role: "RESTAURANT_ADMIN",
+        restaurantId: "res-123",
+      },
+      "old-res-admin-token",
+    );
+
+    const mockPost = jest.fn().mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        data: {
+          access_token: "new-res-admin-token-only",
+        },
+      }),
+    });
+
+    (ky.post as jest.Mock) = mockPost;
+
+    const token = await getOrRefreshAccessToken();
+
+    expect(token).toBe("new-res-admin-token-only");
+    expect(mockPost).toHaveBeenCalledTimes(1);
+
+    const authState = useAuthStore.getState();
+
+    expect(authState.accessToken).toBe("new-res-admin-token-only");
+    expect(authState.user?.role).toBe("RESTAURANT_ADMIN");
+    expect(authState.user?.restaurantId).toBe("res-123");
+    expect(authState.isAuthenticated).toBe(true);
+  });
 });

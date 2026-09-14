@@ -13,6 +13,7 @@ export const mapApiUserToUser = (apiUser: ApiUser): User => {
     role: apiUser.role ?? "CUSTOMER",
     phone: apiUser.phone ?? "",
     status: apiUser.status,
+    onboardingStatus: apiUser.onboardingStatus || apiUser.onboarding_status,
     createdAt: apiUser.created_at ?? new Date().toISOString(),
     updatedAt: apiUser.updated_at ?? new Date().toISOString(),
   };
