@@ -131,6 +131,16 @@ export function useRazorpayCheckout({
       };
 
       const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.on?.("payment.failed", (response) => {
+        setIsProcessing(false);
+        setSelectedPlanId(null);
+        const failureMessage =
+          response?.error?.description ||
+          response?.error?.reason ||
+          SUBSCRIPTION_MESSAGES.PAYMENT_VERIFY_FAILED;
+        toast.error(failureMessage);
+        onError?.(new Error(failureMessage));
+      });
       razorpayInstance.open();
     } catch (err: unknown) {
       setIsProcessing(false);

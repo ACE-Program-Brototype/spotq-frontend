@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, HelpCircle, RefreshCw, ShieldCheck, Zap } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,7 +38,10 @@ export default function RestaurantSubscriptionPage() {
     staleTime: 30 * 1000,
   });
 
+  const isNavigatingRef = useRef(false);
+
   useEffect(() => {
+    if (isNavigatingRef.current) return;
     const currentUser = useAuthStore.getState().user;
     if (currentUser && restaurantStatus?.isSubscriptionActive) {
       navigate("/restaurant/dashboard", { replace: true });
@@ -47,6 +50,7 @@ export default function RestaurantSubscriptionPage() {
 
   const { startCheckout, isProcessing, selectedPlanId } = useRazorpayCheckout({
     onSuccess: (verificationResult) => {
+      isNavigatingRef.current = true;
       // Optimistically seed cache so restaurant dashboard renders active subscription immediately without flicker
       queryClient.setQueryData(
         ["restaurant-status"],
@@ -68,6 +72,15 @@ export default function RestaurantSubscriptionPage() {
           planCode: verificationResult.planCode,
           subscriptionId: verificationResult.subscriptionId,
           periodEnd: verificationResult.currentPeriodEnd,
+        },
+      });
+    },
+    onError: (err) => {
+      isNavigatingRef.current = true;
+      navigate("/restaurant/subscription/failure", {
+        replace: true,
+        state: {
+          errorMessage: err.message,
         },
       });
     },

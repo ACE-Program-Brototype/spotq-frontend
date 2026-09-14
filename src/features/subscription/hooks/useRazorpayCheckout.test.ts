@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { toast } from "sonner";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
+import type { RazorpayPaymentFailedResponse } from "@/features/subscription/types/subscription.types";
 import { useRazorpayCheckout } from "./useRazorpayCheckout";
 
 jest.mock("sonner", () => ({
@@ -237,6 +238,93 @@ describe("useRazorpayCheckout", () => {
     );
     expect(onAlreadyActive).toHaveBeenCalledTimes(1);
     expect(onSuccess).not.toHaveBeenCalled();
+    expect(result.current.isProcessing).toBe(false);
+  });
+
+  it("handles payment verification failure and calls onError", async () => {
+    const mockOrder = {
+      orderId: "order_xyz",
+      amount: 149900,
+      currency: "INR",
+      keyId: "rzp_test_123",
+      plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+      restaurant: { name: "Tasty Restaurant", email: "test@res.com", phone: "9876543210" },
+    };
+
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+    (subscriptionService.verifyPayment as jest.Mock).mockRejectedValue(
+      new Error("Verification failed"),
+    );
+
+    const onError = jest.fn();
+    const onSuccess = jest.fn();
+    const { result } = renderHook(() => useRazorpayCheckout({ onSuccess, onError }));
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    const passedOptions = mockRazorpayConstructor.mock.calls[0][0];
+
+    await act(async () => {
+      await passedOptions.handler({
+        razorpay_order_id: "order_xyz",
+        razorpay_payment_id: "pay_xyz",
+        razorpay_signature: "sig_xyz",
+      });
+    });
+
+    expect(toast.error).toHaveBeenCalledWith("Verification failed");
+    expect(onError).toHaveBeenCalledWith(expect.any(Error));
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(result.current.isProcessing).toBe(false);
+  });
+
+  it("handles payment.failed event from Razorpay instance", async () => {
+    const mockOrder = {
+      orderId: "order_xyz",
+      amount: 149900,
+      currency: "INR",
+      keyId: "rzp_test_123",
+      plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+      restaurant: { name: "Tasty Restaurant" },
+    };
+
+    let paymentFailedCallback: ((res: RazorpayPaymentFailedResponse) => void) | undefined;
+    const mockOn = jest.fn((event, callback) => {
+      if (event === "payment.failed") {
+        paymentFailedCallback = callback;
+      }
+    });
+
+    mockRazorpayConstructor.mockImplementation((options) => ({
+      open: mockOpen,
+      options,
+      on: mockOn,
+    }));
+
+    (subscriptionService.createOrder as jest.Mock).mockResolvedValue(mockOrder);
+
+    const onError = jest.fn();
+    const { result } = renderHook(() => useRazorpayCheckout({ onError }));
+
+    await act(async () => {
+      await result.current.startCheckout("plan-1");
+    });
+
+    expect(mockOn).toHaveBeenCalledWith("payment.failed", expect.any(Function));
+
+    act(() => {
+      paymentFailedCallback?.({
+        error: {
+          description: "Payment failed due to insufficient funds",
+          reason: "payment_failed",
+        },
+      });
+    });
+
+    expect(toast.error).toHaveBeenCalledWith("Payment failed due to insufficient funds");
+    expect(onError).toHaveBeenCalledWith(expect.any(Error));
     expect(result.current.isProcessing).toBe(false);
   });
 });

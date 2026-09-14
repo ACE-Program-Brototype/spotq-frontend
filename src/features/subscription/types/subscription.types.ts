@@ -98,9 +98,24 @@ export interface RazorpayOptions {
   };
 }
 
+export interface RazorpayPaymentFailedResponse {
+  error?: {
+    code?: string;
+    description?: string;
+    source?: string;
+    step?: string;
+    reason?: string;
+    metadata?: {
+      order_id?: string;
+      payment_id?: string;
+    };
+  };
+}
+
 export interface RazorpayInstance {
   open: () => void;
   close?: () => void;
+  on?: (event: string, callback: (response: RazorpayPaymentFailedResponse) => void) => void;
 }
 
 export interface UseRazorpayCheckoutOptions {

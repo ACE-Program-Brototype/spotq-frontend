@@ -39,3 +39,18 @@ export const SUBSCRIPTION_SUCCESS_TEXTS = {
 } as const;
 
 export const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";
+
+export const SUBSCRIPTION_FAILURE_TEXTS = {
+  TITLE: "Payment Incomplete",
+  SUBTITLE:
+    "We could not activate your subscription at this time. If any amount was debited, it will be automatically refunded.",
+  PLAN_LABEL: "Attempted Plan",
+  STATUS_LABEL: "Status",
+  FAILED_BADGE: "Failed",
+  REASON_LABEL: "Reason",
+  DEFAULT_REASON: "Payment transaction was not completed or verification failed.",
+  RETRY_BUTTON: "Try Again",
+  DASHBOARD_BUTTON: "Back to Plans",
+  SUPPORT_NOTE:
+    "If you believe this is an error or money was deducted from your account, please reach out to SpotQ support with your payment details.",
+} as const;
