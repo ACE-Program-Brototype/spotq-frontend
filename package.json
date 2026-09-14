@@ -11,8 +11,8 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check --write .",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "node --experimental-strip-types ./node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-strip-types ./node_modules/jest/bin/jest.js --watch",
     "validate": "pnpm lint && pnpm test && pnpm build",
     "prepare": "husky"
   },

@@ -2,6 +2,12 @@ import type { RestaurantSortByType, RestaurantSortOrderType } from "../types/res
 
 export const RESTAURANT_ENDPOINTS = {
   ADMIN_LIST: "restaurants/admin/restaurants",
+  ADMIN_DETAILS: (id: string) => `restaurants/admin/restaurants/${id}`,
+} as const;
+
+export const RESTAURANT_QUERY_KEYS = {
+  ADMIN_LIST: ["admin", "restaurants"] as const,
+  ADMIN_DETAILS: (id?: string) => ["admin", "restaurant", id] as const,
 } as const;
 
 export const RESTAURANT_DEFAULTS = {
@@ -13,6 +19,7 @@ export const RESTAURANT_DEFAULTS = {
   FILTER_STATUS: "ALL" as const,
   FILTER_PLAN: "ALL" as const,
   FILTER_SUBSCRIPTION_ACTIVE: "ALL" as const,
+  DETAILS_STALE_TIME_MS: 1000 * 60 * 5, // 5 minutes cache
 } as const;
 
 export const RESTAURANT_STATUS = {
@@ -72,4 +79,18 @@ export const RESTAURANT_MESSAGES = {
   COL_STATUS: "Status",
   COL_SUBSCRIPTION: "Subscription",
   COL_JOINED: "Joined Date",
+
+  // Details Page
+  DETAILS_BACK_BUTTON: "Back to Restaurants",
+  DETAILS_PAGE_TITLE: "Restaurant Details",
+  DETAILS_PAGE_SUBTITLE:
+    "Complete profile, operational settings, staff members, and verification documents",
+  DETAILS_NOT_FOUND_TITLE: "Restaurant Not Found",
+  DETAILS_NOT_FOUND_DESCRIPTION:
+    "The requested restaurant profile could not be located or may have been removed.",
+  DETAILS_ERROR_TITLE: "Failed to load restaurant details",
+  DETAILS_TAB_OVERVIEW: "Overview & Settings",
+  DETAILS_TAB_STAFF: "Staff Members",
+  DETAILS_TAB_DOCUMENTS: "Verification Documents",
+  DETAILS_TAB_IMAGES: "Gallery & Photos",
 } as const;

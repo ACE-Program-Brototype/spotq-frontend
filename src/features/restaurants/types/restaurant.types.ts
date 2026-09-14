@@ -71,3 +71,93 @@ export interface GetAdminRestaurantsParams {
   sort_by?: RestaurantSortByType;
   sort_order?: RestaurantSortOrderType;
 }
+
+export interface RestaurantAddress {
+  id?: string;
+  address_line1: string;
+  address_line2?: string | null;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
+export interface RestaurantSettings {
+  is_opened?: boolean;
+  is_preorder?: boolean;
+  is_loyalty?: boolean;
+  cuisine_type?: string | null;
+  seating_capacity?: number;
+  open_time?: string | null;
+  close_time?: string | null;
+}
+
+export interface RestaurantStaffMember {
+  id: string;
+  fullname: string;
+  email: string;
+  phone?: string | null;
+  role: string;
+  status: string;
+  avatar_url?: string | null;
+  created_at: string;
+}
+
+export interface RestaurantDocument {
+  id: string;
+  document_type: string;
+  document_name: string;
+  document_key: string;
+  verification_status: string;
+  uploaded_at: string;
+}
+
+export interface RestaurantImage {
+  id: string;
+  object_key: string;
+  display_order?: number;
+  created_at: string;
+}
+
+export interface OperatingHour {
+  day: string;
+  open_time: string;
+  close_time: string;
+  is_closed?: boolean;
+}
+
+export interface RestaurantDetails {
+  id: string;
+  restaurant_name: string;
+  category?: string | null;
+  email: string;
+  phone: string;
+  owner_name: string;
+  owner_email: string;
+  status: RestaurantStatusType;
+  onboarding_status: string;
+  is_blocked: boolean;
+  block_reason?: string | null;
+  is_subscription_active: boolean;
+  subscription_plan_code?: string | null;
+  subscription_ends_at?: string | null;
+  last_login_at?: string | null;
+  created_at: string;
+  updated_at: string;
+  address?: RestaurantAddress | null;
+  settings?: RestaurantSettings | null;
+  profile?: string | null;
+  operating_hours?: OperatingHour[];
+  staff?: RestaurantStaffMember[];
+  documents?: RestaurantDocument[];
+  images?: RestaurantImage[];
+}
+
+export interface AdminRestaurantDetailsApiResponse {
+  success: boolean;
+  message?: string;
+  data: RestaurantDetails;
+  statusCode?: number;
+}

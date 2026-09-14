@@ -37,6 +37,11 @@ export interface UploadFileResult {
   fileName: string;
 }
 
+export interface PresignedDownloadUrlResponse {
+  download_url: string;
+  expires_in_seconds: number;
+}
+
 /**
  * Requests a presigned upload URL from the backend storage endpoint.
  */
@@ -50,6 +55,33 @@ export async function getPresignedUrl(request: PresignedUrlRequest): Promise<Pre
   }
 
   return response.data;
+}
+
+/**
+ * Requests a presigned download/view URL for an existing S3 object key.
+ */
+export async function getPresignedDownloadUrl(key: string): Promise<string> {
+  if (!key?.trim()) {
+    throw new Error("Object key is required");
+  }
+
+  const trimmedKey = key.trim();
+
+  if (trimmedKey.startsWith("http://") || trimmedKey.startsWith("https://")) {
+    return trimmedKey;
+  }
+
+  const response = await apiClient
+    .get(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+      searchParams: { key: trimmedKey },
+    })
+    .json<ApiResponse<PresignedDownloadUrlResponse>>();
+
+  if (!response?.success || !response?.data?.download_url) {
+    throw new Error(response?.message || "Failed to retrieve presigned download URL.");
+  }
+
+  return response.data.download_url;
 }
 
 /**

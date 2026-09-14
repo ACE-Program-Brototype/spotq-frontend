@@ -1,10 +1,16 @@
 import { apiClient } from "@/lib/api/client";
 import { STORAGE_ENDPOINTS } from "./storage.constants";
-import { getPresignedUrl, uploadFile, uploadFileToS3 } from "./storage.service";
+import {
+  getPresignedDownloadUrl,
+  getPresignedUrl,
+  uploadFile,
+  uploadFileToS3,
+} from "./storage.service";
 
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     post: jest.fn(),
+    get: jest.fn(),
   },
 }));
 
@@ -63,6 +69,44 @@ describe("storage.service", () => {
       };
 
       await expect(getPresignedUrl(request)).rejects.toThrow("Unauthorized entity access");
+    });
+  });
+
+  describe("getPresignedDownloadUrl", () => {
+    it("returns direct URL if key already starts with http/https", async () => {
+      const url = "https://cdn.spotq.com/photos/image.jpg";
+      const result = await getPresignedDownloadUrl(url);
+      expect(result).toBe(url);
+      expect(apiClient.get).not.toHaveBeenCalled();
+    });
+
+    it("requests presigned download URL from storage endpoint via GET", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          message: "Presigned GET URL generated successfully",
+          data: {
+            download_url:
+              "https://s3.amazonaws.com/test-bucket/restaurants/a1/image.jpg?signature=xyz",
+            expires_in_seconds: 900,
+          },
+        }),
+      });
+
+      const result = await getPresignedDownloadUrl("restaurants/a1/image.jpg");
+
+      expect(apiClient.get).toHaveBeenCalledWith(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+        searchParams: {
+          key: "restaurants/a1/image.jpg",
+        },
+      });
+      expect(result).toBe(
+        "https://s3.amazonaws.com/test-bucket/restaurants/a1/image.jpg?signature=xyz",
+      );
+    });
+
+    it("throws error if key is empty", async () => {
+      await expect(getPresignedDownloadUrl("")).rejects.toThrow("Object key is required");
     });
   });
 

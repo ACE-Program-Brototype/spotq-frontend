@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import type { RestaurantListItem } from "../types/restaurant.types";
 import { RestaurantTable } from "./RestaurantTable";
 
@@ -38,8 +39,12 @@ const mockRestaurants: RestaurantListItem[] = [
 ];
 
 describe("RestaurantTable", () => {
-  it("renders restaurant rows correctly with badges and contact details", () => {
-    render(<RestaurantTable restaurants={mockRestaurants} />);
+  it("renders restaurant rows correctly with badges, contact details, and view link", () => {
+    render(
+      <MemoryRouter>
+        <RestaurantTable restaurants={mockRestaurants} />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText("Ajex Grand Bistro")).toBeInTheDocument();
     expect(screen.getByText("Ajex Joshy")).toBeInTheDocument();
@@ -55,17 +60,22 @@ describe("RestaurantTable", () => {
     expect(screen.getByText("Self Service Pro")).toBeInTheDocument();
     expect(screen.getByText("PENDING")).toBeInTheDocument();
     expect(screen.getByText("Inactive")).toBeInTheDocument();
+
+    expect(screen.getByTestId("view-restaurant-rest-1")).toBeInTheDocument();
+    expect(screen.getByTestId("view-restaurant-rest-2")).toBeInTheDocument();
   });
 
   it("calls onSort when a sortable column header is clicked", () => {
     const handleSort = jest.fn();
     render(
-      <RestaurantTable
-        restaurants={mockRestaurants}
-        sortBy="created_at"
-        sortOrder="desc"
-        onSort={handleSort}
-      />,
+      <MemoryRouter>
+        <RestaurantTable
+          restaurants={mockRestaurants}
+          sortBy="created_at"
+          sortOrder="desc"
+          onSort={handleSort}
+        />
+      </MemoryRouter>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /restaurant/i }));

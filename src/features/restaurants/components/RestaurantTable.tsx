@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUp, ArrowUpDown, Mail, Phone, Store, User } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   RESTAURANT_MESSAGES,
   RESTAURANT_PLANS,
@@ -202,6 +203,9 @@ export function RestaurantTable({
                   <span>{RESTAURANT_MESSAGES.COL_JOINED}</span>
                 )}
               </th>
+
+              {/* ACTIONS */}
+              <th className="py-3.5 px-5 text-right font-bold uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700 bg-white">
@@ -212,19 +216,22 @@ export function RestaurantTable({
               return (
                 <tr
                   key={restaurant.id}
-                  className="hover:bg-slate-50/70 transition-colors"
+                  className="hover:bg-slate-50/70 transition-colors group"
                   data-testid={`restaurant-row-${restaurant.id}`}
                 >
                   {/* RESTAURANT NAME & ID */}
                   <td className="py-4 px-5">
                     <div className="flex items-center gap-3">
-                      <div className="size-9 shrink-0 flex items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 shadow-2xs">
+                      <div className="size-9 shrink-0 flex items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 shadow-2xs group-hover:scale-105 transition-transform">
                         <Store className="size-4.5" />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-bold text-slate-900 truncate">
+                        <Link
+                          to={`/admin/restaurants/${restaurant.id}`}
+                          className="font-bold text-slate-900 hover:text-amber-600 truncate transition-colors block"
+                        >
                           {restaurant.restaurant_name}
-                        </p>
+                        </Link>
                         <p className="text-[11px] text-slate-400 font-mono truncate">
                           ID: {restaurant.id.slice(0, 10)}...
                         </p>
@@ -274,6 +281,17 @@ export function RestaurantTable({
                   {/* CREATED AT */}
                   <td className="py-4 px-5 text-slate-500 text-[11px] font-medium whitespace-nowrap">
                     {formatDate(restaurant.created_at)}
+                  </td>
+
+                  {/* ACTION BUTTON */}
+                  <td className="py-4 px-5 text-right whitespace-nowrap">
+                    <Link
+                      to={`/admin/restaurants/${restaurant.id}`}
+                      className="inline-flex items-center justify-center px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 border border-slate-200/70 transition-all shadow-2xs"
+                      data-testid={`view-restaurant-${restaurant.id}`}
+                    >
+                      View Details
+                    </Link>
                   </td>
                 </tr>
               );
