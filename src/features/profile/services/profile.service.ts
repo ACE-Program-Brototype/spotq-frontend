@@ -10,6 +10,7 @@ import type {
 import type {
   RestaurantProfileApiResponse,
   RestaurantProfileData,
+  UpdateRestaurantProfilePayload,
 } from "../types/restaurant-profile.types";
 import { normalizeStaffProfile } from "../utils/profile.utils";
 
@@ -54,8 +55,25 @@ export const profileService = {
 
     return response.data;
   },
+
+  updateRestaurantProfile: async (
+    payload: UpdateRestaurantProfilePayload,
+  ): Promise<RestaurantProfileData> => {
+    const response = await apiClient
+      .put(PROFILE_ENDPOINTS.UPDATE_RESTAURANT_PROFILE, {
+        json: payload,
+      })
+      .json<RestaurantProfileApiResponse>();
+
+    if (!response.data) {
+      throw new Error(response.message || "Failed to update restaurant profile data");
+    }
+
+    return response.data;
+  },
 };
 
 export const getCustomerProfile = profileService.getProfile;
 export const updateCustomerProfile = profileService.updateProfile;
 export const getRestaurantProfile = profileService.getRestaurantProfile;
+export const updateRestaurantProfile = profileService.updateRestaurantProfile;

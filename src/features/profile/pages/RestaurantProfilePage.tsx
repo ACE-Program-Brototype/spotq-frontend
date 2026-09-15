@@ -103,16 +103,20 @@ export default function RestaurantProfilePage() {
       <RestaurantOverviewCard
         restaurant={restaurantData.restaurant}
         profile={restaurantData.profile}
+        fullData={restaurantData}
       />
 
       {/* 2. Info */}
-      <RestaurantInfoCard profile={restaurantData.profile} />
+      <RestaurantInfoCard profile={restaurantData.profile} fullData={restaurantData} />
 
       {/* 3. Settings */}
-      <RestaurantSettingsCard settings={restaurantData.settings} />
+      <RestaurantSettingsCard settings={restaurantData.settings} fullData={restaurantData} />
 
       {/* 4. Business Hours */}
-      <RestaurantBusinessHoursCard businessHours={restaurantData.businessHours} />
+      <RestaurantBusinessHoursCard
+        businessHours={restaurantData.businessHours}
+        fullData={restaurantData}
+      />
     </div>
   );
 }

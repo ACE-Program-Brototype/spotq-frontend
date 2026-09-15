@@ -54,6 +54,7 @@ export const PROFILE_ENDPOINTS = {
   UPDATE_PROFILE: "users/profile",
   GET_STAFF_PROFILE: "restaurants/staff/profile/me",
   GET_RESTAURANT_PROFILE: "restaurants/profile",
+  UPDATE_RESTAURANT_PROFILE: "restaurants/profile",
 } as const;
 
 export const PROFILE_QUERY_KEYS = {

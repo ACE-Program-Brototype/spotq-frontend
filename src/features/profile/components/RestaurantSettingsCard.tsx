@@ -1,40 +1,114 @@
-import { Edit3, QrCode, Sliders, Users, Zap } from "lucide-react";
+import { Check, Edit3, Loader2, QrCode, Sliders, Users, X, Zap } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import type { RestaurantSettingsDetails } from "../types/restaurant-profile.types";
+import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
+import type {
+  RestaurantProfileData,
+  RestaurantSettingsDetails,
+  UpdateRestaurantProfilePayload,
+} from "../types/restaurant-profile.types";
 
 interface RestaurantSettingsCardProps {
   settings: RestaurantSettingsDetails;
+  fullData: RestaurantProfileData;
 }
 
-export function RestaurantSettingsCard({ settings }: RestaurantSettingsCardProps) {
+export function RestaurantSettingsCard({ settings, fullData }: RestaurantSettingsCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [acceptsQueue, setAcceptsQueue] = useState(settings.acceptsQueue);
+  const [acceptsQrOrders, setAcceptsQrOrders] = useState(settings.acceptsQrOrders);
+  const [loyaltyEnabled, setLoyaltyEnabled] = useState(settings.loyaltyEnabled);
+  const [autoAcceptQueue, setAutoAcceptQueue] = useState(settings.autoAcceptQueue);
+
+  const updateMutation = useUpdateRestaurantProfile();
+
+  const handleStartEdit = () => {
+    setAcceptsQueue(settings.acceptsQueue);
+    setAcceptsQrOrders(settings.acceptsQrOrders);
+    setLoyaltyEnabled(settings.loyaltyEnabled);
+    setAutoAcceptQueue(settings.autoAcceptQueue);
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
+  const handleSave = () => {
+    const payload: UpdateRestaurantProfilePayload = {
+      restaurant: {
+        name: fullData.restaurant.name,
+        phone: fullData.restaurant.phone,
+        ownerName: fullData.restaurant.ownerName,
+      },
+      profile: {
+        description: fullData.profile.description,
+        cuisineType: fullData.profile.cuisineType,
+        averageCost: fullData.profile.averageCost,
+      },
+      settings: {
+        acceptsQueue,
+        acceptsQrOrders,
+        loyaltyEnabled,
+        autoAcceptQueue,
+      },
+      businessHours: fullData.businessHours.map((bh) => ({
+        dayOfWeek: bh.dayOfWeek,
+        openTime: bh.openTime,
+        closeTime: bh.closeTime,
+        isClosed: bh.isClosed,
+      })),
+    };
+
+    updateMutation.mutate(payload, {
+      onSuccess: () => {
+        setIsEditing(false);
+      },
+    });
+  };
+
+  const isSaving = updateMutation.isPending;
+
+  const currentSettingsMap = {
+    acceptsQueue: isEditing ? acceptsQueue : settings.acceptsQueue,
+    acceptsQrOrders: isEditing ? acceptsQrOrders : settings.acceptsQrOrders,
+    loyaltyEnabled: isEditing ? loyaltyEnabled : settings.loyaltyEnabled,
+    autoAcceptQueue: isEditing ? autoAcceptQueue : settings.autoAcceptQueue,
+  };
+
   const settingItems = [
     {
       key: "acceptsQueue",
       title: "Accepts Queue",
       description: "Allow customers to join virtual queue remotely or at door",
-      enabled: settings.acceptsQueue,
+      enabled: currentSettingsMap.acceptsQueue,
+      setter: setAcceptsQueue,
       icon: Users,
     },
     {
       key: "acceptsQrOrders",
       title: "Accepts QR Orders",
       description: "Enable table-side QR scanning and direct menu ordering",
-      enabled: settings.acceptsQrOrders,
+      enabled: currentSettingsMap.acceptsQrOrders,
+      setter: setAcceptsQrOrders,
       icon: QrCode,
     },
     {
       key: "loyaltyEnabled",
       title: "Loyalty Enabled",
       description: "Allow customers to earn and redeem SpotQ rewards points",
-      enabled: settings.loyaltyEnabled,
+      enabled: currentSettingsMap.loyaltyEnabled,
+      setter: setLoyaltyEnabled,
       icon: Sliders,
     },
     {
       key: "autoAcceptQueue",
       title: "Auto Accept Queue",
       description: "Automatically accept newly placed queue entries",
-      enabled: settings.autoAcceptQueue,
+      enabled: currentSettingsMap.autoAcceptQueue,
+      setter: setAutoAcceptQueue,
       icon: Zap,
     },
   ];
@@ -49,16 +123,49 @@ export function RestaurantSettingsCard({ settings }: RestaurantSettingsCardProps
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          disabled
-          className="rounded-xl border-[#eddcd4] bg-[#faf7f5] text-neutral-400 font-semibold cursor-not-allowed text-xs h-9 px-4 shrink-0"
-          title="Update functionality placeholder"
-        >
-          <Edit3 className="size-3.5 mr-1.5" />
-          <span>Update Settings</span>
-        </Button>
+        {!isEditing ? (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleStartEdit}
+            className="rounded-xl border-[#eddcd4] bg-[#faf7f5] text-neutral-800 hover:bg-[#f3e6de] font-semibold text-xs h-9 px-4 shrink-0 cursor-pointer"
+          >
+            <Edit3 className="size-3.5 mr-1.5 text-[#e8631b]" />
+            <span>Edit Settings</span>
+          </Button>
+        ) : (
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isSaving}
+              className="rounded-xl border-neutral-200 text-neutral-700 hover:bg-neutral-100 font-semibold text-xs h-9 px-3.5"
+            >
+              <X className="size-3.5 mr-1" />
+              <span>Cancel</span>
+            </Button>
+
+            <Button
+              type="button"
+              onClick={handleSave}
+              disabled={isSaving}
+              className="rounded-xl bg-[#e8631b] hover:bg-[#d55513] text-white font-semibold text-xs h-9 px-4"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Check className="size-3.5 mr-1.5" />
+                  <span>Save Settings</span>
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -82,9 +189,10 @@ export function RestaurantSettingsCard({ settings }: RestaurantSettingsCardProps
               <div className="flex items-center gap-2 shrink-0">
                 <Switch
                   checked={item.enabled}
-                  disabled
+                  onChange={(e) => isEditing && item.setter(e.target.checked)}
+                  disabled={!isEditing || isSaving}
                   aria-label={item.title}
-                  className="cursor-not-allowed"
+                  className={!isEditing ? "cursor-not-allowed opacity-80" : "cursor-pointer"}
                 />
                 <span className="text-xs font-bold text-neutral-600 min-w-8 text-right">
                   {item.enabled ? "ON" : "OFF"}
