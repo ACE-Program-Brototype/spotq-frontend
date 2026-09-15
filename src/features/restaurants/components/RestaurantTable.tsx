@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp, ArrowUpDown, Eye, Mail, Phone, Store, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { formatDate } from "@/lib/utils/date";
 import {
   RESTAURANT_MESSAGES,
   RESTAURANT_PLANS,
@@ -18,20 +19,6 @@ export interface RestaurantTableProps {
   sortBy?: RestaurantSortByType;
   sortOrder?: RestaurantSortOrderType;
   onSort?: (field: RestaurantSortByType) => void;
-}
-
-function formatDate(dateString: string): string {
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
 }
 
 function renderStatusBadge(status: RestaurantStatusType) {
