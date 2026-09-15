@@ -1,5 +1,6 @@
 export const CUSTOMER_ENDPOINTS = {
   LIST: "users",
+  DETAILS: (userId: string) => `admin/customers/${userId}`,
   STATUS: (userId: string) => `users/${userId}/status`,
 } as const;
 
@@ -87,7 +88,12 @@ export const CUSTOMER_MESSAGES = {
   DETAILS_PAGE_TITLE: "Customer Details",
   DETAILS_PAGE_SUBTITLE: "Detailed profile and activity information for the selected customer.",
   DETAILS_PAGE_BACK_BUTTON: "Back to Customer Directory",
-  DETAILS_PAGE_DUMMY_TEXT: "This is a dummy customer details page.",
   DETAILS_PAGE_CUSTOMER_ID_LABEL: "Customer ID",
-  DETAILS_PAGE_STATUS_BADGE: "In Development",
+  DETAILS_NOT_FOUND_TITLE: "Customer Not Found",
+  DETAILS_NOT_FOUND_DESC: "The requested customer profile could not be found or has been removed.",
+  DETAILS_FETCH_ERROR_TITLE: "Failed to load customer details",
+  DETAILS_FETCH_ERROR_DESC:
+    "An error occurred while retrieving customer details. Please try again.",
+  ORDERS_SECTION_TITLE: "Order History",
+  ORDERS_SECTION_SUBTITLE: "Recent orders placed by this customer.",
 } as const;
