@@ -28,7 +28,7 @@ export default function RestaurantDashboardPage() {
             onClick={handleBackToEmail}
             className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
           >
-            Back to email
+            Logout
           </button>
         </div>
 
