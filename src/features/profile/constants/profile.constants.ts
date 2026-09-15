@@ -53,16 +53,29 @@ export const PROFILE_ENDPOINTS = {
   GET_PROFILE: "users/profile",
   UPDATE_PROFILE: "users/profile",
   GET_STAFF_PROFILE: "restaurants/staff/profile/me",
+  GET_RESTAURANT_PROFILE: "restaurants/profile",
 } as const;
 
 export const PROFILE_QUERY_KEYS = {
   CUSTOMER_PROFILE: ["customer", "profile"] as const,
   STAFF_PROFILE: ["staff", "profile"] as const,
+  RESTAURANT_PROFILE: ["restaurant", "profile"] as const,
 };
+
+export const DAYS_OF_WEEK = [
+  { id: 1, label: "Monday" },
+  { id: 2, label: "Tuesday" },
+  { id: 3, label: "Wednesday" },
+  { id: 4, label: "Thursday" },
+  { id: 5, label: "Friday" },
+  { id: 6, label: "Saturday" },
+  { id: 7, label: "Sunday" },
+] as const;
 
 export const profileHooks = {
   STAFF_PROFILE_STALE_TIME: 5 * 60 * 1000,
   CUSTOMER_PROFILE_STALE_TIME: 5 * 60 * 1000,
+  RESTAURANT_PROFILE_STALE_TIME: 5 * 60 * 1000,
 };
 
 export const MONTH_NAMES = [

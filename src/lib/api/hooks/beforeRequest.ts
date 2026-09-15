@@ -14,7 +14,7 @@ export const beforeRequest: BeforeRequestHook = async ({ request }) => {
 
   let token = useAuthStore.getState().accessToken;
 
-  if (!token && useAuthStore.getState().isAuthenticated) {
+  if (!token) {
     try {
       token = await getOrRefreshAccessToken();
     } catch {
