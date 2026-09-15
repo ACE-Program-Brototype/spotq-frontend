@@ -1,7 +1,8 @@
 import { Building2, Camera, Check, Edit3, Loader2, Phone, Upload, User, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
 import type {
@@ -10,6 +11,7 @@ import type {
   RestaurantProfileDetails,
   UpdateRestaurantProfilePayload,
 } from "../types/restaurant-profile.types";
+import { cacheLocalMedia, resolveMediaUrl } from "../utils/profile.utils";
 
 interface RestaurantOverviewCardProps {
   restaurant: RestaurantOverviewDetails;
@@ -28,6 +30,9 @@ export function RestaurantOverviewCard({
   profile,
   fullData,
 }: RestaurantOverviewCardProps) {
+  const user = useAuthStore((state) => state.user);
+  const activeRestaurantId = user?.restaurantId || user?.id || "profile";
+
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(restaurant.name || "");
   const [phone, setPhone] = useState(restaurant.phone || "");
@@ -35,49 +40,96 @@ export function RestaurantOverviewCard({
 
   const [logoKey, setLogoKey] = useState<string | null>(null);
   const [coverImageKey, setCoverImageKey] = useState<string | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(profile.logo || null);
-  const [coverPreview, setCoverPreview] = useState<string | null>(profile.coverImage || null);
+
+  const initialLogo = resolveMediaUrl(profile.logo);
+  const initialCover = resolveMediaUrl(profile.coverImage);
 
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const { upload, isUploading } = useFileUpload();
   const updateMutation = useUpdateRestaurantProfile();
 
-  const [coverSrc, setCoverSrc] = useState<string>(coverPreview || FALLBACK_COVER);
-  const [logoSrc, setLogoSrc] = useState<string>(logoPreview || FALLBACK_LOGO);
+  const [coverSrc, setCoverSrc] = useState<string>(initialCover || FALLBACK_COVER);
+  const [logoSrc, setLogoSrc] = useState<string>(initialLogo || FALLBACK_LOGO);
+
+  // Sync image sources when profile props change (and not actively editing with unsaved local images)
+  useEffect(() => {
+    if (!isEditing) {
+      const resolvedLogo = resolveMediaUrl(profile.logo);
+      const resolvedCover = resolveMediaUrl(profile.coverImage);
+      setLogoSrc(resolvedLogo || FALLBACK_LOGO);
+      setCoverSrc(resolvedCover || FALLBACK_COVER);
+    }
+  }, [profile.logo, profile.coverImage, isEditing]);
 
   const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    try {
-      const res = await upload(file, {
-        entityType: "restaurant",
-        entityId: "profile",
-        fileCategory: "logo",
-      });
-      setLogoKey(res.s3ObjectKey);
-      setLogoPreview(URL.createObjectURL(file));
-      setLogoSrc(URL.createObjectURL(file));
-    } catch {
-      // handled by hook
-    }
+
+    // Immediately show local object URL preview for responsive user feedback
+    const previewUrl = URL.createObjectURL(file);
+    setLogoSrc(previewUrl);
+
+    // Read file as Data URL to store in local media cache once uploaded
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result as string;
+      const fallbackKey = `local_logo_${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
+
+      // Cache dataUrl immediately under fallback key to ensure local dev persistence
+      cacheLocalMedia(fallbackKey, dataUrl);
+      setLogoKey(fallbackKey);
+
+      try {
+        const res = await upload(file, {
+          entityType: "restaurant",
+          entityId: activeRestaurantId,
+          fileCategory: "logo",
+        });
+        if (res?.s3ObjectKey) {
+          setLogoKey(res.s3ObjectKey);
+          cacheLocalMedia(res.s3ObjectKey, dataUrl);
+        }
+      } catch {
+        // Fallback key remains active so user can still save and preview in local dev
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    try {
-      const res = await upload(file, {
-        entityType: "restaurant",
-        entityId: "profile",
-        fileCategory: "cover_image",
-      });
-      setCoverImageKey(res.s3ObjectKey);
-      setCoverPreview(URL.createObjectURL(file));
-      setCoverSrc(URL.createObjectURL(file));
-    } catch {
-      // handled by hook
-    }
+
+    // Immediately show local object URL preview for responsive user feedback
+    const previewUrl = URL.createObjectURL(file);
+    setCoverSrc(previewUrl);
+
+    // Read file as Data URL to store in local media cache once uploaded
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result as string;
+      const fallbackKey = `local_cover_${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
+
+      // Cache dataUrl immediately under fallback key to ensure local dev persistence
+      cacheLocalMedia(fallbackKey, dataUrl);
+      setCoverImageKey(fallbackKey);
+
+      try {
+        const res = await upload(file, {
+          entityType: "restaurant",
+          entityId: activeRestaurantId,
+          fileCategory: "cover_image",
+        });
+        if (res?.s3ObjectKey) {
+          setCoverImageKey(res.s3ObjectKey);
+          cacheLocalMedia(res.s3ObjectKey, dataUrl);
+        }
+      } catch {
+        // Fallback key remains active so user can still save and preview in local dev
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleStartEdit = () => {
@@ -86,10 +138,10 @@ export function RestaurantOverviewCard({
     setOwnerName(restaurant.ownerName || "");
     setLogoKey(null);
     setCoverImageKey(null);
-    setLogoPreview(profile.logo || null);
-    setCoverPreview(profile.coverImage || null);
-    setLogoSrc(profile.logo || FALLBACK_LOGO);
-    setCoverSrc(profile.coverImage || FALLBACK_COVER);
+    const resolvedLogo = resolveMediaUrl(profile.logo);
+    const resolvedCover = resolveMediaUrl(profile.coverImage);
+    setLogoSrc(resolvedLogo || FALLBACK_LOGO);
+    setCoverSrc(resolvedCover || FALLBACK_COVER);
     setValidationError(null);
     setIsEditing(true);
   };
@@ -97,6 +149,12 @@ export function RestaurantOverviewCard({
   const handleCancel = () => {
     setIsEditing(false);
     setValidationError(null);
+    setLogoKey(null);
+    setCoverImageKey(null);
+    const resolvedLogo = resolveMediaUrl(profile.logo);
+    const resolvedCover = resolveMediaUrl(profile.coverImage);
+    setLogoSrc(resolvedLogo || FALLBACK_LOGO);
+    setCoverSrc(resolvedCover || FALLBACK_COVER);
   };
 
   const handleSave = () => {
@@ -159,8 +217,12 @@ export function RestaurantOverviewCard({
 
         {isEditing && (
           <label className="absolute top-4 right-4 cursor-pointer inline-flex items-center gap-2 bg-black/70 hover:bg-black/80 text-white text-xs font-semibold px-3 py-2 rounded-xl backdrop-blur-xs transition-all shadow-md">
-            <Upload className="size-3.5" />
-            <span>Change Cover</span>
+            {isUploading ? (
+              <Loader2 className="size-3.5 animate-spin text-white" />
+            ) : (
+              <Upload className="size-3.5" />
+            )}
+            <span>{isUploading ? "Uploading..." : "Change Cover"}</span>
             <input
               type="file"
               accept="image/*"
@@ -186,8 +248,21 @@ export function RestaurantOverviewCard({
 
             {isEditing && (
               <label className="absolute inset-0 bg-black/50 hover:bg-black/60 flex flex-col items-center justify-center text-white cursor-pointer transition-all">
-                <Camera className="size-6 mb-1" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Change Logo</span>
+                {isUploading ? (
+                  <>
+                    <Loader2 className="size-6 mb-1 animate-spin" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                      Uploading
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Camera className="size-6 mb-1" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                      Change Logo
+                    </span>
+                  </>
+                )}
                 <input
                   type="file"
                   accept="image/*"
