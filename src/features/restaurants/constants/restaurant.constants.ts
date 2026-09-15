@@ -71,4 +71,6 @@ export const RESTAURANT_MESSAGES = {
   COL_STATUS: "Status",
   COL_SUBSCRIPTION: "Subscription",
   COL_JOINED: "Joined Date",
+  COL_ACTIONS: "Actions",
+  ACTION_DETAILS: "Details",
 } as const;

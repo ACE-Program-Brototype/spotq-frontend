@@ -1,4 +1,5 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, Mail, Phone, Store, User } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Eye, Mail, Phone, Store, User } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   RESTAURANT_MESSAGES,
   RESTAURANT_PLANS,
@@ -195,6 +196,9 @@ export function RestaurantTable({
                   <span>{RESTAURANT_MESSAGES.COL_JOINED}</span>
                 )}
               </th>
+
+              {/* ACTIONS */}
+              <th className="py-3.5 px-5 text-right">{RESTAURANT_MESSAGES.COL_ACTIONS}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700 bg-white">
@@ -267,6 +271,19 @@ export function RestaurantTable({
                   {/* CREATED AT */}
                   <td className="py-4 px-5 text-slate-500 text-[11px] font-medium whitespace-nowrap">
                     {formatDate(restaurant.created_at)}
+                  </td>
+
+                  {/* ACTIONS */}
+                  <td className="py-4 px-5 text-right whitespace-nowrap">
+                    <Link
+                      to={`/admin/restaurants/${restaurant.id}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:text-[#0052cc] hover:border-[#0052cc]/30 border border-slate-200/80 rounded-xl transition-all shadow-2xs group"
+                      data-testid={`restaurant-details-btn-${restaurant.id}`}
+                      aria-label={`View details for ${restaurant.restaurant_name}`}
+                    >
+                      <Eye className="size-3.5 text-slate-400 group-hover:text-[#0052cc] transition-colors" />
+                      <span>{RESTAURANT_MESSAGES.ACTION_DETAILS}</span>
+                    </Link>
                   </td>
                 </tr>
               );

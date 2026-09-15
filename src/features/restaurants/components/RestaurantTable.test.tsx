@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import type { RestaurantListItem } from "../types/restaurant.types";
 import { RestaurantTable } from "./RestaurantTable";
 
@@ -37,9 +38,13 @@ const mockRestaurants: RestaurantListItem[] = [
   },
 ];
 
+const renderWithRouter = (ui: React.ReactElement) => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+};
+
 describe("RestaurantTable", () => {
   it("renders restaurant rows correctly with badges and contact details", () => {
-    render(<RestaurantTable restaurants={mockRestaurants} />);
+    renderWithRouter(<RestaurantTable restaurants={mockRestaurants} />);
 
     expect(screen.getByText("Ajex Grand Bistro")).toBeInTheDocument();
     expect(screen.getByText("Ajex Joshy")).toBeInTheDocument();
@@ -57,9 +62,23 @@ describe("RestaurantTable", () => {
     expect(screen.getByText("Inactive")).toBeInTheDocument();
   });
 
+  it("renders Actions column and Details navigation buttons with correct paths", () => {
+    renderWithRouter(<RestaurantTable restaurants={mockRestaurants} />);
+
+    expect(screen.getByRole("columnheader", { name: /actions/i })).toBeInTheDocument();
+
+    const link1 = screen.getByTestId("restaurant-details-btn-rest-1");
+    expect(link1).toBeInTheDocument();
+    expect(link1).toHaveAttribute("href", "/admin/restaurants/rest-1");
+
+    const link2 = screen.getByTestId("restaurant-details-btn-rest-2");
+    expect(link2).toBeInTheDocument();
+    expect(link2).toHaveAttribute("href", "/admin/restaurants/rest-2");
+  });
+
   it("calls onSort when a sortable column header is clicked", () => {
     const handleSort = jest.fn();
-    render(
+    renderWithRouter(
       <RestaurantTable
         restaurants={mockRestaurants}
         sortBy="created_at"
