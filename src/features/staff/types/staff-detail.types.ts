@@ -43,14 +43,22 @@ export interface StaffDetail {
 
 export type StaffStatus = "ACTIVE" | "INACTIVE";
 
-export interface UpdateStaffStatusPayload {
-  status: StaffStatus;
+export interface UpdateStaffInfoPayload {
+  name: string;
+  phone: string;
 }
 
 export interface StaffDetailHeaderProps {
   staff: StaffDetail;
+  onEditStaff?: () => void;
   onToggleStatus?: () => void;
   onRequestDelete?: () => void;
+}
+
+export interface EditStaffModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  staff: StaffDetail;
 }
 
 export interface StaffDetailCardsProps {

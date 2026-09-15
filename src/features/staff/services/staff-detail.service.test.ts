@@ -5,11 +5,13 @@ import { normalizeStaffDetail, staffDetailService } from "./staff-detail.service
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
+    patch: jest.fn(),
   },
 }));
 
 describe("staffDetailService", () => {
   const mockGet = apiClient.get as jest.Mock;
+  const mockPatch = apiClient.patch as jest.Mock;
 
   const mockRawData = {
     id: "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
@@ -83,6 +85,39 @@ describe("staffDetailService", () => {
       expect(res.fullName).toBe("John Owner");
       expect(res.email).toBe("owner@spotq.com");
       expect(res.status).toBe("ACTIVE");
+    });
+  });
+
+  describe("updateStaffInfo", () => {
+    it("calls apiClient.patch with correct endpoint and payload, returning normalized data", async () => {
+      const updatedMockRawData = {
+        ...mockRawData,
+        fullname: "Ravi Kumar",
+        phone: "+919876543210",
+      };
+
+      mockPatch.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          message: "Staff information updated successfully",
+          data: updatedMockRawData,
+          statusCode: 200,
+        }),
+      });
+
+      const payload = {
+        name: "Ravi Kumar",
+        phone: "+919876543210",
+      };
+
+      const res = await staffDetailService.updateStaffInfo("rest_id", "stf_01", payload);
+
+      expect(mockPatch).toHaveBeenCalledWith(
+        STAFF_ENDPOINTS.STAFF_DETAIL_BY_RESTAURANT("rest_id", "stf_01"),
+        { json: payload },
+      );
+      expect(res.fullName).toBe("Ravi Kumar");
+      expect(res.phone).toBe("+919876543210");
     });
   });
 });

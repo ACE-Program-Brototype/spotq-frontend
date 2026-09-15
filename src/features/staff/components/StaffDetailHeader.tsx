@@ -1,10 +1,11 @@
-import { ArrowLeft, ChevronRight, Trash2, UserCheck, UserX } from "lucide-react";
+import { ArrowLeft, ChevronRight, Pencil, Trash2, UserCheck, UserX } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import type { StaffDetailHeaderProps } from "@/features/staff/types/staff-detail.types";
 
 export function StaffDetailHeader({
   staff,
+  onEditStaff,
   onToggleStatus,
   onRequestDelete,
 }: StaffDetailHeaderProps) {
@@ -63,8 +64,22 @@ export function StaffDetailHeader({
           </p>
         </div>
 
-        {/* Action Buttons (UI-Only in this story): 1. Active/Inactive Toggle, 2. Remove Staff */}
+        {/* Action Buttons: 1. Edit Staff, 2. Active/Inactive Toggle, 3. Remove Staff */}
         <div className="flex items-center gap-3 self-start sm:self-auto shrink-0">
+          {/* Edit Staff Button */}
+          {onEditStaff && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onEditStaff}
+              className="h-10 rounded-xl px-4 text-xs font-semibold border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] hover:text-[#9a3412] hover:border-[#e8631b]/40 transition-colors shadow-2xs"
+            >
+              <Pencil className="size-3.5 mr-1.5 text-[#e8631b]" />
+              Edit Staff
+            </Button>
+          )}
+
           {/* Active/Inactive Toggle Button */}
           <Button
             type="button"

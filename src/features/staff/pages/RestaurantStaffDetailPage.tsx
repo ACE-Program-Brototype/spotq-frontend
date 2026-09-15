@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
+import { EditStaffModal } from "@/features/staff/components/EditStaffModal";
 import {
   StaffDetailInfoCard,
   StaffDetailOverviewCard,
@@ -22,6 +23,7 @@ export default function RestaurantStaffDetailPage() {
 function StaffDetailContent() {
   const { staff, isLoading, isError, error, isForbidden, isNotFound, refetch } = useStaffDetail();
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [uiStatus, setUiStatus] = useState<string | null>(null);
 
@@ -74,6 +76,7 @@ function StaffDetailContent() {
       {/* Header section with breadcrumbs and actions */}
       <StaffDetailHeader
         staff={effectiveStaff}
+        onEditStaff={() => setIsEditModalOpen(true)}
         onToggleStatus={handleToggleStatus}
         onRequestDelete={() => setIsDeleteModalOpen(true)}
       />
@@ -87,6 +90,13 @@ function StaffDetailContent() {
           <StaffDetailInfoCard staff={effectiveStaff} />
         </div>
       </div>
+
+      {/* Edit Staff Information Modal */}
+      <EditStaffModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        staff={effectiveStaff}
+      />
 
       {/* Delete / Remove Confirmation Dialog (UI-only in this story) */}
       <ConfirmDialog

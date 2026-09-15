@@ -1,3 +1,4 @@
+export * from "./components/EditStaffModal";
 export * from "./components/InvitationDetailsModal";
 export * from "./components/InviteStaffModal";
 export * from "./components/StaffDetailCards";
@@ -7,12 +8,16 @@ export * from "./components/StaffDetailSkeleton";
 export * from "./constants/staff.constants";
 export * from "./hooks/use-staff-detail";
 export * from "./hooks/use-staff-invitations";
+export * from "./hooks/use-update-staff-info";
 export { default as RestaurantStaffDetailPage } from "./pages/RestaurantStaffDetailPage";
+export { default as RestaurantStaffEditPage } from "./pages/RestaurantStaffEditPage";
 export { default as RestaurantStaffInvitationsPage } from "./pages/RestaurantStaffInvitationsPage";
 export { default as RestaurantStaffPage } from "./pages/RestaurantStaffPage";
 export * from "./schemas/staff-invitation.schema";
+export * from "./schemas/update-staff-info.schema";
 export * from "./services/staff-detail.service";
 export * from "./services/staff-invitation.service";
 export * from "./types/staff-detail.types";
 export * from "./types/staff-invitation.types";
 export * from "./utils/staff.helpers";
+

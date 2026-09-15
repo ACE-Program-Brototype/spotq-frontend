@@ -7,6 +7,7 @@ import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashbo
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
 import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
+import RestaurantStaffEditPage from "@/features/staff/pages/RestaurantStaffEditPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
 import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import AuthLayout from "@/layouts/AuthLayout";
@@ -29,6 +30,18 @@ export const restaurantRoutes: RouteObject[] = [
   {
     path: "privacy",
     Component: RestaurantPrivacyPage,
+  },
+  {
+    path: "staff",
+    Component: RestaurantStaffPage,
+  },
+  {
+    path: "staff/:staffId",
+    Component: RestaurantStaffDetailPage,
+  },
+  {
+    path: "staff/:staffId/edit",
+    Component: RestaurantStaffEditPage,
   },
   {
     Component: RestaurantAuthGuard,
@@ -56,14 +69,6 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "dashboard",
             Component: RestaurantDashboardPage,
-          },
-          {
-            path: "staff",
-            Component: RestaurantStaffPage,
-          },
-          {
-            path: "staff/:staffId",
-            Component: RestaurantStaffDetailPage,
           },
           {
             path: "staff/invitations",

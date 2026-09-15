@@ -47,8 +47,10 @@ export const STAFF_MESSAGES = {
   STAFF_DEACTIVATE_SUCCESS: "Staff deactivated successfully.",
   STAFF_STATUS_UPDATE_ERROR: "Failed to update staff status.",
   STAFF_DELETE_SUCCESS: "Staff member deleted successfully.",
-  STAFF_DELETE_ERROR: "Failed to delete staff member.",
   STAFF_DELETE_CONFIRM_TITLE: "Remove Staff Member?",
   STAFF_DELETE_CONFIRM_DESCRIPTION:
     "Are you sure you want to remove this staff member? This action cannot be undone.",
+  STAFF_UPDATE_SUCCESS: "Staff information updated successfully.",
+  STAFF_UPDATE_ERROR: "Failed to update staff information. Please try again.",
+  STAFF_NO_CHANGES: "No changes detected to update.",
 } as const;
