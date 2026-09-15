@@ -10,8 +10,8 @@ export function RestaurantAdminLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   return (
-    <div className="flex min-h-svh w-full max-w-full overflow-x-hidden bg-[#fffdfb] text-neutral-900">
-      <div className="hidden lg:block lg:shrink-0 sticky top-0 h-svh">
+    <div className="flex h-svh w-full max-w-full overflow-hidden bg-[#fffdfb] text-neutral-900">
+      <div className="hidden lg:block lg:shrink-0 h-full">
         <RestaurantAdminSidebar />
       </div>
 
@@ -43,13 +43,13 @@ export function RestaurantAdminLayout() {
         </div>
       )}
 
-      <div className="flex flex-1 flex-col min-w-0 w-full max-w-full overflow-x-hidden">
+      <div className="flex flex-1 flex-col min-w-0 w-full h-full max-w-full overflow-hidden">
         <RestaurantAdminNavbar
           restaurantName="Basil Mandi"
           onToggleSidebar={() => setMobileDrawerOpen(true)}
         />
 
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 box-border">
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 box-border overflow-y-auto">
           <Outlet />
         </main>
       </div>
