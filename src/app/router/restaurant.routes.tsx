@@ -59,18 +59,6 @@ export const restaurantRoutes: RouteObject[] = [
     Component: RestaurantPrivacyPage,
   },
   {
-    path: "staff",
-    Component: RestaurantStaffPage,
-  },
-  {
-    path: "staff/:staffId",
-    Component: RestaurantStaffDetailPage,
-  },
-  {
-    path: "staff/:staffId/edit",
-    Component: RestaurantStaffEditPage,
-  },
-  {
     Component: RestaurantAuthGuard,
     children: [
       {
@@ -130,6 +118,18 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "dashboard",
             Component: RestaurantDashboardPage,
+          },
+          {
+            path: "staff",
+            Component: RestaurantStaffPage,
+          },
+          {
+            path: "staff/:staffId",
+            Component: RestaurantStaffDetailPage,
+          },
+          {
+            path: "staff/:staffId/edit",
+            Component: RestaurantStaffEditPage,
           },
           {
             path: "staff/invitations",

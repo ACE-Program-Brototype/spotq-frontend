@@ -200,11 +200,10 @@ function StaffEditContent() {
                           type="text"
                           placeholder="e.g. Ravi Kumar"
                           disabled={isSubmitting}
-                          className={`h-10.5 rounded-xl pl-10 pr-3.5 text-sm bg-white border-[#eddcd4] focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b] ${
-                            errors.name
+                          className={`h-10.5 rounded-xl pl-10 pr-3.5 text-sm bg-white border-[#eddcd4] focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b] ${errors.name
                               ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500"
                               : ""
-                          }`}
+                            }`}
                           {...register("name")}
                         />
                       </div>
@@ -230,11 +229,10 @@ function StaffEditContent() {
                           type="tel"
                           placeholder="e.g. +91 9876543210"
                           disabled={isSubmitting}
-                          className={`h-10.5 rounded-xl pl-10 pr-3.5 text-sm bg-white border-[#eddcd4] focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b] ${
-                            errors.phone
+                          className={`h-10.5 rounded-xl pl-10 pr-3.5 text-sm bg-white border-[#eddcd4] focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b] ${errors.phone
                               ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500"
                               : ""
-                          }`}
+                            }`}
                           {...register("phone")}
                         />
                       </div>
