@@ -211,7 +211,10 @@ export function RestaurantTable({
                           {restaurant.restaurant_name}
                         </p>
                         <p className="text-[11px] text-slate-400 font-mono truncate">
-                          ID: {restaurant.id.slice(0, 10)}...
+                          ID:{" "}
+                          {restaurant.id.length > 10
+                            ? `${restaurant.id.slice(0, 10)}...`
+                            : restaurant.id}
                         </p>
                       </div>
                     </div>

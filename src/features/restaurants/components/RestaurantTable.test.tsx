@@ -106,4 +106,21 @@ describe("RestaurantTable", () => {
     renderWithRouter(<RestaurantTable restaurants={lowercaseStatusRestaurants} />);
     expect(screen.getByText("ACTIVE")).toBeInTheDocument();
   });
+
+  it("truncates ID with ellipsis only when length exceeds 10 characters", () => {
+    const mixedIdRestaurants: RestaurantListItem[] = [
+      {
+        ...mockRestaurants[0],
+        id: "short-id",
+      },
+      {
+        ...mockRestaurants[1],
+        id: "very-long-restaurant-id-123456",
+      },
+    ];
+
+    renderWithRouter(<RestaurantTable restaurants={mixedIdRestaurants} />);
+    expect(screen.getByText("ID: short-id")).toBeInTheDocument();
+    expect(screen.getByText("ID: very-long-...")).toBeInTheDocument();
+  });
 });
