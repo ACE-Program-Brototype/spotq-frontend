@@ -33,10 +33,7 @@ export function useUpdateStaffInfo({
       staffDetailService.updateStaffInfo(restaurantId, staffId, payload),
     onSuccess: (updatedStaff) => {
       // Synchronize cache immediately with server truth
-      queryClient.setQueryData(
-        [STAFF_DETAIL_QUERY_KEY, restaurantId, staffId],
-        updatedStaff,
-      );
+      queryClient.setQueryData([STAFF_DETAIL_QUERY_KEY, restaurantId, staffId], updatedStaff);
 
       // Invalidate queries to ensure consistent state
       queryClient.invalidateQueries({

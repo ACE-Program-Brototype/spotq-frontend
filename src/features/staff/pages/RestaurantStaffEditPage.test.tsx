@@ -109,7 +109,9 @@ describe("RestaurantStaffEditPage", () => {
     const cancelBtn = screen.getByRole("button", { name: /^cancel$/i });
     fireEvent.click(cancelBtn);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/restaurant/staff/b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01");
+    expect(mockNavigate).toHaveBeenCalledWith(
+      "/restaurant/staff/b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
+    );
   });
 
   it("submits update with modified data and navigates back on success", async () => {
@@ -144,7 +146,9 @@ describe("RestaurantStaffEditPage", () => {
           phone: "+919876543210",
         },
       );
-      expect(mockNavigate).toHaveBeenCalledWith("/restaurant/staff/b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01");
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/restaurant/staff/b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
+      );
     });
   });
 });

@@ -20,4 +20,3 @@ export * from "./services/staff-invitation.service";
 export * from "./types/staff-detail.types";
 export * from "./types/staff-invitation.types";
 export * from "./utils/staff.helpers";
-

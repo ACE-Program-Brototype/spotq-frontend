@@ -57,4 +57,3 @@ export const staffDetailService = {
     return normalizeStaffDetail(response.data, restaurantId);
   },
 };
-

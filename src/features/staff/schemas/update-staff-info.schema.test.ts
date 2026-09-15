@@ -1,7 +1,4 @@
-import {
-  normalizePhoneNumber,
-  updateStaffInfoSchema,
-} from "./update-staff-info.schema";
+import { normalizePhoneNumber, updateStaffInfoSchema } from "./update-staff-info.schema";
 
 describe("updateStaffInfoSchema", () => {
   it("should validate valid name and phone number", () => {
