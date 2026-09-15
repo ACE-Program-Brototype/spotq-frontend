@@ -11,6 +11,7 @@ import LocationPage from "@/features/onboard/pages/LocationPage";
 import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
 import RestaurantProfilePage from "@/features/profile/pages/RestaurantProfilePage";
+import StaffProfilePage from "@/features/profile/pages/StaffProfilePage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
 import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import AuthLayout from "@/layouts/AuthLayout";
@@ -133,6 +134,10 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "staff/invitations",
             Component: RestaurantStaffInvitationsPage,
+          },
+          {
+            path: "staff/:staffId",
+            Component: StaffProfilePage,
           },
         ],
       },
