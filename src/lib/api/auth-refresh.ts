@@ -26,8 +26,11 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
 
     switch (currentRole) {
       case "RESTAURANT_STAFF":
-      case "RESTAURANT_ADMIN":
         refreshEndpoint = AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN;
+        break;
+
+      case "RESTAURANT_ADMIN":
+        refreshEndpoint = AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN;
         break;
 
       default:
@@ -64,6 +67,10 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
 
     if (user) {
       useAuthStore.getState().setAuth(user, newAccessToken);
+    } else {
+      useAuthStore
+        .getState()
+        .setAuth({ email: "", role: currentRole || "RESTAURANT_ADMIN" }, newAccessToken);
     }
 
     return newAccessToken;

@@ -48,17 +48,17 @@ describe("RestaurantEmailVerification", () => {
     expect(screen.getByText(/please enter a valid email address\./i)).toBeInTheDocument();
     expect(requestOtp).not.toHaveBeenCalled();
 
-    fireEvent.change(emailInput, { target: { value: "owner@restaurant.com" } });
+    fireEvent.change(emailInput, { target: { value: "user@spotq.com" } });
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
 
     expect(screen.getByText(/send verification code\?/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /send code/i }));
 
     await waitFor(() => {
-      expect(requestOtp).toHaveBeenCalledWith("owner@restaurant.com");
+      expect(requestOtp).toHaveBeenCalledWith("user@spotq.com");
     });
 
-    expect(onCodeSent).toHaveBeenCalledWith("owner@restaurant.com");
+    expect(onCodeSent).toHaveBeenCalledWith("user@spotq.com");
   });
 
   it("enables the continue button for valid emails containing 's' like owner@spotq.com", () => {
