@@ -94,9 +94,9 @@ export const AUTH_ENDPOINTS = {
   RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
   RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
   RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
-  RESTAURANT_ONBOARD: "auth/restaurants/onboard",
+  RESTAURANT_ONBOARD: "restaurants/onboard",
   RESTAURANT_REFRESH_TOKEN: "auth/restaurants/refresh-token",
-  RESTAURANT_VERIFICATION_STATUS: "auth/restaurants/verification-status",
+  RESTAURANT_VERIFICATION_STATUS: "restaurants/verification-status",
 
   STAFF_LOGIN: "auth/restaurants/staff/login",
   STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
