@@ -46,13 +46,23 @@ export const PROFILE_MESSAGES = {
   FETCH_ERROR: "Failed to load profile details. Please try again.",
   UNABLE_TO_LOAD: "Unable to Load Profile",
   UNAUTHORIZED: "Your session has expired. Please sign in again.",
-  NO_DATA: "No profile data available.",
+  STAFF_UPDATE_SUCCESS: "Staff profile updated successfully.",
+  STAFF_UPDATE_FAILED: "Failed to update staff profile. Please try again.",
+  STAFF_FORBIDDEN: "You do not have permission to update this profile.",
+  STAFF_NOT_FOUND: "Staff member not found.",
+  EDIT_STAFF_PROFILE_TITLE: "Staff Profile",
+  EDIT_STAFF_PROFILE_SUBTITLE:
+    "Manage your personal information, security preferences, and status.",
+  AVATAR_INVALID_FILE: "Profile photo must be a JPG, GIF, or PNG file under 2MB.",
 } as const;
 
 export const PROFILE_ENDPOINTS = {
   GET_PROFILE: "users/profile",
   UPDATE_PROFILE: "users/profile",
   GET_STAFF_PROFILE: "restaurants/staff/profile/me",
+  UPDATE_STAFF_PROFILE: (restaurantId: string, staffId: string) =>
+    `restaurants/${restaurantId}/staff/${staffId}`,
+  STORAGE_PRESIGNED_URL: "storage/presigned-url",
 } as const;
 
 export const PROFILE_QUERY_KEYS = {
