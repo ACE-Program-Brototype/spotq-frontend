@@ -3,6 +3,7 @@ export const STAFF_ENDPOINTS = {
   INVITATIONS_RESEND: "restaurants/staff/invitations/resend",
   INVITATIONS_REVOKE: "restaurants/staff/invitations/revoke",
   STAFF_LIST: "restaurants/staff",
+  STAFF_LIST_BY_RESTAURANT: (restaurantId: string) => `restaurants/${restaurantId}/staff`,
   STAFF_DETAIL: (id: string) => `restaurants/staff/${id}`,
 } as const;
 
