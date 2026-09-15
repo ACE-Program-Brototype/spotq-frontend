@@ -21,14 +21,15 @@ export interface RestaurantTableProps {
   onSort?: (field: RestaurantSortByType) => void;
 }
 
-function renderStatusBadge(status: RestaurantStatusType) {
-  switch (status) {
+function renderStatusBadge(status: RestaurantStatusType | string | null | undefined) {
+  const normalized = status ? status.toUpperCase() : "";
+  switch (normalized) {
     case RESTAURANT_STATUS.ACTIVE:
     case RESTAURANT_STATUS.APPROVED:
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100/70 text-emerald-800 border border-emerald-200/50">
           <span className="size-1.5 rounded-full bg-emerald-600" />
-          {status}
+          {normalized}
         </span>
       );
     case RESTAURANT_STATUS.REJECTED:
@@ -36,14 +37,14 @@ function renderStatusBadge(status: RestaurantStatusType) {
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100/70 text-rose-800 border border-rose-200/50">
           <span className="size-1.5 rounded-full bg-rose-600" />
-          {status}
+          {normalized}
         </span>
       );
     default:
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200/50">
           <span className="size-1.5 rounded-full bg-slate-500" />
-          {status || "INACTIVE"}
+          {normalized || "INACTIVE"}
         </span>
       );
   }

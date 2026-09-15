@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import type { RestaurantListItem } from "../types/restaurant.types";
+import type { RestaurantListItem, RestaurantStatusType } from "../types/restaurant.types";
 import { RestaurantTable } from "./RestaurantTable";
 
 const mockRestaurants: RestaurantListItem[] = [
@@ -92,5 +92,18 @@ describe("RestaurantTable", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /owner & contact/i }));
     expect(handleSort).toHaveBeenCalledWith("owner_name");
+  });
+
+  it("normalizes lowercase status values properly in badges", () => {
+    const lowercaseStatusRestaurants: RestaurantListItem[] = [
+      {
+        ...mockRestaurants[0],
+        id: "rest-3",
+        status: "active" as unknown as RestaurantStatusType,
+      },
+    ];
+
+    renderWithRouter(<RestaurantTable restaurants={lowercaseStatusRestaurants} />);
+    expect(screen.getByText("ACTIVE")).toBeInTheDocument();
   });
 });
