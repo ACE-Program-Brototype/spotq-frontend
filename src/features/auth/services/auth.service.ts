@@ -343,7 +343,7 @@ export async function getRestaurantVerificationStatus(
   restaurantId?: string,
 ): Promise<VerificationStatusResponse> {
   const endpoint = restaurantId
-    ? `auth/restaurants/${restaurantId}/verification-status`
+    ? `restaurants/${restaurantId}/verification-status`
     : AUTH_ENDPOINTS.RESTAURANT_VERIFICATION_STATUS;
   return apiClient.get(endpoint).json<VerificationStatusResponse>();
 }
