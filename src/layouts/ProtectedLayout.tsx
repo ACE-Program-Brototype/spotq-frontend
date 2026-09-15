@@ -48,7 +48,9 @@ export default function ProtectedLayout({
   const roleHome = getRoleHome(user?.role, user?.status, user?.onboardingStatus);
 
   if (user?.role === "RESTAURANT_ADMIN") {
-    if (user.onboardingStatus === "COMPLETED" || user.status === "UNDER_REVIEW") {
+    if (user.status === "ACTIVE" || user.status === "APPROVED") {
+      // Active or approved restaurant admins can navigate restaurant pages without redirection
+    } else if (user.onboardingStatus === "COMPLETED" || user.status === "UNDER_REVIEW") {
       if (
         !location.pathname.startsWith("/restaurant/onboarding/status") &&
         !location.pathname.startsWith("/restaurant/onboarding/verification-status") &&
