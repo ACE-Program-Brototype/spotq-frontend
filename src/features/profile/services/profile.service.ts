@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { PROFILE_ENDPOINTS } from "../constants/profile.constants";
+import { PROFILE_ENDPOINTS, PROFILE_MESSAGES } from "../constants/profile.constants";
 import type {
   CustomerProfile,
   CustomerProfileApiResponse,
@@ -58,13 +58,15 @@ export const profileService = {
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
         restaurantId,
       );
-    const entityId = isUuid ? restaurantId : "00000000-0000-0000-0000-000000000000";
+    if (!restaurantId || !isUuid) {
+      throw new Error(PROFILE_MESSAGES.INVALID_RESTAURANT_ID);
+    }
 
     const presignedRes = await apiClient
       .post(PROFILE_ENDPOINTS.STORAGE_PRESIGNED_URL, {
         json: {
           entity_type: "restaurants",
-          entity_id: entityId,
+          entity_id: restaurantId,
           file_name: file.name,
           content_type: file.type,
           file_category: "PROFILE",
@@ -78,7 +80,7 @@ export const profileService = {
 
     const data = presignedRes.data;
     if (!data?.uploadUrl || !data?.s3ObjectKey) {
-      throw new Error("Failed to obtain upload authorization for avatar.");
+      throw new Error(PROFILE_MESSAGES.AVATAR_UPLOAD_AUTH_FAILED);
     }
 
     const uploadRes = await fetch(data.uploadUrl, {
@@ -90,7 +92,7 @@ export const profileService = {
     });
 
     if (!uploadRes.ok) {
-      throw new Error("Failed to upload avatar image to storage.");
+      throw new Error(PROFILE_MESSAGES.AVATAR_UPLOAD_FAILED);
     }
 
     return data.s3ObjectKey;

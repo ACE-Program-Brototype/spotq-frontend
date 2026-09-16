@@ -8,7 +8,7 @@ import {
   Upload,
   User as UserIcon,
 } from "lucide-react";
-import { type ChangeEvent, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -37,9 +37,18 @@ export function EditStaffProfileForm({
   isSubmitting = false,
 }: EditStaffProfileFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const createdUrlRef = useRef<string | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(profile.avatarUrl);
   const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (createdUrlRef.current && typeof URL.revokeObjectURL === "function") {
+        URL.revokeObjectURL(createdUrlRef.current);
+      }
+    };
+  }, []);
 
   const {
     register,
@@ -71,8 +80,16 @@ export function EditStaffProfileForm({
       return;
     }
 
+    if (createdUrlRef.current) {
+      if (typeof URL.revokeObjectURL === "function") {
+        URL.revokeObjectURL(createdUrlRef.current);
+      }
+      createdUrlRef.current = null;
+    }
+
     setSelectedAvatarFile(file);
     const objectUrl = URL.createObjectURL(file);
+    createdUrlRef.current = objectUrl;
     setAvatarPreview(objectUrl);
   };
 
@@ -86,9 +103,8 @@ export function EditStaffProfileForm({
           profile.restaurantId,
           selectedAvatarFile,
         );
-      } catch (uploadErr) {
-        console.warn("Avatar upload failed or storage offline:", uploadErr);
-        toast.error("Failed to upload avatar image. Proceeding with name and phone update.");
+      } catch {
+        toast.error(PROFILE_MESSAGES.AVATAR_UPLOAD_FALLBACK_WARNING);
       } finally {
         setIsUploadingAvatar(false);
       }
@@ -150,7 +166,7 @@ export function EditStaffProfileForm({
             disabled={isSaving}
             className="h-10 px-5 rounded-xl border-[#eddcd4] bg-white text-neutral-700 font-bold text-sm hover:bg-neutral-50 transition-colors"
           >
-            Cancel
+            {PROFILE_MESSAGES.CANCEL}
           </Button>
 
           <Button
@@ -164,7 +180,7 @@ export function EditStaffProfileForm({
                 <span>{PROFILE_MESSAGES.SAVING_CHANGES}</span>
               </>
             ) : (
-              <span>Save Changes</span>
+              <span>{PROFILE_MESSAGES.SAVE_CHANGES}</span>
             )}
           </Button>
         </div>

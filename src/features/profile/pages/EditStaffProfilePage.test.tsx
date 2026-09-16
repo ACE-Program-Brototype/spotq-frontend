@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import { profileService } from "../services/profile.service";
 import EditStaffProfilePage from "./EditStaffProfilePage";
 
@@ -269,6 +270,31 @@ describe("EditStaffProfilePage (SCRUM-689)", () => {
     });
   });
 
+  it("AC7: handles 400 Bad Request error response with fallback message", async () => {
+    const user = userEvent.setup();
+    (profileService.getStaffProfile as jest.Mock).mockResolvedValue(mockStaffProfile);
+
+    const badRequestError = { status: 400 };
+    (profileService.updateStaffProfile as jest.Mock).mockRejectedValue(badRequestError);
+
+    renderWithProviders();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/full name/i)).toHaveValue("Ravi Kumar");
+    });
+
+    const nameInput = screen.getByLabelText(/full name/i);
+    await user.clear(nameInput);
+    await user.type(nameInput, "Ravi K.");
+
+    const saveBtn = screen.getByRole("button", { name: /save changes/i });
+    await user.click(saveBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(PROFILE_MESSAGES.INVALID_PROFILE_DATA);
+    });
+  });
+
   it("handles avatar file selection and updates avatarUrl when submitted", async () => {
     const user = userEvent.setup();
     (profileService.getStaffProfile as jest.Mock).mockResolvedValue(mockStaffProfile);
@@ -289,8 +315,9 @@ describe("EditStaffProfilePage (SCRUM-689)", () => {
     const fileInput = screen.getByLabelText(/upload profile photo/i);
     const validFile = new File(["dummy"], "photo.png", { type: "image/png" });
 
-    // Mock createObjectURL
+    // Mock createObjectURL & revokeObjectURL
     window.URL.createObjectURL = jest.fn().mockReturnValue("blob:http://localhost/new-avatar");
+    window.URL.revokeObjectURL = jest.fn();
 
     await user.upload(fileInput, validFile);
 

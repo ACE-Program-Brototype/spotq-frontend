@@ -28,11 +28,13 @@ export const PROFILE_MESSAGES = {
   EDIT_PROFILE_SUBTITLE: "Update your personal information and account preferences",
 
   VALIDATION: {
+    NAME_REQUIRED: "Name is required.",
     NAME_MIN_LENGTH: "Full name must be at least 2 characters.",
     NAME_MAX_LENGTH: "Full name cannot exceed 100 characters.",
     NAME_INVALID_CHARS: "Full name can only contain letters, spaces, and hyphens.",
     DOB_FUTURE: "Date of birth cannot be in the future.",
-    PHONE_INVALID: "Phone number must be exactly 10 digits.",
+    PHONE_REQUIRED: "Phone number is required.",
+    PHONE_INVALID: "Please enter a valid phone number.",
   },
 
   // Staff Profile Messages
@@ -54,6 +56,12 @@ export const PROFILE_MESSAGES = {
   EDIT_STAFF_PROFILE_SUBTITLE:
     "Manage your personal information, security preferences, and status.",
   AVATAR_INVALID_FILE: "Profile photo must be a JPG, GIF, or PNG file under 2MB.",
+  INVALID_RESTAURANT_ID: "A valid restaurant ID is required to upload an avatar.",
+  AVATAR_UPLOAD_AUTH_FAILED: "Failed to obtain upload authorization for avatar.",
+  AVATAR_UPLOAD_FAILED: "Failed to upload avatar image to storage.",
+  AVATAR_UPLOAD_FALLBACK_WARNING:
+    "Failed to upload avatar image. Proceeding with name and phone update.",
+  INVALID_PROFILE_DATA: "Invalid profile data provided. Please check the fields.",
 } as const;
 
 export const PROFILE_ENDPOINTS = {

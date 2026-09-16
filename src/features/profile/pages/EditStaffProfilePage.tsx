@@ -55,9 +55,7 @@ export function EditStaffProfileContent() {
         toast.error(PROFILE_MESSAGES.STAFF_NOT_FOUND);
       } else if (status === 400) {
         const errorMsg =
-          err instanceof Error && err.message
-            ? err.message
-            : "Invalid profile data provided. Please check the fields.";
+          err instanceof Error && err.message ? err.message : PROFILE_MESSAGES.INVALID_PROFILE_DATA;
         toast.error(errorMsg);
       } else {
         toast.error(PROFILE_MESSAGES.STAFF_UPDATE_FAILED);

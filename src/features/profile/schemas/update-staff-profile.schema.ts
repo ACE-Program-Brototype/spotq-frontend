@@ -9,7 +9,7 @@ export const updateStaffProfileSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, { message: "Name is required." })
+    .min(1, { message: PROFILE_MESSAGES.VALIDATION.NAME_REQUIRED })
     .min(2, { message: PROFILE_MESSAGES.VALIDATION.NAME_MIN_LENGTH })
     .max(100, { message: PROFILE_MESSAGES.VALIDATION.NAME_MAX_LENGTH })
     .refine((val) => nameRegex.test(val), {
@@ -18,9 +18,9 @@ export const updateStaffProfileSchema = z.object({
   phone: z
     .string()
     .trim()
-    .min(1, { message: "Phone number is required." })
+    .min(1, { message: PROFILE_MESSAGES.VALIDATION.PHONE_REQUIRED })
     .refine((val) => phoneRegex.test(val), {
-      message: "Please enter a valid phone number.",
+      message: PROFILE_MESSAGES.VALIDATION.PHONE_INVALID,
     }),
 });
 

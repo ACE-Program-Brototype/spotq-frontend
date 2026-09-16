@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { PROFILE_ENDPOINTS } from "../constants/profile.constants";
+import { PROFILE_ENDPOINTS, PROFILE_MESSAGES } from "../constants/profile.constants";
 import { profileService } from "./profile.service";
 
 jest.mock("@/lib/api/client", () => ({
@@ -132,5 +132,49 @@ describe("profileService", () => {
       }),
     );
     expect(resultKey).toBe("restaurants/rest-456/profile/photo.jpg");
+  });
+
+  it("throws error when restaurantId is missing or not a valid UUID", async () => {
+    const dummyFile = new File(["bytes"], "photo.jpg", { type: "image/jpeg" });
+
+    await expect(profileService.uploadStaffAvatar("", dummyFile)).rejects.toThrow(
+      PROFILE_MESSAGES.INVALID_RESTAURANT_ID,
+    );
+
+    await expect(profileService.uploadStaffAvatar("invalid-uuid-123", dummyFile)).rejects.toThrow(
+      PROFILE_MESSAGES.INVALID_RESTAURANT_ID,
+    );
+  });
+
+  it("throws error when presigned response data is missing uploadUrl or s3ObjectKey", async () => {
+    mockPost.mockReturnValue({
+      json: jest.fn().mockResolvedValue({ success: true, data: {} }),
+    });
+
+    const dummyFile = new File(["bytes"], "photo.jpg", { type: "image/jpeg" });
+    await expect(
+      profileService.uploadStaffAvatar("123e4567-e89b-12d3-a456-426614174000", dummyFile),
+    ).rejects.toThrow(PROFILE_MESSAGES.AVATAR_UPLOAD_AUTH_FAILED);
+  });
+
+  it("throws error when S3 PUT upload fails", async () => {
+    const presignedMockResponse = {
+      success: true,
+      data: {
+        uploadUrl: "https://s3.amazonaws.com/upload-target",
+        s3ObjectKey: "restaurants/rest-456/profile/photo.jpg",
+      },
+    };
+
+    mockPost.mockReturnValue({
+      json: jest.fn().mockResolvedValue(presignedMockResponse),
+    });
+
+    global.fetch = jest.fn().mockResolvedValue({ ok: false });
+
+    const dummyFile = new File(["bytes"], "photo.jpg", { type: "image/jpeg" });
+    await expect(
+      profileService.uploadStaffAvatar("123e4567-e89b-12d3-a456-426614174000", dummyFile),
+    ).rejects.toThrow(PROFILE_MESSAGES.AVATAR_UPLOAD_FAILED);
   });
 });

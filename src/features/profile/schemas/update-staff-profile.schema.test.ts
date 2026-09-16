@@ -1,3 +1,4 @@
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import {
   normalizeStaffPhone,
   updateStaffProfileSchema,
@@ -25,6 +26,9 @@ describe("updateStaffProfileSchema", () => {
           phone: "+919876543210",
         });
         expect(result.success).toBe(false);
+        if (!result.success) {
+          expect(result.error.issues[0].message).toBe(PROFILE_MESSAGES.VALIDATION.NAME_REQUIRED);
+        }
       }
     });
 
@@ -81,9 +85,18 @@ describe("updateStaffProfileSchema", () => {
     });
 
     it("rejects empty or invalid phone numbers", () => {
+      const emptyResult = updateStaffProfileSchema.safeParse({
+        name: "Ravi Kumar",
+        phone: "",
+      });
+      expect(emptyResult.success).toBe(false);
+      if (!emptyResult.success) {
+        expect(emptyResult.error.issues[0].message).toBe(
+          PROFILE_MESSAGES.VALIDATION.PHONE_REQUIRED,
+        );
+      }
+
       const invalidPhones = [
-        "",
-        "   ",
         "12345",
         "abcdefghij",
         "5555555555", // Indian numbers start with 6-9
@@ -95,6 +108,9 @@ describe("updateStaffProfileSchema", () => {
           phone,
         });
         expect(result.success).toBe(false);
+        if (!result.success) {
+          expect(result.error.issues[0].message).toBe(PROFILE_MESSAGES.VALIDATION.PHONE_INVALID);
+        }
       }
     });
   });
