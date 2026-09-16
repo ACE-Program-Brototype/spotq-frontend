@@ -189,7 +189,7 @@ export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps
                 <Phone className="size-4 text-slate-400" /> Primary Phone
               </span>
               <span className="font-mono font-medium text-slate-800">
-                {restaurant.phone || "—"}
+                {restaurant.phone || "-"}
               </span>
             </div>
 
@@ -245,7 +245,7 @@ export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps
             <div className="py-2.5 flex justify-between items-center">
               <span className="text-slate-500">Contact Phone</span>
               <span className="font-mono font-medium text-slate-800">
-                {restaurant.phone || "—"}
+                {restaurant.phone || "-"}
               </span>
             </div>
 
@@ -303,7 +303,7 @@ export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps
                 <div className="py-2.5 flex justify-between items-center">
                   <span className="text-slate-500">Country & Pincode</span>
                   <span className="font-medium text-slate-800">
-                    {address.country} —{" "}
+                    {address.country} -{" "}
                     <span className="font-mono font-bold">{address.pincode}</span>
                   </span>
                 </div>

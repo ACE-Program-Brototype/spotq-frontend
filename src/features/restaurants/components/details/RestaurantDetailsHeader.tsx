@@ -25,9 +25,9 @@ export function RestaurantDetailsHeader({ restaurant }: RestaurantDetailsHeaderP
   const handleCopyId = async () => {
     try {
       await navigator.clipboard.writeText(restaurant.id);
-      toast.success("Restaurant ID copied to clipboard");
+      toast.success(RESTAURANT_MESSAGES.TOAST_COPY_ID_SUCCESS);
     } catch {
-      toast.error("Failed to copy ID");
+      toast.error(RESTAURANT_MESSAGES.TOAST_COPY_ID_ERROR);
     }
   };
 
@@ -129,7 +129,7 @@ export function RestaurantDetailsHeader({ restaurant }: RestaurantDetailsHeaderP
               </span>
               <span>•</span>
               <span>
-                Contact: <span className="font-mono text-slate-600">{restaurant.phone || "—"}</span>
+                Contact: <span className="font-mono text-slate-600">{restaurant.phone || "-"}</span>
               </span>
               <span>•</span>
               <span>
