@@ -1,6 +1,6 @@
 export const CUSTOMER_ENDPOINTS = {
   LIST: "users",
-  DETAILS: (userId: string) => `users/${userId}`,
+  DETAILS: (userId: string) => `admin/customers/${userId}`,
   STATUS: (userId: string) => `users/${userId}/status`,
 } as const;
 

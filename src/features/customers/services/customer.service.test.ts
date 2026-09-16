@@ -235,7 +235,7 @@ describe("customerService", () => {
 
       const result = await customerService.getCustomerDetails("user-123");
 
-      expect(apiClient.get).toHaveBeenCalledWith("users/user-123");
+      expect(apiClient.get).toHaveBeenCalledWith("admin/customers/user-123");
       expect(result.id).toBe("user-123");
       expect(result.fullName).toBe("Ananya Roy");
     });
