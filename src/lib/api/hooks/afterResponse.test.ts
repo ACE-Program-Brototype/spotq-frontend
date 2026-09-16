@@ -1,6 +1,11 @@
 import type { NormalizedOptions } from "ky";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { redirectToPortalLogin } from "../portal-redirect";
 import { afterResponse } from "./afterResponse";
+
+jest.mock("../portal-redirect", () => ({
+  redirectToPortalLogin: jest.fn(),
+}));
 
 describe("afterResponse hook", () => {
   beforeEach(() => {
@@ -44,6 +49,7 @@ describe("afterResponse hook", () => {
     expect(result).toBe(mockResponse);
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
     expect(useAuthStore.getState().user).toBeNull();
+    expect(redirectToPortalLogin).toHaveBeenCalledTimes(1);
   });
 
   it("should NOT clear auth state on 403 when error message mentions blocked but code is not USER_BLOCKED", async () => {

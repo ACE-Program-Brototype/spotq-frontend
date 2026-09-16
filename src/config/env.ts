@@ -4,6 +4,7 @@ const env = {
   cdnBaseUrl: import.meta.env.VITE_CDN_BASE_URL || import.meta.env.VITE_S3_BASE_URL || "",
   staffInvitationStaleTimeMs:
     Number(import.meta.env.VITE_STAFF_INVITATION_STALE_TIME_MS) || 300_000,
+  googleMapsBaseUrl: import.meta.env.VITE_GOOGLE_MAPS_BASE_URL || "https://www.google.com/maps",
 } as const;
 
 export default env;

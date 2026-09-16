@@ -113,4 +113,58 @@ describe("restaurantService", () => {
       },
     });
   });
+
+  it("fetches single restaurant details by ID successfully", async () => {
+    const mockDetails = {
+      id: "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      restaurant_name: "Metro Bistro",
+      email: "contact@metrobistro.com",
+      phone: "+15551234567",
+      owner_name: "John Doe",
+      owner_email: "owner@example.com",
+      status: "PENDING",
+      onboarding_status: "COMPLETED",
+      is_blocked: false,
+      is_subscription_active: false,
+      created_at: "2026-09-09T18:58:55.124Z",
+      updated_at: "2026-09-11T14:07:51.567Z",
+      address: {
+        address_line1: "123 Main Street",
+        city: "Metropolis",
+        state: "New York",
+        country: "USA",
+        pincode: "10001",
+      },
+      settings: {
+        seating_capacity: 20,
+        is_opened: false,
+      },
+      staff: [],
+      documents: [],
+      images: [],
+    };
+
+    (apiClient.get as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        success: true,
+        data: mockDetails,
+      }),
+    });
+
+    const result = await restaurantService.getAdminRestaurantById(
+      "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    );
+
+    expect(apiClient.get).toHaveBeenCalledWith(
+      "restaurants/admin/restaurants/a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    );
+    expect(result.restaurant_name).toBe("Metro Bistro");
+    expect(result.address?.city).toBe("Metropolis");
+  });
+
+  it("throws error if restaurant ID is missing or empty", async () => {
+    await expect(restaurantService.getAdminRestaurantById("")).rejects.toThrow(
+      "Restaurant ID is required",
+    );
+  });
 });

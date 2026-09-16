@@ -7,9 +7,11 @@ import {
   RESTAURANT_SUBSCRIPTION_ACTIVE_FILTER,
 } from "../constants/restaurant.constants";
 import type {
+  AdminRestaurantDetailsApiResponse,
   AdminRestaurantsApiResponse,
   AdminRestaurantsListData,
   GetAdminRestaurantsParams,
+  RestaurantDetails,
   RestaurantListItem,
 } from "../types/restaurant.types";
 
@@ -76,6 +78,26 @@ export const restaurantService = {
       pagination,
     };
   },
+
+  /**
+   * Fetch detailed restaurant information by ID for admin
+   */
+  async getAdminRestaurantById(id: string): Promise<RestaurantDetails> {
+    if (!id?.trim()) {
+      throw new Error("Restaurant ID is required");
+    }
+
+    const response = await apiClient
+      .get(RESTAURANT_ENDPOINTS.ADMIN_DETAILS(id.trim()))
+      .json<AdminRestaurantDetailsApiResponse>();
+
+    if (!response?.data) {
+      throw new Error(response?.message || "Failed to retrieve restaurant details");
+    }
+
+    return response.data;
+  },
 };
 
 export const getAdminRestaurants = restaurantService.getAdminRestaurants;
+export const getAdminRestaurantById = restaurantService.getAdminRestaurantById;

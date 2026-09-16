@@ -32,6 +32,13 @@ function renderStatusBadge(status: RestaurantStatusType | string | null | undefi
           {normalized}
         </span>
       );
+    case RESTAURANT_STATUS.PENDING:
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100/70 text-amber-800 border border-amber-200/50">
+          <span className="size-1.5 rounded-full bg-amber-600" />
+          {normalized}
+        </span>
+      );
     case RESTAURANT_STATUS.REJECTED:
     case RESTAURANT_STATUS.SUSPENDED:
       return (
@@ -197,19 +204,22 @@ export function RestaurantTable({
               return (
                 <tr
                   key={restaurant.id}
-                  className="hover:bg-slate-50/70 transition-colors"
+                  className="hover:bg-slate-50/70 transition-colors group"
                   data-testid={`restaurant-row-${restaurant.id}`}
                 >
                   {/* RESTAURANT NAME & ID */}
                   <td className="py-4 px-5">
                     <div className="flex items-center gap-3">
-                      <div className="size-9 shrink-0 flex items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 shadow-2xs">
+                      <div className="size-9 shrink-0 flex items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 shadow-2xs group-hover:scale-105 transition-transform">
                         <Store className="size-4.5" />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-bold text-slate-900 truncate">
+                        <Link
+                          to={`/admin/restaurants/${restaurant.id}`}
+                          className="font-bold text-slate-900 hover:text-amber-600 truncate transition-colors block"
+                        >
                           {restaurant.restaurant_name}
-                        </p>
+                        </Link>
                         <p className="text-[11px] text-slate-400 font-mono truncate">
                           ID:{" "}
                           {restaurant.id.length > 10
