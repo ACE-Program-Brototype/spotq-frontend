@@ -83,7 +83,7 @@ export default function ProtectedLayout({
   }
 
   if (
-    normalizedRole === "RESTAURANT_STAFF" &&
+    (normalizedRole === "STAFF" || normalizedRole === "RESTAURANT_STAFF") &&
     !location.pathname.startsWith("/staff") &&
     !location.pathname.startsWith("/restaurant")
   ) {

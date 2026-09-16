@@ -25,7 +25,7 @@ export const getRoleHome = (
         return "/restaurant/onboarding/business-information";
       }
       return "/restaurant/dashboard";
-    case "RESTAURANT_STAFF":
+    case "STAFF":
       return "/staff/dashboard";
     default:
       return "/";
