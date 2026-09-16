@@ -33,8 +33,11 @@ export default function AuthLayout({ redirectTo }: AuthLayoutProps = {}) {
   }
 
   if (isAuthenticated) {
-    const roleHome = getRoleHome(user?.role, user?.status, user?.onboardingStatus);
-    return <Navigate to={redirectTo && user?.role === "ADMIN" ? redirectTo : roleHome} replace />;
+    const normalizedRole = user?.role?.toUpperCase();
+    const roleHome = getRoleHome(normalizedRole, user?.status, user?.onboardingStatus);
+    return (
+      <Navigate to={redirectTo && normalizedRole === "ADMIN" ? redirectTo : roleHome} replace />
+    );
   }
 
   return <Outlet />;

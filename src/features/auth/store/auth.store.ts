@@ -63,8 +63,16 @@ export const useAuthStore = create<AuthState>()(
               ) {
                 useOnboardStore.getState().resetOnboardStore();
               }
+              const rawRole = user.role || "";
+              const normalizedRole = (
+                rawRole.toUpperCase() === "PLATFORM_ADMIN" ? "ADMIN" : rawRole.toUpperCase()
+              ) as User["role"];
+
               return {
-                user,
+                user: {
+                  ...user,
+                  role: normalizedRole || "CUSTOMER",
+                },
                 accessToken,
                 isAuthenticated: true,
                 savedAt: Date.now(),
@@ -84,8 +92,19 @@ export const useAuthStore = create<AuthState>()(
               ) {
                 useOnboardStore.getState().resetOnboardStore();
               }
+              const normalizedUser = user
+                ? {
+                    ...user,
+                    role: (user.role
+                      ? user.role.toUpperCase() === "PLATFORM_ADMIN"
+                        ? "ADMIN"
+                        : user.role.toUpperCase()
+                      : "CUSTOMER") as User["role"],
+                  }
+                : null;
+
               return {
-                user,
+                user: normalizedUser,
                 isAuthenticated: !!user,
                 savedAt: Date.now(),
               };
@@ -111,8 +130,21 @@ export const useAuthStore = create<AuthState>()(
       {
         name: "spotq-auth-storage",
         storage: createJSONStorage(() => customStorage),
+        onRehydrateStorage: () => (state) => {
+          if (state?.user?.role) {
+            const rawRole = String(state.user.role);
+            const normalizedRole = (
+              rawRole.toUpperCase() === "PLATFORM_ADMIN" ? "ADMIN" : rawRole.toUpperCase()
+            ) as User["role"];
+
+            if (state.user.role !== normalizedRole) {
+              state.user.role = normalizedRole;
+            }
+          }
+        },
         partialize: (state) => ({
           user: state.user,
+          accessToken: state.accessToken,
           isAuthenticated: state.isAuthenticated,
           savedAt: state.savedAt,
         }),

@@ -45,10 +45,13 @@ export default function ProtectedLayout({
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  const roleHome = getRoleHome(user?.role, user?.status, user?.onboardingStatus);
+  const normalizedRole = user?.role?.toUpperCase();
+  const roleHome = getRoleHome(normalizedRole, user?.status, user?.onboardingStatus);
 
-  if (user?.role === "RESTAURANT_ADMIN") {
-    if (user.onboardingStatus === "COMPLETED" || user.status === "UNDER_REVIEW") {
+  if (normalizedRole === "RESTAURANT_ADMIN") {
+    if (user?.status === "ACTIVE" || user?.status === "APPROVED") {
+      // Active or approved restaurant admins can navigate restaurant pages without redirection
+    } else if (user?.onboardingStatus === "COMPLETED" || user?.status === "UNDER_REVIEW") {
       if (
         !location.pathname.startsWith("/restaurant/onboarding/status") &&
         !location.pathname.startsWith("/restaurant/onboarding/verification-status") &&
@@ -58,7 +61,7 @@ export default function ProtectedLayout({
         return <Navigate to="/restaurant/onboarding/status" replace />;
       }
     } else if (
-      user.status === "PENDING" &&
+      user?.status === "PENDING" &&
       !location.pathname.startsWith("/restaurant/onboarding")
     ) {
       return <Navigate to="/restaurant/onboarding/business-information" replace />;
@@ -72,7 +75,7 @@ export default function ProtectedLayout({
     }
   }
 
-  if (user?.role === "ADMIN" && !location.pathname.startsWith("/admin")) {
+  if (normalizedRole === "ADMIN" && !location.pathname.startsWith("/admin")) {
     if (location.pathname === roleHome) {
       return null;
     }
@@ -80,7 +83,7 @@ export default function ProtectedLayout({
   }
 
   if (
-    user?.role === "RESTAURANT_STAFF" &&
+    normalizedRole === "RESTAURANT_STAFF" &&
     !location.pathname.startsWith("/staff") &&
     !location.pathname.startsWith("/restaurant")
   ) {
@@ -90,8 +93,9 @@ export default function ProtectedLayout({
     return <Navigate to={roleHome} replace />;
   }
 
-  if (allowedRoles && allowedRoles.length > 0 && user?.role) {
-    if (!allowedRoles.includes(user.role)) {
+  if (allowedRoles && allowedRoles.length > 0 && normalizedRole) {
+    const isAllowed = allowedRoles.some((r) => r.toUpperCase() === normalizedRole);
+    if (!isAllowed) {
       if (location.pathname === roleHome) {
         return null;
       }

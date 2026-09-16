@@ -21,10 +21,15 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
 
     const currentUser = useAuthStore.getState().user;
     const currentRole = currentUser?.role;
+    const normalizedRole = currentRole?.toUpperCase();
 
     let refreshEndpoint: string;
 
-    switch (currentRole) {
+    switch (normalizedRole) {
+      case "ADMIN":
+        refreshEndpoint = AUTH_ENDPOINTS.ADMIN_REFRESH_TOKEN;
+        break;
+
       case "RESTAURANT_STAFF":
         refreshEndpoint = AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN;
         break;

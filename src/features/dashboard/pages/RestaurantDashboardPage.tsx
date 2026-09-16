@@ -9,9 +9,9 @@ import { subscriptionService } from "@/features/subscription/services/subscripti
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuthStore();
+  const { user, clearAuth } = useAuthStore();
   const restaurantUser = user as { email?: string; status?: string } | null;
-  const restaurantEmail = restaurantUser?.email || "restaurant";
+  const restaurantEmail = restaurantUser?.email || user?.email || "restaurant";
 
   const { data: statusData, isLoading: isLoadingStatus } = useQuery({
     queryKey: ["restaurant-status"],
@@ -40,6 +40,12 @@ export default function RestaurantDashboardPage() {
     }
   }, [isLoadingStatus, needsSubscription, navigate]);
 
+  const handleLogout = () => {
+    clearAuth();
+    queryClient.clear();
+    navigate("/restaurant/email/verification", { replace: true });
+  };
+
   return (
     <div className="space-y-6 max-w-full">
       <div className="rounded-2xl border border-[#eddcd4] bg-white p-6 sm:p-8 shadow-xs">
@@ -54,14 +60,10 @@ export default function RestaurantDashboardPage() {
           </div>
           <button
             type="button"
-            onClick={() => {
-              useAuthStore.getState().clearAuth();
-              queryClient.clear();
-              navigate("/restaurant/email/verification", { replace: true });
-            }}
+            onClick={handleLogout}
             className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
           >
-            Sign out
+            Logout
           </button>
         </div>
 
