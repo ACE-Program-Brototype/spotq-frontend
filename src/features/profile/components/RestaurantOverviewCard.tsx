@@ -1,9 +1,11 @@
 import { Building2, Camera, Check, Edit3, Loader2, Phone, Upload, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
 import type {
   RestaurantOverviewDetails,
@@ -74,11 +76,6 @@ export function RestaurantOverviewCard({
     const reader = new FileReader();
     reader.onload = async () => {
       const dataUrl = reader.result as string;
-      const fallbackKey = `local_logo_${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
-
-      // Cache dataUrl immediately under fallback key to ensure local dev persistence
-      cacheLocalMedia(fallbackKey, dataUrl);
-      setLogoKey(fallbackKey);
 
       try {
         const res = await upload(file, {
@@ -89,9 +86,13 @@ export function RestaurantOverviewCard({
         if (res?.s3ObjectKey) {
           setLogoKey(res.s3ObjectKey);
           cacheLocalMedia(res.s3ObjectKey, dataUrl);
+        } else {
+          throw new Error("Upload did not return object key");
         }
       } catch {
-        // Fallback key remains active so user can still save and preview in local dev
+        toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
+        setLogoKey(null);
+        setLogoSrc(resolveMediaUrl(profile.logo) || FALLBACK_LOGO);
       }
     };
     reader.readAsDataURL(file);
@@ -109,11 +110,6 @@ export function RestaurantOverviewCard({
     const reader = new FileReader();
     reader.onload = async () => {
       const dataUrl = reader.result as string;
-      const fallbackKey = `local_cover_${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
-
-      // Cache dataUrl immediately under fallback key to ensure local dev persistence
-      cacheLocalMedia(fallbackKey, dataUrl);
-      setCoverImageKey(fallbackKey);
 
       try {
         const res = await upload(file, {
@@ -124,9 +120,13 @@ export function RestaurantOverviewCard({
         if (res?.s3ObjectKey) {
           setCoverImageKey(res.s3ObjectKey);
           cacheLocalMedia(res.s3ObjectKey, dataUrl);
+        } else {
+          throw new Error("Upload did not return object key");
         }
       } catch {
-        // Fallback key remains active so user can still save and preview in local dev
+        toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
+        setCoverImageKey(null);
+        setCoverSrc(resolveMediaUrl(profile.coverImage) || FALLBACK_COVER);
       }
     };
     reader.readAsDataURL(file);
@@ -159,15 +159,15 @@ export function RestaurantOverviewCard({
 
   const handleSave = () => {
     if (!name.trim()) {
-      setValidationError("Restaurant name is required.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.RESTAURANT_NAME_REQUIRED);
       return;
     }
     if (!phone.trim()) {
-      setValidationError("Phone number is required.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.PHONE_REQUIRED);
       return;
     }
     if (!ownerName.trim()) {
-      setValidationError("Owner name is required.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.OWNER_NAME_REQUIRED);
       return;
     }
     setValidationError(null);

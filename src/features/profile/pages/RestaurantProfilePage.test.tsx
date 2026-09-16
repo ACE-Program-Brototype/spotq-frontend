@@ -130,7 +130,7 @@ describe("RestaurantProfilePage", () => {
     expect(screen.getByText("Accepts QR Orders")).toBeInTheDocument();
 
     expect(screen.getByText("Monday")).toBeInTheDocument();
-    expect(screen.getByText("11:00 AM – 11:00 PM")).toBeInTheDocument();
+    expect(screen.getByText("11:00 AM - 11:00 PM")).toBeInTheDocument();
     expect(screen.getByText("Sunday")).toBeInTheDocument();
   });
 });

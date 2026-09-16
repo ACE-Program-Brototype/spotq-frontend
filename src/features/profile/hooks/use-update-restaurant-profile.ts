@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PROFILE_QUERY_KEYS } from "../constants/profile.constants";
+import { PROFILE_MESSAGES, PROFILE_QUERY_KEYS } from "../constants/profile.constants";
 import { updateRestaurantProfile } from "../services/profile.service";
 import type {
   RestaurantProfileData,
@@ -15,10 +15,10 @@ export function useUpdateRestaurantProfile() {
     onSuccess: (data) => {
       queryClient.setQueryData(PROFILE_QUERY_KEYS.RESTAURANT_PROFILE, data);
       queryClient.invalidateQueries({ queryKey: PROFILE_QUERY_KEYS.RESTAURANT_PROFILE });
-      toast.success("Restaurant profile updated successfully");
+      toast.success(PROFILE_MESSAGES.RESTAURANT_UPDATE_SUCCESS);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to update restaurant profile");
+      toast.error(error.message || PROFILE_MESSAGES.RESTAURANT_UPDATE_FAILED);
     },
   });
 }

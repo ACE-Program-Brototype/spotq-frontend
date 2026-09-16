@@ -97,7 +97,7 @@ export function resolveMediaUrl(mediaKeyOrUrl?: string | null): string | null {
     return `${base}/${trimmed.replace(/^\/+/, "")}`;
   }
 
-  return `https://spotq-restaurant-bucket.s3.ap-south-1.amazonaws.com/${trimmed.replace(/^\/+/, "")}`;
+  return trimmed;
 }
 
 /**

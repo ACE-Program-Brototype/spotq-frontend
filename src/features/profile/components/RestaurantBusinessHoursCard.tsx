@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { DAYS_OF_WEEK } from "../constants/profile.constants";
+import { DAYS_OF_WEEK, PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
 import type {
   BusinessHoursItem,
@@ -70,10 +70,14 @@ export function RestaurantBusinessHoursCard({
   const handleSave = () => {
     for (const h of localHours) {
       if (!h.isClosed) {
+        const dayName =
+          DAYS_OF_WEEK.find((d) => d.id === h.dayOfWeek)?.label || `Day ${h.dayOfWeek}`;
         if (!h.openTime || !h.closeTime) {
-          const dayName =
-            DAYS_OF_WEEK.find((d) => d.id === h.dayOfWeek)?.label || `Day ${h.dayOfWeek}`;
-          setValidationError(`Please set valid open and close times for ${dayName}.`);
+          setValidationError(PROFILE_MESSAGES.VALIDATION.HOURS_REQUIRED(dayName));
+          return;
+        }
+        if (h.closeTime <= h.openTime) {
+          setValidationError(PROFILE_MESSAGES.VALIDATION.HOURS_CHRONOLOGICAL(dayName));
           return;
         }
       }
@@ -208,7 +212,7 @@ export function RestaurantBusinessHoursCard({
                     </span>
                   ) : openFormatted && closeFormatted ? (
                     <span className="text-xs font-semibold text-neutral-700 bg-white border border-[#eddcd4] px-3 py-1 rounded-xl shadow-2xs">
-                      {openFormatted} – {closeFormatted}
+                      {openFormatted} - {closeFormatted}
                     </span>
                   ) : (
                     <span className="inline-flex items-center rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700 border border-red-200">
@@ -262,7 +266,7 @@ export function RestaurantBusinessHoursCard({
                         disabled={isSaving}
                         className="w-28 rounded-xl border-[#eddcd4] text-xs h-8 focus-visible:ring-[#e8631b]"
                       />
-                      <span className="text-xs text-neutral-400 font-bold">–</span>
+                      <span className="text-xs text-neutral-400 font-bold">-</span>
                       <Input
                         type="time"
                         value={currentDayState.closeTime}

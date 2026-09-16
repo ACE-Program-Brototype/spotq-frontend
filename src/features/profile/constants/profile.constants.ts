@@ -33,7 +33,17 @@ export const PROFILE_MESSAGES = {
     NAME_INVALID_CHARS: "Full name can only contain letters, spaces, and hyphens.",
     DOB_FUTURE: "Date of birth cannot be in the future.",
     PHONE_INVALID: "Phone number must be exactly 10 digits.",
+    RESTAURANT_NAME_REQUIRED: "Restaurant name is required.",
+    PHONE_REQUIRED: "Phone number is required.",
+    OWNER_NAME_REQUIRED: "Owner name is required.",
+    HOURS_REQUIRED: (day: string) => `Please set valid open and close times for ${day}.`,
+    HOURS_CHRONOLOGICAL: (day: string) => `Closing time must be after opening time for ${day}.`,
   },
+
+  // Restaurant Profile Messages
+  RESTAURANT_UPDATE_SUCCESS: "Restaurant profile updated successfully",
+  RESTAURANT_UPDATE_FAILED: "Failed to update restaurant profile",
+  UPLOAD_FAILED: "Failed to upload image. Please try again.",
 
   // Staff Profile Messages
   PAGE_SUBTITLE: "View and verify your staff account details and restaurant role.",
