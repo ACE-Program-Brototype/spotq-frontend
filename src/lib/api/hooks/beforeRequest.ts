@@ -35,6 +35,7 @@ export const beforeRequest: BeforeRequestHook = async ({ request }) => {
 
   if (token) {
     request.headers.set("Authorization", `Bearer ${token}`);
+    return request;
   }
 
   return request;

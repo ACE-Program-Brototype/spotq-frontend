@@ -72,7 +72,7 @@ describe("AdminCustomerDetailsPage", () => {
     expect(screen.getByTestId("customer-email")).toHaveTextContent("alice@example.com");
     expect(screen.getByTestId("customer-details-id")).toHaveTextContent("cust-123");
     expect(screen.getByTestId("customer-status-badge")).toHaveTextContent("ACTIVE");
-    expect(screen.getByTestId("customer-block-btn")).toBeInTheDocument();
+    expect(screen.queryByTestId("customer-block-btn")).not.toBeInTheDocument();
   });
 
   it("should navigate back to /admin/customers when back button is clicked", () => {
@@ -90,37 +90,6 @@ describe("AdminCustomerDetailsPage", () => {
     fireEvent.click(backButton);
 
     expect(mockNavigate).toHaveBeenCalledWith("/admin/customers");
-  });
-
-  it("should open block confirmation dialog when Block Customer button is clicked", async () => {
-    (useCustomerDetails as jest.Mock).mockReturnValue({
-      data: mockCustomer,
-      isLoading: false,
-      isError: false,
-      error: null,
-      refetch: mockRefetch,
-    });
-
-    render(<AdminCustomerDetailsPage />);
-
-    const blockBtn = screen.getByTestId("customer-block-btn");
-    fireEvent.click(blockBtn);
-
-    expect(await screen.findByText("Block Customer?")).toBeInTheDocument();
-  });
-
-  it("should render unblock button when customer status is BLOCKED", () => {
-    (useCustomerDetails as jest.Mock).mockReturnValue({
-      data: { ...mockCustomer, status: CUSTOMER_STATUS.BLOCKED },
-      isLoading: false,
-      isError: false,
-      error: null,
-      refetch: mockRefetch,
-    });
-
-    render(<AdminCustomerDetailsPage />);
-
-    expect(screen.getByTestId("customer-unblock-btn")).toBeInTheDocument();
   });
 
   it("should render error state when API call fails with generic error", () => {

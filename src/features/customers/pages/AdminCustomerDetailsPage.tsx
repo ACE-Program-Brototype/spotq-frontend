@@ -1,31 +1,21 @@
 import {
   AlertCircle,
   ArrowLeft,
-  Ban,
   Calendar,
-  CheckCircle2,
   Clock,
-  Loader2,
   Mail,
   RefreshCw,
   ShoppingBag,
   User,
 } from "lucide-react";
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CustomerDetailsSkeleton } from "../components/CustomerDetailsSkeleton";
-import {
-  CUSTOMER_MESSAGES,
-  CUSTOMER_STATUS,
-  type CustomerStatusType,
-} from "../constants/customer.constants";
-import { useCustomerDetails, useUpdateCustomerStatus } from "../hooks/use-customers";
+import { CUSTOMER_MESSAGES, CUSTOMER_STATUS } from "../constants/customer.constants";
+import { useCustomerDetails } from "../hooks/use-customers";
 import { DUMMY_CUSTOMER_ORDERS } from "../mocks/customer-orders.mock";
 import { formatMemberSince, getCustomerInitials } from "../utils/customer.utils";
 
@@ -35,38 +25,8 @@ export function AdminCustomerDetailsPage() {
 
   const { data: customer, isLoading, isError, error, refetch } = useCustomerDetails(id);
 
-  const { mutateAsync: updateStatus, isPending: isUpdatingStatus } = useUpdateCustomerStatus();
-
-  // Confirmation Modal state for Block / Unblock actions
-  const [statusTarget, setStatusTarget] = useState<CustomerStatusType | null>(null);
-
   const handleBack = () => {
     navigate("/admin/customers");
-  };
-
-  const handleOpenStatusModal = (nextStatus: CustomerStatusType) => {
-    setStatusTarget(nextStatus);
-  };
-
-  const handleConfirmStatusChange = async () => {
-    if (!customer || !statusTarget) return;
-
-    try {
-      await updateStatus({
-        userId: customer.id,
-        status: statusTarget,
-      });
-
-      toast.success(
-        statusTarget === CUSTOMER_STATUS.BLOCKED
-          ? CUSTOMER_MESSAGES.BLOCK_SUCCESS
-          : CUSTOMER_MESSAGES.UNBLOCK_SUCCESS,
-      );
-      setStatusTarget(null);
-      refetch();
-    } catch {
-      toast.error(CUSTOMER_MESSAGES.STATUS_UPDATE_ERROR);
-    }
   };
 
   // Loading Skeleton State
@@ -188,8 +148,6 @@ export function AdminCustomerDetailsPage() {
   if (!customer) return null;
 
   const normalizedStatus = customer.status?.toUpperCase();
-  const isBlocked = normalizedStatus === CUSTOMER_STATUS.BLOCKED;
-  const isActionModalBlocked = statusTarget === CUSTOMER_STATUS.BLOCKED;
 
   return (
     <div className="space-y-6" data-testid="admin-customer-details-page">
@@ -209,82 +167,41 @@ export function AdminCustomerDetailsPage() {
       </div>
 
       {/* Header Bar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1
-              className="text-2xl font-bold tracking-tight text-slate-900"
-              data-testid="customer-name"
+      <div>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-2xl font-bold tracking-tight text-slate-900"
+            data-testid="customer-name"
+          >
+            {customer.fullName}
+          </h1>
+          {normalizedStatus === CUSTOMER_STATUS.ACTIVE ? (
+            <span
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100/70 text-emerald-800"
+              data-testid="customer-status-badge"
             >
-              {customer.fullName}
-            </h1>
-            {normalizedStatus === CUSTOMER_STATUS.ACTIVE ? (
-              <span
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100/70 text-emerald-800"
-                data-testid="customer-status-badge"
-              >
-                <span className="size-1.5 rounded-full bg-emerald-600" />
-                ACTIVE
-              </span>
-            ) : normalizedStatus === CUSTOMER_STATUS.BLOCKED ? (
-              <span
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100/70 text-rose-800"
-                data-testid="customer-status-badge"
-              >
-                <span className="size-1.5 rounded-full bg-rose-600" />
-                BLOCKED
-              </span>
-            ) : (
-              <span
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700"
-                data-testid="customer-status-badge"
-              >
-                <span className="size-1.5 rounded-full bg-slate-500" />
-                INACTIVE
-              </span>
-            )}
-          </div>
-          <p className="mt-1 text-xs text-slate-500">{CUSTOMER_MESSAGES.DETAILS_PAGE_SUBTITLE}</p>
-        </div>
-
-        {/* Action Button: Block or Unblock */}
-        <div>
-          {isBlocked ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => handleOpenStatusModal(CUSTOMER_STATUS.ACTIVE)}
-              disabled={isUpdatingStatus}
-              className="gap-2 border-emerald-300 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-100/70 font-semibold"
-              data-testid="customer-unblock-btn"
+              <span className="size-1.5 rounded-full bg-emerald-600" />
+              ACTIVE
+            </span>
+          ) : normalizedStatus === CUSTOMER_STATUS.BLOCKED ? (
+            <span
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100/70 text-rose-800"
+              data-testid="customer-status-badge"
             >
-              {isUpdatingStatus ? (
-                <Loader2 className="size-4 animate-spin text-emerald-600" />
-              ) : (
-                <CheckCircle2 className="size-4 text-emerald-600" />
-              )}
-              {CUSTOMER_MESSAGES.UNBLOCK_ACTION_TOOLTIP}
-            </Button>
+              <span className="size-1.5 rounded-full bg-rose-600" />
+              BLOCKED
+            </span>
           ) : (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => handleOpenStatusModal(CUSTOMER_STATUS.BLOCKED)}
-              disabled={isUpdatingStatus}
-              className="gap-2 bg-rose-600 hover:bg-rose-700 font-semibold shadow-2xs"
-              data-testid="customer-block-btn"
+            <span
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700"
+              data-testid="customer-status-badge"
             >
-              {isUpdatingStatus ? (
-                <Loader2 className="size-4 animate-spin text-white" />
-              ) : (
-                <Ban className="size-4" />
-              )}
-              {CUSTOMER_MESSAGES.BLOCK_ACTION_TOOLTIP}
-            </Button>
+              <span className="size-1.5 rounded-full bg-slate-500" />
+              INACTIVE
+            </span>
           )}
         </div>
+        <p className="mt-1 text-xs text-slate-500">{CUSTOMER_MESSAGES.DETAILS_PAGE_SUBTITLE}</p>
       </div>
 
       {/* Customer Profile Details Card */}
@@ -421,33 +338,6 @@ export function AdminCustomerDetailsPage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Confirmation Dialog Modal for Block / Unblock actions */}
-      <ConfirmDialog
-        open={statusTarget !== null}
-        onOpenChange={(open) => {
-          if (!open) setStatusTarget(null);
-        }}
-        title={
-          isActionModalBlocked
-            ? CUSTOMER_MESSAGES.BLOCK_CONFIRM_TITLE
-            : CUSTOMER_MESSAGES.UNBLOCK_CONFIRM_TITLE
-        }
-        description={
-          isActionModalBlocked
-            ? CUSTOMER_MESSAGES.BLOCK_CONFIRM_DESCRIPTION(customer.fullName)
-            : CUSTOMER_MESSAGES.UNBLOCK_CONFIRM_DESCRIPTION(customer.fullName)
-        }
-        confirmText={
-          isActionModalBlocked
-            ? CUSTOMER_MESSAGES.CONFIRM_BLOCK_BUTTON
-            : CUSTOMER_MESSAGES.CONFIRM_UNBLOCK_BUTTON
-        }
-        confirmVariant={isActionModalBlocked ? "destructive" : "default"}
-        isLoading={isUpdatingStatus}
-        loadingText={CUSTOMER_MESSAGES.UPDATING_STATUS}
-        onConfirm={handleConfirmStatusChange}
-      />
     </div>
   );
 }
