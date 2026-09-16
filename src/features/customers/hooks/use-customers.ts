@@ -4,6 +4,7 @@ import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
   CUSTOMER_DEFAULTS,
   CUSTOMER_FILTER_STATUS,
+  CUSTOMER_MESSAGES,
   type CustomerFilterStatusType,
   type CustomerSortByType,
   type CustomerSortOrderType,
@@ -120,6 +121,17 @@ export function useCustomers(options?: UseCustomersOptions) {
       search.trim().length > 0 ||
       sortOrder !== CUSTOMER_DEFAULTS.SORT_ORDER,
   };
+}
+
+export function useCustomerDetails(id: string | undefined) {
+  return useQuery({
+    queryKey: ["admin", "customers", id],
+    queryFn: () => {
+      if (!id) throw new Error(CUSTOMER_MESSAGES.CUSTOMER_ID_REQUIRED);
+      return customerService.getCustomerDetails(id);
+    },
+    enabled: Boolean(id),
+  });
 }
 
 export function useUpdateCustomerStatus() {

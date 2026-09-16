@@ -1,6 +1,13 @@
 import { CUSTOMER_MESSAGES } from "../constants/customer.constants";
 
-export function formatMemberSince(isoString?: string | null): string {
+export interface FormatMemberSinceOptions {
+  includePrefix?: boolean;
+}
+
+export function formatMemberSince(
+  isoString?: string | null,
+  options?: FormatMemberSinceOptions,
+): string {
   if (!isoString) return "";
   try {
     const date = new Date(isoString);
@@ -9,7 +16,8 @@ export function formatMemberSince(isoString?: string | null): string {
       month: "short",
       year: "numeric",
     });
-    return `${CUSTOMER_MESSAGES.MEMBER_SINCE_PREFIX} ${formatted}`;
+    const includePrefix = options?.includePrefix ?? true;
+    return includePrefix ? `${CUSTOMER_MESSAGES.MEMBER_SINCE_PREFIX} ${formatted}` : formatted;
   } catch {
     return "";
   }
