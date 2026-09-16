@@ -14,28 +14,12 @@ import { MediaPreviewModal } from "@/components/common/MediaPreviewModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDate } from "@/lib/utils/date";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { ApplicationDocument } from "../../types/restaurant-application.types";
 
 export interface ApplicationDocumentsTabProps {
   documents?: ApplicationDocument[];
-}
-
-function formatDate(dateString?: string | null): string {
-  if (!dateString) return "—";
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
 }
 
 function getDocumentTypeBadge(type: string) {

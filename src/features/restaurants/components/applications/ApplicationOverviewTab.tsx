@@ -13,27 +13,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import env from "@/config/env";
+import { formatDate } from "@/lib/utils/date";
 import type { RestaurantApplicationItem } from "../../types/restaurant-application.types";
 
 export interface ApplicationOverviewTabProps {
   application: RestaurantApplicationItem;
-}
-
-function formatDate(dateString?: string | null): string {
-  if (!dateString) return "Not recorded";
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
 }
 
 export function ApplicationOverviewTab({ application }: ApplicationOverviewTabProps) {

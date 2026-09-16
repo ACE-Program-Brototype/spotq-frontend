@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/utils/date";
 import {
   APPLICATION_MESSAGES,
   APPLICATION_STATUS,
@@ -28,23 +29,6 @@ export interface RestaurantApplicationTableProps {
   sortBy?: ApplicationSortByType;
   sortOrder?: ApplicationSortOrderType;
   onSort?: (field: ApplicationSortByType) => void;
-}
-
-function formatDate(dateString?: string | null): string {
-  if (!dateString) return "—";
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
 }
 
 export function RestaurantApplicationTable({
