@@ -99,7 +99,7 @@ export function RestaurantFilters({
         <div className="flex flex-wrap items-center gap-2.5">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 mr-1">
             <Filter className="size-3.5 text-slate-400" />
-            <span>Filters:</span>
+            <span>{RESTAURANT_MESSAGES.FILTER_LABEL}</span>
           </div>
 
           {/* Status Filter */}
@@ -111,13 +111,24 @@ export function RestaurantFilters({
               aria-label="Filter by restaurant status"
               className="h-8.5 px-3 rounded-lg border border-slate-200 bg-slate-50/70 text-xs font-medium text-slate-700 hover:bg-slate-100/70 focus:outline-none focus:ring-1 focus:ring-[#0052cc] cursor-pointer transition-colors"
             >
-              <option value={RESTAURANT_FILTER_STATUS.ALL}>Status: All</option>
-              <option value={RESTAURANT_FILTER_STATUS.ACTIVE}>Status: Active</option>
-              <option value={RESTAURANT_FILTER_STATUS.APPROVED}>Status: Approved</option>
-              <option value={RESTAURANT_FILTER_STATUS.PENDING}>Status: Pending</option>
-              <option value={RESTAURANT_FILTER_STATUS.REJECTED}>Status: Rejected</option>
-              <option value={RESTAURANT_FILTER_STATUS.SUSPENDED}>Status: Suspended</option>
-              <option value={RESTAURANT_FILTER_STATUS.INACTIVE}>Status: Inactive</option>
+              <option value={RESTAURANT_FILTER_STATUS.ALL}>
+                {RESTAURANT_MESSAGES.FILTER_STATUS_ALL}
+              </option>
+              <option value={RESTAURANT_FILTER_STATUS.ACTIVE}>
+                {RESTAURANT_MESSAGES.FILTER_STATUS_ACTIVE}
+              </option>
+              <option value={RESTAURANT_FILTER_STATUS.APPROVED}>
+                {RESTAURANT_MESSAGES.FILTER_STATUS_APPROVED}
+              </option>
+              <option value={RESTAURANT_FILTER_STATUS.REJECTED}>
+                {RESTAURANT_MESSAGES.FILTER_STATUS_REJECTED}
+              </option>
+              <option value={RESTAURANT_FILTER_STATUS.SUSPENDED}>
+                {RESTAURANT_MESSAGES.FILTER_STATUS_SUSPENDED}
+              </option>
+              <option value={RESTAURANT_FILTER_STATUS.INACTIVE}>
+                {RESTAURANT_MESSAGES.FILTER_STATUS_INACTIVE}
+              </option>
             </select>
           </div>
 
@@ -130,10 +141,14 @@ export function RestaurantFilters({
               aria-label="Filter by subscription plan"
               className="h-8.5 px-3 rounded-lg border border-slate-200 bg-slate-50/70 text-xs font-medium text-slate-700 hover:bg-slate-100/70 focus:outline-none focus:ring-1 focus:ring-[#0052cc] cursor-pointer transition-colors"
             >
-              <option value={RESTAURANT_FILTER_PLANS.ALL}>Plan: All</option>
-              <option value={RESTAURANT_FILTER_PLANS.QUEUE_PRO}>Plan: Queue Pro</option>
+              <option value={RESTAURANT_FILTER_PLANS.ALL}>
+                {RESTAURANT_MESSAGES.FILTER_PLAN_ALL}
+              </option>
+              <option value={RESTAURANT_FILTER_PLANS.QUEUE_PRO}>
+                {RESTAURANT_MESSAGES.FILTER_PLAN_QUEUE_PRO}
+              </option>
               <option value={RESTAURANT_FILTER_PLANS.SELF_SERVICE_PRO}>
-                Plan: Self Service Pro
+                {RESTAURANT_MESSAGES.FILTER_PLAN_SELF_SERVICE_PRO}
               </option>
             </select>
           </div>
@@ -149,12 +164,14 @@ export function RestaurantFilters({
               aria-label="Filter by subscription status"
               className="h-8.5 px-3 rounded-lg border border-slate-200 bg-slate-50/70 text-xs font-medium text-slate-700 hover:bg-slate-100/70 focus:outline-none focus:ring-1 focus:ring-[#0052cc] cursor-pointer transition-colors"
             >
-              <option value={RESTAURANT_SUBSCRIPTION_ACTIVE_FILTER.ALL}>Subscription: All</option>
+              <option value={RESTAURANT_SUBSCRIPTION_ACTIVE_FILTER.ALL}>
+                {RESTAURANT_MESSAGES.FILTER_SUBSCRIPTION_ALL}
+              </option>
               <option value={RESTAURANT_SUBSCRIPTION_ACTIVE_FILTER.ACTIVE}>
-                Subscription: Active
+                {RESTAURANT_MESSAGES.FILTER_SUBSCRIPTION_ACTIVE}
               </option>
               <option value={RESTAURANT_SUBSCRIPTION_ACTIVE_FILTER.INACTIVE}>
-                Subscription: Inactive
+                {RESTAURANT_MESSAGES.FILTER_SUBSCRIPTION_INACTIVE}
               </option>
             </select>
           </div>
@@ -165,7 +182,7 @@ export function RestaurantFilters({
           <div className="flex items-center gap-1.5">
             <div className="flex items-center gap-1 text-xs font-semibold text-slate-500 mr-0.5">
               <ArrowUpDown className="size-3.5 text-slate-400" />
-              <span>Sort:</span>
+              <span>{RESTAURANT_MESSAGES.SORT_LABEL}</span>
             </div>
 
             <select
@@ -175,12 +192,12 @@ export function RestaurantFilters({
               aria-label="Sort restaurants by"
               className="h-8.5 px-3 rounded-lg border border-slate-200 bg-slate-50/70 text-xs font-medium text-slate-700 hover:bg-slate-100/70 focus:outline-none focus:ring-1 focus:ring-[#0052cc] cursor-pointer transition-colors"
             >
-              <option value="created_at">Date Created</option>
-              <option value="restaurant_name">Restaurant Name</option>
-              <option value="owner_name">Owner Name</option>
-              <option value="status">Status</option>
-              <option value="plan">Plan</option>
-              <option value="updated_at">Last Updated</option>
+              <option value="created_at">{RESTAURANT_MESSAGES.SORT_DATE_CREATED}</option>
+              <option value="restaurant_name">{RESTAURANT_MESSAGES.SORT_RESTAURANT_NAME}</option>
+              <option value="owner_name">{RESTAURANT_MESSAGES.SORT_OWNER_NAME}</option>
+              <option value="status">{RESTAURANT_MESSAGES.SORT_STATUS}</option>
+              <option value="plan">{RESTAURANT_MESSAGES.SORT_PLAN}</option>
+              <option value="updated_at">{RESTAURANT_MESSAGES.SORT_LAST_UPDATED}</option>
             </select>
 
             {onToggleSortOrder && (
@@ -195,12 +212,12 @@ export function RestaurantFilters({
                 {sortOrder === "desc" ? (
                   <>
                     <ArrowDown className="size-3.5 text-slate-600" />
-                    <span>Desc</span>
+                    <span>{RESTAURANT_MESSAGES.SORT_DESC}</span>
                   </>
                 ) : (
                   <>
                     <ArrowUp className="size-3.5 text-slate-600" />
-                    <span>Asc</span>
+                    <span>{RESTAURANT_MESSAGES.SORT_ASC}</span>
                   </>
                 )}
               </button>
