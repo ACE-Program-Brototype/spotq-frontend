@@ -8,6 +8,8 @@ export function StaffDetailHeader({
   staff,
   onToggleStatus,
   onRequestDelete,
+  isUpdatingStatus = false,
+  isDeleting = false,
 }: StaffDetailHeaderProps) {
   const isActive = staff.status.toUpperCase() === "ACTIVE";
 
@@ -83,6 +85,7 @@ export function StaffDetailHeader({
             variant="outline"
             size="sm"
             onClick={onToggleStatus}
+            disabled={isUpdatingStatus || isDeleting}
             className={`h-10 rounded-xl px-4 text-xs font-semibold transition-colors border shadow-2xs ${
               isActive
                 ? "border-amber-200 bg-amber-50/70 text-amber-800 hover:bg-amber-100/80 hover:text-amber-900"
@@ -108,6 +111,7 @@ export function StaffDetailHeader({
             variant="outline"
             size="sm"
             onClick={onRequestDelete}
+            disabled={isUpdatingStatus || isDeleting}
             className="h-10 rounded-xl px-4 text-xs font-semibold border-rose-200 bg-rose-50/60 text-rose-700 hover:bg-rose-100 hover:text-rose-800 transition-colors shadow-2xs"
           >
             <Trash2 className="size-3.5 mr-1.5 text-rose-600" />

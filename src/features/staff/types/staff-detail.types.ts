@@ -51,6 +51,8 @@ export interface StaffDetailHeaderProps {
   staff: StaffDetail;
   onToggleStatus?: () => void;
   onRequestDelete?: () => void;
+  isUpdatingStatus?: boolean;
+  isDeleting?: boolean;
 }
 
 export interface StaffDetailCardsProps {

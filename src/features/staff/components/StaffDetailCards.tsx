@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import type { StaffDetailCardsProps } from "@/features/staff/types/staff-detail.types";
 import { formatStaffDate, getStaffInitials } from "@/features/staff/utils/staff.helpers";
+import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 
 /**
  * Staff Detail Profile Overview Card
@@ -17,14 +18,15 @@ export function StaffDetailOverviewCard({ staff }: StaffDetailCardsProps) {
   const initials = getStaffInitials(staff.fullName);
   const isActive = staff.status.toUpperCase() === "ACTIVE";
   const memberSince = formatStaffDate(staff.createdAt);
+  const { data: imageUrl } = usePresignedUrl(staff.avatarUrl);
 
   return (
     <Card className="rounded-2xl border-[#eddcd4] bg-white shadow-2xs">
       <CardContent className="flex flex-col items-center pt-8 pb-6 px-6 text-center space-y-4">
         <Avatar className="size-24 sm:size-28 rounded-full border-2 border-[#eddcd4] shadow-xs bg-[#faf7f5]">
-          {staff.avatarUrl ? (
+          {imageUrl ? (
             <AvatarImage
-              src={staff.avatarUrl}
+              src={imageUrl}
               alt={staff.fullName}
               className="size-full object-cover rounded-full"
             />

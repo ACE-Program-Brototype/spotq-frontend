@@ -9,6 +9,10 @@ export const STAFF_ENDPOINTS = {
       : `restaurants/staff/${restaurantIdOrStaffId}`,
   STAFF_DETAIL_BY_RESTAURANT: (restaurantId: string, staffId: string) =>
     `restaurants/${restaurantId}/staff/${staffId}`,
+  STAFF_STATUS: (restaurantId: string, staffId: string) =>
+    `restaurants/${restaurantId}/staff/${staffId}/status`,
+  STAFF_DELETE: (restaurantId: string, staffId: string) =>
+    `restaurants/${restaurantId}/staff/${staffId}`,
 } as const;
 
 export const STAFF_DESIGNATIONS = [

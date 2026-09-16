@@ -3,6 +3,7 @@ import type {
   StaffDetail,
   StaffDetailApiResponse,
   StaffDetailRawData,
+  StaffStatus,
 } from "@/features/staff/types/staff-detail.types";
 import { apiClient } from "@/lib/api/client";
 
@@ -52,5 +53,29 @@ export const staffDetailService = {
       .json<StaffDetailApiResponse>();
 
     return normalizeStaffDetail(response?.data, restaurantId);
+  },
+
+  /**
+   * Update staff account status (ACTIVE/INACTIVE) under SCRUM-64
+   */
+  async updateStaffStatus(
+    restaurantId: string,
+    staffId: string,
+    status: StaffStatus,
+  ): Promise<StaffDetail> {
+    const response = await apiClient
+      .patch(STAFF_ENDPOINTS.STAFF_STATUS(restaurantId, staffId), {
+        json: { status },
+      })
+      .json<StaffDetailApiResponse>();
+
+    return normalizeStaffDetail(response?.data, restaurantId);
+  },
+
+  /**
+   * Remove a staff member belonging to the restaurant
+   */
+  async deleteStaff(restaurantId: string, staffId: string): Promise<void> {
+    await apiClient.delete(STAFF_ENDPOINTS.STAFF_DELETE(restaurantId, staffId)).json();
   },
 };

@@ -9,7 +9,10 @@ import { StaffDetailErrorState } from "@/features/staff/components/StaffDetailEr
 import { StaffDetailHeader } from "@/features/staff/components/StaffDetailHeader";
 import { StaffDetailSkeleton } from "@/features/staff/components/StaffDetailSkeleton";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
+import { useDeleteStaff } from "@/features/staff/hooks/use-delete-staff";
 import { useStaffDetail } from "@/features/staff/hooks/use-staff-detail";
+import { useUpdateStaffStatus } from "@/features/staff/hooks/use-update-staff-status";
+import type { StaffStatus } from "@/features/staff/types/staff-detail.types";
 
 export default function RestaurantStaffDetailPage() {
   return (
@@ -24,19 +27,30 @@ function StaffDetailContent() {
     useStaffDetail();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [uiStatus, setUiStatus] = useState<string | null>(null);
 
-  // Active / Inactive button is UI-only in this story
+  const statusMutation = useUpdateStaffStatus({
+    restaurantId: staff?.restaurantId || "",
+    staffId: staff?.id || "",
+  });
+
+  const deleteMutation = useDeleteStaff({
+    restaurantId: staff?.restaurantId || "",
+    staffId: staff?.id || "",
+    onSuccess: () => {
+      setIsDeleteModalOpen(false);
+    },
+  });
+
   const handleToggleStatus = () => {
-    if (!staff) return;
-    const currentStatus = uiStatus || staff.status;
-    const nextStatus = currentStatus.toUpperCase() === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-    setUiStatus(nextStatus);
+    if (!staff || statusMutation.isPending) return;
+    const currentStatus = staff.status.toUpperCase();
+    const nextStatus: StaffStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    statusMutation.mutate(nextStatus);
   };
 
-  // Remove staff button is UI-only in this story
   const handleConfirmDelete = () => {
-    setIsDeleteModalOpen(false);
+    if (!staff || deleteMutation.isPending) return;
+    deleteMutation.mutate();
   };
 
   // 1. Loading State
@@ -64,32 +78,29 @@ function StaffDetailContent() {
     );
   }
 
-  const effectiveStaff = {
-    ...staff,
-    status: uiStatus || staff.status,
-  };
-
   // 5. Successful Staff Details View
   return (
     <div className="space-y-6 max-w-5xl mx-auto w-full pb-10">
       {/* Header section with breadcrumbs and actions */}
       <StaffDetailHeader
-        staff={effectiveStaff}
+        staff={staff}
         onToggleStatus={handleToggleStatus}
         onRequestDelete={() => setIsDeleteModalOpen(true)}
+        isUpdatingStatus={statusMutation.isPending}
+        isDeleting={deleteMutation.isPending}
       />
 
       {/* Main details grid: Overview card + Information card */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
-          <StaffDetailOverviewCard staff={effectiveStaff} />
+          <StaffDetailOverviewCard staff={staff} />
         </div>
         <div className="lg:col-span-2">
-          <StaffDetailInfoCard staff={effectiveStaff} />
+          <StaffDetailInfoCard staff={staff} />
         </div>
       </div>
 
-      {/* Delete / Remove Confirmation Dialog (UI-only in this story) */}
+      {/* Delete / Remove Confirmation Dialog */}
       <ConfirmDialog
         open={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
@@ -98,6 +109,8 @@ function StaffDetailContent() {
         confirmText={STAFF_MESSAGES.ACTION_REMOVE}
         cancelText={STAFF_MESSAGES.ACTION_CANCEL}
         confirmVariant="destructive"
+        isLoading={deleteMutation.isPending}
+        loadingText="Removing..."
         onConfirm={handleConfirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
