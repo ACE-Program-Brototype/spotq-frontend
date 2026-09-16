@@ -3,8 +3,13 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user, clearAuth } = useAuthStore();
   const restaurantEmail = user?.email || "restaurant";
+
+  const handleBackToEmail = () => {
+    clearAuth();
+    navigate("/restaurant/email/verification", { replace: true });
+  };
 
   return (
     <div className="space-y-6 max-w-full">
@@ -20,10 +25,10 @@ export default function RestaurantDashboardPage() {
           </div>
           <button
             type="button"
-            onClick={() => navigate("/restaurant/email/verification", { replace: false })}
+            onClick={handleBackToEmail}
             className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
           >
-            Back to email
+            Logout
           </button>
         </div>
 
