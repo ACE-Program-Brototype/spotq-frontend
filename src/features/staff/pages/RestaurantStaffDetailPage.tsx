@@ -20,7 +20,8 @@ export default function RestaurantStaffDetailPage() {
 }
 
 function StaffDetailContent() {
-  const { staff, isLoading, isError, error, isForbidden, isNotFound, refetch } = useStaffDetail();
+  const { staff, isLoading, isPending, isError, error, isForbidden, isNotFound, refetch } =
+    useStaffDetail();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [uiStatus, setUiStatus] = useState<string | null>(null);
@@ -39,7 +40,7 @@ function StaffDetailContent() {
   };
 
   // 1. Loading State
-  if (isLoading) {
+  if (isLoading || isPending) {
     return <StaffDetailSkeleton />;
   }
 
@@ -94,8 +95,8 @@ function StaffDetailContent() {
         onOpenChange={setIsDeleteModalOpen}
         title={STAFF_MESSAGES.STAFF_DELETE_CONFIRM_TITLE}
         description={STAFF_MESSAGES.STAFF_DELETE_CONFIRM_DESCRIPTION}
-        confirmText="Remove Staff"
-        cancelText="Cancel"
+        confirmText={STAFF_MESSAGES.ACTION_REMOVE}
+        cancelText={STAFF_MESSAGES.ACTION_CANCEL}
         confirmVariant="destructive"
         onConfirm={handleConfirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}

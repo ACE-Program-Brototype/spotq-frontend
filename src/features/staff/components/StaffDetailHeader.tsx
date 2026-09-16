@@ -1,6 +1,7 @@
 import { ArrowLeft, ChevronRight, Trash2, UserCheck, UserX } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import type { StaffDetailHeaderProps } from "@/features/staff/types/staff-detail.types";
 
 export function StaffDetailHeader({
@@ -14,19 +15,30 @@ export function StaffDetailHeader({
     <div className="space-y-4">
       {/* Breadcrumbs & Back Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <nav
-          aria-label="Breadcrumbs"
-          className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium"
-        >
-          <Link to="/restaurant/dashboard" className="hover:text-neutral-900 transition-colors">
-            Home
-          </Link>
-          <ChevronRight className="size-3 text-neutral-400" />
-          <Link to="/restaurant/staff" className="hover:text-neutral-900 transition-colors">
-            Staff
-          </Link>
-          <ChevronRight className="size-3 text-neutral-400" />
-          <span className="font-bold text-[#9a3412]">Staff Details</span>
+        <nav aria-label="Breadcrumbs">
+          <ol className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium">
+            <li>
+              <Link to="/restaurant/dashboard" className="hover:text-neutral-900 transition-colors">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true">
+              <ChevronRight className="size-3 text-neutral-400" />
+            </li>
+            <li>
+              <Link to="/restaurant/staff" className="hover:text-neutral-900 transition-colors">
+                Staff
+              </Link>
+            </li>
+            <li aria-hidden="true">
+              <ChevronRight className="size-3 text-neutral-400" />
+            </li>
+            <li>
+              <span aria-current="page" className="font-bold text-[#9a3412]">
+                Staff Details
+              </span>
+            </li>
+          </ol>
         </nav>
 
         <Link
@@ -34,7 +46,7 @@ export function StaffDetailHeader({
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-neutral-900 transition-colors"
         >
           <ArrowLeft className="size-3.5" />
-          Back to Staff Members
+          {STAFF_MESSAGES.ACTION_BACK_TO_STAFF_MEMBERS}
         </Link>
       </div>
 
@@ -80,12 +92,12 @@ export function StaffDetailHeader({
             {isActive ? (
               <>
                 <UserX className="size-3.5 mr-1.5 text-amber-700" />
-                Deactivate Staff
+                {STAFF_MESSAGES.ACTION_DEACTIVATE}
               </>
             ) : (
               <>
                 <UserCheck className="size-3.5 mr-1.5 text-emerald-700" />
-                Activate Staff
+                {STAFF_MESSAGES.ACTION_ACTIVATE}
               </>
             )}
           </Button>
@@ -99,7 +111,7 @@ export function StaffDetailHeader({
             className="h-10 rounded-xl px-4 text-xs font-semibold border-rose-200 bg-rose-50/60 text-rose-700 hover:bg-rose-100 hover:text-rose-800 transition-colors shadow-2xs"
           >
             <Trash2 className="size-3.5 mr-1.5 text-rose-600" />
-            Remove Staff
+            {STAFF_MESSAGES.ACTION_REMOVE}
           </Button>
         </div>
       </div>

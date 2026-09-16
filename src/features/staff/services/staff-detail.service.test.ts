@@ -29,6 +29,27 @@ describe("staffDetailService", () => {
   });
 
   describe("normalizeStaffDetail", () => {
+    it("handles null and undefined input gracefully without throwing errors", () => {
+      const normalizedNull = normalizeStaffDetail(null, "fallback_rest");
+      expect(normalizedNull).toEqual({
+        id: "",
+        restaurantId: "fallback_rest",
+        fullName: "Staff Member",
+        email: "",
+        phone: null,
+        avatarUrl: null,
+        role: "Staff",
+        status: "ACTIVE",
+        createdAt: null,
+        updatedAt: null,
+      });
+
+      const normalizedUndefined = normalizeStaffDetail(undefined);
+      expect(normalizedUndefined.fullName).toBe("Staff Member");
+      expect(normalizedUndefined.role).toBe("Staff");
+      expect(normalizedUndefined.status).toBe("ACTIVE");
+    });
+
     it("correctly normalizes API data with snake_case and camelCase fallbacks", () => {
       const normalized = normalizeStaffDetail(mockRawData, "fallback_rest");
       expect(normalized).toEqual({
@@ -80,6 +101,7 @@ describe("staffDetailService", () => {
       expect(mockGet).toHaveBeenCalledWith(
         STAFF_ENDPOINTS.STAFF_DETAIL_BY_RESTAURANT("rest_id", "stf_01"),
       );
+      expect(mockGet).toHaveBeenCalledWith("restaurants/rest_id/staff/stf_01");
       expect(res.fullName).toBe("John Owner");
       expect(res.email).toBe("owner@spotq.com");
       expect(res.status).toBe("ACTIVE");

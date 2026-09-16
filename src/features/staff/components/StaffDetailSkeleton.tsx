@@ -48,7 +48,7 @@ export function StaffDetailSkeleton() {
             </CardHeader>
             <CardContent className="space-y-5 pt-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (
+                {Array.from({ length: 7 }).map((_, i) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: Static array for skeleton placeholders
                   <div key={i} className="space-y-1.5">
                     <Skeleton className="h-3.5 w-24 bg-[#eddcd4]/40" />

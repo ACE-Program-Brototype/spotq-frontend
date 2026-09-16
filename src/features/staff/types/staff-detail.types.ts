@@ -28,6 +28,8 @@ export interface StaffDetailApiResponse {
   data: StaffDetailRawData;
 }
 
+export type StaffStatus = "ACTIVE" | "INACTIVE";
+
 export interface StaffDetail {
   id: string;
   restaurantId: string;
@@ -36,12 +38,10 @@ export interface StaffDetail {
   phone: string | null;
   avatarUrl: string | null;
   role: string;
-  status: "ACTIVE" | "INACTIVE" | string;
+  status: StaffStatus | (string & {});
   createdAt: string | null;
   updatedAt: string | null;
 }
-
-export type StaffStatus = "ACTIVE" | "INACTIVE";
 
 export interface UpdateStaffStatusPayload {
   status: StaffStatus;

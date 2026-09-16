@@ -62,12 +62,12 @@ export const restaurantRoutes: RouteObject[] = [
             Component: RestaurantStaffPage,
           },
           {
-            path: "staff/:staffId",
-            Component: RestaurantStaffDetailPage,
-          },
-          {
             path: "staff/invitations",
             Component: RestaurantStaffInvitationsPage,
+          },
+          {
+            path: "staff/:staffId",
+            Component: RestaurantStaffDetailPage,
           },
         ],
       },

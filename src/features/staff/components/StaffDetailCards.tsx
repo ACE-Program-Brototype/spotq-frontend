@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import type { StaffDetailCardsProps } from "@/features/staff/types/staff-detail.types";
 import { formatStaffDate, getStaffInitials } from "@/features/staff/utils/staff.helpers";
 
@@ -18,7 +19,7 @@ export function StaffDetailOverviewCard({ staff }: StaffDetailCardsProps) {
   const memberSince = formatStaffDate(staff.createdAt);
 
   return (
-    <Card className="rounded-2xl border-[#eddcd4] bg-white shadow-2xs select-none">
+    <Card className="rounded-2xl border-[#eddcd4] bg-white shadow-2xs">
       <CardContent className="flex flex-col items-center pt-8 pb-6 px-6 text-center space-y-4">
         <Avatar className="size-24 sm:size-28 rounded-full border-2 border-[#eddcd4] shadow-xs bg-[#faf7f5]">
           {staff.avatarUrl ? (
@@ -65,7 +66,9 @@ export function StaffDetailOverviewCard({ staff }: StaffDetailCardsProps) {
         {staff.createdAt && (
           <div className="flex items-center justify-center gap-1.5 text-xs text-neutral-500 pt-1">
             <Calendar className="size-3.5 text-neutral-400 shrink-0" />
-            <span>Member since {memberSince}</span>
+            <span>
+              {STAFF_MESSAGES.MEMBER_SINCE} {memberSince}
+            </span>
           </div>
         )}
       </CardContent>
@@ -95,7 +98,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {/* Full Name */}
           <div className="space-y-1.5">
             <Label htmlFor="staff-full-name" className="text-xs font-semibold text-neutral-600">
-              Full Name
+              {STAFF_MESSAGES.LABEL_FULL_NAME}
             </Label>
             <Input
               id="staff-full-name"
@@ -109,7 +112,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {/* Email Address */}
           <div className="space-y-1.5">
             <Label htmlFor="staff-email" className="text-xs font-semibold text-neutral-600">
-              Email Address
+              {STAFF_MESSAGES.LABEL_EMAIL}
             </Label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -128,7 +131,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {/* Phone Number */}
           <div className="space-y-1.5">
             <Label htmlFor="staff-phone" className="text-xs font-semibold text-neutral-600">
-              Phone Number
+              {STAFF_MESSAGES.LABEL_PHONE}
             </Label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -138,7 +141,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
                 id="staff-phone"
                 type="text"
                 readOnly
-                value={staff.phone || "Not provided"}
+                value={staff.phone || STAFF_MESSAGES.NOT_PROVIDED}
                 className={`h-10 rounded-xl border-[#eddcd4] bg-neutral-50/60 pl-10 pr-3.5 text-sm font-medium cursor-default ${
                   staff.phone ? "text-neutral-900" : "text-neutral-400 italic"
                 }`}
@@ -149,7 +152,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {/* Assigned Role */}
           <div className="space-y-1.5">
             <Label htmlFor="staff-role" className="text-xs font-semibold text-neutral-600">
-              Role
+              {STAFF_MESSAGES.LABEL_ROLE}
             </Label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -168,7 +171,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {/* Account Status */}
           <div className="space-y-1.5">
             <Label htmlFor="staff-status" className="text-xs font-semibold text-neutral-600">
-              Account Status
+              {STAFF_MESSAGES.LABEL_STATUS}
             </Label>
             <Input
               id="staff-status"
@@ -182,7 +185,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {/* Joined Date */}
           <div className="space-y-1.5">
             <Label htmlFor="staff-joined-date" className="text-xs font-semibold text-neutral-600">
-              Created At
+              {STAFF_MESSAGES.LABEL_CREATED_AT}
             </Label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -203,7 +206,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {/* Last Updated */}
           <div className="space-y-1.5">
             <Label htmlFor="staff-updated-date" className="text-xs font-semibold text-neutral-600">
-              Last Updated
+              {STAFF_MESSAGES.LABEL_UPDATED_AT}
             </Label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -228,7 +231,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-neutral-500 pt-1">
           <div className="flex items-center gap-2">
             <Hash className="size-3.5 text-neutral-400" />
-            <span className="font-semibold text-neutral-600">Staff ID:</span>
+            <span className="font-semibold text-neutral-600">{STAFF_MESSAGES.LABEL_STAFF_ID}</span>
             <span className="font-mono text-neutral-700 bg-neutral-100 border border-[#eddcd4]/80 px-2 py-0.5 rounded-md text-[11px]">
               {staff.id}
             </span>
@@ -237,7 +240,9 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           {staff.restaurantId && (
             <div className="flex items-center gap-2">
               <Store className="size-3.5 text-neutral-400" />
-              <span className="font-semibold text-neutral-600">Restaurant ID:</span>
+              <span className="font-semibold text-neutral-600">
+                {STAFF_MESSAGES.LABEL_RESTAURANT_ID}
+              </span>
               <span className="font-mono text-neutral-700 bg-neutral-100 border border-[#eddcd4]/80 px-2 py-0.5 rounded-md text-[11px]">
                 {staff.restaurantId}
               </span>
