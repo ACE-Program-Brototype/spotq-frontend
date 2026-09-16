@@ -4,26 +4,12 @@ import { MediaPreviewModal } from "@/components/common/MediaPreviewModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatDate } from "@/lib/utils/date";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { RestaurantImage } from "../../types/restaurant.types";
 
 interface RestaurantImagesTabProps {
   images?: RestaurantImage[];
-}
-
-function formatDate(dateString?: string | null): string {
-  if (!dateString) return "—";
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
 }
 
 function RestaurantImageCard({

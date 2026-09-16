@@ -20,27 +20,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import env from "@/config/env";
+import { formatDate } from "@/lib/utils/date";
 import type { RestaurantDetails } from "../../types/restaurant.types";
 
 interface RestaurantOverviewTabProps {
   restaurant: RestaurantDetails;
-}
-
-function formatDate(dateString?: string | null): string {
-  if (!dateString) return "Not recorded";
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
 }
 
 export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps) {
@@ -189,7 +173,7 @@ export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps
                 <Phone className="size-4 text-slate-400" /> Primary Phone
               </span>
               <span className="font-mono font-medium text-slate-800">
-                {restaurant.phone || "—"}
+                {restaurant.phone || "-"}
               </span>
             </div>
 
@@ -245,7 +229,7 @@ export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps
             <div className="py-2.5 flex justify-between items-center">
               <span className="text-slate-500">Contact Phone</span>
               <span className="font-mono font-medium text-slate-800">
-                {restaurant.phone || "—"}
+                {restaurant.phone || "-"}
               </span>
             </div>
 
@@ -303,7 +287,7 @@ export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps
                 <div className="py-2.5 flex justify-between items-center">
                   <span className="text-slate-500">Country & Pincode</span>
                   <span className="font-medium text-slate-800">
-                    {address.country} —{" "}
+                    {address.country} -{" "}
                     <span className="font-mono font-bold">{address.pincode}</span>
                   </span>
                 </div>

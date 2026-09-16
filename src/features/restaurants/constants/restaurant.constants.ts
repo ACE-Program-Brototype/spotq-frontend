@@ -93,4 +93,8 @@ export const RESTAURANT_MESSAGES = {
   DETAILS_TAB_STAFF: "Staff Members",
   DETAILS_TAB_DOCUMENTS: "Verification Documents",
   DETAILS_TAB_IMAGES: "Gallery & Photos",
+
+  // Toasts
+  TOAST_COPY_ID_SUCCESS: "Restaurant ID copied to clipboard",
+  TOAST_COPY_ID_ERROR: "Failed to copy ID",
 } as const;
