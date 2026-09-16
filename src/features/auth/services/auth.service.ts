@@ -124,9 +124,12 @@ export async function verifyRestaurantEmailOtp(data: {
     ApiResponse<
       VerifyOtpResponse & {
         accessToken?: string;
+        access_token?: string;
       }
     >
   >();
+
+  const token = res.data?.accessToken || res.data?.access_token;
 
   return {
     success: res.success,
@@ -135,9 +138,7 @@ export async function verifyRestaurantEmailOtp(data: {
     data: res.data
       ? {
           ...res.data,
-          ...(res.data.nextStep === "DASHBOARD" && res.data.accessToken
-            ? { accessToken: res.data.accessToken }
-            : {}),
+          ...(token ? { accessToken: token } : {}),
         }
       : undefined,
   };
