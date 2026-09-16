@@ -87,7 +87,7 @@ describe("useUpdateStaffInfo", () => {
     expect(onSuccess).toHaveBeenCalledWith(mockStaff);
   });
 
-  it("handles 401 Unauthorized by clearing auth and redirecting to login", async () => {
+  it("handles 401 Unauthorized by clearing auth and redirecting to email verification", async () => {
     const error401 = new Error("Unauthorized");
     (error401 as unknown as { status: number }).status = 401;
 

@@ -5,6 +5,7 @@ export * from "./components/StaffDetailCards";
 export * from "./components/StaffDetailErrorState";
 export * from "./components/StaffDetailHeader";
 export * from "./components/StaffDetailSkeleton";
+export * from "./components/StaffEditForm";
 export * from "./constants/staff.constants";
 export * from "./hooks/use-staff-detail";
 export * from "./hooks/use-staff-invitations";

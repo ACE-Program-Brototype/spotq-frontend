@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 
 /**
  * Regex validating 10-digit Indian phone numbers with optional +91, 91, or 0 prefix.
@@ -18,17 +19,17 @@ export const updateStaffInfoSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, "Name is required")
-    .min(2, "Full name must be at least 2 characters")
-    .max(100, "Full name must not exceed 100 characters")
+    .min(1, STAFF_MESSAGES.NAME_REQUIRED)
+    .min(2, STAFF_MESSAGES.NAME_MIN_LENGTH)
+    .max(100, STAFF_MESSAGES.NAME_MAX_LENGTH)
     .refine((val) => val.trim().length > 0, {
-      message: "Name is required",
+      message: STAFF_MESSAGES.NAME_REQUIRED,
     }),
   phone: z
     .string()
     .trim()
-    .min(1, "Phone number is required")
-    .regex(INDIAN_PHONE_REGEX, "Please enter a valid phone number"),
+    .min(1, STAFF_MESSAGES.PHONE_REQUIRED)
+    .regex(INDIAN_PHONE_REGEX, STAFF_MESSAGES.PHONE_INVALID),
 });
 
 export type UpdateStaffInfoFormValues = z.infer<typeof updateStaffInfoSchema>;

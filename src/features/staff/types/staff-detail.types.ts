@@ -61,6 +61,12 @@ export interface EditStaffModalProps {
   staff: StaffDetail;
 }
 
+export interface StaffEditFormProps {
+  staff: StaffDetail;
+  onSuccess?: (updatedStaff?: StaffDetail) => void;
+  onCancel?: () => void;
+}
+
 export interface StaffDetailCardsProps {
   staff: StaffDetail;
 }

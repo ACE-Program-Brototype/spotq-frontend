@@ -18,7 +18,7 @@ export function useStaffDetail() {
   const queryClient = useQueryClient();
   const { user, clearAuth } = useAuthStore();
 
-  const authRestaurantId = user?.restaurantId || user?._id || user?.id || "";
+  const authRestaurantId = user?.restaurantId || "";
 
   // Authorization check: if URL specifies a restaurantId, it must match authenticated owner
   const isForbiddenMismatch = Boolean(
