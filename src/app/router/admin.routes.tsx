@@ -50,10 +50,6 @@ export const adminRoutes: RouteObject[] = [
             Component: AdminDashboardPage,
           },
           {
-            path: "restaurants",
-            Component: AdminRestaurantsPage,
-          },
-          {
             path: "restaurants/management",
             Component: AdminRestaurantsPage,
           },
