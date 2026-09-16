@@ -112,6 +112,7 @@ export type VerifyOtpResponse = {
 export type VerifyOtpSuccessDashboard = {
   nextStep: "DASHBOARD";
   accessToken: string;
+  restaurantId?: string;
 };
 
 export type ApiErrorShape = {
