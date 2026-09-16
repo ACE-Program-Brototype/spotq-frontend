@@ -1,6 +1,6 @@
 export const CUSTOMER_ENDPOINTS = {
   LIST: "users",
-  DETAILS: (userId: string) => `admin/customers/${userId}`,
+  DETAILS: (userId: string) => `users/${userId}`,
   STATUS: (userId: string) => `users/${userId}/status`,
 } as const;
 
@@ -96,4 +96,14 @@ export const CUSTOMER_MESSAGES = {
     "An error occurred while retrieving customer details. Please try again.",
   ORDERS_SECTION_TITLE: "Order History",
   ORDERS_SECTION_SUBTITLE: "Recent orders placed by this customer.",
+  CUSTOMER_ID_REQUIRED: "Customer ID is required",
+  UPDATING_STATUS: "Updating...",
+  CARD_LABEL_MEMBER_SINCE: "Member Since",
+  CARD_LABEL_ACCOUNT_STATUS: "Account Status",
+  CARD_LABEL_CONTACT_EMAIL: "Contact Email",
+  COL_ORDER_ID: "ORDER ID",
+  COL_ORDER_DATE: "DATE",
+  COL_ORDER_ITEMS: "ITEMS",
+  COL_ORDER_TOTAL: "TOTAL",
+  COL_ORDER_STATUS: "STATUS",
 } as const;

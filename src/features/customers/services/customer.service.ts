@@ -77,10 +77,10 @@ export const customerService = {
       fullName: item.fullName || item.fullname || item.email.split("@")[0],
       phone: item.phone ?? null,
       status: item.status,
-      isEmailVerified: item.isEmailVerified ?? true,
+      isEmailVerified: item.isEmailVerified ?? false,
       avatarUrl: item.avatarUrl ?? null,
-      createdAt: item.createdAt || new Date().toISOString(),
-      updatedAt: item.updatedAt || new Date().toISOString(),
+      createdAt: item.createdAt || "",
+      updatedAt: item.updatedAt || "",
       location: item.location ?? null,
     }));
 
@@ -141,10 +141,10 @@ export const customerService = {
       fullName: item.fullName || item.fullname || item.email.split("@")[0],
       phone: item.phone ?? null,
       status: item.status,
-      isEmailVerified: item.isEmailVerified ?? true,
+      isEmailVerified: item.isEmailVerified ?? false,
       avatarUrl: item.avatarUrl ?? null,
-      createdAt: item.createdAt || new Date().toISOString(),
-      updatedAt: item.updatedAt || new Date().toISOString(),
+      createdAt: item.createdAt || "",
+      updatedAt: item.updatedAt || "",
       location: item.location ?? null,
     };
   },

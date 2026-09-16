@@ -1,10 +1,8 @@
 export function CustomerDetailsSkeleton() {
   return (
     <div className="space-y-6 animate-pulse" data-testid="customer-details-skeleton">
-      {/* Back button skeleton */}
       <div className="h-8 w-44 rounded bg-slate-200" />
 
-      {/* Header skeleton */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
@@ -16,7 +14,6 @@ export function CustomerDetailsSkeleton() {
         <div className="h-9 w-36 rounded-lg bg-slate-200" />
       </div>
 
-      {/* Profile Card Skeleton */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
           <div className="flex items-center gap-4">
@@ -45,7 +42,6 @@ export function CustomerDetailsSkeleton() {
         </div>
       </div>
 
-      {/* Orders Placeholder Skeleton */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4">
         <div className="h-5 w-36 rounded bg-slate-200" />
         <div className="h-4 w-64 rounded bg-slate-100" />

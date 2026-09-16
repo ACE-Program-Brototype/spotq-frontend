@@ -26,25 +26,8 @@ import {
   type CustomerStatusType,
 } from "../constants/customer.constants";
 import { useCustomerDetails, useUpdateCustomerStatus } from "../hooks/use-customers";
+import { DUMMY_CUSTOMER_ORDERS } from "../mocks/customer-orders.mock";
 import { formatMemberSince, getCustomerInitials } from "../utils/customer.utils";
-
-// Dummy order static placeholder data
-const DUMMY_CUSTOMER_ORDERS = [
-  {
-    id: "ORD-98241",
-    date: "2026-09-12",
-    items: "2x Gourmet Burger Combo, 1x Iced Tea",
-    total: "$34.50",
-    status: "COMPLETED",
-  },
-  {
-    id: "ORD-97104",
-    date: "2026-09-08",
-    items: "1x Margherita Pizza, 2x Garlic Bread",
-    total: "$22.00",
-    status: "COMPLETED",
-  },
-];
 
 export function AdminCustomerDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -92,7 +75,10 @@ export function AdminCustomerDetailsPage() {
   }
 
   // Check for 404 or missing customer record
-  const isNotFound = isError && (error as { status?: number })?.status === 404;
+  const isNotFound =
+    isError &&
+    ((error as { response?: { status?: number } })?.response?.status === 404 ||
+      (error as { status?: number })?.status === 404);
 
   if (isNotFound || (!isLoading && !customer && !isError)) {
     return (
@@ -201,7 +187,8 @@ export function AdminCustomerDetailsPage() {
 
   if (!customer) return null;
 
-  const isBlocked = customer.status === CUSTOMER_STATUS.BLOCKED;
+  const normalizedStatus = customer.status?.toUpperCase();
+  const isBlocked = normalizedStatus === CUSTOMER_STATUS.BLOCKED;
   const isActionModalBlocked = statusTarget === CUSTOMER_STATUS.BLOCKED;
 
   return (
@@ -231,7 +218,7 @@ export function AdminCustomerDetailsPage() {
             >
               {customer.fullName}
             </h1>
-            {customer.status === CUSTOMER_STATUS.ACTIVE ? (
+            {normalizedStatus === CUSTOMER_STATUS.ACTIVE ? (
               <span
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100/70 text-emerald-800"
                 data-testid="customer-status-badge"
@@ -239,7 +226,7 @@ export function AdminCustomerDetailsPage() {
                 <span className="size-1.5 rounded-full bg-emerald-600" />
                 ACTIVE
               </span>
-            ) : customer.status === CUSTOMER_STATUS.BLOCKED ? (
+            ) : normalizedStatus === CUSTOMER_STATUS.BLOCKED ? (
               <span
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100/70 text-rose-800"
                 data-testid="customer-status-badge"
@@ -348,17 +335,17 @@ export function AdminCustomerDetailsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Member Since
+                {CUSTOMER_MESSAGES.CARD_LABEL_MEMBER_SINCE}
               </p>
               <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
                 <Calendar className="size-3.5 text-slate-400" />
-                <span>{formatMemberSince(customer.createdAt)}</span>
+                <span>{formatMemberSince(customer.createdAt, { includePrefix: false })}</span>
               </div>
             </div>
 
             <div className="space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Account Status
+                {CUSTOMER_MESSAGES.CARD_LABEL_ACCOUNT_STATUS}
               </p>
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
                 <Clock className="size-3.5 text-slate-400" />
@@ -368,7 +355,7 @@ export function AdminCustomerDetailsPage() {
 
             <div className="space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Contact Email
+                {CUSTOMER_MESSAGES.CARD_LABEL_CONTACT_EMAIL}
               </p>
               <div className="flex items-center gap-2 text-xs text-slate-700 font-medium truncate">
                 <Mail className="size-3.5 text-slate-400 shrink-0" />
@@ -403,11 +390,11 @@ export function AdminCustomerDetailsPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-[#f0edf1]/60 text-slate-500 font-semibold border-b border-slate-200/80">
                 <tr>
-                  <th className="py-3 px-4">ORDER ID</th>
-                  <th className="py-3 px-4">DATE</th>
-                  <th className="py-3 px-4">ITEMS</th>
-                  <th className="py-3 px-4">TOTAL</th>
-                  <th className="py-3 px-4 text-right">STATUS</th>
+                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_ID}</th>
+                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_DATE}</th>
+                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_ITEMS}</th>
+                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_TOTAL}</th>
+                  <th className="py-3 px-4 text-right">{CUSTOMER_MESSAGES.COL_ORDER_STATUS}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
@@ -458,7 +445,7 @@ export function AdminCustomerDetailsPage() {
         }
         confirmVariant={isActionModalBlocked ? "destructive" : "default"}
         isLoading={isUpdatingStatus}
-        loadingText="Updating..."
+        loadingText={CUSTOMER_MESSAGES.UPDATING_STATUS}
         onConfirm={handleConfirmStatusChange}
       />
     </div>
