@@ -9,6 +9,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { MediaPreviewModal } from "@/components/common/MediaPreviewModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -120,14 +121,22 @@ function ApplicationDocumentCard({
   const formattedDate = formatDate(doc.uploaded_at);
 
   const handlePreview = () => {
-    if (docUrl) {
-      onOpenPreview(docUrl, doc.document_name, doc.document_type, formattedDate);
+    try {
+      if (docUrl) {
+        onOpenPreview(docUrl, doc.document_name, doc.document_type, formattedDate);
+      }
+    } catch {
+      toast.error("Failed to preview document");
     }
   };
 
   const handleDownload = () => {
-    if (docUrl) {
-      window.open(docUrl, "_blank", "noopener,noreferrer");
+    try {
+      if (docUrl) {
+        window.open(docUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch {
+      toast.error("Failed to download document");
     }
   };
 

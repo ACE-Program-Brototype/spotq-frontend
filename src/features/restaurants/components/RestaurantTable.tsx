@@ -71,7 +71,7 @@ function renderStatusBadge(status: RestaurantStatusType) {
 
 function renderPlanBadge(plan: RestaurantPlanType | string | null) {
   if (!plan) {
-    return <span className="text-xs text-slate-400 font-medium">—</span>;
+    return <span className="text-xs text-slate-400 font-medium">-</span>;
   }
 
   const normalized = plan.toUpperCase();
@@ -210,8 +210,8 @@ export function RestaurantTable({
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700 bg-white">
             {restaurants.map((restaurant) => {
-              const email = restaurant.contact?.email || restaurant.contact?.owner_email || "—";
-              const phone = restaurant.contact?.phone || null;
+              const email = restaurant.contact?.email ?? restaurant.contact?.owner_email ?? "-";
+              const phone = restaurant.contact?.phone ?? null;
 
               return (
                 <tr
