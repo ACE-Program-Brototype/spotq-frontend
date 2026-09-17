@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { InviteStaffModal } from "@/features/staff/components/InviteStaffModal";
 import { useStaffInvitations } from "@/features/staff/hooks/use-staff-invitations";
 import { useStaffMembers } from "@/features/staff/hooks/use-staff-members";
+import { getStaffInitials } from "@/features/staff/utils/staff.helpers";
+import { formatDate } from "@/lib/utils/date";
 
 export default function RestaurantStaffPage() {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
@@ -320,12 +322,7 @@ export default function RestaurantStaffPage() {
                       <div className="flex items-center gap-3">
                         <Avatar className="size-9 border border-[#eddcd4]">
                           <AvatarFallback className="bg-[#fef3ec] text-[#9a3412] font-semibold text-xs">
-                            {staff.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                              .slice(0, 2)}
+                            {getStaffInitials(staff.name)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -347,11 +344,7 @@ export default function RestaurantStaffPage() {
                     </td>
                     <td className="py-4 px-6">{getStatusBadge(staff.status)}</td>
                     <td className="py-4 px-6 text-neutral-500 font-medium">
-                      {new Date(staff.joinedDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {formatDate(staff.joinedDate)}
                     </td>
                     <td className="py-4 px-6 text-right">
                       <div className="flex items-center justify-end gap-1">
