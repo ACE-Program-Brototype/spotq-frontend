@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
 import type {
   RestaurantProfileData,
@@ -43,7 +44,7 @@ export function RestaurantInfoCard({ profile, fullData }: RestaurantInfoCardProp
     const costNumber = typeof averageCost === "number" ? averageCost : Number(averageCost);
 
     if (averageCost !== "" && (Number.isNaN(costNumber) || costNumber < 0)) {
-      setValidationError("Average cost must be a valid positive number.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.AVERAGE_COST_INVALID);
       return;
     }
 

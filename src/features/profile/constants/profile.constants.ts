@@ -36,6 +36,7 @@ export const PROFILE_MESSAGES = {
     RESTAURANT_NAME_REQUIRED: "Restaurant name is required.",
     PHONE_REQUIRED: "Phone number is required.",
     OWNER_NAME_REQUIRED: "Owner name is required.",
+    AVERAGE_COST_INVALID: "Average cost must be a valid positive number.",
     HOURS_REQUIRED: (day: string) => `Please set valid open and close times for ${day}.`,
     HOURS_CHRONOLOGICAL: (day: string) => `Closing time must be after opening time for ${day}.`,
   },
