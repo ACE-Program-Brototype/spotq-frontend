@@ -28,6 +28,7 @@ export const PROFILE_MESSAGES = {
   EDIT_PROFILE_SUBTITLE: "Update your personal information and account preferences",
 
   VALIDATION: {
+    NAME_REQUIRED: "Name is required.",
     NAME_MIN_LENGTH: "Full name must be at least 2 characters.",
     NAME_MAX_LENGTH: "Full name cannot exceed 100 characters.",
     NAME_INVALID_CHARS: "Full name can only contain letters, spaces, and hyphens.",
@@ -57,13 +58,29 @@ export const PROFILE_MESSAGES = {
   FETCH_ERROR: "Failed to load profile details. Please try again.",
   UNABLE_TO_LOAD: "Unable to Load Profile",
   UNAUTHORIZED: "Your session has expired. Please sign in again.",
-  NO_DATA: "No profile data available.",
+  STAFF_UPDATE_SUCCESS: "Staff profile updated successfully.",
+  STAFF_UPDATE_FAILED: "Failed to update staff profile. Please try again.",
+  STAFF_FORBIDDEN: "You do not have permission to update this profile.",
+  STAFF_NOT_FOUND: "Staff member not found.",
+  EDIT_STAFF_PROFILE_TITLE: "Staff Profile",
+  EDIT_STAFF_PROFILE_SUBTITLE:
+    "Manage your personal information, security preferences, and status.",
+  AVATAR_INVALID_FILE: "Profile photo must be a JPG, GIF, or PNG file under 2MB.",
+  INVALID_RESTAURANT_ID: "A valid restaurant ID is required to upload an avatar.",
+  AVATAR_UPLOAD_AUTH_FAILED: "Failed to obtain upload authorization for avatar.",
+  AVATAR_UPLOAD_FAILED: "Failed to upload avatar image to storage.",
+  AVATAR_UPLOAD_FALLBACK_WARNING:
+    "Failed to upload avatar image. Proceeding with name and phone update.",
+  INVALID_PROFILE_DATA: "Invalid profile data provided. Please check the fields.",
 } as const;
 
 export const PROFILE_ENDPOINTS = {
   GET_PROFILE: "users/profile",
   UPDATE_PROFILE: "users/profile",
   GET_STAFF_PROFILE: "restaurants/staff/profile/me",
+  UPDATE_STAFF_PROFILE: (restaurantId: string, staffId: string) =>
+    `restaurants/${restaurantId}/staff/${staffId}`,
+  STORAGE_PRESIGNED_URL: "storage/presigned-url",
   GET_RESTAURANT_PROFILE: "restaurants/profile",
   UPDATE_RESTAURANT_PROFILE: "restaurants/profile",
 } as const;

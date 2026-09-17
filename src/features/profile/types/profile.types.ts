@@ -85,3 +85,17 @@ export interface StaffProfile {
   status: string;
   createdAt: string | null;
 }
+
+export interface UpdateStaffProfileDto {
+  name?: string;
+  phone?: string;
+  avatar_url?: string | null;
+  avatarUrl?: string | null;
+}
+
+export interface EditStaffProfileFormProps {
+  profile: StaffProfile;
+  onSubmit: (payload: UpdateStaffProfileDto) => Promise<void> | void;
+  onCancel: () => void;
+  isSubmitting?: boolean;
+}
