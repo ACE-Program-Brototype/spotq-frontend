@@ -46,10 +46,10 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
     seatingCapacity !== "" &&
     !Number.isNaN(capacityNum) &&
     Number.isInteger(capacityNum) &&
-    capacityNum >= 1;
+    capacityNum >= 0;
 
   const capacityError =
-    isEditing && !isCapacityValid ? "Seating capacity must be at least 1" : null;
+    isEditing && !isCapacityValid ? "Seating capacity cannot be negative" : null;
 
   const isDirty =
     (acceptsQueue !== settings.acceptsQueue ||

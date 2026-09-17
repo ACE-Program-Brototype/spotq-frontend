@@ -88,9 +88,13 @@ describe("RestaurantSettingsCard Component", () => {
 
     expect(saveButton).not.toBeDisabled();
 
-    // Set invalid seating capacity (<1)
+    // Set valid seating capacity of 0
     fireEvent.change(capacityInput, { target: { value: "0" } });
-    expect(screen.getByText("Seating capacity must be at least 1")).toBeInTheDocument();
+    expect(saveButton).not.toBeDisabled();
+
+    // Set invalid seating capacity (<0)
+    fireEvent.change(capacityInput, { target: { value: "-5" } });
+    expect(screen.getByText("Seating capacity cannot be negative")).toBeInTheDocument();
     expect(saveButton).toBeDisabled();
   });
 
