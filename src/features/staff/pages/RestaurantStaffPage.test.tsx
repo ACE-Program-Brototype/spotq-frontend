@@ -82,6 +82,46 @@ describe("RestaurantStaffPage", () => {
     expect(screen.getAllByText("Active")[0]).toBeInTheDocument();
   });
 
+  it("triggers sort toggle when Member or Joined Date headers are clicked", async () => {
+    mockGetStaffMembers.mockResolvedValue({
+      success: true,
+      data: [
+        {
+          id: "staff-1",
+          name: "Ravi Kumar",
+          email: "ravi@example.com",
+          phone: "9876543211",
+          designation: "Manager",
+          status: "ACTIVE",
+          joinedDate: "2026-01-02",
+          lastLogin: "2026-01-02",
+          employeeCode: "EMP-001",
+        },
+      ],
+      pagination: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    });
+
+    const Wrapper = createWrapper();
+    render(<RestaurantStaffPage />, { wrapper: Wrapper });
+
+    await waitFor(() => {
+      expect(screen.getByText("Ravi Kumar")).toBeInTheDocument();
+    });
+
+    const memberSortBtn = screen.getByRole("button", { name: /Member/i });
+    fireEvent.click(memberSortBtn);
+
+    await waitFor(() => {
+      expect(mockGetStaffMembers).toHaveBeenCalledWith(
+        "rest-123",
+        expect.objectContaining({
+          sortBy: "name",
+          sortOrder: "ASC",
+        }),
+      );
+    });
+  });
+
   it("shows empty state when no staff members are returned", async () => {
     mockGetStaffMembers.mockResolvedValueOnce({
       success: true,

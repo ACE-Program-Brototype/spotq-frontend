@@ -3,6 +3,8 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { STAFF_DESIGNATIONS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import {
   type StaffDirectoryStats,
+  type StaffSortBy,
+  type StaffSortOrder,
   staffMemberService,
 } from "@/features/staff/services/staff-member.service";
 import type {
@@ -15,8 +17,8 @@ export type UseStaffMembersOptions = {
   initialPage?: number;
   initialLimit?: number;
   initialStatusFilter?: string;
-  initialSortBy?: "createdAt";
-  initialSortOrder?: "ASC" | "DESC";
+  initialSortBy?: StaffSortBy;
+  initialSortOrder?: StaffSortOrder;
 };
 
 export function useStaffMembers(options?: UseStaffMembersOptions) {
@@ -34,8 +36,8 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
   const [designationFilter, setDesignationFilter] = useState<string>("ALL");
   const [page, setPage] = useState<number>(options?.initialPage || 1);
   const [limit, setLimit] = useState<number>(options?.initialLimit || 20);
-  const [sortBy, setSortBy] = useState<"createdAt">(options?.initialSortBy || "createdAt");
-  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">(options?.initialSortOrder || "DESC");
+  const [sortBy, setSortBy] = useState<StaffSortBy>(options?.initialSortBy || "createdAt");
+  const [sortOrder, setSortOrder] = useState<StaffSortOrder>(options?.initialSortOrder || "DESC");
   const [serverStats, setServerStats] = useState<StaffDirectoryStats | null>(null);
 
   const [pagination, setPagination] = useState<StaffInvitationPagination>({
@@ -148,6 +150,19 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
     };
   }, [staffList, pagination.total, serverStats]);
 
+  const toggleSort = useCallback(
+    (column: StaffSortBy) => {
+      if (sortBy === column) {
+        setSortOrder((prev) => (prev === "ASC" ? "DESC" : "ASC"));
+      } else {
+        setSortBy(column);
+        setSortOrder("ASC");
+      }
+      setPage(1);
+    },
+    [sortBy],
+  );
+
   const resetFilters = useCallback(() => {
     setSearchQuery("");
     setStatusFilter("ALL");
@@ -175,6 +190,7 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
     setSortBy,
     sortOrder,
     setSortOrder,
+    toggleSort,
     pagination,
     stats,
     resetFilters,

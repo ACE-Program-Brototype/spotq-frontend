@@ -6,12 +6,15 @@ import type {
 import { formatEmployeeCode } from "@/features/staff/utils/staff.helpers";
 import { apiClient } from "@/lib/api/client";
 
+export type StaffSortBy = "createdAt" | "name";
+export type StaffSortOrder = "ASC" | "DESC";
+
 export type ListStaffMembersParams = {
   page?: number;
   limit?: number;
   status?: string;
   search?: string;
-  sortBy?: "createdAt";
+  sortBy?: StaffSortBy;
   sortOrder?: "ASC" | "DESC" | "asc" | "desc";
 };
 

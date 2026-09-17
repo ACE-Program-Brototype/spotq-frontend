@@ -1,5 +1,8 @@
 import {
   AlertCircle,
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
   Briefcase,
   ChevronDown,
   ChevronLeft,
@@ -42,6 +45,9 @@ export default function RestaurantStaffPage() {
     availableDesignations,
     page,
     setPage,
+    sortBy,
+    sortOrder,
+    toggleSort,
     pagination,
     stats,
     resetFilters,
@@ -307,11 +313,47 @@ export default function RestaurantStaffPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-[#faf7f5] text-neutral-500 font-semibold border-b border-[#eddcd4]">
                 <tr>
-                  <th className="py-3.5 px-6">Member</th>
+                  <th className="py-3.5 px-6">
+                    <button
+                      type="button"
+                      onClick={() => toggleSort("name")}
+                      className="inline-flex items-center gap-1.5 hover:text-neutral-900 transition-colors cursor-pointer"
+                      title="Sort by member name"
+                    >
+                      <span>Member</span>
+                      {sortBy === "name" ? (
+                        sortOrder === "ASC" ? (
+                          <ArrowUp className="size-3.5 text-[#e8631b]" />
+                        ) : (
+                          <ArrowDown className="size-3.5 text-[#e8631b]" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="size-3 text-neutral-400 opacity-60" />
+                      )}
+                    </button>
+                  </th>
                   <th className="py-3.5 px-6">Contact Details</th>
                   <th className="py-3.5 px-6">Role</th>
                   <th className="py-3.5 px-6">Status</th>
-                  <th className="py-3.5 px-6">Joined Date</th>
+                  <th className="py-3.5 px-6">
+                    <button
+                      type="button"
+                      onClick={() => toggleSort("createdAt")}
+                      className="inline-flex items-center gap-1.5 hover:text-neutral-900 transition-colors cursor-pointer"
+                      title="Sort by joined date"
+                    >
+                      <span>Joined Date</span>
+                      {sortBy === "createdAt" ? (
+                        sortOrder === "ASC" ? (
+                          <ArrowUp className="size-3.5 text-[#e8631b]" />
+                        ) : (
+                          <ArrowDown className="size-3.5 text-[#e8631b]" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="size-3 text-neutral-400 opacity-60" />
+                      )}
+                    </button>
+                  </th>
                   <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
