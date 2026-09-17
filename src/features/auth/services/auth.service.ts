@@ -124,9 +124,12 @@ export async function verifyRestaurantEmailOtp(data: {
     ApiResponse<
       VerifyOtpResponse & {
         accessToken?: string;
+        access_token?: string;
       }
     >
   >();
+
+  const token = res.data?.accessToken || res.data?.access_token;
 
   return {
     success: res.success,
@@ -135,9 +138,7 @@ export async function verifyRestaurantEmailOtp(data: {
     data: res.data
       ? {
           ...res.data,
-          ...(res.data.nextStep === "DASHBOARD" && res.data.accessToken
-            ? { accessToken: res.data.accessToken }
-            : {}),
+          ...(token ? { accessToken: token } : {}),
         }
       : undefined,
   };
@@ -285,6 +286,69 @@ export async function logoutStaff(): Promise<StaffLogoutRes> {
   };
 }
 
+export interface CompleteRestaurantOnboardingPayload {
+  restaurantName: string;
+  phone: string;
+  ownerName: string;
+  seatingCapacity?: number;
+  documents?: {
+    fssai: { documentName: string; documentKey: string };
+    businessRegistration: { documentName: string; documentKey: string };
+    ownerIdentity: { documentName: string; documentKey: string };
+    gst: { documentName: string; documentKey: string };
+    businessPan: { documentName: string; documentKey: string };
+  };
+  restaurantImages?: Array<{
+    objectKey: string;
+    fileName?: string;
+    displayOrder?: number;
+  }>;
+  location?: {
+    addressLine1: string;
+    addressLine2?: string | null;
+    city: string;
+    state: string;
+    country: string;
+    pincode: string;
+    latitude: number;
+    longitude: number;
+  };
+}
+
+export async function completeRestaurantOnboarding(
+  payload: CompleteRestaurantOnboardingPayload,
+): Promise<ApiResponse> {
+  return apiClient
+    .post(AUTH_ENDPOINTS.RESTAURANT_ONBOARD, {
+      json: payload,
+    })
+    .json<ApiResponse>();
+}
+
+export type VerificationStatus = "SUBMITTED" | "UNDER_REVIEW" | "VERIFIED" | "REJECTED";
+
+export interface RestaurantVerificationStatusData {
+  status: VerificationStatus;
+  rejectionReason?: string;
+  submittedAt?: string;
+  updatedAt?: string;
+}
+
+export interface VerificationStatusResponse {
+  success: boolean;
+  message: string;
+  data: RestaurantVerificationStatusData;
+}
+
+export async function getRestaurantVerificationStatus(
+  restaurantId?: string,
+): Promise<VerificationStatusResponse> {
+  const endpoint = restaurantId
+    ? `restaurants/${restaurantId}/verification-status`
+    : AUTH_ENDPOINTS.RESTAURANT_VERIFICATION_STATUS;
+  return apiClient.get(endpoint).json<VerificationStatusResponse>();
+}
+
 export type ValidateStaffInvitationResponse = {
   valid: boolean;
   email?: string;
@@ -369,7 +433,7 @@ export async function acceptStaffInvitation(
   const staff: User | undefined = rawStaff
     ? {
         ...rawStaff,
-        role: (rawStaff.role || "RESTAURANT_STAFF") as User["role"],
+        role: (rawStaff.role || "STAFF") as User["role"],
       }
     : undefined;
   const accessToken = rawRes.data?.accessToken;

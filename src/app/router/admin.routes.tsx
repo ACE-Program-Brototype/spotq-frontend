@@ -4,7 +4,11 @@ import AdminForgotPasswordPage from "@/features/auth/pages/AdminForgotPasswordPa
 import AdminLoginPage from "@/features/auth/pages/AdminLoginPage";
 import AdminResetPasswordPage from "@/features/auth/pages/AdminResetPasswordPage";
 import AdminVerifyOtpPage from "@/features/auth/pages/AdminVerifyOtpPage";
+import AdminCustomerDetailsPage from "@/features/customers/pages/AdminCustomerDetailsPage";
+import AdminCustomersPage from "@/features/customers/pages/AdminCustomersPage";
 import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
+import AdminRestaurantDetailsPage from "@/features/restaurants/pages/AdminRestaurantDetailsPage";
+import AdminRestaurantsPage from "@/features/restaurants/pages/AdminRestaurantsPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -45,6 +49,22 @@ export const adminRoutes: RouteObject[] = [
           {
             path: "dashboard",
             Component: AdminDashboardPage,
+          },
+          {
+            path: "restaurants/management",
+            Component: AdminRestaurantsPage,
+          },
+          {
+            path: "restaurants/:id",
+            Component: AdminRestaurantDetailsPage,
+          },
+          {
+            path: "customers",
+            Component: AdminCustomersPage,
+          },
+          {
+            path: "customers/:id",
+            Component: AdminCustomerDetailsPage,
           },
         ],
       },
