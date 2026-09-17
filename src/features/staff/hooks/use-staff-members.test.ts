@@ -129,6 +129,23 @@ describe("useStaffMembers", () => {
     });
   });
 
+  it("preserves initialPage on mount without being overridden by filter defaults", async () => {
+    mockGetStaffMembers.mockResolvedValueOnce({
+      success: true,
+      message: "Success",
+      data: [],
+      pagination: { page: 3, limit: 20, total: 50, totalPages: 3 },
+    });
+
+    const { result } = renderHook(() => useStaffMembers({ initialPage: 3 }));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.page).toBe(3);
+  });
+
   it("resets filters when resetFilters is called", async () => {
     mockGetStaffMembers.mockResolvedValue({
       success: true,

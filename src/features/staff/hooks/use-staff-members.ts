@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import { staffMemberService } from "@/features/staff/services/staff-member.service";
@@ -84,8 +84,29 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
   }, [fetchStaffMembers]);
 
   // Reset page to 1 when filters change
+  const isInitialMount = useRef(true);
+  const prevFiltersRef = useRef({
+    search: debouncedSearch,
+    status: statusFilter,
+    designation: designationFilter,
+  });
+
   useEffect(() => {
-    if (debouncedSearch || statusFilter || designationFilter) {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    const prev = prevFiltersRef.current;
+    if (
+      prev.search !== debouncedSearch ||
+      prev.status !== statusFilter ||
+      prev.designation !== designationFilter
+    ) {
+      prevFiltersRef.current = {
+        search: debouncedSearch,
+        status: statusFilter,
+        designation: designationFilter,
+      };
       setPage(1);
     }
   }, [debouncedSearch, statusFilter, designationFilter]);
