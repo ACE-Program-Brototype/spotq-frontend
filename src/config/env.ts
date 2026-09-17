@@ -4,7 +4,7 @@ const env = {
   cdnBaseUrl:
     import.meta.env.VITE_CDN_BASE_URL ||
     import.meta.env.VITE_S3_BASE_URL ||
-    "https://spotq-restaurant-bucket.s3.ap-south-1.amazonaws.com",
+    "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com",
   staffInvitationStaleTimeMs:
     Number(import.meta.env.VITE_STAFF_INVITATION_STALE_TIME_MS) || 300_000,
 } as const;

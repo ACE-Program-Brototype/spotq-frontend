@@ -72,7 +72,7 @@ export function resolveMediaUrl(mediaKeyOrUrl?: string | null): string | null {
   if (/^(https?:\/\/|data:|blob:)/i.test(trimmed)) return trimmed;
 
   const base = (
-    env.cdnBaseUrl || "https://spotq-restaurant-bucket.s3.ap-south-1.amazonaws.com"
+    env.cdnBaseUrl || "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com"
   ).replace(/\/+$/, "");
 
   return `${base}/${trimmed.replace(/^\/+/, "")}`;

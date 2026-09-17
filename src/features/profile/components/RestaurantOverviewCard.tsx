@@ -213,10 +213,16 @@ export function RestaurantOverviewCard({
     };
 
     updateMutation.mutate(payload, {
-      onSuccess: () => {
+      onSuccess: (updated) => {
         setIsEditing(false);
         setLogoKey(null);
         setCoverImageKey(null);
+        if (updated?.profile?.logo) {
+          setLogoSrc(resolveMediaUrl(updated.profile.logo) || FALLBACK_LOGO);
+        }
+        if (updated?.profile?.coverImage) {
+          setCoverSrc(resolveMediaUrl(updated.profile.coverImage) || FALLBACK_COVER);
+        }
       },
     });
   };
