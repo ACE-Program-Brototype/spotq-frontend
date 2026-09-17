@@ -33,7 +33,8 @@ export function RestaurantOverviewCard({
   fullData,
 }: RestaurantOverviewCardProps) {
   const user = useAuthStore((state) => state.user);
-  const activeRestaurantId = user?.restaurantId || user?.id || "profile";
+  const activeRestaurantId =
+    restaurant?.id || fullData.restaurant?.id || user?.restaurantId || user?.id || "";
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(restaurant.name || "");
@@ -54,19 +55,34 @@ export function RestaurantOverviewCard({
   const [coverSrc, setCoverSrc] = useState<string>(initialCover || FALLBACK_COVER);
   const [logoSrc, setLogoSrc] = useState<string>(initialLogo || FALLBACK_LOGO);
 
-  // Sync image sources when profile props change (and not actively editing with unsaved local images)
+  // Sync details & image sources when props change (and not actively editing)
   useEffect(() => {
     if (!isEditing) {
+      setName(restaurant.name || "");
+      setPhone(restaurant.phone || "");
+      setOwnerName(restaurant.ownerName || "");
       const resolvedLogo = resolveMediaUrl(profile.logo);
       const resolvedCover = resolveMediaUrl(profile.coverImage);
       setLogoSrc(resolvedLogo || FALLBACK_LOGO);
       setCoverSrc(resolvedCover || FALLBACK_COVER);
     }
-  }, [profile.logo, profile.coverImage, isEditing]);
+  }, [
+    restaurant.name,
+    restaurant.phone,
+    restaurant.ownerName,
+    profile.logo,
+    profile.coverImage,
+    isEditing,
+  ]);
 
   const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (!activeRestaurantId) {
+      toast.error("Restaurant session not found. Please log in again.");
+      return;
+    }
 
     // Immediately show local object URL preview for responsive user feedback
     const previewUrl = URL.createObjectURL(file);
@@ -74,7 +90,7 @@ export function RestaurantOverviewCard({
 
     try {
       const res = await upload(file, {
-        entityType: "restaurant",
+        entityType: "restaurants",
         entityId: activeRestaurantId,
         fileCategory: "PROFILE",
       });
@@ -83,8 +99,9 @@ export function RestaurantOverviewCard({
       } else {
         throw new Error("Upload did not return object key");
       }
-    } catch {
-      toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : PROFILE_MESSAGES.UPLOAD_FAILED;
+      toast.error(message);
       setLogoKey(null);
       setLogoSrc(resolveMediaUrl(profile.logo) || FALLBACK_LOGO);
     }
@@ -94,13 +111,18 @@ export function RestaurantOverviewCard({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!activeRestaurantId) {
+      toast.error("Restaurant session not found. Please log in again.");
+      return;
+    }
+
     // Immediately show local object URL preview for responsive user feedback
     const previewUrl = URL.createObjectURL(file);
     setCoverSrc(previewUrl);
 
     try {
       const res = await upload(file, {
-        entityType: "restaurant",
+        entityType: "restaurants",
         entityId: activeRestaurantId,
         fileCategory: "PROFILE",
       });
@@ -109,8 +131,9 @@ export function RestaurantOverviewCard({
       } else {
         throw new Error("Upload did not return object key");
       }
-    } catch {
-      toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : PROFILE_MESSAGES.UPLOAD_FAILED;
+      toast.error(message);
       setCoverImageKey(null);
       setCoverSrc(resolveMediaUrl(profile.coverImage) || FALLBACK_COVER);
     }
@@ -132,6 +155,9 @@ export function RestaurantOverviewCard({
 
   const handleCancel = () => {
     setIsEditing(false);
+    setName(restaurant.name || "");
+    setPhone(restaurant.phone || "");
+    setOwnerName(restaurant.ownerName || "");
     setValidationError(null);
     setLogoKey(null);
     setCoverImageKey(null);
@@ -169,7 +195,15 @@ export function RestaurantOverviewCard({
         ...(logoKey ? { logoKey } : {}),
         ...(coverImageKey ? { coverImageKey } : {}),
       },
-      settings: fullData.settings,
+      settings: fullData.settings
+        ? {
+            acceptsQueue: fullData.settings.acceptsQueue,
+            acceptsQrOrders: fullData.settings.acceptsQrOrders,
+            loyaltyEnabled: fullData.settings.loyaltyEnabled,
+            autoAcceptQueue: fullData.settings.autoAcceptQueue,
+            seatingCapacity: fullData.settings.seatingCapacity ?? 0,
+          }
+        : undefined,
       businessHours: fullData.businessHours.map((bh) => ({
         dayOfWeek: bh.dayOfWeek,
         openTime: bh.openTime,

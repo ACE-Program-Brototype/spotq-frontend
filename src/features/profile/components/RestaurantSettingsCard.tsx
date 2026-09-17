@@ -261,7 +261,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
                 <Input
                   id="seatingCapacity"
                   type="number"
-                  min={1}
+                  min={0}
                   value={seatingCapacity}
                   onChange={(e) => {
                     const val = e.target.value;

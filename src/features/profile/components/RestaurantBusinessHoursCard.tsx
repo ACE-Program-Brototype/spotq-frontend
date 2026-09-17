@@ -96,7 +96,15 @@ export function RestaurantBusinessHoursCard({
         cuisineType: fullData.profile.cuisineType,
         averageCost: fullData.profile.averageCost,
       },
-      settings: fullData.settings,
+      settings: fullData.settings
+        ? {
+            acceptsQueue: fullData.settings.acceptsQueue,
+            acceptsQrOrders: fullData.settings.acceptsQrOrders,
+            loyaltyEnabled: fullData.settings.loyaltyEnabled,
+            autoAcceptQueue: fullData.settings.autoAcceptQueue,
+            seatingCapacity: fullData.settings.seatingCapacity ?? 0,
+          }
+        : undefined,
       businessHours: localHours.map((h) => ({
         dayOfWeek: h.dayOfWeek,
         openTime: h.isClosed ? null : h.openTime,

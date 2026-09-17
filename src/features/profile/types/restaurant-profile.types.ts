@@ -1,6 +1,7 @@
 import type { ApiResponse } from "@/features/auth/services/auth.service";
 
 export interface RestaurantOverviewDetails {
+  id?: string;
   name: string;
   phone: string;
   ownerName: string;

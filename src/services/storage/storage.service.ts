@@ -53,6 +53,28 @@ export async function getPresignedUrl(request: PresignedUrlRequest): Promise<Pre
 }
 
 /**
+ * Infers standard MIME types from file extensions when browser file.type is empty or generic.
+ */
+function inferMimeType(fileName: string): string {
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  switch (ext) {
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "png":
+      return "image/png";
+    case "webp":
+      return "image/webp";
+    case "avif":
+      return "image/avif";
+    case "pdf":
+      return "application/pdf";
+    default:
+      return "application/octet-stream";
+  }
+}
+
+/**
  * Uploads a file directly to AWS S3 using a presigned PUT URL.
  */
 export function uploadFileToS3(
@@ -64,7 +86,9 @@ export function uploadFileToS3(
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", uploadUrl, true);
-    xhr.setRequestHeader("Content-Type", contentType || file.type || "application/octet-stream");
+    const resolvedContentType =
+      contentType || (file.type && file.type !== "" ? file.type : inferMimeType(file.name));
+    xhr.setRequestHeader("Content-Type", resolvedContentType);
 
     if (onProgress && xhr.upload) {
       xhr.upload.onprogress = (event) => {
@@ -111,7 +135,8 @@ export async function uploadFile(params: UploadFileParams): Promise<UploadFileRe
       ? "PROFILE"
       : rawCategory;
 
-  const resolvedContentType = contentType || file.type || "application/octet-stream";
+  const resolvedContentType =
+    contentType || (file.type && file.type !== "" ? file.type : inferMimeType(file.name));
 
   const presignedRequest: PresignedUrlRequest = {
     entity_type: entityType,
