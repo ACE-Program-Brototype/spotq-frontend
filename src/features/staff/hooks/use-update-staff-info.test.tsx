@@ -105,7 +105,7 @@ describe("useUpdateStaffInfo", () => {
     await act(async () => {
       try {
         await result.current.mutateAsync({
-          name: "Ravi Kumar",
+          fullname: "Ravi Kumar",
           phone: "+919876543210",
         });
       } catch {
@@ -135,7 +135,7 @@ describe("useUpdateStaffInfo", () => {
     await act(async () => {
       try {
         await result.current.mutateAsync({
-          name: "Ravi Kumar",
+          fullname: "Ravi Kumar",
           phone: "+919876543210",
         });
       } catch {
@@ -164,7 +164,7 @@ describe("useUpdateStaffInfo", () => {
     await act(async () => {
       try {
         await result.current.mutateAsync({
-          name: "Ravi Kumar",
+          fullname: "Ravi Kumar",
           phone: "+919876543210",
         });
       } catch {
