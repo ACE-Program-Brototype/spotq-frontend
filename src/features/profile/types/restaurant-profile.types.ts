@@ -19,6 +19,7 @@ export interface RestaurantSettingsDetails {
   acceptsQrOrders: boolean;
   loyaltyEnabled: boolean;
   autoAcceptQueue: boolean;
+  seatingCapacity: number;
 }
 
 export interface BusinessHoursItem {
@@ -56,6 +57,7 @@ export interface UpdateRestaurantSettingsInput {
   acceptsQrOrders: boolean;
   loyaltyEnabled: boolean;
   autoAcceptQueue: boolean;
+  seatingCapacity?: number;
 }
 
 export interface UpdateBusinessHoursInput {

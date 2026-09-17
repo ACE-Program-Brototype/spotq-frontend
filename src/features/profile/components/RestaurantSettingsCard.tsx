@@ -1,6 +1,7 @@
-import { Check, Edit3, Loader2, QrCode, Sliders, Users, X, Zap } from "lucide-react";
+import { Armchair, Check, Edit3, Loader2, QrCode, Sliders, Users, X, Zap } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
 import type {
@@ -21,6 +22,9 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
   const [acceptsQrOrders, setAcceptsQrOrders] = useState(settings.acceptsQrOrders);
   const [loyaltyEnabled, setLoyaltyEnabled] = useState(settings.loyaltyEnabled);
   const [autoAcceptQueue, setAutoAcceptQueue] = useState(settings.autoAcceptQueue);
+  const [seatingCapacity, setSeatingCapacity] = useState<number | "">(
+    settings.seatingCapacity ?? 0,
+  );
 
   const updateMutation = useUpdateRestaurantProfile();
 
@@ -29,6 +33,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
     setAcceptsQrOrders(settings.acceptsQrOrders);
     setLoyaltyEnabled(settings.loyaltyEnabled);
     setAutoAcceptQueue(settings.autoAcceptQueue);
+    setSeatingCapacity(settings.seatingCapacity ?? 0);
     setIsEditing(true);
   };
 
@@ -36,7 +41,27 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
     setIsEditing(false);
   };
 
+  const capacityNum = Number(seatingCapacity);
+  const isCapacityValid =
+    seatingCapacity !== "" &&
+    !Number.isNaN(capacityNum) &&
+    Number.isInteger(capacityNum) &&
+    capacityNum >= 1;
+
+  const capacityError =
+    isEditing && !isCapacityValid ? "Seating capacity must be at least 1" : null;
+
+  const isDirty =
+    (acceptsQueue !== settings.acceptsQueue ||
+      acceptsQrOrders !== settings.acceptsQrOrders ||
+      loyaltyEnabled !== settings.loyaltyEnabled ||
+      autoAcceptQueue !== settings.autoAcceptQueue ||
+      Number(seatingCapacity) !== (settings.seatingCapacity ?? 0)) &&
+    isCapacityValid;
+
   const handleSave = () => {
+    if (!isDirty || !isCapacityValid) return;
+
     const payload: UpdateRestaurantProfilePayload = {
       restaurant: {
         name: fullData.restaurant.name,
@@ -53,6 +78,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
         acceptsQrOrders,
         loyaltyEnabled,
         autoAcceptQueue,
+        seatingCapacity: capacityNum,
       },
       businessHours: fullData.businessHours.map((bh) => ({
         dayOfWeek: bh.dayOfWeek,
@@ -119,7 +145,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
         <div>
           <h3 className="text-lg sm:text-xl font-bold text-neutral-900">Restaurant Settings</h3>
           <p className="text-xs text-neutral-500 mt-0.5">
-            Core operational toggles for queue management, ordering, and loyalty
+            Core operational preferences, seating capacity, and queue settings
           </p>
         </div>
 
@@ -149,7 +175,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
             <Button
               type="button"
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={isSaving || !isDirty || !isCapacityValid}
               className="rounded-xl bg-[#e8631b] hover:bg-[#d55513] text-white font-semibold text-xs h-9 px-4"
             >
               {isSaving ? (
@@ -169,6 +195,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Operational Toggle Cards */}
         {settingItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -201,6 +228,56 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
             </div>
           );
         })}
+
+        {/* Seating Capacity Input Card */}
+        <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#f3e6de] bg-[#fffcf9] p-4 transition-all">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-[#fef3ec] text-[#e8631b] shrink-0 mt-0.5">
+              <Armchair className="size-4.5" />
+            </div>
+            <div className="min-w-0">
+              <label
+                htmlFor="seatingCapacity"
+                className="text-sm font-bold text-neutral-900 leading-tight block"
+              >
+                Seating Capacity
+              </label>
+              <p className="text-xs text-neutral-500 mt-0.5 leading-snug">
+                Total guest seating capacity
+              </p>
+              {capacityError && (
+                <p className="text-[11px] font-medium text-red-500 mt-1">{capacityError}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            {!isEditing ? (
+              <span className="text-xs font-bold text-neutral-800 px-3 py-1.5 rounded-xl bg-[#fef3ec] border border-[#f3e6de]">
+                {settings.seatingCapacity ?? 0} seats
+              </span>
+            ) : (
+              <div className="w-24">
+                <Input
+                  id="seatingCapacity"
+                  type="number"
+                  min={1}
+                  value={seatingCapacity}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSeatingCapacity(val === "" ? "" : Number(val));
+                  }}
+                  disabled={isSaving}
+                  aria-label="Seating Capacity"
+                  placeholder="50"
+                  className={`h-9 text-xs text-right font-bold rounded-xl ${
+                    capacityError ? "border-red-400 focus-visible:ring-red-400" : "border-[#eddcd4]"
+                  }`}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

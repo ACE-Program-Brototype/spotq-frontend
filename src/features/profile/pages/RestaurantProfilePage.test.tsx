@@ -29,6 +29,7 @@ const mockData: RestaurantProfileData = {
     acceptsQrOrders: true,
     loyaltyEnabled: false,
     autoAcceptQueue: false,
+    seatingCapacity: 50,
   },
   businessHours: [
     {
