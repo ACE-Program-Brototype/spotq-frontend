@@ -1,4 +1,4 @@
-import { STAFF_ENDPOINTS } from "@/features/staff/constants/staff.constants";
+import { STAFF_ENDPOINTS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import type {
   StaffInvitationPagination,
   StaffMember,
@@ -41,7 +41,7 @@ export const staffMemberService = {
     if (!restaurantId) {
       return {
         success: false,
-        message: "Restaurant ID is required",
+        message: STAFF_MESSAGES.RESTAURANT_ID_REQUIRED,
         data: [],
         pagination: {
           page: 1,

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import { staffMemberService } from "@/features/staff/services/staff-member.service";
 import type {
   StaffInvitationPagination,
@@ -68,10 +69,10 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
           setPagination(response.pagination);
         }
       } else {
-        setError(response.message || "Failed to fetch staff members");
+        setError(response.message || STAFF_MESSAGES.FETCH_STAFF_ERROR);
       }
     } catch (err) {
-      const errMessage = err instanceof Error ? err.message : "Failed to fetch staff directory";
+      const errMessage = err instanceof Error ? err.message : STAFF_MESSAGES.FETCH_STAFF_ERROR;
       setError(errMessage);
     } finally {
       setIsLoading(false);

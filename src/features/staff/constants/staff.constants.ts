@@ -33,6 +33,7 @@ export const STAFF_MESSAGES = {
   FETCH_INVITATIONS_SUCCESS: "Invitations fetched successfully",
   FETCH_INVITATIONS_ERROR: "Failed to fetch invitations",
   FETCH_STAFF_ERROR: "Failed to fetch staff directory.",
+  RESTAURANT_ID_REQUIRED: "Restaurant ID is required",
   INVALID_OR_EXPIRED_TOKEN: "Invalid or expired invitation token",
   ACCEPT_INVITATION_SUCCESS: "Invitation accepted successfully",
   SEND_INVITATION_ERROR: "Failed to send invitation. Please try again.",
