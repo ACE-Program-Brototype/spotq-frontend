@@ -26,8 +26,7 @@ export function StaffDetailErrorState({
                 {title || STAFF_MESSAGES.STAFF_NOT_FOUND}
               </h2>
               <p className="text-xs sm:text-sm text-neutral-500">
-                {message ||
-                  "The staff member you are looking for does not exist or may have been removed."}
+                {message || STAFF_MESSAGES.ERROR_NOT_FOUND_DESCRIPTION}
               </p>
             </div>
             <div className="pt-3">
@@ -39,7 +38,7 @@ export function StaffDetailErrorState({
                 )}
               >
                 <ArrowLeft className="size-4 mr-2" />
-                Back to Staff Members
+                {STAFF_MESSAGES.ACTION_BACK_TO_STAFF_MEMBERS}
               </Link>
             </div>
           </CardContent>
@@ -57,7 +56,9 @@ export function StaffDetailErrorState({
               <ShieldAlert className="size-7" />
             </div>
             <div className="space-y-1">
-              <h2 className="text-xl font-bold text-neutral-900">{title || "Access Denied"}</h2>
+              <h2 className="text-xl font-bold text-neutral-900">
+                {title || STAFF_MESSAGES.ERROR_ACCESS_DENIED_TITLE}
+              </h2>
               <p className="text-xs sm:text-sm text-neutral-500">
                 {message || STAFF_MESSAGES.STAFF_FORBIDDEN}
               </p>
@@ -71,7 +72,7 @@ export function StaffDetailErrorState({
                 )}
               >
                 <ArrowLeft className="size-4 mr-2" />
-                Back to Staff Members
+                {STAFF_MESSAGES.ACTION_BACK_TO_STAFF_MEMBERS}
               </Link>
             </div>
           </CardContent>
@@ -89,7 +90,7 @@ export function StaffDetailErrorState({
           </div>
           <div className="space-y-1">
             <h2 className="text-xl font-bold text-neutral-900">
-              {title || "Unable to Load Staff Details"}
+              {title || STAFF_MESSAGES.ERROR_LOAD_FAILED_TITLE}
             </h2>
             <p className="text-xs sm:text-sm text-neutral-500">
               {message || STAFF_MESSAGES.FETCH_STAFF_DETAIL_ERROR}
@@ -103,7 +104,7 @@ export function StaffDetailErrorState({
                 className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white text-xs font-semibold"
               >
                 <RefreshCw className="size-3.5 mr-2" />
-                Retry
+                {STAFF_MESSAGES.ACTION_RETRY}
               </Button>
             )}
             <Link
@@ -114,7 +115,7 @@ export function StaffDetailErrorState({
               )}
             >
               <ArrowLeft className="size-3.5 mr-1.5" />
-              Back to Staff
+              {STAFF_MESSAGES.ACTION_BACK_TO_STAFF}
             </Link>
           </div>
         </CardContent>

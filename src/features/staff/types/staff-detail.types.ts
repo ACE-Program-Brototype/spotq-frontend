@@ -28,6 +28,8 @@ export interface StaffDetailApiResponse {
   data: StaffDetailRawData;
 }
 
+export type StaffStatus = "ACTIVE" | "INACTIVE";
+
 export interface StaffDetail {
   id: string;
   restaurantId: string;
@@ -36,15 +38,17 @@ export interface StaffDetail {
   phone: string | null;
   avatarUrl: string | null;
   role: string;
-  status: "ACTIVE" | "INACTIVE" | string;
+  status: StaffStatus | (string & {});
   createdAt: string | null;
   updatedAt: string | null;
 }
 
-export type StaffStatus = "ACTIVE" | "INACTIVE";
+export interface UpdateStaffStatusPayload {
+  status: StaffStatus;
+}
 
 export interface UpdateStaffInfoPayload {
-  name: string;
+  fullname: string;
   phone: string;
 }
 
@@ -53,6 +57,8 @@ export interface StaffDetailHeaderProps {
   onEditStaff?: () => void;
   onToggleStatus?: () => void;
   onRequestDelete?: () => void;
+  isUpdatingStatus?: boolean;
+  isDeleting?: boolean;
 }
 
 export interface EditStaffModalProps {

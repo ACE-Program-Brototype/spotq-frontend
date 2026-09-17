@@ -96,8 +96,28 @@ describe("RestaurantStaffDetailPage", () => {
     expect(screen.getByText(/Back to Staff Members/i)).toBeInTheDocument();
   });
 
-  it("displays 'Deactivate Staff' button when status is ACTIVE and toggles UI on click (UI-only)", async () => {
+  it("opens edit staff modal on clicking 'Edit Staff'", async () => {
     (staffDetailService.getStaffDetail as jest.Mock).mockResolvedValue(mockStaffActive);
+
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /edit staff/i })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /edit staff/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Edit Staff Information")).toBeInTheDocument();
+    });
+  });
+
+  it("displays 'Deactivate Staff' button when status is ACTIVE and toggles status on click", async () => {
+    (staffDetailService.getStaffDetail as jest.Mock).mockResolvedValue(mockStaffActive);
+    (staffDetailService.updateStaffStatus as jest.Mock).mockResolvedValue({
+      ...mockStaffActive,
+      status: "INACTIVE",
+    });
 
     renderPage();
 
@@ -108,12 +128,20 @@ describe("RestaurantStaffDetailPage", () => {
     fireEvent.click(screen.getByRole("button", { name: /deactivate staff/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /activate staff/i })).toBeInTheDocument();
+      expect(staffDetailService.updateStaffStatus).toHaveBeenCalledWith(
+        "rest_01ABC",
+        "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
+        "INACTIVE",
+      );
     });
   });
 
-  it("displays 'Activate Staff' button when status is INACTIVE and toggles UI on click (UI-only)", async () => {
+  it("displays 'Activate Staff' button when status is INACTIVE and calls updateStaffStatus on click", async () => {
     (staffDetailService.getStaffDetail as jest.Mock).mockResolvedValue(mockStaffInactive);
+    (staffDetailService.updateStaffStatus as jest.Mock).mockResolvedValue({
+      ...mockStaffInactive,
+      status: "ACTIVE",
+    });
 
     renderPage();
 
@@ -124,7 +152,11 @@ describe("RestaurantStaffDetailPage", () => {
     fireEvent.click(screen.getByRole("button", { name: /activate staff/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /deactivate staff/i })).toBeInTheDocument();
+      expect(staffDetailService.updateStaffStatus).toHaveBeenCalledWith(
+        "rest_01ABC",
+        "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
+        "ACTIVE",
+      );
     });
   });
 
@@ -155,8 +187,9 @@ describe("RestaurantStaffDetailPage", () => {
     });
   });
 
-  it("confirms remove staff in modal and closes modal (UI-only)", async () => {
+  it("confirms remove staff in modal and calls deleteStaff API", async () => {
     (staffDetailService.getStaffDetail as jest.Mock).mockResolvedValue(mockStaffActive);
+    (staffDetailService.deleteStaff as jest.Mock).mockResolvedValue(undefined);
 
     renderPage();
 
@@ -177,7 +210,11 @@ describe("RestaurantStaffDetailPage", () => {
     fireEvent.click(modalConfirmBtn);
 
     await waitFor(() => {
-      expect(screen.queryByText("Remove Staff Member?")).not.toBeInTheDocument();
+      expect(staffDetailService.deleteStaff).toHaveBeenCalledWith(
+        "rest_01ABC",
+        "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
+      );
+      expect(mockNavigate).toHaveBeenCalledWith("/restaurant/staff");
     });
   });
 

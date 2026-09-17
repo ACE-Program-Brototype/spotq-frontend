@@ -5,8 +5,13 @@
 
 import type { Role } from "../types/auth.types";
 
-export const getRoleHome = (role?: Role, status?: string, onboardingStatus?: string): string => {
-  switch (role) {
+export const getRoleHome = (
+  role?: Role | string,
+  status?: string,
+  onboardingStatus?: string,
+): string => {
+  const normalizedRole = role?.toUpperCase();
+  switch (normalizedRole) {
     case "ADMIN":
       return "/admin/dashboard";
     case "RESTAURANT_ADMIN":
@@ -20,7 +25,7 @@ export const getRoleHome = (role?: Role, status?: string, onboardingStatus?: str
         return "/restaurant/onboarding/business-information";
       }
       return "/restaurant/dashboard";
-    case "RESTAURANT_STAFF":
+    case "STAFF":
       return "/staff/dashboard";
     default:
       return "/";

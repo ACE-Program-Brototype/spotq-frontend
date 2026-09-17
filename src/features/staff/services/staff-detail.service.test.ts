@@ -6,12 +6,14 @@ jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
     patch: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
 describe("staffDetailService", () => {
   const mockGet = apiClient.get as jest.Mock;
   const mockPatch = apiClient.patch as jest.Mock;
+  const mockDelete = apiClient.delete as jest.Mock;
 
   const mockRawData = {
     id: "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
@@ -31,6 +33,27 @@ describe("staffDetailService", () => {
   });
 
   describe("normalizeStaffDetail", () => {
+    it("handles null and undefined input gracefully without throwing errors", () => {
+      const normalizedNull = normalizeStaffDetail(null, "fallback_rest");
+      expect(normalizedNull).toEqual({
+        id: "",
+        restaurantId: "fallback_rest",
+        fullName: "Staff Member",
+        email: "",
+        phone: null,
+        avatarUrl: null,
+        role: "Staff",
+        status: "ACTIVE",
+        createdAt: null,
+        updatedAt: null,
+      });
+
+      const normalizedUndefined = normalizeStaffDetail(undefined);
+      expect(normalizedUndefined.fullName).toBe("Staff Member");
+      expect(normalizedUndefined.role).toBe("Staff");
+      expect(normalizedUndefined.status).toBe("ACTIVE");
+    });
+
     it("correctly normalizes API data with snake_case and camelCase fallbacks", () => {
       const normalized = normalizeStaffDetail(mockRawData, "fallback_rest");
       expect(normalized).toEqual({
@@ -82,6 +105,7 @@ describe("staffDetailService", () => {
       expect(mockGet).toHaveBeenCalledWith(
         STAFF_ENDPOINTS.STAFF_DETAIL_BY_RESTAURANT("rest_id", "stf_01"),
       );
+      expect(mockGet).toHaveBeenCalledWith("restaurants/rest_id/staff/stf_01");
       expect(res.fullName).toBe("John Owner");
       expect(res.email).toBe("owner@spotq.com");
       expect(res.status).toBe("ACTIVE");
@@ -106,7 +130,7 @@ describe("staffDetailService", () => {
       });
 
       const payload = {
-        name: "Ravi Kumar",
+        fullname: "Ravi Kumar",
         phone: "+919876543210",
       };
 
@@ -118,6 +142,41 @@ describe("staffDetailService", () => {
       );
       expect(res.fullName).toBe("Ravi Kumar");
       expect(res.phone).toBe("+919876543210");
+    });
+  });
+
+  describe("updateStaffStatus", () => {
+    it("calls apiClient.patch with correct endpoint and status payload", async () => {
+      mockPatch.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          message: "Staff status updated successfully",
+          data: { ...mockRawData, status: "INACTIVE" },
+          statusCode: 200,
+        }),
+      });
+
+      const res = await staffDetailService.updateStaffStatus("rest_id", "stf_01", "INACTIVE");
+
+      expect(mockPatch).toHaveBeenCalledWith(STAFF_ENDPOINTS.STAFF_STATUS("rest_id", "stf_01"), {
+        json: { status: "INACTIVE" },
+      });
+      expect(res.status).toBe("INACTIVE");
+    });
+  });
+
+  describe("deleteStaff", () => {
+    it("calls apiClient.delete with correct endpoint", async () => {
+      mockDelete.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          message: "Staff member deleted successfully",
+        }),
+      });
+
+      await staffDetailService.deleteStaff("rest_id", "stf_01");
+
+      expect(mockDelete).toHaveBeenCalledWith(STAFF_ENDPOINTS.STAFF_DELETE("rest_id", "stf_01"));
     });
   });
 });

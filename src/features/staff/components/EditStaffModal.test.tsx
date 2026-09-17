@@ -137,7 +137,7 @@ describe("EditStaffModal", () => {
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith({
-        name: "Ravi Sharma",
+        fullname: "Ravi Sharma",
         phone: "+919876543210",
       });
     });

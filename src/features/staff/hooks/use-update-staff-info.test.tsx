@@ -74,13 +74,13 @@ describe("useUpdateStaffInfo", () => {
 
     await act(async () => {
       await result.current.mutateAsync({
-        name: "Ravi Kumar",
+        fullname: "Ravi Kumar",
         phone: "+919876543210",
       });
     });
 
     expect(staffDetailService.updateStaffInfo).toHaveBeenCalledWith("res-456", "stf-123", {
-      name: "Ravi Kumar",
+      fullname: "Ravi Kumar",
       phone: "+919876543210",
     });
     expect(toast.success).toHaveBeenCalledWith(STAFF_MESSAGES.STAFF_UPDATE_SUCCESS);

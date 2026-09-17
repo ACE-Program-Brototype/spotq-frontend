@@ -7,6 +7,11 @@ describe("customer.utils", () => {
       expect(result).toBe("Member since Jan 2023");
     });
 
+    it("should format ISO string without prefix when includePrefix is false", () => {
+      const result = formatMemberSince("2023-01-15T10:00:00.000Z", { includePrefix: false });
+      expect(result).toBe("Jan 2023");
+    });
+
     it("should return empty string for null or invalid date", () => {
       expect(formatMemberSince(null)).toBe("");
       expect(formatMemberSince(undefined)).toBe("");

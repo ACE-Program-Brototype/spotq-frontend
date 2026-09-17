@@ -80,16 +80,36 @@ describe("useStaffDetail", () => {
     );
   });
 
-  it("detects forbidden access if URL restaurantId does not match authenticated owner", async () => {
-    const wrapper = createWrapper(
-      "/restaurant/other_rest/staff/stf_01",
-      "/restaurant/:restaurantId/staff/:staffId",
-    );
+  it("detects forbidden access if authenticated user lacks restaurant ID", async () => {
+    useAuthStore.getState().setUser({
+      _id: "user_without_rest",
+      restaurantId: "",
+      email: "no_rest@spotq.com",
+      role: "RESTAURANT_ADMIN",
+    });
+
+    const wrapper = createWrapper("/restaurant/staff/stf_01", "/restaurant/staff/:staffId");
 
     const { result } = renderHook(() => useStaffDetail(), { wrapper });
 
     expect(result.current.isForbidden).toBe(true);
     expect(staffDetailService.getStaffDetail).not.toHaveBeenCalled();
+  });
+
+  it("handles 403 forbidden error from service", async () => {
+    const forbiddenError = new Error("Forbidden");
+    (forbiddenError as unknown as { status: number }).status = 403;
+    (staffDetailService.getStaffDetail as jest.Mock).mockRejectedValue(forbiddenError);
+
+    const wrapper = createWrapper("/restaurant/staff/stf_01", "/restaurant/staff/:staffId");
+
+    const { result } = renderHook(() => useStaffDetail(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.isForbidden).toBe(true);
   });
 
   it("handles 404 not found error", async () => {

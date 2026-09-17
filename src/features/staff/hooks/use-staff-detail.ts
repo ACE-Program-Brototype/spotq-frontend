@@ -9,33 +9,25 @@ import type { StaffDetail } from "@/features/staff/types/staff-detail.types";
 export const STAFF_DETAIL_QUERY_KEY = "restaurant-staff-detail" as const;
 
 export function useStaffDetail() {
-  const { staffId = "", restaurantId: routeRestaurantId } = useParams<{
-    staffId: string;
-    restaurantId?: string;
-  }>();
+  const { staffId = "" } = useParams<{ staffId: string }>();
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, clearAuth } = useAuthStore();
 
-  const authRestaurantId = user?.restaurantId || "";
-
-  // Authorization check: if URL specifies a restaurantId, it must match authenticated owner
-  const isForbiddenMismatch = Boolean(
-    routeRestaurantId && authRestaurantId && routeRestaurantId !== authRestaurantId,
-  );
-
-  const effectiveRestaurantId = routeRestaurantId || authRestaurantId;
+  const authRestaurantId = user?.restaurantId ?? "";
+  const hasRestaurantAccess = Boolean(authRestaurantId);
 
   const queryKey = useMemo(
-    () => [STAFF_DETAIL_QUERY_KEY, effectiveRestaurantId, staffId],
-    [effectiveRestaurantId, staffId],
+    () => [STAFF_DETAIL_QUERY_KEY, authRestaurantId, staffId],
+    [authRestaurantId, staffId],
   );
 
   const query = useQuery<StaffDetail, Error>({
     queryKey,
-    queryFn: () => staffDetailService.getStaffDetail(effectiveRestaurantId, staffId),
-    enabled: Boolean(effectiveRestaurantId && staffId && !isForbiddenMismatch),
+    queryFn: () => staffDetailService.getStaffDetail(authRestaurantId, staffId),
+    enabled: Boolean(hasRestaurantAccess && staffId),
+
     retry: (failureCount, error) => {
       const configuredDefaultRetry = queryClient.getDefaultOptions().queries?.retry;
       if (configuredDefaultRetry === false || configuredDefaultRetry === 0) {
@@ -52,13 +44,13 @@ export function useStaffDetail() {
     },
   });
 
-  const { data: staff, isLoading, isFetching, isError, error, refetch } = query;
+  const { data: staff, isLoading, isPending, isFetching, isError, error, refetch } = query;
 
   const errorStatus =
     error instanceof HTTPError ? error.response?.status : (error as { status?: number })?.status;
 
   const isUnauthorized = errorStatus === 401;
-  const isForbidden = isForbiddenMismatch || errorStatus === 403;
+  const isForbidden = !hasRestaurantAccess || errorStatus === 403;
   const isNotFound = errorStatus === 404;
 
   // Handle 401 Unauthorized redirect
@@ -72,6 +64,7 @@ export function useStaffDetail() {
   return {
     staff,
     isLoading,
+    isPending,
     isFetching,
     isError,
     error,

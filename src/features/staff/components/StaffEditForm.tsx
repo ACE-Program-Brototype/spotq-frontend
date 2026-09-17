@@ -46,7 +46,7 @@ export function StaffEditForm({ staff, onSuccess, onCancel }: StaffEditFormProps
 
   const onSubmit = (values: UpdateStaffInfoFormValues) => {
     updateMutation.mutate({
-      name: values.name.trim(),
+      fullname: values.name.trim(),
       phone: normalizePhoneNumber(values.phone),
     });
   };

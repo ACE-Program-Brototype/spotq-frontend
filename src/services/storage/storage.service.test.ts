@@ -236,6 +236,27 @@ describe("storage.service", () => {
       expect(result).toBe("https://s3.amazonaws.com/bucket/avatar.png?sig=xyz");
     });
 
+    it("extracts S3 key from full unsigned S3 URL and requests presigned download URL", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: {
+            download_url: "https://s3.amazonaws.com/bucket/staff/avatars/avatar2.png?sig=abc",
+            expires_in_seconds: 900,
+          },
+        }),
+      });
+
+      const result = await getPresignedDownloadUrl(
+        "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com/staff/avatars/avatar2.png",
+      );
+
+      expect(apiClient.get).toHaveBeenCalledWith(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+        searchParams: { key: "staff/avatars/avatar2.png" },
+      });
+      expect(result).toBe("https://s3.amazonaws.com/bucket/staff/avatars/avatar2.png?sig=abc");
+    });
+
     it("throws error when API returns success: false", async () => {
       (apiClient.get as jest.Mock).mockReturnValue({
         json: jest.fn().mockResolvedValue({

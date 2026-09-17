@@ -3,6 +3,7 @@
  * Provides collapsible navigation sections, restaurant branding, and admin profile overview.
  */
 
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Briefcase,
   ChevronDown,
@@ -18,7 +19,7 @@ import {
   Utensils,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -35,7 +36,20 @@ export function RestaurantAdminSidebar({
   onLogout,
 }: RestaurantAdminSidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      clearAuth();
+      queryClient.clear();
+      navigate("/restaurant/email/verification", { replace: true });
+    }
+  };
 
   const adminNavItems: NavItem[] = [
     {
@@ -45,10 +59,9 @@ export function RestaurantAdminSidebar({
     },
     {
       title: "Restaurant",
-      href: `${basePath}/profile`,
+      href: `${basePath}/overview`,
       icon: Store,
       children: [
-        { title: "Profile", href: `${basePath}/profile` },
         { title: "Overview", href: `${basePath}/overview` },
         { title: "QR Management", href: `${basePath}/qr-management` },
         { title: "Tables", href: `${basePath}/tables` },
@@ -130,10 +143,10 @@ export function RestaurantAdminSidebar({
     },
     {
       title: "Settings",
-      href: `${basePath}/settings`,
+      href: `${basePath}/profile`,
       icon: Settings,
       children: [
-        { title: "Account", href: `${basePath}/settings/account` },
+        { title: "Account", href: `${basePath}/profile` },
         { title: "Security", href: `${basePath}/settings/security` },
       ],
     },
@@ -141,6 +154,7 @@ export function RestaurantAdminSidebar({
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Restaurant: true,
+    Settings: true,
   });
 
   const toggleSection = (title: string) => {
@@ -308,7 +322,7 @@ export function RestaurantAdminSidebar({
             description="Are you sure you want to end your session?"
             confirmText="Sign Out"
             confirmVariant="destructive"
-            onConfirm={() => onLogout?.()}
+            onConfirm={handleLogout}
           />
         </div>
       </div>

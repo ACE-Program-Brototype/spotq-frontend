@@ -142,7 +142,7 @@ describe("RestaurantStaffEditPage", () => {
         "rest_01ABC",
         "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01",
         {
-          name: "Ravi Sharma",
+          fullname: "Ravi Sharma",
           phone: "+919876543210",
         },
       );

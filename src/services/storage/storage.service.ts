@@ -42,6 +42,11 @@ export interface UploadFileResult {
   fileName: string;
 }
 
+export interface PresignedDownloadUrlResponse {
+  download_url: string;
+  expires_in_seconds: number;
+}
+
 /**
  * Requests a presigned upload URL from the backend storage endpoint.
  */
@@ -57,6 +62,66 @@ export async function getPresignedUrl(request: PresignedUrlRequest): Promise<Pre
   return response.data;
 }
 
+function inferMimeType(fileName: string): string {
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  switch (ext) {
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "png":
+      return "image/png";
+    case "webp":
+      return "image/webp";
+    case "avif":
+      return "image/avif";
+    case "pdf":
+      return "application/pdf";
+    default:
+      return "application/octet-stream";
+  }
+}
+
+/**
+ * Requests a presigned download/view URL for an existing S3 object key.
+ */
+export async function getPresignedDownloadUrl(key: string): Promise<string> {
+  if (!key?.trim()) {
+    throw new Error("Object key is required");
+  }
+
+  let trimmedKey = key.trim();
+
+  // If it is already a signed URL with credentials/signature, return directly
+  if (
+    trimmedKey.includes("X-Amz-Signature") ||
+    trimmedKey.includes("Signature=") ||
+    trimmedKey.includes("AWSAccessKeyId=")
+  ) {
+    return trimmedKey;
+  }
+
+  // If it is an S3 URL without signature, extract the object key so we can get a presigned URL
+  const s3Match = trimmedKey.match(/^https?:\/\/[^/]+\.amazonaws\.com\/(.+)$/i);
+  if (s3Match?.[1]) {
+    trimmedKey = decodeURIComponent(s3Match[1].split("?")[0]);
+  } else if (trimmedKey.startsWith("http://") || trimmedKey.startsWith("https://")) {
+    // Non-S3 external URLs (e.g. data:, blob:, Google avatar, Unsplash)
+    return trimmedKey;
+  }
+
+  const response = await apiClient
+    .get(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+      searchParams: { key: trimmedKey },
+    })
+    .json<ApiResponse<PresignedDownloadUrlResponse>>();
+
+  if (!response?.success || !response?.data?.download_url) {
+    throw new Error(response?.message || "Failed to retrieve presigned download URL.");
+  }
+
+  return response.data.download_url;
+}
+
 /**
  * Uploads a file directly to AWS S3 using a presigned PUT URL.
  */
@@ -69,7 +134,9 @@ export function uploadFileToS3(
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", uploadUrl, true);
-    xhr.setRequestHeader("Content-Type", contentType || file.type || "application/octet-stream");
+    const resolvedContentType =
+      contentType || (file.type && file.type !== "" ? file.type : inferMimeType(file.name));
+    xhr.setRequestHeader("Content-Type", resolvedContentType);
 
     if (onProgress && xhr.upload) {
       xhr.upload.onprogress = (event) => {
@@ -110,14 +177,21 @@ export function uploadFileToS3(
 export async function uploadFile(params: UploadFileParams): Promise<UploadFileResult> {
   const { file, entityType, entityId, fileCategory, contentType, onProgress } = params;
 
-  const resolvedContentType = contentType || file.type || "application/octet-stream";
+  const rawCategory = (fileCategory || "DOCUMENTS").toUpperCase();
+  const normalizedCategory =
+    rawCategory === "LOGO" || rawCategory === "COVER_IMAGE" || rawCategory === "AVATAR"
+      ? "PROFILE"
+      : rawCategory;
+
+  const resolvedContentType =
+    contentType || (file.type && file.type !== "" ? file.type : inferMimeType(file.name));
 
   const presignedRequest: PresignedUrlRequest = {
     entity_type: entityType,
     entity_id: entityId,
     file_name: file.name,
     content_type: resolvedContentType,
-    file_category: fileCategory,
+    file_category: normalizedCategory,
     file_size: file.size,
   };
 
@@ -129,32 +203,4 @@ export async function uploadFile(params: UploadFileParams): Promise<UploadFileRe
     s3ObjectKey: presignedResponse.s3ObjectKey,
     fileName: file.name,
   };
-}
-
-/**
- * Retrieves a presigned download/view URL for an S3 object key.
- * If the key is already an absolute HTTP/HTTPS URL, returns it directly.
- */
-export async function getPresignedDownloadUrl(key: string): Promise<string> {
-  if (!key?.trim()) {
-    throw new Error("Object key is required");
-  }
-
-  const trimmedKey = key.trim();
-
-  if (trimmedKey.startsWith("http://") || trimmedKey.startsWith("https://")) {
-    return trimmedKey;
-  }
-
-  const response = await apiClient
-    .get(STORAGE_ENDPOINTS.PRESIGNED_URL, {
-      searchParams: { key: trimmedKey },
-    })
-    .json<ApiResponse<PresignedDownloadUrlResponse>>();
-
-  if (!response?.success || !response?.data?.download_url) {
-    throw new Error(response?.message || "Failed to retrieve presigned download URL.");
-  }
-
-  return response.data.download_url;
 }
