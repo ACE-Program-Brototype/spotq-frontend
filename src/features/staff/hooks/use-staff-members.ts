@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
-import { staffMemberService } from "@/features/staff/services/staff-member.service";
+import { STAFF_DESIGNATIONS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
+import {
+  type StaffDirectoryStats,
+  staffMemberService,
+} from "@/features/staff/services/staff-member.service";
 import type {
   StaffInvitationPagination,
   StaffMember,
@@ -33,6 +36,7 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
   const [limit, setLimit] = useState<number>(options?.initialLimit || 20);
   const [sortBy, setSortBy] = useState<"createdAt">(options?.initialSortBy || "createdAt");
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">(options?.initialSortOrder || "DESC");
+  const [serverStats, setServerStats] = useState<StaffDirectoryStats | null>(null);
 
   const [pagination, setPagination] = useState<StaffInvitationPagination>({
     page: page,
@@ -67,6 +71,9 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
         setStaffList(response.data);
         if (response.pagination) {
           setPagination(response.pagination);
+        }
+        if (response.stats) {
+          setServerStats(response.stats);
         }
       } else {
         setError(response.message || STAFF_MESSAGES.FETCH_STAFF_ERROR);
@@ -111,16 +118,23 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
     }
   }, [debouncedSearch, statusFilter, designationFilter]);
 
+  // Client-side designation filtering on current page slice until backend query support is available
   const filteredStaff = useMemo(() => {
     if (designationFilter === "ALL") return staffList;
     return staffList.filter((s) => s.designation === designationFilter);
   }, [staffList, designationFilter]);
 
+  // Reuse centralized STAFF_DESIGNATIONS and include any custom roles from staffList
   const availableDesignations = useMemo(() => {
-    return Array.from(new Set(staffList.map((s) => s.designation).filter(Boolean)));
+    const dynamicRoles = staffList.map((s) => s.designation).filter(Boolean);
+    return Array.from(new Set<string>([...STAFF_DESIGNATIONS, ...dynamicRoles]));
   }, [staffList]);
 
+  // Directory statistics: prioritize aggregate backend totals when provided, else compute from loaded staff
   const stats = useMemo(() => {
+    if (serverStats) {
+      return serverStats;
+    }
     const total = pagination.total || staffList.length;
     const active = staffList.filter((s) => s.status?.toUpperCase() === "ACTIVE").length;
     const inactive = staffList.filter((s) => s.status?.toUpperCase() === "INACTIVE").length;
@@ -132,7 +146,7 @@ export function useStaffMembers(options?: UseStaffMembersOptions) {
       inactive,
       pending,
     };
-  }, [staffList, pagination.total]);
+  }, [staffList, pagination.total, serverStats]);
 
   const resetFilters = useCallback(() => {
     setSearchQuery("");

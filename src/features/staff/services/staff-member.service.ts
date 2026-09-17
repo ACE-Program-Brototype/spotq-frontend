@@ -15,6 +15,13 @@ export type ListStaffMembersParams = {
   sortOrder?: "ASC" | "DESC" | "asc" | "desc";
 };
 
+export type StaffDirectoryStats = {
+  total: number;
+  active: number;
+  inactive: number;
+  pending: number;
+};
+
 export type StaffMemberResponseItem = {
   id: string;
   fullname: string;
@@ -37,6 +44,7 @@ export const staffMemberService = {
     message: string;
     data: StaffMember[];
     pagination: StaffInvitationPagination;
+    stats?: StaffDirectoryStats;
   }> {
     if (!restaurantId) {
       return {
@@ -76,6 +84,7 @@ export const staffMemberService = {
         message?: string;
         data?: StaffMemberResponseItem[];
         pagination?: StaffInvitationPagination;
+        stats?: StaffDirectoryStats;
       }>();
 
     const rawItems = Array.isArray(raw.data) ? raw.data : [];
@@ -107,6 +116,7 @@ export const staffMemberService = {
       message: raw.message || "Staff members retrieved successfully",
       data: staffMembers,
       pagination,
+      stats: raw.stats,
     };
   },
 };

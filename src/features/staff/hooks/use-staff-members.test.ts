@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { STAFF_DESIGNATIONS } from "@/features/staff/constants/staff.constants";
 import { staffMemberService } from "@/features/staff/services/staff-member.service";
 import type { StaffMember } from "@/features/staff/types/staff-invitation.types";
 import { useStaffMembers } from "./use-staff-members";
@@ -127,6 +128,50 @@ describe("useStaffMembers", () => {
         }),
       );
     });
+  });
+
+  it("includes all centralized STAFF_DESIGNATIONS in availableDesignations", async () => {
+    mockGetStaffMembers.mockResolvedValueOnce({
+      success: true,
+      message: "Success",
+      data: mockStaffData,
+      pagination: { page: 1, limit: 20, total: 2, totalPages: 1 },
+    });
+
+    const { result } = renderHook(() => useStaffMembers());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    for (const designation of STAFF_DESIGNATIONS) {
+      expect(result.current.availableDesignations).toContain(designation);
+    }
+  });
+
+  it("uses server-provided aggregate stats when available", async () => {
+    const mockServerStats = {
+      total: 50,
+      active: 40,
+      inactive: 8,
+      pending: 2,
+    };
+
+    mockGetStaffMembers.mockResolvedValueOnce({
+      success: true,
+      message: "Success",
+      data: mockStaffData,
+      pagination: { page: 1, limit: 20, total: 50, totalPages: 3 },
+      stats: mockServerStats,
+    });
+
+    const { result } = renderHook(() => useStaffMembers());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.stats).toEqual(mockServerStats);
   });
 
   it("preserves initialPage on mount without being overridden by filter defaults", async () => {
