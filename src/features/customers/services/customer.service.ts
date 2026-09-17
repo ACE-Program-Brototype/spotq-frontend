@@ -20,6 +20,7 @@ interface RawCustomerItem {
   id: string;
   fullname?: string;
   fullName?: string;
+  full_name?: string;
   email: string;
   phone?: string | null;
   status: Customer["status"];
@@ -74,7 +75,7 @@ export const customerService = {
     const users: Customer[] = rawList.map((item) => ({
       id: item.id,
       email: item.email,
-      fullName: item.fullName || item.fullname || item.email.split("@")[0],
+      fullName: item.fullName || item.full_name || item.fullname || item.email.split("@")[0],
       phone: item.phone ?? null,
       status: item.status,
       isEmailVerified: item.isEmailVerified ?? false,

@@ -101,7 +101,6 @@ export const restaurantService = {
 
     return response.data;
   },
-
   /**
    * Block an active restaurant with an administrative reason
    */

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import type { RestaurantListItem } from "../types/restaurant.types";
+import type { RestaurantListItem, RestaurantStatusType } from "../types/restaurant.types";
 import { RestaurantTable } from "./RestaurantTable";
 
 const mockRestaurants: RestaurantListItem[] = [
@@ -30,7 +30,7 @@ const mockRestaurants: RestaurantListItem[] = [
       owner_email: "sarah@cafe.com",
     },
     plan: "SELF_SERVICE_PRO",
-    status: "PENDING",
+    status: "REJECTED",
     is_subscription_active: false,
     is_blocked: false,
     created_at: "2026-09-11T09:00:00.000Z",
@@ -38,13 +38,13 @@ const mockRestaurants: RestaurantListItem[] = [
   },
 ];
 
+const renderWithRouter = (ui: React.ReactElement) => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+};
+
 describe("RestaurantTable", () => {
-  it("renders restaurant rows correctly with badges, contact details, and view link", () => {
-    render(
-      <MemoryRouter>
-        <RestaurantTable restaurants={mockRestaurants} />
-      </MemoryRouter>,
-    );
+  it("renders restaurant rows correctly with badges and contact details", () => {
+    renderWithRouter(<RestaurantTable restaurants={mockRestaurants} />);
 
     expect(screen.getByText("Ajex Grand Bistro")).toBeInTheDocument();
     expect(screen.getByText("Ajex Joshy")).toBeInTheDocument();
@@ -58,24 +58,33 @@ describe("RestaurantTable", () => {
     expect(screen.getByText("Sarah Connor")).toBeInTheDocument();
     expect(screen.getByText("sarah@cafe.com")).toBeInTheDocument();
     expect(screen.getByText("Self Service Pro")).toBeInTheDocument();
-    expect(screen.getByText("PENDING")).toBeInTheDocument();
+    expect(screen.getByText("REJECTED")).toBeInTheDocument();
     expect(screen.getByText("Inactive")).toBeInTheDocument();
+  });
 
-    expect(screen.getByTestId("view-restaurant-rest-1")).toBeInTheDocument();
-    expect(screen.getByTestId("view-restaurant-rest-2")).toBeInTheDocument();
+  it("renders Actions column and Details navigation buttons with correct paths", () => {
+    renderWithRouter(<RestaurantTable restaurants={mockRestaurants} />);
+
+    expect(screen.getByRole("columnheader", { name: /actions/i })).toBeInTheDocument();
+
+    const link1 = screen.getByTestId("restaurant-details-btn-rest-1");
+    expect(link1).toBeInTheDocument();
+    expect(link1).toHaveAttribute("href", "/admin/restaurants/rest-1");
+
+    const link2 = screen.getByTestId("restaurant-details-btn-rest-2");
+    expect(link2).toBeInTheDocument();
+    expect(link2).toHaveAttribute("href", "/admin/restaurants/rest-2");
   });
 
   it("calls onSort when a sortable column header is clicked", () => {
     const handleSort = jest.fn();
-    render(
-      <MemoryRouter>
-        <RestaurantTable
-          restaurants={mockRestaurants}
-          sortBy="created_at"
-          sortOrder="desc"
-          onSort={handleSort}
-        />
-      </MemoryRouter>,
+    renderWithRouter(
+      <RestaurantTable
+        restaurants={mockRestaurants}
+        sortBy="created_at"
+        sortOrder="desc"
+        onSort={handleSort}
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /restaurant/i }));
@@ -83,5 +92,35 @@ describe("RestaurantTable", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /owner & contact/i }));
     expect(handleSort).toHaveBeenCalledWith("owner_name");
+  });
+
+  it("normalizes lowercase status values properly in badges", () => {
+    const lowercaseStatusRestaurants: RestaurantListItem[] = [
+      {
+        ...mockRestaurants[0],
+        id: "rest-3",
+        status: "active" as unknown as RestaurantStatusType,
+      },
+    ];
+
+    renderWithRouter(<RestaurantTable restaurants={lowercaseStatusRestaurants} />);
+    expect(screen.getByText("ACTIVE")).toBeInTheDocument();
+  });
+
+  it("truncates ID with ellipsis only when length exceeds 10 characters", () => {
+    const mixedIdRestaurants: RestaurantListItem[] = [
+      {
+        ...mockRestaurants[0],
+        id: "short-id",
+      },
+      {
+        ...mockRestaurants[1],
+        id: "very-long-restaurant-id-123456",
+      },
+    ];
+
+    renderWithRouter(<RestaurantTable restaurants={mixedIdRestaurants} />);
+    expect(screen.getByText("ID: short-id")).toBeInTheDocument();
+    expect(screen.getByText("ID: very-long-...")).toBeInTheDocument();
   });
 });

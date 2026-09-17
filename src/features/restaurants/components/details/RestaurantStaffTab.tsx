@@ -4,36 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { formatDate } from "@/lib/utils/date";
 import type { RestaurantStaffMember } from "../../types/restaurant.types";
+import { getStaffInitials } from "../../utils/restaurant.utils";
 
 interface RestaurantStaffTabProps {
   staff?: RestaurantStaffMember[];
-}
-
-function formatDate(dateString?: string | null): string {
-  if (!dateString) return "—";
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) {
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-  }
-  if (parts.length === 1 && parts[0].length >= 2) {
-    return parts[0].slice(0, 2).toUpperCase();
-  }
-  return parts[0]?.[0]?.toUpperCase() || "ST";
 }
 
 export function RestaurantStaffTab({ staff = [] }: RestaurantStaffTabProps) {
@@ -121,7 +97,7 @@ export function RestaurantStaffTab({ staff = [] }: RestaurantStaffTabProps) {
                           />
                         )}
                         <AvatarFallback className="bg-amber-100 text-amber-800 font-bold text-xs">
-                          {getInitials(member.fullname)}
+                          {getStaffInitials(member.fullname)}
                         </AvatarFallback>
                       </Avatar>
 
@@ -168,7 +144,7 @@ export function RestaurantStaffTab({ staff = [] }: RestaurantStaffTabProps) {
 
                   <div className="flex items-center gap-2 text-slate-600">
                     <Phone className="size-3.5 text-slate-400 shrink-0" />
-                    <span className="font-mono text-slate-700">{member.phone || "—"}</span>
+                    <span className="font-mono text-slate-700">{member.phone || "-"}</span>
                   </div>
 
                   <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-50">

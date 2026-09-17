@@ -1,5 +1,6 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, Mail, Phone, Store, User } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Eye, Mail, Phone, Store, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { formatDate } from "@/lib/utils/date";
 import {
   RESTAURANT_MESSAGES,
   RESTAURANT_PLANS,
@@ -20,35 +21,22 @@ export interface RestaurantTableProps {
   onSort?: (field: RestaurantSortByType) => void;
 }
 
-function formatDate(dateString: string): string {
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  } catch {
-    return dateString;
-  }
-}
-
-function renderStatusBadge(status: RestaurantStatusType) {
-  switch (status) {
+function renderStatusBadge(status: RestaurantStatusType | string | null | undefined) {
+  const normalized = status ? status.toUpperCase() : "";
+  switch (normalized) {
     case RESTAURANT_STATUS.ACTIVE:
     case RESTAURANT_STATUS.APPROVED:
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100/70 text-emerald-800 border border-emerald-200/50">
           <span className="size-1.5 rounded-full bg-emerald-600" />
-          {status}
+          {normalized}
         </span>
       );
     case RESTAURANT_STATUS.PENDING:
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100/70 text-amber-800 border border-amber-200/50">
           <span className="size-1.5 rounded-full bg-amber-600" />
-          PENDING
+          {normalized}
         </span>
       );
     case RESTAURANT_STATUS.REJECTED:
@@ -56,14 +44,14 @@ function renderStatusBadge(status: RestaurantStatusType) {
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100/70 text-rose-800 border border-rose-200/50">
           <span className="size-1.5 rounded-full bg-rose-600" />
-          {status}
+          {normalized}
         </span>
       );
     default:
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200/50">
           <span className="size-1.5 rounded-full bg-slate-500" />
-          {status || "INACTIVE"}
+          {normalized || "INACTIVE"}
         </span>
       );
   }
@@ -71,7 +59,7 @@ function renderStatusBadge(status: RestaurantStatusType) {
 
 function renderPlanBadge(plan: RestaurantPlanType | string | null) {
   if (!plan) {
-    return <span className="text-xs text-slate-400 font-medium">—</span>;
+    return <span className="text-xs text-slate-400 font-medium">-</span>;
   }
 
   const normalized = plan.toUpperCase();
@@ -205,12 +193,12 @@ export function RestaurantTable({
               </th>
 
               {/* ACTIONS */}
-              <th className="py-3.5 px-5 text-right font-bold uppercase">Actions</th>
+              <th className="py-3.5 px-5 text-right">{RESTAURANT_MESSAGES.COL_ACTIONS}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700 bg-white">
             {restaurants.map((restaurant) => {
-              const email = restaurant.contact?.email || restaurant.contact?.owner_email || "—";
+              const email = restaurant.contact?.email || restaurant.contact?.owner_email || "-";
               const phone = restaurant.contact?.phone || null;
 
               return (
@@ -233,7 +221,10 @@ export function RestaurantTable({
                           {restaurant.restaurant_name}
                         </Link>
                         <p className="text-[11px] text-slate-400 font-mono truncate">
-                          ID: {restaurant.id.slice(0, 10)}...
+                          ID:{" "}
+                          {restaurant.id.length > 10
+                            ? `${restaurant.id.slice(0, 10)}...`
+                            : restaurant.id}
                         </p>
                       </div>
                     </div>
@@ -283,14 +274,16 @@ export function RestaurantTable({
                     {formatDate(restaurant.created_at)}
                   </td>
 
-                  {/* ACTION BUTTON */}
+                  {/* ACTIONS */}
                   <td className="py-4 px-5 text-right whitespace-nowrap">
                     <Link
                       to={`/admin/restaurants/${restaurant.id}`}
-                      className="inline-flex items-center justify-center px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 border border-slate-200/70 transition-all shadow-2xs"
-                      data-testid={`view-restaurant-${restaurant.id}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:text-[#0052cc] hover:border-[#0052cc]/30 border border-slate-200/80 rounded-xl transition-all shadow-2xs group"
+                      data-testid={`restaurant-details-btn-${restaurant.id}`}
+                      aria-label={`View details for ${restaurant.restaurant_name}`}
                     >
-                      View Details
+                      <Eye className="size-3.5 text-slate-400 group-hover:text-[#0052cc] transition-colors" />
+                      <span>{RESTAURANT_MESSAGES.ACTION_DETAILS}</span>
                     </Link>
                   </td>
                 </tr>

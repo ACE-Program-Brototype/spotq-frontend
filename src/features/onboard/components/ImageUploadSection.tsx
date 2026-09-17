@@ -16,7 +16,7 @@ export default function ImageUploadSection({
   onAddImage,
   onRemoveImage,
   restaurantId,
-  allowedTypes = ["image/jpeg", "image/png", "image/webp"],
+  allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"],
   maxSizeMB = 5,
 }: ImageUploadSectionProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -32,7 +32,7 @@ export default function ImageUploadSection({
 
     // Validate type
     if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
-      setError("Invalid image format. Allowed formats: JPG, PNG, WEBP.");
+      setError("Invalid image format. Allowed formats: JPG, PNG, WEBP, AVIF.");
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
@@ -83,7 +83,7 @@ export default function ImageUploadSection({
             <span className="text-sm font-bold text-red-500">*</span>
           </div>
           <p className="mt-0.5 text-xs text-neutral-500">
-            Accepted formats: JPG, PNG, WEBP • Max size: {maxSizeMB}MB
+            Accepted formats: JPG, PNG, WEBP, AVIF • Max size: {maxSizeMB}MB
           </p>
         </div>
 

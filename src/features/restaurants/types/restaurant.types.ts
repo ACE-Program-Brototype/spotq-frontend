@@ -162,7 +162,6 @@ export interface AdminRestaurantDetailsApiResponse {
   data: RestaurantDetails;
   statusCode?: number;
 }
-
 export interface BlockRestaurantInput {
   restaurantId: string;
   reason: string;
