@@ -5,12 +5,12 @@ import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification"
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
-import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
 import BusinessInformationPage from "@/features/onboard/pages/BusinessInformationPage";
 import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
 import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
+import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
 import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
