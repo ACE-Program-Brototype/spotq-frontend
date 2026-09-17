@@ -13,7 +13,7 @@ import type {
   RestaurantProfileDetails,
   UpdateRestaurantProfilePayload,
 } from "../types/restaurant-profile.types";
-import { cacheLocalMedia, resolveMediaUrl } from "../utils/profile.utils";
+import { resolveMediaUrl } from "../utils/profile.utils";
 
 interface RestaurantOverviewCardProps {
   restaurant: RestaurantOverviewDetails;
@@ -72,30 +72,22 @@ export function RestaurantOverviewCard({
     const previewUrl = URL.createObjectURL(file);
     setLogoSrc(previewUrl);
 
-    // Read file as Data URL to store in local media cache once uploaded
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result as string;
-
-      try {
-        const res = await upload(file, {
-          entityType: "restaurant",
-          entityId: activeRestaurantId,
-          fileCategory: "PROFILE",
-        });
-        if (res?.s3ObjectKey) {
-          setLogoKey(res.s3ObjectKey);
-          cacheLocalMedia(res.s3ObjectKey, dataUrl);
-        } else {
-          throw new Error("Upload did not return object key");
-        }
-      } catch {
-        toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
-        setLogoKey(null);
-        setLogoSrc(resolveMediaUrl(profile.logo) || FALLBACK_LOGO);
+    try {
+      const res = await upload(file, {
+        entityType: "restaurant",
+        entityId: activeRestaurantId,
+        fileCategory: "PROFILE",
+      });
+      if (res?.s3ObjectKey) {
+        setLogoKey(res.s3ObjectKey);
+      } else {
+        throw new Error("Upload did not return object key");
       }
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
+      setLogoKey(null);
+      setLogoSrc(resolveMediaUrl(profile.logo) || FALLBACK_LOGO);
+    }
   };
 
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,30 +98,22 @@ export function RestaurantOverviewCard({
     const previewUrl = URL.createObjectURL(file);
     setCoverSrc(previewUrl);
 
-    // Read file as Data URL to store in local media cache once uploaded
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result as string;
-
-      try {
-        const res = await upload(file, {
-          entityType: "restaurant",
-          entityId: activeRestaurantId,
-          fileCategory: "PROFILE",
-        });
-        if (res?.s3ObjectKey) {
-          setCoverImageKey(res.s3ObjectKey);
-          cacheLocalMedia(res.s3ObjectKey, dataUrl);
-        } else {
-          throw new Error("Upload did not return object key");
-        }
-      } catch {
-        toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
-        setCoverImageKey(null);
-        setCoverSrc(resolveMediaUrl(profile.coverImage) || FALLBACK_COVER);
+    try {
+      const res = await upload(file, {
+        entityType: "restaurant",
+        entityId: activeRestaurantId,
+        fileCategory: "PROFILE",
+      });
+      if (res?.s3ObjectKey) {
+        setCoverImageKey(res.s3ObjectKey);
+      } else {
+        throw new Error("Upload did not return object key");
       }
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      toast.error(PROFILE_MESSAGES.UPLOAD_FAILED);
+      setCoverImageKey(null);
+      setCoverSrc(resolveMediaUrl(profile.coverImage) || FALLBACK_COVER);
+    }
   };
 
   const handleStartEdit = () => {
