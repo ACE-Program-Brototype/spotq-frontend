@@ -65,7 +65,7 @@ const mockUser = {
   id: "staff-1",
   name: "John Staff",
   email: "staff@restaurant.com",
-  role: "RESTAURANT_STAFF" as const,
+  role: "STAFF" as const,
 };
 
 describe("useStaffLogin Hook", () => {
@@ -109,7 +109,7 @@ describe("useStaffLogin Hook", () => {
 
     expect(authState.user).toEqual({
       ...mockUser,
-      role: "RESTAURANT_STAFF",
+      role: "STAFF",
     });
 
     expect(authState.accessToken).toBe("staff-jwt-token");
@@ -123,7 +123,7 @@ describe("useStaffLogin Hook", () => {
     });
   });
 
-  it("sets the user role to RESTAURANT_STAFF", async () => {
+  it("sets the user role to STAFF", async () => {
     mockMutateAsync.mockResolvedValueOnce({
       success: true,
       message: "Login successful",
@@ -149,7 +149,7 @@ describe("useStaffLogin Hook", () => {
       });
     });
 
-    expect(useAuthStore.getState().user?.role).toBe("RESTAURANT_STAFF");
+    expect(useAuthStore.getState().user?.role).toBe("STAFF");
   });
 
   it("shows error when login fails", async () => {

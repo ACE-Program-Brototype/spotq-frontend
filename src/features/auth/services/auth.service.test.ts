@@ -277,7 +277,7 @@ describe("auth.service", () => {
         _id: "staff-1",
         name: "Chef Ramsey",
         email: "chef@spotq.com",
-        role: "RESTAURANT_STAFF" as const,
+        role: "STAFF" as const,
       };
 
       mockPost.mockReturnValueOnce({

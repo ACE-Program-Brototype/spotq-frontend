@@ -32,7 +32,7 @@ describe("useUpdateStaffProfile", () => {
       id: "staff-1",
       name: "Original Name",
       email: "staff@example.com",
-      role: "RESTAURANT_STAFF",
+      role: "STAFF",
     });
   });
 
