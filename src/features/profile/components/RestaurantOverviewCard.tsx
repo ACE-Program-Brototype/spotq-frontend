@@ -181,6 +181,8 @@ export function RestaurantOverviewCard({
     updateMutation.mutate(payload, {
       onSuccess: () => {
         setIsEditing(false);
+        setLogoKey(null);
+        setCoverImageKey(null);
       },
     });
   };
