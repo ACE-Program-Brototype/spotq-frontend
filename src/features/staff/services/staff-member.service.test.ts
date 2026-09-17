@@ -100,6 +100,20 @@ describe("staffMemberService", () => {
       expect(res.pagination).toEqual(mockPagination);
     });
 
+    it("falls back to standard hyphen when phone number is missing", async () => {
+      mockGet.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          data: [{ id: "staff-2", fullname: "John Doe", email: "john@example.com" }],
+        }),
+      });
+
+      const res = await staffMemberService.getStaffMembers(mockRestaurantId);
+
+      expect(res.success).toBe(true);
+      expect(res.data[0].phone).toBe("-");
+    });
+
     it("handles empty array or missing pagination gracefully", async () => {
       mockGet.mockReturnValueOnce({
         json: jest.fn().mockResolvedValueOnce({

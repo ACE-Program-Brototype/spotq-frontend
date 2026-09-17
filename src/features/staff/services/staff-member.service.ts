@@ -82,7 +82,7 @@ export const staffMemberService = {
       id: item.id,
       name: item.fullname || "Staff Member",
       email: item.email || "",
-      phone: item.phone || "—",
+      phone: item.phone || "-",
       designation: item.role || "Staff",
       status: (item.status?.toUpperCase() as "ACTIVE" | "INACTIVE" | "PENDING") || "ACTIVE",
       joinedDate: item.createdAt || new Date().toISOString(),
