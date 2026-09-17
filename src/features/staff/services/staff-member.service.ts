@@ -3,6 +3,7 @@ import type {
   StaffInvitationPagination,
   StaffMember,
 } from "@/features/staff/types/staff-invitation.types";
+import { formatEmployeeCode } from "@/features/staff/utils/staff.helpers";
 import { apiClient } from "@/lib/api/client";
 
 export type ListStaffMembersParams = {
@@ -87,7 +88,7 @@ export const staffMemberService = {
       status: (item.status?.toUpperCase() as "ACTIVE" | "INACTIVE" | "PENDING") || "ACTIVE",
       joinedDate: item.createdAt || new Date().toISOString(),
       lastLogin: item.createdAt || new Date().toISOString(),
-      employeeCode: `EMP-${item.id.slice(-6).toUpperCase()}`,
+      employeeCode: formatEmployeeCode(item.id),
     }));
 
     const defaultLimit = params?.limit || 20;
