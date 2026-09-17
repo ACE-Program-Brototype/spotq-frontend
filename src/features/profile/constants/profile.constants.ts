@@ -28,12 +28,24 @@ export const PROFILE_MESSAGES = {
   EDIT_PROFILE_SUBTITLE: "Update your personal information and account preferences",
 
   VALIDATION: {
+    NAME_REQUIRED: "Name is required.",
     NAME_MIN_LENGTH: "Full name must be at least 2 characters.",
     NAME_MAX_LENGTH: "Full name cannot exceed 100 characters.",
     NAME_INVALID_CHARS: "Full name can only contain letters, spaces, and hyphens.",
     DOB_FUTURE: "Date of birth cannot be in the future.",
     PHONE_INVALID: "Phone number must be exactly 10 digits.",
+    RESTAURANT_NAME_REQUIRED: "Restaurant name is required.",
+    PHONE_REQUIRED: "Phone number is required.",
+    OWNER_NAME_REQUIRED: "Owner name is required.",
+    AVERAGE_COST_INVALID: "Average cost must be a valid positive number.",
+    HOURS_REQUIRED: (day: string) => `Please set valid open and close times for ${day}.`,
+    HOURS_CHRONOLOGICAL: (day: string) => `Closing time must be after opening time for ${day}.`,
   },
+
+  // Restaurant Profile Messages
+  RESTAURANT_UPDATE_SUCCESS: "Restaurant profile updated successfully",
+  RESTAURANT_UPDATE_FAILED: "Failed to update restaurant profile",
+  UPLOAD_FAILED: "Failed to upload image. Please try again.",
 
   // Staff Profile Messages
   PAGE_SUBTITLE: "View and verify your staff account details and restaurant role.",
@@ -46,23 +58,53 @@ export const PROFILE_MESSAGES = {
   FETCH_ERROR: "Failed to load profile details. Please try again.",
   UNABLE_TO_LOAD: "Unable to Load Profile",
   UNAUTHORIZED: "Your session has expired. Please sign in again.",
-  NO_DATA: "No profile data available.",
+  STAFF_UPDATE_SUCCESS: "Staff profile updated successfully.",
+  STAFF_UPDATE_FAILED: "Failed to update staff profile. Please try again.",
+  STAFF_FORBIDDEN: "You do not have permission to update this profile.",
+  STAFF_NOT_FOUND: "Staff member not found.",
+  EDIT_STAFF_PROFILE_TITLE: "Staff Profile",
+  EDIT_STAFF_PROFILE_SUBTITLE:
+    "Manage your personal information, security preferences, and status.",
+  AVATAR_INVALID_FILE: "Profile photo must be a JPG, GIF, or PNG file under 2MB.",
+  INVALID_RESTAURANT_ID: "A valid restaurant ID is required to upload an avatar.",
+  AVATAR_UPLOAD_AUTH_FAILED: "Failed to obtain upload authorization for avatar.",
+  AVATAR_UPLOAD_FAILED: "Failed to upload avatar image to storage.",
+  AVATAR_UPLOAD_FALLBACK_WARNING:
+    "Failed to upload avatar image. Proceeding with name and phone update.",
+  INVALID_PROFILE_DATA: "Invalid profile data provided. Please check the fields.",
 } as const;
 
 export const PROFILE_ENDPOINTS = {
   GET_PROFILE: "users/profile",
   UPDATE_PROFILE: "users/profile",
   GET_STAFF_PROFILE: "restaurants/staff/profile/me",
+  UPDATE_STAFF_PROFILE: (restaurantId: string, staffId: string) =>
+    `restaurants/${restaurantId}/staff/${staffId}`,
+  STORAGE_PRESIGNED_URL: "storage/presigned-url",
+  GET_RESTAURANT_PROFILE: "restaurants/profile",
+  UPDATE_RESTAURANT_PROFILE: "restaurants/profile",
 } as const;
 
 export const PROFILE_QUERY_KEYS = {
   CUSTOMER_PROFILE: ["customer", "profile"] as const,
   STAFF_PROFILE: ["staff", "profile"] as const,
+  RESTAURANT_PROFILE: ["restaurant", "profile"] as const,
 };
+
+export const DAYS_OF_WEEK = [
+  { id: 1, label: "Monday" },
+  { id: 2, label: "Tuesday" },
+  { id: 3, label: "Wednesday" },
+  { id: 4, label: "Thursday" },
+  { id: 5, label: "Friday" },
+  { id: 6, label: "Saturday" },
+  { id: 7, label: "Sunday" },
+] as const;
 
 export const profileHooks = {
   STAFF_PROFILE_STALE_TIME: 5 * 60 * 1000,
   CUSTOMER_PROFILE_STALE_TIME: 5 * 60 * 1000,
+  RESTAURANT_PROFILE_STALE_TIME: 5 * 60 * 1000,
 };
 
 export const MONTH_NAMES = [

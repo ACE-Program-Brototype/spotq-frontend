@@ -3,6 +3,8 @@ import type { RestaurantSortByType, RestaurantSortOrderType } from "../types/res
 export const RESTAURANT_ENDPOINTS = {
   ADMIN_LIST: "restaurants/admin/restaurants",
   ADMIN_DETAILS: (id: string) => `restaurants/admin/restaurants/${id}`,
+  ADMIN_BLOCK: (id: string) => `restaurants/admin/restaurants/${id}/block`,
+  ADMIN_UNBLOCK: (id: string) => `restaurants/admin/restaurants/${id}/unblock`,
 } as const;
 
 export const RESTAURANT_QUERY_KEYS = {
@@ -29,6 +31,7 @@ export const RESTAURANT_STATUS = {
   SUSPENDED: "SUSPENDED",
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
+  BLOCKED: "BLOCKED",
 } as const;
 
 export const RESTAURANT_FILTER_STATUS = {
@@ -79,6 +82,30 @@ export const RESTAURANT_MESSAGES = {
   COL_STATUS: "Status",
   COL_SUBSCRIPTION: "Subscription",
   COL_JOINED: "Joined Date",
+  COL_ACTIONS: "Actions",
+  ACTION_DETAILS: "Details",
+  FILTER_LABEL: "Filters:",
+  FILTER_STATUS_ALL: "Status: All",
+  FILTER_STATUS_ACTIVE: "Status: Active",
+  FILTER_STATUS_APPROVED: "Status: Approved",
+  FILTER_STATUS_REJECTED: "Status: Rejected",
+  FILTER_STATUS_SUSPENDED: "Status: Suspended",
+  FILTER_STATUS_INACTIVE: "Status: Inactive",
+  FILTER_PLAN_ALL: "Plan: All",
+  FILTER_PLAN_QUEUE_PRO: "Plan: Queue Pro",
+  FILTER_PLAN_SELF_SERVICE_PRO: "Plan: Self Service Pro",
+  FILTER_SUBSCRIPTION_ALL: "Subscription: All",
+  FILTER_SUBSCRIPTION_ACTIVE: "Subscription: Active",
+  FILTER_SUBSCRIPTION_INACTIVE: "Subscription: Inactive",
+  SORT_LABEL: "Sort:",
+  SORT_DATE_CREATED: "Date Created",
+  SORT_RESTAURANT_NAME: "Restaurant Name",
+  SORT_OWNER_NAME: "Owner Name",
+  SORT_STATUS: "Status",
+  SORT_PLAN: "Plan",
+  SORT_LAST_UPDATED: "Last Updated",
+  SORT_DESC: "Desc",
+  SORT_ASC: "Asc",
 
   // Details Page
   DETAILS_BACK_BUTTON: "Back to Restaurants",
@@ -93,6 +120,30 @@ export const RESTAURANT_MESSAGES = {
   DETAILS_TAB_STAFF: "Staff Members",
   DETAILS_TAB_DOCUMENTS: "Verification Documents",
   DETAILS_TAB_IMAGES: "Gallery & Photos",
+
+  // Block & Unblock Actions
+  BLOCK_BUTTON: "Block Restaurant",
+  UNBLOCK_BUTTON: "Unblock Restaurant",
+  BLOCK_MODAL_TITLE: "Block Restaurant",
+  BLOCK_MODAL_DESCRIPTION:
+    "Blocking this restaurant will immediately revoke access for all associated managers, staff members, and active sessions.",
+  BLOCK_REASON_LABEL: "Reason for Blocking",
+  BLOCK_REASON_PLACEHOLDER:
+    "Provide a detailed reason for blocking this restaurant (e.g. policy violation, regulatory order, payment default)...",
+  BLOCK_REASON_REQUIRED: "A reason is required to block a restaurant.",
+  BLOCK_REASON_MIN_LENGTH: "Reason must be at least 5 characters long.",
+  BLOCK_CONFIRM_BUTTON: "Confirm & Block Restaurant",
+  BLOCK_CANCEL_BUTTON: "Cancel",
+  BLOCK_SUCCESS: "Restaurant has been blocked successfully.",
+  BLOCK_ERROR: "Failed to block restaurant. Please try again.",
+
+  UNBLOCK_CONFIRM_TITLE: "Unblock Restaurant",
+  UNBLOCK_CONFIRM_DESCRIPTION: (name: string) =>
+    `Are you sure you want to unblock ${name}? Access to restaurant management tools and portal services will be restored immediately.`,
+  UNBLOCK_CONFIRM_BUTTON: "Confirm & Unblock Restaurant",
+  UNBLOCK_CANCEL_BUTTON: "Cancel",
+  UNBLOCK_SUCCESS: "Restaurant has been unblocked successfully.",
+  UNBLOCK_ERROR: "Failed to unblock restaurant. Please try again.",
 
   // Toasts
   TOAST_COPY_ID_SUCCESS: "Restaurant ID copied to clipboard",

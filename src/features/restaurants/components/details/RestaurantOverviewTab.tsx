@@ -10,6 +10,7 @@ import {
   MapPin,
   Navigation,
   Phone,
+  ShieldAlert,
   ShieldCheck,
   Store,
   Tag,
@@ -20,11 +21,27 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import env from "@/config/env";
-import { formatDate } from "@/lib/utils/date";
 import type { RestaurantDetails } from "../../types/restaurant.types";
 
 interface RestaurantOverviewTabProps {
   restaurant: RestaurantDetails;
+}
+
+function formatDate(dateString?: string | null): string {
+  if (!dateString) return "Not recorded";
+  try {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return dateString;
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  } catch {
+    return dateString;
+  }
 }
 
 export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps) {
@@ -365,24 +382,32 @@ export function RestaurantOverviewTab({ restaurant }: RestaurantOverviewTabProps
 
             <div className="py-2.5 flex justify-between items-center">
               <span className="text-slate-500">Account Block Status</span>
-              {restaurant.is_blocked ? (
-                <Badge variant="destructive" className="text-xs font-bold">
-                  BLOCKED
+              {restaurant.is_blocked || restaurant.status === "SUSPENDED" ? (
+                <Badge
+                  variant="destructive"
+                  className="text-xs font-bold gap-1"
+                  data-testid="block-status-badge"
+                >
+                  <ShieldAlert className="size-3" /> SUSPENDED (BLOCKED)
                 </Badge>
               ) : (
                 <Badge
                   variant="outline"
                   className="bg-emerald-50 text-emerald-700 border-emerald-200 text-xs font-semibold"
+                  data-testid="block-status-badge"
                 >
-                  <ShieldCheck className="size-3 mr-1" /> Normal (Unblocked)
+                  <ShieldCheck className="size-3 mr-1" /> Normal (Active)
                 </Badge>
               )}
             </div>
 
             {restaurant.block_reason && (
-              <div className="py-2.5 flex flex-col gap-1">
-                <span className="text-slate-500 text-xs font-semibold">Block Reason:</span>
-                <p className="text-xs text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200">
+              <div className="py-2.5 flex flex-col gap-1" data-testid="block-reason-display">
+                <span className="text-slate-500 text-xs font-semibold flex items-center gap-1 text-rose-700">
+                  <ShieldAlert className="size-3.5 text-rose-600" />
+                  Administrative Block Reason:
+                </span>
+                <p className="text-xs text-rose-800 bg-rose-50/80 p-2.5 rounded-xl border border-rose-200/90 font-medium">
                   {restaurant.block_reason}
                 </p>
               </div>

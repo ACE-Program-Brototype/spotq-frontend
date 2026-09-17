@@ -25,9 +25,7 @@ export function RestaurantEmptyState({
         )}
       </div>
 
-      <h3 className="text-base font-bold text-slate-900">
-        {isFiltered ? RESTAURANT_MESSAGES.EMPTY_TITLE : RESTAURANT_MESSAGES.EMPTY_TITLE}
-      </h3>
+      <h3 className="text-base font-bold text-slate-900">{RESTAURANT_MESSAGES.EMPTY_TITLE}</h3>
 
       <p className="mt-1 text-xs text-slate-500 max-w-sm">
         {isFiltered ? RESTAURANT_MESSAGES.EMPTY_DESCRIPTION : RESTAURANT_MESSAGES.EMPTY_DEFAULT}

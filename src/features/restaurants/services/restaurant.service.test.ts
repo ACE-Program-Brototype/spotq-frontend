@@ -4,6 +4,7 @@ import { restaurantService } from "./restaurant.service";
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
+    patch: jest.fn(),
   },
 }));
 
@@ -122,7 +123,7 @@ describe("restaurantService", () => {
       phone: "+15551234567",
       owner_name: "John Doe",
       owner_email: "owner@example.com",
-      status: "PENDING",
+      status: "APPROVED",
       onboarding_status: "COMPLETED",
       is_blocked: false,
       is_subscription_active: false,
@@ -162,9 +163,94 @@ describe("restaurantService", () => {
     expect(result.address?.city).toBe("Metropolis");
   });
 
-  it("throws error if restaurant ID is missing or empty", async () => {
+  it("throws error if restaurant ID is missing or empty in getAdminRestaurantById", async () => {
     await expect(restaurantService.getAdminRestaurantById("")).rejects.toThrow(
       "Restaurant ID is required",
     );
+  });
+
+  describe("blockRestaurant", () => {
+    it("submits block request with reason and returns updated response", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Restaurant blocked successfully",
+        data: {
+          id: "rest-123",
+          is_blocked: true,
+          status: "SUSPENDED",
+          block_reason: "Violation of terms",
+        },
+      };
+
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await restaurantService.blockRestaurant({
+        restaurantId: "rest-123",
+        reason: "Violation of terms",
+      });
+
+      expect(apiClient.patch).toHaveBeenCalledWith("restaurants/admin/restaurants/rest-123/block", {
+        json: { reason: "Violation of terms" },
+      });
+      expect(result.success).toBe(true);
+      expect(result.data?.is_blocked).toBe(true);
+    });
+
+    it("throws error when reason is empty or whitespace", async () => {
+      await expect(
+        restaurantService.blockRestaurant({
+          restaurantId: "rest-123",
+          reason: "   ",
+        }),
+      ).rejects.toThrow("A reason is required to block a restaurant");
+    });
+
+    it("throws error when restaurantId is missing", async () => {
+      await expect(
+        restaurantService.blockRestaurant({
+          restaurantId: "",
+          reason: "Valid reason",
+        }),
+      ).rejects.toThrow("Restaurant ID is required");
+    });
+  });
+
+  describe("unblockRestaurant", () => {
+    it("submits unblock request and returns response", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Restaurant unblocked successfully",
+        data: {
+          id: "rest-123",
+          is_blocked: false,
+          status: "ACTIVE",
+          block_reason: null,
+        },
+      };
+
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await restaurantService.unblockRestaurant({
+        restaurantId: "rest-123",
+      });
+
+      expect(apiClient.patch).toHaveBeenCalledWith(
+        "restaurants/admin/restaurants/rest-123/unblock",
+      );
+      expect(result.success).toBe(true);
+      expect(result.data?.is_blocked).toBe(false);
+    });
+
+    it("throws error when restaurantId is missing", async () => {
+      await expect(
+        restaurantService.unblockRestaurant({
+          restaurantId: "",
+        }),
+      ).rejects.toThrow("Restaurant ID is required");
+    });
   });
 });

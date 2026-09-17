@@ -4,7 +4,8 @@ export type RestaurantStatusType =
   | "REJECTED"
   | "SUSPENDED"
   | "ACTIVE"
-  | "INACTIVE";
+  | "INACTIVE"
+  | "BLOCKED";
 
 export type RestaurantPlanType = "QUEUE_PRO" | "SELF_SERVICE_PRO";
 
@@ -159,5 +160,27 @@ export interface AdminRestaurantDetailsApiResponse {
   success: boolean;
   message?: string;
   data: RestaurantDetails;
+  statusCode?: number;
+}
+export interface BlockRestaurantInput {
+  restaurantId: string;
+  reason: string;
+}
+
+export interface UnblockRestaurantInput {
+  restaurantId: string;
+}
+
+export interface BlockRestaurantResponse {
+  success: boolean;
+  message?: string;
+  data?: RestaurantDetails;
+  statusCode?: number;
+}
+
+export interface UnblockRestaurantResponse {
+  success: boolean;
+  message?: string;
+  data?: RestaurantDetails;
   statusCode?: number;
 }

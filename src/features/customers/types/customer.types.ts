@@ -63,3 +63,24 @@ export interface UpdateCustomerStatusResponse {
   };
   statusCode: number;
 }
+
+export interface RawCustomerDetails {
+  id: string;
+  fullname?: string;
+  fullName?: string;
+  email: string;
+  phone?: string | null;
+  status: CustomerStatusType;
+  isEmailVerified?: boolean;
+  avatarUrl?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  location?: string | null;
+}
+
+export interface CustomerDetailsApiResponse {
+  success: boolean;
+  message: string;
+  data: RawCustomerDetails;
+  statusCode: number;
+}

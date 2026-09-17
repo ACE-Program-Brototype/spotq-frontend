@@ -210,4 +210,56 @@ describe("customerService", () => {
       expect(result.status).toBe("BLOCKED");
     });
   });
+
+  describe("getCustomerDetails", () => {
+    it("should fetch customer details from users/:id endpoint", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Customer retrieved",
+        data: {
+          id: "user-123",
+          fullName: "Ananya Roy",
+          email: "ananya@example.com",
+          phone: "+919876543210",
+          status: "ACTIVE",
+          isEmailVerified: true,
+          createdAt: "2026-01-01T00:00:00.000Z",
+          updatedAt: "2026-01-01T00:00:00.000Z",
+        },
+        statusCode: 200,
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await customerService.getCustomerDetails("user-123");
+
+      expect(apiClient.get).toHaveBeenCalledWith("admin/customers/user-123");
+      expect(result.id).toBe("user-123");
+      expect(result.fullName).toBe("Ananya Roy");
+    });
+
+    it("should default isEmailVerified to false and createdAt to empty string when omitted", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Customer retrieved",
+        data: {
+          id: "user-456",
+          email: "test@example.com",
+          status: "ACTIVE",
+        },
+        statusCode: 200,
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await customerService.getCustomerDetails("user-456");
+
+      expect(result.isEmailVerified).toBe(false);
+      expect(result.createdAt).toBe("");
+    });
+  });
 });
