@@ -81,7 +81,7 @@ export function RestaurantOverviewCard({
         const res = await upload(file, {
           entityType: "restaurant",
           entityId: activeRestaurantId,
-          fileCategory: "logo",
+          fileCategory: "PROFILE",
         });
         if (res?.s3ObjectKey) {
           setLogoKey(res.s3ObjectKey);
@@ -115,7 +115,7 @@ export function RestaurantOverviewCard({
         const res = await upload(file, {
           entityType: "restaurant",
           entityId: activeRestaurantId,
-          fileCategory: "cover_image",
+          fileCategory: "PROFILE",
         });
         if (res?.s3ObjectKey) {
           setCoverImageKey(res.s3ObjectKey);

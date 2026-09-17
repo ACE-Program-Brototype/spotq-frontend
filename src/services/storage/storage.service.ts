@@ -105,6 +105,12 @@ export function uploadFileToS3(
 export async function uploadFile(params: UploadFileParams): Promise<UploadFileResult> {
   const { file, entityType, entityId, fileCategory, contentType, onProgress } = params;
 
+  const rawCategory = (fileCategory || "DOCUMENTS").toUpperCase();
+  const normalizedCategory =
+    rawCategory === "LOGO" || rawCategory === "COVER_IMAGE" || rawCategory === "AVATAR"
+      ? "PROFILE"
+      : rawCategory;
+
   const resolvedContentType = contentType || file.type || "application/octet-stream";
 
   const presignedRequest: PresignedUrlRequest = {
@@ -112,7 +118,7 @@ export async function uploadFile(params: UploadFileParams): Promise<UploadFileRe
     entity_id: entityId,
     file_name: file.name,
     content_type: resolvedContentType,
-    file_category: fileCategory,
+    file_category: normalizedCategory,
     file_size: file.size,
   };
 
