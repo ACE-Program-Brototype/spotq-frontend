@@ -66,6 +66,18 @@ export const adminRoutes: RouteObject[] = [
             path: "customers/:id",
             Component: AdminCustomerDetailsPage,
           },
+          {
+            path: "restaurants",
+            Component: AdminRestaurantsPage,
+          },
+          {
+            path: "restaurants/management",
+            Component: AdminRestaurantsPage,
+          },
+          {
+            path: "restaurants/:id",
+            Component: AdminRestaurantDetailsPage,
+          },
         ],
       },
     ],

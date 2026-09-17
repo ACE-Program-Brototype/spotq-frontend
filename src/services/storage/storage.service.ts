@@ -57,7 +57,6 @@ export async function getPresignedUrl(request: PresignedUrlRequest): Promise<Pre
   return response.data;
 }
 
-
 function inferMimeType(fileName: string): string {
   const ext = fileName.split(".").pop()?.toLowerCase();
   switch (ext) {
@@ -75,7 +74,11 @@ function inferMimeType(fileName: string): string {
     default:
       return "application/octet-stream";
   }
+}
 
+/**
+ * Requests a presigned download/view URL for an existing S3 object key.
+ */
 export async function getPresignedDownloadUrl(key: string): Promise<string> {
   if (!key?.trim()) {
     throw new Error("Object key is required");
