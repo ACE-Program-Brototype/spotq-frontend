@@ -1,6 +1,9 @@
 import { apiClient } from "@/lib/api/client";
 import { STORAGE_ENDPOINTS } from "./storage.constants";
 
+export interface PresignedDownloadUrlResponse {
+  download_url: string;
+  expires_in_seconds: number;
 export interface PresignedUrlRequest {
   entity_type: string;
   entity_id: string;
