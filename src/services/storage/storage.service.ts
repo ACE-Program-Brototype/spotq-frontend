@@ -16,6 +16,11 @@ export interface PresignedUrlResponse {
   expiresInSeconds: number;
 }
 
+export interface PresignedDownloadUrlResponse {
+  download_url: string;
+  expires_in_seconds: number;
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   statusCode?: number;
@@ -84,9 +89,23 @@ export async function getPresignedDownloadUrl(key: string): Promise<string> {
     throw new Error("Object key is required");
   }
 
-  const trimmedKey = key.trim();
+  let trimmedKey = key.trim();
 
-  if (trimmedKey.startsWith("http://") || trimmedKey.startsWith("https://")) {
+  // If it is already a signed URL with credentials/signature, return directly
+  if (
+    trimmedKey.includes("X-Amz-Signature") ||
+    trimmedKey.includes("Signature=") ||
+    trimmedKey.includes("AWSAccessKeyId=")
+  ) {
+    return trimmedKey;
+  }
+
+  // If it is an S3 URL without signature, extract the object key so we can get a presigned URL
+  const s3Match = trimmedKey.match(/^https?:\/\/[^/]+\.amazonaws\.com\/(.+)$/i);
+  if (s3Match?.[1]) {
+    trimmedKey = decodeURIComponent(s3Match[1].split("?")[0]);
+  } else if (trimmedKey.startsWith("http://") || trimmedKey.startsWith("https://")) {
+    // Non-S3 external URLs (e.g. data:, blob:, Google avatar, Unsplash)
     return trimmedKey;
   }
 

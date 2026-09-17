@@ -112,6 +112,39 @@ describe("staffDetailService", () => {
     });
   });
 
+  describe("updateStaffInfo", () => {
+    it("calls apiClient.patch with correct endpoint and payload, returning normalized data", async () => {
+      const updatedMockRawData = {
+        ...mockRawData,
+        fullname: "Ravi Kumar",
+        phone: "+919876543210",
+      };
+
+      mockPatch.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          success: true,
+          message: "Staff information updated successfully",
+          data: updatedMockRawData,
+          statusCode: 200,
+        }),
+      });
+
+      const payload = {
+        fullname: "Ravi Kumar",
+        phone: "+919876543210",
+      };
+
+      const res = await staffDetailService.updateStaffInfo("rest_id", "stf_01", payload);
+
+      expect(mockPatch).toHaveBeenCalledWith(
+        STAFF_ENDPOINTS.STAFF_DETAIL_BY_RESTAURANT("rest_id", "stf_01"),
+        { json: payload },
+      );
+      expect(res.fullName).toBe("Ravi Kumar");
+      expect(res.phone).toBe("+919876543210");
+    });
+  });
+
   describe("updateStaffStatus", () => {
     it("calls apiClient.patch with correct endpoint and status payload", async () => {
       mockPatch.mockReturnValueOnce({

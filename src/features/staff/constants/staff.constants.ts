@@ -87,4 +87,12 @@ export const STAFF_MESSAGES = {
   STAFF_DELETE_CONFIRM_TITLE: "Remove Staff Member?",
   STAFF_DELETE_CONFIRM_DESCRIPTION:
     "Are you sure you want to remove this staff member? This action cannot be undone.",
+  STAFF_UPDATE_SUCCESS: "Staff information updated successfully.",
+  STAFF_UPDATE_ERROR: "Failed to update staff information. Please try again.",
+  STAFF_NO_CHANGES: "No changes detected to update.",
+  NAME_REQUIRED: "Name is required",
+  NAME_MIN_LENGTH: "Full name must be at least 2 characters",
+  NAME_MAX_LENGTH: "Full name must not exceed 100 characters",
+  PHONE_REQUIRED: "Phone number is required",
+  PHONE_INVALID: "Please enter a valid phone number",
 } as const;

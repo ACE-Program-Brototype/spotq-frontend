@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import {
   normalizeStaffPhone,
@@ -38,9 +39,12 @@ export function EditStaffProfileForm({
 }: EditStaffProfileFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createdUrlRef = useRef<string | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(profile.avatarUrl);
+  const { data: presignedAvatarUrl } = usePresignedUrl(profile.avatarUrl);
+  const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null);
   const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+  const avatarDisplayUrl = localAvatarPreview || presignedAvatarUrl;
 
   useEffect(() => {
     return () => {
@@ -90,7 +94,7 @@ export function EditStaffProfileForm({
     setSelectedAvatarFile(file);
     const objectUrl = URL.createObjectURL(file);
     createdUrlRef.current = objectUrl;
-    setAvatarPreview(objectUrl);
+    setLocalAvatarPreview(objectUrl);
   };
 
   const handleFormSubmit = async (data: UpdateStaffProfileFormData) => {
@@ -198,9 +202,9 @@ export function EditStaffProfileForm({
 
             <CardContent className="flex flex-col items-center pt-2 pb-6 px-6 text-center space-y-4">
               <Avatar className="size-28 sm:size-32 rounded-full border-2 border-[#eddcd4] shadow-sm bg-[#faf7f5]">
-                {avatarPreview ? (
+                {avatarDisplayUrl ? (
                   <AvatarImage
-                    src={avatarPreview}
+                    src={avatarDisplayUrl}
                     alt={profile.fullName}
                     className="size-full object-cover rounded-full"
                   />

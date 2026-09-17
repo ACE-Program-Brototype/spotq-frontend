@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
+import { EditStaffModal } from "@/features/staff/components/EditStaffModal";
 import {
   StaffDetailInfoCard,
   StaffDetailOverviewCard,
@@ -26,6 +27,7 @@ function StaffDetailContent() {
   const { staff, isLoading, isPending, isError, error, isForbidden, isNotFound, refetch } =
     useStaffDetail();
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const statusMutation = useUpdateStaffStatus({
@@ -84,6 +86,7 @@ function StaffDetailContent() {
       {/* Header section with breadcrumbs and actions */}
       <StaffDetailHeader
         staff={staff}
+        onEditStaff={() => setIsEditModalOpen(true)}
         onToggleStatus={handleToggleStatus}
         onRequestDelete={() => setIsDeleteModalOpen(true)}
         isUpdatingStatus={statusMutation.isPending}
@@ -99,6 +102,13 @@ function StaffDetailContent() {
           <StaffDetailInfoCard staff={staff} />
         </div>
       </div>
+
+      {/* Edit Staff Information Modal */}
+      <EditStaffModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        staff={staff}
+      />
 
       {/* Delete / Remove Confirmation Dialog */}
       <ConfirmDialog

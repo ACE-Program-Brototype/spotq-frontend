@@ -47,12 +47,30 @@ export interface UpdateStaffStatusPayload {
   status: StaffStatus;
 }
 
+export interface UpdateStaffInfoPayload {
+  fullname: string;
+  phone: string;
+}
+
 export interface StaffDetailHeaderProps {
   staff: StaffDetail;
+  onEditStaff?: () => void;
   onToggleStatus?: () => void;
   onRequestDelete?: () => void;
   isUpdatingStatus?: boolean;
   isDeleting?: boolean;
+}
+
+export interface EditStaffModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  staff: StaffDetail;
+}
+
+export interface StaffEditFormProps {
+  staff: StaffDetail;
+  onSuccess?: (updatedStaff?: StaffDetail) => void;
+  onCancel?: () => void;
 }
 
 export interface StaffDetailCardsProps {

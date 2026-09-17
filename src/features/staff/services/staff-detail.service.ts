@@ -4,6 +4,7 @@ import type {
   StaffDetailApiResponse,
   StaffDetailRawData,
   StaffStatus,
+  UpdateStaffInfoPayload,
 } from "@/features/staff/types/staff-detail.types";
 import { apiClient } from "@/lib/api/client";
 
@@ -50,6 +51,23 @@ export const staffDetailService = {
   async getStaffDetail(restaurantId: string, staffId: string): Promise<StaffDetail> {
     const response = await apiClient
       .get(STAFF_ENDPOINTS.STAFF_DETAIL_BY_RESTAURANT(restaurantId, staffId))
+      .json<StaffDetailApiResponse>();
+
+    return normalizeStaffDetail(response?.data, restaurantId);
+  },
+
+  /**
+   * Update staff member's basic information (name, phone)
+   */
+  async updateStaffInfo(
+    restaurantId: string,
+    staffId: string,
+    payload: UpdateStaffInfoPayload,
+  ): Promise<StaffDetail> {
+    const response = await apiClient
+      .patch(STAFF_ENDPOINTS.STAFF_DETAIL_BY_RESTAURANT(restaurantId, staffId), {
+        json: payload,
+      })
       .json<StaffDetailApiResponse>();
 
     return normalizeStaffDetail(response?.data, restaurantId);

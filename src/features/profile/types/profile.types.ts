@@ -60,6 +60,7 @@ export interface StaffProfileRawData {
   phone?: string | null;
   phoneNumber?: string | null;
   avatar?: string | null;
+  avatarUrl?: string | null;
   avatar_url?: string | null;
   role?: string;
   status?: string;

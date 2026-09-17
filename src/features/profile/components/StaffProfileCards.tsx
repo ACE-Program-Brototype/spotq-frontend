@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import type { StaffProfile } from "../types/profile.types";
 import { formatDate, getInitials } from "../utils/profile.utils";
@@ -21,14 +22,15 @@ export function StaffProfileOverviewCard({ profile }: ProfileCardProps) {
   const initials = getInitials(profile.fullName);
   const isStatusActive = profile.status.toLowerCase() === "active";
   const memberSince = formatDate(profile.createdAt);
+  const { data: signedAvatarUrl } = usePresignedUrl(profile.avatarUrl);
 
   return (
     <Card className="rounded-2xl border-[#eddcd4] bg-white shadow-xs select-none">
       <CardContent className="flex flex-col items-center pt-8 pb-6 px-6 text-center space-y-4">
         <Avatar className="size-28 sm:size-32 rounded-full border-2 border-[#eddcd4] shadow-sm bg-[#faf7f5]">
-          {profile.avatarUrl ? (
+          {signedAvatarUrl ? (
             <AvatarImage
-              src={profile.avatarUrl}
+              src={signedAvatarUrl}
               alt={profile.fullName}
               className="size-full object-cover rounded-full"
             />
