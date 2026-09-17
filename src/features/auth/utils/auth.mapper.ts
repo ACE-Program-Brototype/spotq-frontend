@@ -6,11 +6,18 @@
 import type { ApiAuthResponse, ApiUser, AuthResult, User } from "../types/auth.types";
 
 export const mapApiUserToUser = (apiUser: ApiUser): User => {
+  const rawRole = apiUser.role || "";
+  const normalizedRole = (
+    rawRole.toUpperCase() === "ADMIN" || rawRole.toUpperCase() === "PLATFORM_ADMIN"
+      ? "ADMIN"
+      : rawRole.toUpperCase()
+  ) as User["role"];
+
   return {
     id: apiUser.id || apiUser._id,
     fullName: apiUser.full_name || apiUser.name,
     email: apiUser.email,
-    role: apiUser.role ?? "CUSTOMER",
+    role: normalizedRole || "CUSTOMER",
     phone: apiUser.phone ?? "",
     status: apiUser.status,
     onboardingStatus: apiUser.onboardingStatus || apiUser.onboarding_status,

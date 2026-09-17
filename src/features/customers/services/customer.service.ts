@@ -6,10 +6,12 @@ import {
 } from "../constants/customer.constants";
 import type {
   Customer,
+  CustomerDetailsApiResponse,
   CustomerPagination,
   CustomersApiResponse,
   CustomersListData,
   GetCustomersParams,
+  RawCustomerDetails,
   UpdateCustomerStatusInput,
   UpdateCustomerStatusResponse,
 } from "../types/customer.types";
@@ -76,10 +78,10 @@ export const customerService = {
       fullName: item.fullName || item.full_name || item.fullname || item.email.split("@")[0],
       phone: item.phone ?? null,
       status: item.status,
-      isEmailVerified: item.isEmailVerified ?? true,
+      isEmailVerified: item.isEmailVerified ?? false,
       avatarUrl: item.avatarUrl ?? null,
-      createdAt: item.createdAt || new Date().toISOString(),
-      updatedAt: item.updatedAt || new Date().toISOString(),
+      createdAt: item.createdAt || "",
+      updatedAt: item.updatedAt || "",
       location: item.location ?? null,
     }));
 
@@ -126,6 +128,29 @@ export const customerService = {
   },
 
   /**
+   * Fetch single customer details by ID
+   */
+  async getCustomerDetails(id: string): Promise<Customer> {
+    const response = await apiClient
+      .get(CUSTOMER_ENDPOINTS.DETAILS(id))
+      .json<CustomerDetailsApiResponse>();
+
+    const item: RawCustomerDetails = response.data;
+    return {
+      id: item.id,
+      email: item.email,
+      fullName: item.fullName || item.fullname || item.email.split("@")[0],
+      phone: item.phone ?? null,
+      status: item.status,
+      isEmailVerified: item.isEmailVerified ?? false,
+      avatarUrl: item.avatarUrl ?? null,
+      createdAt: item.createdAt || "",
+      updatedAt: item.updatedAt || "",
+      location: item.location ?? null,
+    };
+  },
+
+  /**
    * Update customer account status (e.g. Block or Unblock)
    */
   async updateCustomerStatus(
@@ -142,4 +167,5 @@ export const customerService = {
 };
 
 export const getCustomers = customerService.getCustomers;
+export const getCustomerDetails = customerService.getCustomerDetails;
 export const updateCustomerStatus = customerService.updateCustomerStatus;

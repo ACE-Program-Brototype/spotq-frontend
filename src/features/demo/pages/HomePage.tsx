@@ -94,13 +94,14 @@ export default function HomePage() {
   const { user, setUser } = useAuthStore();
   const { handleLogout, isLoading: isLoggingOut } = useLogout();
 
+  const displayName = user?.fullName || user?.name || user?.email?.split("@")[0] || "";
+  const nameParts = displayName.trim().split(/\s+/).filter(Boolean);
   const initials =
-    user?.name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2) ?? "CU";
+    nameParts.length >= 2
+      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+      : nameParts.length === 1 && nameParts[0].length >= 2
+        ? nameParts[0].slice(0, 2).toUpperCase()
+        : nameParts[0]?.[0]?.toUpperCase() || "CU";
 
   const handleDemoLogin = () => {
     setUser({
@@ -124,7 +125,7 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold text-neutral-900">
-                {user ? user.name || "Customer User" : "Guest Visitor"}
+                {user ? displayName || "Customer" : "Guest Visitor"}
               </span>
               <span className="rounded-md bg-neutral-200/80 px-2 py-0.5 text-[10px] font-bold text-neutral-700 uppercase tracking-wider">
                 {user?.role ?? "GUEST"}
@@ -151,7 +152,7 @@ export default function HomePage() {
                 </Button>
               }
               title="Sign Out"
-              description={`Are you sure you want to end your session, ${user.name || "Customer"}?`}
+              description={`Are you sure you want to end your session, ${displayName || "Customer"}?`}
               confirmText="Sign Out"
               confirmVariant="destructive"
               isLoading={isLoggingOut}

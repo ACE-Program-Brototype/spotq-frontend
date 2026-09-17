@@ -37,6 +37,11 @@ export interface UploadFileResult {
   fileName: string;
 }
 
+export interface PresignedDownloadUrlResponse {
+  download_url: string;
+  expires_in_seconds: number;
+}
+
 /**
  * Requests a presigned upload URL from the backend storage endpoint.
  */
@@ -52,9 +57,7 @@ export async function getPresignedUrl(request: PresignedUrlRequest): Promise<Pre
   return response.data;
 }
 
-/**
- * Infers standard MIME types from file extensions when browser file.type is empty or generic.
- */
+
 function inferMimeType(fileName: string): string {
   const ext = fileName.split(".").pop()?.toLowerCase();
   switch (ext) {
@@ -72,6 +75,29 @@ function inferMimeType(fileName: string): string {
     default:
       return "application/octet-stream";
   }
+
+export async function getPresignedDownloadUrl(key: string): Promise<string> {
+  if (!key?.trim()) {
+    throw new Error("Object key is required");
+  }
+
+  const trimmedKey = key.trim();
+
+  if (trimmedKey.startsWith("http://") || trimmedKey.startsWith("https://")) {
+    return trimmedKey;
+  }
+
+  const response = await apiClient
+    .get(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+      searchParams: { key: trimmedKey },
+    })
+    .json<ApiResponse<PresignedDownloadUrlResponse>>();
+
+  if (!response?.success || !response?.data?.download_url) {
+    throw new Error(response?.message || "Failed to retrieve presigned download URL.");
+  }
+
+  return response.data.download_url;
 }
 
 /**

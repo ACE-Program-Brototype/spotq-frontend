@@ -7,6 +7,7 @@ const env = {
     "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com",
   staffInvitationStaleTimeMs:
     Number(import.meta.env.VITE_STAFF_INVITATION_STALE_TIME_MS) || 300_000,
+  googleMapsBaseUrl: import.meta.env.VITE_GOOGLE_MAPS_BASE_URL || "https://www.google.com/maps",
 } as const;
 
 export default env;
