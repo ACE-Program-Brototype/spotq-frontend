@@ -33,7 +33,18 @@ export const PROFILE_MESSAGES = {
     NAME_INVALID_CHARS: "Full name can only contain letters, spaces, and hyphens.",
     DOB_FUTURE: "Date of birth cannot be in the future.",
     PHONE_INVALID: "Phone number must be exactly 10 digits.",
+    RESTAURANT_NAME_REQUIRED: "Restaurant name is required.",
+    PHONE_REQUIRED: "Phone number is required.",
+    OWNER_NAME_REQUIRED: "Owner name is required.",
+    AVERAGE_COST_INVALID: "Average cost must be a valid positive number.",
+    HOURS_REQUIRED: (day: string) => `Please set valid open and close times for ${day}.`,
+    HOURS_CHRONOLOGICAL: (day: string) => `Closing time must be after opening time for ${day}.`,
   },
+
+  // Restaurant Profile Messages
+  RESTAURANT_UPDATE_SUCCESS: "Restaurant profile updated successfully",
+  RESTAURANT_UPDATE_FAILED: "Failed to update restaurant profile",
+  UPLOAD_FAILED: "Failed to upload image. Please try again.",
 
   // Staff Profile Messages
   PAGE_SUBTITLE: "View and verify your staff account details and restaurant role.",
@@ -53,16 +64,30 @@ export const PROFILE_ENDPOINTS = {
   GET_PROFILE: "users/profile",
   UPDATE_PROFILE: "users/profile",
   GET_STAFF_PROFILE: "restaurants/staff/profile/me",
+  GET_RESTAURANT_PROFILE: "restaurants/profile",
+  UPDATE_RESTAURANT_PROFILE: "restaurants/profile",
 } as const;
 
 export const PROFILE_QUERY_KEYS = {
   CUSTOMER_PROFILE: ["customer", "profile"] as const,
   STAFF_PROFILE: ["staff", "profile"] as const,
+  RESTAURANT_PROFILE: ["restaurant", "profile"] as const,
 };
+
+export const DAYS_OF_WEEK = [
+  { id: 1, label: "Monday" },
+  { id: 2, label: "Tuesday" },
+  { id: 3, label: "Wednesday" },
+  { id: 4, label: "Thursday" },
+  { id: 5, label: "Friday" },
+  { id: 6, label: "Saturday" },
+  { id: 7, label: "Sunday" },
+] as const;
 
 export const profileHooks = {
   STAFF_PROFILE_STALE_TIME: 5 * 60 * 1000,
   CUSTOMER_PROFILE_STALE_TIME: 5 * 60 * 1000,
+  RESTAURANT_PROFILE_STALE_TIME: 5 * 60 * 1000,
 };
 
 export const MONTH_NAMES = [

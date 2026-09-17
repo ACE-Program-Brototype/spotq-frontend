@@ -57,9 +57,25 @@ export async function getPresignedUrl(request: PresignedUrlRequest): Promise<Pre
   return response.data;
 }
 
-/**
- * Requests a presigned download/view URL for an existing S3 object key.
- */
+
+function inferMimeType(fileName: string): string {
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  switch (ext) {
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "png":
+      return "image/png";
+    case "webp":
+      return "image/webp";
+    case "avif":
+      return "image/avif";
+    case "pdf":
+      return "application/pdf";
+    default:
+      return "application/octet-stream";
+  }
+
 export async function getPresignedDownloadUrl(key: string): Promise<string> {
   if (!key?.trim()) {
     throw new Error("Object key is required");
@@ -96,7 +112,9 @@ export function uploadFileToS3(
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", uploadUrl, true);
-    xhr.setRequestHeader("Content-Type", contentType || file.type || "application/octet-stream");
+    const resolvedContentType =
+      contentType || (file.type && file.type !== "" ? file.type : inferMimeType(file.name));
+    xhr.setRequestHeader("Content-Type", resolvedContentType);
 
     if (onProgress && xhr.upload) {
       xhr.upload.onprogress = (event) => {
@@ -137,14 +155,21 @@ export function uploadFileToS3(
 export async function uploadFile(params: UploadFileParams): Promise<UploadFileResult> {
   const { file, entityType, entityId, fileCategory, contentType, onProgress } = params;
 
-  const resolvedContentType = contentType || file.type || "application/octet-stream";
+  const rawCategory = (fileCategory || "DOCUMENTS").toUpperCase();
+  const normalizedCategory =
+    rawCategory === "LOGO" || rawCategory === "COVER_IMAGE" || rawCategory === "AVATAR"
+      ? "PROFILE"
+      : rawCategory;
+
+  const resolvedContentType =
+    contentType || (file.type && file.type !== "" ? file.type : inferMimeType(file.name));
 
   const presignedRequest: PresignedUrlRequest = {
     entity_type: entityType,
     entity_id: entityId,
     file_name: file.name,
     content_type: resolvedContentType,
-    file_category: fileCategory,
+    file_category: normalizedCategory,
     file_size: file.size,
   };
 

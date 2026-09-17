@@ -10,6 +10,7 @@ import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
 import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
+import RestaurantProfilePage from "@/features/profile/pages/RestaurantProfilePage";
 import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
 import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
@@ -132,6 +133,14 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "dashboard",
             Component: RestaurantDashboardPage,
+          },
+          {
+            path: "profile",
+            Component: RestaurantProfilePage,
+          },
+          {
+            path: "settings/account",
+            Component: RestaurantProfilePage,
           },
           {
             path: "staff",

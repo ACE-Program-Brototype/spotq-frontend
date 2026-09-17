@@ -63,16 +63,26 @@ export function getProfileInitials(name?: string | null, fallback = "CU"): strin
 }
 
 /**
+ * Resolves media/image key or URL into a full displayable URL using CDN or S3 base URL.
+ */
+export function resolveMediaUrl(mediaKeyOrUrl?: string | null): string | null {
+  if (!mediaKeyOrUrl?.trim()) return null;
+
+  const trimmed = mediaKeyOrUrl.trim();
+  if (/^(https?:\/\/|data:|blob:)/i.test(trimmed)) return trimmed;
+
+  const base = (
+    env.cdnBaseUrl || "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com"
+  ).replace(/\/+$/, "");
+
+  return `${base}/${trimmed.replace(/^\/+/, "")}`;
+}
+
+/**
  * Resolves avatar key or URL into full URL using configured CDN/S3/MinIO base URL.
  */
 export function resolveAvatarUrl(avatar?: string | null): string | null {
-  if (!avatar?.trim()) return null;
-
-  const trimmed = avatar.trim();
-  if (/^(https?:\/\/|data:|blob:)/i.test(trimmed)) return trimmed;
-
-  const base = env.cdnBaseUrl?.replace(/\/+$/, "");
-  return base ? `${base}/${trimmed.replace(/^\/+/, "")}` : null;
+  return resolveMediaUrl(avatar);
 }
 
 /**
