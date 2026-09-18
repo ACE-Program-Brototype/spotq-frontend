@@ -124,7 +124,7 @@ export function RestaurantOverviewCard({
       const res = await upload(file, {
         entityType: "restaurants",
         entityId: activeRestaurantId,
-        fileCategory: "PROFILE",
+        fileCategory: "IMAGES",
       });
       if (res?.s3ObjectKey) {
         setCoverImageKey(res.s3ObjectKey);

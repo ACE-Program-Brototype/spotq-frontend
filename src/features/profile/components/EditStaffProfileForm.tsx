@@ -106,6 +106,7 @@ export function EditStaffProfileForm({
         uploadedAvatarKey = await profileService.uploadStaffAvatar(
           profile.restaurantId,
           selectedAvatarFile,
+          profile.id,
         );
       } catch {
         toast.error(PROFILE_MESSAGES.AVATAR_UPLOAD_FALLBACK_WARNING);
@@ -122,6 +123,7 @@ export function EditStaffProfileForm({
     if (uploadedAvatarKey) {
       payload.avatar_url = uploadedAvatarKey;
       payload.avatarUrl = uploadedAvatarKey;
+      payload.hasAvatar = true;
     }
 
     await onSubmit(payload);

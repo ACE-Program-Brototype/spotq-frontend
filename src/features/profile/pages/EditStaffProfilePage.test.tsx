@@ -398,7 +398,11 @@ describe("EditStaffProfilePage (SCRUM-689)", () => {
     await user.click(saveBtn);
 
     await waitFor(() => {
-      expect(profileService.uploadStaffAvatar).toHaveBeenCalledWith("res_01ABC", validFile);
+      expect(profileService.uploadStaffAvatar).toHaveBeenCalledWith(
+        "res_01ABC",
+        validFile,
+        "stf_02AB",
+      );
 
       expect(profileService.updateStaffProfile).toHaveBeenCalledWith(
         "res_01ABC",
