@@ -207,4 +207,82 @@ describe("ProtectedLayout", () => {
     expect(screen.getByText("Restaurant Dashboard Page")).toBeInTheDocument();
     expect(screen.queryByText("Staff Dashboard Page")).not.toBeInTheDocument();
   });
+
+  it("allows VERIFIED RESTAURANT_ADMIN to access /restaurant/staff without redirecting to onboarding status", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Owner",
+      email: "restaurant@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      status: "VERIFIED",
+      onboardingStatus: "COMPLETED",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/restaurant/staff"]}>
+        <Routes>
+          <Route element={<ProtectedLayout allowedRoles={["RESTAURANT_ADMIN"]} />}>
+            <Route path="/restaurant/staff" element={<div>Restaurant Staff Page</div>} />
+          </Route>
+          <Route path="/restaurant/onboarding/status" element={<div>Onboarding Status Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Restaurant Staff Page")).toBeInTheDocument();
+    expect(screen.queryByText("Onboarding Status Page")).not.toBeInTheDocument();
+  });
+
+  it("redirects UNDER_REVIEW RESTAURANT_ADMIN attempting to access /restaurant/dashboard to /restaurant/onboarding/status", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Owner",
+      email: "restaurant@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      status: "UNDER_REVIEW",
+      onboardingStatus: "COMPLETED",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
+        <Routes>
+          <Route element={<ProtectedLayout allowedRoles={["RESTAURANT_ADMIN"]} />}>
+            <Route path="/restaurant/dashboard" element={<div>Restaurant Dashboard Page</div>} />
+          </Route>
+          <Route path="/restaurant/onboarding/status" element={<div>Onboarding Status Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Onboarding Status Page")).toBeInTheDocument();
+    expect(screen.queryByText("Restaurant Dashboard Page")).not.toBeInTheDocument();
+  });
+
+  it("redirects UNDER_REVIEW RESTAURANT_ADMIN attempting to access /restaurant/subscription to /restaurant/onboarding/status", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Owner",
+      email: "restaurant@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      status: "UNDER_REVIEW",
+      onboardingStatus: "COMPLETED",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/restaurant/subscription"]}>
+        <Routes>
+          <Route element={<ProtectedLayout allowedRoles={["RESTAURANT_ADMIN"]} />}>
+            <Route path="/restaurant/subscription" element={<div>Subscription Page</div>} />
+          </Route>
+          <Route path="/restaurant/onboarding/status" element={<div>Onboarding Status Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Onboarding Status Page")).toBeInTheDocument();
+    expect(screen.queryByText("Subscription Page")).not.toBeInTheDocument();
+  });
 });

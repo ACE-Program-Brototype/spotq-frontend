@@ -35,6 +35,14 @@ export default function VerificationStatusPage() {
             setRejectionReason(response.data.rejectionReason);
           }
           if (fetchedStatus === "VERIFIED") {
+            const currentUser = useAuthStore.getState().user;
+            if (currentUser && currentUser.status !== "VERIFIED") {
+              useAuthStore.getState().setUser({
+                ...currentUser,
+                status: "VERIFIED",
+                onboardingStatus: "COMPLETED",
+              });
+            }
             toast.success("Application approved! Redirecting to subscription...");
             setTimeout(() => {
               navigate("/restaurant/subscription", { replace: true });

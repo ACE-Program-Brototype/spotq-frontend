@@ -1,23 +1,54 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { RestaurantAdminNavbar } from "@/components/layout/RestaurantAdminNavbar";
 import { RestaurantAdminSidebar } from "@/components/layout/RestaurantAdminSidebar";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export function RestaurantAdminLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const { user, clearAuth } = useAuthStore();
+
+  const { data: statusData, isLoading: isLoadingStatus } = useQuery({
+    queryKey: ["restaurant-status"],
+    queryFn: () => subscriptionService.fetchRestaurantStatus(),
+    staleTime: 30 * 1000,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (!isLoadingStatus && statusData && !statusData.isSubscriptionActive) {
+      navigate("/restaurant/subscription", { replace: true });
+    }
+  }, [isLoadingStatus, statusData, navigate]);
 
   const handleLogout = () => {
     clearAuth();
     queryClient.clear();
     navigate("/restaurant/email/verification", { replace: true });
   };
+
+  if (isLoadingStatus) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-[#fffdfb]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#e8631b] border-t-transparent" />
+          <p className="text-sm font-medium text-neutral-600">Verifying subscription...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (statusData && !statusData.isSubscriptionActive) {
+    return null;
+  }
+
+  const restaurantName = statusData?.restaurantName || user?.fullName || user?.name || "Restaurant";
 
   return (
     <div className="flex h-svh w-full max-w-full overflow-hidden bg-[#fffdfb] text-neutral-900">
@@ -56,7 +87,7 @@ export function RestaurantAdminLayout() {
 
       <div className="flex flex-1 flex-col min-w-0 w-full h-full max-w-full overflow-hidden">
         <RestaurantAdminNavbar
-          restaurantName="Basil Mandi"
+          restaurantName={restaurantName}
           onToggleSidebar={() => setMobileDrawerOpen(true)}
         />
 

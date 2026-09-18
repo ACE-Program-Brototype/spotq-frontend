@@ -15,10 +15,10 @@ export const getRoleHome = (
     case "ADMIN":
       return "/admin/dashboard";
     case "RESTAURANT_ADMIN":
-      if (status === "ACTIVE" || status === "APPROVED") {
+      if (status === "ACTIVE" || status === "APPROVED" || status === "VERIFIED") {
         return "/restaurant/dashboard";
       }
-      if (onboardingStatus === "COMPLETED" || status === "UNDER_REVIEW") {
+      if (status === "UNDER_REVIEW" || status === "SUBMITTED" || onboardingStatus === "COMPLETED") {
         return "/restaurant/onboarding/status";
       }
       if (status === "PENDING") {

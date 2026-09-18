@@ -49,14 +49,20 @@ export default function ProtectedLayout({
   const roleHome = getRoleHome(normalizedRole, user?.status, user?.onboardingStatus);
 
   if (normalizedRole === "RESTAURANT_ADMIN") {
-    if (user?.status === "ACTIVE" || user?.status === "APPROVED") {
-      // Active or approved restaurant admins can navigate restaurant pages without redirection
-    } else if (user?.onboardingStatus === "COMPLETED" || user?.status === "UNDER_REVIEW") {
+    const isVerifiedOrActive =
+      user?.status === "VERIFIED" || user?.status === "ACTIVE" || user?.status === "APPROVED";
+
+    if (isVerifiedOrActive) {
+      // Verified, active or approved restaurant admins can navigate restaurant pages without redirection
+    } else if (
+      user?.status === "SUBMITTED" ||
+      user?.status === "UNDER_REVIEW" ||
+      user?.status === "REJECTED" ||
+      (user?.onboardingStatus === "COMPLETED" && user?.status !== "VERIFIED")
+    ) {
       if (
         !location.pathname.startsWith("/restaurant/onboarding/status") &&
-        !location.pathname.startsWith("/restaurant/onboarding/verification-status") &&
-        !location.pathname.startsWith("/restaurant/dashboard") &&
-        !location.pathname.startsWith("/restaurant/subscription")
+        !location.pathname.startsWith("/restaurant/onboarding/verification-status")
       ) {
         return <Navigate to="/restaurant/onboarding/status" replace />;
       }
