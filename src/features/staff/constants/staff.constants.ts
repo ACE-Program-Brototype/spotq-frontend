@@ -7,6 +7,10 @@ export const STAFF_ENDPOINTS = {
   STAFF_DETAIL: (id: string) => `restaurants/staff/${id}`,
 } as const;
 
+export const STAFF_STATUSES = ["ACTIVE", "INACTIVE", "SUSPENDED", "INVITED", "REMOVED"] as const;
+
+export type StaffStatus = (typeof STAFF_STATUSES)[number];
+
 export const STAFF_DESIGNATIONS = [
   "Manager",
   "Head Chef",

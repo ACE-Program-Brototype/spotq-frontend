@@ -78,9 +78,6 @@ describe("staffMemberService", () => {
             sortBy: "createdAt",
             sortOrder: "DESC",
           },
-          headers: {
-            "x-restaurant-id": mockRestaurantId,
-          },
         },
       );
 

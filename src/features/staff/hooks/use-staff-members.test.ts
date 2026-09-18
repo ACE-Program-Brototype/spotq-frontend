@@ -1,11 +1,22 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
+import React from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { STAFF_DESIGNATIONS } from "@/features/staff/constants/staff.constants";
 import { staffMemberService } from "@/features/staff/services/staff-member.service";
 import type { StaffMember } from "@/features/staff/types/staff-invitation.types";
 import { useStaffMembers } from "./use-staff-members";
 
 jest.mock("@/features/staff/services/staff-member.service");
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false, gcTime: 0 },
+    },
+  });
+  return ({ children }: { children: React.ReactNode }) =>
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
+};
 
 describe("useStaffMembers", () => {
   const mockGetStaffMembers = staffMemberService.getStaffMembers as jest.Mock;
@@ -58,7 +69,9 @@ describe("useStaffMembers", () => {
       pagination: { page: 1, limit: 20, total: 2, totalPages: 1 },
     });
 
-    const { result } = renderHook(() => useStaffMembers());
+    const { result } = renderHook(() => useStaffMembers(), {
+      wrapper: createWrapper(),
+    });
 
     expect(result.current.isLoading).toBe(true);
 
@@ -80,7 +93,9 @@ describe("useStaffMembers", () => {
       total: 2,
       active: 1,
       inactive: 1,
-      pending: 0,
+      suspended: 0,
+      invited: 0,
+      removed: 0,
     });
   });
 
@@ -92,7 +107,9 @@ describe("useStaffMembers", () => {
       pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
     });
 
-    const { result } = renderHook(() => useStaffMembers());
+    const { result } = renderHook(() => useStaffMembers(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -110,7 +127,9 @@ describe("useStaffMembers", () => {
       pagination: { page: 1, limit: 20, total: 1, totalPages: 1 },
     });
 
-    const { result } = renderHook(() => useStaffMembers());
+    const { result } = renderHook(() => useStaffMembers(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -130,31 +149,14 @@ describe("useStaffMembers", () => {
     });
   });
 
-  it("includes all centralized STAFF_DESIGNATIONS in availableDesignations", async () => {
-    mockGetStaffMembers.mockResolvedValueOnce({
-      success: true,
-      message: "Success",
-      data: mockStaffData,
-      pagination: { page: 1, limit: 20, total: 2, totalPages: 1 },
-    });
-
-    const { result } = renderHook(() => useStaffMembers());
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    for (const designation of STAFF_DESIGNATIONS) {
-      expect(result.current.availableDesignations).toContain(designation);
-    }
-  });
-
   it("uses server-provided aggregate stats when available", async () => {
     const mockServerStats = {
       total: 50,
       active: 40,
       inactive: 8,
-      pending: 2,
+      suspended: 1,
+      invited: 1,
+      removed: 0,
     };
 
     mockGetStaffMembers.mockResolvedValueOnce({
@@ -165,7 +167,9 @@ describe("useStaffMembers", () => {
       stats: mockServerStats,
     });
 
-    const { result } = renderHook(() => useStaffMembers());
+    const { result } = renderHook(() => useStaffMembers(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -182,7 +186,9 @@ describe("useStaffMembers", () => {
       pagination: { page: 3, limit: 20, total: 50, totalPages: 3 },
     });
 
-    const { result } = renderHook(() => useStaffMembers({ initialPage: 3 }));
+    const { result } = renderHook(() => useStaffMembers({ initialPage: 3 }), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -198,7 +204,9 @@ describe("useStaffMembers", () => {
       pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
     });
 
-    const { result } = renderHook(() => useStaffMembers());
+    const { result } = renderHook(() => useStaffMembers(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);

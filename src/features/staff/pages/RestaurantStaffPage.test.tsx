@@ -108,14 +108,14 @@ describe("RestaurantStaffPage", () => {
       expect(screen.getByText("Ravi Kumar")).toBeInTheDocument();
     });
 
-    const memberSortBtn = screen.getByRole("button", { name: /Member/i });
-    fireEvent.click(memberSortBtn);
+    const joinedDateSortBtn = screen.getByRole("button", { name: /Joined Date/i });
+    fireEvent.click(joinedDateSortBtn);
 
     await waitFor(() => {
       expect(mockGetStaffMembers).toHaveBeenCalledWith(
         "rest-123",
         expect.objectContaining({
-          sortBy: "name",
+          sortBy: "createdAt",
           sortOrder: "ASC",
         }),
       );

@@ -1,4 +1,8 @@
-import { STAFF_ENDPOINTS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
+import {
+  STAFF_ENDPOINTS,
+  STAFF_MESSAGES,
+  type StaffStatus,
+} from "@/features/staff/constants/staff.constants";
 import type {
   StaffInvitationPagination,
   StaffMember,
@@ -6,23 +10,25 @@ import type {
 import { formatEmployeeCode } from "@/features/staff/utils/staff.helpers";
 import { apiClient } from "@/lib/api/client";
 
-export type StaffSortBy = "createdAt" | "name";
+export type StaffSortBy = "createdAt";
 export type StaffSortOrder = "ASC" | "DESC";
 
 export type ListStaffMembersParams = {
   page?: number;
   limit?: number;
-  status?: string;
+  status?: StaffStatus | string;
   search?: string;
   sortBy?: StaffSortBy;
-  sortOrder?: "ASC" | "DESC" | "asc" | "desc";
+  sortOrder?: StaffSortOrder | "asc" | "desc";
 };
 
 export type StaffDirectoryStats = {
   total: number;
   active: number;
   inactive: number;
-  pending: number;
+  suspended: number;
+  invited: number;
+  removed: number;
 };
 
 export type StaffMemberResponseItem = {
@@ -78,9 +84,6 @@ export const staffMemberService = {
     const raw = await apiClient
       .get(endpoint, {
         searchParams: Object.keys(searchParams).length > 0 ? searchParams : undefined,
-        headers: {
-          "x-restaurant-id": restaurantId,
-        },
       })
       .json<{
         success?: boolean;
@@ -97,7 +100,7 @@ export const staffMemberService = {
       email: item.email || "",
       phone: item.phone || "-",
       designation: item.role || "Staff",
-      status: (item.status?.toUpperCase() as "ACTIVE" | "INACTIVE" | "PENDING") || "ACTIVE",
+      status: (item.status?.toUpperCase() as StaffStatus) || "ACTIVE",
       joinedDate: item.createdAt || new Date().toISOString(),
       lastLogin: item.createdAt || new Date().toISOString(),
       employeeCode: formatEmployeeCode(item.id),

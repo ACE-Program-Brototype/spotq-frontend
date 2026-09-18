@@ -10,7 +10,6 @@ import {
   Eye,
   Filter,
   Mail,
-  MoreVertical,
   RefreshCw,
   Search,
   UserCheck,
@@ -40,9 +39,6 @@ export default function RestaurantStaffPage() {
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-    designationFilter,
-    setDesignationFilter,
-    availableDesignations,
     page,
     setPage,
     sortBy,
@@ -81,11 +77,32 @@ export default function RestaurantStaffPage() {
             Inactive
           </span>
         );
+      case "SUSPENDED":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
+            <span className="size-1.5 rounded-full bg-amber-500" />
+            Suspended
+          </span>
+        );
+      case "INVITED":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 border border-sky-200">
+            <span className="size-1.5 rounded-full bg-sky-500" />
+            Invited
+          </span>
+        );
+      case "REMOVED":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
+            <span className="size-1.5 rounded-full bg-rose-500" />
+            Removed
+          </span>
+        );
       default:
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fef3ec] px-2.5 py-1 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
             <span className="size-1.5 rounded-full bg-[#e8631b]" />
-            {status || "Pending"}
+            {status || "Active"}
           </span>
         );
     }
@@ -225,25 +242,6 @@ export default function RestaurantStaffPage() {
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap">
-            {/* Designation filter */}
-            {availableDesignations.length > 0 && (
-              <div className="relative">
-                <select
-                  value={designationFilter}
-                  onChange={(e) => setDesignationFilter(e.target.value)}
-                  className="h-10 pl-3 pr-8 rounded-xl border border-[#eddcd4] bg-white text-xs font-medium text-neutral-700 hover:bg-[#faf7f5] appearance-none focus:outline-none focus:border-[#e8631b]"
-                >
-                  <option value="ALL">All Roles / Designations</option>
-                  {availableDesignations.map((desig) => (
-                    <option key={desig} value={desig}>
-                      {desig}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-neutral-400 pointer-events-none" />
-              </div>
-            )}
-
             {/* Status filter */}
             <div className="relative">
               <select
@@ -254,7 +252,9 @@ export default function RestaurantStaffPage() {
                 <option value="ALL">All Statuses</option>
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
-                <option value="PENDING">Pending</option>
+                <option value="SUSPENDED">Suspended</option>
+                <option value="INVITED">Invited</option>
+                <option value="REMOVED">Removed</option>
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-neutral-400 pointer-events-none" />
             </div>
@@ -284,12 +284,12 @@ export default function RestaurantStaffPage() {
             </div>
             <h3 className="text-base font-bold text-neutral-900">No staff members found</h3>
             <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto">
-              {searchQuery || designationFilter !== "ALL" || statusFilter !== "ALL"
+              {searchQuery || statusFilter !== "ALL"
                 ? "No members match your active filters. Try resetting the filters."
                 : "You haven't added any staff members yet. Send an invitation to get started."}
             </p>
             <div className="mt-5 flex items-center justify-center gap-3">
-              {searchQuery || designationFilter !== "ALL" || statusFilter !== "ALL" ? (
+              {searchQuery || statusFilter !== "ALL" ? (
                 <Button
                   onClick={resetFilters}
                   variant="outline"
@@ -313,25 +313,7 @@ export default function RestaurantStaffPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-[#faf7f5] text-neutral-500 font-semibold border-b border-[#eddcd4]">
                 <tr>
-                  <th className="py-3.5 px-6">
-                    <button
-                      type="button"
-                      onClick={() => toggleSort("name")}
-                      className="inline-flex items-center gap-1.5 hover:text-neutral-900 transition-colors cursor-pointer"
-                      title="Sort by member name"
-                    >
-                      <span>Member</span>
-                      {sortBy === "name" ? (
-                        sortOrder === "ASC" ? (
-                          <ArrowUp className="size-3.5 text-[#e8631b]" />
-                        ) : (
-                          <ArrowDown className="size-3.5 text-[#e8631b]" />
-                        )
-                      ) : (
-                        <ArrowUpDown className="size-3 text-neutral-400 opacity-60" />
-                      )}
-                    </button>
-                  </th>
+                  <th className="py-3.5 px-6">Member</th>
                   <th className="py-3.5 px-6">Contact Details</th>
                   <th className="py-3.5 px-6">Role</th>
                   <th className="py-3.5 px-6">Status</th>
@@ -389,7 +371,7 @@ export default function RestaurantStaffPage() {
                       {formatDate(staff.joinedDate)}
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <div className="flex items-center justify-end gap-1">
+                      <div className="flex items-center justify-end">
                         <Link
                           to={`/restaurant/staff/${staff.id}`}
                           className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors"
@@ -398,13 +380,6 @@ export default function RestaurantStaffPage() {
                         >
                           <Eye className="size-4" />
                         </Link>
-                        <button
-                          type="button"
-                          className="rounded-lg p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
-                          aria-label="Staff options"
-                        >
-                          <MoreVertical className="size-4" />
-                        </button>
                       </div>
                     </td>
                   </tr>

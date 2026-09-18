@@ -1,3 +1,5 @@
+import type { StaffStatus } from "@/features/staff/constants/staff.constants";
+
 export type StaffInvitationStatus = "PENDING" | "ACCEPTED" | "EXPIRED" | "REVOKED";
 
 export type StaffInvitationSortBy = "createdAt" | "expiresAt" | "email" | "status";
@@ -49,7 +51,7 @@ export type StaffMember = {
   email: string;
   phone: string;
   designation: string;
-  status: "ACTIVE" | "INACTIVE" | "PENDING";
+  status: StaffStatus;
   lastLogin: string;
   joinedDate: string;
   avatarUrl?: string;
