@@ -63,13 +63,34 @@ export function getProfileInitials(name?: string | null, fallback = "CU"): strin
 }
 
 /**
- * Resolves media/image key or URL into a full displayable URL using CDN or S3 base URL.
+ * Saves a local image Data URI against an S3 object key into browser local storage for instant persistent caching.
+ */
+export function cacheLocalMedia(objectKey: string, dataUrl: string): void {
+  if (!objectKey || !dataUrl) return;
+  try {
+    const cacheKey = `spotq_media_${objectKey.trim()}`;
+    localStorage.setItem(cacheKey, dataUrl);
+  } catch {
+    // ignore quota errors
+  }
+}
+
+/**
+ * Resolves media/image key or URL into a full displayable URL using local cache, CDN, or S3 base URL.
  */
 export function resolveMediaUrl(mediaKeyOrUrl?: string | null): string | null {
   if (!mediaKeyOrUrl?.trim()) return null;
 
   const trimmed = mediaKeyOrUrl.trim();
   if (/^(https?:\/\/|data:|blob:)/i.test(trimmed)) return trimmed;
+
+  // Check local cache for Data URI saved by object key
+  try {
+    const cachedDataUrl = localStorage.getItem(`spotq_media_${trimmed}`);
+    if (cachedDataUrl) return cachedDataUrl;
+  } catch {
+    // ignore storage access errors
+  }
 
   const base = (
     env.cdnBaseUrl || "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com"

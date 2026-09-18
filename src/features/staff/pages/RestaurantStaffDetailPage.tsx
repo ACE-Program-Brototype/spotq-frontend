@@ -9,11 +9,10 @@ import {
 import { StaffDetailErrorState } from "@/features/staff/components/StaffDetailErrorState";
 import { StaffDetailHeader } from "@/features/staff/components/StaffDetailHeader";
 import { StaffDetailSkeleton } from "@/features/staff/components/StaffDetailSkeleton";
-import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
+import { STAFF_MESSAGES, type StaffStatus } from "@/features/staff/constants/staff.constants";
 import { useDeleteStaff } from "@/features/staff/hooks/use-delete-staff";
 import { useStaffDetail } from "@/features/staff/hooks/use-staff-detail";
 import { useUpdateStaffStatus } from "@/features/staff/hooks/use-update-staff-status";
-import type { StaffStatus } from "@/features/staff/types/staff-detail.types";
 
 export default function RestaurantStaffDetailPage() {
   return (

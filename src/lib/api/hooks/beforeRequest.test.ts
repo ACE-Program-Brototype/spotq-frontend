@@ -77,4 +77,21 @@ describe("beforeRequest hook", () => {
     expect(authRefreshModule.getOrRefreshAccessToken).not.toHaveBeenCalled();
     expect(request.headers.set).not.toHaveBeenCalled();
   });
+
+  it("attaches Authorization header for protected onboarding endpoint", async () => {
+    useAuthStore.setState({
+      accessToken: "restaurant-jwt-token",
+      isAuthenticated: true,
+    });
+
+    const request = createMockRequest(
+      `http://localhost:10000/api/v1/${AUTH_ENDPOINTS.RESTAURANT_ONBOARD}`,
+    );
+    await beforeRequest({ request, options: dummyOptions, retryCount: 0 });
+
+    expect(request.headers.set).toHaveBeenCalledWith(
+      "Authorization",
+      "Bearer restaurant-jwt-token",
+    );
+  });
 });

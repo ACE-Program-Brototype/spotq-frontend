@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import type { User } from "@/features/auth/types/auth.types";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export default function RestaurantDashboardPage() {
@@ -21,7 +22,8 @@ export default function RestaurantDashboardPage() {
 
   const isSubscriptionActive = statusData?.isSubscriptionActive ?? false;
   const userStatus = restaurantUser?.status ?? statusData?.verificationStatus;
-  const isApprovedOrActive = userStatus === "APPROVED" || userStatus === "ACTIVE";
+  const isApprovedOrActive =
+    userStatus === "APPROVED" || userStatus === "ACTIVE" || userStatus === "VERIFIED";
   const needsSubscription = isApprovedOrActive && !isSubscriptionActive;
 
   const subscriptionEndsAt = statusData?.subscriptionEndsAt
@@ -33,6 +35,23 @@ export default function RestaurantDashboardPage() {
     : null;
   const isExpiringSoon =
     isSubscriptionActive && daysRemaining !== null && daysRemaining <= 7 && daysRemaining >= 0;
+
+  useEffect(() => {
+    if (statusData?.verificationStatus) {
+      const currentUser = useAuthStore.getState().user;
+      if (
+        currentUser &&
+        statusData.verificationStatus &&
+        currentUser.status !== statusData.verificationStatus
+      ) {
+        useAuthStore.getState().setUser({
+          ...currentUser,
+          status: statusData.verificationStatus as User["status"],
+          onboardingStatus: "COMPLETED",
+        });
+      }
+    }
+  }, [statusData]);
 
   useEffect(() => {
     if (!isLoadingStatus && needsSubscription) {

@@ -3,6 +3,7 @@ export const STAFF_ENDPOINTS = {
   INVITATIONS_RESEND: "restaurants/staff/invitations/resend",
   INVITATIONS_REVOKE: "restaurants/staff/invitations/revoke",
   STAFF_LIST: "restaurants/staff",
+  STAFF_LIST_BY_RESTAURANT: (restaurantId: string) => `restaurants/${restaurantId}/staff`,
   STAFF_DETAIL: (restaurantIdOrStaffId: string, maybeStaffId?: string) =>
     maybeStaffId
       ? `restaurants/${restaurantIdOrStaffId}/staff/${maybeStaffId}`
@@ -14,6 +15,10 @@ export const STAFF_ENDPOINTS = {
   STAFF_DELETE: (restaurantId: string, staffId: string) =>
     `restaurants/${restaurantId}/staff/${staffId}`,
 } as const;
+
+export const STAFF_STATUSES = ["ACTIVE", "INACTIVE", "SUSPENDED", "INVITED", "REMOVED"] as const;
+
+export type StaffStatus = (typeof STAFF_STATUSES)[number];
 
 export const STAFF_DESIGNATIONS = [
   "Manager",
@@ -70,6 +75,7 @@ export const STAFF_MESSAGES = {
   FETCH_INVITATIONS_SUCCESS: "Invitations fetched successfully",
   FETCH_INVITATIONS_ERROR: "Failed to fetch invitations",
   FETCH_STAFF_ERROR: "Failed to fetch staff directory.",
+  RESTAURANT_ID_REQUIRED: "Restaurant ID is required",
   INVALID_OR_EXPIRED_TOKEN: "Invalid or expired invitation token",
   ACCEPT_INVITATION_SUCCESS: "Invitation accepted successfully",
   SEND_INVITATION_ERROR: "Failed to send invitation. Please try again.",

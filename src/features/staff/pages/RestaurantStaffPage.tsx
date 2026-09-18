@@ -1,9 +1,16 @@
 import {
+  AlertCircle,
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
   Briefcase,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
   Filter,
   Mail,
-  MoreVertical,
+  RefreshCw,
   Search,
   UserCheck,
   UserPlus,
@@ -11,50 +18,48 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Spinner } from "@/components/common/LoadingIndicator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InviteStaffModal } from "@/features/staff/components/InviteStaffModal";
 import { useStaffInvitations } from "@/features/staff/hooks/use-staff-invitations";
-import type { StaffMember } from "@/features/staff/types/staff-invitation.types";
-import { useDebounce } from "@/lib/hooks/use-debounce";
+import { useStaffMembers } from "@/features/staff/hooks/use-staff-members";
+import { getStaffInitials } from "@/features/staff/utils/staff.helpers";
+import { formatDate } from "@/lib/utils/date";
 
 export default function RestaurantStaffPage() {
-  const [staffList] = useState<StaffMember[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const debouncedSearch = useDebounce(searchQuery, 300);
-  const [designationFilter, setDesignationFilter] = useState("ALL");
-  const [statusFilter, setStatusFilter] = useState("ALL");
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  const {
+    staffList,
+    isLoading,
+    error,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    page,
+    setPage,
+    sortBy,
+    sortOrder,
+    toggleSort,
+    pagination,
+    stats,
+    resetFilters,
+    refreshStaffMembers,
+  } = useStaffMembers();
 
   const { sendInvitation, isSending, stats: invitationStats } = useStaffInvitations();
 
-  const totalStaff = staffList.length;
-  const activeStaff = staffList.filter((staff) => staff.status?.toUpperCase() === "ACTIVE").length;
-  const inactiveStaff = staffList.filter(
-    (staff) => staff.status?.toUpperCase() === "INACTIVE",
-  ).length;
-
-  const availableDesignations = Array.from(
-    new Set(staffList.map((s) => s.designation).filter(Boolean)),
-  );
-
-  const filteredStaff = staffList.filter((staff) => {
-    const matchesSearch =
-      debouncedSearch.trim() === "" ||
-      staff.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-      staff.email.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-      staff.phone.includes(debouncedSearch) ||
-      staff.id.toLowerCase().includes(debouncedSearch.toLowerCase());
-
-    const matchesDesignation =
-      designationFilter === "ALL" || staff.designation === designationFilter;
-
-    const matchesStatus =
-      statusFilter === "ALL" || staff.status.toUpperCase() === statusFilter.toUpperCase();
-
-    return matchesSearch && matchesDesignation && matchesStatus;
-  });
+  const handleSendInvitation = async (email: string): Promise<boolean> => {
+    const success = await sendInvitation(email);
+    if (success) {
+      setIsInviteModalOpen(false);
+      refreshStaffMembers();
+    }
+    return success;
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status?.toUpperCase()) {
@@ -72,11 +77,32 @@ export default function RestaurantStaffPage() {
             Inactive
           </span>
         );
+      case "SUSPENDED":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
+            <span className="size-1.5 rounded-full bg-amber-500" />
+            Suspended
+          </span>
+        );
+      case "INVITED":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 border border-sky-200">
+            <span className="size-1.5 rounded-full bg-sky-500" />
+            Invited
+          </span>
+        );
+      case "REMOVED":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
+            <span className="size-1.5 rounded-full bg-rose-500" />
+            Removed
+          </span>
+        );
       default:
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fef3ec] px-2.5 py-1 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
             <span className="size-1.5 rounded-full bg-[#e8631b]" />
-            {status || "Pending"}
+            {status || "Active"}
           </span>
         );
     }
@@ -99,6 +125,17 @@ export default function RestaurantStaffPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refreshStaffMembers()}
+            disabled={isLoading}
+            className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] shadow-2xs"
+            title="Refresh staff list"
+          >
+            <RefreshCw className={`size-4 ${isLoading ? "animate-spin text-[#e8631b]" : ""}`} />
+          </Button>
+
           <Link to="/restaurant/staff/invitations">
             <Button
               variant="outline"
@@ -124,6 +161,24 @@ export default function RestaurantStaffPage() {
         </div>
       </div>
 
+      {/* Error Banner if API error occurs */}
+      {error && (
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 flex items-center justify-between text-rose-800 text-sm">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="size-5 text-rose-600 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refreshStaffMembers()}
+            className="rounded-xl border-rose-300 text-rose-700 hover:bg-rose-100"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
+
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-2xs">
@@ -133,7 +188,7 @@ export default function RestaurantStaffPage() {
               <Briefcase className="size-4" />
             </div>
           </div>
-          <p className="mt-3 text-2xl font-bold text-neutral-900">{totalStaff}</p>
+          <p className="mt-3 text-2xl font-bold text-neutral-900">{stats.total}</p>
           <p className="mt-1 text-xs text-neutral-400">Total registered members</p>
         </div>
 
@@ -144,7 +199,7 @@ export default function RestaurantStaffPage() {
               <UserCheck className="size-4" />
             </div>
           </div>
-          <p className="mt-3 text-2xl font-bold text-emerald-600">{activeStaff}</p>
+          <p className="mt-3 text-2xl font-bold text-emerald-600">{stats.active}</p>
           <p className="mt-1 text-xs text-neutral-400">Can access system & queues</p>
         </div>
 
@@ -166,7 +221,7 @@ export default function RestaurantStaffPage() {
               <UserX className="size-4" />
             </div>
           </div>
-          <p className="mt-3 text-2xl font-bold text-neutral-600">{inactiveStaff}</p>
+          <p className="mt-3 text-2xl font-bold text-neutral-600">{stats.inactive}</p>
           <p className="mt-1 text-xs text-neutral-400">Access suspended or left</p>
         </div>
       </div>
@@ -187,23 +242,6 @@ export default function RestaurantStaffPage() {
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap">
-            {/* Designation filter */}
-            <div className="relative">
-              <select
-                value={designationFilter}
-                onChange={(e) => setDesignationFilter(e.target.value)}
-                className="h-10 pl-3 pr-8 rounded-xl border border-[#eddcd4] bg-white text-xs font-medium text-neutral-700 hover:bg-[#faf7f5] appearance-none focus:outline-none focus:border-[#e8631b]"
-              >
-                <option value="ALL">All Roles / Designations</option>
-                {availableDesignations.map((desig) => (
-                  <option key={desig} value={desig}>
-                    {desig}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-neutral-400 pointer-events-none" />
-            </div>
-
             {/* Status filter */}
             <div className="relative">
               <select
@@ -214,7 +252,9 @@ export default function RestaurantStaffPage() {
                 <option value="ALL">All Statuses</option>
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
-                <option value="PENDING">Pending</option>
+                <option value="SUSPENDED">Suspended</option>
+                <option value="INVITED">Invited</option>
+                <option value="REMOVED">Removed</option>
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-neutral-400 pointer-events-none" />
             </div>
@@ -223,11 +263,7 @@ export default function RestaurantStaffPage() {
               variant="outline"
               size="sm"
               className="h-10 rounded-xl border-[#eddcd4] text-neutral-600 hover:bg-[#faf7f5]"
-              onClick={() => {
-                setSearchQuery("");
-                setDesignationFilter("ALL");
-                setStatusFilter("ALL");
-              }}
+              onClick={resetFilters}
             >
               <Filter className="size-3.5 mr-1.5 text-neutral-400" />
               Reset
@@ -236,25 +272,40 @@ export default function RestaurantStaffPage() {
         </div>
 
         {/* Staff Table / Content */}
-        {filteredStaff.length === 0 ? (
+        {isLoading ? (
+          <div className="py-16 text-center">
+            <Spinner className="mx-auto size-8 text-[#e8631b]" />
+            <p className="mt-3 text-xs text-neutral-500">Loading staff members...</p>
+          </div>
+        ) : staffList.length === 0 ? (
           <div className="py-16 px-4 text-center">
             <div className="mx-auto size-16 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#9a3412] mb-4">
               <Briefcase className="size-8 text-[#e8631b]" />
             </div>
             <h3 className="text-base font-bold text-neutral-900">No staff members found</h3>
             <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto">
-              {searchQuery || designationFilter !== "ALL" || statusFilter !== "ALL"
+              {searchQuery || statusFilter !== "ALL"
                 ? "No members match your active filters. Try resetting the filters."
                 : "You haven't added any staff members yet. Send an invitation to get started."}
             </p>
             <div className="mt-5 flex items-center justify-center gap-3">
-              <Button
-                onClick={() => setIsInviteModalOpen(true)}
-                className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white"
-              >
-                <UserPlus className="size-4 mr-2" />
-                Invite First Staff Member
-              </Button>
+              {searchQuery || statusFilter !== "ALL" ? (
+                <Button
+                  onClick={resetFilters}
+                  variant="outline"
+                  className="rounded-xl border-[#eddcd4]"
+                >
+                  Clear Filters
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => setIsInviteModalOpen(true)}
+                  className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white"
+                >
+                  <UserPlus className="size-4 mr-2" />
+                  Invite First Staff Member
+                </Button>
+              )}
             </div>
           </div>
         ) : (
@@ -264,25 +315,38 @@ export default function RestaurantStaffPage() {
                 <tr>
                   <th className="py-3.5 px-6">Member</th>
                   <th className="py-3.5 px-6">Contact Details</th>
-                  <th className="py-3.5 px-6">Designation / Role</th>
+                  <th className="py-3.5 px-6">Role</th>
                   <th className="py-3.5 px-6">Status</th>
-                  <th className="py-3.5 px-6">Joined Date</th>
+                  <th className="py-3.5 px-6">
+                    <button
+                      type="button"
+                      onClick={() => toggleSort("createdAt")}
+                      className="inline-flex items-center gap-1.5 hover:text-neutral-900 transition-colors cursor-pointer"
+                      title="Sort by joined date"
+                    >
+                      <span>Joined Date</span>
+                      {sortBy === "createdAt" ? (
+                        sortOrder === "ASC" ? (
+                          <ArrowUp className="size-3.5 text-[#e8631b]" />
+                        ) : (
+                          <ArrowDown className="size-3.5 text-[#e8631b]" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="size-3 text-neutral-400 opacity-60" />
+                      )}
+                    </button>
+                  </th>
                   <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f3e6de] text-neutral-700">
-                {filteredStaff.map((staff) => (
+                {staffList.map((staff) => (
                   <tr key={staff.id} className="hover:bg-[#faf7f5]/70 transition-colors">
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
                         <Avatar className="size-9 border border-[#eddcd4]">
                           <AvatarFallback className="bg-[#fef3ec] text-[#9a3412] font-semibold text-xs">
-                            {staff.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                              .slice(0, 2)}
+                            {getStaffInitials(staff.name)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -304,21 +368,18 @@ export default function RestaurantStaffPage() {
                     </td>
                     <td className="py-4 px-6">{getStatusBadge(staff.status)}</td>
                     <td className="py-4 px-6 text-neutral-500 font-medium">
-                      {new Date(staff.joinedDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {formatDate(staff.joinedDate)}
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          className="rounded-lg p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
-                          aria-label="Staff options"
+                      <div className="flex items-center justify-end">
+                        <Link
+                          to={`/restaurant/staff/${staff.id}`}
+                          className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors"
+                          aria-label={`View details for ${staff.name}`}
+                          title="View staff details"
                         >
-                          <MoreVertical className="size-4" />
-                        </button>
+                          <Eye className="size-4" />
+                        </Link>
                       </div>
                     </td>
                   </tr>
@@ -327,13 +388,48 @@ export default function RestaurantStaffPage() {
             </table>
           </div>
         )}
+
+        {/* Pagination Toolbar */}
+        {!isLoading && pagination.totalPages > 1 && (
+          <div className="px-6 py-4 border-t border-[#f3e6de] bg-[#fffcf9] flex items-center justify-between">
+            <p className="text-xs text-neutral-500">
+              Page <span className="font-semibold text-neutral-900">{pagination.page}</span> of{" "}
+              <span className="font-semibold text-neutral-900">{pagination.totalPages}</span> (
+              {pagination.total} total staff)
+            </p>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!pagination.hasPrevPage && page <= 1}
+                onClick={() => setPage(page - 1)}
+                className="h-8 px-2.5 rounded-lg border-[#eddcd4] text-neutral-700"
+              >
+                <ChevronLeft className="size-4 mr-1" />
+                Previous
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!pagination.hasNextPage && page >= pagination.totalPages}
+                onClick={() => setPage(page + 1)}
+                className="h-8 px-2.5 rounded-lg border-[#eddcd4] text-neutral-700"
+              >
+                Next
+                <ChevronRight className="size-4 ml-1" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Invite Modal */}
       <InviteStaffModal
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
-        onSend={sendInvitation}
+        onSend={handleSendInvitation}
         isLoading={isSending}
       />
     </div>

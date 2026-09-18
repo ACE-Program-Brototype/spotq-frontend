@@ -3,10 +3,14 @@ import { HTTPError } from "ky";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { STAFF_ENDPOINTS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
+import {
+  STAFF_ENDPOINTS,
+  STAFF_MESSAGES,
+  type StaffStatus,
+} from "@/features/staff/constants/staff.constants";
 import { STAFF_DETAIL_QUERY_KEY } from "@/features/staff/hooks/use-staff-detail";
 import { staffDetailService } from "@/features/staff/services/staff-detail.service";
-import type { StaffDetail, StaffStatus } from "@/features/staff/types/staff-detail.types";
+import type { StaffDetail } from "@/features/staff/types/staff-detail.types";
 
 export interface UseUpdateStaffStatusOptions {
   restaurantId: string;

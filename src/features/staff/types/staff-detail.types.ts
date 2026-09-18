@@ -1,6 +1,4 @@
-/**
- * Staff Detail Domain & API Types
- */
+import type { StaffStatus } from "../constants/staff.constants";
 
 export interface StaffDetailRawData {
   id: string;
@@ -27,8 +25,6 @@ export interface StaffDetailApiResponse {
   message: string;
   data: StaffDetailRawData;
 }
-
-export type StaffStatus = "ACTIVE" | "INACTIVE";
 
 export interface StaffDetail {
   id: string;

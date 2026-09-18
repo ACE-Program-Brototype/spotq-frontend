@@ -189,7 +189,7 @@ describe("restaurantRoutes structure and protection", () => {
     expect(screen.getByText("Restaurant Email Verification")).toBeInTheDocument();
   });
 
-  it("allows authenticated RESTAURANT_ADMIN user to access /restaurant/dashboard", () => {
+  it("allows authenticated RESTAURANT_ADMIN user to access /restaurant/dashboard", async () => {
     useAuthStore.getState().setUser({
       _id: "res-1",
       name: "Owner",
@@ -252,6 +252,6 @@ describe("restaurantRoutes structure and protection", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText(/Welcome/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Welcome/i)).toBeInTheDocument();
   });
 });

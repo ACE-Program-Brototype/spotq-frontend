@@ -43,6 +43,26 @@ export default function RestaurantSubscriptionPage() {
   useEffect(() => {
     if (isNavigatingRef.current) return;
     const currentUser = useAuthStore.getState().user;
+    const currentStatus = (
+      restaurantStatus?.verificationStatus ||
+      currentUser?.status ||
+      ""
+    ).toUpperCase();
+
+    if (currentStatus === "PENDING" && currentUser?.onboardingStatus !== "COMPLETED") {
+      navigate("/restaurant/onboarding/business-information", { replace: true });
+      return;
+    }
+
+    if (
+      currentStatus === "SUBMITTED" ||
+      currentStatus === "UNDER_REVIEW" ||
+      currentStatus === "REJECTED"
+    ) {
+      navigate("/restaurant/onboarding/status", { replace: true });
+      return;
+    }
+
     if (currentUser && restaurantStatus?.isSubscriptionActive) {
       navigate("/restaurant/dashboard", { replace: true });
     }
@@ -61,6 +81,15 @@ export default function RestaurantSubscriptionPage() {
           subscriptionEndsAt: verificationResult.currentPeriodEnd,
         }),
       );
+
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser) {
+        useAuthStore.getState().setUser({
+          ...currentUser,
+          status: "VERIFIED",
+          onboardingStatus: "COMPLETED",
+        });
+      }
 
       // Invalidate to fetch fresh authoritative state from backend
       queryClient.invalidateQueries({ queryKey: ["restaurant-status"] });

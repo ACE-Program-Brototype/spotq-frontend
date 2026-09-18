@@ -1,9 +1,12 @@
-import { STAFF_DEFAULTS, STAFF_ENDPOINTS } from "@/features/staff/constants/staff.constants";
+import {
+  STAFF_DEFAULTS,
+  STAFF_ENDPOINTS,
+  type StaffStatus,
+} from "@/features/staff/constants/staff.constants";
 import type {
   StaffDetail,
   StaffDetailApiResponse,
   StaffDetailRawData,
-  StaffStatus,
   UpdateStaffInfoPayload,
 } from "@/features/staff/types/staff-detail.types";
 import { apiClient } from "@/lib/api/client";
