@@ -1,4 +1,5 @@
 import {
+  extractS3Key,
   formatDate,
   formatDateOfBirth,
   formatDateTime,
@@ -80,6 +81,10 @@ describe("profile.utils", () => {
   });
 
   describe("formatRole", () => {
+    it("formats STAFF to Staff", () => {
+      expect(formatRole("STAFF")).toBe("Staff");
+    });
+
     it("formats RESTAURANT_STAFF to Staff", () => {
       expect(formatRole("RESTAURANT_STAFF")).toBe("Staff");
     });
@@ -122,6 +127,26 @@ describe("profile.utils", () => {
     });
   });
 
+  describe("extractS3Key", () => {
+    it("returns null for empty or null key", () => {
+      expect(extractS3Key("")).toBeNull();
+      expect(extractS3Key(null)).toBeNull();
+    });
+
+    it("extracts S3 object key from full S3 bucket URL", () => {
+      expect(
+        extractS3Key(
+          "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com/restaurants/res-1/avatar.jpg",
+        ),
+      ).toBe("restaurants/res-1/avatar.jpg");
+    });
+
+    it("returns raw S3 key or external URL as-is", () => {
+      expect(extractS3Key("restaurants/res-1/avatar.jpg")).toBe("restaurants/res-1/avatar.jpg");
+      expect(extractS3Key("https://example.com/avatar.jpg")).toBe("https://example.com/avatar.jpg");
+    });
+  });
+
   describe("normalizeStaffProfile", () => {
     it("normalizes snake_case backend payload", () => {
       const raw = {
@@ -148,6 +173,21 @@ describe("profile.utils", () => {
         status: "Active",
         createdAt: "2024-10-24T08:42:00.000Z",
       });
+    });
+
+    it("supports camelCase avatarUrl and extracts S3 key", () => {
+      const raw = {
+        id: "staff-2",
+        restaurantId: "rest-2",
+        fullName: "Ravi Kumar",
+        email: "ravi@example.com",
+        avatarUrl: "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com/avatars/user.jpg",
+        role: "STAFF",
+        status: "ACTIVE",
+      };
+
+      const normalized = normalizeStaffProfile(raw);
+      expect(normalized.avatarUrl).toBe("avatars/user.jpg");
     });
   });
 });

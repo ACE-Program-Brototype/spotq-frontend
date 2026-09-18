@@ -1,9 +1,15 @@
 import { apiClient } from "@/lib/api/client";
 import { STORAGE_ENDPOINTS } from "./storage.constants";
-import { getPresignedUrl, uploadFile, uploadFileToS3 } from "./storage.service";
+import {
+  getPresignedDownloadUrl,
+  getPresignedUrl,
+  uploadFile,
+  uploadFileToS3,
+} from "./storage.service";
 
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
+    get: jest.fn(),
     post: jest.fn(),
   },
 }));
@@ -191,6 +197,90 @@ describe("storage.service", () => {
         s3ObjectKey: "restaurants/res-100/documents/uuid_doc.pdf",
         fileName: "doc.pdf",
       });
+    });
+  });
+
+  describe("getPresignedDownloadUrl", () => {
+    it("throws error if key is empty or blank", async () => {
+      await expect(getPresignedDownloadUrl("")).rejects.toThrow("Object key is required");
+      await expect(getPresignedDownloadUrl("   ")).rejects.toThrow("Object key is required");
+    });
+
+    it("returns key directly if it starts with http:// or https://", async () => {
+      const httpUrl = "http://example.com/avatar.png";
+      const httpsUrl = "https://example.com/avatar.png";
+
+      expect(await getPresignedDownloadUrl(httpUrl)).toBe(httpUrl);
+      expect(await getPresignedDownloadUrl(httpsUrl)).toBe(httpsUrl);
+      expect(apiClient.get).not.toHaveBeenCalled();
+    });
+
+    it("fetches presigned download URL from storage endpoint for key", async () => {
+      const mockResponse = {
+        success: true,
+        data: {
+          download_url: "https://s3.amazonaws.com/bucket/avatar.png?sig=xyz",
+          expires_in_seconds: 900,
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await getPresignedDownloadUrl("staff/avatars/avatar1.png");
+
+      expect(apiClient.get).toHaveBeenCalledWith(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+        searchParams: { key: "staff/avatars/avatar1.png" },
+      });
+      expect(result).toBe("https://s3.amazonaws.com/bucket/avatar.png?sig=xyz");
+    });
+
+    it("extracts S3 key from full unsigned S3 URL and requests presigned download URL", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: {
+            download_url: "https://s3.amazonaws.com/bucket/staff/avatars/avatar2.png?sig=abc",
+            expires_in_seconds: 900,
+          },
+        }),
+      });
+
+      const result = await getPresignedDownloadUrl(
+        "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com/staff/avatars/avatar2.png",
+      );
+
+      expect(apiClient.get).toHaveBeenCalledWith(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+        searchParams: { key: "staff/avatars/avatar2.png" },
+      });
+      expect(result).toBe("https://s3.amazonaws.com/bucket/staff/avatars/avatar2.png?sig=abc");
+    });
+
+    it("throws error when API returns success: false", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+          message: "Key not found in bucket",
+        }),
+      });
+
+      await expect(getPresignedDownloadUrl("staff/avatars/non-existent.png")).rejects.toThrow(
+        "Key not found in bucket",
+      );
+    });
+
+    it("throws fallback error when download_url is missing in response", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: {},
+        }),
+      });
+
+      await expect(getPresignedDownloadUrl("staff/avatars/invalid.png")).rejects.toThrow(
+        "Failed to retrieve presigned download URL.",
+      );
     });
   });
 });

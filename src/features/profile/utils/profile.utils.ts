@@ -92,12 +92,11 @@ export function resolveMediaUrl(mediaKeyOrUrl?: string | null): string | null {
     // ignore storage access errors
   }
 
-  const base = env.cdnBaseUrl?.replace(/\/+$/, "");
-  if (base) {
-    return `${base}/${trimmed.replace(/^\/+/, "")}`;
-  }
+  const base = (
+    env.cdnBaseUrl || "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com"
+  ).replace(/\/+$/, "");
 
-  return `https://spotq-restaurant-bucket.s3.ap-south-1.amazonaws.com/${trimmed.replace(/^\/+/, "")}`;
+  return `${base}/${trimmed.replace(/^\/+/, "")}`;
 }
 
 /**
@@ -174,9 +173,36 @@ export function formatDateTime(dateStr?: string | null): string {
 }
 
 /**
+ * Extracts raw S3 key if given a full S3 bucket URL, or returns the key as-is.
+ */
+export function extractS3Key(keyOrUrl?: string | null): string | null {
+  if (!keyOrUrl?.trim()) return null;
+  const trimmed = keyOrUrl.trim();
+
+  // If already a presigned URL with signature, return it directly
+  if (
+    trimmed.includes("X-Amz-Signature") ||
+    trimmed.includes("Signature=") ||
+    trimmed.includes("AWSAccessKeyId=")
+  ) {
+    return trimmed;
+  }
+
+  // If it's a full S3 URL without signature, extract the object key
+  const s3Match = trimmed.match(/^https?:\/\/[^/]+\.amazonaws\.com\/(.+)$/i);
+  if (s3Match?.[1]) {
+    return decodeURIComponent(s3Match[1].split("?")[0]);
+  }
+
+  return trimmed;
+}
+
+/**
  * Normalizes backend raw profile data into clean frontend domain model.
  */
 export function normalizeStaffProfile(raw: StaffProfileRawData): StaffProfile {
+  const rawAvatar = raw.avatarUrl?.trim() || raw.avatar_url?.trim() || raw.avatar?.trim() || null;
+
   return {
     id: raw.id || "",
     restaurantId: raw.restaurantId || raw.restaurant_id || "",
@@ -187,7 +213,7 @@ export function normalizeStaffProfile(raw: StaffProfileRawData): StaffProfile {
       PROFILE_MESSAGES.DEFAULT_NAME,
     email: raw.email?.trim() || "",
     phone: raw.phone?.trim() || raw.phoneNumber?.trim() || null,
-    avatarUrl: resolveAvatarUrl(raw.avatar_url || raw.avatar),
+    avatarUrl: extractS3Key(rawAvatar),
     role: formatRole(raw.role),
     status: formatStatus(raw.status),
     createdAt: raw.created_at || raw.createdAt || null,

@@ -60,6 +60,7 @@ export interface StaffProfileRawData {
   phone?: string | null;
   phoneNumber?: string | null;
   avatar?: string | null;
+  avatarUrl?: string | null;
   avatar_url?: string | null;
   role?: string;
   status?: string;
@@ -84,4 +85,18 @@ export interface StaffProfile {
   role: string;
   status: string;
   createdAt: string | null;
+}
+
+export interface UpdateStaffProfileDto {
+  name?: string;
+  phone?: string;
+  avatar_url?: string | null;
+  avatarUrl?: string | null;
+}
+
+export interface EditStaffProfileFormProps {
+  profile: StaffProfile;
+  onSubmit: (payload: UpdateStaffProfileDto) => Promise<void> | void;
+  onCancel: () => void;
+  isSubmitting?: boolean;
 }

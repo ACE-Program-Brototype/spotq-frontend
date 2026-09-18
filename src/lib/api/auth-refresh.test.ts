@@ -64,13 +64,13 @@ describe("auth-refresh", () => {
     expect(authState.isAuthenticated).toBe(true);
   });
 
-  test("should refresh staff token and update auth store with RESTAURANT_STAFF role", async () => {
+  test("should refresh staff token and update auth store with STAFF role", async () => {
     useAuthStore.getState().setAuth(
       {
         id: "staff-123",
         fullName: "Restaurant Staff",
         email: "staff@example.com",
-        role: "RESTAURANT_STAFF",
+        role: "STAFF",
         phone: "",
         status: "Active",
         createdAt: "",
@@ -113,7 +113,7 @@ describe("auth-refresh", () => {
     expect(authState.user?.fullName).toBe("Refreshed Staff");
     expect(authState.user?.email).toBe("refreshed-staff@example.com");
 
-    expect(authState.user?.role).toBe("RESTAURANT_STAFF");
+    expect(authState.user?.role).toBe("STAFF");
 
     expect(authState.isAuthenticated).toBe(true);
   });
@@ -188,7 +188,7 @@ describe("auth-refresh", () => {
         id: "staff-1",
         fullName: "Shared Staff",
         email: "staff@example.com",
-        role: "RESTAURANT_STAFF",
+        role: "STAFF",
         phone: "",
         status: "Active",
         createdAt: "",
@@ -245,7 +245,7 @@ describe("auth-refresh", () => {
     const authState = useAuthStore.getState();
 
     expect(authState.accessToken).toBe("shared-staff-token");
-    expect(authState.user?.role).toBe("RESTAURANT_STAFF");
+    expect(authState.user?.role).toBe("STAFF");
     expect(authState.isAuthenticated).toBe(true);
   });
 
@@ -284,12 +284,61 @@ describe("auth-refresh", () => {
 
     expect(token).toBe("new-res-admin-token");
     expect(mockPost).toHaveBeenCalledTimes(1);
+    expect(mockPost).toHaveBeenCalledWith(
+      AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN,
+      expect.objectContaining({ credentials: "include" }),
+    );
 
     const authState = useAuthStore.getState();
 
     expect(authState.accessToken).toBe("new-res-admin-token");
     expect(authState.user?.role).toBe("RESTAURANT_ADMIN");
     expect(authState.isAuthenticated).toBe(true);
+  });
+
+  test("should refresh platform admin token using ADMIN_REFRESH_TOKEN", async () => {
+    useAuthStore.getState().setAuth(
+      {
+        id: "admin-123",
+        fullName: "Existing Admin",
+        email: "admin@example.com",
+        role: "ADMIN",
+        phone: "",
+        status: "Active",
+        createdAt: "",
+        updatedAt: "",
+      },
+      "old-admin-token",
+    );
+
+    const mockPost = jest.fn().mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        data: {
+          access_token: "new-admin-token",
+          user: {
+            id: "admin-123",
+            full_name: "Refreshed Admin",
+            email: "refreshed-admin@example.com",
+            status: "ACTIVE",
+          },
+        },
+      }),
+    });
+
+    (ky.post as jest.Mock) = mockPost;
+
+    const token = await getOrRefreshAccessToken();
+
+    expect(token).toBe("new-admin-token");
+    expect(mockPost).toHaveBeenCalledTimes(1);
+    expect(mockPost).toHaveBeenCalledWith(
+      AUTH_ENDPOINTS.ADMIN_REFRESH_TOKEN,
+      expect.objectContaining({ credentials: "include" }),
+    );
+
+    const authState = useAuthStore.getState();
+    expect(authState.accessToken).toBe("new-admin-token");
+    expect(authState.user?.role).toBe("ADMIN");
   });
 
   test("should use default refresh endpoint when unauthenticated or unknown user role", async () => {

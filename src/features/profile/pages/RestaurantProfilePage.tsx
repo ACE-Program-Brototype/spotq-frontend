@@ -82,6 +82,7 @@ export default function RestaurantProfilePage() {
       acceptsQrOrders: true,
       loyaltyEnabled: false,
       autoAcceptQueue: false,
+      seatingCapacity: 0,
     },
     businessHours: [],
   };

@@ -132,6 +132,8 @@ describe("VerificationStatusPage", () => {
     const checkStatusBtn = screen.getByRole("button", { name: /check status/i });
     fireEvent.click(checkStatusBtn);
 
-    expect(getRestaurantVerificationStatus).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(getRestaurantVerificationStatus).toHaveBeenCalledTimes(2);
+    });
   });
 });

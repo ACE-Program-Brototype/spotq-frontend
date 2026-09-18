@@ -1,6 +1,7 @@
 import type { ApiResponse } from "@/features/auth/services/auth.service";
 
 export interface RestaurantOverviewDetails {
+  id?: string;
   name: string;
   phone: string;
   ownerName: string;
@@ -19,6 +20,7 @@ export interface RestaurantSettingsDetails {
   acceptsQrOrders: boolean;
   loyaltyEnabled: boolean;
   autoAcceptQueue: boolean;
+  seatingCapacity: number;
 }
 
 export interface BusinessHoursItem {
@@ -56,6 +58,7 @@ export interface UpdateRestaurantSettingsInput {
   acceptsQrOrders: boolean;
   loyaltyEnabled: boolean;
   autoAcceptQueue: boolean;
+  seatingCapacity?: number;
 }
 
 export interface UpdateBusinessHoursInput {

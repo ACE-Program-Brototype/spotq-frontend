@@ -7,6 +7,10 @@ import AdminVerifyOtpPage from "@/features/auth/pages/AdminVerifyOtpPage";
 import AdminCustomerDetailsPage from "@/features/customers/pages/AdminCustomerDetailsPage";
 import AdminCustomersPage from "@/features/customers/pages/AdminCustomersPage";
 import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
+import AdminRestaurantApplicationReviewPage from "@/features/restaurants/pages/AdminRestaurantApplicationReviewPage";
+import AdminRestaurantApplicationsPage from "@/features/restaurants/pages/AdminRestaurantApplicationsPage";
+import AdminRestaurantDetailsPage from "@/features/restaurants/pages/AdminRestaurantDetailsPage";
+import AdminRestaurantsPage from "@/features/restaurants/pages/AdminRestaurantsPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -47,6 +51,26 @@ export const adminRoutes: RouteObject[] = [
           {
             path: "dashboard",
             Component: AdminDashboardPage,
+          },
+          {
+            path: "restaurants",
+            Component: AdminRestaurantsPage,
+          },
+          {
+            path: "restaurants/management",
+            Component: AdminRestaurantsPage,
+          },
+          {
+            path: "restaurants/onboarding",
+            Component: AdminRestaurantApplicationsPage,
+          },
+          {
+            path: "restaurants/onboarding/:id",
+            Component: AdminRestaurantApplicationReviewPage,
+          },
+          {
+            path: "restaurants/:id",
+            Component: AdminRestaurantDetailsPage,
           },
           {
             path: "customers",

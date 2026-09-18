@@ -16,6 +16,17 @@ export const beforeRequest: BeforeRequestHook = async ({ request }) => {
 
   if (!token) {
     try {
+      const stored =
+        typeof window !== "undefined" ? localStorage.getItem("spotq-auth-storage") : null;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        token = parsed?.state?.accessToken || null;
+      }
+    } catch {}
+  }
+
+  if (!token && useAuthStore.getState().isAuthenticated) {
+    try {
       token = await getOrRefreshAccessToken();
     } catch {
       useAuthStore.getState().clearAuth();
@@ -24,6 +35,7 @@ export const beforeRequest: BeforeRequestHook = async ({ request }) => {
 
   if (token) {
     request.headers.set("Authorization", `Bearer ${token}`);
+    return request;
   }
 
   return request;

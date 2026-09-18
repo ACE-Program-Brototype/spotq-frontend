@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
 import type {
   RestaurantProfileData,
@@ -43,7 +44,7 @@ export function RestaurantInfoCard({ profile, fullData }: RestaurantInfoCardProp
     const costNumber = typeof averageCost === "number" ? averageCost : Number(averageCost);
 
     if (averageCost !== "" && (Number.isNaN(costNumber) || costNumber < 0)) {
-      setValidationError("Average cost must be a valid positive number.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.AVERAGE_COST_INVALID);
       return;
     }
 
@@ -60,7 +61,15 @@ export function RestaurantInfoCard({ profile, fullData }: RestaurantInfoCardProp
         cuisineType: cuisineType.trim() || null,
         averageCost: typeof averageCost === "number" ? averageCost : costNumber || 0,
       },
-      settings: fullData.settings,
+      settings: fullData.settings
+        ? {
+            acceptsQueue: fullData.settings.acceptsQueue,
+            acceptsQrOrders: fullData.settings.acceptsQrOrders,
+            loyaltyEnabled: fullData.settings.loyaltyEnabled,
+            autoAcceptQueue: fullData.settings.autoAcceptQueue,
+            seatingCapacity: fullData.settings.seatingCapacity ?? 0,
+          }
+        : undefined,
       businessHours: fullData.businessHours.map((bh) => ({
         dayOfWeek: bh.dayOfWeek,
         openTime: bh.openTime,

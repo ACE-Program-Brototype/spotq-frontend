@@ -1,9 +1,11 @@
 import { Building2, Camera, Check, Edit3, Loader2, Phone, Upload, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { PROFILE_MESSAGES } from "../constants/profile.constants";
 import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
 import type {
   RestaurantOverviewDetails,
@@ -11,7 +13,7 @@ import type {
   RestaurantProfileDetails,
   UpdateRestaurantProfilePayload,
 } from "../types/restaurant-profile.types";
-import { cacheLocalMedia, resolveMediaUrl } from "../utils/profile.utils";
+import { resolveMediaUrl } from "../utils/profile.utils";
 
 interface RestaurantOverviewCardProps {
   restaurant: RestaurantOverviewDetails;
@@ -31,7 +33,8 @@ export function RestaurantOverviewCard({
   fullData,
 }: RestaurantOverviewCardProps) {
   const user = useAuthStore((state) => state.user);
-  const activeRestaurantId = user?.restaurantId || user?.id || "profile";
+  const activeRestaurantId =
+    restaurant?.id || fullData.restaurant?.id || user?.restaurantId || user?.id || "";
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(restaurant.name || "");
@@ -52,84 +55,88 @@ export function RestaurantOverviewCard({
   const [coverSrc, setCoverSrc] = useState<string>(initialCover || FALLBACK_COVER);
   const [logoSrc, setLogoSrc] = useState<string>(initialLogo || FALLBACK_LOGO);
 
-  // Sync image sources when profile props change (and not actively editing with unsaved local images)
+  // Sync details & image sources when props change (and not actively editing)
   useEffect(() => {
     if (!isEditing) {
+      setName(restaurant.name || "");
+      setPhone(restaurant.phone || "");
+      setOwnerName(restaurant.ownerName || "");
       const resolvedLogo = resolveMediaUrl(profile.logo);
       const resolvedCover = resolveMediaUrl(profile.coverImage);
       setLogoSrc(resolvedLogo || FALLBACK_LOGO);
       setCoverSrc(resolvedCover || FALLBACK_COVER);
     }
-  }, [profile.logo, profile.coverImage, isEditing]);
+  }, [
+    restaurant.name,
+    restaurant.phone,
+    restaurant.ownerName,
+    profile.logo,
+    profile.coverImage,
+    isEditing,
+  ]);
 
   const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!activeRestaurantId) {
+      toast.error("Restaurant session not found. Please log in again.");
+      return;
+    }
+
     // Immediately show local object URL preview for responsive user feedback
     const previewUrl = URL.createObjectURL(file);
     setLogoSrc(previewUrl);
 
-    // Read file as Data URL to store in local media cache once uploaded
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result as string;
-      const fallbackKey = `local_logo_${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
-
-      // Cache dataUrl immediately under fallback key to ensure local dev persistence
-      cacheLocalMedia(fallbackKey, dataUrl);
-      setLogoKey(fallbackKey);
-
-      try {
-        const res = await upload(file, {
-          entityType: "restaurant",
-          entityId: activeRestaurantId,
-          fileCategory: "logo",
-        });
-        if (res?.s3ObjectKey) {
-          setLogoKey(res.s3ObjectKey);
-          cacheLocalMedia(res.s3ObjectKey, dataUrl);
-        }
-      } catch {
-        // Fallback key remains active so user can still save and preview in local dev
+    try {
+      const res = await upload(file, {
+        entityType: "restaurants",
+        entityId: activeRestaurantId,
+        fileCategory: "PROFILE",
+      });
+      if (res?.s3ObjectKey) {
+        setLogoKey(res.s3ObjectKey);
+      } else {
+        throw new Error("Upload did not return object key");
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : PROFILE_MESSAGES.UPLOAD_FAILED;
+      toast.error(message);
+      setLogoKey(null);
+      setLogoSrc(resolveMediaUrl(profile.logo) || FALLBACK_LOGO);
+    }
   };
 
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!activeRestaurantId) {
+      toast.error("Restaurant session not found. Please log in again.");
+      return;
+    }
+
     // Immediately show local object URL preview for responsive user feedback
     const previewUrl = URL.createObjectURL(file);
     setCoverSrc(previewUrl);
 
-    // Read file as Data URL to store in local media cache once uploaded
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result as string;
-      const fallbackKey = `local_cover_${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
-
-      // Cache dataUrl immediately under fallback key to ensure local dev persistence
-      cacheLocalMedia(fallbackKey, dataUrl);
-      setCoverImageKey(fallbackKey);
-
-      try {
-        const res = await upload(file, {
-          entityType: "restaurant",
-          entityId: activeRestaurantId,
-          fileCategory: "cover_image",
-        });
-        if (res?.s3ObjectKey) {
-          setCoverImageKey(res.s3ObjectKey);
-          cacheLocalMedia(res.s3ObjectKey, dataUrl);
-        }
-      } catch {
-        // Fallback key remains active so user can still save and preview in local dev
+    try {
+      const res = await upload(file, {
+        entityType: "restaurants",
+        entityId: activeRestaurantId,
+        fileCategory: "PROFILE",
+      });
+      if (res?.s3ObjectKey) {
+        setCoverImageKey(res.s3ObjectKey);
+      } else {
+        throw new Error("Upload did not return object key");
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : PROFILE_MESSAGES.UPLOAD_FAILED;
+      toast.error(message);
+      setCoverImageKey(null);
+      setCoverSrc(resolveMediaUrl(profile.coverImage) || FALLBACK_COVER);
+    }
   };
 
   const handleStartEdit = () => {
@@ -148,6 +155,9 @@ export function RestaurantOverviewCard({
 
   const handleCancel = () => {
     setIsEditing(false);
+    setName(restaurant.name || "");
+    setPhone(restaurant.phone || "");
+    setOwnerName(restaurant.ownerName || "");
     setValidationError(null);
     setLogoKey(null);
     setCoverImageKey(null);
@@ -159,15 +169,15 @@ export function RestaurantOverviewCard({
 
   const handleSave = () => {
     if (!name.trim()) {
-      setValidationError("Restaurant name is required.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.RESTAURANT_NAME_REQUIRED);
       return;
     }
     if (!phone.trim()) {
-      setValidationError("Phone number is required.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.PHONE_REQUIRED);
       return;
     }
     if (!ownerName.trim()) {
-      setValidationError("Owner name is required.");
+      setValidationError(PROFILE_MESSAGES.VALIDATION.OWNER_NAME_REQUIRED);
       return;
     }
     setValidationError(null);
@@ -185,7 +195,15 @@ export function RestaurantOverviewCard({
         ...(logoKey ? { logoKey } : {}),
         ...(coverImageKey ? { coverImageKey } : {}),
       },
-      settings: fullData.settings,
+      settings: fullData.settings
+        ? {
+            acceptsQueue: fullData.settings.acceptsQueue,
+            acceptsQrOrders: fullData.settings.acceptsQrOrders,
+            loyaltyEnabled: fullData.settings.loyaltyEnabled,
+            autoAcceptQueue: fullData.settings.autoAcceptQueue,
+            seatingCapacity: fullData.settings.seatingCapacity ?? 0,
+          }
+        : undefined,
       businessHours: fullData.businessHours.map((bh) => ({
         dayOfWeek: bh.dayOfWeek,
         openTime: bh.openTime,
@@ -195,8 +213,16 @@ export function RestaurantOverviewCard({
     };
 
     updateMutation.mutate(payload, {
-      onSuccess: () => {
+      onSuccess: (updated) => {
         setIsEditing(false);
+        setLogoKey(null);
+        setCoverImageKey(null);
+        if (updated?.profile?.logo) {
+          setLogoSrc(resolveMediaUrl(updated.profile.logo) || FALLBACK_LOGO);
+        }
+        if (updated?.profile?.coverImage) {
+          setCoverSrc(resolveMediaUrl(updated.profile.coverImage) || FALLBACK_COVER);
+        }
       },
     });
   };
