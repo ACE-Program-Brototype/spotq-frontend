@@ -90,6 +90,8 @@ export interface StaffProfile {
 export interface UpdateStaffProfileDto {
   name?: string;
   phone?: string;
+  hasAvatar?: boolean | null;
+  avatarUpdatedAt?: Date | string | null;
   avatar_url?: string | null;
   avatarUrl?: string | null;
 }
