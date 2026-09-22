@@ -3,4 +3,5 @@ export * from "./ErrorBoundary";
 export * from "./LoadingIndicator";
 export * from "./MediaPreviewModal";
 export * from "./Pagination";
+export * from "./table";
 export * from "./types";

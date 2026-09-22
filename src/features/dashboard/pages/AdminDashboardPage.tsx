@@ -2,7 +2,7 @@ import { BarChart3, Package, Settings, ShieldCheck, TrendingUp, Users } from "lu
 import { useState } from "react";
 
 import { LoadingIndicator } from "@/components/common/LoadingIndicator";
-import { Pagination } from "@/components/common/Pagination";
+import { type Column, DataTable } from "@/components/common/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -67,6 +67,48 @@ const mockRestaurants = [
   },
 ];
 
+type MockRestaurant = (typeof mockRestaurants)[number];
+
+const restaurantColumns: Column<MockRestaurant>[] = [
+  {
+    key: "name",
+    header: "Restaurant Name",
+    accessor: "name",
+    className: "font-semibold text-slate-900",
+  },
+  {
+    key: "category",
+    header: "Category",
+    accessor: "category",
+  },
+  {
+    key: "status",
+    header: "Status",
+    cell: ({ row: r }) => (
+      <span
+        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+          r.status === "Active"
+            ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+            : "bg-amber-50 text-amber-700 border border-amber-200/60"
+        }`}
+      >
+        {r.status}
+      </span>
+    ),
+  },
+  {
+    key: "tables",
+    header: "Tables",
+    cell: ({ row: r }) => `${r.tables} seats`,
+  },
+  {
+    key: "orders",
+    header: "Daily Orders",
+    accessor: "orders",
+    className: "font-medium",
+  },
+];
+
 function AdminDashboardPage() {
   const user = useAuthStore((state) => state.user);
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,57 +169,27 @@ function AdminDashboardPage() {
         </CardHeader>
 
         <CardContent className="p-0">
-          {isDemoLoading ? (
-            <div className="p-6">
-              <LoadingIndicator variant="table-skeleton" />
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50/80 text-slate-500 border-y border-slate-200/80 font-semibold">
-                  <tr>
-                    <th className="py-3 px-6">Restaurant Name</th>
-                    <th className="py-3 px-6">Category</th>
-                    <th className="py-3 px-6">Status</th>
-                    <th className="py-3 px-6">Tables</th>
-                    <th className="py-3 px-6">Daily Orders</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700">
-                  {mockRestaurants.map((r) => (
-                    <tr key={r.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="py-3.5 px-6 font-semibold text-slate-900">{r.name}</td>
-                      <td className="py-3.5 px-6">{r.category}</td>
-                      <td className="py-3.5 px-6">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                            r.status === "Active"
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
-                              : "bg-amber-50 text-amber-700 border border-amber-200/60"
-                          }`}
-                        >
-                          {r.status}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-6">{r.tables} seats</td>
-                      <td className="py-3.5 px-6 font-medium">{r.orders}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          <div className="border-t border-slate-200/80">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalEntries}
-              pageSize={5}
-              theme="admin"
-              onPageChange={handlePageChange}
-            />
-          </div>
+          <DataTable
+            data={mockRestaurants}
+            columns={restaurantColumns}
+            isLoading={isDemoLoading}
+            loadingRenderer={
+              <div className="p-6">
+                <LoadingIndicator variant="table-skeleton" />
+              </div>
+            }
+            pagination={{
+              currentPage,
+              totalPages,
+              totalItems: totalEntries,
+              pageSize: 5,
+              theme: "admin",
+              onPageChange: handlePageChange,
+            }}
+            theme="admin"
+            className="border-0 rounded-none shadow-none"
+            headerClassName="bg-slate-50/80 text-slate-500 border-y border-slate-200/80 font-semibold"
+          />
         </CardContent>
       </Card>
 
