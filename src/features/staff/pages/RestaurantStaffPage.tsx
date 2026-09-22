@@ -1,12 +1,7 @@
 import {
   AlertCircle,
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
   Briefcase,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   Eye,
   Filter,
   Mail,
@@ -16,15 +11,17 @@ import {
   UserPlus,
   UserX,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Spinner } from "@/components/common/LoadingIndicator";
+import { type Column, DataTable } from "@/components/common/table";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InviteStaffModal } from "@/features/staff/components/InviteStaffModal";
 import { useStaffInvitations } from "@/features/staff/hooks/use-staff-invitations";
 import { useStaffMembers } from "@/features/staff/hooks/use-staff-members";
+import type { StaffMember } from "@/features/staff/types/staff-invitation.types";
 import { getStaffInitials } from "@/features/staff/utils/staff.helpers";
 import { formatDate } from "@/lib/utils/date";
 
@@ -39,7 +36,6 @@ export default function RestaurantStaffPage() {
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-    page,
     setPage,
     sortBy,
     sortOrder,
@@ -61,7 +57,7 @@ export default function RestaurantStaffPage() {
     return success;
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = useCallback((status: string) => {
     switch (status?.toUpperCase()) {
       case "ACTIVE":
         return (
@@ -106,7 +102,84 @@ export default function RestaurantStaffPage() {
           </span>
         );
     }
-  };
+  }, []);
+
+  const columns = useMemo<Column<StaffMember>[]>(
+    () => [
+      {
+        key: "name",
+        header: "Member",
+        cell: ({ row: staff }) => (
+          <div className="flex items-center gap-3">
+            <Avatar className="size-9 border border-[#eddcd4]">
+              <AvatarFallback className="bg-[#fef3ec] text-[#9a3412] font-semibold text-xs">
+                {getStaffInitials(staff.name)}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-bold text-neutral-900 leading-snug">{staff.name}</p>
+              <p className="text-[11px] text-neutral-400 font-mono">
+                {staff.employeeCode || staff.id}
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        key: "contact",
+        header: "Contact Details",
+        cell: ({ row: staff }) => (
+          <div>
+            <p className="font-medium text-neutral-900">{staff.email}</p>
+            <p className="text-[11px] text-neutral-400">{staff.phone}</p>
+          </div>
+        ),
+      },
+      {
+        key: "role",
+        header: "Role",
+        cell: ({ row: staff }) => (
+          <span className="inline-flex items-center rounded-lg bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-neutral-700 border border-neutral-200">
+            {staff.designation}
+          </span>
+        ),
+      },
+      {
+        key: "status",
+        header: "Status",
+        cell: ({ row: staff }) => getStatusBadge(staff.status),
+      },
+      {
+        key: "createdAt",
+        sortKey: "createdAt",
+        header: "Joined Date",
+        sortable: true,
+        cell: ({ row: staff }) => (
+          <span className="text-neutral-500 font-medium whitespace-nowrap">
+            {formatDate(staff.joinedDate)}
+          </span>
+        ),
+      },
+      {
+        key: "actions",
+        header: "Actions",
+        align: "right",
+        cell: ({ row: staff }) => (
+          <div className="flex items-center justify-end">
+            <Link
+              to={`/restaurant/staff/${staff.id}`}
+              className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors"
+              aria-label={`View details for ${staff.name}`}
+              title="View staff details"
+            >
+              <Eye className="size-4" />
+            </Link>
+          </div>
+        ),
+      },
+    ],
+    [getStatusBadge],
+  );
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -139,12 +212,13 @@ export default function RestaurantStaffPage() {
           <Link to="/restaurant/staff/invitations">
             <Button
               variant="outline"
-              className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] shadow-2xs relative"
+              size="sm"
+              className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] shadow-2xs gap-2"
             >
-              <Mail className="size-4 mr-2 text-[#9a3412]" />
+              <Mail className="size-4 text-[#e8631b]" />
               <span>Invitations</span>
               {invitationStats.pending > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center size-5 rounded-full bg-[#e8631b] text-white text-[10px] font-bold">
+                <span className="ml-1 rounded-full bg-[#e8631b] px-1.5 py-0.2 text-[10px] font-bold text-white">
                   {invitationStats.pending}
                 </span>
               )}
@@ -152,49 +226,50 @@ export default function RestaurantStaffPage() {
           </Link>
 
           <Button
+            size="sm"
             onClick={() => setIsInviteModalOpen(true)}
-            className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-2xs transition-all"
+            className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5"
           >
-            <UserPlus className="size-4 mr-2" />
-            Invite Staff
+            <UserPlus className="size-4" />
+            <span>Invite Staff</span>
           </Button>
         </div>
       </div>
 
-      {/* Error Banner if API error occurs */}
+      {/* Error Alert */}
       {error && (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 flex items-center justify-between text-rose-800 text-sm">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <AlertCircle className="size-5 text-rose-600 flex-shrink-0" />
+            <AlertCircle className="size-5 shrink-0" />
             <span>{error}</span>
           </div>
           <Button
             variant="outline"
             size="sm"
             onClick={() => refreshStaffMembers()}
-            className="rounded-xl border-rose-300 text-rose-700 hover:bg-rose-100"
+            className="border-rose-300 text-rose-800 hover:bg-rose-100 rounded-xl"
           >
             Retry
           </Button>
         </div>
       )}
 
-      {/* KPI Stats Cards */}
+      {/* Directory Metrics Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-2xs">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-neutral-500">Total Staff</p>
-            <div className="size-8 rounded-xl bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center text-neutral-700">
-              <Briefcase className="size-4" />
+            <p className="text-xs font-semibold text-neutral-500">Total Team</p>
+            <div className="size-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-500">
+              <UserCheck className="size-4" />
             </div>
           </div>
           <p className="mt-3 text-2xl font-bold text-neutral-900">{stats.total}</p>
-          <p className="mt-1 text-xs text-neutral-400">Total registered members</p>
+          <p className="mt-1 text-xs text-neutral-400">Registered employees</p>
         </div>
 
         <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-2xs">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-neutral-500">Active Now</p>
+            <p className="text-xs font-semibold text-neutral-500">Active Staff</p>
             <div className="size-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
               <UserCheck className="size-4" />
             </div>
@@ -271,158 +346,68 @@ export default function RestaurantStaffPage() {
           </div>
         </div>
 
-        {/* Staff Table / Content */}
-        {isLoading ? (
-          <div className="py-16 text-center">
-            <Spinner className="mx-auto size-8 text-[#e8631b]" />
-            <p className="mt-3 text-xs text-neutral-500">Loading staff members...</p>
-          </div>
-        ) : staffList.length === 0 ? (
-          <div className="py-16 px-4 text-center">
-            <div className="mx-auto size-16 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#9a3412] mb-4">
-              <Briefcase className="size-8 text-[#e8631b]" />
+        {/* Reusable DataTable Component */}
+        <DataTable
+          data={staffList}
+          columns={columns}
+          isLoading={isLoading}
+          loadingRenderer={
+            <div className="py-16 text-center">
+              <Spinner className="mx-auto size-8 text-[#e8631b]" />
+              <p className="mt-3 text-xs text-neutral-500">Loading staff members...</p>
             </div>
-            <h3 className="text-base font-bold text-neutral-900">No staff members found</h3>
-            <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto">
-              {searchQuery || statusFilter !== "ALL"
-                ? "No members match your active filters. Try resetting the filters."
-                : "You haven't added any staff members yet. Send an invitation to get started."}
-            </p>
-            <div className="mt-5 flex items-center justify-center gap-3">
-              {searchQuery || statusFilter !== "ALL" ? (
-                <Button
-                  onClick={resetFilters}
-                  variant="outline"
-                  className="rounded-xl border-[#eddcd4]"
-                >
-                  Clear Filters
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => setIsInviteModalOpen(true)}
-                  className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white"
-                >
-                  <UserPlus className="size-4 mr-2" />
-                  Invite First Staff Member
-                </Button>
-              )}
+          }
+          sortBy={sortBy}
+          sortOrder={sortOrder === "ASC" ? "asc" : "desc"}
+          onSort={() => toggleSort("createdAt")}
+          emptyState={
+            <div className="py-16 px-4 text-center">
+              <div className="mx-auto size-16 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#9a3412] mb-4">
+                <Briefcase className="size-8 text-[#e8631b]" />
+              </div>
+              <h3 className="text-base font-bold text-neutral-900">No staff members found</h3>
+              <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto">
+                {searchQuery || statusFilter !== "ALL"
+                  ? "No members match your active filters. Try resetting the filters."
+                  : "You haven't added any staff members yet. Send an invitation to get started."}
+              </p>
+              <div className="mt-5 flex items-center justify-center gap-3">
+                {searchQuery || statusFilter !== "ALL" ? (
+                  <Button
+                    onClick={resetFilters}
+                    variant="outline"
+                    className="rounded-xl border-[#eddcd4]"
+                  >
+                    Clear Filters
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => setIsInviteModalOpen(true)}
+                    className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white"
+                  >
+                    <UserPlus className="size-4 mr-2" />
+                    Invite First Staff Member
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[#faf7f5] text-neutral-500 font-semibold border-b border-[#eddcd4]">
-                <tr>
-                  <th className="py-3.5 px-6">Member</th>
-                  <th className="py-3.5 px-6">Contact Details</th>
-                  <th className="py-3.5 px-6">Role</th>
-                  <th className="py-3.5 px-6">Status</th>
-                  <th className="py-3.5 px-6">
-                    <button
-                      type="button"
-                      onClick={() => toggleSort("createdAt")}
-                      className="inline-flex items-center gap-1.5 hover:text-neutral-900 transition-colors cursor-pointer"
-                      title="Sort by joined date"
-                    >
-                      <span>Joined Date</span>
-                      {sortBy === "createdAt" ? (
-                        sortOrder === "ASC" ? (
-                          <ArrowUp className="size-3.5 text-[#e8631b]" />
-                        ) : (
-                          <ArrowDown className="size-3.5 text-[#e8631b]" />
-                        )
-                      ) : (
-                        <ArrowUpDown className="size-3 text-neutral-400 opacity-60" />
-                      )}
-                    </button>
-                  </th>
-                  <th className="py-3.5 px-6 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#f3e6de] text-neutral-700">
-                {staffList.map((staff) => (
-                  <tr key={staff.id} className="hover:bg-[#faf7f5]/70 transition-colors">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="size-9 border border-[#eddcd4]">
-                          <AvatarFallback className="bg-[#fef3ec] text-[#9a3412] font-semibold text-xs">
-                            {getStaffInitials(staff.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-bold text-neutral-900 leading-snug">{staff.name}</p>
-                          <p className="text-[11px] text-neutral-400 font-mono">
-                            {staff.employeeCode || staff.id}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6">
-                      <p className="font-medium text-neutral-900">{staff.email}</p>
-                      <p className="text-[11px] text-neutral-400">{staff.phone}</p>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="inline-flex items-center rounded-lg bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-neutral-700 border border-neutral-200">
-                        {staff.designation}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">{getStatusBadge(staff.status)}</td>
-                    <td className="py-4 px-6 text-neutral-500 font-medium">
-                      {formatDate(staff.joinedDate)}
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex items-center justify-end">
-                        <Link
-                          to={`/restaurant/staff/${staff.id}`}
-                          className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors"
-                          aria-label={`View details for ${staff.name}`}
-                          title="View staff details"
-                        >
-                          <Eye className="size-4" />
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Pagination Toolbar */}
-        {!isLoading && pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-[#f3e6de] bg-[#fffcf9] flex items-center justify-between">
-            <p className="text-xs text-neutral-500">
-              Page <span className="font-semibold text-neutral-900">{pagination.page}</span> of{" "}
-              <span className="font-semibold text-neutral-900">{pagination.totalPages}</span> (
-              {pagination.total} total staff)
-            </p>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!pagination.hasPrevPage && page <= 1}
-                onClick={() => setPage(page - 1)}
-                className="h-8 px-2.5 rounded-lg border-[#eddcd4] text-neutral-700"
-              >
-                <ChevronLeft className="size-4 mr-1" />
-                Previous
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!pagination.hasNextPage && page >= pagination.totalPages}
-                onClick={() => setPage(page + 1)}
-                className="h-8 px-2.5 rounded-lg border-[#eddcd4] text-neutral-700"
-              >
-                Next
-                <ChevronRight className="size-4 ml-1" />
-              </Button>
-            </div>
-          </div>
-        )}
+          }
+          pagination={
+            pagination.totalPages > 1
+              ? {
+                  currentPage: pagination.page,
+                  totalPages: pagination.totalPages,
+                  totalItems: pagination.total,
+                  pageSize: pagination.limit || 20,
+                  onPageChange: (p) => setPage(p),
+                  theme: "restaurant",
+                }
+              : undefined
+          }
+          theme="restaurant"
+          className="border-0 rounded-none shadow-none"
+          headerClassName="bg-[#faf7f5] text-neutral-500 font-semibold border-b border-[#eddcd4]"
+        />
       </div>
 
       {/* Invite Modal */}

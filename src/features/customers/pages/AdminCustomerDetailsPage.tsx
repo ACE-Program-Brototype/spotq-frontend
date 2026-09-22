@@ -9,6 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { DataTable } from "@/components/common/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,14 @@ import { CUSTOMER_MESSAGES, CUSTOMER_STATUS } from "../constants/customer.consta
 import { useCustomerDetails } from "../hooks/use-customers";
 import { DUMMY_CUSTOMER_ORDERS } from "../mocks/customer-orders.mock";
 import { formatMemberSince, getCustomerInitials } from "../utils/customer.utils";
+
+interface DummyCustomerOrder {
+  id: string;
+  date: string;
+  items: string;
+  total: string;
+  status: string;
+}
 
 export function AdminCustomerDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -302,40 +311,52 @@ export function AdminCustomerDetailsPage() {
             {CUSTOMER_MESSAGES.ORDERS_SECTION_SUBTITLE}
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-4">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[#f0edf1]/60 text-slate-500 font-semibold border-b border-slate-200/80">
-                <tr>
-                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_ID}</th>
-                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_DATE}</th>
-                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_ITEMS}</th>
-                  <th className="py-3 px-4">{CUSTOMER_MESSAGES.COL_ORDER_TOTAL}</th>
-                  <th className="py-3 px-4 text-right">{CUSTOMER_MESSAGES.COL_ORDER_STATUS}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
-                {DUMMY_CUSTOMER_ORDERS.map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-3 px-4 font-mono font-semibold text-slate-900">{order.id}</td>
-                    <td className="py-3 px-4 text-slate-500">{order.date}</td>
-                    <td className="py-3 px-4 text-slate-800 font-medium truncate max-w-xs">
-                      {order.items}
-                    </td>
-                    <td className="py-3 px-4 font-bold text-slate-900">{order.total}</td>
-                    <td className="py-3 px-4 text-right">
-                      <Badge
-                        variant="outline"
-                        className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-bold"
-                      >
-                        {order.status}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <CardContent className="p-0">
+          <DataTable<DummyCustomerOrder>
+            data={DUMMY_CUSTOMER_ORDERS}
+            columns={[
+              {
+                key: "id",
+                header: CUSTOMER_MESSAGES.COL_ORDER_ID,
+                accessor: "id",
+                className: "font-mono font-semibold text-slate-900",
+              },
+              {
+                key: "date",
+                header: CUSTOMER_MESSAGES.COL_ORDER_DATE,
+                accessor: "date",
+                className: "text-slate-500",
+              },
+              {
+                key: "items",
+                header: CUSTOMER_MESSAGES.COL_ORDER_ITEMS,
+                accessor: "items",
+                className: "text-slate-800 font-medium truncate max-w-xs",
+              },
+              {
+                key: "total",
+                header: CUSTOMER_MESSAGES.COL_ORDER_TOTAL,
+                accessor: "total",
+                className: "font-bold text-slate-900",
+              },
+              {
+                key: "status",
+                header: CUSTOMER_MESSAGES.COL_ORDER_STATUS,
+                align: "right",
+                cell: ({ row: order }) => (
+                  <Badge
+                    variant="outline"
+                    className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-bold"
+                  >
+                    {order.status}
+                  </Badge>
+                ),
+              },
+            ]}
+            theme="admin"
+            className="border-0 rounded-none shadow-none"
+            headerClassName="bg-[#f0edf1]/60 text-slate-500 font-semibold border-b border-slate-200/80"
+          />
         </CardContent>
       </Card>
     </div>
