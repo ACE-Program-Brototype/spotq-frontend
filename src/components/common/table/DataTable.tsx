@@ -143,6 +143,20 @@ export function DataTable<T>({
         return activeSortOrder === "asc" ? aVal - bVal : bVal - aVal;
       }
 
+      // Dates (chronological sort)
+      if (aVal instanceof Date && bVal instanceof Date) {
+        return activeSortOrder === "asc"
+          ? aVal.getTime() - bVal.getTime()
+          : bVal.getTime() - aVal.getTime();
+      }
+
+      // Booleans
+      if (typeof aVal === "boolean" && typeof bVal === "boolean") {
+        const aNum = aVal ? 1 : 0;
+        const bNum = bVal ? 1 : 0;
+        return activeSortOrder === "asc" ? aNum - bNum : bNum - aNum;
+      }
+
       // Strings (case-insensitive)
       const aStr = String(aVal);
       const bStr = String(bVal);
@@ -409,6 +423,7 @@ export function DataTable<T>({
                 <Fragment key={rowId}>
                   <TableRow
                     data-state={isSelected ? "selected" : undefined}
+                    aria-selected={selectable ? isSelected : undefined}
                     tabIndex={onRowClick ? 0 : undefined}
                     onClick={(e) => onRowClick?.(row, e)}
                     onKeyDown={(e) => {
@@ -482,9 +497,15 @@ export function DataTable<T>({
                       }
 
                       // Render cell content
-                      let cellContent: React.ReactNode = value as React.ReactNode;
+                      let cellContent: React.ReactNode;
                       if (col.cell) {
                         cellContent = col.cell({ row, value, index: rowIdx });
+                      } else if (value instanceof Date) {
+                        cellContent = value.toLocaleDateString();
+                      } else if (typeof value === "boolean") {
+                        cellContent = value ? "Yes" : "No";
+                      } else {
+                        cellContent = value as React.ReactNode;
                       }
 
                       return (

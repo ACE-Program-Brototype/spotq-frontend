@@ -198,6 +198,50 @@ describe("DataTable", () => {
       expect(rows[1]).toHaveTextContent("Zara"); // 30
       expect(rows[2]).toHaveTextContent("Adam"); // 20
     });
+
+    it("sorts Date objects chronologically and booleans correctly during client-side sorting", () => {
+      interface DateItem {
+        id: string;
+        name: string;
+        joinedAt: Date;
+        isVerified: boolean;
+      }
+
+      const dateItems: DateItem[] = [
+        { id: "1", name: "Middle", joinedAt: new Date("2024-05-15"), isVerified: true },
+        { id: "2", name: "Oldest", joinedAt: new Date("2021-01-01"), isVerified: false },
+        { id: "3", name: "Newest", joinedAt: new Date("2026-09-20"), isVerified: true },
+      ];
+
+      const dateColumns: Column<DateItem>[] = [
+        { key: "name", header: "Name", accessor: "name" },
+        { key: "joinedAt", header: "Joined", accessor: "joinedAt", sortable: true },
+        { key: "isVerified", header: "Verified", accessor: "isVerified", sortable: true },
+      ];
+
+      render(<DataTable data={dateItems} columns={dateColumns} />);
+      const sortDateBtn = screen.getByRole("button", { name: /sort by joined/i });
+
+      // Sort Date ASC (Oldest -> Middle -> Newest)
+      fireEvent.click(sortDateBtn);
+      let rows = screen.getAllByRole("row");
+      expect(rows[1]).toHaveTextContent("Oldest");
+      expect(rows[2]).toHaveTextContent("Middle");
+      expect(rows[3]).toHaveTextContent("Newest");
+
+      // Sort Date DESC (Newest -> Middle -> Oldest)
+      fireEvent.click(sortDateBtn);
+      rows = screen.getAllByRole("row");
+      expect(rows[1]).toHaveTextContent("Newest");
+      expect(rows[2]).toHaveTextContent("Middle");
+      expect(rows[3]).toHaveTextContent("Oldest");
+
+      // Sort Boolean ASC (false -> true)
+      const sortVerifiedBtn = screen.getByRole("button", { name: /sort by verified/i });
+      fireEvent.click(sortVerifiedBtn);
+      rows = screen.getAllByRole("row");
+      expect(rows[1]).toHaveTextContent("Oldest"); // false
+    });
   });
 
   describe("Row Interactions & Click Handlers", () => {
@@ -278,6 +322,23 @@ describe("DataTable", () => {
         expect.arrayContaining(["99", "1", "2", "3"]),
         expect.any(Array),
       );
+    });
+
+    it("sets aria-selected attribute on TableRow when selectable is true", () => {
+      render(
+        <DataTable
+          data={mockData}
+          columns={mockColumns}
+          selectable
+          selectedRowKeys={new Set(["1"])}
+        />,
+      );
+
+      const row1 = screen.getByTestId("data-table-row-1");
+      const row2 = screen.getByTestId("data-table-row-2");
+
+      expect(row1).toHaveAttribute("aria-selected", "true");
+      expect(row2).toHaveAttribute("aria-selected", "false");
     });
   });
 
