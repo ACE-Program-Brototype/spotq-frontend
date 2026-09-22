@@ -82,7 +82,10 @@ export interface DataTableProps<T> {
 
   // Row Interactions
   /** Row click callback */
-  onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  onRowClick?: (
+    row: T,
+    event: React.MouseEvent<HTMLTableRowElement> | React.KeyboardEvent<HTMLTableRowElement>,
+  ) => void;
   /** Custom row class name */
   rowClassName?: string | ((row: T, index: number) => string);
 

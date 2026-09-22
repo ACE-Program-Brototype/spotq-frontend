@@ -161,6 +161,43 @@ describe("DataTable", () => {
       );
       expect(nameTh).toHaveAttribute("aria-sort", "descending");
     });
+
+    it("handles mutual nullish values symmetrically during client-side sorting", () => {
+      const dataWithNulls = [
+        { id: "1", name: "Zara", age: 30, role: "Admin", status: "active" as const },
+        {
+          id: "2",
+          name: "",
+          age: null as unknown as number,
+          role: "User",
+          status: "inactive" as const,
+        },
+        {
+          id: "3",
+          name: "",
+          age: undefined as unknown as number,
+          role: "Guest",
+          status: "active" as const,
+        },
+        { id: "4", name: "Adam", age: 20, role: "User", status: "active" as const },
+      ];
+
+      render(<DataTable data={dataWithNulls} columns={mockColumns} />);
+      const sortAgeBtn = screen.getByRole("button", { name: /sort by age/i });
+
+      // Sort ASC
+      fireEvent.click(sortAgeBtn);
+      let rows = screen.getAllByRole("row");
+      expect(rows[1]).toHaveTextContent("Adam"); // 20
+      expect(rows[2]).toHaveTextContent("Zara"); // 30
+      // Nullish items are placed at the end without instability
+
+      // Sort DESC
+      fireEvent.click(sortAgeBtn);
+      rows = screen.getAllByRole("row");
+      expect(rows[1]).toHaveTextContent("Zara"); // 30
+      expect(rows[2]).toHaveTextContent("Adam"); // 20
+    });
   });
 
   describe("Row Interactions & Click Handlers", () => {
@@ -173,6 +210,21 @@ describe("DataTable", () => {
 
       expect(handleRowClick).toHaveBeenCalledTimes(1);
       expect(handleRowClick).toHaveBeenCalledWith(mockData[0], expect.any(Object));
+    });
+
+    it("supports keyboard navigation with Enter and Space on clickable rows", () => {
+      const handleRowClick = jest.fn();
+      render(<DataTable data={mockData} columns={mockColumns} onRowClick={handleRowClick} />);
+
+      const firstRow = screen.getByTestId("data-table-row-1");
+      expect(firstRow).toHaveAttribute("tabIndex", "0");
+
+      fireEvent.keyDown(firstRow, { key: "Enter" });
+      expect(handleRowClick).toHaveBeenCalledTimes(1);
+      expect(handleRowClick).toHaveBeenCalledWith(mockData[0], expect.any(Object));
+
+      fireEvent.keyDown(firstRow, { key: " " });
+      expect(handleRowClick).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -203,10 +255,34 @@ describe("DataTable", () => {
       fireEvent.click(selectAllCheckbox);
       expect(handleSelectionChange).toHaveBeenCalledWith(["1", "2", "3"], mockData);
     });
+
+    it("preserves selection keys from other pages when select-all is toggled", () => {
+      const handleSelectionChange = jest.fn();
+
+      // Row "99" was selected on a previous page
+      render(
+        <DataTable
+          data={mockData}
+          columns={mockColumns}
+          selectable
+          selectedRowKeys={new Set(["99"])}
+          onSelectionChange={handleSelectionChange}
+        />,
+      );
+
+      const selectAllCheckbox = screen.getByLabelText("Select all rows");
+      fireEvent.click(selectAllCheckbox);
+
+      // Should contain "99" + current page rows ("1", "2", "3")
+      expect(handleSelectionChange).toHaveBeenCalledWith(
+        expect.arrayContaining(["99", "1", "2", "3"]),
+        expect.any(Array),
+      );
+    });
   });
 
   describe("Expandable Rows", () => {
-    it("renders expander toggle button and displays expanded row content on toggle", async () => {
+    it("renders expander toggle button with aria-expanded and displays expanded row content on toggle", async () => {
       const user = userEvent.setup();
 
       render(
@@ -222,8 +298,11 @@ describe("DataTable", () => {
       expect(screen.queryByTestId("expanded-1")).not.toBeInTheDocument();
 
       const expandButtons = screen.getAllByRole("button", { name: "Expand row" });
+      expect(expandButtons[0]).toHaveAttribute("aria-expanded", "false");
+
       await user.click(expandButtons[0]);
 
+      expect(expandButtons[0]).toHaveAttribute("aria-expanded", "true");
       expect(screen.getByTestId("expanded-1")).toBeInTheDocument();
       expect(screen.getByText("Expanded info for Alice Johnson")).toBeInTheDocument();
     });
@@ -235,6 +314,22 @@ describe("DataTable", () => {
 
       expect(screen.getByTestId("data-table-skeleton")).toBeInTheDocument();
       expect(screen.queryByText("Alice Johnson")).not.toBeInTheDocument();
+    });
+
+    it("synchronizes skeleton column count when expander and selection are enabled", () => {
+      render(
+        <DataTable
+          data={mockData}
+          columns={mockColumns}
+          isLoading
+          selectable
+          renderExpandedRow={() => <div>Details</div>}
+        />,
+      );
+
+      const skeletonRows = screen.getAllByRole("row");
+      // skeletonRows[0] is the header row, skeletonRows[1] is the first skeleton row
+      expect(skeletonRows[1].children).toHaveLength(mockColumns.length + 2);
     });
 
     it("renders custom empty state when data is empty", () => {

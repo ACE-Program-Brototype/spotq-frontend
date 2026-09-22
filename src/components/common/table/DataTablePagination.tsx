@@ -42,9 +42,7 @@ export function DataTablePagination({
             ))}
           </select>
         </div>
-      ) : (
-        <div />
-      )}
+      ) : null}
 
       {/* Main Page Navigation */}
       <Pagination

@@ -5,6 +5,7 @@ export interface DataTableSkeletonProps {
   columnsCount: number;
   rowCount?: number;
   hasSelection?: boolean;
+  hasExpander?: boolean;
   className?: string;
 }
 
@@ -12,9 +13,12 @@ export function DataTableSkeleton({
   columnsCount,
   rowCount = 5,
   hasSelection = false,
+  hasExpander = false,
   className,
 }: DataTableSkeletonProps) {
-  const totalColumns = hasSelection ? columnsCount + 1 : columnsCount;
+  let totalColumns = columnsCount;
+  if (hasSelection) totalColumns += 1;
+  if (hasExpander) totalColumns += 1;
 
   return (
     <TableBody className={className} data-testid="data-table-skeleton">
@@ -22,12 +26,23 @@ export function DataTableSkeleton({
         // biome-ignore lint/suspicious/noArrayIndexKey: skeleton rows
         <TableRow key={`skeleton-row-${rowIndex}`} className="animate-pulse">
           {Array.from({ length: totalColumns }).map((__, colIndex) => {
-            // First column when selection enabled is a small checkbox box
-            if (hasSelection && colIndex === 0) {
+            // First column when expander enabled is a small expand button placeholder
+            if (hasExpander && colIndex === 0) {
+              return (
+                // biome-ignore lint/suspicious/noArrayIndexKey: skeleton cells
+                <TableCell key={`skeleton-cell-${rowIndex}-${colIndex}`} className="w-10">
+                  <div className="size-4 rounded bg-muted/70 mx-auto" />
+                </TableCell>
+              );
+            }
+
+            // Selection checkbox column placeholder
+            const isSelectionCell = hasSelection && (hasExpander ? colIndex === 1 : colIndex === 0);
+            if (isSelectionCell) {
               return (
                 // biome-ignore lint/suspicious/noArrayIndexKey: skeleton cells
                 <TableCell key={`skeleton-cell-${rowIndex}-${colIndex}`} className="w-12">
-                  <div className="size-4 rounded bg-muted/70" />
+                  <div className="size-4 rounded bg-muted/70 mx-auto" />
                 </TableCell>
               );
             }

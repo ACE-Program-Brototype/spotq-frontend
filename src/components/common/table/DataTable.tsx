@@ -134,8 +134,9 @@ export function DataTable<T>({
       }
 
       // Handle nullish values
-      if (aVal === null || aVal === undefined) return 1;
-      if (bVal === null || bVal === undefined) return -1;
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
 
       // Numbers
       if (typeof aVal === "number" && typeof bVal === "number") {
@@ -184,14 +185,17 @@ export function DataTable<T>({
     }
   };
 
-  // Select all rows handler
+  // Select all rows handler (preserves selections across other pages)
   const handleSelectAll = (checked: boolean) => {
-    const nextSet = new Set<string>();
-    if (checked) {
-      sortedData.forEach((row, idx) => {
-        nextSet.add(resolveRowId(row, idx));
-      });
-    }
+    const nextSet = new Set(currentSelectedSet);
+    sortedData.forEach((row, idx) => {
+      const id = resolveRowId(row, idx);
+      if (checked) {
+        nextSet.add(id);
+      } else {
+        nextSet.delete(id);
+      }
+    });
 
     if (!selectedRowKeys) {
       setInternalSelectedKeys(nextSet);
@@ -199,7 +203,7 @@ export function DataTable<T>({
 
     if (onSelectionChange) {
       const selectedKeysArr = Array.from(nextSet);
-      const selectedRows = checked ? [...sortedData] : [];
+      const selectedRows = sortedData.filter((r, idx) => nextSet.has(resolveRowId(r, idx)));
       onSelectionChange(selectedKeysArr, selectedRows);
     }
   };
@@ -370,6 +374,7 @@ export function DataTable<T>({
               columnsCount={columns.length}
               rowCount={loadingRowCount}
               hasSelection={selectable}
+              hasExpander={Boolean(renderExpandedRow)}
               className={bodyClassName}
             />
           )
@@ -404,8 +409,23 @@ export function DataTable<T>({
                 <Fragment key={rowId}>
                   <TableRow
                     data-state={isSelected ? "selected" : undefined}
+                    tabIndex={onRowClick ? 0 : undefined}
                     onClick={(e) => onRowClick?.(row, e)}
-                    className={cn(onRowClick && "cursor-pointer", computedRowClass)}
+                    onKeyDown={(e) => {
+                      if (
+                        onRowClick &&
+                        (e.key === "Enter" || e.key === " ") &&
+                        e.target === e.currentTarget
+                      ) {
+                        e.preventDefault();
+                        onRowClick(row, e);
+                      }
+                    }}
+                    className={cn(
+                      onRowClick &&
+                        "cursor-pointer focus:outline-none focus-visible:bg-muted/60 focus-visible:ring-1 focus-visible:ring-ring",
+                      computedRowClass,
+                    )}
                     data-testid={
                       getRowTestId ? getRowTestId(row, rowIdx) : `data-table-row-${rowId}`
                     }
@@ -415,6 +435,7 @@ export function DataTable<T>({
                       <TableCell className="w-10 px-3 text-center">
                         <button
                           type="button"
+                          aria-expanded={isExpanded}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleToggleExpand(rowId, row);
