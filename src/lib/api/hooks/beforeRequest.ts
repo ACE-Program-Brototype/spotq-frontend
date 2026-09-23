@@ -14,17 +14,6 @@ export const beforeRequest: BeforeRequestHook = async ({ request }) => {
 
   let token = useAuthStore.getState().accessToken;
 
-  if (!token) {
-    try {
-      const stored =
-        typeof window !== "undefined" ? localStorage.getItem("spotq-auth-storage") : null;
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        token = parsed?.state?.accessToken || null;
-      }
-    } catch {}
-  }
-
   if (!token && useAuthStore.getState().isAuthenticated) {
     try {
       token = await getOrRefreshAccessToken();

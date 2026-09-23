@@ -26,7 +26,7 @@ describe("useAuthStore State and Persistence", () => {
     expect(state.isAuthenticated).toBe(false);
   });
 
-  it("saves credentials to store and persists user to localStorage", () => {
+  it("saves credentials to in-memory store and persists non-sensitive state to localStorage without accessToken", () => {
     useAuthStore.getState().setAuth(mockUser, "test-token-value");
 
     const state = useAuthStore.getState();
@@ -39,7 +39,7 @@ describe("useAuthStore State and Persistence", () => {
 
     const parsed = JSON.parse(localData as string);
     expect(parsed.state.user).toEqual(mockUser);
-    expect(parsed.state.accessToken).toBe("test-token-value");
+    expect(parsed.state.accessToken).toBeUndefined();
   });
 
   it("clears user and session on clearAuth", () => {
