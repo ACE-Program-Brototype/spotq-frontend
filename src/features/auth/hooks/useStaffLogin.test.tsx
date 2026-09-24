@@ -75,6 +75,7 @@ const createWrapper = () => {
 const mockUser = {
   id: "staff-1",
   name: "John Staff",
+  fullName: "John Staff",
   email: "staff@restaurant.com",
   role: "STAFF" as const,
 };

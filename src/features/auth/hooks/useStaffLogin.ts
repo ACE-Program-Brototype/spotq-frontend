@@ -9,6 +9,7 @@ import { useStaffLoginMutation, useStaffSelectRestaurantMutation } from "./use-a
 export interface RestaurantSelectionData {
   selectToken: string;
   restaurants: StaffRestaurantOption[];
+  email: string;
 }
 
 export const useStaffLogin = () => {
@@ -29,21 +30,37 @@ export const useStaffLogin = () => {
       });
 
       if (response.success && response.data) {
-        if (response.data.requiresRestaurantSelection && response.data.selectToken) {
+        if (response.data.requiresRestaurantSelection) {
+          if (!response.data.selectToken) {
+            toast.error(response.message || "Selection token missing from server response");
+            return;
+          }
           setSelectionData({
             selectToken: response.data.selectToken,
             restaurants: response.data.restaurants || [],
+            email: values.email,
           });
           return;
         }
 
+        if (!response.data.accessToken) {
+          toast.error(response.message || AUTH_MESSAGES.LOGIN_FAILED);
+          return;
+        }
+
+        const rawUser = response.data.user;
+        const fullname =
+          (rawUser as { fullname?: string })?.fullname || rawUser?.fullName || rawUser?.name;
+
         setAuth(
           {
-            ...response.data.user,
-            email: response.data.user?.email || values.email,
+            ...rawUser,
+            name: fullname || rawUser?.name,
+            fullName: fullname || rawUser?.fullName,
+            email: rawUser?.email || values.email,
             role: "STAFF",
           },
-          response.data.accessToken || "",
+          response.data.accessToken,
         );
 
         toast.success(response.message || "Staff login successful!");
@@ -73,13 +90,24 @@ export const useStaffLogin = () => {
       });
 
       if (response.success && response.data) {
+        if (!response.data.accessToken) {
+          toast.error(response.message || "Access token missing from server response");
+          return;
+        }
+
+        const rawUser = response.data.user;
+        const fullname =
+          (rawUser as { fullname?: string })?.fullname || rawUser?.fullName || rawUser?.name;
+
         setAuth(
           {
-            ...response.data.user,
-            email: response.data.user?.email || "",
+            ...rawUser,
+            name: fullname || rawUser?.name,
+            fullName: fullname || rawUser?.fullName,
+            email: rawUser?.email || selectionData.email || "",
             role: "STAFF",
           },
-          response.data.accessToken || "",
+          response.data.accessToken,
         );
 
         toast.success(response.message || "Staff login successful!");

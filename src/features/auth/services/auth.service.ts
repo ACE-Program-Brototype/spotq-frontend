@@ -272,7 +272,17 @@ export async function loginStaff(data: LoginFormValues): Promise<StaffLoginRespo
     })
     .json<StaffLoginApiRes>();
 
-  const userData = res.data?.staff || res.data?.user;
+  const rawStaff = res.data?.staff || res.data?.user;
+  const fullname =
+    (rawStaff as { fullname?: string })?.fullname || rawStaff?.fullName || rawStaff?.name;
+
+  const userData: User | undefined = rawStaff
+    ? {
+        ...rawStaff,
+        name: fullname || rawStaff.name,
+        fullName: fullname || rawStaff.fullName,
+      }
+    : undefined;
 
   return {
     success: res.success,
@@ -297,7 +307,17 @@ export async function selectStaffRestaurant(input: {
     })
     .json<StaffLoginApiRes>();
 
-  const userData = res.data?.staff || res.data?.user;
+  const rawStaff = res.data?.staff || res.data?.user;
+  const fullname =
+    (rawStaff as { fullname?: string })?.fullname || rawStaff?.fullName || rawStaff?.name;
+
+  const userData: User | undefined = rawStaff
+    ? {
+        ...rawStaff,
+        name: fullname || rawStaff.name,
+        fullName: fullname || rawStaff.fullName,
+      }
+    : undefined;
 
   return {
     success: res.success,

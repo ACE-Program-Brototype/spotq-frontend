@@ -11,6 +11,7 @@ import env from "@/config/env";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import type { AcceptInvitationFormValues } from "@/features/auth/schemas/accept-invitation.schema";
 import {
+  type AcceptStaffInvitationInput,
   acceptStaffInvitation,
   validateStaffInvitation,
 } from "@/features/auth/services/auth.service";
@@ -31,8 +32,7 @@ export function useAcceptInvitation() {
   });
 
   const acceptMutation = useMutation({
-    mutationFn: (payload: { token: string; fullname: string; phone: string; password: string }) =>
-      acceptStaffInvitation(payload),
+    mutationFn: (payload: AcceptStaffInvitationInput) => acceptStaffInvitation(payload),
     onSuccess: (res) => {
       if (res.data?.staff && res.data?.accessToken) {
         setAuth(res.data.staff, res.data.accessToken);
@@ -73,12 +73,13 @@ export function useAcceptInvitation() {
       return;
     }
 
-    await acceptMutation.mutateAsync({
-      token,
-      fullname: "",
-      phone: "",
-      password: "",
-    });
+    try {
+      await acceptMutation.mutateAsync({
+        token,
+      });
+    } catch {
+      // Handled by acceptMutation.onError
+    }
   };
 
   const handleAccept = async (values: AcceptInvitationFormValues) => {
@@ -90,12 +91,16 @@ export function useAcceptInvitation() {
     const cleanPhone = values.phone.replace(/\D/g, "");
     const formattedPhone = `+91${cleanPhone.slice(-10)}`;
 
-    await acceptMutation.mutateAsync({
-      token,
-      fullname: values.fullname,
-      phone: formattedPhone,
-      password: values.password,
-    });
+    try {
+      await acceptMutation.mutateAsync({
+        token,
+        fullname: values.fullname,
+        phone: formattedPhone,
+        password: values.password,
+      });
+    } catch {
+      // Handled by acceptMutation.onError
+    }
   };
 
   return {

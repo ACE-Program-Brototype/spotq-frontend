@@ -158,7 +158,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           </div>
 
           {/* Account Status */}
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="staff-status" className="text-xs font-semibold text-neutral-600">
               {STAFF_MESSAGES.LABEL_STATUS}
             </Label>
