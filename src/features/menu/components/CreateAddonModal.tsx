@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUploader } from "@/features/menu/components/ImageUploader";
 import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import { useRestaurantAddons } from "@/features/menu/hooks/use-restaurant-addons";
 import {
@@ -43,10 +44,12 @@ export function CreateAddonModal({
       description: "",
       price: 0,
       isAvailable: true,
+      imageKey: "",
     },
   });
 
   const isAvailable = watch("isAvailable");
+  const imageKey = watch("imageKey");
 
   if (!isOpen) return null;
 
@@ -57,6 +60,7 @@ export function CreateAddonModal({
         description: data.description || undefined,
         price: data.price,
         isAvailable: data.isAvailable,
+        imageKey: data.imageKey || undefined,
       });
       reset();
       onAddonCreated?.(created);
@@ -93,7 +97,7 @@ export function CreateAddonModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+            className="rounded-lg p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
             aria-label="Close modal"
           >
             <X className="size-4" />
@@ -170,6 +174,19 @@ export function CreateAddonModal({
               </div>
               <p className="text-[10px] text-neutral-500 mt-1">{MENU_MESSAGES.ADDON_STATUS_HINT}</p>
             </div>
+          </div>
+
+          {/* Add-on Photo (Optional) */}
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold text-neutral-800">
+              {MENU_MESSAGES.IMAGE_LABEL}{" "}
+              <span className="text-neutral-400 font-normal">(Optional)</span>
+            </Label>
+            <ImageUploader
+              value={imageKey}
+              onChange={(key) => setValue("imageKey", key)}
+              restaurantId={restaurantId}
+            />
           </div>
 
           {/* Action Buttons */}
