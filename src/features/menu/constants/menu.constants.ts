@@ -54,15 +54,6 @@ export const DIETARY_OPTIONS: Array<{
     dotColor: "bg-amber-500",
     borderColor: "border-amber-500",
   },
-  {
-    value: "VEGAN",
-    label: "Pure Vegan",
-    badgeClass: "bg-teal-50 text-teal-700 border-teal-200",
-    activeBorder: "border-teal-600 bg-teal-50/50",
-    description: "Strictly 100% plant-based with zero animal or dairy products",
-    dotColor: "bg-teal-600",
-    borderColor: "border-teal-600",
-  },
 ];
 
 export const MENU_MESSAGES = {
