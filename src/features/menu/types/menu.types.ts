@@ -42,6 +42,7 @@ export interface MenuItemAddonLinkInput {
 }
 
 export interface CreateMenuItemPayload {
+  price?: number;
   name: string;
   categoryId: string;
   description?: string;

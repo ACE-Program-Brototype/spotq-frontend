@@ -115,10 +115,24 @@ export const menuService = {
     restaurantId: string,
     payload: CreateMenuItemPayload,
   ): Promise<MenuItemResponse> {
+    const defaultVariant = payload.variants.find((v) => v.isDefault) ?? payload.variants[0];
+    const calculatedPrice =
+      payload.price !== undefined
+        ? Number(payload.price)
+        : defaultVariant
+          ? Number(defaultVariant.price)
+          : 0;
+
     const formattedAddons = payload.addons?.map((addon) => ({
       addonId: addon.addonId,
-      ...(addon.priceOverride !== undefined ? { priceOverride: addon.priceOverride } : {}),
+      ...(addon.priceOverride !== undefined ? { priceOverride: Number(addon.priceOverride) } : {}),
     }));
+
+    const images = payload.imageUrl
+      ? [{ objectKey: payload.imageUrl, displayOrder: 0 }]
+      : undefined;
+
+    const isVegetarian = payload.dietaryType === "VEG" || payload.dietaryType === "VEGAN";
 
     const response = await apiClient
       .post(MENU_ENDPOINTS.ITEMS(restaurantId), {
@@ -126,17 +140,16 @@ export const menuService = {
           name: payload.name.trim(),
           categoryId: payload.categoryId,
           description: payload.description?.trim() || null,
-          dietaryType: payload.dietaryType,
+          price: calculatedPrice,
+          isVegetarian,
           preparationTime: payload.preparationTime ? Number(payload.preparationTime) : null,
-          imageUrl: payload.imageUrl || null,
           isAvailable: payload.isAvailable ?? true,
+          ...(images ? { images } : {}),
           variants: payload.variants.map((v) => ({
-            name: v.name.trim(),
-            portion: v.portion.trim(),
+            name: v.portion ? `${v.name.trim()} (${v.portion.trim()})` : v.name.trim(),
             price: Number(v.price),
             sku: v.sku?.trim() || null,
             isDefault: Boolean(v.isDefault),
-            isAvailable: v.isAvailable ?? true,
           })),
           ...(formattedAddons && formattedAddons.length > 0 ? { addons: formattedAddons } : {}),
           ...(payload.addonIds && payload.addonIds.length > 0

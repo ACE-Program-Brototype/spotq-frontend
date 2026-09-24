@@ -82,8 +82,12 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
           : {}),
       }));
 
+      const defaultVariant = data.variants.find((v) => v.isDefault) ?? data.variants[0];
+      const basePrice = defaultVariant ? Number(defaultVariant.price) : 0;
+
       await createMenuItem({
         name: data.name,
+        price: basePrice,
         categoryId: data.categoryId,
         description: data.description || undefined,
         dietaryType: data.dietaryType,
