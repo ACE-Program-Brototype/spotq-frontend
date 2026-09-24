@@ -229,32 +229,33 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
               <Label className="text-xs font-semibold text-neutral-800">
                 {MENU_MESSAGES.DIETARY_TYPE_LABEL}
               </Label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-0.5">
                 {DIETARY_OPTIONS.map((opt) => {
                   const isSelected = currentDietaryType === opt.value;
                   return (
-                    <button
+                    <label
                       key={opt.value}
-                      type="button"
-                      onClick={() => setValue("dietaryType", opt.value)}
-                      className={`flex flex-col text-left p-3 rounded-xl border transition-all cursor-pointer ${
+                      className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl border transition-all cursor-pointer select-none ${
                         isSelected
-                          ? `${opt.activeBorder} shadow-2xs`
-                          : "border-[#eddcd4] bg-[#fffdfb] hover:bg-neutral-50/60"
+                          ? "border-[#e8631b] bg-[#fffaf5] shadow-2xs ring-1 ring-[#e8631b]/20"
+                          : "border-[#e5dcd6] bg-white hover:bg-neutral-50/80"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${opt.badgeClass}`}
-                        >
-                          {opt.label}
-                        </span>
-                        {isSelected && <span className="size-2 rounded-full bg-[#e8631b]" />}
-                      </div>
-                      <p className="text-[10px] text-neutral-400 mt-2 line-clamp-2">
-                        {opt.description}
-                      </p>
-                    </button>
+                      <input
+                        type="radio"
+                        name="dietaryType"
+                        value={opt.value}
+                        checked={isSelected}
+                        onChange={() => setValue("dietaryType", opt.value)}
+                        className="size-4 text-[#e8631b] focus:ring-[#e8631b] border-neutral-300 accent-[#e8631b] cursor-pointer"
+                      />
+                      <span
+                        className={`inline-flex items-center justify-center size-3.5 border ${opt.borderColor} p-0.5 rounded-xs bg-white shrink-0`}
+                      >
+                        <span className={`size-1.5 rounded-full ${opt.dotColor}`} />
+                      </span>
+                      <span className="text-xs font-semibold text-neutral-800">{opt.label}</span>
+                    </label>
                   );
                 })}
               </div>

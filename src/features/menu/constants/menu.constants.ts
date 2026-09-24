@@ -24,27 +24,26 @@ export const DIETARY_OPTIONS: Array<{
   badgeClass: string;
   activeBorder: string;
   description: string;
+  dotColor: string;
+  borderColor: string;
 }> = [
   {
     value: "VEG",
-    label: "Vegetarian",
+    label: "Veg",
     badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
     activeBorder: "border-emerald-600 bg-emerald-50/50",
     description: "Contains plant-based and dairy ingredients, 100% vegetarian",
+    dotColor: "bg-emerald-600",
+    borderColor: "border-emerald-600",
   },
   {
     value: "NON_VEG",
-    label: "Non-Vegetarian",
+    label: "Non-Veg",
     badgeClass: "bg-rose-50 text-rose-700 border-rose-200",
     activeBorder: "border-rose-600 bg-rose-50/50",
     description: "Contains meat, poultry, seafood, or animal by-products",
-  },
-  {
-    value: "VEGAN",
-    label: "Pure Vegan",
-    badgeClass: "bg-teal-50 text-teal-700 border-teal-200",
-    activeBorder: "border-teal-600 bg-teal-50/50",
-    description: "Strictly 100% plant-based with zero animal or dairy products",
+    dotColor: "bg-rose-600",
+    borderColor: "border-rose-600",
   },
   {
     value: "EGG",
@@ -52,6 +51,17 @@ export const DIETARY_OPTIONS: Array<{
     badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
     activeBorder: "border-amber-600 bg-amber-50/50",
     description: "Vegetarian preparation containing egg ingredients",
+    dotColor: "bg-amber-500",
+    borderColor: "border-amber-500",
+  },
+  {
+    value: "VEGAN",
+    label: "Pure Vegan",
+    badgeClass: "bg-teal-50 text-teal-700 border-teal-200",
+    activeBorder: "border-teal-600 bg-teal-50/50",
+    description: "Strictly 100% plant-based with zero animal or dairy products",
+    dotColor: "bg-teal-600",
+    borderColor: "border-teal-600",
   },
 ];
 
