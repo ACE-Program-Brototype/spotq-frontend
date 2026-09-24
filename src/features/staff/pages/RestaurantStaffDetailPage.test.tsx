@@ -96,20 +96,22 @@ describe("RestaurantStaffDetailPage", () => {
     expect(screen.getByText(/Back to Staff Members/i)).toBeInTheDocument();
   });
 
-  it("opens edit staff modal on clicking 'Edit Staff'", async () => {
+  it("does not render edit staff button or date fields since staff identity is global", async () => {
     (staffDetailService.getStaffDetail as jest.Mock).mockResolvedValue(mockStaffActive);
 
     renderPage();
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: /edit staff/i })).toBeInTheDocument();
+      expect(screen.getAllByText("John Owner").length).toBeGreaterThan(0);
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /edit staff/i }));
+    // Edit button must NOT exist
+    expect(screen.queryByRole("button", { name: /edit staff/i })).not.toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.getByText("Edit Staff Information")).toBeInTheDocument();
-    });
+    // Created At and Last Updated At fields must NOT exist
+    expect(screen.queryByLabelText(/created at/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/last updated/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/member since/i)).not.toBeInTheDocument();
   });
 
   it("displays 'Deactivate Staff' button when status is ACTIVE and toggles status on click", async () => {

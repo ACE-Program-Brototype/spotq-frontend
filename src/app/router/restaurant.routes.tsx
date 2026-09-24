@@ -1,4 +1,4 @@
-import { Navigate, type RouteObject } from "react-router-dom";
+import { Navigate, type RouteObject, useParams } from "react-router-dom";
 
 import RestaurantEmailVerificationPage from "@/features/auth/pages/RestaurantEmailVerification";
 import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
@@ -12,7 +12,6 @@ import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
 import RestaurantProfilePage from "@/features/profile/pages/RestaurantProfilePage";
 import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
-import RestaurantStaffEditPage from "@/features/staff/pages/RestaurantStaffEditPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
 import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
@@ -30,6 +29,11 @@ const RestaurantProtectedLayout = () => (
     redirectTo="/restaurant/email/verification"
   />
 );
+
+const StaffEditRedirect = () => {
+  const { staffId } = useParams();
+  return <Navigate to={`/restaurant/staff/${staffId}`} replace />;
+};
 
 const VerificationStatusLayout = () => (
   <div className="min-h-screen bg-neutral-100">
@@ -157,7 +161,7 @@ export const restaurantRoutes: RouteObject[] = [
           },
           {
             path: "staff/:staffId/edit",
-            Component: RestaurantStaffEditPage,
+            Component: StaffEditRedirect,
           },
         ],
       },

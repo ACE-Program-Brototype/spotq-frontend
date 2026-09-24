@@ -65,6 +65,22 @@ export function useAcceptInvitation() {
         ? (validationQuery.error as Error)?.message || AUTH_MESSAGES.STAFF_INVITATION_VALIDATE_ERROR
         : "";
 
+  const isExistingStaff = Boolean(validationQuery.data?.isExistingStaff);
+
+  const handleJoinExisting = async () => {
+    if (!token) {
+      toast.error(AUTH_MESSAGES.STAFF_INVITATION_MISSING_TOKEN);
+      return;
+    }
+
+    await acceptMutation.mutateAsync({
+      token,
+      fullname: "",
+      phone: "",
+      password: "",
+    });
+  };
+
   const handleAccept = async (values: AcceptInvitationFormValues) => {
     if (!token) {
       toast.error(AUTH_MESSAGES.STAFF_INVITATION_MISSING_TOKEN);
@@ -86,11 +102,13 @@ export function useAcceptInvitation() {
     token,
     isValidating,
     isValid,
+    isExistingStaff,
     email,
     restaurantName,
     errorMessage,
     isSubmitting: acceptMutation.isPending,
     handleAccept,
+    handleJoinExisting,
     retryValidation: () => validationQuery.refetch(),
   };
 }

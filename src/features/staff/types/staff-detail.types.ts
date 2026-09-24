@@ -50,7 +50,6 @@ export interface UpdateStaffInfoPayload {
 
 export interface StaffDetailHeaderProps {
   staff: StaffDetail;
-  onEditStaff?: () => void;
   onToggleStatus?: () => void;
   onRequestDelete?: () => void;
   isUpdatingStatus?: boolean;
