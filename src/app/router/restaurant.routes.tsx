@@ -5,6 +5,8 @@ import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification"
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
+import CreateMenuItemPage from "@/features/menu/pages/CreateMenuItemPage";
+import MenuItemsPage from "@/features/menu/pages/MenuItemsPage";
 import BusinessInformationPage from "@/features/onboard/pages/BusinessInformationPage";
 import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
@@ -158,6 +160,31 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "staff/:staffId/edit",
             Component: RestaurantStaffEditPage,
+          },
+          {
+            path: "menu",
+            children: [
+              {
+                index: true,
+                Component: () => <Navigate to="items" replace />,
+              },
+              {
+                path: "items",
+                Component: MenuItemsPage,
+              },
+              {
+                path: "items/create",
+                Component: CreateMenuItemPage,
+              },
+              {
+                path: "overview",
+                Component: MenuItemsPage,
+              },
+              {
+                path: "categories",
+                Component: MenuItemsPage,
+              },
+            ],
           },
         ],
       },
