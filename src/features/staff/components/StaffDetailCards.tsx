@@ -1,4 +1,4 @@
-import { Calendar, Clock, Hash, Mail, Phone, Shield, Store, User } from "lucide-react";
+import { Hash, Mail, Phone, Shield, Store, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,17 +7,16 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import type { StaffDetailCardsProps } from "@/features/staff/types/staff-detail.types";
-import { formatStaffDate, getStaffInitials } from "@/features/staff/utils/staff.helpers";
+import { getStaffInitials } from "@/features/staff/utils/staff.helpers";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 
 /**
  * Staff Detail Profile Overview Card
- * Clean avatar, identity banner, role tag, status badge, and dates.
+ * Clean avatar, identity banner, role tag, and status badge.
  */
 export function StaffDetailOverviewCard({ staff }: StaffDetailCardsProps) {
   const initials = getStaffInitials(staff.fullName);
   const isActive = staff.status.toUpperCase() === "ACTIVE";
-  const memberSince = formatStaffDate(staff.createdAt);
   const { data: imageUrl } = usePresignedUrl(staff.avatarUrl);
 
   return (
@@ -64,15 +63,6 @@ export function StaffDetailOverviewCard({ staff }: StaffDetailCardsProps) {
             <span className="uppercase tracking-wider font-bold text-[11px]">{staff.status}</span>
           </div>
         </div>
-
-        {staff.createdAt && (
-          <div className="flex items-center justify-center gap-1.5 text-xs text-neutral-500 pt-1">
-            <Calendar className="size-3.5 text-neutral-400 shrink-0" />
-            <span>
-              {STAFF_MESSAGES.MEMBER_SINCE} {memberSince}
-            </span>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
@@ -83,9 +73,6 @@ export function StaffDetailOverviewCard({ staff }: StaffDetailCardsProps) {
  * Detailed 2-column view of contact details, assignment info, timestamps, and identifiers.
  */
 export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
-  const memberSince = formatStaffDate(staff.createdAt);
-  const lastUpdated = formatStaffDate(staff.updatedAt);
-
   return (
     <Card className="rounded-2xl border-[#eddcd4] bg-white shadow-2xs">
       <CardHeader className="pb-3 border-b border-[#eddcd4]/60">
@@ -171,7 +158,7 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
           </div>
 
           {/* Account Status */}
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="staff-status" className="text-xs font-semibold text-neutral-600">
               {STAFF_MESSAGES.LABEL_STATUS}
             </Label>
@@ -182,48 +169,6 @@ export function StaffDetailInfoCard({ staff }: StaffDetailCardsProps) {
               value={staff.status}
               className="h-10 rounded-xl border-[#eddcd4] bg-neutral-50/60 px-3.5 text-sm font-medium text-neutral-900 cursor-default"
             />
-          </div>
-
-          {/* Joined Date */}
-          <div className="space-y-1.5">
-            <Label htmlFor="staff-joined-date" className="text-xs font-semibold text-neutral-600">
-              {STAFF_MESSAGES.LABEL_CREATED_AT}
-            </Label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                <Calendar className="size-4 text-neutral-400" />
-              </div>
-              <Input
-                id="staff-joined-date"
-                type="text"
-                readOnly
-                value={memberSince}
-                className={`h-10 rounded-xl border-[#eddcd4] bg-neutral-50/60 pl-10 pr-3.5 text-sm font-medium cursor-default ${
-                  staff.createdAt ? "text-neutral-900" : "text-neutral-400 italic"
-                }`}
-              />
-            </div>
-          </div>
-
-          {/* Last Updated */}
-          <div className="space-y-1.5">
-            <Label htmlFor="staff-updated-date" className="text-xs font-semibold text-neutral-600">
-              {STAFF_MESSAGES.LABEL_UPDATED_AT}
-            </Label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                <Clock className="size-4 text-neutral-400" />
-              </div>
-              <Input
-                id="staff-updated-date"
-                type="text"
-                readOnly
-                value={lastUpdated}
-                className={`h-10 rounded-xl border-[#eddcd4] bg-neutral-50/60 pl-10 pr-3.5 text-sm font-medium cursor-default ${
-                  staff.updatedAt ? "text-neutral-900" : "text-neutral-400 italic"
-                }`}
-              />
-            </div>
           </div>
         </div>
 
