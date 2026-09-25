@@ -31,8 +31,7 @@ export function CategoryListSkeleton() {
             <Skeleton className="h-4 w-full rounded-md bg-neutral-100" />
             <Skeleton className="h-4 w-2/3 rounded-md bg-neutral-100" />
           </div>
-          <div className="flex items-center justify-between pt-3 border-t border-neutral-100">
-            <Skeleton className="h-4 w-20 rounded-md bg-neutral-100" />
+          <div className="flex items-center justify-end pt-3 border-t border-neutral-100">
             <Skeleton className="h-8 w-16 rounded-xl bg-neutral-200" />
           </div>
         </div>

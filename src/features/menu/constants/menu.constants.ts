@@ -37,7 +37,6 @@ export const DUMMY_CATEGORIES: MenuCategory[] = [
     description: "Crispy appetizers and starter delicacies.",
     displayOrder: 1,
     isActive: true,
-    itemCount: 6,
   },
   {
     id: "472be91d-c952-42f6-8931-36ff5f1e91f2",
@@ -46,7 +45,6 @@ export const DUMMY_CATEGORIES: MenuCategory[] = [
     description: "Chef specialty mains and seasonal entrees.",
     displayOrder: 2,
     isActive: true,
-    itemCount: 12,
   },
   {
     id: "d57c2f05-4202-4f6f-8a02-21412c31ff59",
@@ -55,6 +53,5 @@ export const DUMMY_CATEGORIES: MenuCategory[] = [
     description: "Sweet desserts, milkshakes, and refreshing mocktails.",
     displayOrder: 3,
     isActive: false,
-    itemCount: 4,
   },
 ];

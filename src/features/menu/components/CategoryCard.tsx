@@ -3,7 +3,7 @@
  * Displays a single menu category with metadata, status badge, and an Edit action.
  */
 
-import { ArrowUpDown, Edit3, UtensilsCrossed } from "lucide-react";
+import { ArrowUpDown, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { MenuCategory } from "../types/menu-category.types";
 
@@ -48,13 +48,8 @@ export function CategoryCard({ category, onEdit }: CategoryCardProps) {
         </p>
       </div>
 
-      {/* Card Footer: Items Count & Edit Action */}
-      <div className="flex items-center justify-between pt-3 border-t border-[#f3e6de]">
-        <div className="flex items-center gap-1.5 text-xs text-neutral-500">
-          <UtensilsCrossed className="size-3.5 text-neutral-400" />
-          <span>{category.itemCount ?? 0} menu items</span>
-        </div>
-
+      {/* Card Footer: Edit Action */}
+      <div className="flex items-center justify-end pt-3 border-t border-[#f3e6de]">
         <Button
           type="button"
           size="sm"

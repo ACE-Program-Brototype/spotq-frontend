@@ -10,7 +10,6 @@ export interface MenuCategory {
   description: string | null;
   displayOrder: number;
   isActive: boolean;
-  itemCount?: number;
   createdAt?: string;
   updatedAt?: string;
 }
