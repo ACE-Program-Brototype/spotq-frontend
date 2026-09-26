@@ -6,7 +6,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, Hash, Layers, Tag } from "lucide-react";
-import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,6 @@ export function MenuCategoryForm({
     register,
     handleSubmit,
     control,
-    reset,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<MenuCategorySchema>({
@@ -47,18 +45,6 @@ export function MenuCategoryForm({
       isActive: initialValues?.isActive ?? true,
     },
   });
-
-  // Re-sync default values when initialValues update (e.g. category selected)
-  useEffect(() => {
-    if (initialValues) {
-      reset({
-        name: initialValues.name || "",
-        description: initialValues.description || "",
-        displayOrder: initialValues.displayOrder ?? 0,
-        isActive: initialValues.isActive ?? true,
-      });
-    }
-  }, [initialValues, reset]);
 
   const currentIsActive = watch("isActive");
   const isPending = isLoading || isSubmitting;

@@ -44,8 +44,5 @@ export function useUpdateMenuCategory() {
 
       toast.success(MENU_MESSAGES.UPDATE_SUCCESS);
     },
-    onError: (error: Error) => {
-      toast.error(error.message || MENU_MESSAGES.UPDATE_ERROR);
-    },
   });
 }

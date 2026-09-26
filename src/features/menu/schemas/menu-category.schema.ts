@@ -22,6 +22,9 @@ export const menuCategorySchema = z.object({
     .number({
       message: MENU_MESSAGES.DISPLAY_ORDER_INVALID,
     })
+    .refine((val) => !Number.isNaN(val), {
+      message: MENU_MESSAGES.DISPLAY_ORDER_INVALID,
+    })
     .int({ message: MENU_MESSAGES.DISPLAY_ORDER_INVALID })
     .min(0, { message: MENU_MESSAGES.DISPLAY_ORDER_INVALID }),
   isActive: z.boolean({ message: MENU_MESSAGES.STATUS_INVALID }),

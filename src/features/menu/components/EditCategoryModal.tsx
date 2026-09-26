@@ -5,7 +5,7 @@
  */
 
 import { AlertTriangle, Edit3, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MENU_MESSAGES } from "../constants/menu.constants";
 import { useUpdateMenuCategory } from "../hooks/use-update-menu-category";
 import type { MenuCategory, MenuCategoryFormValues } from "../types/menu-category.types";
@@ -16,7 +16,6 @@ export interface EditCategoryModalProps {
   category: MenuCategory | null;
   restaurantId: string;
   onClose: () => void;
-  onSuccess?: (updated: MenuCategory) => void;
 }
 
 export function EditCategoryModal({
@@ -24,37 +23,46 @@ export function EditCategoryModal({
   category,
   restaurantId,
   onClose,
-  onSuccess,
 }: EditCategoryModalProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [savedFormDraft, setSavedFormDraft] = useState<Partial<MenuCategoryFormValues> | null>(
-    null,
-  );
 
   const updateMutation = useUpdateMenuCategory();
 
-  // Reset error state and draft whenever modal opens or category changes
+  // Reset error state whenever modal opens
   useEffect(() => {
-    if (isOpen && category) {
+    if (isOpen) {
       setErrorMessage(null);
-      setSavedFormDraft({
-        name: category.name,
-        description: category.description || "",
-        displayOrder: category.displayOrder,
-        isActive: category.isActive,
-      });
     }
-  }, [isOpen, category]);
+  }, [isOpen]);
+
+  const handleClose = useCallback(() => {
+    if (!updateMutation.isPending) {
+      setErrorMessage(null);
+      onClose();
+    }
+  }, [updateMutation.isPending, onClose]);
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleClose]);
 
   if (!isOpen || !category) return null;
 
   const handleSubmit = async (values: MenuCategoryFormValues) => {
     setErrorMessage(null);
-    // Preserve values in case submission fails
-    setSavedFormDraft(values);
 
     try {
-      const updated = await updateMutation.mutateAsync({
+      await updateMutation.mutateAsync({
         restaurantId,
         categoryId: category.id,
         payload: {
@@ -65,31 +73,30 @@ export function EditCategoryModal({
         },
       });
 
-      if (onSuccess) {
-        onSuccess(updated);
-      }
       onClose();
     } catch (err: unknown) {
-      // Keep form open, preserve admin's changes, display user-friendly message
+      // Keep form open, preserve user's changes, display user-friendly message
       setErrorMessage((err as Error)?.message || MENU_MESSAGES.UPDATE_ERROR);
     }
   };
 
-  const handleClose = () => {
-    if (!updateMutation.isPending) {
-      setErrorMessage(null);
-      onClose();
-    }
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/50 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-200">
-      <div
-        className="relative w-full max-w-lg rounded-2xl bg-white border border-[#eddcd4] shadow-2xl overflow-hidden my-8 animate-in zoom-in-95 duration-200"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="edit-category-title"
-      >
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-category-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200"
+    >
+      {/* Backdrop overlay */}
+      <button
+        type="button"
+        aria-label="Close modal backdrop"
+        onClick={handleClose}
+        disabled={updateMutation.isPending}
+        className="fixed inset-0 bg-neutral-900/50 backdrop-blur-xs cursor-default border-0 outline-none w-full h-full disabled:cursor-not-allowed"
+      />
+
+      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white border border-[#eddcd4] shadow-2xl overflow-hidden my-8 animate-in zoom-in-95 duration-200">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#f3e6de] bg-[#fffcf9]">
           <div className="flex items-center gap-3">
@@ -139,8 +146,14 @@ export function EditCategoryModal({
           )}
 
           <MenuCategoryForm
+            key={category.id}
             mode="edit"
-            initialValues={savedFormDraft || undefined}
+            initialValues={{
+              name: category.name,
+              description: category.description || "",
+              displayOrder: category.displayOrder,
+              isActive: category.isActive,
+            }}
             onSubmit={handleSubmit}
             onCancel={handleClose}
             isLoading={updateMutation.isPending}

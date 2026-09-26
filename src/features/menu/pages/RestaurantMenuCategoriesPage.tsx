@@ -13,8 +13,7 @@ import { useMenuCategories } from "../hooks/use-menu-categories";
 import type { MenuCategory } from "../types/menu-category.types";
 
 export default function RestaurantMenuCategoriesPage() {
-  const { categories, restaurantId, isLoading, isError, refetch, updateCategoryLocally } =
-    useMenuCategories();
+  const { categories, restaurantId, isLoading, isError, refetch } = useMenuCategories();
 
   // Edit Modal State
   const [selectedCategory, setSelectedCategory] = useState<MenuCategory | null>(null);
@@ -29,12 +28,6 @@ export default function RestaurantMenuCategoriesPage() {
     setIsEditModalOpen(false);
     setSelectedCategory(null);
   };
-
-  const handleCategoryUpdated = (updated: MenuCategory) => {
-    updateCategoryLocally(updated);
-  };
-
-  const sortedCategories = [...categories].sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
     <div className="flex-1 space-y-6 p-6 sm:p-8 bg-[#faf7f5]/40 min-h-full">
@@ -87,7 +80,7 @@ export default function RestaurantMenuCategoriesPage() {
             Try Again
           </Button>
         </div>
-      ) : sortedCategories.length === 0 ? (
+      ) : categories.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[#eddcd4] bg-white p-12 text-center space-y-3">
           <div className="size-12 rounded-2xl bg-[#fef3ec] text-[#e8631b] flex items-center justify-center mx-auto border border-[#fae2d3]">
             <Layers className="size-6" />
@@ -99,7 +92,7 @@ export default function RestaurantMenuCategoriesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {sortedCategories.map((category) => (
+          {categories.map((category) => (
             <CategoryCard key={category.id} category={category} onEdit={handleEditClick} />
           ))}
         </div>
@@ -111,7 +104,6 @@ export default function RestaurantMenuCategoriesPage() {
         category={selectedCategory}
         restaurantId={restaurantId}
         onClose={handleCloseModal}
-        onSuccess={handleCategoryUpdated}
       />
     </div>
   );
