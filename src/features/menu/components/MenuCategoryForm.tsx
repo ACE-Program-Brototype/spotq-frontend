@@ -43,7 +43,7 @@ export function MenuCategoryForm({
     defaultValues: {
       name: initialValues?.name || "",
       description: initialValues?.description || "",
-      displayOrder: initialValues?.displayOrder ?? 1,
+      displayOrder: initialValues?.displayOrder ?? 0,
       isActive: initialValues?.isActive ?? true,
     },
   });
@@ -54,7 +54,7 @@ export function MenuCategoryForm({
       reset({
         name: initialValues.name || "",
         description: initialValues.description || "",
-        displayOrder: initialValues.displayOrder ?? 1,
+        displayOrder: initialValues.displayOrder ?? 0,
         isActive: initialValues.isActive ?? true,
       });
     }
@@ -64,9 +64,10 @@ export function MenuCategoryForm({
   const isPending = isLoading || isSubmitting;
 
   const onFormSubmit = async (data: MenuCategorySchema) => {
+    const trimmedDescription = data.description?.trim();
     await onSubmit({
       name: data.name.trim(),
-      description: data.description.trim(),
+      description: trimmedDescription && trimmedDescription.length > 0 ? trimmedDescription : null,
       displayOrder: Number(data.displayOrder),
       isActive: data.isActive,
     });
@@ -91,11 +92,17 @@ export function MenuCategoryForm({
           type="text"
           placeholder="e.g. Starters"
           disabled={isPending}
+          aria-invalid={errors.name ? "true" : "false"}
+          aria-describedby={errors.name ? "category-name-error" : undefined}
           className="h-10 rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b]"
           {...register("name")}
         />
         {errors.name && (
-          <p className="flex items-center gap-1 text-xs font-medium text-rose-500">
+          <p
+            id="category-name-error"
+            role="alert"
+            className="flex items-center gap-1 text-xs font-medium text-rose-500"
+          >
             <AlertCircle className="size-3.5 shrink-0" />
             <span>{errors.name.message}</span>
           </p>
@@ -110,7 +117,7 @@ export function MenuCategoryForm({
         >
           <span className="flex items-center gap-1.5">
             <Layers className="size-3.5 text-neutral-400" />
-            Description <span className="text-rose-500">*</span>
+            Description <span className="text-[11px] font-normal text-neutral-400">(Optional)</span>
           </span>
           <span className="text-[11px] font-normal text-neutral-400">Max 1000 chars</span>
         </label>
@@ -119,11 +126,17 @@ export function MenuCategoryForm({
           rows={3}
           placeholder="e.g. Delicious starters and appetizers."
           disabled={isPending}
+          aria-invalid={errors.description ? "true" : "false"}
+          aria-describedby={errors.description ? "category-description-error" : undefined}
           className="rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b] resize-none"
           {...register("description")}
         />
         {errors.description && (
-          <p className="flex items-center gap-1 text-xs font-medium text-rose-500">
+          <p
+            id="category-description-error"
+            role="alert"
+            className="flex items-center gap-1 text-xs font-medium text-rose-500"
+          >
             <AlertCircle className="size-3.5 shrink-0" />
             <span>{errors.description.message}</span>
           </p>
@@ -140,20 +153,26 @@ export function MenuCategoryForm({
             <Hash className="size-3.5 text-neutral-400" />
             Display Order <span className="text-rose-500">*</span>
           </span>
-          <span className="text-[11px] font-normal text-neutral-400">Positive integer</span>
+          <span className="text-[11px] font-normal text-neutral-400">Non-negative integer</span>
         </label>
         <Input
           id="category-display-order"
           type="number"
-          min={1}
+          min={0}
           step={1}
-          placeholder="1"
+          placeholder="0"
           disabled={isPending}
+          aria-invalid={errors.displayOrder ? "true" : "false"}
+          aria-describedby={errors.displayOrder ? "category-display-order-error" : undefined}
           className="h-10 rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b]"
           {...register("displayOrder", { valueAsNumber: true })}
         />
         {errors.displayOrder && (
-          <p className="flex items-center gap-1 text-xs font-medium text-rose-500">
+          <p
+            id="category-display-order-error"
+            role="alert"
+            className="flex items-center gap-1 text-xs font-medium text-rose-500"
+          >
             <AlertCircle className="size-3.5 shrink-0" />
             <span>{errors.displayOrder.message}</span>
           </p>
@@ -200,12 +219,18 @@ export function MenuCategoryForm({
                 checked={field.value}
                 onChange={(e) => field.onChange(e.target.checked)}
                 disabled={isPending}
+                aria-invalid={errors.isActive ? "true" : "false"}
+                aria-describedby={errors.isActive ? "category-status-error" : undefined}
               />
             )}
           />
         </div>
         {errors.isActive && (
-          <p className="flex items-center gap-1 text-xs font-medium text-rose-500">
+          <p
+            id="category-status-error"
+            role="alert"
+            className="flex items-center gap-1 text-xs font-medium text-rose-500"
+          >
             <AlertCircle className="size-3.5 shrink-0" />
             <span>{errors.isActive.message}</span>
           </p>

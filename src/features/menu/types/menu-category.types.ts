@@ -23,7 +23,7 @@ export interface UpdateMenuCategoryPayload {
 
 export interface MenuCategoryFormValues {
   name: string;
-  description: string;
+  description?: string | null;
   displayOrder: number;
   isActive: boolean;
 }
@@ -35,9 +35,14 @@ export interface MenuCategoryApiResponse {
   data: MenuCategory;
 }
 
+export interface MenuCategoriesListData {
+  restaurantId?: string;
+  categories: MenuCategory[];
+}
+
 export interface MenuCategoriesListApiResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: MenuCategory[];
+  data: MenuCategoriesListData | MenuCategory[];
 }

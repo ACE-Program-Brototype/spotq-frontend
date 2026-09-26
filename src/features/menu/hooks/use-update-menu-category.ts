@@ -19,16 +19,12 @@ export function useUpdateMenuCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       restaurantId,
       categoryId,
       payload,
     }: UpdateMenuCategoryVariables): Promise<MenuCategory> => {
-      try {
-        return await menuCategoryService.updateCategory(restaurantId, categoryId, payload);
-      } catch {
-        throw new Error(MENU_MESSAGES.UPDATE_ERROR);
-      }
+      return menuCategoryService.updateCategory(restaurantId, categoryId, payload);
     },
     onSuccess: (updatedCategory, variables) => {
       // Reflect updated values in query cache immediately
@@ -47,6 +43,9 @@ export function useUpdateMenuCategory() {
       });
 
       toast.success(MENU_MESSAGES.UPDATE_SUCCESS);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || MENU_MESSAGES.UPDATE_ERROR);
     },
   });
 }

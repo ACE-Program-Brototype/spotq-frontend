@@ -130,9 +130,9 @@ export function EditCategoryModal({
             >
               <AlertTriangle className="size-4.5 text-rose-500 shrink-0 mt-0.5" />
               <div className="text-xs space-y-0.5">
-                <p className="font-semibold">Unable to update menu category.</p>
+                <p className="font-semibold">{errorMessage}</p>
                 <p className="text-rose-700/90 leading-relaxed">
-                  Please review the details and try again. Your changes have been preserved.
+                  Your changes have been preserved. Please adjust the details and try again.
                 </p>
               </div>
             </div>

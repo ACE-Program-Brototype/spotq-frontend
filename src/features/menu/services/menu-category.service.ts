@@ -4,7 +4,7 @@
  */
 
 import { apiClient } from "@/lib/api/client";
-import { DUMMY_CATEGORIES, MENU_ENDPOINTS } from "../constants/menu.constants";
+import { MENU_ENDPOINTS } from "../constants/menu.constants";
 import type {
   MenuCategoriesListApiResponse,
   MenuCategory,
@@ -14,28 +14,35 @@ import type {
 
 export const menuCategoryService = {
   /**
-   * Fetches existing menu categories for a restaurant.
-   * If backend listing API is not yet available, returns dummy categories with target IDs for testing.
+   * Fetches existing menu categories for a restaurant directly from the API.
+   * Lets errors bubble up so React Query surfaces the error state / retry actions.
    */
   async getCategories(restaurantId: string): Promise<MenuCategory[]> {
     if (!restaurantId) return [];
 
-    try {
-      const response = await apiClient
-        .get(MENU_ENDPOINTS.CATEGORIES(restaurantId))
-        .json<MenuCategoriesListApiResponse>();
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.CATEGORIES(restaurantId))
+      .json<MenuCategoriesListApiResponse>();
 
-      if (response?.data && Array.isArray(response.data) && response.data.length > 0) {
-        return response.data;
-      }
-    } catch {
-      // Listing API not yet mounted on backend, fallback to testing dummy data
+    const rawData = response?.data;
+    if (Array.isArray(rawData)) {
+      return rawData;
     }
 
-    return DUMMY_CATEGORIES.map((cat) => ({
-      ...cat,
-      restaurantId,
-    }));
+    if (
+      rawData &&
+      typeof rawData === "object" &&
+      "categories" in rawData &&
+      Array.isArray(rawData.categories)
+    ) {
+      const activeRestaurantId = rawData.restaurantId || restaurantId;
+      return rawData.categories.map((cat) => ({
+        ...cat,
+        restaurantId: cat.restaurantId || activeRestaurantId,
+      }));
+    }
+
+    return [];
   },
 
   /**

@@ -12,7 +12,8 @@ import type { MenuCategory } from "../types/menu-category.types";
 export function useMenuCategories() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
-  const restaurantId = user?.restaurantId || user?.id || "";
+  // Strictly source from verified restaurantId, avoiding user ID fallback
+  const restaurantId = user?.restaurantId || "";
 
   const queryKey = useMemo(() => [MENU_CATEGORIES_QUERY_KEY, restaurantId], [restaurantId]);
 
@@ -25,7 +26,7 @@ export function useMenuCategories() {
   } = useQuery({
     queryKey,
     queryFn: () => menuCategoryService.getCategories(restaurantId),
-    enabled: !!restaurantId,
+    enabled: Boolean(restaurantId),
     staleTime: 60 * 1000,
   });
 
