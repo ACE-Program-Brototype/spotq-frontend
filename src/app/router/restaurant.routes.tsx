@@ -5,6 +5,7 @@ import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification"
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
+import RestaurantMenuCategoriesPage from "@/features/menu/pages/RestaurantMenuCategoriesPage";
 import BusinessInformationPage from "@/features/onboard/pages/BusinessInformationPage";
 import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
@@ -162,6 +163,10 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "staff/:staffId/edit",
             Component: StaffEditRedirect,
+          },
+          {
+            path: "menu/categories",
+            Component: RestaurantMenuCategoriesPage,
           },
         ],
       },
