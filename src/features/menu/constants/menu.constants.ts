@@ -7,6 +7,7 @@ export const MENU_ENDPOINTS = {
   CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/menu/categories`,
   CATEGORY_UPDATE: (restaurantId: string, categoryId: string) =>
     `restaurants/${restaurantId}/menu/categories/${categoryId}`,
+  ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/menu/items`,
 } as const;
 
 export const MENU_MESSAGES = {
@@ -19,6 +20,8 @@ export const MENU_MESSAGES = {
   STATUS_INVALID: "Status must be valid.",
   RESTAURANT_ID_REQUIRED: "Restaurant ID is required.",
   FETCH_ERROR: "Failed to load menu categories.",
+  ITEMS_FETCH_ERROR: "Failed to load menu items.",
 } as const;
 
 export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;
+export const MENU_ITEMS_QUERY_KEY = "menu-items" as const;
