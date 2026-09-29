@@ -3,7 +3,7 @@
  * Displays paginated list of restaurant menu items with KPI summary stats, filters, and sorting.
  */
 
-import { AlertCircle, Layers, RefreshCw } from "lucide-react";
+import { AlertCircle, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MenuItemFilters } from "../components/MenuItemFilters";
@@ -64,28 +64,14 @@ export default function RestaurantMenuItemsPage() {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            disabled={isLoading}
-            className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] shadow-2xs gap-1.5"
-            title="Refresh menu items"
-          >
-            <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin text-[#e8631b]" : ""}`} />
-            <span>Refresh</span>
-          </Button>
-
-          <Link to="/restaurant/menu/categories">
+          <Link to="/restaurant/menu/items/create">
             <Button
               type="button"
-              variant="outline"
               size="sm"
-              className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] shadow-2xs gap-1.5"
+              className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs cursor-pointer"
             >
-              <Layers className="size-3.5 text-[#e8631b]" />
-              <span>Categories</span>
+              <Plus className="size-4" />
+              <span>Create Menu Item</span>
             </Button>
           </Link>
         </div>

@@ -107,6 +107,11 @@ describe("RestaurantMenuItemsPage", () => {
     expect(screen.getByText("Available In-Stock")).toBeInTheDocument();
     expect(screen.getAllByText("Out of Stock").length).toBeGreaterThanOrEqual(1);
 
+    // Verify Create Menu Item Button
+    const createButton = screen.getByRole("link", { name: "Create Menu Item" });
+    expect(createButton).toBeInTheDocument();
+    expect(createButton).toHaveAttribute("href", "/restaurant/menu/items/create");
+
     // Verify Item in Table
     expect(await screen.findByText("Crispy Corn")).toBeInTheDocument();
     expect(screen.getByText("₹199.00")).toBeInTheDocument();
