@@ -3,7 +3,7 @@
  * Data contracts matching spotq-restaurant-service API.
  */
 
-export type MenuItemSortBy = "name" | "price" | "createdAt" | "category";
+export type MenuItemSortBy = "name" | "price" | "createdAt";
 export type MenuItemSortOrder = "asc" | "desc" | "ASC" | "DESC";
 export type MenuItemStatusFilter = "ALL" | "AVAILABLE" | "OUT_OF_STOCK";
 

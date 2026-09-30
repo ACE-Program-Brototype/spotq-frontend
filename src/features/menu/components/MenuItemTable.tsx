@@ -94,9 +94,7 @@ export function MenuItemTable({
       },
       {
         key: "category",
-        sortKey: "category",
         header: "Category",
-        sortable: Boolean(onSort),
         cell: ({ row: item }) => (
           <span className="text-xs font-medium text-neutral-700">
             {item.categoryName || "Unassigned"}
