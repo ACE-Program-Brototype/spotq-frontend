@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import type { MenuItemSummary } from "../types/menu-item.types";
 import { MenuItemTable } from "./MenuItemTable";
@@ -78,5 +78,22 @@ describe("MenuItemTable", () => {
     expect(
       screen.getByText("No dishes or beverages match the selected filter criteria."),
     ).toBeInTheDocument();
+  });
+
+  it("switches to fallback icon declaratively when image fails to load", () => {
+    render(
+      <MemoryRouter>
+        <MenuItemTable items={mockItems} />
+      </MemoryRouter>,
+    );
+
+    const imageElement = screen.getByAltText("Butter Chicken");
+    expect(imageElement).toBeInTheDocument();
+
+    // Trigger image loading error
+    fireEvent.error(imageElement);
+
+    // Image element is removed and fallback is rendered
+    expect(screen.queryByAltText("Butter Chicken")).not.toBeInTheDocument();
   });
 });

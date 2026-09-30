@@ -1,5 +1,5 @@
 import { Eye, Pencil, Sparkles, Utensils } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { type Column, DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,30 @@ import type {
   MenuItemSortOrder,
   MenuItemSummary,
 } from "../types/menu-item.types";
+
+function MenuItemThumbnail({ image, name }: { image: string | null; name: string }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (image && !hasError) {
+    return (
+      <div className="size-11 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center">
+        <img
+          src={image}
+          alt={name}
+          className="h-full w-full object-cover"
+          loading="lazy"
+          onError={() => setHasError(true)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="size-11 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center text-[#e8631b]">
+      <Utensils className="size-5" />
+    </div>
+  );
+}
 
 export interface MenuItemTableProps {
   items: MenuItemSummary[];
@@ -46,33 +70,7 @@ export function MenuItemTable({
         sortable: Boolean(onSort),
         cell: ({ row: item }) => (
           <div className="flex items-center gap-3.5">
-            {/* Image Thumbnail */}
-            <div className="size-11 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center">
-              {item.image ? (
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                  onError={(e) => {
-                    // Fallback to icon on image error
-                    e.currentTarget.style.display = "none";
-                    if (e.currentTarget.parentElement) {
-                      const fallback =
-                        e.currentTarget.parentElement.querySelector(".fallback-icon");
-                      if (fallback) fallback.classList.remove("hidden");
-                    }
-                  }}
-                />
-              ) : null}
-              <div
-                className={`fallback-icon flex items-center justify-center text-[#e8631b] ${
-                  item.image ? "hidden" : ""
-                }`}
-              >
-                <Utensils className="size-5" />
-              </div>
-            </div>
+            <MenuItemThumbnail image={item.image} name={item.name} />
 
             {/* Name & Badges */}
             <div className="min-w-0">
