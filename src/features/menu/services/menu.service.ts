@@ -54,8 +54,8 @@ export const menuService = {
       })
       .json<ApiResponse<MenuCategory>>();
 
-    if (!response.success && response.message) {
-      throw new Error(response.message);
+    if (!response.success) {
+      throw new Error(response.message || MENU_MESSAGES.CATEGORY_CREATE_FAILED);
     }
 
     return response.data;
@@ -93,8 +93,8 @@ export const menuService = {
       })
       .json<ApiResponse<MenuAddon>>();
 
-    if (!response.success && response.message) {
-      throw new Error(response.message);
+    if (!response.success) {
+      throw new Error(response.message || MENU_MESSAGES.ADDON_CREATE_FAILED);
     }
 
     return response.data;
@@ -148,7 +148,7 @@ export const menuService = {
       })
       .json<ApiResponse<MenuItemResponse>>();
 
-    if (!response.success && response.message) {
+    if (!response.success) {
       throw new Error(response.message || MENU_MESSAGES.ITEM_CREATE_FAILED);
     }
 

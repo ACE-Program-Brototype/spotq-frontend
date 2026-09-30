@@ -72,6 +72,18 @@ describe("menuService", () => {
       expect(apiClient.post).toHaveBeenCalled();
       expect(result).toEqual(createdCategory);
     });
+
+    it("throws error when API returns success false", async () => {
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: false, message: "Category exists" }),
+      });
+
+      await expect(
+        menuService.createCategory("res-1", {
+          name: "Desserts",
+        }),
+      ).rejects.toThrow("Category exists");
+    });
   });
 
   describe("getAddons", () => {
@@ -100,6 +112,43 @@ describe("menuService", () => {
       });
 
       await expect(menuService.getAddons("res-1")).rejects.toThrow("Network Error");
+    });
+  });
+
+  describe("createAddon", () => {
+    it("posts new addon and returns created addon object", async () => {
+      const mockAddon = {
+        id: "add-1",
+        restaurantId: "res-1",
+        name: "Extra Jalapenos",
+        price: 30,
+        isAvailable: true,
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: mockAddon }),
+      });
+
+      const result = await menuService.createAddon("res-1", {
+        name: "Extra Jalapenos",
+        price: 30,
+      });
+
+      expect(apiClient.post).toHaveBeenCalled();
+      expect(result).toEqual(mockAddon);
+    });
+
+    it("throws error when API returns success false", async () => {
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: false, message: "Addon exists" }),
+      });
+
+      await expect(
+        menuService.createAddon("res-1", {
+          name: "Extra Jalapenos",
+          price: 30,
+        }),
+      ).rejects.toThrow("Addon exists");
     });
   });
 
@@ -162,6 +211,30 @@ describe("menuService", () => {
         }),
       );
       expect(result.id).toBe("item-1");
+    });
+
+    it("throws error when API returns success false", async () => {
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: false, message: "Item exists" }),
+      });
+
+      await expect(
+        menuService.createMenuItem("res-1", {
+          name: "Farmhouse Pizza",
+          categoryId: "cat-1",
+          dietaryType: "VEG",
+          isAvailable: true,
+          variants: [
+            {
+              name: "Regular",
+              portion: "Standard",
+              price: 200,
+              isDefault: true,
+              isAvailable: true,
+            },
+          ],
+        }),
+      ).rejects.toThrow("Item exists");
     });
   });
 });
