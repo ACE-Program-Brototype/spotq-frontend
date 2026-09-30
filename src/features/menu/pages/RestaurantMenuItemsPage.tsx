@@ -5,7 +5,8 @@
 
 import { AlertCircle, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 import { MenuItemFilters } from "../components/MenuItemFilters";
 import { MenuItemStatsCards } from "../components/MenuItemStatsCards";
 import { MenuItemTable } from "../components/MenuItemTable";
@@ -64,15 +65,15 @@ export default function RestaurantMenuItemsPage() {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <Link to="/restaurant/menu/items/create">
-            <Button
-              type="button"
-              size="sm"
-              className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs cursor-pointer"
-            >
-              <Plus className="size-4" />
-              <span>Create Menu Item</span>
-            </Button>
+          <Link
+            to="/restaurant/menu/items/create"
+            className={cn(
+              buttonVariants({ size: "sm" }),
+              "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs",
+            )}
+          >
+            <Plus className="size-4" />
+            <span>Create Menu Item</span>
           </Link>
         </div>
       </div>
