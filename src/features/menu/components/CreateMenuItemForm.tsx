@@ -96,7 +96,6 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
         isAvailable: data.isAvailable,
         variants: data.variants,
         addons: addonsPayload,
-        addonIds: data.selectedAddonIds,
       });
 
       navigate("/restaurant/menu/items");

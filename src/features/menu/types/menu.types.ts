@@ -43,7 +43,6 @@ export interface CreateMenuItemPayload {
   isAvailable: boolean;
   variants: MenuItemVariantInput[];
   addons?: MenuItemAddonLinkInput[];
-  addonIds?: string[];
 }
 
 export interface MenuItemResponse {

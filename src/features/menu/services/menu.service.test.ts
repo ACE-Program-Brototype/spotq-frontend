@@ -146,7 +146,6 @@ describe("menuService", () => {
             isAvailable: true,
           },
         ],
-        addonIds: ["add-1"],
       });
 
       expect(apiClient.post).toHaveBeenCalledWith(
