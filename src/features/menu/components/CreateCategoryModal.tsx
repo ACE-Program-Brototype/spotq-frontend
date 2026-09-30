@@ -141,7 +141,9 @@ export function CreateCategoryModal({
                 type="number"
                 min="0"
                 placeholder={MENU_MESSAGES.CATEGORY_ORDER_PLACEHOLDER}
-                {...register("displayOrder", { valueAsNumber: true })}
+                {...register("displayOrder", {
+                  setValueAs: (val) => (val === "" || Number.isNaN(Number(val)) ? 0 : Number(val)),
+                })}
                 className="h-10 text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
               />
               <p className="text-[10px] text-neutral-400">{MENU_MESSAGES.CATEGORY_ORDER_HINT}</p>

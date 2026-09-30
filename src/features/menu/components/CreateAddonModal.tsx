@@ -152,7 +152,10 @@ export function CreateAddonModal({
                   step="0.5"
                   min="0"
                   placeholder={MENU_MESSAGES.ADDON_PRICE_PLACEHOLDER}
-                  {...register("price", { valueAsNumber: true })}
+                  {...register("price", {
+                    setValueAs: (val) =>
+                      val === "" || Number.isNaN(Number(val)) ? 0 : Number(val),
+                  })}
                   className="pl-7 h-10 text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
                 />
               </div>

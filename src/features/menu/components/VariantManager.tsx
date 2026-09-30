@@ -146,7 +146,10 @@ export function VariantManager({ form }: VariantManagerProps) {
                       step="0.5"
                       min="0"
                       placeholder={MENU_MESSAGES.VARIANT_PRICE_PLACEHOLDER}
-                      {...register(`variants.${index}.price`, { valueAsNumber: true })}
+                      {...register(`variants.${index}.price`, {
+                        setValueAs: (val) =>
+                          val === "" || Number.isNaN(Number(val)) ? 0 : Number(val),
+                      })}
                       className="pl-6 h-9 text-xs bg-neutral-50/50 focus:bg-white"
                     />
                   </div>
