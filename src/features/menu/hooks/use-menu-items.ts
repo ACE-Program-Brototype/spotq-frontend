@@ -119,6 +119,11 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
     setPage(1);
   }, []);
 
+  const handleLimitChange = useCallback((newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
+  }, []);
+
   const resetFilters = useCallback(() => {
     setSearchQuery("");
     setCategoryFilter("ALL");
@@ -149,7 +154,8 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
     sortOrder,
     // Updaters
     setPage,
-    setLimit,
+    setLimit: handleLimitChange,
+    setPageSize: handleLimitChange,
     setSearchQuery: handleSearchChange,
     setCategoryFilter: handleCategoryChange,
     setStatusFilter: handleStatusChange,
