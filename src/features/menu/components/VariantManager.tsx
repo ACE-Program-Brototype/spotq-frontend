@@ -49,11 +49,11 @@ export function VariantManager({ form }: VariantManagerProps) {
   };
 
   const handleSetDefault = (targetIndex: number) => {
-    variants.forEach((_, i) => {
-      setValue(`variants.${i}.isDefault`, i === targetIndex, {
-        shouldValidate: true,
-      });
-    });
+    const updatedVariants = variants.map((v, i) => ({
+      ...v,
+      isDefault: i === targetIndex,
+    }));
+    setValue("variants", updatedVariants, { shouldValidate: true, shouldDirty: true });
   };
 
   return (
