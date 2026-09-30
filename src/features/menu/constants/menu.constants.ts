@@ -4,9 +4,9 @@
  */
 
 export const MENU_ENDPOINTS = {
-  ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/menu-items`,
+  ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/menu/items`,
   ITEM_DETAIL: (restaurantId: string, itemId: string) =>
-    `restaurants/${restaurantId}/menu-items/${itemId}`,
+    `restaurants/${restaurantId}/menu/items/${itemId}`,
   CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/menu/categories`,
   CATEGORY_DETAIL: (restaurantId: string, categoryId: string) =>
     `restaurants/${restaurantId}/menu/categories/${categoryId}`,
@@ -147,7 +147,11 @@ export const MENU_MESSAGES = {
   VALIDATION_ITEM_NAME_REQUIRED: "Menu item name is required",
   VALIDATION_ITEM_NAME_MAX: "Item name cannot exceed 255 characters",
   VALIDATION_CATEGORY_REQUIRED: "Please select a category",
+  VALIDATION_DESCRIPTION_REQUIRED: "Description is required",
+  VALIDATION_DESCRIPTION_MAX: "Description cannot exceed 1000 characters",
+  VALIDATION_PREP_TIME_REQUIRED: "Preparation time is required",
   VALIDATION_PREP_TIME_POSITIVE: "Preparation time must be a positive number",
+  VALIDATION_IMAGE_REQUIRED: "Menu item image is required",
   VALIDATION_VARIANTS_MIN: "At least one variant is required",
   VALIDATION_VARIANT_NAME_REQUIRED: "Variant name is required",
   VALIDATION_VARIANT_PORTION_REQUIRED: "Portion size description is required",

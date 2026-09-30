@@ -185,17 +185,17 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
             {/* Preparation Time */}
             <div className="space-y-1.5">
               <Label htmlFor="item-prep-time" className="text-xs font-semibold text-neutral-800">
-                {MENU_MESSAGES.PREPARATION_TIME_LABEL}
+                {MENU_MESSAGES.PREPARATION_TIME_LABEL} <span className="text-rose-500">*</span>
               </Label>
               <div className="relative">
                 <Clock className="absolute left-3 top-2.5 size-4 text-neutral-400" />
                 <Input
                   id="item-prep-time"
                   type="number"
-                  min="1"
+                  min="0"
                   placeholder={MENU_MESSAGES.PREPARATION_TIME_PLACEHOLDER}
                   {...register("preparationTime", {
-                    setValueAs: (v) => (v === "" ? null : Number(v)),
+                    setValueAs: (v) => (v === "" || v === null ? undefined : Number(v)),
                   })}
                   className="pl-9 h-10 text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
                 />
@@ -210,7 +210,7 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
             {/* Description */}
             <div className="space-y-1.5 md:col-span-2">
               <Label htmlFor="item-description" className="text-xs font-semibold text-neutral-800">
-                {MENU_MESSAGES.DESCRIPTION_LABEL}
+                {MENU_MESSAGES.DESCRIPTION_LABEL} <span className="text-rose-500">*</span>
               </Label>
               <Textarea
                 id="item-description"
@@ -286,7 +286,7 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
         <div className="rounded-2xl border border-[#eddcd4] bg-white p-6 shadow-xs space-y-4">
           <div>
             <h3 className="text-base font-bold text-neutral-900 leading-tight">
-              {MENU_MESSAGES.IMAGE_LABEL}
+              {MENU_MESSAGES.IMAGE_LABEL} <span className="text-rose-500">*</span>
             </h3>
             <p className="text-xs text-neutral-500">
               High resolution photo of the dish to entice diners
@@ -294,9 +294,12 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
           </div>
           <ImageUploader
             value={imageUrl}
-            onChange={(url) => setValue("imageUrl", url)}
+            onChange={(url) => setValue("imageUrl", url, { shouldValidate: true })}
             restaurantId={restaurantId}
           />
+          {errors.imageUrl && (
+            <p className="text-xs font-medium text-rose-500">{errors.imageUrl.message}</p>
+          )}
         </div>
 
         {/* Variants & Portion Sizes Card (SCRUM-1113) */}

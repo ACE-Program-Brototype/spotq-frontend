@@ -116,7 +116,10 @@ describe("menuService", () => {
       const result = await menuService.createMenuItem("res-1", {
         name: "Farmhouse Pizza",
         categoryId: "cat-1",
+        description: "Fresh vegetables and mozzarella on crisp dough",
         dietaryType: "VEG",
+        preparationTime: 20,
+        imageUrl: "restaurants/res-1/menus/pizza.jpg",
         isAvailable: true,
         variants: [
           {
@@ -130,7 +133,19 @@ describe("menuService", () => {
         addonIds: ["add-1"],
       });
 
-      expect(apiClient.post).toHaveBeenCalled();
+      expect(apiClient.post).toHaveBeenCalledWith(
+        "restaurants/res-1/menu/items",
+        expect.objectContaining({
+          json: expect.objectContaining({
+            name: "Farmhouse Pizza",
+            categoryId: "cat-1",
+            description: "Fresh vegetables and mozzarella on crisp dough",
+            preparationTime: 20,
+            isVegetarian: true,
+            images: [{ objectKey: "restaurants/res-1/menus/pizza.jpg", displayOrder: 0 }],
+          }),
+        }),
+      );
       expect(result.id).toBe("item-1");
     });
   });

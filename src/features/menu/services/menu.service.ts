@@ -128,9 +128,9 @@ export const menuService = {
       ...(addon.priceOverride !== undefined ? { priceOverride: Number(addon.priceOverride) } : {}),
     }));
 
-    const images = payload.imageUrl
-      ? [{ objectKey: payload.imageUrl, displayOrder: 0 }]
-      : undefined;
+    const images = payload.imageUrl?.trim()
+      ? [{ objectKey: payload.imageUrl.trim(), displayOrder: 0 }]
+      : [];
 
     const isVegetarian = payload.dietaryType === "VEG" || payload.dietaryType === "VEGAN";
 
@@ -139,12 +139,12 @@ export const menuService = {
         json: {
           name: payload.name.trim(),
           categoryId: payload.categoryId,
-          description: payload.description?.trim() || null,
+          description: (payload.description || "").trim(),
           price: calculatedPrice,
           isVegetarian,
-          preparationTime: payload.preparationTime ? Number(payload.preparationTime) : null,
+          preparationTime: Number(payload.preparationTime || 0),
           isAvailable: payload.isAvailable ?? true,
-          ...(images ? { images } : {}),
+          images,
           variants: payload.variants.map((v) => ({
             name: v.portion ? `${v.name.trim()} (${v.portion.trim()})` : v.name.trim(),
             price: Number(v.price),
@@ -152,9 +152,6 @@ export const menuService = {
             isDefault: Boolean(v.isDefault),
           })),
           ...(formattedAddons && formattedAddons.length > 0 ? { addons: formattedAddons } : {}),
-          ...(payload.addonIds && payload.addonIds.length > 0
-            ? { addonIds: payload.addonIds }
-            : {}),
         },
       })
       .json<ApiResponse<MenuItemResponse>>();

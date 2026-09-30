@@ -36,6 +36,18 @@ jest.mock("@/features/menu/hooks/use-restaurant-addons", () => ({
   }),
 }));
 
+jest.mock("@/features/menu/components/ImageUploader", () => ({
+  ImageUploader: ({ onChange }: { onChange: (url: string) => void }) => (
+    <button
+      type="button"
+      data-testid="mock-image-uploader"
+      onClick={() => onChange("restaurants/res-100/menus/burger.jpg")}
+    >
+      Upload Image
+    </button>
+  ),
+}));
+
 describe("CreateMenuItemForm", () => {
   let queryClient: QueryClient;
 
@@ -61,6 +73,8 @@ describe("CreateMenuItemForm", () => {
 
     expect(screen.getByLabelText(/item name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/menu category/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/preparation time/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
     expect(screen.getByText("Portion Sizes & Variants")).toBeInTheDocument();
     expect(screen.getByText("Complementary Add-ons")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^create menu item$/i })).toBeInTheDocument();
@@ -76,6 +90,8 @@ describe("CreateMenuItemForm", () => {
     await waitFor(() => {
       expect(screen.getByText(/menu item name is required/i)).toBeInTheDocument();
       expect(screen.getByText(/please select a category/i)).toBeInTheDocument();
+      expect(screen.getByText(/description is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/menu item image is required/i)).toBeInTheDocument();
     });
     expect(mockCreateMenuItem).not.toHaveBeenCalled();
   });
@@ -93,6 +109,19 @@ describe("CreateMenuItemForm", () => {
     // Select Category
     const categorySelect = screen.getByLabelText(/menu category/i);
     await user.selectOptions(categorySelect, "cat-1");
+
+    // Fill Preparation Time
+    const prepTimeInput = screen.getByLabelText(/preparation time/i);
+    await user.clear(prepTimeInput);
+    await user.type(prepTimeInput, "15");
+
+    // Fill Description
+    const descInput = screen.getByLabelText(/description/i);
+    await user.type(descInput, "Juicy smashed double patties with melted cheddar cheese");
+
+    // Upload Image
+    const uploadBtn = screen.getByTestId("mock-image-uploader");
+    await user.click(uploadBtn);
 
     // Fill default variant name and portion
     const variantNameInput = screen.getByPlaceholderText(/e\.g\., regular, large/i);
@@ -115,6 +144,9 @@ describe("CreateMenuItemForm", () => {
         expect.objectContaining({
           name: "Double Cheese Smash",
           categoryId: "cat-1",
+          description: "Juicy smashed double patties with melted cheddar cheese",
+          preparationTime: 15,
+          imageUrl: "restaurants/res-100/menus/burger.jpg",
           variants: expect.arrayContaining([
             expect.objectContaining({
               name: "Regular",

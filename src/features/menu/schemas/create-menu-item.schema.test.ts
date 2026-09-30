@@ -103,4 +103,22 @@ describe("createMenuItemSchema", () => {
     const result = createMenuItemSchema.safeParse(invalid);
     expect(result.success).toBe(false);
   });
+
+  it("fails when description is missing or empty", () => {
+    const invalid = { ...validMenuItem, description: "   " };
+    const result = createMenuItemSchema.safeParse(invalid);
+    expect(result.success).toBe(false);
+  });
+
+  it("fails when preparationTime is negative", () => {
+    const invalid = { ...validMenuItem, preparationTime: -5 };
+    const result = createMenuItemSchema.safeParse(invalid);
+    expect(result.success).toBe(false);
+  });
+
+  it("fails when imageUrl is missing or empty", () => {
+    const invalid = { ...validMenuItem, imageUrl: "" };
+    const result = createMenuItemSchema.safeParse(invalid);
+    expect(result.success).toBe(false);
+  });
 });
