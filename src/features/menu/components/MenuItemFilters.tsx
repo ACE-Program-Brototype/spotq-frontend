@@ -38,7 +38,7 @@ export function MenuItemFilters({
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-neutral-400 pointer-events-none" />
         <Input
           type="text"
-          placeholder="Search items by name..."
+          placeholder="Search items by name or description..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10 h-10 rounded-xl border-[#eddcd4] bg-white focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b] text-xs"
