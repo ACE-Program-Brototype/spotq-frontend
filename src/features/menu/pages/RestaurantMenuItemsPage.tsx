@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils/cn";
 import { MenuItemFilters } from "../components/MenuItemFilters";
 import { MenuItemStatsCards } from "../components/MenuItemStatsCards";
 import { MenuItemTable } from "../components/MenuItemTable";
+import { MENU_MESSAGES } from "../constants/menu.constants";
 import { useMenuCategories } from "../hooks/use-menu-categories";
 import { useMenuItems } from "../hooks/use-menu-items";
 
@@ -83,11 +84,7 @@ export default function RestaurantMenuItemsPage() {
         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertCircle className="size-5 shrink-0" />
-            <span>
-              {error instanceof Error
-                ? error.message
-                : "Failed to load menu items. Please try again."}
-            </span>
+            <span>{error instanceof Error ? error.message : MENU_MESSAGES.ITEMS_FETCH_ERROR}</span>
           </div>
           <Button
             type="button"

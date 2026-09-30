@@ -117,4 +117,21 @@ describe("RestaurantMenuItemsPage", () => {
     expect(screen.getByText("₹199.00")).toBeInTheDocument();
     expect(screen.getByText("Featured")).toBeInTheDocument();
   });
+
+  it("renders error alert with retry button on query failure", async () => {
+    (menuItemService.getMenuItems as jest.Mock).mockRejectedValueOnce(
+      new Error("Failed to load menu items."),
+    );
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <RestaurantMenuItemsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Failed to load menu items.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
+  });
 });
