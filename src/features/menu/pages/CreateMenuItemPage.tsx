@@ -7,7 +7,7 @@ import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 export function CreateMenuItemPage() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const restaurantId = user?.restaurantId || user?.id || "";
+  const restaurantId = user?.restaurantId || "";
 
   return (
     <div className="space-y-6 pb-12 max-w-4xl mx-auto">
