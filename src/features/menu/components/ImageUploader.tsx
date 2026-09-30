@@ -1,5 +1,5 @@
 import { Image as ImageIcon, Loader2, Trash2, UploadCloud } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
@@ -13,18 +13,36 @@ interface ImageUploaderProps {
 
 export function ImageUploader({ value, onChange, restaurantId }: ImageUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
-    // Validate size (max 5MB)
+  const processFile = async (file: File) => {
+    const validTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Invalid image format. Supported formats: JPG, PNG, WebP.");
+      return;
+    }
+
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Image file size exceeds the 5MB limit.");
       return;
     }
+
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    const localPreview = URL.createObjectURL(file);
+    setPreviewUrl(localPreview);
 
     try {
       setIsUploading(true);
@@ -41,6 +59,8 @@ export function ImageUploader({ value, onChange, restaurantId }: ImageUploaderPr
       onChange(result.s3ObjectKey);
       toast.success(MENU_MESSAGES.IMAGE_UPLOAD_SUCCESS);
     } catch (err: unknown) {
+      URL.revokeObjectURL(localPreview);
+      setPreviewUrl("");
       const message = err instanceof Error ? err.message : "Failed to upload image.";
       toast.error(message);
     } finally {
@@ -51,9 +71,44 @@ export function ImageUploader({ value, onChange, restaurantId }: ImageUploaderPr
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
   const handleRemove = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl("");
+    }
     onChange("");
   };
+
+  const displaySrc = previewUrl || (value?.startsWith("http") ? value : null);
 
   return (
     <div className="space-y-2">
@@ -70,8 +125,8 @@ export function ImageUploader({ value, onChange, restaurantId }: ImageUploaderPr
         <div className="relative rounded-2xl border border-[#eddcd4] bg-[#fffaf5] p-3 flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
             <div className="size-12 rounded-xl bg-[#fae2d3] flex items-center justify-center text-[#9a3412] shrink-0 overflow-hidden">
-              {value.startsWith("http") ? (
-                <img src={value} alt="Preview" className="h-full w-full object-cover" />
+              {displaySrc ? (
+                <img src={displaySrc} alt="Preview" className="h-full w-full object-cover" />
               ) : (
                 <ImageIcon className="size-6 text-[#e8631b]" />
               )}
@@ -98,8 +153,15 @@ export function ImageUploader({ value, onChange, restaurantId }: ImageUploaderPr
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
           disabled={isUploading}
-          className="w-full rounded-2xl border-2 border-dashed border-[#ecd8cc] hover:border-[#e8631b] bg-[#fffdfb] hover:bg-[#fff9f4] p-5 text-center transition-all flex flex-col items-center justify-center gap-2 group cursor-pointer"
+          className={`w-full rounded-2xl border-2 border-dashed p-5 text-center transition-all flex flex-col items-center justify-center gap-2 group cursor-pointer ${
+            isDragging
+              ? "border-[#e8631b] bg-[#fff3ec]"
+              : "border-[#ecd8cc] hover:border-[#e8631b] bg-[#fffdfb] hover:bg-[#fff9f4]"
+          }`}
         >
           {isUploading ? (
             <div className="flex flex-col items-center gap-2">
