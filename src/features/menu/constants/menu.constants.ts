@@ -163,6 +163,7 @@ export const MENU_MESSAGES = {
   VALIDATION_CATEGORY_NAME_MAX: "Category name cannot exceed 255 characters",
   VALIDATION_CATEGORY_ORDER_INTEGER: "Display order must be an integer",
   VALIDATION_ADDON_NAME_REQUIRED: "Add-on name is required",
+  VALIDATION_ADDON_PRICE_REQUIRED: "Add-on price is required",
   VALIDATION_ADDON_PRICE_NON_NEGATIVE: "Add-on price cannot be negative",
 
   UPDATE_SUCCESS: "Menu category updated successfully.",

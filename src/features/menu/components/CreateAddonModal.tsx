@@ -167,7 +167,7 @@ export function CreateAddonModal({
                   placeholder={MENU_MESSAGES.ADDON_PRICE_PLACEHOLDER}
                   {...register("price", {
                     setValueAs: (val) =>
-                      val === "" || Number.isNaN(Number(val)) ? 0 : Number(val),
+                      val === "" || Number.isNaN(Number(val)) ? undefined : Number(val),
                   })}
                   className="pl-7 h-10 text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
                 />

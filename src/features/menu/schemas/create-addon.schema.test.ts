@@ -31,4 +31,13 @@ describe("createAddonSchema", () => {
     const result = createAddonSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
+
+  it("fails when price is missing or undefined", () => {
+    const invalidData = {
+      name: "Garlic Dip",
+      isAvailable: true,
+    };
+    const result = createAddonSchema.safeParse(invalidData);
+    expect(result.success).toBe(false);
+  });
 });
