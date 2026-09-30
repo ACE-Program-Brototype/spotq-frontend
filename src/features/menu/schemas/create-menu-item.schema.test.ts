@@ -104,6 +104,23 @@ describe("createMenuItemSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("fails when variant price is zero", () => {
+    const invalid = {
+      ...validMenuItem,
+      variants: [
+        {
+          name: "Regular",
+          portion: "1 Person",
+          price: 0,
+          isDefault: true,
+          isAvailable: true,
+        },
+      ],
+    };
+    const result = createMenuItemSchema.safeParse(invalid);
+    expect(result.success).toBe(false);
+  });
+
   it("fails when description is missing or empty", () => {
     const invalid = { ...validMenuItem, description: "   " };
     const result = createMenuItemSchema.safeParse(invalid);

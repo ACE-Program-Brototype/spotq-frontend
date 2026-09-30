@@ -46,9 +46,9 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
       isAvailable: true,
       variants: [
         {
-          name: "Regular",
-          portion: "1 Person",
-          price: 0,
+          name: "",
+          portion: "",
+          price: undefined as never,
           sku: "",
           isDefault: true,
           isAvailable: true,

@@ -90,7 +90,9 @@ describe("CreateMenuItemForm", () => {
     await waitFor(() => {
       expect(screen.getByText(/menu item name is required/i)).toBeInTheDocument();
       expect(screen.getByText(/please select a category/i)).toBeInTheDocument();
-      expect(screen.getByText(/description is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/^description is required$/i)).toBeInTheDocument();
+      expect(screen.getByText(/portion size description is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/variant price is required/i)).toBeInTheDocument();
       expect(screen.getByText(/menu item image is required/i)).toBeInTheDocument();
     });
     expect(mockCreateMenuItem).not.toHaveBeenCalled();

@@ -157,6 +157,8 @@ export const MENU_MESSAGES = {
   VALIDATION_VARIANTS_MIN: "At least one variant is required",
   VALIDATION_VARIANT_NAME_REQUIRED: "Variant name is required",
   VALIDATION_VARIANT_PORTION_REQUIRED: "Portion size description is required",
+  VALIDATION_VARIANT_PRICE_REQUIRED: "Variant price is required",
+  VALIDATION_VARIANT_PRICE_POSITIVE: "Variant price must be greater than 0",
   VALIDATION_VARIANT_PRICE_NON_NEGATIVE: "Price cannot be negative",
   VALIDATION_ONE_DEFAULT_VARIANT: "Exactly one variant must be designated as the default",
   VALIDATION_CATEGORY_NAME_REQUIRED: "Category name is required",

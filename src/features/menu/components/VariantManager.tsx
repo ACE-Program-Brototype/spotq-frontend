@@ -32,7 +32,7 @@ export function VariantManager({ form }: VariantManagerProps) {
     append({
       name: "",
       portion: "",
-      price: 0,
+      price: undefined as never,
       sku: "",
       isDefault: isFirst,
       isAvailable: true,
@@ -148,7 +148,7 @@ export function VariantManager({ form }: VariantManagerProps) {
                       placeholder={MENU_MESSAGES.VARIANT_PRICE_PLACEHOLDER}
                       {...register(`variants.${index}.price`, {
                         setValueAs: (val) =>
-                          val === "" || Number.isNaN(Number(val)) ? 0 : Number(val),
+                          val === "" || Number.isNaN(Number(val)) ? undefined : Number(val),
                       })}
                       className="pl-6 h-9 text-xs bg-neutral-50/50 focus:bg-white"
                     />

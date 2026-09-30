@@ -4,7 +4,9 @@ import { DIETARY_TYPES, MENU_MESSAGES } from "@/features/menu/constants/menu.con
 export const variantSchema = z.object({
   name: z.string().trim().min(1, MENU_MESSAGES.VALIDATION_VARIANT_NAME_REQUIRED),
   portion: z.string().trim().min(1, MENU_MESSAGES.VALIDATION_VARIANT_PORTION_REQUIRED),
-  price: z.number().min(0, MENU_MESSAGES.VALIDATION_VARIANT_PRICE_NON_NEGATIVE),
+  price: z
+    .number({ message: MENU_MESSAGES.VALIDATION_VARIANT_PRICE_REQUIRED })
+    .positive(MENU_MESSAGES.VALIDATION_VARIANT_PRICE_POSITIVE),
   sku: z.string().trim().optional(),
   isDefault: z.boolean(),
   isAvailable: z.boolean(),
