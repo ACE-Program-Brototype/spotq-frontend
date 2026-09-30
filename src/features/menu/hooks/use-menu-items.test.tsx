@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
-import type React from "react";
+import { type ReactNode, StrictMode } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { menuItemService } from "../services/menu-item.service";
 import { useMenuItems } from "./use-menu-items";
@@ -14,7 +14,7 @@ jest.mock("../services/menu-item.service", () => ({
 describe("useMenuItems", () => {
   let queryClient: QueryClient;
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
+  const wrapper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 
@@ -195,5 +195,47 @@ describe("useMenuItems", () => {
     expect(result.current.vegFilter).toBe("ALL");
     expect(result.current.sortBy).toBe("createdAt");
     expect(result.current.sortOrder).toBe("desc");
+  });
+
+  it("handles consecutive toggleSort clicks atomically on the same column under StrictMode", () => {
+    const strictWrapper = ({ children }: { children: ReactNode }) => (
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </StrictMode>
+    );
+
+    const { result } = renderHook(() => useMenuItems(), { wrapper: strictWrapper });
+
+    // Initial state: createdAt desc
+    expect(result.current.sortBy).toBe("createdAt");
+    expect(result.current.sortOrder).toBe("desc");
+
+    // Click 'price' column -> switches to price asc
+    act(() => {
+      result.current.toggleSort("price");
+    });
+    expect(result.current.sortBy).toBe("price");
+    expect(result.current.sortOrder).toBe("asc");
+
+    // Click 'price' again -> switches to price desc
+    act(() => {
+      result.current.toggleSort("price");
+    });
+    expect(result.current.sortBy).toBe("price");
+    expect(result.current.sortOrder).toBe("desc");
+
+    // Click 'price' third time -> switches to price asc
+    act(() => {
+      result.current.toggleSort("price");
+    });
+    expect(result.current.sortBy).toBe("price");
+    expect(result.current.sortOrder).toBe("asc");
+
+    // Click different column 'name' -> switches to name asc
+    act(() => {
+      result.current.toggleSort("name");
+    });
+    expect(result.current.sortBy).toBe("name");
+    expect(result.current.sortOrder).toBe("asc");
   });
 });

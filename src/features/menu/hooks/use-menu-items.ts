@@ -31,8 +31,13 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<MenuItemStatusFilter>("ALL");
   const [vegFilter, setVegFilter] = useState<"ALL" | "VEG" | "NON_VEG">("ALL");
-  const [sortBy, setSortBy] = useState<MenuItemSortBy>("createdAt");
-  const [sortOrder, setSortOrder] = useState<MenuItemSortOrder>("desc");
+  const [sort, setSort] = useState<{
+    sortBy: MenuItemSortBy;
+    sortOrder: MenuItemSortOrder;
+  }>({
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
 
   const queryParams = useMemo(() => {
     const isVegetarian = vegFilter === "VEG" ? true : vegFilter === "NON_VEG" ? false : undefined;
@@ -44,10 +49,10 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
       categoryId: categoryFilter !== "ALL" ? categoryFilter : undefined,
       status: statusFilter !== "ALL" ? statusFilter : undefined,
       isVegetarian,
-      sortBy,
-      sortOrder,
+      sortBy: sort.sortBy,
+      sortOrder: sort.sortOrder,
     };
-  }, [page, limit, searchQuery, categoryFilter, statusFilter, vegFilter, sortBy, sortOrder]);
+  }, [page, limit, searchQuery, categoryFilter, statusFilter, vegFilter, sort]);
 
   const queryKey = useMemo(
     () => [MENU_ITEMS_QUERY_KEY, restaurantId, queryParams],
@@ -108,13 +113,19 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
   }, []);
 
   const toggleSort = useCallback((field: MenuItemSortBy) => {
-    setSortBy((prevField) => {
-      if (prevField === field) {
-        setSortOrder((prevOrder) => (prevOrder === "asc" || prevOrder === "ASC" ? "desc" : "asc"));
-        return field;
+    setSort((prev) => {
+      if (prev.sortBy === field) {
+        const nextOrder: MenuItemSortOrder =
+          prev.sortOrder.toLowerCase() === "asc" ? "desc" : "asc";
+        return {
+          sortBy: field,
+          sortOrder: nextOrder,
+        };
       }
-      setSortOrder("asc");
-      return field;
+      return {
+        sortBy: field,
+        sortOrder: "asc",
+      };
     });
     setPage(1);
   }, []);
@@ -129,8 +140,7 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
     setCategoryFilter("ALL");
     setStatusFilter("ALL");
     setVegFilter("ALL");
-    setSortBy("createdAt");
-    setSortOrder("desc");
+    setSort({ sortBy: "createdAt", sortOrder: "desc" });
     setPage(1);
   }, []);
 
@@ -150,8 +160,8 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
     categoryFilter,
     statusFilter,
     vegFilter,
-    sortBy,
-    sortOrder,
+    sortBy: sort.sortBy,
+    sortOrder: sort.sortOrder,
     // Updaters
     setPage,
     setLimit: handleLimitChange,
