@@ -6,6 +6,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 import { MENU_ITEMS_QUERY_KEY } from "../constants/menu.constants";
 import { menuItemService } from "../services/menu-item.service";
 import type {
@@ -19,6 +20,7 @@ import type {
 
 export interface UseMenuItemsOptions {
   initialLimit?: number;
+  searchDebounceMs?: number;
 }
 
 export function useMenuItems(options?: UseMenuItemsOptions) {
@@ -28,6 +30,7 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(options?.initialLimit || 10);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, options?.searchDebounceMs ?? 400);
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<MenuItemStatusFilter>("ALL");
   const [vegFilter, setVegFilter] = useState<"ALL" | "VEG" | "NON_VEG">("ALL");
@@ -45,14 +48,14 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
     return {
       page,
       limit,
-      search: searchQuery.trim() || undefined,
+      search: debouncedSearch.trim() || undefined,
       categoryId: categoryFilter !== "ALL" ? categoryFilter : undefined,
       status: statusFilter !== "ALL" ? statusFilter : undefined,
       isVegetarian,
       sortBy: sort.sortBy,
       sortOrder: sort.sortOrder,
     };
-  }, [page, limit, searchQuery, categoryFilter, statusFilter, vegFilter, sort]);
+  }, [page, limit, debouncedSearch, categoryFilter, statusFilter, vegFilter, sort]);
 
   const queryKey = useMemo(
     () => [MENU_ITEMS_QUERY_KEY, restaurantId, queryParams],

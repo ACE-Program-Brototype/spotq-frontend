@@ -238,4 +238,54 @@ describe("useMenuItems", () => {
     expect(result.current.sortBy).toBe("name");
     expect(result.current.sortOrder).toBe("asc");
   });
+
+  it("debounces rapid typing burst in search so only one request is triggered after delay", async () => {
+    jest.useFakeTimers();
+    try {
+      const { result } = renderHook(() => useMenuItems({ searchDebounceMs: 300 }), {
+        wrapper,
+      });
+
+      const initialCallCount = (menuItemService.getMenuItems as jest.Mock).mock.calls.length;
+
+      // Simulate rapid typing burst
+      act(() => {
+        result.current.setSearchQuery("p");
+      });
+      act(() => {
+        result.current.setSearchQuery("pa");
+      });
+      act(() => {
+        result.current.setSearchQuery("pan");
+      });
+      act(() => {
+        result.current.setSearchQuery("paneer");
+      });
+
+      // Input state updates immediately
+      expect(result.current.searchQuery).toBe("paneer");
+
+      // No additional API call before debounce duration
+      act(() => {
+        jest.advanceTimersByTime(200);
+      });
+      expect(menuItemService.getMenuItems).toHaveBeenCalledTimes(initialCallCount);
+
+      // Advance past debounce duration
+      act(() => {
+        jest.advanceTimersByTime(150);
+      });
+
+      // Exactly 1 new request made with the debounced search value
+      expect(menuItemService.getMenuItems).toHaveBeenCalledTimes(initialCallCount + 1);
+      expect(menuItemService.getMenuItems).toHaveBeenLastCalledWith(
+        "rest-123",
+        expect.objectContaining({
+          search: "paneer",
+        }),
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  });
 });
