@@ -27,18 +27,14 @@ export const menuService = {
   async getCategories(restaurantId: string): Promise<MenuCategory[]> {
     if (!restaurantId) return [];
 
-    try {
-      const response = await apiClient
-        .get(MENU_ENDPOINTS.CATEGORIES(restaurantId))
-        .json<ApiResponse<MenuCategory[]> | MenuCategory[]>();
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.CATEGORIES(restaurantId))
+      .json<ApiResponse<MenuCategory[]> | MenuCategory[]>();
 
-      if (Array.isArray(response)) {
-        return response;
-      }
-      return Array.isArray(response?.data) ? response.data : [];
-    } catch {
-      return [];
+    if (Array.isArray(response)) {
+      return response;
     }
+    return Array.isArray(response?.data) ? response.data : [];
   },
 
   /**
@@ -71,18 +67,14 @@ export const menuService = {
   async getAddons(restaurantId: string): Promise<MenuAddon[]> {
     if (!restaurantId) return [];
 
-    try {
-      const response = await apiClient
-        .get(MENU_ENDPOINTS.ADDONS(restaurantId))
-        .json<ApiResponse<MenuAddon[]> | MenuAddon[]>();
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.ADDONS(restaurantId))
+      .json<ApiResponse<MenuAddon[]> | MenuAddon[]>();
 
-      if (Array.isArray(response)) {
-        return response;
-      }
-      return Array.isArray(response?.data) ? response.data : [];
-    } catch {
-      return [];
+    if (Array.isArray(response)) {
+      return response;
     }
+    return Array.isArray(response?.data) ? response.data : [];
   },
 
   /**

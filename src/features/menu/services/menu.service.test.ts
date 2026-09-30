@@ -38,6 +38,14 @@ describe("menuService", () => {
       expect(result).toEqual([]);
       expect(apiClient.get).not.toHaveBeenCalled();
     });
+
+    it("propagates error when API call fails", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockRejectedValue(new Error("Network Error")),
+      });
+
+      await expect(menuService.getCategories("res-1")).rejects.toThrow("Network Error");
+    });
   });
 
   describe("createCategory", () => {
@@ -84,6 +92,14 @@ describe("menuService", () => {
 
       const result = await menuService.getAddons("res-1");
       expect(result).toEqual(mockAddons);
+    });
+
+    it("propagates error when API call fails", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockRejectedValue(new Error("Network Error")),
+      });
+
+      await expect(menuService.getAddons("res-1")).rejects.toThrow("Network Error");
     });
   });
 
