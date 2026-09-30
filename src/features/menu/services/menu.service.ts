@@ -124,7 +124,7 @@ export const menuService = {
       ? [{ objectKey: payload.imageUrl.trim(), displayOrder: 0 }]
       : [];
 
-    const isVegetarian = payload.dietaryType === "VEG" || payload.dietaryType === "VEGAN";
+    const isVegetarian = payload.dietaryType === "VEG";
 
     const response = await apiClient
       .post(MENU_ENDPOINTS.ITEMS(restaurantId), {

@@ -17,7 +17,7 @@ export const MENU_ENDPOINTS = {
     `restaurants/${restaurantId}/addons/${addonId}`,
 } as const;
 
-export const DIETARY_TYPES = ["VEG", "NON_VEG", "VEGAN", "EGG"] as const;
+export const DIETARY_TYPES = ["VEG", "NON_VEG", "EGG"] as const;
 export type DietaryType = (typeof DIETARY_TYPES)[number];
 
 export const DIETARY_OPTIONS: Array<{
