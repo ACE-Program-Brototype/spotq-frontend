@@ -1,6 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import type { ApiResponse } from "../services/auth.service";
-import { authService, loginStaff, logoutStaff } from "../services/auth.service";
+import {
+  authService,
+  loginStaff,
+  logoutStaff,
+  selectStaffRestaurant,
+} from "../services/auth.service";
 import type {
   GoogleLoginResult,
   LoginInput,
@@ -12,6 +17,7 @@ import type {
   StaffLoginInput,
   StaffLoginResponse,
   StaffLogoutRes,
+  StaffSelectRestaurantInput,
   VerifyEmailResult,
   VerifyOtpInput,
 } from "../types/auth.types";
@@ -55,6 +61,12 @@ export const useResendEmailOtp = () => {
 export const useStaffLoginMutation = () => {
   return useMutation<StaffLoginResponse, Error, StaffLoginInput>({
     mutationFn: (input) => loginStaff(input),
+  });
+};
+
+export const useStaffSelectRestaurantMutation = () => {
+  return useMutation<StaffLoginResponse, Error, StaffSelectRestaurantInput>({
+    mutationFn: (input) => selectStaffRestaurant(input),
   });
 };
 

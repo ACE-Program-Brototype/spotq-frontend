@@ -4,16 +4,7 @@
 
 import type { DietaryType } from "@/features/menu/constants/menu.constants";
 
-export interface MenuCategory {
-  id: string;
-  restaurantId: string;
-  name: string;
-  description?: string | null;
-  displayOrder: number;
-  isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
+export type { MenuCategory } from "./menu-category.types";
 
 export interface MenuAddon {
   id: string;

@@ -1,10 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import { MENU_ITEMS_QUERY_KEY, MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import { menuService } from "@/features/menu/services/menu.service";
 import type { CreateMenuItemPayload, MenuItemResponse } from "@/features/menu/types/menu.types";
-
-export const MENU_ITEMS_QUERY_KEY = "menuItems";
 
 export function useCreateMenuItem(restaurantId: string) {
   const queryClient = useQueryClient();

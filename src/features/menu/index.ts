@@ -1,17 +1,48 @@
+/**
+ * Menu Feature Exports
+ */
+
+// Components - Creation & Management
 export * from "./components/AddonSelector";
+export * from "./components/CategoryCard";
+export * from "./components/CategoryListSkeleton";
 export * from "./components/CreateAddonModal";
 export * from "./components/CreateCategoryModal";
 export * from "./components/CreateMenuItemForm";
+export * from "./components/EditCategoryModal";
 export * from "./components/ImageUploader";
+export * from "./components/MenuCategoryForm";
+export * from "./components/MenuItemFilters";
+export * from "./components/MenuItemStatsCards";
+export * from "./components/MenuItemTable";
 export * from "./components/VariantManager";
+
+// Constants
 export * from "./constants/menu.constants";
+
+// Hooks
 export * from "./hooks/use-create-menu-item";
 export * from "./hooks/use-menu-categories";
+export * from "./hooks/use-menu-items";
 export * from "./hooks/use-restaurant-addons";
+export * from "./hooks/use-update-menu-category";
+
+// Pages
 export * from "./pages/CreateMenuItemPage";
-export * from "./pages/MenuItemsPage";
+export * from "./pages/RestaurantMenuCategoriesPage";
+export * from "./pages/RestaurantMenuItemsPage";
+
+// Schemas
 export * from "./schemas/create-addon.schema";
 export * from "./schemas/create-category.schema";
 export * from "./schemas/create-menu-item.schema";
+export * from "./schemas/menu-category.schema";
+
+// Services
 export * from "./services/menu.service";
+export * from "./services/menu-category.service";
+export * from "./services/menu-item.service";
+
+// Types
 export * from "./types/menu.types";
+export * from "./types/menu-category.types";

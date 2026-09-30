@@ -134,12 +134,27 @@ export type StaffLoginInput = {
   password: string;
 };
 
+export type StaffRestaurantOption = {
+  restaurantId: string;
+  restaurantName: string;
+  role: string;
+  status?: string;
+};
+
+export type StaffSelectRestaurantInput = {
+  selectToken: string;
+  restaurantId: string;
+};
+
 export type StaffLoginResponse = {
   success: boolean;
   message: string;
   data: {
-    user: User;
-    accessToken: string;
+    requiresRestaurantSelection?: boolean;
+    selectToken?: string;
+    restaurants?: StaffRestaurantOption[];
+    user?: User;
+    accessToken?: string;
   };
 };
 

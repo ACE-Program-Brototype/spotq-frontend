@@ -45,8 +45,16 @@ type StaffLoginApiRes = {
   statusCode: number;
   message: string;
   data: {
-    staff: User;
-    accessToken: string;
+    requiresRestaurantSelection?: boolean;
+    selectToken?: string;
+    restaurants?: Array<{
+      restaurantId: string;
+      restaurantName: string;
+      role: string;
+    }>;
+    staff?: User;
+    user?: User;
+    accessToken?: string;
   };
 };
 
@@ -264,12 +272,59 @@ export async function loginStaff(data: LoginFormValues): Promise<StaffLoginRespo
     })
     .json<StaffLoginApiRes>();
 
+  const rawStaff = res.data?.staff || res.data?.user;
+  const fullname =
+    (rawStaff as { fullname?: string })?.fullname || rawStaff?.fullName || rawStaff?.name;
+
+  const userData: User | undefined = rawStaff
+    ? {
+        ...rawStaff,
+        name: fullname || rawStaff.name,
+        fullName: fullname || rawStaff.fullName,
+      }
+    : undefined;
+
   return {
     success: res.success,
     message: res.message,
     data: {
-      user: res.data.staff,
-      accessToken: res.data.accessToken,
+      requiresRestaurantSelection: res.data?.requiresRestaurantSelection,
+      selectToken: res.data?.selectToken,
+      restaurants: res.data?.restaurants,
+      user: userData,
+      accessToken: res.data?.accessToken,
+    },
+  };
+}
+
+export async function selectStaffRestaurant(input: {
+  selectToken: string;
+  restaurantId: string;
+}): Promise<StaffLoginResponse> {
+  const res = await apiClient
+    .post(STAFF_AUTH_ENDPOINTS.SELECT_RESTAURANT, {
+      json: input,
+    })
+    .json<StaffLoginApiRes>();
+
+  const rawStaff = res.data?.staff || res.data?.user;
+  const fullname =
+    (rawStaff as { fullname?: string })?.fullname || rawStaff?.fullName || rawStaff?.name;
+
+  const userData: User | undefined = rawStaff
+    ? {
+        ...rawStaff,
+        name: fullname || rawStaff.name,
+        fullName: fullname || rawStaff.fullName,
+      }
+    : undefined;
+
+  return {
+    success: res.success,
+    message: res.message,
+    data: {
+      user: userData,
+      accessToken: res.data?.accessToken,
     },
   };
 }
@@ -354,13 +409,14 @@ export type ValidateStaffInvitationResponse = {
   email?: string;
   restaurantName?: string;
   message?: string;
+  isExistingStaff?: boolean;
 };
 
 export type AcceptStaffInvitationInput = {
   token: string;
-  fullname: string;
-  phone: string;
-  password: string;
+  fullname?: string;
+  phone?: string;
+  password?: string;
 };
 
 export type AcceptStaffInvitationResponse = {
@@ -385,17 +441,20 @@ export async function validateStaffInvitation(
           valid?: boolean;
           email?: string;
           restaurantName?: string;
+          isExistingStaff?: boolean;
         }>
       >();
 
     const valid = response.data?.valid ?? response.success ?? true;
     const email = response.data?.email ?? "";
     const restaurantName = response.data?.restaurantName ?? "SpotQ Restaurant";
+    const isExistingStaff = Boolean(response.data?.isExistingStaff);
 
     return {
       valid,
       email,
       restaurantName,
+      isExistingStaff,
       message: response.message,
     };
   } catch (err: unknown) {
@@ -413,14 +472,14 @@ export async function validateStaffInvitation(
 export async function acceptStaffInvitation(
   input: AcceptStaffInvitationInput,
 ): Promise<AcceptStaffInvitationResponse> {
+  const payload: Record<string, string> = { token: input.token };
+  if (input.fullname) payload.fullname = input.fullname;
+  if (input.phone) payload.phone = input.phone;
+  if (input.password) payload.password = input.password;
+
   const rawRes = await apiClient
     .post(STAFF_AUTH_ENDPOINTS.INVITATION_ACCEPT, {
-      json: {
-        token: input.token,
-        fullname: input.fullname,
-        phone: input.phone,
-        password: input.password,
-      },
+      json: payload,
     })
     .json<
       ApiResponse<{

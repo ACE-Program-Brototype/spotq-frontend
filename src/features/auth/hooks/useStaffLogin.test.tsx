@@ -6,11 +6,12 @@ import { toast } from "sonner";
 
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useAuthStore } from "../store/auth.store";
-import { useStaffLoginMutation } from "./use-auth-mutations";
+import { useStaffLoginMutation, useStaffSelectRestaurantMutation } from "./use-auth-mutations";
 import { useStaffLogin } from "./useStaffLogin";
 
 const mockNavigate = jest.fn();
 const mockMutateAsync = jest.fn();
+const mockSelectMutateAsync = jest.fn();
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -26,11 +27,15 @@ jest.mock("sonner", () => ({
 
 jest.mock("./use-auth-mutations", () => ({
   useStaffLoginMutation: jest.fn(),
+  useStaffSelectRestaurantMutation: jest.fn(),
 }));
 
 const mockedUseStaffLoginMutation = useStaffLoginMutation as jest.MockedFunction<
   typeof useStaffLoginMutation
 >;
+
+const mockedUseStaffSelectRestaurantMutation =
+  useStaffSelectRestaurantMutation as jest.MockedFunction<typeof useStaffSelectRestaurantMutation>;
 
 const mockToastSuccess = toast.success as jest.MockedFunction<typeof toast.success>;
 
@@ -41,6 +46,12 @@ const createStaffLoginMutationMock = (isPending: boolean) =>
     mutateAsync: mockMutateAsync,
     isPending,
   }) as unknown as ReturnType<typeof useStaffLoginMutation>;
+
+const createStaffSelectRestaurantMutationMock = (isPending: boolean) =>
+  ({
+    mutateAsync: mockSelectMutateAsync,
+    isPending,
+  }) as unknown as ReturnType<typeof useStaffSelectRestaurantMutation>;
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -64,6 +75,7 @@ const createWrapper = () => {
 const mockUser = {
   id: "staff-1",
   name: "John Staff",
+  fullName: "John Staff",
   email: "staff@restaurant.com",
   role: "STAFF" as const,
 };
@@ -75,6 +87,9 @@ describe("useStaffLogin Hook", () => {
     useAuthStore.getState().clearAuth();
 
     mockedUseStaffLoginMutation.mockReturnValue(createStaffLoginMutationMock(false));
+    mockedUseStaffSelectRestaurantMutation.mockReturnValue(
+      createStaffSelectRestaurantMutationMock(false),
+    );
   });
 
   it("successfully logs in staff and redirects to dashboard", async () => {
