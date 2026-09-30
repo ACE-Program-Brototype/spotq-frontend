@@ -163,7 +163,7 @@ export function AddonSelector({
                       <Input
                         id={`override-${addon.id}`}
                         type="number"
-                        step="0.5"
+                        step="0.01"
                         min="0"
                         placeholder={String(addon.price)}
                         value={overridePrice !== undefined ? overridePrice : ""}

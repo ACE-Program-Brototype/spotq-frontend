@@ -143,7 +143,7 @@ export function VariantManager({ form }: VariantManagerProps) {
                     </span>
                     <Input
                       type="number"
-                      step="0.5"
+                      step="0.01"
                       min="0"
                       placeholder={MENU_MESSAGES.VARIANT_PRICE_PLACEHOLDER}
                       {...register(`variants.${index}.price`, {

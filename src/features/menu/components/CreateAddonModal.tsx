@@ -162,7 +162,7 @@ export function CreateAddonModal({
                 <Input
                   id="addon-price"
                   type="number"
-                  step="0.5"
+                  step="0.01"
                   min="0"
                   placeholder={MENU_MESSAGES.ADDON_PRICE_PLACEHOLDER}
                   {...register("price", {
