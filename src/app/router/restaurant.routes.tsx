@@ -5,6 +5,7 @@ import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification"
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
+import CreateMenuItemPage from "@/features/menu/pages/CreateMenuItemPage";
 import RestaurantMenuCategoriesPage from "@/features/menu/pages/RestaurantMenuCategoriesPage";
 import RestaurantMenuItemsPage from "@/features/menu/pages/RestaurantMenuItemsPage";
 import BusinessInformationPage from "@/features/onboard/pages/BusinessInformationPage";
@@ -172,6 +173,10 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "menu/items",
             Component: RestaurantMenuItemsPage,
+          },
+          {
+            path: "menu/items/create",
+            Component: CreateMenuItemPage,
           },
         ],
       },
