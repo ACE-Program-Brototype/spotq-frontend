@@ -30,6 +30,7 @@ export function useMenuCategories(restaurantId: string) {
         [MENU_CATEGORIES_QUERY_KEY, restaurantId],
         (old: MenuCategory[] | undefined) => [...(old || []), newCategory],
       );
+      queryClient.invalidateQueries({ queryKey: [MENU_CATEGORIES_QUERY_KEY, restaurantId] });
       toast.success(MENU_MESSAGES.CATEGORY_CREATED_SUCCESS);
     },
     onError: (err: Error) => {

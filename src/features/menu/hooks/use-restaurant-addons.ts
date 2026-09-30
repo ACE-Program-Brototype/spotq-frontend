@@ -29,6 +29,7 @@ export function useRestaurantAddons(restaurantId: string) {
         [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
         (old: MenuAddon[] | undefined) => [...(old || []), newAddon],
       );
+      queryClient.invalidateQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
       toast.success(MENU_MESSAGES.ADDON_CREATED_SUCCESS);
     },
     onError: (err: Error) => {
