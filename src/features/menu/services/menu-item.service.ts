@@ -94,4 +94,13 @@ export const menuItemService = {
       }
     );
   },
+
+  /**
+   * Soft deletes a menu item.
+   * Calls: DELETE /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}
+   */
+  async deleteMenuItem(restaurantId: string, menuItemId: string): Promise<void> {
+    if (!restaurantId || !menuItemId) return;
+    await apiClient.delete(MENU_ENDPOINTS.ITEM_DETAIL(restaurantId, menuItemId));
+  },
 };

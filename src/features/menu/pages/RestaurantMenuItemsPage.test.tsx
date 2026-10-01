@@ -9,6 +9,7 @@ import RestaurantMenuItemsPage from "./RestaurantMenuItemsPage";
 jest.mock("../services/menu-item.service", () => ({
   menuItemService: {
     getMenuItems: jest.fn(),
+    deleteMenuItem: jest.fn(),
   },
 }));
 
@@ -133,5 +134,41 @@ describe("RestaurantMenuItemsPage", () => {
 
     expect(await screen.findByText("Failed to load menu items.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
+  });
+
+  it("opens confirmation dialog when delete button is clicked and executes deletion", async () => {
+    const { fireEvent, waitFor } = await import("@testing-library/react");
+    (menuItemService.deleteMenuItem as jest.Mock).mockResolvedValue(undefined);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <RestaurantMenuItemsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Crispy Corn")).toBeInTheDocument();
+
+    // Click delete action button on the row
+    const deleteActionButton = screen.getByRole("button", { name: "Delete Crispy Corn" });
+    expect(deleteActionButton).toBeInTheDocument();
+    fireEvent.click(deleteActionButton);
+
+    // Verify confirmation modal opens
+    expect(screen.getByText("Delete Menu Item")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Are you sure you want to delete "Crispy Corn"? This action will remove the item from customer menus.',
+      ),
+    ).toBeInTheDocument();
+
+    // Confirm deletion
+    const confirmButton = screen.getByRole("button", { name: "Delete" });
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => {
+      expect(menuItemService.deleteMenuItem).toHaveBeenCalledWith("rest-123", "item-1");
+    });
   });
 });

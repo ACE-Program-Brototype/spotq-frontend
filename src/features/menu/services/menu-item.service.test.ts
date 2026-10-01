@@ -4,6 +4,7 @@ import { menuItemService } from "./menu-item.service";
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -93,6 +94,26 @@ describe("menuItemService", () => {
       expect(result.items[0].name).toBe("Spring Rolls");
       expect(result.stats.totalCategories).toBe(3);
       expect(result.stats.availableItems).toBe(7);
+    });
+  });
+
+  describe("deleteMenuItem", () => {
+    it("calls delete endpoint with correct URL", async () => {
+      (apiClient.delete as jest.Mock).mockResolvedValue(undefined);
+
+      await menuItemService.deleteMenuItem(mockRestaurantId, "item-123");
+
+      expect(apiClient.delete).toHaveBeenCalledWith(
+        `restaurants/${mockRestaurantId}/menu/items/item-123`,
+      );
+    });
+
+    it("does not call apiClient.delete if restaurantId or menuItemId is missing", async () => {
+      await menuItemService.deleteMenuItem("", "item-123");
+      expect(apiClient.delete).not.toHaveBeenCalled();
+
+      await menuItemService.deleteMenuItem(mockRestaurantId, "");
+      expect(apiClient.delete).not.toHaveBeenCalled();
     });
   });
 });

@@ -22,6 +22,7 @@ export * from "./constants/menu.constants";
 
 // Hooks
 export * from "./hooks/use-create-menu-item";
+export * from "./hooks/use-delete-menu-item";
 export * from "./hooks/use-menu-categories";
 export * from "./hooks/use-menu-items";
 export * from "./hooks/use-restaurant-addons";
