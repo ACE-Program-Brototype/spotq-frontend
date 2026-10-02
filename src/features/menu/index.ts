@@ -47,3 +47,4 @@ export * from "./services/menu-item.service";
 // Types
 export * from "./types/menu.types";
 export * from "./types/menu-category.types";
+export * from "./types/menu-item.types";

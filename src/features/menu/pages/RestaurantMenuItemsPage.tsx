@@ -88,7 +88,7 @@ export default function RestaurantMenuItemsPage() {
             )}
           >
             <Plus className="size-4" />
-            <span>Create Menu Item</span>
+            <span>Add Menu Item</span>
           </Link>
         </div>
       </div>
@@ -151,21 +151,23 @@ export default function RestaurantMenuItemsPage() {
       <ConfirmDialog
         open={Boolean(itemToDelete)}
         onOpenChange={(open) => {
-          if (!open) setItemToDelete(null);
+          if (!open && !deleteMutation.isPending) {
+            setItemToDelete(null);
+          }
         }}
         title={MENU_MESSAGES.DELETE_ITEM_CONFIRM_TITLE}
-        description={
-          itemToDelete
-            ? `Are you sure you want to delete "${itemToDelete.name}"? This action will remove the item from customer menus.`
-            : MENU_MESSAGES.DELETE_ITEM_CONFIRM_DESCRIPTION
-        }
+        description={MENU_MESSAGES.DELETE_ITEM_CONFIRM_DESCRIPTION(itemToDelete?.name)}
         confirmText={MENU_MESSAGES.BTN_DELETE}
         cancelText={MENU_MESSAGES.BTN_CANCEL}
         confirmVariant="destructive"
         isLoading={deleteMutation.isPending}
         loadingText={MENU_MESSAGES.BTN_DELETING}
         onConfirm={handleConfirmDelete}
-        onCancel={() => setItemToDelete(null)}
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setItemToDelete(null);
+          }
+        }}
       />
     </div>
   );

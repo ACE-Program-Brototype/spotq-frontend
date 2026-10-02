@@ -114,8 +114,10 @@ export const MENU_MESSAGES = {
   ITEM_CREATE_FAILED: "Failed to create menu item. Please check the form and try again.",
 
   DELETE_ITEM_CONFIRM_TITLE: "Delete Menu Item",
-  DELETE_ITEM_CONFIRM_DESCRIPTION:
-    "Are you sure you want to delete this menu item? This action will remove the item from customer-facing menus and cannot be undone.",
+  DELETE_ITEM_CONFIRM_DESCRIPTION: (itemName?: string) =>
+    itemName
+      ? `Are you sure you want to delete "${itemName}"? This action will remove the item from customer menus and cannot be undone.`
+      : "Are you sure you want to delete this menu item? This action will remove the item from customer-facing menus and cannot be undone.",
   BTN_DELETE: "Delete",
   BTN_DELETING: "Deleting...",
   ITEM_DELETED_SUCCESS: "Menu item deleted successfully.",

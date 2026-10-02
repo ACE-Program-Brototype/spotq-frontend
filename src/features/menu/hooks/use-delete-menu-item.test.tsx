@@ -56,14 +56,14 @@ describe("useDeleteMenuItem", () => {
 
     expect(menuItemService.deleteMenuItem).toHaveBeenCalledWith("rest-123", "item-123");
     expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: ["menu-items"],
+      queryKey: ["menu-items", "rest-123"],
     });
     expect(toast.success).toHaveBeenCalledWith(MENU_MESSAGES.ITEM_DELETED_SUCCESS);
     expect(onSuccessMock).toHaveBeenCalled();
   });
 
-  it("handles 403 forbidden error gracefully", async () => {
-    const errorWithStatus = Object.assign(new Error("Forbidden"), { status: 403 });
+  it("handles 403 forbidden error gracefully with fallback message", async () => {
+    const errorWithStatus = Object.assign(new Error(""), { status: 403 });
     (menuItemService.deleteMenuItem as jest.Mock).mockRejectedValue(errorWithStatus);
     const onErrorMock = jest.fn();
 
@@ -88,8 +88,8 @@ describe("useDeleteMenuItem", () => {
     expect(onErrorMock).toHaveBeenCalledWith(errorWithStatus);
   });
 
-  it("handles 404 not found error gracefully", async () => {
-    const errorWithStatus = Object.assign(new Error("Not Found"), { status: 404 });
+  it("handles 404 not found error gracefully with fallback message", async () => {
+    const errorWithStatus = Object.assign(new Error(""), { status: 404 });
     (menuItemService.deleteMenuItem as jest.Mock).mockRejectedValue(errorWithStatus);
 
     const { result } = renderHook(
@@ -109,5 +109,30 @@ describe("useDeleteMenuItem", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith(MENU_MESSAGES.ITEM_NOT_FOUND);
+  });
+
+  it("preserves custom server error message on error response", async () => {
+    const errorWithStatus = Object.assign(new Error("Cannot delete item with active orders"), {
+      status: 400,
+    });
+    (menuItemService.deleteMenuItem as jest.Mock).mockRejectedValue(errorWithStatus);
+
+    const { result } = renderHook(
+      () =>
+        useDeleteMenuItem({
+          restaurantId: "rest-123",
+        }),
+      { wrapper },
+    );
+
+    await act(async () => {
+      try {
+        await result.current.mutateAsync("item-123");
+      } catch {
+        // expected mutation rejection
+      }
+    });
+
+    expect(toast.error).toHaveBeenCalledWith("Cannot delete item with active orders");
   });
 });

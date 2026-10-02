@@ -18,7 +18,7 @@ export function useDeleteMenuItem({ restaurantId, onSuccess, onError }: UseDelet
     onSuccess: () => {
       // Invalidate the menu items query cache to refetch the data and update statistics
       queryClient.invalidateQueries({
-        queryKey: [MENU_ITEMS_QUERY_KEY],
+        queryKey: [MENU_ITEMS_QUERY_KEY, restaurantId],
       });
 
       toast.success(MENU_MESSAGES.ITEM_DELETED_SUCCESS);
@@ -35,9 +35,9 @@ export function useDeleteMenuItem({ restaurantId, onSuccess, onError }: UseDelet
       }
 
       if (status === 403) {
-        errorMessage = MENU_MESSAGES.ITEM_FORBIDDEN;
+        errorMessage = err.message || MENU_MESSAGES.ITEM_FORBIDDEN;
       } else if (status === 404) {
-        errorMessage = MENU_MESSAGES.ITEM_NOT_FOUND;
+        errorMessage = err.message || MENU_MESSAGES.ITEM_NOT_FOUND;
       }
 
       toast.error(errorMessage);

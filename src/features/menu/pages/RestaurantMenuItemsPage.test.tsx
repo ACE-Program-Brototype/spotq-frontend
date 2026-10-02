@@ -109,7 +109,7 @@ describe("RestaurantMenuItemsPage", () => {
     expect(screen.getAllByText("Out of Stock").length).toBeGreaterThanOrEqual(1);
 
     // Verify Create Menu Item Button
-    const createButton = screen.getByRole("link", { name: "Create Menu Item" });
+    const createButton = screen.getByRole("link", { name: "Add Menu Item" });
     expect(createButton).toBeInTheDocument();
     expect(createButton).toHaveAttribute("href", "/restaurant/menu/items/create");
 
@@ -159,7 +159,7 @@ describe("RestaurantMenuItemsPage", () => {
     expect(screen.getByText("Delete Menu Item")).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Are you sure you want to delete "Crispy Corn"? This action will remove the item from customer menus.',
+        'Are you sure you want to delete "Crispy Corn"? This action will remove the item from customer menus and cannot be undone.',
       ),
     ).toBeInTheDocument();
 

@@ -108,11 +108,13 @@ describe("menuItemService", () => {
       );
     });
 
-    it("does not call apiClient.delete if restaurantId or menuItemId is missing", async () => {
-      await menuItemService.deleteMenuItem("", "item-123");
-      expect(apiClient.delete).not.toHaveBeenCalled();
-
-      await menuItemService.deleteMenuItem(mockRestaurantId, "");
+    it("throws an error if restaurantId or menuItemId is missing", async () => {
+      await expect(menuItemService.deleteMenuItem("", "item-123")).rejects.toThrow(
+        "Restaurant ID and Menu Item ID are required to delete a menu item.",
+      );
+      await expect(menuItemService.deleteMenuItem(mockRestaurantId, "")).rejects.toThrow(
+        "Restaurant ID and Menu Item ID are required to delete a menu item.",
+      );
       expect(apiClient.delete).not.toHaveBeenCalled();
     });
   });
