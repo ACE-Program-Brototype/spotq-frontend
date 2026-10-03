@@ -9,6 +9,7 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { MENU_CATEGORIES_QUERY_KEY, MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import { menuService } from "@/features/menu/services/menu.service";
 import { menuCategoryService } from "@/features/menu/services/menu-category.service";
+import { staffMenuService } from "@/features/menu/services/staff-menu.service";
 import type { CreateCategoryPayload, MenuCategory } from "@/features/menu/types/menu.types";
 
 export { MENU_CATEGORIES_QUERY_KEY };
@@ -17,8 +18,12 @@ export function useMenuCategories(restaurantIdParam?: string) {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
   const restaurantId = restaurantIdParam || user?.restaurantId || "";
+  const isStaff = user?.role?.toLowerCase() === "staff";
 
-  const queryKey = useMemo(() => [MENU_CATEGORIES_QUERY_KEY, restaurantId], [restaurantId]);
+  const queryKey = useMemo(
+    () => [MENU_CATEGORIES_QUERY_KEY, restaurantId, isStaff ? "staff" : "owner"],
+    [restaurantId, isStaff],
+  );
 
   const {
     data: categories = [],
@@ -28,7 +33,10 @@ export function useMenuCategories(restaurantIdParam?: string) {
     refetch,
   } = useQuery({
     queryKey,
-    queryFn: () => menuCategoryService.getCategories(restaurantId),
+    queryFn: () =>
+      isStaff
+        ? staffMenuService.getStaffCategories(restaurantId)
+        : menuCategoryService.getCategories(restaurantId),
     enabled: Boolean(restaurantId),
     staleTime: 60 * 1000,
     select: (data) => [...data].sort((a, b) => a.displayOrder - b.displayOrder),

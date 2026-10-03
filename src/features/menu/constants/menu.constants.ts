@@ -5,6 +5,8 @@
 
 export const MENU_ENDPOINTS = {
   ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/menu/items`,
+  STAFF_ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/staff/menu/items`,
+  STAFF_CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/staff/menu/categories`,
   ITEM_DETAIL: (restaurantId: string, itemId: string) =>
     `restaurants/${restaurantId}/menu/items/${itemId}`,
   CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/menu/categories`,
@@ -178,7 +180,16 @@ export const MENU_MESSAGES = {
   RESTAURANT_ID_REQUIRED: "Restaurant ID is required.",
   FETCH_ERROR: "Failed to load menu categories.",
   ITEMS_FETCH_ERROR: "Failed to load menu items.",
+  STAFF_ITEMS_FETCH_ERROR:
+    "Failed to load staff menu items. Please check your connection and try again.",
+  STAFF_MENU_TITLE: "Staff Menu Directory",
+  STAFF_MENU_SUBTITLE:
+    "Real-time menu catalog with live 86'd stock tracking, variant pricing, and category mapping.",
+  NO_STAFF_MENU_ITEMS: "No menu items found.",
+  NO_STAFF_MENU_ITEMS_DESC: "No menu items match your search or filter criteria.",
+  CLEAR_FILTERS_BTN: "Clear Filters",
 } as const;
 
 export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;
 export const MENU_ITEMS_QUERY_KEY = "menu-items" as const;
+export const STAFF_MENU_ITEMS_QUERY_KEY = "staff-menu-items" as const;

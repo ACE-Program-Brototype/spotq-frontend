@@ -15,6 +15,11 @@ export * from "./components/MenuCategoryForm";
 export * from "./components/MenuItemFilters";
 export * from "./components/MenuItemStatsCards";
 export * from "./components/MenuItemTable";
+export * from "./components/StaffMenuItemCard";
+export * from "./components/StaffMenuItemFilters";
+export * from "./components/StaffMenuItemSkeleton";
+export * from "./components/StaffMenuItemTable";
+export * from "./components/StaffMenuStatsCards";
 export * from "./components/VariantManager";
 
 // Constants
@@ -25,12 +30,14 @@ export * from "./hooks/use-create-menu-item";
 export * from "./hooks/use-menu-categories";
 export * from "./hooks/use-menu-items";
 export * from "./hooks/use-restaurant-addons";
+export * from "./hooks/use-staff-menu-items";
 export * from "./hooks/use-update-menu-category";
 
 // Pages
 export * from "./pages/CreateMenuItemPage";
 export * from "./pages/RestaurantMenuCategoriesPage";
 export * from "./pages/RestaurantMenuItemsPage";
+export * from "./pages/StaffMenuItemsPage";
 
 // Schemas
 export * from "./schemas/create-addon.schema";
@@ -42,7 +49,10 @@ export * from "./schemas/menu-category.schema";
 export * from "./services/menu.service";
 export * from "./services/menu-category.service";
 export * from "./services/menu-item.service";
+export * from "./services/staff-menu.service";
 
 // Types
 export * from "./types/menu.types";
 export * from "./types/menu-category.types";
+export * from "./types/menu-item.types";
+export * from "./types/staff-menu-item.types";

@@ -11,6 +11,7 @@ import {
   Table as TableIcon,
   User,
   UsersRound,
+  Utensils,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -30,6 +31,12 @@ const staffNavItems: StaffNavItem[] = [
     path: "/dashboard",
     icon: LayoutDashboard,
     mobileLabel: "Dashboard",
+  },
+  {
+    title: "Menu Items",
+    path: "/menu",
+    icon: Utensils,
+    mobileLabel: "Menu",
   },
   {
     title: "Queue Management",

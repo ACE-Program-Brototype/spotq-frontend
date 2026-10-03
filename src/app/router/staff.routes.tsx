@@ -4,6 +4,7 @@ import StaffLoginPage from "@/features/auth/pages/StaffLoginPage";
 import StaffResetPasswordPage from "@/features/auth/pages/StaffResetPasswordPage";
 import StaffVerifyOtpPage from "@/features/auth/pages/StaffVerifyOtpPage";
 import StaffDashboardPage from "@/features/dashboard/pages/StaffDashboardPage";
+import StaffMenuItemsPage from "@/features/menu/pages/StaffMenuItemsPage";
 import EditStaffProfilePage from "@/features/profile/pages/EditStaffProfilePage";
 import StaffProfilePage from "@/features/profile/pages/StaffProfilePage";
 import AuthLayout from "@/layouts/AuthLayout";
@@ -60,6 +61,14 @@ export const staffRoutes: RouteObject[] = [
           {
             path: "profile/edit",
             Component: EditStaffProfilePage,
+          },
+          {
+            path: "menu",
+            Component: StaffMenuItemsPage,
+          },
+          {
+            path: "menu/items",
+            Component: StaffMenuItemsPage,
           },
         ],
       },
