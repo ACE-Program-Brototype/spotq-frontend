@@ -145,19 +145,34 @@ describe("useStaffMenuItems", () => {
   it("toggles sorting direction", async () => {
     const { result } = renderHook(() => useStaffMenuItems(), { wrapper });
 
-    expect(result.current.sortBy).toBe("displayOrder");
-    expect(result.current.sortOrder).toBe("asc");
+    expect(result.current.sortBy).toBe("createdAt");
+    expect(result.current.sortOrder).toBe("desc");
 
     act(() => {
-      result.current.toggleSort("displayOrder");
+      result.current.toggleSort("createdAt");
     });
-    expect(result.current.sortOrder).toBe("desc");
+    expect(result.current.sortOrder).toBe("asc");
 
     act(() => {
       result.current.toggleSort("price");
     });
     expect(result.current.sortBy).toBe("price");
     expect(result.current.sortOrder).toBe("asc");
+  });
+
+  it("resets page when includeInactive is updated", async () => {
+    const { result } = renderHook(() => useStaffMenuItems(), { wrapper });
+
+    act(() => {
+      result.current.setPage(3);
+    });
+    expect(result.current.page).toBe(3);
+
+    act(() => {
+      result.current.setIncludeInactive(true);
+    });
+    expect(result.current.includeInactive).toBe(true);
+    expect(result.current.page).toBe(1);
   });
 
   it("resets all filters back to default", async () => {
@@ -177,19 +192,8 @@ describe("useStaffMenuItems", () => {
     expect(result.current.searchQuery).toBe("");
     expect(result.current.categoryFilter).toBe("ALL");
     expect(result.current.availabilityFilter).toBe("ALL");
-    expect(result.current.sortBy).toBe("displayOrder");
-    expect(result.current.sortOrder).toBe("asc");
+    expect(result.current.sortBy).toBe("createdAt");
+    expect(result.current.sortOrder).toBe("desc");
     expect(result.current.page).toBe(1);
-  });
-
-  it("switches view mode between grid and table", () => {
-    const { result } = renderHook(() => useStaffMenuItems(), { wrapper });
-
-    expect(result.current.viewMode).toBe("grid");
-
-    act(() => {
-      result.current.setViewMode("table");
-    });
-    expect(result.current.viewMode).toBe("table");
   });
 });

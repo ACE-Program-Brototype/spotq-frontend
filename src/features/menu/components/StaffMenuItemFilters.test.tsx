@@ -34,12 +34,11 @@ describe("StaffMenuItemFilters", () => {
     onCategoryChange: jest.fn(),
     availabilityFilter: "ALL" as const,
     onAvailabilityChange: jest.fn(),
-    sortBy: "displayOrder" as const,
-    sortOrder: "asc" as const,
+    sortBy: "createdAt" as const,
+    sortOrder: "desc" as const,
     onSortChange: jest.fn(),
     onResetFilters: jest.fn(),
     isFiltered: false,
-    totalCount: 10,
   };
 
   it("renders search input, category pills, and availability buttons", () => {
@@ -76,5 +75,21 @@ describe("StaffMenuItemFilters", () => {
     expect(resetBtn).toBeInTheDocument();
     fireEvent.click(resetBtn);
     expect(defaultProps.onResetFilters).toHaveBeenCalled();
+  });
+
+  it("triggers onToggleSortOrder when sort direction button is clicked", () => {
+    const onToggleSortOrder = jest.fn();
+    render(
+      <StaffMenuItemFilters
+        {...defaultProps}
+        sortOrder="asc"
+        onToggleSortOrder={onToggleSortOrder}
+      />,
+    );
+
+    const sortOrderBtn = screen.getByRole("button", { name: /Sort order: Ascending/i });
+    expect(sortOrderBtn).toBeInTheDocument();
+    fireEvent.click(sortOrderBtn);
+    expect(onToggleSortOrder).toHaveBeenCalled();
   });
 });

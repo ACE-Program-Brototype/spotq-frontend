@@ -4,12 +4,36 @@
  */
 
 import { Clock, Tag, Utensils } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { type Column, DataTable } from "@/components/common/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import type { StaffMenuItem, StaffMenuSortOption } from "../types/staff-menu-item.types";
+
+function StaffMenuItemThumbnail({ image, name }: { image?: string | null; name: string }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (image && !hasError) {
+    return (
+      <div className="size-10 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center">
+        <img
+          src={image}
+          alt={name}
+          className="h-full w-full object-cover"
+          loading="lazy"
+          onError={() => setHasError(true)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="size-10 shrink-0 rounded-xl bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center text-[#9a3412]">
+      <Utensils className="size-4" />
+    </div>
+  );
+}
 
 export interface StaffMenuItemTableProps {
   items: StaffMenuItem[];
@@ -29,8 +53,8 @@ export interface StaffMenuItemTableProps {
 export function StaffMenuItemTable({
   items,
   isLoading = false,
-  sortBy = "displayOrder",
-  sortOrder = "asc",
+  sortBy = "createdAt",
+  sortOrder = "desc",
   onSort,
   page = 1,
   limit = 12,
@@ -49,9 +73,7 @@ export function StaffMenuItemTable({
         sortable: Boolean(onSort),
         cell: ({ row: item }) => (
           <div className="flex items-start gap-3 py-1">
-            <div className="size-9 shrink-0 rounded-xl bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center text-[#9a3412]">
-              <Utensils className="size-4" />
-            </div>
+            <StaffMenuItemThumbnail image={item.image ?? item.imageUrl} name={item.name} />
             <div className="min-w-0">
               <p
                 className={cn(
@@ -130,7 +152,9 @@ export function StaffMenuItemTable({
                   )}
                 >
                   <span>{v.name}</span>
-                  <strong className="text-[#9a3412]">₹{v.price}</strong>
+                  <strong className="text-[#9a3412]">
+                    ₹{typeof v.price === "number" ? v.price.toFixed(2) : v.price}
+                  </strong>
                 </span>
               ))}
             </div>

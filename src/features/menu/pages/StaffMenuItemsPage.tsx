@@ -111,14 +111,14 @@ export default function StaffMenuItemsPage() {
         sortBy={sortBy}
         sortOrder={sortOrder}
         onSortChange={toggleSort}
+        onToggleSortOrder={() => toggleSort(sortBy)}
         onResetFilters={resetFilters}
         isFiltered={isFiltered}
-        totalCount={totalCount}
       />
 
       {/* Main Content Area - Table Only */}
       {isLoading ? (
-        <StaffMenuItemSkeleton viewMode="table" count={5} />
+        <StaffMenuItemSkeleton count={5} />
       ) : items.length === 0 ? (
         /* Empty State */
         <div

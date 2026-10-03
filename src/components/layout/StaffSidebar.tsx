@@ -87,6 +87,7 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
             const fullHref = `${basePath}${item.path}`;
             const isActive =
               location.pathname === fullHref ||
+              location.pathname.startsWith(`${fullHref}/`) ||
               (item.path === "/dashboard" &&
                 (location.pathname === basePath || location.pathname === `${basePath}/`));
 
@@ -183,6 +184,7 @@ export function StaffMobileNav({
         const fullHref = `${basePath}${item.path}`;
         const isActive =
           location.pathname === fullHref ||
+          location.pathname.startsWith(`${fullHref}/`) ||
           (item.path === "/dashboard" &&
             (location.pathname === basePath || location.pathname === `${basePath}/`));
 

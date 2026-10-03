@@ -18,6 +18,8 @@ export interface StaffMenuItem {
   sku: string | null;
   description: string | null;
   basePrice: number;
+  image?: string | null;
+  imageUrl?: string | null;
   categoryId: string;
   categoryName: string;
   displayOrder: number;

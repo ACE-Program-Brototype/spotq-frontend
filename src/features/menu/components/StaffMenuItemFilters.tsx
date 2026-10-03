@@ -3,7 +3,17 @@
  * Search toolbar, category selector tabs, availability filter, sort dropdown, and view switcher.
  */
 
-import { CheckCircle2, ChevronDown, ListFilter, RotateCcw, Search, X, XCircle } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  CheckCircle2,
+  ChevronDown,
+  ListFilter,
+  RotateCcw,
+  Search,
+  X,
+  XCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils/cn";
@@ -24,9 +34,9 @@ export interface StaffMenuItemFiltersProps {
   sortBy: StaffMenuSortOption;
   sortOrder: "asc" | "desc";
   onSortChange: (field: StaffMenuSortOption) => void;
+  onToggleSortOrder?: () => void;
   onResetFilters: () => void;
   isFiltered: boolean;
-  totalCount: number;
 }
 
 export function StaffMenuItemFilters({
@@ -38,13 +48,15 @@ export function StaffMenuItemFilters({
   availabilityFilter,
   onAvailabilityChange,
   sortBy,
+  sortOrder,
   onSortChange,
+  onToggleSortOrder,
   onResetFilters,
   isFiltered,
 }: StaffMenuItemFiltersProps) {
   return (
     <div className="space-y-4 rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-2xs">
-      {/* Top Row: Search Input + Sort + Reset */}
+      {/* Top Row: Search Input + Sort + Direction + Reset */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Search Field */}
         <div className="relative flex-1">
@@ -68,8 +80,8 @@ export function StaffMenuItemFilters({
           )}
         </div>
 
-        {/* Right Controls: Sort & Reset */}
-        <div className="flex items-center gap-2">
+        {/* Right Controls: Sort & Direction & Reset */}
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Sort Select */}
           <div className="relative">
             <select
@@ -78,10 +90,9 @@ export function StaffMenuItemFilters({
               className="h-10 rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 pl-8 pr-8 text-xs font-medium text-neutral-700 shadow-2xs focus:border-[#e8631b] focus:outline-none focus:ring-1 focus:ring-[#e8631b] appearance-none cursor-pointer"
               aria-label="Sort menu items"
             >
-              <option value="displayOrder">Category Display Order</option>
-              <option value="price">Price</option>
               <option value="createdAt">Date Created</option>
               <option value="name">Item Name</option>
+              <option value="price">Price</option>
             </select>
             <div className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-400">
               <ListFilter className="size-3.5 text-neutral-500" />
@@ -90,6 +101,23 @@ export function StaffMenuItemFilters({
               <ChevronDown className="size-3.5" />
             </div>
           </div>
+
+          {/* Sort Direction Toggle Button */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onToggleSortOrder || (() => onSortChange(sortBy))}
+            aria-label={`Sort order: ${sortOrder === "asc" ? "Ascending" : "Descending"}`}
+            title={`Sort order: ${sortOrder === "asc" ? "Ascending" : "Descending"}`}
+            className="h-10 px-2.5 rounded-xl border-[#eddcd4] bg-[#faf7f5]/60 text-neutral-700 hover:bg-[#eddcd4]/60 cursor-pointer"
+          >
+            {sortOrder === "asc" ? (
+              <ArrowUp className="size-3.5 text-[#9a3412]" />
+            ) : (
+              <ArrowDown className="size-3.5 text-[#9a3412]" />
+            )}
+          </Button>
 
           {/* Reset Filters Button */}
           {isFiltered && (

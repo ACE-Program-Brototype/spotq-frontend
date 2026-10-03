@@ -15,7 +15,6 @@ export * from "./components/MenuCategoryForm";
 export * from "./components/MenuItemFilters";
 export * from "./components/MenuItemStatsCards";
 export * from "./components/MenuItemTable";
-export * from "./components/StaffMenuItemCard";
 export * from "./components/StaffMenuItemFilters";
 export * from "./components/StaffMenuItemSkeleton";
 export * from "./components/StaffMenuItemTable";
@@ -37,7 +36,7 @@ export * from "./hooks/use-update-menu-category";
 export * from "./pages/CreateMenuItemPage";
 export * from "./pages/RestaurantMenuCategoriesPage";
 export * from "./pages/RestaurantMenuItemsPage";
-export * from "./pages/StaffMenuItemsPage";
+export { default as StaffMenuItemsPage } from "./pages/StaffMenuItemsPage";
 
 // Schemas
 export * from "./schemas/create-addon.schema";

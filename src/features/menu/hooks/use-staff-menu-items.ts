@@ -34,14 +34,13 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
   const [availabilityFilter, setAvailabilityFilter] = useState<StaffMenuAvailabilityFilter>("ALL");
   const [includeInactive, setIncludeInactive] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   const [sort, setSort] = useState<{
     sortBy: StaffMenuSortOption;
     sortOrder: "asc" | "desc";
   }>({
-    sortBy: "displayOrder",
-    sortOrder: "asc",
+    sortBy: "createdAt",
+    sortOrder: "desc",
   });
 
   const queryParams: StaffMenuItemsQueryParams = useMemo(() => {
@@ -144,12 +143,17 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     setPage(1);
   }, []);
 
+  const handleIncludeInactiveChange = useCallback((include: boolean) => {
+    setIncludeInactive(include);
+    setPage(1);
+  }, []);
+
   const resetFilters = useCallback(() => {
     setSearchQuery("");
     setCategoryFilter("ALL");
     setAvailabilityFilter("ALL");
     setIncludeInactive(false);
-    setSort({ sortBy: "displayOrder", sortOrder: "asc" });
+    setSort({ sortBy: "createdAt", sortOrder: "desc" });
     setPage(1);
   }, []);
 
@@ -175,15 +179,13 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     includeInactive,
     sortBy: sort.sortBy,
     sortOrder: sort.sortOrder,
-    viewMode,
     // Updaters
     setPage,
     setLimit: handleLimitChange,
     setSearchQuery: handleSearchChange,
     setCategoryFilter: handleCategoryChange,
     setAvailabilityFilter: handleAvailabilityChange,
-    setIncludeInactive,
-    setViewMode,
+    setIncludeInactive: handleIncludeInactiveChange,
     toggleSort,
     resetFilters,
   };

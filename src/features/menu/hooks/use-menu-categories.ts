@@ -18,7 +18,8 @@ export function useMenuCategories(restaurantIdParam?: string) {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
   const restaurantId = restaurantIdParam || user?.restaurantId || "";
-  const isStaff = user?.role?.toLowerCase() === "staff";
+  const normalizedRole = user?.role?.toUpperCase();
+  const isStaff = normalizedRole === "STAFF" || normalizedRole === "RESTAURANT_STAFF";
 
   const queryKey = useMemo(
     () => [MENU_CATEGORIES_QUERY_KEY, restaurantId, isStaff ? "staff" : "owner"],

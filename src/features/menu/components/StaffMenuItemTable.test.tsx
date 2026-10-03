@@ -39,7 +39,7 @@ describe("StaffMenuItemTable", () => {
     expect(screen.getByText("Paneer Tikka")).toBeInTheDocument();
     expect(screen.getByText("PAN-TIK-01")).toBeInTheDocument();
     expect(screen.getByText("Appetizers")).toBeInTheDocument();
-    expect(screen.getByText("₹210.00")).toBeInTheDocument();
+    expect(screen.getAllByText("₹210.00").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("In Stock")).toBeInTheDocument();
     expect(screen.getByText("6 Pcs")).toBeInTheDocument();
   });
