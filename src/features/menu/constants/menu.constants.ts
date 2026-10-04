@@ -110,8 +110,14 @@ export const MENU_MESSAGES = {
   BTN_CANCEL: "Cancel",
   BTN_SUBMIT: "Create Menu Item",
   BTN_SUBMITTING: "Creating Menu Item...",
+  BTN_UPDATE: "Update Menu Item",
+  BTN_UPDATING: "Updating Menu Item...",
   ITEM_CREATED_SUCCESS: "Menu item created successfully.",
   ITEM_CREATE_FAILED: "Failed to create menu item. Please check the form and try again.",
+  EDIT_ITEM_TITLE: "Edit Menu Item",
+  EDIT_ITEM_SUBTITLE: "Update dish details, pricing, variants, and complementary add-ons.",
+  ITEM_UPDATED_SUCCESS: "Menu item updated successfully.",
+  ITEM_UPDATE_FAILED: "Failed to update menu item. Please check the form and try again.",
 
   DELETE_ITEM_CONFIRM_TITLE: "Delete Menu Item",
   DELETE_ITEM_CONFIRM_DESCRIPTION: (itemName?: string) =>

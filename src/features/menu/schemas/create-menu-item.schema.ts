@@ -2,6 +2,7 @@ import { z } from "zod";
 import { DIETARY_TYPES, MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 
 export const variantSchema = z.object({
+  id: z.string().optional(),
   name: z.string().trim().min(1, MENU_MESSAGES.VALIDATION_VARIANT_NAME_REQUIRED),
   portion: z.string().trim().min(1, MENU_MESSAGES.VALIDATION_VARIANT_PORTION_REQUIRED),
   price: z
