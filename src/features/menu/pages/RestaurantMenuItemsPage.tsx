@@ -1,18 +1,17 @@
-/**
- * Restaurant Menu Items Page
- * Displays paginated list of restaurant menu items with KPI summary stats, filters, and sorting.
- */
-
 import { AlertCircle, Plus } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { MenuItemFilters } from "../components/MenuItemFilters";
 import { MenuItemStatsCards } from "../components/MenuItemStatsCards";
 import { MenuItemTable } from "../components/MenuItemTable";
 import { MENU_MESSAGES } from "../constants/menu.constants";
+import { useDeleteMenuItem } from "../hooks/use-delete-menu-item";
 import { useMenuCategories } from "../hooks/use-menu-categories";
 import { useMenuItems } from "../hooks/use-menu-items";
+import type { MenuItemSummary } from "../types/menu-item.types";
 
 export default function RestaurantMenuItemsPage() {
   const { categories } = useMenuCategories();
@@ -20,6 +19,7 @@ export default function RestaurantMenuItemsPage() {
     items,
     stats,
     pagination,
+    restaurantId,
     isLoading,
     isError,
     error,
@@ -39,6 +39,20 @@ export default function RestaurantMenuItemsPage() {
     toggleSort,
     resetFilters,
   } = useMenuItems();
+
+  const [itemToDelete, setItemToDelete] = useState<MenuItemSummary | null>(null);
+
+  const deleteMutation = useDeleteMenuItem({
+    restaurantId,
+    onSuccess: () => {
+      setItemToDelete(null);
+    },
+  });
+
+  const handleConfirmDelete = () => {
+    if (!itemToDelete || deleteMutation.isPending) return;
+    deleteMutation.mutate(itemToDelete.id);
+  };
 
   const isFiltered = Boolean(
     searchQuery.trim() || categoryFilter !== "ALL" || statusFilter !== "ALL" || vegFilter !== "ALL",
@@ -74,7 +88,7 @@ export default function RestaurantMenuItemsPage() {
             )}
           >
             <Plus className="size-4" />
-            <span>Create Menu Item</span>
+            <span>Add Menu Item</span>
           </Link>
         </div>
       </div>
@@ -129,8 +143,32 @@ export default function RestaurantMenuItemsPage() {
           onPageChange={setPage}
           onLimitChange={setLimit}
           onResetFilters={resetFilters}
+          onDelete={setItemToDelete}
         />
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmDialog
+        open={Boolean(itemToDelete)}
+        onOpenChange={(open) => {
+          if (!open && !deleteMutation.isPending) {
+            setItemToDelete(null);
+          }
+        }}
+        title={MENU_MESSAGES.DELETE_ITEM_CONFIRM_TITLE}
+        description={MENU_MESSAGES.DELETE_ITEM_CONFIRM_DESCRIPTION(itemToDelete?.name)}
+        confirmText={MENU_MESSAGES.BTN_DELETE}
+        cancelText={MENU_MESSAGES.BTN_CANCEL}
+        confirmVariant="destructive"
+        isLoading={deleteMutation.isPending}
+        loadingText={MENU_MESSAGES.BTN_DELETING}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setItemToDelete(null);
+          }
+        }}
+      />
     </div>
   );
 }

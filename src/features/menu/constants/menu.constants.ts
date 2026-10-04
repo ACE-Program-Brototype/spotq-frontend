@@ -115,6 +115,18 @@ export const MENU_MESSAGES = {
   ITEM_CREATED_SUCCESS: "Menu item created successfully.",
   ITEM_CREATE_FAILED: "Failed to create menu item. Please check the form and try again.",
 
+  DELETE_ITEM_CONFIRM_TITLE: "Delete Menu Item",
+  DELETE_ITEM_CONFIRM_DESCRIPTION: (itemName?: string) =>
+    itemName
+      ? `Are you sure you want to delete "${itemName}"? This action will remove the item from customer menus and cannot be undone.`
+      : "Are you sure you want to delete this menu item? This action will remove the item from customer-facing menus and cannot be undone.",
+  BTN_DELETE: "Delete",
+  BTN_DELETING: "Deleting...",
+  ITEM_DELETED_SUCCESS: "Menu item deleted successfully.",
+  ITEM_DELETE_FAILED: "Failed to delete menu item.",
+  ITEM_FORBIDDEN: "You do not have permission to delete this menu item.",
+  ITEM_NOT_FOUND: "Menu item not found.",
+
   MODAL_CREATE_CATEGORY_TITLE: "Create Menu Category",
   MODAL_CREATE_CATEGORY_DESC:
     "Organize your menu by creating a new category for appetizers, mains, beverages, etc.",

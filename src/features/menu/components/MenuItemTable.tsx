@@ -1,4 +1,4 @@
-import { Eye, Pencil, Sparkles, Utensils } from "lucide-react";
+import { Eye, Pencil, Sparkles, Trash2, Utensils } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { type Column, DataTable } from "@/components/common/table";
@@ -45,6 +45,7 @@ export interface MenuItemTableProps {
   onLimitChange?: (limit: number) => void;
   onResetFilters?: () => void;
   onEdit?: (item: MenuItemSummary) => void;
+  onDelete?: (item: MenuItemSummary) => void;
 }
 
 export function MenuItemTable({
@@ -58,6 +59,7 @@ export function MenuItemTable({
   onLimitChange,
   onResetFilters,
   onEdit,
+  onDelete,
 }: MenuItemTableProps) {
   const normalizedSortOrder = sortOrder?.toLowerCase() === "asc" ? "asc" : "desc";
 
@@ -177,11 +179,23 @@ export function MenuItemTable({
                 <Pencil className="size-4" />
               </Link>
             )}
+
+            {onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(item)}
+                className="rounded-lg p-1.5 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                aria-label={`Delete ${item.name}`}
+                title="Delete menu item"
+              >
+                <Trash2 className="size-4" />
+              </button>
+            )}
           </div>
         ),
       },
     ],
-    [onSort, onEdit],
+    [onSort, onEdit, onDelete],
   );
 
   return (

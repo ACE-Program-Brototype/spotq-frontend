@@ -96,4 +96,20 @@ describe("MenuItemTable", () => {
     // Image element is removed and fallback is rendered
     expect(screen.queryByAltText("Butter Chicken")).not.toBeInTheDocument();
   });
+
+  it("renders delete button and triggers onDelete callback when clicked", () => {
+    const onDeleteMock = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <MenuItemTable items={mockItems} onDelete={onDeleteMock} />
+      </MemoryRouter>,
+    );
+
+    const deleteBtn = screen.getByRole("button", { name: "Delete Paneer Tikka" });
+    expect(deleteBtn).toBeInTheDocument();
+
+    fireEvent.click(deleteBtn);
+    expect(onDeleteMock).toHaveBeenCalledWith(mockItems[0]);
+  });
 });
