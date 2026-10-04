@@ -71,6 +71,7 @@ export function useMenuItemDetail(options?: UseMenuItemDetailOptions) {
     onSuccess: (data) => {
       toast.success(data.isAvailable ? "Item marked as in stock" : "Item marked as out of stock");
       queryClient.invalidateQueries({ queryKey: [MENU_ITEMS_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey });
     },
   });
 

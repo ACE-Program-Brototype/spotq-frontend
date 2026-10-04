@@ -117,7 +117,7 @@ export const menuItemService = {
 
   /**
    * Updates menu item availability status.
-   * Calls: PATCH /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}/availability
+   * Calls: PATCH /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}/status
    */
   async updateMenuItemAvailability(
     restaurantId: string,

@@ -74,7 +74,7 @@ export function MenuItemAddonsCard({ addons = [] }: MenuItemAddonsCardProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {addons.map((addon) => {
-            const price = addon.priceOverride ?? addon.price ?? 0;
+            const price = addon.priceOverride != null ? addon.priceOverride : (addon.price ?? 0);
 
             return (
               <div
@@ -89,7 +89,7 @@ export function MenuItemAddonsCard({ addons = [] }: MenuItemAddonsCardProps) {
                       <h4 className="font-bold text-neutral-900 text-sm truncate">
                         {addon.name || "Add-on"}
                       </h4>
-                      {addon.priceOverride !== undefined && (
+                      {addon.priceOverride != null && (
                         <span className="inline-flex items-center gap-0.5 rounded-md bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-700 border border-amber-200 shrink-0">
                           <Sparkles className="size-2 text-amber-500" />
                           Custom

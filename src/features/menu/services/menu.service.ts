@@ -133,6 +133,7 @@ export const menuService = {
           categoryId: payload.categoryId,
           description: (payload.description || "").trim(),
           price: calculatedPrice,
+          dietaryType: payload.dietaryType,
           isVegetarian,
           preparationTime: Number(payload.preparationTime || 0),
           isAvailable: payload.isAvailable ?? true,
