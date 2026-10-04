@@ -6,6 +6,7 @@
 
 import { AlertCircle, ChefHat, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 import { StaffMenuItemFilters } from "../components/StaffMenuItemFilters";
 import { StaffMenuItemSkeleton } from "../components/StaffMenuItemSkeleton";
 import { StaffMenuItemTable } from "../components/StaffMenuItemTable";
@@ -23,6 +24,7 @@ export default function StaffMenuItemsPage() {
     availableCount,
     outOfStockCount,
     isLoading,
+    isFetching,
     isError,
     error,
     refetch,
@@ -65,6 +67,20 @@ export default function StaffMenuItemsPage() {
           <p className="mt-1 text-xs sm:text-sm text-neutral-500">
             {MENU_MESSAGES.STAFF_MENU_SUBTITLE}
           </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="rounded-xl border-[#eddcd4] text-xs font-semibold text-neutral-700 hover:bg-[#fef3ec]"
+          >
+            <RotateCcw className={cn("size-3.5 mr-1.5", isFetching && "animate-spin")} />
+            {isFetching ? "Refreshing..." : "Refresh"}
+          </Button>
         </div>
       </div>
 
@@ -119,7 +135,7 @@ export default function StaffMenuItemsPage() {
       {/* Main Content Area - Table Only */}
       {isLoading ? (
         <StaffMenuItemSkeleton count={5} />
-      ) : items.length === 0 ? (
+      ) : isError ? null : items.length === 0 ? (
         /* Empty State */
         <div
           data-testid="staff-menu-empty-state"

@@ -168,6 +168,7 @@ describe("StaffMenuItemsPage", () => {
     expect(await screen.findByTestId("staff-menu-error-alert")).toBeInTheDocument();
     expect(screen.getByText("Network Error")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Try Again" })).toBeInTheDocument();
+    expect(screen.queryByTestId("staff-menu-empty-state")).not.toBeInTheDocument();
   });
 
   it("renders empty state when no items are returned", async () => {

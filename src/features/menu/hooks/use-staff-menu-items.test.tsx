@@ -87,17 +87,41 @@ describe("useStaffMenuItems", () => {
       isAuthenticated: true,
     });
 
-    (staffMenuService.getStaffMenuItems as jest.Mock).mockResolvedValue({
-      restaurantId: "rest-123",
-      page: 1,
-      limit: 12,
-      totalCount: 2,
-      totalPages: 1,
-      items: mockStaffItems,
-    });
+    (staffMenuService.getStaffMenuItems as jest.Mock).mockImplementation(
+      async (_restaurantId: string, params?: { isAvailable?: boolean }) => {
+        if (params?.isAvailable === true) {
+          return {
+            restaurantId: "rest-123",
+            page: 1,
+            limit: 1,
+            totalCount: 1,
+            totalPages: 1,
+            items: [mockStaffItems[0]],
+          };
+        }
+        if (params?.isAvailable === false) {
+          return {
+            restaurantId: "rest-123",
+            page: 1,
+            limit: 1,
+            totalCount: 1,
+            totalPages: 1,
+            items: [mockStaffItems[1]],
+          };
+        }
+        return {
+          restaurantId: "rest-123",
+          page: 1,
+          limit: 12,
+          totalCount: 2,
+          totalPages: 1,
+          items: mockStaffItems,
+        };
+      },
+    );
   });
 
-  it("fetches and returns staff menu items and computed metrics", async () => {
+  it("fetches and returns staff menu items and independent stock metrics", async () => {
     const { result } = renderHook(() => useStaffMenuItems(), { wrapper });
 
     await waitFor(() => {
@@ -108,7 +132,6 @@ describe("useStaffMenuItems", () => {
     expect(result.current.totalCount).toBe(2);
     expect(result.current.availableCount).toBe(1);
     expect(result.current.outOfStockCount).toBe(1);
-    expect(result.current.groupedByCategory).toHaveLength(2);
   });
 
   it("updates search query with debouncing and resets page to 1", async () => {

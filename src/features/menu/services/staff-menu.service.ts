@@ -5,11 +5,13 @@
 
 import { apiClient } from "@/lib/api/client";
 import { MENU_ENDPOINTS } from "../constants/menu.constants";
+import type { MenuCategoriesListApiResponse, MenuCategory } from "../types/menu-category.types";
 import type {
   StaffMenuItemsApiResponse,
   StaffMenuItemsQueryParams,
   StaffMenuItemsResponse,
 } from "../types/staff-menu-item.types";
+import { normalizeCategoriesResponse } from "./menu-category.service";
 
 export const staffMenuService = {
   /**
@@ -79,33 +81,13 @@ export const staffMenuService = {
    * Fetches menu categories for restaurant staff.
    * Calls: GET /api/v1/restaurants/{restaurantId}/staff/menu/categories
    */
-  async getStaffCategories(
-    restaurantId: string,
-  ): Promise<import("../types/menu-category.types").MenuCategory[]> {
+  async getStaffCategories(restaurantId: string): Promise<MenuCategory[]> {
     if (!restaurantId) return [];
 
     const response = await apiClient
       .get(MENU_ENDPOINTS.STAFF_CATEGORIES(restaurantId))
-      .json<import("../types/menu-category.types").MenuCategoriesListApiResponse>();
+      .json<MenuCategoriesListApiResponse>();
 
-    const rawData = response?.data;
-    if (Array.isArray(rawData)) {
-      return rawData;
-    }
-
-    if (
-      rawData &&
-      typeof rawData === "object" &&
-      "categories" in rawData &&
-      Array.isArray(rawData.categories)
-    ) {
-      const activeRestaurantId = rawData.restaurantId || restaurantId;
-      return rawData.categories.map((cat) => ({
-        ...cat,
-        restaurantId: cat.restaurantId || activeRestaurantId,
-      }));
-    }
-
-    return [];
+    return normalizeCategoriesResponse(response?.data, restaurantId);
   },
 };

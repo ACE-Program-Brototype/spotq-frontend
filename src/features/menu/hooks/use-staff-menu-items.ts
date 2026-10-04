@@ -21,11 +21,13 @@ export interface UseStaffMenuItemsOptions {
   restaurantId?: string;
   initialLimit?: number;
   searchDebounceMs?: number;
+  refetchInterval?: number | false;
 }
 
 export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
   const user = useAuthStore((state) => state.user);
   const restaurantId = options?.restaurantId || user?.restaurantId || "";
+  const pollInterval = options?.refetchInterval ?? 30 * 1000;
 
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(options?.initialLimit || 12);
@@ -66,46 +68,53 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     [restaurantId, queryParams],
   );
 
-  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+  const mainQuery = useQuery({
     queryKey,
     queryFn: () => staffMenuService.getStaffMenuItems(restaurantId, queryParams),
     enabled: Boolean(restaurantId),
     staleTime: 15 * 1000,
+    refetchInterval: pollInterval,
   });
 
-  const items: StaffMenuItem[] = useMemo(() => data?.items ?? [], [data?.items]);
-  const totalCount = data?.totalCount ?? 0;
-  const totalPages = data?.totalPages ?? 0;
+  // Global availability metric queries independent of pagination and active filters
+  const availableStatsQuery = useQuery({
+    queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId, "stats", "available", includeInactive],
+    queryFn: () =>
+      staffMenuService.getStaffMenuItems(restaurantId, {
+        limit: 1,
+        isAvailable: true,
+        includeInactive: includeInactive || undefined,
+      }),
+    enabled: Boolean(restaurantId),
+    staleTime: 30 * 1000,
+    refetchInterval: pollInterval,
+  });
 
-  // Computed summary metrics
-  const availableCount = useMemo(() => items.filter((item) => item.isAvailable).length, [items]);
-  const outOfStockCount = useMemo(() => items.filter((item) => !item.isAvailable).length, [items]);
+  const outOfStockStatsQuery = useQuery({
+    queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId, "stats", "unavailable", includeInactive],
+    queryFn: () =>
+      staffMenuService.getStaffMenuItems(restaurantId, {
+        limit: 1,
+        isAvailable: false,
+        includeInactive: includeInactive || undefined,
+      }),
+    enabled: Boolean(restaurantId),
+    staleTime: 30 * 1000,
+    refetchInterval: pollInterval,
+  });
 
-  // Group items by category preserving displayOrder
-  const groupedByCategory = useMemo(() => {
-    const map = new Map<
-      string,
-      { categoryId: string; categoryName: string; displayOrder: number; items: StaffMenuItem[] }
-    >();
+  const items: StaffMenuItem[] = useMemo(
+    () => mainQuery.data?.items ?? [],
+    [mainQuery.data?.items],
+  );
+  const totalCount = mainQuery.data?.totalCount ?? 0;
+  const totalPages = mainQuery.data?.totalPages ?? 0;
 
-    for (const item of items) {
-      const key = item.categoryId || "uncategorized";
-      if (!map.has(key)) {
-        map.set(key, {
-          categoryId: item.categoryId,
-          categoryName: item.categoryName || "Uncategorized",
-          displayOrder: item.displayOrder,
-          items: [],
-        });
-      }
-      const target = map.get(key);
-      if (target) {
-        target.items.push(item);
-      }
-    }
-
-    return Array.from(map.values()).sort((a, b) => a.displayOrder - b.displayOrder);
-  }, [items]);
+  // Global stock counts fallback to visible items slice if stats query not yet resolved
+  const availableCount =
+    availableStatsQuery.data?.totalCount ?? items.filter((item) => item.isAvailable).length;
+  const outOfStockCount =
+    outOfStockStatsQuery.data?.totalCount ?? items.filter((item) => !item.isAvailable).length;
 
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
@@ -157,18 +166,26 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     setPage(1);
   }, []);
 
+  const refetch = useCallback(async () => {
+    const [mainResult] = await Promise.all([
+      mainQuery.refetch(),
+      availableStatsQuery.refetch(),
+      outOfStockStatsQuery.refetch(),
+    ]);
+    return mainResult;
+  }, [mainQuery, availableStatsQuery, outOfStockStatsQuery]);
+
   return {
     items,
-    groupedByCategory,
     restaurantId,
     totalCount,
     totalPages,
     availableCount,
     outOfStockCount,
-    isLoading,
-    isFetching,
-    isError,
-    error,
+    isLoading: mainQuery.isLoading,
+    isFetching: mainQuery.isFetching,
+    isError: mainQuery.isError,
+    error: mainQuery.error,
     refetch,
     // Filter & Sort state
     page,
