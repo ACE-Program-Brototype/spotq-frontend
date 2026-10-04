@@ -1,7 +1,22 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import type { MenuItemSummary } from "../types/menu-item.types";
 import { MenuItemTable } from "./MenuItemTable";
+
+function renderWithProviders(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false, gcTime: 0 },
+    },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
 
 const mockItems: MenuItemSummary[] = [
   {
@@ -36,11 +51,7 @@ const mockItems: MenuItemSummary[] = [
 
 describe("MenuItemTable", () => {
   it("renders menu items in the reusable data table with actions", () => {
-    render(
-      <MemoryRouter>
-        <MenuItemTable items={mockItems} />
-      </MemoryRouter>,
-    );
+    renderWithProviders(<MenuItemTable items={mockItems} />);
 
     expect(screen.getByText("Paneer Tikka")).toBeInTheDocument();
     expect(screen.getByText("Butter Chicken")).toBeInTheDocument();
@@ -68,11 +79,7 @@ describe("MenuItemTable", () => {
   });
 
   it("renders empty state message when no items are found", () => {
-    render(
-      <MemoryRouter>
-        <MenuItemTable items={[]} />
-      </MemoryRouter>,
-    );
+    renderWithProviders(<MenuItemTable items={[]} />);
 
     expect(screen.getByText("No menu items found")).toBeInTheDocument();
     expect(
@@ -80,14 +87,10 @@ describe("MenuItemTable", () => {
     ).toBeInTheDocument();
   });
 
-  it("switches to fallback icon declaratively when image fails to load", () => {
-    render(
-      <MemoryRouter>
-        <MenuItemTable items={mockItems} />
-      </MemoryRouter>,
-    );
+  it("switches to fallback icon declaratively when image fails to load", async () => {
+    renderWithProviders(<MenuItemTable items={mockItems} />);
 
-    const imageElement = screen.getByAltText("Butter Chicken");
+    const imageElement = await screen.findByAltText("Butter Chicken");
     expect(imageElement).toBeInTheDocument();
 
     // Trigger image loading error
@@ -100,11 +103,7 @@ describe("MenuItemTable", () => {
   it("renders delete button and triggers onDelete callback when clicked", () => {
     const onDeleteMock = jest.fn();
 
-    render(
-      <MemoryRouter>
-        <MenuItemTable items={mockItems} onDelete={onDeleteMock} />
-      </MemoryRouter>,
-    );
+    renderWithProviders(<MenuItemTable items={mockItems} onDelete={onDeleteMock} />);
 
     const deleteBtn = screen.getByRole("button", { name: "Delete Paneer Tikka" });
     expect(deleteBtn).toBeInTheDocument();

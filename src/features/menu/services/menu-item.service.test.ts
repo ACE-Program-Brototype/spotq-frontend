@@ -5,6 +5,7 @@ jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
     delete: jest.fn(),
+    patch: jest.fn(),
   },
 }));
 
@@ -94,6 +95,72 @@ describe("menuItemService", () => {
       expect(result.items[0].name).toBe("Spring Rolls");
       expect(result.stats.totalCategories).toBe(3);
       expect(result.stats.availableItems).toBe(7);
+    });
+  });
+
+  describe("getMenuItemById", () => {
+    it("fetches single menu item detail by id", async () => {
+      const mockDetail = {
+        id: "item-123",
+        restaurantId: mockRestaurantId,
+        categoryId: "cat-1",
+        categoryName: "Appetizers",
+        name: "Crispy Spring Rolls",
+        description: "Freshly prepared rolls with sweet chili dip.",
+        price: 220,
+        isVegetarian: true,
+        isAvailable: true,
+        variants: [
+          {
+            id: "v-1",
+            name: "6 Pieces",
+            portion: "Regular",
+            price: 220,
+            isDefault: true,
+            isAvailable: true,
+          },
+        ],
+        addons: [],
+      };
+
+      const mockJson = jest.fn().mockResolvedValue({ success: true, data: mockDetail });
+      (apiClient.get as jest.Mock).mockReturnValue({ json: mockJson });
+
+      const result = await menuItemService.getMenuItemById(mockRestaurantId, "item-123");
+
+      expect(apiClient.get).toHaveBeenCalledWith(
+        `restaurants/${mockRestaurantId}/menu/items/item-123`,
+      );
+      expect(result.id).toBe("item-123");
+      expect(result.name).toBe("Crispy Spring Rolls");
+    });
+
+    it("throws an error if restaurantId or menuItemId is missing", async () => {
+      await expect(menuItemService.getMenuItemById("", "item-123")).rejects.toThrow(
+        "Restaurant ID and Menu Item ID are required.",
+      );
+    });
+  });
+
+  describe("updateMenuItemAvailability", () => {
+    it("patches item availability correctly", async () => {
+      const mockJson = jest.fn().mockResolvedValue({
+        success: true,
+        data: { isAvailable: false },
+      });
+      (apiClient.patch as jest.Mock).mockReturnValue({ json: mockJson });
+
+      const result = await menuItemService.updateMenuItemAvailability(
+        mockRestaurantId,
+        "item-123",
+        false,
+      );
+
+      expect(apiClient.patch).toHaveBeenCalledWith(
+        `restaurants/${mockRestaurantId}/menu/items/item-123/status`,
+        { json: { isAvailable: false } },
+      );
+      expect(result.isAvailable).toBe(false);
     });
   });
 

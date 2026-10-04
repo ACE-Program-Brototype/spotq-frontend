@@ -6,9 +6,11 @@
 import { apiClient } from "@/lib/api/client";
 import { MENU_ENDPOINTS } from "../constants/menu.constants";
 import type {
+  GetMenuItemApiResponse,
   ListMenuItemsApiResponse,
   ListMenuItemsData,
   ListMenuItemsQueryParams,
+  MenuItemDetail,
 } from "../types/menu-item.types";
 
 export const menuItemService = {
@@ -93,6 +95,46 @@ export const menuItemService = {
         },
       }
     );
+  },
+
+  /**
+   * Fetches single menu item detail by ID.
+   * Calls: GET /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}
+   */
+  async getMenuItemById(restaurantId: string, menuItemId: string): Promise<MenuItemDetail> {
+    if (!restaurantId || !menuItemId) {
+      throw new Error("Restaurant ID and Menu Item ID are required.");
+    }
+
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.ITEM_DETAIL(restaurantId, menuItemId))
+      .json<GetMenuItemApiResponse | { data?: MenuItemDetail } | MenuItemDetail>();
+
+    const data = "data" in response && response.data ? response.data : (response as MenuItemDetail);
+
+    return data;
+  },
+
+  /**
+   * Updates menu item availability status.
+   * Calls: PATCH /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}/availability
+   */
+  async updateMenuItemAvailability(
+    restaurantId: string,
+    menuItemId: string,
+    isAvailable: boolean,
+  ): Promise<{ isAvailable: boolean }> {
+    if (!restaurantId || !menuItemId) {
+      throw new Error("Restaurant ID and Menu Item ID are required.");
+    }
+
+    const response = await apiClient
+      .patch(MENU_ENDPOINTS.ITEM_STATUS(restaurantId, menuItemId), {
+        json: { isAvailable },
+      })
+      .json<{ success: boolean; data?: { isAvailable: boolean } }>();
+
+    return response.data ?? { isAvailable };
   },
 
   /**

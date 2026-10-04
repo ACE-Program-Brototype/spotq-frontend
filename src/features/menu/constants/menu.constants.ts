@@ -7,6 +7,8 @@ export const MENU_ENDPOINTS = {
   ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/menu/items`,
   ITEM_DETAIL: (restaurantId: string, itemId: string) =>
     `restaurants/${restaurantId}/menu/items/${itemId}`,
+  ITEM_STATUS: (restaurantId: string, itemId: string) =>
+    `restaurants/${restaurantId}/menu/items/${itemId}/status`,
   CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/menu/categories`,
   CATEGORY_DETAIL: (restaurantId: string, categoryId: string) =>
     `restaurants/${restaurantId}/menu/categories/${categoryId}`,
@@ -16,6 +18,8 @@ export const MENU_ENDPOINTS = {
   ADDON_DETAIL: (restaurantId: string, addonId: string) =>
     `restaurants/${restaurantId}/addons/${addonId}`,
 } as const;
+
+export const MENU_ITEM_DETAIL_QUERY_KEY = "menu-item-detail" as const;
 
 export const DIETARY_TYPES = ["VEG", "NON_VEG", "EGG"] as const;
 export type DietaryType = (typeof DIETARY_TYPES)[number];
