@@ -10,7 +10,9 @@ import type {
   CreateMenuItemPayload,
   MenuAddon,
   MenuCategory,
+  MenuItemDetails,
   MenuItemResponse,
+  UpdateMenuItemPayload,
 } from "@/features/menu/types/menu.types";
 import { apiClient } from "@/lib/api/client";
 
@@ -150,6 +152,93 @@ export const menuService = {
 
     if (!response.success) {
       throw new Error(response.message || MENU_MESSAGES.ITEM_CREATE_FAILED);
+    }
+
+    return response.data;
+  },
+
+  /**
+   * Fetch single menu item details for restaurant owner/admin
+   */
+  async getMenuItem(restaurantId: string, menuItemId: string): Promise<MenuItemDetails> {
+    if (!restaurantId || !menuItemId) {
+      throw new Error("Restaurant ID and Menu Item ID are required.");
+    }
+
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.ITEM_DETAIL(restaurantId, menuItemId))
+      .json<ApiResponse<MenuItemDetails>>();
+
+    if (!response.success) {
+      throw new Error(response.message || MENU_MESSAGES.FETCH_ERROR);
+    }
+
+    return response.data;
+  },
+
+  /**
+   * Update an existing menu item
+   */
+  async updateMenuItem(
+    restaurantId: string,
+    menuItemId: string,
+    payload: UpdateMenuItemPayload,
+  ): Promise<MenuItemResponse> {
+    if (!restaurantId || !menuItemId) {
+      throw new Error("Restaurant ID and Menu Item ID are required.");
+    }
+
+    const defaultVariant = payload.variants?.find((v) => v.isDefault) ?? payload.variants?.[0];
+    const calculatedPrice =
+      payload.price !== undefined
+        ? Number(payload.price)
+        : defaultVariant
+          ? Number(defaultVariant.price)
+          : undefined;
+
+    const formattedAddons = payload.addons?.map((addon) => ({
+      addonId: addon.addonId,
+      ...(addon.priceOverride !== undefined ? { priceOverride: Number(addon.priceOverride) } : {}),
+    }));
+
+    const images = payload.imageUrl?.trim()
+      ? [{ objectKey: payload.imageUrl.trim(), displayOrder: 0 }]
+      : undefined;
+
+    const isVegetarian =
+      payload.dietaryType !== undefined ? payload.dietaryType === "VEG" : undefined;
+
+    const formattedVariants = payload.variants?.map((v) => ({
+      ...(v.id ? { id: v.id } : {}),
+      name: v.portion ? `${v.name.trim()} (${v.portion.trim()})` : v.name.trim(),
+      price: Number(v.price),
+      sku: v.sku?.trim() || null,
+      isDefault: Boolean(v.isDefault),
+      isAvailable: v.isAvailable ?? true,
+    }));
+
+    const response = await apiClient
+      .put(MENU_ENDPOINTS.ITEM_DETAIL(restaurantId, menuItemId), {
+        json: {
+          ...(payload.name !== undefined ? { name: payload.name.trim() } : {}),
+          ...(payload.categoryId !== undefined ? { categoryId: payload.categoryId } : {}),
+          ...(payload.description !== undefined ? { description: payload.description.trim() } : {}),
+          ...(calculatedPrice !== undefined ? { price: calculatedPrice } : {}),
+          ...(isVegetarian !== undefined ? { isVegetarian } : {}),
+          ...(payload.preparationTime !== undefined
+            ? { preparationTime: Number(payload.preparationTime) }
+            : {}),
+          ...(payload.isAvailable !== undefined ? { isAvailable: payload.isAvailable } : {}),
+          ...(payload.isFeatured !== undefined ? { isFeatured: payload.isFeatured } : {}),
+          ...(images !== undefined ? { images } : {}),
+          ...(formattedVariants !== undefined ? { variants: formattedVariants } : {}),
+          ...(formattedAddons !== undefined ? { addons: formattedAddons } : {}),
+        },
+      })
+      .json<ApiResponse<MenuItemResponse>>();
+
+    if (!response.success) {
+      throw new Error(response.message || MENU_MESSAGES.ITEM_UPDATE_FAILED);
     }
 
     return response.data;
