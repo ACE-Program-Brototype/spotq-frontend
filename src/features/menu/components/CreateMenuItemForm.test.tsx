@@ -12,6 +12,14 @@ jest.mock("@/features/menu/hooks/use-create-menu-item", () => ({
   }),
 }));
 
+const mockUpdateMenuItem = jest.fn();
+jest.mock("@/features/menu/hooks/use-update-menu-item", () => ({
+  useUpdateMenuItem: () => ({
+    updateMenuItem: mockUpdateMenuItem,
+    isSubmitting: false,
+  }),
+}));
+
 const mockCategories = [
   { id: "cat-1", restaurantId: "res-100", name: "Burgers", displayOrder: 1, isActive: true },
 ];
@@ -157,6 +165,85 @@ describe("CreateMenuItemForm", () => {
               isDefault: true,
             }),
           ]),
+        }),
+      );
+    });
+  });
+
+  it("handles edit mode prefilling and calls updateMenuItem on submit", async () => {
+    const user = userEvent.setup();
+    mockUpdateMenuItem.mockResolvedValue({ id: "item-123" });
+
+    const initialData = {
+      id: "item-123",
+      restaurantId: "res-100",
+      categoryId: "cat-1",
+      categoryName: "Burgers",
+      category: { id: "cat-1", name: "Burgers", description: null },
+      name: "BBQ Bacon Burger",
+      description: "Smoky BBQ with crispy bacon",
+      price: 310,
+      preparationTime: 18,
+      calories: 700,
+      isVegetarian: false,
+      isFeatured: false,
+      isAvailable: true,
+      images: [{ id: "img-1", objectKey: "res-100/bbq.jpg", displayOrder: 0 }],
+      variants: [
+        {
+          id: "var-1",
+          name: "Regular (Standard)",
+          price: 310,
+          sku: "BBQ-01",
+          isDefault: true,
+          isAvailable: true,
+        },
+      ],
+      addons: [
+        {
+          id: "add-link-1",
+          addonId: "add-1",
+          name: "Bacon",
+          description: null,
+          price: 60,
+          priceOverride: 50,
+          imageKey: null,
+          isAvailable: true,
+        },
+      ],
+      createdAt: "2026-10-01T00:00:00.000Z",
+      updatedAt: "2026-10-01T00:00:00.000Z",
+    };
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <CreateMenuItemForm
+            restaurantId="res-100"
+            mode="edit"
+            menuItemId="item-123"
+            initialData={initialData}
+          />
+        </BrowserRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByDisplayValue("BBQ Bacon Burger")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^update menu item$/i })).toBeInTheDocument();
+
+    const nameInput = screen.getByLabelText(/item name/i);
+    await user.clear(nameInput);
+    await user.type(nameInput, "BBQ Deluxe Burger");
+
+    const submitBtn = screen.getByRole("button", { name: /^update menu item$/i });
+    await user.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockUpdateMenuItem).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "BBQ Deluxe Burger",
+          categoryId: "cat-1",
+          price: 310,
         }),
       );
     });

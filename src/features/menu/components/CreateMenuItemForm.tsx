@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Clock, Loader2, Plus, Utensils } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,27 +16,97 @@ import { VariantManager } from "@/features/menu/components/VariantManager";
 import { DIETARY_OPTIONS, MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import { useCreateMenuItem } from "@/features/menu/hooks/use-create-menu-item";
 import { useMenuCategories } from "@/features/menu/hooks/use-menu-categories";
+import { useUpdateMenuItem } from "@/features/menu/hooks/use-update-menu-item";
 import {
   type CreateMenuItemFormData,
   createMenuItemSchema,
 } from "@/features/menu/schemas/create-menu-item.schema";
-import type { MenuAddon, MenuCategory } from "@/features/menu/types/menu.types";
+import type { MenuAddon, MenuCategory, MenuItemDetails } from "@/features/menu/types/menu.types";
 
-interface CreateMenuItemFormProps {
+export interface CreateMenuItemFormProps {
   restaurantId: string;
+  mode?: "create" | "edit";
+  menuItemId?: string;
+  initialData?: MenuItemDetails | null;
 }
 
-export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
+const parseVariantNamePortion = (fullName: string) => {
+  const match = fullName.match(/^(.*?)\s*\((.*?)\)$/);
+  if (match) {
+    return { name: match[1].trim(), portion: match[2].trim() };
+  }
+  return { name: fullName.trim(), portion: "Standard" };
+};
+
+export function CreateMenuItemForm({
+  restaurantId,
+  mode = "create",
+  menuItemId,
+  initialData,
+}: CreateMenuItemFormProps) {
   const navigate = useNavigate();
   const { categories, isLoading: isLoadingCategories } = useMenuCategories(restaurantId);
-  const { createMenuItem, isSubmitting } = useCreateMenuItem(restaurantId);
+  const { createMenuItem, isSubmitting: isCreating } = useCreateMenuItem(restaurantId);
+  const { updateMenuItem, isSubmitting: isUpdating } = useUpdateMenuItem(
+    restaurantId,
+    menuItemId || "",
+  );
+
+  const isSubmitting = mode === "edit" ? isUpdating : isCreating;
 
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isAddonModalOpen, setIsAddonModalOpen] = useState(false);
 
-  const form = useForm<CreateMenuItemFormData>({
-    resolver: zodResolver(createMenuItemSchema),
-    defaultValues: {
+  const defaultValues = useMemo<CreateMenuItemFormData>(() => {
+    if (initialData) {
+      const parsedVariants =
+        initialData.variants && initialData.variants.length > 0
+          ? initialData.variants.map((v) => {
+              const { name, portion } = parseVariantNamePortion(v.name);
+              return {
+                id: v.id,
+                name,
+                portion,
+                price: v.price,
+                sku: v.sku || "",
+                isDefault: v.isDefault,
+                isAvailable: v.isAvailable,
+              };
+            })
+          : [
+              {
+                name: "",
+                portion: "",
+                price: undefined as never,
+                sku: "",
+                isDefault: true,
+                isAvailable: true,
+              },
+            ];
+
+      const selectedAddonIds = initialData.addons?.map((a) => a.addonId) ?? [];
+      const addonOverrides: Record<string, number> = {};
+      initialData.addons?.forEach((a) => {
+        if (a.priceOverride !== null && a.priceOverride !== undefined) {
+          addonOverrides[a.addonId] = a.priceOverride;
+        }
+      });
+
+      return {
+        name: initialData.name,
+        categoryId: initialData.categoryId,
+        description: initialData.description || "",
+        dietaryType: initialData.isVegetarian ? "VEG" : "NON_VEG",
+        preparationTime: initialData.preparationTime ?? 15,
+        imageUrl: initialData.images?.[0]?.objectKey || "",
+        isAvailable: initialData.isAvailable,
+        variants: parsedVariants,
+        selectedAddonIds,
+        addonOverrides,
+      };
+    }
+
+    return {
       name: "",
       categoryId: "",
       description: "",
@@ -56,8 +126,19 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
       ],
       selectedAddonIds: [],
       addonOverrides: {},
-    },
+    };
+  }, [initialData]);
+
+  const form = useForm<CreateMenuItemFormData>({
+    resolver: zodResolver(createMenuItemSchema),
+    defaultValues,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset(defaultValues);
+    }
+  }, [defaultValues, form, initialData]);
 
   const {
     register,
@@ -85,18 +166,33 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
       const defaultVariant = data.variants.find((v) => v.isDefault) ?? data.variants[0];
       const basePrice = defaultVariant ? Number(defaultVariant.price) : 0;
 
-      await createMenuItem({
-        name: data.name,
-        price: basePrice,
-        categoryId: data.categoryId,
-        description: data.description || undefined,
-        dietaryType: data.dietaryType,
-        preparationTime: data.preparationTime ? Number(data.preparationTime) : undefined,
-        imageUrl: data.imageUrl || undefined,
-        isAvailable: data.isAvailable,
-        variants: data.variants,
-        addons: addonsPayload,
-      });
+      if (mode === "edit" && menuItemId) {
+        await updateMenuItem({
+          name: data.name,
+          price: basePrice,
+          categoryId: data.categoryId,
+          description: data.description || undefined,
+          dietaryType: data.dietaryType,
+          preparationTime: data.preparationTime ? Number(data.preparationTime) : undefined,
+          imageUrl: data.imageUrl || undefined,
+          isAvailable: data.isAvailable,
+          variants: data.variants,
+          addons: addonsPayload,
+        });
+      } else {
+        await createMenuItem({
+          name: data.name,
+          price: basePrice,
+          categoryId: data.categoryId,
+          description: data.description || undefined,
+          dietaryType: data.dietaryType,
+          preparationTime: data.preparationTime ? Number(data.preparationTime) : undefined,
+          imageUrl: data.imageUrl || undefined,
+          isAvailable: data.isAvailable,
+          variants: data.variants,
+          addons: addonsPayload,
+        });
+      }
 
       navigate("/restaurant/menu/items");
     } catch {
@@ -339,8 +435,10 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
             {isSubmitting ? (
               <>
                 <Loader2 className="size-4 animate-spin mr-2" />
-                {MENU_MESSAGES.BTN_SUBMITTING}
+                {mode === "edit" ? MENU_MESSAGES.BTN_UPDATING : MENU_MESSAGES.BTN_SUBMITTING}
               </>
+            ) : mode === "edit" ? (
+              MENU_MESSAGES.BTN_UPDATE
             ) : (
               MENU_MESSAGES.BTN_SUBMIT
             )}
@@ -365,3 +463,5 @@ export function CreateMenuItemForm({ restaurantId }: CreateMenuItemFormProps) {
     </>
   );
 }
+
+export const MenuItemForm = CreateMenuItemForm;

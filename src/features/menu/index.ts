@@ -24,12 +24,15 @@ export * from "./constants/menu.constants";
 export * from "./hooks/use-create-menu-item";
 export * from "./hooks/use-delete-menu-item";
 export * from "./hooks/use-menu-categories";
+export * from "./hooks/use-menu-item-details";
 export * from "./hooks/use-menu-items";
 export * from "./hooks/use-restaurant-addons";
 export * from "./hooks/use-update-menu-category";
+export * from "./hooks/use-update-menu-item";
 
 // Pages
 export * from "./pages/CreateMenuItemPage";
+export * from "./pages/EditMenuItemPage";
 export * from "./pages/RestaurantMenuCategoriesPage";
 export * from "./pages/RestaurantMenuItemsPage";
 
