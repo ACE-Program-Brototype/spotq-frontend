@@ -12,6 +12,34 @@ import type {
   UpdateMenuCategoryPayload,
 } from "../types/menu-category.types";
 
+/**
+ * Normalizes raw category response data into an array of MenuCategory objects.
+ */
+export function normalizeCategoriesResponse(
+  rawData: unknown,
+  restaurantId: string,
+): MenuCategory[] {
+  if (Array.isArray(rawData)) {
+    return rawData;
+  }
+
+  if (
+    rawData &&
+    typeof rawData === "object" &&
+    "categories" in rawData &&
+    Array.isArray((rawData as { categories: unknown[] }).categories)
+  ) {
+    const rawCategoriesObj = rawData as { restaurantId?: string; categories: MenuCategory[] };
+    const activeRestaurantId = rawCategoriesObj.restaurantId || restaurantId;
+    return rawCategoriesObj.categories.map((cat) => ({
+      ...cat,
+      restaurantId: cat.restaurantId || activeRestaurantId,
+    }));
+  }
+
+  return [];
+}
+
 export const menuCategoryService = {
   /**
    * Fetches existing menu categories for a restaurant directly from the API.
@@ -24,25 +52,7 @@ export const menuCategoryService = {
       .get(MENU_ENDPOINTS.CATEGORIES(restaurantId))
       .json<MenuCategoriesListApiResponse>();
 
-    const rawData = response?.data;
-    if (Array.isArray(rawData)) {
-      return rawData;
-    }
-
-    if (
-      rawData &&
-      typeof rawData === "object" &&
-      "categories" in rawData &&
-      Array.isArray(rawData.categories)
-    ) {
-      const activeRestaurantId = rawData.restaurantId || restaurantId;
-      return rawData.categories.map((cat) => ({
-        ...cat,
-        restaurantId: cat.restaurantId || activeRestaurantId,
-      }));
-    }
-
-    return [];
+    return normalizeCategoriesResponse(response?.data, restaurantId);
   },
 
   /**

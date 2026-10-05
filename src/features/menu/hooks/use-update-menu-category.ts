@@ -27,9 +27,9 @@ export function useUpdateMenuCategory() {
       return menuCategoryService.updateCategory(restaurantId, categoryId, payload);
     },
     onSuccess: (updatedCategory, variables) => {
-      // Reflect updated values in query cache immediately
-      queryClient.setQueryData<MenuCategory[]>(
-        [MENU_CATEGORIES_QUERY_KEY, variables.restaurantId],
+      // Reflect updated values across role-scoped query variants immediately
+      queryClient.setQueriesData<MenuCategory[]>(
+        { queryKey: [MENU_CATEGORIES_QUERY_KEY, variables.restaurantId] },
         (oldList = []) => {
           return oldList
             .map((cat) => (cat.id === updatedCategory.id ? { ...cat, ...updatedCategory } : cat))

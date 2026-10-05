@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { HTTPError } from "ky";
 import { toast } from "sonner";
-import { MENU_ITEMS_QUERY_KEY, MENU_MESSAGES } from "../constants/menu.constants";
+import {
+  MENU_ITEM_DETAIL_QUERY_KEY,
+  MENU_ITEMS_QUERY_KEY,
+  MENU_MESSAGES,
+} from "../constants/menu.constants";
 import { menuItemService } from "../services/menu-item.service";
 
 export interface UseDeleteMenuItemOptions {
@@ -15,11 +19,17 @@ export function useDeleteMenuItem({ restaurantId, onSuccess, onError }: UseDelet
 
   return useMutation<void, Error, string>({
     mutationFn: (menuItemId: string) => menuItemService.deleteMenuItem(restaurantId, menuItemId),
-    onSuccess: () => {
+    onSuccess: (_data, menuItemId) => {
       // Invalidate the menu items query cache to refetch the data and update statistics
       queryClient.invalidateQueries({
         queryKey: [MENU_ITEMS_QUERY_KEY, restaurantId],
       });
+
+      if (menuItemId) {
+        queryClient.removeQueries({
+          queryKey: [MENU_ITEM_DETAIL_QUERY_KEY, restaurantId, menuItemId],
+        });
+      }
 
       toast.success(MENU_MESSAGES.ITEM_DELETED_SUCCESS);
       onSuccess?.();

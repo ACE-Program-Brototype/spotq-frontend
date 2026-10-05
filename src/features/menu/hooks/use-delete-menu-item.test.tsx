@@ -39,6 +39,7 @@ describe("useDeleteMenuItem", () => {
   it("successfully deletes a menu item and shows success toast", async () => {
     (menuItemService.deleteMenuItem as jest.Mock).mockResolvedValue(undefined);
     const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
+    const removeSpy = jest.spyOn(queryClient, "removeQueries");
     const onSuccessMock = jest.fn();
 
     const { result } = renderHook(
@@ -57,6 +58,9 @@ describe("useDeleteMenuItem", () => {
     expect(menuItemService.deleteMenuItem).toHaveBeenCalledWith("rest-123", "item-123");
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ["menu-items", "rest-123"],
+    });
+    expect(removeSpy).toHaveBeenCalledWith({
+      queryKey: ["menu-item-detail", "rest-123", "item-123"],
     });
     expect(toast.success).toHaveBeenCalledWith(MENU_MESSAGES.ITEM_DELETED_SUCCESS);
     expect(onSuccessMock).toHaveBeenCalled();

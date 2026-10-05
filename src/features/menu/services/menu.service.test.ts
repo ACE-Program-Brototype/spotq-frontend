@@ -370,6 +370,25 @@ describe("menuService", () => {
       await expect(menuService.updateMenuItem("res-1", "item-1", { name: "Test" })).rejects.toThrow(
         "Update failed",
       );
+    it("delegates to menuItemService.getMenuItem", async () => {
+      const mockDetail = {
+        id: "item-1",
+        restaurantId: "res-1",
+        categoryId: "cat-1",
+        name: "Farmhouse Pizza",
+        price: 350,
+        isVegetarian: true,
+        isAvailable: true,
+        variants: [],
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: mockDetail }),
+      });
+
+      const result = await menuService.getMenuItem("res-1", "item-1");
+      expect(result.id).toBe("item-1");
+      expect(result.name).toBe("Farmhouse Pizza");
     });
   });
 });

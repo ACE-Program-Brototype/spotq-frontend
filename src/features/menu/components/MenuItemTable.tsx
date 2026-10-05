@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { type Column, DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import type {
   MenuItemPagination,
   MenuItemSortBy,
@@ -11,13 +13,24 @@ import type {
 } from "../types/menu-item.types";
 
 function MenuItemThumbnail({ image, name }: { image: string | null; name: string }) {
+  const { data: presignedUrl, isLoading } = usePresignedUrl(image);
   const [hasError, setHasError] = useState(false);
 
-  if (image && !hasError) {
+  const displayUrl = presignedUrl || image;
+
+  if (isLoading) {
+    return (
+      <div className="size-11 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center">
+        <Skeleton className="h-full w-full" />
+      </div>
+    );
+  }
+
+  if (displayUrl && !hasError) {
     return (
       <div className="size-11 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center">
         <img
-          src={image}
+          src={displayUrl}
           alt={name}
           className="h-full w-full object-cover"
           loading="lazy"

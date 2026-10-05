@@ -1,10 +1,12 @@
-/**
- * Menu Feature Type Definitions
- */
-
 import type { DietaryType } from "@/features/menu/constants/menu.constants";
+import type { MenuItemDetailAddon, MenuItemDetailVariant } from "./menu-item.types";
 
 export type { MenuCategory } from "./menu-category.types";
+export type {
+  MenuItemDetail,
+  MenuItemDetailAddon,
+  MenuItemDetailVariant,
+} from "./menu-item.types";
 
 export interface MenuAddon {
   id: string;
@@ -131,21 +133,8 @@ export interface MenuItemResponse {
   preparationTime?: number | null;
   imageUrl?: string | null;
   isAvailable: boolean;
-  variants: Array<{
-    id: string;
-    menuItemId: string;
-    name: string;
-    portion: string;
-    price: number;
-    sku?: string | null;
-    isDefault: boolean;
-    isAvailable: boolean;
-  }>;
-  addons?: Array<{
-    id: string;
-    addonId: string;
-    priceOverride?: number | null;
-  }>;
+  variants: MenuItemDetailVariant[];
+  addons?: MenuItemDetailAddon[];
   createdAt?: string;
   updatedAt?: string;
 }

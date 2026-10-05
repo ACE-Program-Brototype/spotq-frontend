@@ -5,8 +5,12 @@
 
 export const MENU_ENDPOINTS = {
   ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/menu/items`,
+  STAFF_ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/staff/menu/items`,
+  STAFF_CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/staff/menu/categories`,
   ITEM_DETAIL: (restaurantId: string, itemId: string) =>
     `restaurants/${restaurantId}/menu/items/${itemId}`,
+  ITEM_STATUS: (restaurantId: string, itemId: string) =>
+    `restaurants/${restaurantId}/menu/items/${itemId}/status`,
   CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/menu/categories`,
   CATEGORY_DETAIL: (restaurantId: string, categoryId: string) =>
     `restaurants/${restaurantId}/menu/categories/${categoryId}`,
@@ -16,6 +20,8 @@ export const MENU_ENDPOINTS = {
   ADDON_DETAIL: (restaurantId: string, addonId: string) =>
     `restaurants/${restaurantId}/addons/${addonId}`,
 } as const;
+
+export const MENU_ITEM_DETAIL_QUERY_KEY = "menu-item-detail" as const;
 
 export const DIETARY_TYPES = ["VEG", "NON_VEG", "EGG"] as const;
 export type DietaryType = (typeof DIETARY_TYPES)[number];
@@ -205,7 +211,19 @@ export const MENU_MESSAGES = {
   EDIT_ITEM_ERROR_FALLBACK: "The requested menu item could not be found or failed to load.",
   BTN_RETURN_TO_ITEMS: "Return to Menu Items",
   BACK_TO_CATALOG: "Back to Catalog",
+  STAFF_ITEMS_FETCH_ERROR:
+    "Failed to load staff menu items. Please check your connection and try again.",
+  STAFF_MENU_TITLE: "Staff Menu Directory",
+  STAFF_MENU_SUBTITLE:
+    "Real-time menu catalog with live 86'd stock tracking, variant pricing, and category mapping.",
+  NO_STAFF_MENU_ITEMS: "No menu items found.",
+  NO_STAFF_MENU_ITEMS_DESC: "No menu items match your search or filter criteria.",
+  CLEAR_FILTERS_BTN: "Clear Filters",
+  ITEM_AVAILABILITY_UPDATE_FAILED: "Failed to update item availability",
+  ITEM_MARKED_IN_STOCK: "Item marked as in stock",
+  ITEM_MARKED_OUT_OF_STOCK: "Item marked as out of stock",
 } as const;
 
 export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;
 export const MENU_ITEMS_QUERY_KEY = "menu-items" as const;
+export const STAFF_MENU_ITEMS_QUERY_KEY = "staff-menu-items" as const;

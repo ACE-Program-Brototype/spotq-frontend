@@ -11,6 +11,7 @@ import {
   Table as TableIcon,
   User,
   UsersRound,
+  Utensils,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -30,6 +31,12 @@ const staffNavItems: StaffNavItem[] = [
     path: "/dashboard",
     icon: LayoutDashboard,
     mobileLabel: "Dashboard",
+  },
+  {
+    title: "Menu Items",
+    path: "/menu",
+    icon: Utensils,
+    mobileLabel: "Menu",
   },
   {
     title: "Queue Management",
@@ -80,6 +87,7 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
             const fullHref = `${basePath}${item.path}`;
             const isActive =
               location.pathname === fullHref ||
+              location.pathname.startsWith(`${fullHref}/`) ||
               (item.path === "/dashboard" &&
                 (location.pathname === basePath || location.pathname === `${basePath}/`));
 
@@ -176,6 +184,7 @@ export function StaffMobileNav({
         const fullHref = `${basePath}${item.path}`;
         const isActive =
           location.pathname === fullHref ||
+          location.pathname.startsWith(`${fullHref}/`) ||
           (item.path === "/dashboard" &&
             (location.pathname === basePath || location.pathname === `${basePath}/`));
 
