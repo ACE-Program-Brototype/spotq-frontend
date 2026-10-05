@@ -74,6 +74,8 @@ const mockItem: MenuItemDetail = {
       isAvailable: true,
     },
   ],
+  createdAt: "2026-09-29T10:00:00.000Z",
+  updatedAt: "2026-09-30T12:00:00.000Z",
 };
 
 function renderPage(itemId = "dish-555") {
@@ -118,6 +120,11 @@ describe("RestaurantMenuItemDetailPage", () => {
         screen.getByRole("heading", { name: "Margherita Supreme", level: 1 }),
       ).toBeInTheDocument();
     });
+
+    // Check Header Timestamps & ID
+    expect(screen.getByText("dish-555")).toBeInTheDocument();
+    expect(screen.getByText(/Created:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Updated:/i)).toBeInTheDocument();
 
     // Check Hero Info
     expect(screen.getByText("Pizzas")).toBeInTheDocument();

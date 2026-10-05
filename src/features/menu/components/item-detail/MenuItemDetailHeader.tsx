@@ -3,7 +3,7 @@
  * Provides breadcrumb navigation, title, quick availability switch, Edit, and Delete actions.
  */
 
-import { ArrowLeft, Edit2, Loader2, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Edit2, Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import type { MenuItemDetail } from "@/features/menu/types/menu-item.types";
 import { cn } from "@/lib/utils/cn";
+import { formatDate } from "@/lib/utils/date";
 
 export interface MenuItemDetailHeaderProps {
   item: MenuItemDetail;
@@ -78,9 +79,39 @@ export function MenuItemDetailHeader({
             <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
               {item.name}
             </h1>
-            <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-              Menu Item ID: <span className="font-mono text-neutral-700">{item.id}</span>
-            </p>
+            <div className="flex items-center gap-2.5 text-xs sm:text-sm text-neutral-500 mt-1 flex-wrap">
+              <span>
+                Menu Item ID: <span className="font-mono text-neutral-700">{item.id}</span>
+              </span>
+              {item.createdAt && (
+                <>
+                  <span className="text-neutral-300">•</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Calendar className="size-3.5 text-neutral-400" />
+                    <span>
+                      Created:{" "}
+                      <span className="font-medium text-neutral-700">
+                        {formatDate(item.createdAt)}
+                      </span>
+                    </span>
+                  </span>
+                </>
+              )}
+              {item.updatedAt && (
+                <>
+                  <span className="text-neutral-300">•</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="size-3.5 text-neutral-400" />
+                    <span>
+                      Updated:{" "}
+                      <span className="font-medium text-neutral-700">
+                        {formatDate(item.updatedAt)}
+                      </span>
+                    </span>
+                  </span>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-2.5">
