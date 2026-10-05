@@ -5,6 +5,7 @@ jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
     post: jest.fn(),
+    put: jest.fn(),
   },
 }));
 
@@ -239,7 +240,139 @@ describe("menuService", () => {
   });
 
   describe("getMenuItem", () => {
-    it("delegates to menuItemService.getMenuItem", async () => {
+    it("fetches single menu item details", async () => {
+      const mockItemDetails = {
+        id: "item-1",
+        restaurantId: "res-1",
+        categoryId: "cat-1",
+        categoryName: "Pizza",
+        name: "Margherita",
+        price: 250,
+        isVegetarian: true,
+        isAvailable: true,
+        variants: [
+          {
+            id: "var-1",
+            sku: "SKU-1",
+            name: "Regular (1 Person)",
+            price: 250,
+            isDefault: true,
+            isAvailable: true,
+          },
+        ],
+        addons: [],
+        images: [{ id: "img-1", objectKey: "res-1/pizza.jpg", displayOrder: 0 }],
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: mockItemDetails }),
+      });
+
+      const result = await menuService.getMenuItem("res-1", "item-1");
+      expect(apiClient.get).toHaveBeenCalledWith("restaurants/res-1/menu/items/item-1");
+      expect(result).toEqual(mockItemDetails);
+    });
+
+    it("throws error when restaurantId or menuItemId is missing", async () => {
+      await expect(menuService.getMenuItem("", "item-1")).rejects.toThrow(
+        "Restaurant ID and Menu Item ID are required.",
+      );
+      await expect(menuService.getMenuItem("res-1", "")).rejects.toThrow(
+        "Restaurant ID and Menu Item ID are required.",
+      );
+    });
+
+    it("throws error when API returns success false", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: false, message: "Not found" }),
+      });
+
+      await expect(menuService.getMenuItem("res-1", "item-999")).rejects.toThrow("Not found");
+    });
+  });
+
+  describe("updateMenuItem", () => {
+    it("sends PUT request with mapped update payload", async () => {
+      const mockUpdated = {
+        id: "item-1",
+        restaurantId: "res-1",
+        name: "Updated Pizza",
+      };
+
+      (apiClient.put as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: mockUpdated }),
+      });
+
+      const result = await menuService.updateMenuItem("res-1", "item-1", {
+        name: "Updated Pizza",
+        categoryId: "cat-2",
+        description: "Freshly updated recipe",
+        dietaryType: "VEG",
+        preparationTime: 25,
+        imageUrl: "res-1/updated-pizza.jpg",
+        isAvailable: true,
+        variants: [
+          {
+            id: "var-1",
+            name: "Medium",
+            portion: "2 Persons",
+            price: 380,
+            sku: "SKU-2",
+            isDefault: true,
+            isAvailable: true,
+          },
+        ],
+        addons: [{ addonId: "add-1", priceOverride: 40 }],
+      });
+
+      expect(apiClient.put).toHaveBeenCalledWith(
+        "restaurants/res-1/menu/items/item-1",
+        expect.objectContaining({
+          json: expect.objectContaining({
+            name: "Updated Pizza",
+            categoryId: "cat-2",
+            description: "Freshly updated recipe",
+            price: 380,
+            isVegetarian: true,
+            preparationTime: 25,
+            images: [{ objectKey: "res-1/updated-pizza.jpg", displayOrder: 0 }],
+            variants: [
+              {
+                id: "var-1",
+                name: "Medium (2 Persons)",
+                price: 380,
+                sku: "SKU-2",
+                isDefault: true,
+                isAvailable: true,
+              },
+            ],
+            addons: [{ addonId: "add-1", priceOverride: 40 }],
+          }),
+        }),
+      );
+      expect(result).toEqual(mockUpdated);
+    });
+
+    it("throws error when restaurantId or menuItemId is missing", async () => {
+      await expect(menuService.updateMenuItem("", "item-1", {})).rejects.toThrow(
+        "Restaurant ID and Menu Item ID are required.",
+      );
+      await expect(menuService.updateMenuItem("res-1", "", {})).rejects.toThrow(
+        "Restaurant ID and Menu Item ID are required.",
+      );
+    });
+
+    it("throws error when API returns success false", async () => {
+      (apiClient.put as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: false, message: "Update failed" }),
+      });
+
+      await expect(menuService.updateMenuItem("res-1", "item-1", { name: "Test" })).rejects.toThrow(
+        "Update failed",
+      );
+    });
+
+    it("fetches single menu item by ID", async () => {
       const mockDetail = {
         id: "item-1",
         restaurantId: "res-1",

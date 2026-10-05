@@ -6,6 +6,7 @@ import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashbo
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
 import CreateMenuItemPage from "@/features/menu/pages/CreateMenuItemPage";
+import EditMenuItemPage from "@/features/menu/pages/EditMenuItemPage";
 import RestaurantMenuCategoriesPage from "@/features/menu/pages/RestaurantMenuCategoriesPage";
 import RestaurantMenuItemDetailPage from "@/features/menu/pages/RestaurantMenuItemDetailPage";
 import RestaurantMenuItemsPage from "@/features/menu/pages/RestaurantMenuItemsPage";
@@ -178,6 +179,10 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "menu/items/create",
             Component: CreateMenuItemPage,
+          },
+          {
+            path: "menu/items/:itemId/edit",
+            Component: EditMenuItemPage,
           },
           {
             path: "menu/items/:itemId",

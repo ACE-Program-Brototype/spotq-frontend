@@ -121,20 +121,20 @@ describe("createMenuItemSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("fails when description is missing or empty", () => {
-    const invalid = { ...validMenuItem, description: "   " };
+  it("allows optional description and imageUrl", () => {
+    const itemWithoutOptional = { ...validMenuItem, description: "", imageUrl: "" };
+    const result = createMenuItemSchema.safeParse(itemWithoutOptional);
+    expect(result.success).toBe(true);
+  });
+
+  it("fails when description exceeds max length", () => {
+    const invalid = { ...validMenuItem, description: "a".repeat(1001) };
     const result = createMenuItemSchema.safeParse(invalid);
     expect(result.success).toBe(false);
   });
 
   it("fails when preparationTime is negative", () => {
     const invalid = { ...validMenuItem, preparationTime: -5 };
-    const result = createMenuItemSchema.safeParse(invalid);
-    expect(result.success).toBe(false);
-  });
-
-  it("fails when imageUrl is missing or empty", () => {
-    const invalid = { ...validMenuItem, imageUrl: "" };
     const result = createMenuItemSchema.safeParse(invalid);
     expect(result.success).toBe(false);
   });

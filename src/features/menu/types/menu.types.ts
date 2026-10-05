@@ -2,11 +2,7 @@ import type { DietaryType } from "@/features/menu/constants/menu.constants";
 import type { MenuItemDetailAddon, MenuItemDetailVariant } from "./menu-item.types";
 
 export type { MenuCategory } from "./menu-category.types";
-export type {
-  MenuItemDetail,
-  MenuItemDetailAddon,
-  MenuItemDetailVariant,
-} from "./menu-item.types";
+export type { MenuItemDetail } from "./menu-item.types";
 
 export interface MenuAddon {
   id: string;
@@ -21,6 +17,7 @@ export interface MenuAddon {
 }
 
 export interface MenuItemVariantInput {
+  id?: string;
   name: string;
   portion: string;
   price: number;
@@ -31,7 +28,13 @@ export interface MenuItemVariantInput {
 
 export interface MenuItemAddonLinkInput {
   addonId: string;
-  priceOverride?: number;
+  priceOverride?: number | null;
+}
+
+export interface MenuItemImageInput {
+  id?: string;
+  objectKey: string;
+  displayOrder?: number;
 }
 
 export interface CreateMenuItemPayload {
@@ -45,6 +48,56 @@ export interface CreateMenuItemPayload {
   isAvailable: boolean;
   variants: MenuItemVariantInput[];
   addons?: MenuItemAddonLinkInput[];
+}
+
+export interface UpdateMenuItemPayload {
+  price?: number;
+  name?: string;
+  categoryId?: string;
+  description?: string | null;
+  dietaryType?: DietaryType;
+  isVegetarian?: boolean;
+  preparationTime?: number | null;
+  imageUrl?: string | null;
+  images?: MenuItemImageInput[];
+  isAvailable?: boolean;
+  isFeatured?: boolean;
+  variants?: MenuItemVariantInput[];
+  addons?: MenuItemAddonLinkInput[];
+}
+
+export interface MenuItemDetailCategory {
+  id: string;
+  name: string;
+  description: string | null;
+}
+
+export interface MenuItemDetailImage {
+  id: string;
+  objectKey: string;
+  displayOrder: number;
+}
+
+export interface MenuItemDetails {
+  id: string;
+  restaurantId: string;
+  categoryId: string;
+  categoryName: string;
+  category: MenuItemDetailCategory | null;
+  name: string;
+  description: string | null;
+  price: number;
+  preparationTime: number | null;
+  calories: number | null;
+  isVegetarian: boolean;
+  dietaryType?: DietaryType;
+  isFeatured: boolean;
+  isAvailable: boolean;
+  images: MenuItemDetailImage[];
+  variants: MenuItemDetailVariant[];
+  addons: MenuItemDetailAddon[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MenuItemResponse {
