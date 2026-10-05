@@ -9,7 +9,11 @@ import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import { MENU_ITEMS_QUERY_KEY, STAFF_MENU_ITEMS_QUERY_KEY } from "../constants/menu.constants";
+import {
+  MENU_ITEMS_QUERY_KEY,
+  MENU_MESSAGES,
+  STAFF_MENU_ITEMS_QUERY_KEY,
+} from "../constants/menu.constants";
 import { menuItemService } from "../services/menu-item.service";
 import { staffMenuService } from "../services/staff-menu.service";
 import type {
@@ -178,6 +182,8 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     return mainResult;
   }, [mainQuery, availableStatsQuery, outOfStockStatsQuery]);
 
+  const [pendingItemIds, setPendingItemIds] = useState<Set<string>>(() => new Set());
+
   // Toggle Menu Item Availability
   const toggleItemAvailabilityMutation = useMutation({
     mutationFn: async ({ itemId, isAvailable }: { itemId: string; isAvailable: boolean }) => {
@@ -185,9 +191,11 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     },
     onMutate: async ({ itemId, isAvailable }) => {
       await queryClient.cancelQueries({ queryKey: [STAFF_MENU_ITEMS_QUERY_KEY] });
-      const previousData = queryClient.getQueryData(queryKey);
+      const previousQueries = queryClient.getQueriesData({
+        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY],
+      });
 
-      // Optimistically update the staff menu cache
+      // Optimistically update the staff menu cache across matching queries
       queryClient.setQueriesData({ queryKey: [STAFF_MENU_ITEMS_QUERY_KEY] }, (old: unknown) => {
         if (!old) return old;
         const oldObj = old as { items?: StaffMenuItem[]; totalCount?: number };
@@ -202,16 +210,33 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
         return old;
       });
 
-      return { previousData };
+      return { previousQueries, itemId };
     },
     onError: (err, _variables, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(queryKey, context.previousData);
+      if (context?.previousQueries) {
+        for (const [key, data] of context.previousQueries) {
+          queryClient.setQueryData(key, data);
+        }
       }
-      toast.error(err instanceof Error ? err.message : "Failed to update item availability");
+      toast.error(
+        err instanceof Error ? err.message : MENU_MESSAGES.ITEM_AVAILABILITY_UPDATE_FAILED,
+      );
     },
     onSuccess: (data) => {
-      toast.success(data.isAvailable ? "Item marked as in stock" : "Item marked as out of stock");
+      toast.success(
+        data.isAvailable
+          ? MENU_MESSAGES.ITEM_MARKED_IN_STOCK
+          : MENU_MESSAGES.ITEM_MARKED_OUT_OF_STOCK,
+      );
+    },
+    onSettled: (_data, _error, variables) => {
+      if (variables?.itemId) {
+        setPendingItemIds((prev) => {
+          const next = new Set(prev);
+          next.delete(variables.itemId);
+          return next;
+        });
+      }
       queryClient.invalidateQueries({ queryKey: [STAFF_MENU_ITEMS_QUERY_KEY] });
       queryClient.invalidateQueries({ queryKey: [MENU_ITEMS_QUERY_KEY] });
     },
@@ -219,10 +244,13 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
 
   const toggleAvailability = useCallback(
     (item: StaffMenuItem) => {
-      if (!restaurantId || !item.id) return;
+      if (!restaurantId || !item.id || item.isActive === false) return;
+      if (pendingItemIds.has(item.id)) return;
+
+      setPendingItemIds((prev) => new Set(prev).add(item.id));
       toggleItemAvailabilityMutation.mutate({ itemId: item.id, isAvailable: !item.isAvailable });
     },
-    [restaurantId, toggleItemAvailabilityMutation],
+    [restaurantId, pendingItemIds, toggleItemAvailabilityMutation],
   );
 
   return {
@@ -257,9 +285,11 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     resetFilters,
     // Toggle Availability
     toggleAvailability,
-    isTogglingAvailability: toggleItemAvailabilityMutation.isPending,
-    togglingItemId: toggleItemAvailabilityMutation.isPending
-      ? toggleItemAvailabilityMutation.variables?.itemId
-      : null,
+    pendingItemIds,
+    isTogglingAvailability: pendingItemIds.size > 0,
+    togglingItemId:
+      pendingItemIds.size > 0
+        ? Array.from(pendingItemIds)[0]
+        : toggleItemAvailabilityMutation.variables?.itemId || null,
   };
 }

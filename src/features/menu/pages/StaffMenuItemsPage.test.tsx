@@ -223,7 +223,7 @@ describe("StaffMenuItemsPage", () => {
     expect(await screen.findByText("Chicken Biriyani")).toBeInTheDocument();
 
     const toggleBtn = screen.getByRole("button", {
-      name: "Mark Chicken Biriyani as out of stock",
+      name: "Toggle Chicken Biriyani availability",
     });
     fireEvent.click(toggleBtn);
 

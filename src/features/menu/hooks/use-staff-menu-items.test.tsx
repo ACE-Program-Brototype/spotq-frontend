@@ -259,4 +259,42 @@ describe("useStaffMenuItems", () => {
       expect(toast.success).toHaveBeenCalledWith("Item marked as out of stock");
     });
   });
+
+  it("rolls back all cached queries and shows error toast on failure", async () => {
+    (menuItemService.updateMenuItemAvailability as jest.Mock).mockRejectedValue(
+      new Error("Network Error"),
+    );
+
+    const { result } = renderHook(() => useStaffMenuItems(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.items).toHaveLength(2);
+    });
+
+    await act(async () => {
+      result.current.toggleAvailability(mockStaffItems[0]);
+    });
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Network Error");
+      expect(result.current.items[0].isAvailable).toBe(true);
+    });
+  });
+
+  it("prevents toggling inactive or deleted items", async () => {
+    const { result } = renderHook(() => useStaffMenuItems(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.items).toHaveLength(2);
+    });
+
+    await act(async () => {
+      result.current.toggleAvailability({
+        ...mockStaffItems[0],
+        isActive: false,
+      });
+    });
+
+    expect(menuItemService.updateMenuItemAvailability).not.toHaveBeenCalled();
+  });
 });

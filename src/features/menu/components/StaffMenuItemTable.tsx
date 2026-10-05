@@ -49,6 +49,7 @@ export interface StaffMenuItemTableProps {
   onLimitChange?: (limit: number) => void;
   onResetFilters?: () => void;
   onToggleAvailability?: (item: StaffMenuItem) => void;
+  pendingItemIds?: Set<string>;
   togglingItemId?: string | null;
 }
 
@@ -66,6 +67,7 @@ export function StaffMenuItemTable({
   onLimitChange,
   onResetFilters,
   onToggleAvailability,
+  pendingItemIds,
   togglingItemId,
 }: StaffMenuItemTableProps) {
   const columns = useMemo<Column<StaffMenuItem>[]>(
@@ -168,84 +170,48 @@ export function StaffMenuItemTable({
       {
         key: "isAvailable",
         header: "Stock Status",
-        cell: ({ row: item }) => {
-          const isItemToggling = togglingItemId === item.id;
+        cell: ({ row: item }) => (
+          <div className="space-y-1">
+            {item.isAvailable ? (
+              <Badge
+                variant="outline"
+                className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border-emerald-200 flex items-center gap-1.5 w-fit"
+              >
+                <span className="size-1.5 rounded-full bg-emerald-500" />
+                In Stock
+              </Badge>
+            ) : (
+              <Badge
+                variant="outline"
+                className="rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 border-rose-200 flex items-center gap-1.5 w-fit"
+              >
+                <span className="size-1.5 rounded-full bg-rose-500" />
+                86'd / Out
+              </Badge>
+            )}
 
-          return (
-            <div className="space-y-1">
-              {onToggleAvailability ? (
-                <button
-                  type="button"
-                  disabled={isItemToggling}
-                  onClick={() => onToggleAvailability(item)}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer shadow-2xs select-none active:scale-95",
-                    item.isAvailable
-                      ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300"
-                      : "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100 hover:border-rose-300",
-                    isItemToggling && "opacity-75 cursor-not-allowed",
-                  )}
-                  aria-label={
-                    item.isAvailable
-                      ? `Mark ${item.name} as out of stock`
-                      : `Mark ${item.name} as in stock`
-                  }
-                  title={
-                    item.isAvailable
-                      ? "Click to 86 / mark out of stock"
-                      : "Click to restore / mark in stock"
-                  }
-                >
-                  {isItemToggling ? (
-                    <Loader2 className="size-3 animate-spin" />
-                  ) : (
-                    <span
-                      className={cn(
-                        "size-1.5 rounded-full",
-                        item.isAvailable ? "bg-emerald-500" : "bg-rose-500",
-                      )}
-                    />
-                  )}
-                  <span>{item.isAvailable ? "In Stock" : "86'd / Out"}</span>
-                </button>
-              ) : item.isAvailable ? (
-                <Badge
-                  variant="outline"
-                  className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border-emerald-200 flex items-center gap-1.5 w-fit"
-                >
-                  <span className="size-1.5 rounded-full bg-emerald-500" />
-                  In Stock
-                </Badge>
-              ) : (
-                <Badge
-                  variant="outline"
-                  className="rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 border-rose-200 flex items-center gap-1.5 w-fit"
-                >
-                  <span className="size-1.5 rounded-full bg-rose-500" />
-                  86'd / Out
-                </Badge>
-              )}
-
-              {!item.isAvailable && item.autoResetAt && (
-                <p className="text-[10px] text-neutral-500 flex items-center gap-1 font-medium pl-1">
-                  <Clock className="size-2.5 text-neutral-400" />
-                  Reset:{" "}
-                  {new Date(item.autoResetAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              )}
-            </div>
-          );
-        },
+            {!item.isAvailable && item.autoResetAt && (
+              <p className="text-[10px] text-neutral-500 flex items-center gap-1 font-medium pl-1">
+                <Clock className="size-2.5 text-neutral-400" />
+                Reset:{" "}
+                {new Date(item.autoResetAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            )}
+          </div>
+        ),
       },
       {
         key: "actions",
         header: "Actions",
         align: "right",
         cell: ({ row: item }) => {
-          const isItemToggling = togglingItemId === item.id;
+          const isItemToggling = pendingItemIds
+            ? pendingItemIds.has(item.id)
+            : togglingItemId === item.id;
+          const isItemDisabled = isItemToggling || item.isActive === false;
 
           if (!onToggleAvailability) return null;
 
@@ -255,15 +221,23 @@ export function StaffMenuItemTable({
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={isItemToggling}
+                disabled={isItemDisabled}
                 onClick={() => onToggleAvailability(item)}
                 className={cn(
                   "h-8 px-3 rounded-xl text-xs font-semibold border gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95",
                   item.isAvailable
                     ? "border-rose-200 bg-rose-50/60 text-rose-700 hover:bg-rose-100 hover:text-rose-800"
                     : "border-emerald-200 bg-emerald-50/60 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800",
+                  isItemDisabled && "opacity-60 cursor-not-allowed",
                 )}
                 aria-label={`Toggle ${item.name} availability`}
+                title={
+                  item.isActive === false
+                    ? "Cannot modify inactive item"
+                    : item.isAvailable
+                      ? `Mark ${item.name} as 86'd / Out of Stock`
+                      : `Restore ${item.name} to In Stock`
+                }
               >
                 {isItemToggling ? (
                   <Loader2 className="size-3.5 animate-spin" />
@@ -279,7 +253,7 @@ export function StaffMenuItemTable({
         },
       },
     ],
-    [onSort, onToggleAvailability, togglingItemId],
+    [onSort, onToggleAvailability, pendingItemIds, togglingItemId],
   );
 
   return (

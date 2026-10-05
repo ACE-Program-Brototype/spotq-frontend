@@ -204,6 +204,9 @@ export const MENU_MESSAGES = {
   NO_STAFF_MENU_ITEMS: "No menu items found.",
   NO_STAFF_MENU_ITEMS_DESC: "No menu items match your search or filter criteria.",
   CLEAR_FILTERS_BTN: "Clear Filters",
+  ITEM_AVAILABILITY_UPDATE_FAILED: "Failed to update item availability",
+  ITEM_MARKED_IN_STOCK: "Item marked as in stock",
+  ITEM_MARKED_OUT_OF_STOCK: "Item marked as out of stock",
 } as const;
 
 export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;

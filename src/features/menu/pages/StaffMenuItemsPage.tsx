@@ -43,6 +43,7 @@ export default function StaffMenuItemsPage() {
     toggleSort,
     resetFilters,
     toggleAvailability,
+    pendingItemIds,
     togglingItemId,
   } = useStaffMenuItems();
 
@@ -188,6 +189,7 @@ export default function StaffMenuItemsPage() {
             onLimitChange={setLimit}
             onResetFilters={resetFilters}
             onToggleAvailability={toggleAvailability}
+            pendingItemIds={pendingItemIds}
             togglingItemId={togglingItemId}
           />
         </div>
