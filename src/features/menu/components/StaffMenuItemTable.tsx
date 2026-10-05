@@ -3,7 +3,7 @@
  * High-density tabular representation using the reusable DataTable component.
  */
 
-import { Clock, Tag, Utensils } from "lucide-react";
+import { Clock, Loader2, Power, PowerOff, Tag, Utensils } from "lucide-react";
 import { useMemo, useState } from "react";
 import { type Column, DataTable } from "@/components/common/table";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +48,9 @@ export interface StaffMenuItemTableProps {
   onPageChange?: (page: number) => void;
   onLimitChange?: (limit: number) => void;
   onResetFilters?: () => void;
+  onToggleAvailability?: (item: StaffMenuItem) => void;
+  pendingItemIds?: Set<string>;
+  togglingItemId?: string | null;
 }
 
 export function StaffMenuItemTable({
@@ -63,6 +66,9 @@ export function StaffMenuItemTable({
   onPageChange,
   onLimitChange,
   onResetFilters,
+  onToggleAvailability,
+  pendingItemIds,
+  togglingItemId,
 }: StaffMenuItemTableProps) {
   const columns = useMemo<Column<StaffMenuItem>[]>(
     () => [
@@ -175,31 +181,79 @@ export function StaffMenuItemTable({
                 In Stock
               </Badge>
             ) : (
-              <div className="space-y-0.5">
-                <Badge
-                  variant="outline"
-                  className="rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 border-rose-200 flex items-center gap-1.5 w-fit"
-                >
-                  <span className="size-1.5 rounded-full bg-rose-500" />
-                  86'd / Out
-                </Badge>
-                {item.autoResetAt && (
-                  <p className="text-[10px] text-neutral-500 flex items-center gap-1 font-medium">
-                    <Clock className="size-2.5 text-neutral-400" />
-                    Reset:{" "}
-                    {new Date(item.autoResetAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                )}
-              </div>
+              <Badge
+                variant="outline"
+                className="rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 border-rose-200 flex items-center gap-1.5 w-fit"
+              >
+                <span className="size-1.5 rounded-full bg-rose-500" />
+                86'd / Out
+              </Badge>
+            )}
+
+            {!item.isAvailable && item.autoResetAt && (
+              <p className="text-[10px] text-neutral-500 flex items-center gap-1 font-medium pl-1">
+                <Clock className="size-2.5 text-neutral-400" />
+                Reset:{" "}
+                {new Date(item.autoResetAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
             )}
           </div>
         ),
       },
+      {
+        key: "actions",
+        header: "Actions",
+        align: "right",
+        cell: ({ row: item }) => {
+          const isItemToggling = pendingItemIds
+            ? pendingItemIds.has(item.id)
+            : togglingItemId === item.id;
+          const isItemDisabled = isItemToggling || item.isActive === false;
+
+          if (!onToggleAvailability) return null;
+
+          return (
+            <div className="flex items-center justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isItemDisabled}
+                onClick={() => onToggleAvailability(item)}
+                className={cn(
+                  "h-8 px-3 rounded-xl text-xs font-semibold border gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95",
+                  item.isAvailable
+                    ? "border-rose-200 bg-rose-50/60 text-rose-700 hover:bg-rose-100 hover:text-rose-800"
+                    : "border-emerald-200 bg-emerald-50/60 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800",
+                  isItemDisabled && "opacity-60 cursor-not-allowed",
+                )}
+                aria-label={`Toggle ${item.name} availability`}
+                title={
+                  item.isActive === false
+                    ? "Cannot modify inactive item"
+                    : item.isAvailable
+                      ? `Mark ${item.name} as 86'd / Out of Stock`
+                      : `Restore ${item.name} to In Stock`
+                }
+              >
+                {isItemToggling ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : item.isAvailable ? (
+                  <PowerOff className="size-3.5 text-rose-600" />
+                ) : (
+                  <Power className="size-3.5 text-emerald-600" />
+                )}
+                <span>{item.isAvailable ? "86 Item" : "Restore"}</span>
+              </Button>
+            </div>
+          );
+        },
+      },
     ],
-    [onSort],
+    [onSort, onToggleAvailability, pendingItemIds, togglingItemId],
   );
 
   return (

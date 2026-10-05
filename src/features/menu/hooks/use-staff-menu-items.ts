@@ -4,11 +4,17 @@
  * Supports 86'd status tracking, category filtering, search, sorting, and pagination.
  */
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import { STAFF_MENU_ITEMS_QUERY_KEY } from "../constants/menu.constants";
+import {
+  MENU_ITEMS_QUERY_KEY,
+  MENU_MESSAGES,
+  STAFF_MENU_ITEMS_QUERY_KEY,
+} from "../constants/menu.constants";
+import { menuItemService } from "../services/menu-item.service";
 import { staffMenuService } from "../services/staff-menu.service";
 import type {
   StaffMenuAvailabilityFilter,
@@ -25,6 +31,7 @@ export interface UseStaffMenuItemsOptions {
 }
 
 export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
+  const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
   const restaurantId = options?.restaurantId || user?.restaurantId || "";
   const pollInterval = options?.refetchInterval ?? 30 * 1000;
@@ -175,6 +182,86 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     return mainResult;
   }, [mainQuery, availableStatsQuery, outOfStockStatsQuery]);
 
+  const [pendingItemIds, setPendingItemIds] = useState<Set<string>>(() => new Set());
+
+  // Toggle Menu Item Availability
+  const toggleItemAvailabilityMutation = useMutation({
+    mutationFn: async ({ itemId, isAvailable }: { itemId: string; isAvailable: boolean }) => {
+      return menuItemService.updateMenuItemAvailability(restaurantId, itemId, isAvailable);
+    },
+    onMutate: async ({ itemId, isAvailable }) => {
+      await queryClient.cancelQueries({
+        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId],
+      });
+      const previousQueries = queryClient.getQueriesData({
+        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId],
+      });
+
+      // Optimistically update the staff menu cache across matching queries for this restaurant
+      queryClient.setQueriesData(
+        { queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId] },
+        (old: unknown) => {
+          if (!old) return old;
+          const oldObj = old as { items?: StaffMenuItem[]; totalCount?: number };
+          if (oldObj.items && Array.isArray(oldObj.items)) {
+            return {
+              ...oldObj,
+              items: oldObj.items.map((item) =>
+                item.id === itemId ? { ...item, isAvailable } : item,
+              ),
+            };
+          }
+          return old;
+        },
+      );
+
+      return { previousQueries, itemId };
+    },
+    onError: (err, _variables, context) => {
+      if (context?.previousQueries) {
+        for (const [key, data] of context.previousQueries) {
+          queryClient.setQueryData(key, data);
+        }
+      }
+      toast.error(
+        err instanceof Error ? err.message : MENU_MESSAGES.ITEM_AVAILABILITY_UPDATE_FAILED,
+      );
+    },
+    onSuccess: (data) => {
+      toast.success(
+        data.isAvailable
+          ? MENU_MESSAGES.ITEM_MARKED_IN_STOCK
+          : MENU_MESSAGES.ITEM_MARKED_OUT_OF_STOCK,
+      );
+    },
+    onSettled: (_data, _error, variables) => {
+      if (variables?.itemId) {
+        setPendingItemIds((prev) => {
+          const next = new Set(prev);
+          next.delete(variables.itemId);
+          return next;
+        });
+      }
+      queryClient.invalidateQueries({
+        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [MENU_ITEMS_QUERY_KEY, restaurantId],
+      });
+    },
+  });
+
+  const toggleAvailability = useCallback(
+    (item: StaffMenuItem) => {
+      if (!restaurantId || !item.id || item.isActive === false) return;
+      if (pendingItemIds.has(item.id)) return;
+
+      setPendingItemIds((prev) => new Set(prev).add(item.id));
+      toggleItemAvailabilityMutation.mutate({ itemId: item.id, isAvailable: !item.isAvailable });
+    },
+    [restaurantId, pendingItemIds, toggleItemAvailabilityMutation],
+  );
+
   return {
     items,
     restaurantId,
@@ -205,5 +292,13 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
     setIncludeInactive: handleIncludeInactiveChange,
     toggleSort,
     resetFilters,
+    // Toggle Availability
+    toggleAvailability,
+    pendingItemIds,
+    isTogglingAvailability: pendingItemIds.size > 0,
+    togglingItemId:
+      pendingItemIds.size > 0
+        ? Array.from(pendingItemIds)[0]
+        : toggleItemAvailabilityMutation.variables?.itemId || null,
   };
 }
