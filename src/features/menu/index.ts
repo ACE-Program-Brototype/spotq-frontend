@@ -11,6 +11,11 @@ export * from "./components/CreateCategoryModal";
 export * from "./components/CreateMenuItemForm";
 export * from "./components/EditCategoryModal";
 export * from "./components/ImageUploader";
+export * from "./components/item-detail/MenuItemAddonsCard";
+export * from "./components/item-detail/MenuItemDetailHeader";
+export * from "./components/item-detail/MenuItemDetailSkeleton";
+export * from "./components/item-detail/MenuItemHeroCard";
+export * from "./components/item-detail/MenuItemVariantsCard";
 export * from "./components/MenuCategoryForm";
 export * from "./components/MenuItemFilters";
 export * from "./components/MenuItemStatsCards";
@@ -28,6 +33,7 @@ export * from "./constants/menu.constants";
 export * from "./hooks/use-create-menu-item";
 export * from "./hooks/use-delete-menu-item";
 export * from "./hooks/use-menu-categories";
+export * from "./hooks/use-menu-item-detail";
 export * from "./hooks/use-menu-items";
 export * from "./hooks/use-restaurant-addons";
 export * from "./hooks/use-staff-menu-items";
@@ -36,6 +42,7 @@ export * from "./hooks/use-update-menu-category";
 // Pages
 export * from "./pages/CreateMenuItemPage";
 export * from "./pages/RestaurantMenuCategoriesPage";
+export * from "./pages/RestaurantMenuItemDetailPage";
 export * from "./pages/RestaurantMenuItemsPage";
 export { default as StaffMenuItemsPage } from "./pages/StaffMenuItemsPage";
 
