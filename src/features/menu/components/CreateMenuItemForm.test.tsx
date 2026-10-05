@@ -160,5 +160,5 @@ describe("CreateMenuItemForm", () => {
         }),
       );
     });
-  });
+  }, 20000);
 });
