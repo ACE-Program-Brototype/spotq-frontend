@@ -39,6 +39,7 @@ export function MenuItemHeroCard({ item }: MenuItemHeroCardProps) {
               <Skeleton className="h-full w-full" />
             ) : displayImageUrl && !imageError ? (
               <img
+                key={displayImageUrl}
                 src={displayImageUrl}
                 alt={item.name}
                 className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"

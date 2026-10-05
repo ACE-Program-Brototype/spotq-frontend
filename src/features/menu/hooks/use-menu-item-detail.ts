@@ -91,14 +91,17 @@ export function useMenuItemDetail(options?: UseMenuItemDetailOptions) {
     },
   });
 
+  const { mutate: toggleAvailability, isPending: isTogglingItem } = toggleItemAvailabilityMutation;
+  const { mutate: deleteMenuItem, isPending: isDeleting } = deleteMenuItemMutation;
+
   const handleToggleItemAvailability = useCallback(() => {
     if (!item) return;
-    toggleItemAvailabilityMutation.mutate({ isAvailable: !item.isAvailable });
-  }, [item, toggleItemAvailabilityMutation]);
+    toggleAvailability({ isAvailable: !item.isAvailable });
+  }, [item, toggleAvailability]);
 
   const handleDeleteItem = useCallback(() => {
-    deleteMenuItemMutation.mutate();
-  }, [deleteMenuItemMutation]);
+    deleteMenuItem();
+  }, [deleteMenuItem]);
 
   return {
     item,
@@ -108,8 +111,8 @@ export function useMenuItemDetail(options?: UseMenuItemDetailOptions) {
     isError,
     error,
     refetch,
-    isTogglingItem: toggleItemAvailabilityMutation.isPending,
-    isDeleting: deleteMenuItemMutation.isPending,
+    isTogglingItem,
+    isDeleting,
     handleToggleItemAvailability,
     handleDeleteItem,
   };
