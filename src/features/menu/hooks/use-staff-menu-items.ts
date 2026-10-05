@@ -190,25 +190,30 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
       return menuItemService.updateMenuItemAvailability(restaurantId, itemId, isAvailable);
     },
     onMutate: async ({ itemId, isAvailable }) => {
-      await queryClient.cancelQueries({ queryKey: [STAFF_MENU_ITEMS_QUERY_KEY] });
+      await queryClient.cancelQueries({
+        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId],
+      });
       const previousQueries = queryClient.getQueriesData({
-        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY],
+        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId],
       });
 
-      // Optimistically update the staff menu cache across matching queries
-      queryClient.setQueriesData({ queryKey: [STAFF_MENU_ITEMS_QUERY_KEY] }, (old: unknown) => {
-        if (!old) return old;
-        const oldObj = old as { items?: StaffMenuItem[]; totalCount?: number };
-        if (oldObj.items && Array.isArray(oldObj.items)) {
-          return {
-            ...oldObj,
-            items: oldObj.items.map((item) =>
-              item.id === itemId ? { ...item, isAvailable } : item,
-            ),
-          };
-        }
-        return old;
-      });
+      // Optimistically update the staff menu cache across matching queries for this restaurant
+      queryClient.setQueriesData(
+        { queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId] },
+        (old: unknown) => {
+          if (!old) return old;
+          const oldObj = old as { items?: StaffMenuItem[]; totalCount?: number };
+          if (oldObj.items && Array.isArray(oldObj.items)) {
+            return {
+              ...oldObj,
+              items: oldObj.items.map((item) =>
+                item.id === itemId ? { ...item, isAvailable } : item,
+              ),
+            };
+          }
+          return old;
+        },
+      );
 
       return { previousQueries, itemId };
     },
@@ -237,8 +242,12 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
           return next;
         });
       }
-      queryClient.invalidateQueries({ queryKey: [STAFF_MENU_ITEMS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [MENU_ITEMS_QUERY_KEY] });
+      queryClient.invalidateQueries({
+        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [MENU_ITEMS_QUERY_KEY, restaurantId],
+      });
     },
   });
 
