@@ -162,7 +162,7 @@ export const menuService = {
    */
   async getMenuItem(restaurantId: string, menuItemId: string): Promise<MenuItemDetails> {
     if (!restaurantId || !menuItemId) {
-      throw new Error("Restaurant ID and Menu Item ID are required.");
+      throw new Error(MENU_MESSAGES.RESTAURANT_OR_ITEM_ID_REQUIRED);
     }
 
     const response = await apiClient
@@ -170,7 +170,7 @@ export const menuService = {
       .json<ApiResponse<MenuItemDetails>>();
 
     if (!response.success) {
-      throw new Error(response.message || MENU_MESSAGES.FETCH_ERROR);
+      throw new Error(response.message || MENU_MESSAGES.ITEMS_FETCH_ERROR);
     }
 
     return response.data;
@@ -185,7 +185,7 @@ export const menuService = {
     payload: UpdateMenuItemPayload,
   ): Promise<MenuItemResponse> {
     if (!restaurantId || !menuItemId) {
-      throw new Error("Restaurant ID and Menu Item ID are required.");
+      throw new Error(MENU_MESSAGES.RESTAURANT_OR_ITEM_ID_REQUIRED);
     }
 
     const defaultVariant = payload.variants?.find((v) => v.isDefault) ?? payload.variants?.[0];
@@ -198,19 +198,36 @@ export const menuService = {
 
     const formattedAddons = payload.addons?.map((addon) => ({
       addonId: addon.addonId,
-      ...(addon.priceOverride !== undefined ? { priceOverride: Number(addon.priceOverride) } : {}),
+      ...(addon.priceOverride === null
+        ? { priceOverride: null }
+        : addon.priceOverride !== undefined
+          ? { priceOverride: Number(addon.priceOverride) }
+          : {}),
     }));
 
-    const images = payload.imageUrl?.trim()
-      ? [{ objectKey: payload.imageUrl.trim(), displayOrder: 0 }]
-      : undefined;
+    let images: Array<{ id?: string; objectKey: string; displayOrder: number }> | undefined;
+    if (payload.images !== undefined) {
+      images = payload.images.map((img, idx) => ({
+        ...(img.id ? { id: img.id } : {}),
+        objectKey: img.objectKey.trim(),
+        displayOrder: img.displayOrder ?? idx,
+      }));
+    } else if (payload.imageUrl !== undefined) {
+      images = payload.imageUrl?.trim()
+        ? [{ objectKey: payload.imageUrl.trim(), displayOrder: 0 }]
+        : [];
+    }
 
     const isVegetarian =
-      payload.dietaryType !== undefined ? payload.dietaryType === "VEG" : undefined;
+      payload.dietaryType !== undefined
+        ? payload.dietaryType === "VEG"
+        : payload.isVegetarian !== undefined
+          ? payload.isVegetarian
+          : undefined;
 
     const formattedVariants = payload.variants?.map((v) => ({
       ...(v.id ? { id: v.id } : {}),
-      name: v.portion ? `${v.name.trim()} (${v.portion.trim()})` : v.name.trim(),
+      name: v.portion?.trim() ? `${v.name.trim()} (${v.portion.trim()})` : v.name.trim(),
       price: Number(v.price),
       sku: v.sku?.trim() || null,
       isDefault: Boolean(v.isDefault),
@@ -222,11 +239,18 @@ export const menuService = {
         json: {
           ...(payload.name !== undefined ? { name: payload.name.trim() } : {}),
           ...(payload.categoryId !== undefined ? { categoryId: payload.categoryId } : {}),
-          ...(payload.description !== undefined ? { description: payload.description.trim() } : {}),
+          ...(payload.description !== undefined
+            ? { description: payload.description ? payload.description.trim() : null }
+            : {}),
           ...(calculatedPrice !== undefined ? { price: calculatedPrice } : {}),
           ...(isVegetarian !== undefined ? { isVegetarian } : {}),
           ...(payload.preparationTime !== undefined
-            ? { preparationTime: Number(payload.preparationTime) }
+            ? {
+                preparationTime:
+                  payload.preparationTime !== null && payload.preparationTime !== undefined
+                    ? Number(payload.preparationTime)
+                    : null,
+              }
             : {}),
           ...(payload.isAvailable !== undefined ? { isAvailable: payload.isAvailable } : {}),
           ...(payload.isFeatured !== undefined ? { isFeatured: payload.isFeatured } : {}),

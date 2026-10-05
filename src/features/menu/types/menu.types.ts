@@ -30,7 +30,13 @@ export interface MenuItemVariantInput {
 
 export interface MenuItemAddonLinkInput {
   addonId: string;
-  priceOverride?: number;
+  priceOverride?: number | null;
+}
+
+export interface MenuItemImageInput {
+  id?: string;
+  objectKey: string;
+  displayOrder?: number;
 }
 
 export interface CreateMenuItemPayload {
@@ -50,10 +56,12 @@ export interface UpdateMenuItemPayload {
   price?: number;
   name?: string;
   categoryId?: string;
-  description?: string;
+  description?: string | null;
   dietaryType?: DietaryType;
-  preparationTime?: number;
-  imageUrl?: string;
+  isVegetarian?: boolean;
+  preparationTime?: number | null;
+  imageUrl?: string | null;
+  images?: MenuItemImageInput[];
   isAvailable?: boolean;
   isFeatured?: boolean;
   variants?: MenuItemVariantInput[];

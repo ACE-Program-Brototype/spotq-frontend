@@ -12,7 +12,13 @@ export function EditMenuItemPage() {
   const user = useAuthStore((state) => state.user);
   const restaurantId = user?.restaurantId || "";
 
+  const isParamsMissing = !restaurantId || !itemId;
   const { item, isLoading, isError, error } = useMenuItemDetails(restaurantId, itemId || "");
+
+  const hasError = isParamsMissing || isError;
+  const errorMessage = isParamsMissing
+    ? MENU_MESSAGES.RESTAURANT_OR_ITEM_ID_REQUIRED
+    : error?.message || MENU_MESSAGES.EDIT_ITEM_ERROR_FALLBACK;
 
   return (
     <div className="space-y-6 pb-12 max-w-4xl mx-auto">
@@ -27,7 +33,11 @@ export function EditMenuItemPage() {
         </Link>
         <ChevronRight className="size-3" />
         <span className="text-[#9a3412] font-bold">
-          {isLoading ? "Loading..." : item?.name ? `Edit: ${item.name}` : "Edit Dish"}
+          {isLoading
+            ? MENU_MESSAGES.LOADING_BREADCRUMB
+            : item?.name
+              ? `${MENU_MESSAGES.EDIT_ITEM_BREADCRUMB_PREFIX}${item.name}`
+              : MENU_MESSAGES.EDIT_ITEM_FALLBACK_TITLE}
         </span>
       </div>
 
@@ -40,7 +50,7 @@ export function EditMenuItemPage() {
             className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-500 hover:text-neutral-900 mb-2 transition-colors cursor-pointer"
           >
             <ArrowLeft className="size-3.5" />
-            Back to Catalog
+            {MENU_MESSAGES.BACK_TO_CATALOG}
           </button>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
             {MENU_MESSAGES.EDIT_ITEM_TITLE}
@@ -52,24 +62,26 @@ export function EditMenuItemPage() {
       </div>
 
       {/* Loading State */}
-      {isLoading && (
+      {isLoading && !isParamsMissing && (
         <div className="rounded-2xl border border-[#eddcd4] bg-white p-12 flex flex-col items-center justify-center space-y-4 shadow-xs">
           <Loader2 className="size-8 text-[#e8631b] animate-spin" />
-          <p className="text-sm font-semibold text-neutral-600">Loading menu item details...</p>
+          <p className="text-sm font-semibold text-neutral-600">
+            {MENU_MESSAGES.LOADING_ITEM_DETAILS}
+          </p>
         </div>
       )}
 
       {/* Error State */}
-      {isError && !isLoading && (
+      {hasError && !isLoading && (
         <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-8 text-center space-y-4">
           <div className="inline-flex size-12 items-center justify-center rounded-full bg-rose-100 text-rose-600">
             <AlertCircle className="size-6" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-rose-900">Failed to Load Menu Item</h3>
-            <p className="text-xs text-rose-600 mt-1">
-              {error?.message || "The requested menu item could not be found or failed to load."}
-            </p>
+            <h3 className="text-base font-bold text-rose-900">
+              {MENU_MESSAGES.EDIT_ITEM_ERROR_TITLE}
+            </h3>
+            <p className="text-xs text-rose-600 mt-1">{errorMessage}</p>
           </div>
           <Button
             type="button"
@@ -77,13 +89,13 @@ export function EditMenuItemPage() {
             onClick={() => navigate("/restaurant/menu/items")}
             className="border-rose-300 text-rose-700 hover:bg-rose-100"
           >
-            Return to Menu Items
+            {MENU_MESSAGES.BTN_RETURN_TO_ITEMS}
           </Button>
         </div>
       )}
 
       {/* Edit Form */}
-      {!isLoading && !isError && item && (
+      {!isLoading && !hasError && item && (
         <CreateMenuItemForm
           restaurantId={restaurantId}
           mode="edit"

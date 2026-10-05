@@ -196,6 +196,15 @@ export const MENU_MESSAGES = {
   RESTAURANT_ID_REQUIRED: "Restaurant ID is required.",
   FETCH_ERROR: "Failed to load menu categories.",
   ITEMS_FETCH_ERROR: "Failed to load menu items.",
+  RESTAURANT_OR_ITEM_ID_REQUIRED: "Restaurant ID and Menu Item ID are required.",
+  LOADING_ITEM_DETAILS: "Loading menu item details...",
+  LOADING_BREADCRUMB: "Loading...",
+  EDIT_ITEM_FALLBACK_TITLE: "Edit Dish",
+  EDIT_ITEM_BREADCRUMB_PREFIX: "Edit: ",
+  EDIT_ITEM_ERROR_TITLE: "Failed to Load Menu Item",
+  EDIT_ITEM_ERROR_FALLBACK: "The requested menu item could not be found or failed to load.",
+  BTN_RETURN_TO_ITEMS: "Return to Menu Items",
+  BACK_TO_CATALOG: "Back to Catalog",
 } as const;
 
 export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;

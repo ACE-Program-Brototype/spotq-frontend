@@ -114,4 +114,16 @@ describe("EditMenuItemPage", () => {
     expect(screen.getByDisplayValue("Single Patty")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^update menu item$/i })).toBeInTheDocument();
   });
+
+  it("renders error state when restaurantId is missing", async () => {
+    useAuthStore.setState({
+      user: null,
+      isAuthenticated: false,
+    });
+
+    renderPage();
+
+    expect(await screen.findByText(/failed to load menu item/i)).toBeInTheDocument();
+    expect(screen.getByText(/restaurant id and menu item id are required/i)).toBeInTheDocument();
+  });
 });

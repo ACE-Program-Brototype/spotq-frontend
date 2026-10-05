@@ -9,8 +9,8 @@ import { useRestaurantAddons } from "@/features/menu/hooks/use-restaurant-addons
 interface AddonSelectorProps {
   restaurantId: string;
   selectedIds: string[];
-  overrides: Record<string, number>;
-  onSelectionChange: (ids: string[], overrides: Record<string, number>) => void;
+  overrides: Record<string, number | null | undefined>;
+  onSelectionChange: (ids: string[], overrides: Record<string, number | null | undefined>) => void;
   onOpenCreateModal: () => void;
 }
 
@@ -166,7 +166,9 @@ export function AddonSelector({
                         step="0.01"
                         min="0"
                         placeholder={String(addon.price)}
-                        value={overridePrice !== undefined ? overridePrice : ""}
+                        value={
+                          overridePrice !== undefined && overridePrice !== null ? overridePrice : ""
+                        }
                         onChange={(e) => handleOverrideChange(addon.id, e.target.value)}
                         className="pl-5 h-6 text-[11px] bg-white border-[#ecd8cc]"
                       />
