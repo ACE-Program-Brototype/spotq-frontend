@@ -42,6 +42,8 @@ export default function StaffMenuItemsPage() {
     setAvailabilityFilter,
     toggleSort,
     resetFilters,
+    toggleAvailability,
+    togglingItemId,
   } = useStaffMenuItems();
 
   const isFiltered = Boolean(
@@ -185,6 +187,8 @@ export default function StaffMenuItemsPage() {
             onPageChange={setPage}
             onLimitChange={setLimit}
             onResetFilters={resetFilters}
+            onToggleAvailability={toggleAvailability}
+            togglingItemId={togglingItemId}
           />
         </div>
       )}

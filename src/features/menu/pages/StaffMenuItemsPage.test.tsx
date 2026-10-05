@@ -1,8 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { menuCategoryService } from "../services/menu-category.service";
+import { menuItemService } from "../services/menu-item.service";
 import { staffMenuService } from "../services/staff-menu.service";
 import StaffMenuItemsPage from "./StaffMenuItemsPage";
 
@@ -16,6 +17,19 @@ jest.mock("../services/staff-menu.service", () => ({
 jest.mock("../services/menu-category.service", () => ({
   menuCategoryService: {
     getCategories: jest.fn(),
+  },
+}));
+
+jest.mock("../services/menu-item.service", () => ({
+  menuItemService: {
+    updateMenuItemAvailability: jest.fn(),
+  },
+}));
+
+jest.mock("sonner", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
   },
 }));
 
@@ -191,5 +205,34 @@ describe("StaffMenuItemsPage", () => {
 
     expect(await screen.findByTestId("staff-menu-empty-state")).toBeInTheDocument();
     expect(screen.getByText("No menu items yet")).toBeInTheDocument();
+  });
+
+  it("handles availability toggle action from table", async () => {
+    (menuItemService.updateMenuItemAvailability as jest.Mock).mockResolvedValue({
+      isAvailable: false,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <StaffMenuItemsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Chicken Biriyani")).toBeInTheDocument();
+
+    const toggleBtn = screen.getByRole("button", {
+      name: "Mark Chicken Biriyani as out of stock",
+    });
+    fireEvent.click(toggleBtn);
+
+    await waitFor(() => {
+      expect(menuItemService.updateMenuItemAvailability).toHaveBeenCalledWith(
+        "rest-123",
+        "item-1",
+        false,
+      );
+    });
   });
 });

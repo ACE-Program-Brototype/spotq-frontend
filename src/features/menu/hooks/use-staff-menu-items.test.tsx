@@ -1,13 +1,28 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
+import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { menuItemService } from "../services/menu-item.service";
 import { staffMenuService } from "../services/staff-menu.service";
 import { useStaffMenuItems } from "./use-staff-menu-items";
 
 jest.mock("../services/staff-menu.service", () => ({
   staffMenuService: {
     getStaffMenuItems: jest.fn(),
+  },
+}));
+
+jest.mock("../services/menu-item.service", () => ({
+  menuItemService: {
+    updateMenuItemAvailability: jest.fn(),
+  },
+}));
+
+jest.mock("sonner", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
   },
 }));
 
@@ -218,5 +233,30 @@ describe("useStaffMenuItems", () => {
     expect(result.current.sortBy).toBe("createdAt");
     expect(result.current.sortOrder).toBe("desc");
     expect(result.current.page).toBe(1);
+  });
+
+  it("handles toggleAvailability mutation successfully", async () => {
+    (menuItemService.updateMenuItemAvailability as jest.Mock).mockResolvedValue({
+      isAvailable: false,
+    });
+
+    const { result } = renderHook(() => useStaffMenuItems(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.items).toHaveLength(2);
+    });
+
+    await act(async () => {
+      result.current.toggleAvailability(mockStaffItems[0]);
+    });
+
+    await waitFor(() => {
+      expect(menuItemService.updateMenuItemAvailability).toHaveBeenCalledWith(
+        "rest-123",
+        "item-1",
+        false,
+      );
+      expect(toast.success).toHaveBeenCalledWith("Item marked as out of stock");
+    });
   });
 });
