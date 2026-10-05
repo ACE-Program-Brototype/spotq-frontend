@@ -16,9 +16,12 @@ export function MenuItemHeroCard({ item }: MenuItemHeroCardProps) {
   const rawImageKey =
     item.imageUrl || item.image || item.images?.[0]?.objectKey || item.images?.[0]?.url;
 
-  const { data: presignedUrl, isLoading: isImageLoading } = usePresignedUrl(rawImageKey);
+  const isHttpUrl = Boolean(rawImageKey && /^https?:\/\//i.test(rawImageKey));
+  const { data: presignedUrl, isLoading: isImageLoading } = usePresignedUrl(
+    !isHttpUrl ? rawImageKey : null,
+  );
 
-  const displayImageUrl = presignedUrl || rawImageKey;
+  const displayImageUrl = isHttpUrl ? rawImageKey : presignedUrl || rawImageKey;
 
   // Resolve Dietary configuration
   const dietaryValue = item.dietaryType || (item.isVegetarian ? "VEG" : "NON_VEG");

@@ -101,7 +101,7 @@ export const menuItemService = {
    * Fetches single menu item detail by ID.
    * Calls: GET /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}
    */
-  async getMenuItemById(restaurantId: string, menuItemId: string): Promise<MenuItemDetail> {
+  async getMenuItem(restaurantId: string, menuItemId: string): Promise<MenuItemDetail> {
     if (!restaurantId || !menuItemId) {
       throw new Error("Restaurant ID and Menu Item ID are required.");
     }
@@ -113,6 +113,10 @@ export const menuItemService = {
     const data = "data" in response && response.data ? response.data : (response as MenuItemDetail);
 
     return data;
+  },
+
+  async getMenuItemById(restaurantId: string, menuItemId: string): Promise<MenuItemDetail> {
+    return this.getMenuItem(restaurantId, menuItemId);
   },
 
   /**
@@ -132,7 +136,11 @@ export const menuItemService = {
       .patch(MENU_ENDPOINTS.ITEM_STATUS(restaurantId, menuItemId), {
         json: { isAvailable },
       })
-      .json<{ success: boolean; data?: { isAvailable: boolean } }>();
+      .json<{ success: boolean; message?: string; data?: { isAvailable: boolean } }>();
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to update menu item availability");
+    }
 
     return response.data ?? { isAvailable };
   },

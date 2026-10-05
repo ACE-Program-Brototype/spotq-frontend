@@ -13,6 +13,7 @@ import type {
   MenuItemResponse,
 } from "@/features/menu/types/menu.types";
 import { apiClient } from "@/lib/api/client";
+import { menuItemService } from "./menu-item.service";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -154,5 +155,12 @@ export const menuService = {
     }
 
     return response.data;
+  },
+
+  /**
+   * Fetch a single menu item by ID
+   */
+  async getMenuItem(restaurantId: string, menuItemId: string) {
+    return menuItemService.getMenuItem(restaurantId, menuItemId);
   },
 };

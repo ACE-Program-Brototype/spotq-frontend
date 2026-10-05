@@ -9,10 +9,11 @@ export interface MenuItemAddonsCardProps {
 }
 
 function AddonImageThumbnail({ imageKey, name }: { imageKey?: string | null; name: string }) {
-  const { data: presignedUrl, isLoading } = usePresignedUrl(imageKey);
+  const isHttpUrl = Boolean(imageKey && /^https?:\/\//i.test(imageKey));
+  const { data: presignedUrl, isLoading } = usePresignedUrl(!isHttpUrl ? imageKey : null);
   const [hasError, setHasError] = useState(false);
 
-  const displayUrl = presignedUrl || imageKey;
+  const displayUrl = isHttpUrl ? imageKey : presignedUrl || imageKey;
 
   if (isLoading) {
     return (
@@ -74,7 +75,8 @@ export function MenuItemAddonsCard({ addons = [] }: MenuItemAddonsCardProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {addons.map((addon) => {
-            const price = addon.priceOverride != null ? addon.priceOverride : (addon.price ?? 0);
+            const rawPrice = addon.priceOverride != null ? addon.priceOverride : (addon.price ?? 0);
+            const price = Number(rawPrice);
 
             return (
               <div
@@ -107,7 +109,7 @@ export function MenuItemAddonsCard({ addons = [] }: MenuItemAddonsCardProps) {
                 <div className="flex items-center justify-between pt-3 mt-3 border-t border-[#f3e6de]">
                   <span className="text-xs font-semibold text-neutral-500">Price</span>
                   <span className="text-sm font-extrabold text-[#9a3412]">
-                    +₹{typeof price === "number" ? price.toFixed(2) : price}
+                    +₹{Number.isFinite(price) ? price.toFixed(2) : "0.00"}
                   </span>
                 </div>
               </div>

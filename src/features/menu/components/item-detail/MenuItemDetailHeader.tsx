@@ -116,16 +116,22 @@ export function MenuItemDetailHeader({
 
       <ConfirmDialog
         open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
+        onOpenChange={(open) => {
+          if (!open && !isDeleting) {
+            setShowDeleteDialog(false);
+          }
+        }}
         title={MENU_MESSAGES.DELETE_ITEM_CONFIRM_TITLE}
         description={MENU_MESSAGES.DELETE_ITEM_CONFIRM_DESCRIPTION(item.name)}
         confirmText={MENU_MESSAGES.BTN_DELETE}
         cancelText={MENU_MESSAGES.BTN_CANCEL}
         isLoading={isDeleting}
         loadingText={MENU_MESSAGES.BTN_DELETING}
-        onConfirm={() => {
-          setShowDeleteDialog(false);
-          onDelete();
+        onConfirm={onDelete}
+        onCancel={() => {
+          if (!isDeleting) {
+            setShowDeleteDialog(false);
+          }
         }}
         confirmVariant="destructive"
       />

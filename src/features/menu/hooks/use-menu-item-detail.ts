@@ -1,6 +1,6 @@
 /**
  * Hook for Single Menu Item Detail Management
- * Handles fetching item details, toggling item & variant availability, and delete operations.
+ * Handles fetching item details, toggling item availability, and delete operations.
  */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

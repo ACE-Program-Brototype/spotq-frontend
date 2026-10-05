@@ -53,7 +53,9 @@ export function MenuItemVariantsCard({ variants, basePrice }: MenuItemVariantsCa
             </thead>
             <tbody className="divide-y divide-[#f3e6de]">
               {variants.map((variant) => {
-                const priceDelta = variant.price - basePrice;
+                const variantPrice = Number(variant.price) || 0;
+                const parsedBasePrice = Number(basePrice) || 0;
+                const priceDelta = variantPrice - parsedBasePrice;
 
                 return (
                   <tr key={variant.id} className="hover:bg-[#fef9f6] transition-colors">
@@ -91,10 +93,7 @@ export function MenuItemVariantsCard({ variants, basePrice }: MenuItemVariantsCa
                     <td className="py-3.5 px-4">
                       <div className="flex items-baseline gap-1.5">
                         <span className="font-extrabold text-neutral-900 text-sm">
-                          ₹
-                          {typeof variant.price === "number"
-                            ? variant.price.toFixed(2)
-                            : variant.price}
+                          ₹{variantPrice.toFixed(2)}
                         </span>
                         {!variant.isDefault && priceDelta !== 0 && (
                           <span
