@@ -2,11 +2,7 @@ import type { DietaryType } from "@/features/menu/constants/menu.constants";
 import type { MenuItemDetailAddon, MenuItemDetailVariant } from "./menu-item.types";
 
 export type { MenuCategory } from "./menu-category.types";
-export type {
-  MenuItemDetail,
-  MenuItemDetailAddon,
-  MenuItemDetailVariant,
-} from "./menu-item.types";
+export type { MenuItemDetail } from "./menu-item.types";
 
 export interface MenuAddon {
   id: string;
@@ -82,26 +78,6 @@ export interface MenuItemDetailImage {
   displayOrder: number;
 }
 
-export interface MenuItemDetailVariant {
-  id: string;
-  sku: string | null;
-  name: string;
-  price: number;
-  isDefault: boolean;
-  isAvailable: boolean;
-}
-
-export interface MenuItemDetailAddon {
-  id: string;
-  addonId: string;
-  name: string;
-  description: string | null;
-  price: number;
-  priceOverride: number | null;
-  imageKey: string | null;
-  isAvailable: boolean;
-}
-
 export interface MenuItemDetails {
   id: string;
   restaurantId: string;
@@ -114,6 +90,7 @@ export interface MenuItemDetails {
   preparationTime: number | null;
   calories: number | null;
   isVegetarian: boolean;
+  dietaryType?: DietaryType;
   isFeatured: boolean;
   isAvailable: boolean;
   images: MenuItemDetailImage[];

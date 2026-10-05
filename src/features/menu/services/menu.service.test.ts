@@ -370,7 +370,9 @@ describe("menuService", () => {
       await expect(menuService.updateMenuItem("res-1", "item-1", { name: "Test" })).rejects.toThrow(
         "Update failed",
       );
-    it("delegates to menuItemService.getMenuItem", async () => {
+    });
+
+    it("fetches single menu item by ID", async () => {
       const mockDetail = {
         id: "item-1",
         restaurantId: "res-1",

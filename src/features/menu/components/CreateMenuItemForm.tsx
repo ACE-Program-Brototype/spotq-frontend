@@ -34,7 +34,8 @@ export interface CreateMenuItemFormProps {
   initialData?: MenuItemDetails | null;
 }
 
-const parseVariantNamePortion = (fullName: string) => {
+const parseVariantNamePortion = (fullName: string = "") => {
+  if (!fullName) return { name: "", portion: "" };
   const match = fullName.match(/^(.*?)\s*\((.*?)\)$/);
   if (match) {
     return { name: match[1].trim(), portion: match[2].trim() };
@@ -98,8 +99,7 @@ export function CreateMenuItemForm({
       });
 
       const initialDietaryType: DietaryType =
-        (initialData as MenuItemDetails & { dietaryType?: DietaryType })?.dietaryType ||
-        (initialData.isVegetarian ? "VEG" : "NON_VEG");
+        initialData.dietaryType || (initialData.isVegetarian ? "VEG" : "NON_VEG");
 
       return {
         name: initialData.name,
@@ -235,7 +235,12 @@ export function CreateMenuItemForm({
           categoryId: data.categoryId,
           description: data.description || undefined,
           dietaryType: data.dietaryType,
-          preparationTime: data.preparationTime ? Number(data.preparationTime) : undefined,
+          preparationTime:
+            data.preparationTime !== undefined &&
+            data.preparationTime !== null &&
+            !Number.isNaN(Number(data.preparationTime))
+              ? Number(data.preparationTime)
+              : undefined,
           imageUrl: data.imageUrl || undefined,
           isAvailable: data.isAvailable,
           variants: data.variants,

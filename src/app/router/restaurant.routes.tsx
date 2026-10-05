@@ -183,6 +183,8 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "menu/items/:itemId/edit",
             Component: EditMenuItemPage,
+          },
+          {
             path: "menu/items/:itemId",
             Component: RestaurantMenuItemDetailPage,
           },
