@@ -76,7 +76,7 @@ export const AUTH_ENDPOINTS = {
   LOGOUT: "auth/users/logout",
   REFRESH_TOKEN: "auth/users/refresh-token",
   REGISTER: "auth/users/register",
-  VERIFY_OTP: "auth/users/verify-otp",
+  VERIFY_OTP: "auth/users/verify-email",
   RESEND_EMAIL_OTP: "auth/users/resend-email-otp",
   FORGOT_PASSWORD: "auth/users/forgot-password",
   FORGOT_PASSWORD_VERIFY: "auth/users/forgot-password/verify",
