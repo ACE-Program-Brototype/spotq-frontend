@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import LegalPageLayout from "@/layouts/LegalLayout";
 
 export default function TermsAndConditionsPage() {
@@ -265,9 +266,9 @@ export default function TermsAndConditionsPage() {
           <p>
             For complete details regarding how your personal information is stored, protected, and
             processed, please review our full{" "}
-            <a href="/privacy" className="font-semibold text-spotq-orange">
+            <Link to="/privacy" className="font-semibold text-spotq-orange">
               Privacy Policy
-            </a>
+            </Link>
             .
           </p>
         </div>

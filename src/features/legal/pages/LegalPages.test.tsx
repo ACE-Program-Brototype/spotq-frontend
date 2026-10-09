@@ -56,6 +56,11 @@ describe("Legal Pages", () => {
     expect(
       screen.getByRole("heading", { name: /7\. refunds & failed transactions/i }),
     ).toBeInTheDocument();
+    const privacyLinks = screen.getAllByRole("link", { name: /privacy policy/i });
+    expect(privacyLinks.length).toBeGreaterThanOrEqual(1);
+    for (const link of privacyLinks) {
+      expect(link).toHaveAttribute("href", "/privacy");
+    }
   });
 
   it("renders PrivacyPolicyPage with headings and content", () => {
