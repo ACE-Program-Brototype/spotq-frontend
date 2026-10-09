@@ -47,6 +47,15 @@ describe("Legal Pages", () => {
 
     expect(screen.getByRole("heading", { name: /^terms & conditions$/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /1\. about spotq/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /4\. food ordering & fulfillment/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /5\. pricing, billing & payments/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /7\. refunds & failed transactions/i }),
+    ).toBeInTheDocument();
   });
 
   it("renders PrivacyPolicyPage with headings and content", () => {

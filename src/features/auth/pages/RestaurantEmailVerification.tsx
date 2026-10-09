@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import restaurantEmailVerificationBg from "@/features/auth/assets/restaurant-email-verification-bg.jpeg";
@@ -16,6 +16,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
   const [apiError, setApiError] = useState<string | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const { mutateAsync: sendRestaurantOtp, isPending: isSendingOtp } = useRestaurantEmailOtp();
 
@@ -24,7 +25,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
   const isValid = RESTAURANT_EMAIL_REGEX.test(trimmedEmail);
   const showValidationError = touched && !isValid;
 
-  const canSubmit = isValid && !isSendingOtp;
+  const canSubmit = isValid && termsAccepted && !isSendingOtp;
 
   const executeRequestOtp = async (nextEmail: string) => {
     if (requestOtp) {
@@ -146,12 +147,46 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
                 </div>
               )}
 
+              <div className="mt-5 flex items-start gap-2.5 text-left">
+                <input
+                  id="restaurantTermsConsent"
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 rounded border-neutral-300 text-orange-500 focus:ring-orange-500 cursor-pointer"
+                />
+                <label
+                  htmlFor="restaurantTermsConsent"
+                  className="text-xs leading-5 text-neutral-600 cursor-pointer"
+                >
+                  I agree to the{" "}
+                  <a
+                    href="/restaurant/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-neutral-900 underline underline-offset-2 hover:text-orange-600"
+                  >
+                    Partner Terms &amp; Conditions
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="/restaurant/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-neutral-900 underline underline-offset-2 hover:text-orange-600"
+                  >
+                    Privacy Policy
+                  </a>
+                  .
+                </label>
+              </div>
+
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className={`mt-6 flex w-full items-center justify-center rounded-lg py-2 text-base font-semibold text-white transition-colors ${
+                className={`mt-5 flex w-full items-center justify-center rounded-lg py-2.5 text-base font-semibold text-white transition-colors ${
                   canSubmit
-                    ? "bg-orange-500 hover:bg-orange-600"
+                    ? "bg-orange-500 hover:bg-orange-600 cursor-pointer"
                     : "cursor-not-allowed bg-neutral-300"
                 }`}
               >
@@ -184,16 +219,6 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
                   "Continue"
                 )}
               </button>
-
-              <p className="mt-6 text-center text-xs text-neutral-500">
-                By continuing, I agree to SpotQ's{" "}
-                <Link
-                  to="/restaurant/terms"
-                  className="font-medium text-neutral-700 underline underline-offset-2 hover:text-orange-600"
-                >
-                  terms &amp; conditions
-                </Link>
-              </p>
             </form>
           </div>
         </div>
