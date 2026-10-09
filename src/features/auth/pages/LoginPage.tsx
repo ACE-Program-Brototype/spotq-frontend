@@ -86,17 +86,29 @@ export default function LoginPage() {
 
           <GoogleLoginButton onSuccess={handleGoogleSuccess} disabled={isLoading} />
 
-          <p className="text-center text-sm text-gray-500">
-            Don't have an account?{" "}
-            <button
-              type="button"
-              onClick={() => navigate("/register")}
-              className="font-bold text-spotq-orange hover:text-spotq-orange/80 transition-colors cursor-pointer"
-            >
-              <span className="hidden md:inline">Register now</span>
-              <span className="inline md:hidden">Register</span>
-            </button>
-          </p>
+          <div className="text-center text-sm text-gray-500 space-y-2">
+            <p>
+              Don&apos;t have an account?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/register")}
+                className="font-bold text-spotq-orange hover:text-spotq-orange/80 transition-colors cursor-pointer"
+              >
+                <span className="hidden md:inline">Register now</span>
+                <span className="inline md:hidden">Register</span>
+              </button>
+            </p>
+            <p>
+              Didn&apos;t verify your email yet?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/verify-otp")}
+                className="font-semibold text-spotq-orange hover:text-spotq-orange/80 transition-colors cursor-pointer"
+              >
+                Verify email
+              </button>
+            </p>
+          </div>
         </div>
 
         <div className="h-6 md:hidden" />
