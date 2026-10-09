@@ -47,6 +47,20 @@ describe("Legal Pages", () => {
 
     expect(screen.getByRole("heading", { name: /^terms & conditions$/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /1\. about spotq/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /4\. food ordering & fulfillment/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /5\. pricing, billing & payments/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /7\. refunds & failed transactions/i }),
+    ).toBeInTheDocument();
+    const privacyLinks = screen.getAllByRole("link", { name: /privacy policy/i });
+    expect(privacyLinks.length).toBeGreaterThanOrEqual(1);
+    for (const link of privacyLinks) {
+      expect(link).toHaveAttribute("href", "/privacy");
+    }
   });
 
   it("renders PrivacyPolicyPage with headings and content", () => {

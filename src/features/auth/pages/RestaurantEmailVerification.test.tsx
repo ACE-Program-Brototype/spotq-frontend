@@ -40,9 +40,13 @@ describe("RestaurantEmailVerification", () => {
     );
 
     const emailInput = screen.getByLabelText(/enter your restaurant email to continue/i);
+    const termsCheckbox = screen.getByRole("checkbox", { name: /partner terms & conditions/i });
+
+    expect(termsCheckbox).not.toBeChecked();
 
     fireEvent.change(emailInput, { target: { value: "invalid-email" } });
     fireEvent.blur(emailInput);
+    fireEvent.click(termsCheckbox);
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
 
     expect(screen.getByText(/please enter a valid email address\./i)).toBeInTheDocument();
@@ -61,7 +65,7 @@ describe("RestaurantEmailVerification", () => {
     expect(onCodeSent).toHaveBeenCalledWith("user@spotq.com");
   });
 
-  it("enables the continue button for valid emails containing 's' like owner@spotq.com", () => {
+  it("enables the continue button only when valid email is entered and terms checkbox is checked", () => {
     render(
       <MemoryRouter>
         <QueryClientProvider client={queryClient}>
@@ -71,11 +75,25 @@ describe("RestaurantEmailVerification", () => {
     );
 
     const emailInput = screen.getByLabelText(/enter your restaurant email to continue/i);
+    const termsCheckbox = screen.getByRole("checkbox", { name: /partner terms & conditions/i });
     const continueBtn = screen.getByRole("button", { name: /continue/i });
 
+    // Initial state: disabled and checkbox un-checked
+    expect(termsCheckbox).not.toBeChecked();
     expect(continueBtn).toBeDisabled();
 
+    // Valid email entered, but terms not yet accepted: still disabled
     fireEvent.change(emailInput, { target: { value: "owner@spotq.com" } });
+    expect(continueBtn).toBeDisabled();
+
+    // Terms accepted: now enabled
+    fireEvent.click(termsCheckbox);
+    expect(termsCheckbox).toBeChecked();
     expect(continueBtn).not.toBeDisabled();
+
+    // Uncheck terms: becomes disabled again
+    fireEvent.click(termsCheckbox);
+    expect(termsCheckbox).not.toBeChecked();
+    expect(continueBtn).toBeDisabled();
   });
 });
