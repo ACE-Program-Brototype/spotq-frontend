@@ -89,13 +89,12 @@ export default function RestaurantTermsPage() {
             customer discovery channels. You must upload authentic documentation, including:
           </p>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li>
-              A valid Food Safety and Standards Authority of India (FSSAI) license or equivalent
-              food regulatory permit
-            </li>
-            <li>GST Registration Certificate (GSTIN) where legally applicable</li>
-            <li>Bank account settlement documentation (cancelled cheque / bank passbook)</li>
-            <li>Trade/Municipal establishment permits</li>
+            <li>Food Safety and Standards Authority of India (FSSAI) Certificate</li>
+            <li>Business Registration Certificate (Shop &amp; Establishment / Incorporation)</li>
+            <li>Owner Identity Proof (Government-issued identification)</li>
+            <li>Goods and Services Tax (GST) Certificate</li>
+            <li>Business PAN Card</li>
+            <li>Authentic photographs of the restaurant premises, dining area, and kitchen</li>
           </ul>
           <p>
             You must maintain active regulatory licenses throughout your tenure on SpotQ. SpotQ
@@ -201,9 +200,10 @@ export default function RestaurantTermsPage() {
               GST.
             </li>
             <li>
-              <strong>Settlement Schedule:</strong> Net customer order collections (less processing
-              fees and refunds) are settled directly to your registered bank account on a T+2
-              business day rolling schedule.
+              <strong>Settlement Schedule:</strong> Net customer order collections (less applicable
+              processing fees and approved refunds) are disbursed to your registered bank account in
+              accordance with the settlement schedule and bank clearing cycles configured in the
+              partner dashboard.
             </li>
           </ul>
         </div>

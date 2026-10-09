@@ -125,8 +125,10 @@ export default function TermsAndConditionsPage() {
         <h2>4. Food Ordering &amp; Fulfillment</h2>
         <div className="mt-4 space-y-4">
           <p>
-            SpotQ enables guests to place pre-orders while waiting in queue, scan table QR codes for
-            self-service dine-in ordering, or place takeaway orders.
+            Where supported by participating restaurant partners, SpotQ enables guests to place
+            pre-orders while waiting in queue, scan table QR codes for self-service dine-in
+            ordering, or submit takeaway orders. Feature availability may vary by restaurant
+            location and service tier.
           </p>
           <p>
             Submitting an order constitutes an offer to purchase the specified menu items. The order
