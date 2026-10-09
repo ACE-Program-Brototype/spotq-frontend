@@ -98,16 +98,6 @@ export default function LoginPage() {
                 <span className="inline md:hidden">Register</span>
               </button>
             </p>
-            <p>
-              Didn&apos;t verify your email yet?{" "}
-              <button
-                type="button"
-                onClick={() => navigate("/verify-otp")}
-                className="font-semibold text-spotq-orange hover:text-spotq-orange/80 transition-colors cursor-pointer"
-              >
-                Verify email
-              </button>
-            </p>
           </div>
         </div>
 
