@@ -1,5 +1,6 @@
-import { Plus, Search, Sparkles } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,7 +12,6 @@ interface AddonSelectorProps {
   selectedIds: string[];
   overrides: Record<string, number | null | undefined>;
   onSelectionChange: (ids: string[], overrides: Record<string, number | null | undefined>) => void;
-  onOpenCreateModal: () => void;
 }
 
 export function AddonSelector({
@@ -19,7 +19,6 @@ export function AddonSelector({
   selectedIds,
   overrides,
   onSelectionChange,
-  onOpenCreateModal,
 }: AddonSelectorProps) {
   const { addons, isLoading } = useRestaurantAddons(restaurantId);
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,14 +69,6 @@ export function AddonSelector({
           </h4>
           <p className="text-xs text-neutral-500">{MENU_MESSAGES.ADDONS_SECTION_DESC}</p>
         </div>
-        <button
-          type="button"
-          onClick={onOpenCreateModal}
-          className="flex items-center gap-1 text-xs font-bold text-[#e8631b] hover:text-[#9a3412] px-2.5 py-1 rounded-lg border border-[#fae2d3] bg-[#fffaf5] hover:bg-[#fef3ec] transition-colors"
-        >
-          <Plus className="size-3.5" />
-          {MENU_MESSAGES.ADD_ADDON_BTN}
-        </button>
       </div>
 
       {addons.length > 5 && (
@@ -99,15 +90,15 @@ export function AddonSelector({
         </div>
       ) : addons.length === 0 ? (
         <div className="rounded-xl border border-dashed border-[#ecd8cc] p-4 text-center bg-[#fffdfb]">
-          <p className="text-xs text-neutral-500 mb-2">{MENU_MESSAGES.NO_ADDONS_FOUND}</p>
-          <button
-            type="button"
-            onClick={onOpenCreateModal}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#e8631b] hover:bg-[#cf5413] px-3 py-1.5 rounded-lg transition-colors"
+          <p className="text-xs text-neutral-500 mb-2">
+            No add-ons created yet. Manage your modifiers and add-ons in the Modifiers section.
+          </p>
+          <Link
+            to="/restaurant/menu/modifiers"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#e8631b] hover:text-[#9a3412] underline"
           >
-            <Plus className="size-3.5" />
-            {MENU_MESSAGES.ADD_ADDON_BTN}
-          </button>
+            Manage Add-ons
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto pr-1">

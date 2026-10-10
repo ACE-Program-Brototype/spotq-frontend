@@ -7,6 +7,7 @@ import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage"
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
 import CreateMenuItemPage from "@/features/menu/pages/CreateMenuItemPage";
 import EditMenuItemPage from "@/features/menu/pages/EditMenuItemPage";
+import RestaurantMenuAddonsPage from "@/features/menu/pages/RestaurantMenuAddonsPage";
 import RestaurantMenuCategoriesPage from "@/features/menu/pages/RestaurantMenuCategoriesPage";
 import RestaurantMenuItemDetailPage from "@/features/menu/pages/RestaurantMenuItemDetailPage";
 import RestaurantMenuItemsPage from "@/features/menu/pages/RestaurantMenuItemsPage";
@@ -171,6 +172,10 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: "menu/categories",
             Component: RestaurantMenuCategoriesPage,
+          },
+          {
+            path: "menu/modifiers",
+            Component: RestaurantMenuAddonsPage,
           },
           {
             path: "menu/items",
