@@ -3,6 +3,8 @@
  */
 
 // Components - Creation & Management
+export * from "./components/AddonCard";
+export * from "./components/AddonListSkeleton";
 export * from "./components/AddonSelector";
 export * from "./components/CategoryCard";
 export * from "./components/CategoryListSkeleton";
@@ -43,6 +45,7 @@ export * from "./hooks/use-update-menu-item";
 // Pages
 export * from "./pages/CreateMenuItemPage";
 export * from "./pages/EditMenuItemPage";
+export * from "./pages/RestaurantMenuAddonsPage";
 export * from "./pages/RestaurantMenuCategoriesPage";
 export * from "./pages/RestaurantMenuItemDetailPage";
 export * from "./pages/RestaurantMenuItemsPage";
