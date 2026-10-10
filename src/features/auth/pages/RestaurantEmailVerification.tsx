@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import restaurantEmailVerificationBg from "@/features/auth/assets/restaurant-email-verification-bg.jpeg";
-import { RESTAURANT_EMAIL_REGEX } from "@/features/auth/constants/auth.constants";
+import { EMAIL_REGEX } from "@/features/auth/constants/auth.constants";
 import { useRestaurantEmailOtp } from "@/features/auth/hooks/useRestaurantEmailOtp";
 import type { EmailVerificationProps } from "@/features/auth/types/auth.types";
 import { useOnboardStore } from "@/features/onboard/store/onboard.store";
@@ -21,7 +21,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
 
   const trimmedEmail = email.trim();
   const isEmpty = trimmedEmail.length === 0;
-  const isValid = RESTAURANT_EMAIL_REGEX.test(trimmedEmail);
+  const isValid = EMAIL_REGEX.test(trimmedEmail);
   const showValidationError = touched && !isValid;
 
   const canSubmit = isValid && !isSendingOtp;

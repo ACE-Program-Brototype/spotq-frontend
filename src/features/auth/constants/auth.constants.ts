@@ -178,7 +178,6 @@ export const PUBLIC_AUTH_ENDPOINTS = [
 ] as const;
 
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-export const RESTAURANT_EMAIL_REGEX = EMAIL_REGEX;
 export const RESTAURANT_OTP_LENGTH = 6;
 export const RESTAURANT_RESEND_COOLDOWN_SECONDS = 60;
 export const RESTAURANT_MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
