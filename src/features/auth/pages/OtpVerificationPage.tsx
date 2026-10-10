@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils/cn";
 import { OtpHeroPanel } from "../components/OtpHeroPanel";
 import { OtpInput } from "../components/OtpInput";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { AUTH_MESSAGES, EMAIL_REGEX } from "../constants/auth.constants";
 import { useResendOtp } from "../hooks/use-resend-otp";
 import { useVerifyOtp } from "../hooks/use-verify-email";
 import { useOtpTimer } from "../hooks/useOtpTimer";
@@ -56,8 +56,7 @@ export default function OtpVerificationPage() {
     event.preventDefault();
     const cleanEmail = inputEmail.trim();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
+    if (!cleanEmail || !EMAIL_REGEX.test(cleanEmail)) {
       setEmailError(AUTH_MESSAGES.ENTER_VALID_EMAIL);
       return;
     }
