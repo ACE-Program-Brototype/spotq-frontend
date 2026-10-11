@@ -3,7 +3,7 @@
  * Displays existing menu add-ons with a creation action to open the Create Add-on Modal.
  */
 
-import { AlertCircle, Plus, RefreshCw, Sparkles } from "lucide-react";
+import { Plus, RefreshCw, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -12,13 +12,50 @@ import { AddonListSkeleton } from "@/features/menu/components/AddonListSkeleton"
 import { CreateAddonModal } from "@/features/menu/components/CreateAddonModal";
 import { useRestaurantAddons } from "@/features/menu/hooks/use-restaurant-addons";
 import { cn } from "@/lib/utils/cn";
+import { EmptyState, ErrorState } from "../components/MenuPageStateUI";
 
 export default function RestaurantMenuAddonsPage() {
   const user = useAuthStore((state) => state.user);
   const restaurantId = user?.restaurantId || "";
 
-  const { addons, isLoading, isError, refetch } = useRestaurantAddons(restaurantId);
+  const { addons, isLoading, isError, refetch } =
+    useRestaurantAddons(restaurantId);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const renderContent = () => {
+    if (isLoading) return <AddonListSkeleton />;
+
+
+    if (isError) {
+      return (
+        <ErrorState
+          title="Failed to load add-ons"
+          description="We encountered a problem loading your modifiers and add-ons. Please check your connection and try again."
+          onRetry={refetch}
+        />
+      );
+    }
+
+    if (addons.length === 0) {
+      return (
+        <EmptyState
+          icon={<Sparkles className="size-6" />}
+          title="No add-ons found"
+          description="No modifiers or complementary add-ons are currently available for this restaurant."
+          createLabel="Create Your First Add-on"
+          onCreateClick={() => setIsCreateModalOpen(true)}
+        />
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {addons.map((addon) => (
+          <AddonCard key={addon.id} addon={addon} />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="flex-1 space-y-6 p-6 sm:p-8 bg-[#faf7f5]/40 min-h-full">
@@ -34,7 +71,8 @@ export default function RestaurantMenuAddonsPage() {
             </span>
           </div>
           <p className="text-sm text-neutral-500 mt-1">
-            Manage complementary items, toppings, and extras available for your menu items.
+            Manage complementary items, toppings, and extras available for your
+            menu items.
           </p>
         </div>
 
@@ -47,7 +85,9 @@ export default function RestaurantMenuAddonsPage() {
             disabled={isLoading}
             className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] text-xs font-medium"
           >
-            <RefreshCw className={`size-3.5 mr-1.5 ${isLoading ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`size-3.5 mr-1.5 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
 
@@ -66,50 +106,7 @@ export default function RestaurantMenuAddonsPage() {
       </div>
 
       {/* Main Content Area */}
-      {isLoading ? (
-        <AddonListSkeleton />
-      ) : isError ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-8 text-center space-y-3">
-          <AlertCircle className="size-8 text-rose-500 mx-auto" />
-          <h3 className="text-base font-bold text-neutral-900">Failed to load add-ons</h3>
-          <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-            We encountered a problem loading your modifiers and add-ons. Please check your
-            connection and try again.
-          </p>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => refetch()}
-            className="rounded-xl border-rose-300 text-rose-700 hover:bg-rose-100/50 text-xs"
-          >
-            Try Again
-          </Button>
-        </div>
-      ) : addons.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#eddcd4] bg-white p-12 text-center space-y-3">
-          <div className="size-12 rounded-2xl bg-[#fef3ec] text-[#e8631b] flex items-center justify-center mx-auto border border-[#fae2d3]">
-            <Sparkles className="size-6" />
-          </div>
-          <h3 className="text-base font-bold text-neutral-900">No add-ons found</h3>
-          <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-            No modifiers or complementary add-ons are currently available for this restaurant.
-          </p>
-          <Button
-            type="button"
-            onClick={() => setIsCreateModalOpen(true)}
-            className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white text-xs font-semibold px-4 py-2"
-          >
-            <Plus className="size-4 mr-1.5" />
-            Create Your First Add-on
-          </Button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {addons.map((addon) => (
-            <AddonCard key={addon.id} addon={addon} />
-          ))}
-        </div>
-      )}
+      {renderContent()}
 
       {/* Create Add-on Modal */}
       <CreateAddonModal
