@@ -1,46 +1,9 @@
-import { Sparkles, Utensils } from "lucide-react";
-import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Sparkles } from "lucide-react";
 import type { MenuAddon } from "@/features/menu/types/menu.types";
-import { usePresignedUrl } from "@/hooks/usePresignedUrl";
+import { AddonThumbnail } from "./AddonThumpnail";
 
 export interface AddonCardProps {
   addon: MenuAddon;
-}
-
-function AddonThumbnail({ imageKey, name }: { imageKey?: string | null; name: string }) {
-  const isHttpUrl = Boolean(imageKey && /^https?:\/\//i.test(imageKey));
-  const { data: presignedUrl, isLoading } = usePresignedUrl(!isHttpUrl ? imageKey : null);
-  const [hasError, setHasError] = useState(false);
-
-  const displayUrl = isHttpUrl ? imageKey : presignedUrl || imageKey;
-
-  if (isLoading) {
-    return (
-      <div className="size-12 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center">
-        <Skeleton className="h-full w-full" />
-      </div>
-    );
-  }
-
-  if (displayUrl && !hasError) {
-    return (
-      <div className="size-12 shrink-0 rounded-xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center">
-        <img
-          src={displayUrl}
-          alt={name}
-          className="h-full w-full object-cover"
-          onError={() => setHasError(true)}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div className="size-12 shrink-0 rounded-xl overflow-hidden bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#e8631b]">
-      <Utensils className="size-5 opacity-70" />
-    </div>
-  );
 }
 
 export function AddonCard({ addon }: AddonCardProps) {
