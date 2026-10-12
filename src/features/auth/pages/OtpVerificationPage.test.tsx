@@ -98,6 +98,27 @@ describe("OtpVerificationPage", () => {
     expect(screen.getByText(/customer@example\.com/i)).toBeInTheDocument();
   });
 
+  it("normalizes email with trim and lowercase before sending verification code", async () => {
+    const user = userEvent.setup();
+    mockHandleResendOtp.mockResolvedValue({ success: true });
+
+    render(
+      <MemoryRouter initialEntries={["/verify-otp"]}>
+        <OtpVerificationPage />
+      </MemoryRouter>,
+    );
+
+    const emailInput = screen.getByLabelText(/email address/i);
+    await user.type(emailInput, "  Customer@Example.COM  ");
+
+    const submitBtn = screen.getByRole("button", { name: /send verification code/i });
+    await user.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockHandleResendOtp).toHaveBeenCalledWith("customer@example.com");
+    });
+  });
+
   it("renders OTP verification view directly when email is in search params", () => {
     render(
       <MemoryRouter initialEntries={["/verify-otp?email=user%40spotq.com"]}>

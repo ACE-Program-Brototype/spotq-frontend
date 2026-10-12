@@ -34,15 +34,24 @@ export const useLogin = () => {
           ? err.data
           : undefined;
 
+      const errorCode =
+        errorData?.code ||
+        (errorData as { error?: { code?: string } } | undefined)?.error?.code ||
+        (typeof (errorData as { error?: string } | undefined)?.error === "string"
+          ? (errorData as { error?: string }).error
+          : undefined);
+
       const isUnverified =
         (isHTTPError(err) &&
-          (err.response.status === 403 || errorData?.code === "EMAIL_NOT_VERIFIED") &&
-          (errorData?.code === "EMAIL_NOT_VERIFIED" || /not verified/i.test(err.message))) ||
-        (err instanceof Error && /not verified/i.test(err.message));
+          (err.response.status === 403 || errorCode === "EMAIL_NOT_VERIFIED") &&
+          (errorCode === "EMAIL_NOT_VERIFIED" ||
+            /email.*(?:not verified|verification)|not verified/i.test(err.message))) ||
+        (err instanceof Error &&
+          /email.*(?:not verified|verification)|not verified/i.test(err.message));
 
       if (isUnverified) {
         toast.info(AUTH_MESSAGES.EMAIL_NOT_VERIFIED_PROMPT);
-        navigate(`/verify-otp?email=${encodeURIComponent(values.email)}`);
+        navigate(`/verify-otp?email=${encodeURIComponent(values.email.trim().toLowerCase())}`);
         return;
       }
 

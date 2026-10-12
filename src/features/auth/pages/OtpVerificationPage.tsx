@@ -1,5 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, ArrowRight, Loader2, Mail, ShieldCheck } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -8,22 +10,52 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils/cn";
 import { OtpHeroPanel } from "../components/OtpHeroPanel";
 import { OtpInput } from "../components/OtpInput";
-import { AUTH_MESSAGES, EMAIL_REGEX } from "../constants/auth.constants";
+import { CUSTOMER_OTP_COOLDOWN_SECONDS } from "../constants/auth.constants";
 import { useResendOtp } from "../hooks/use-resend-otp";
 import { useVerifyOtp } from "../hooks/use-verify-email";
 import { useOtpTimer } from "../hooks/useOtpTimer";
+import {
+  type RequestVerificationEmailFormValues,
+  requestVerificationEmailSchema,
+} from "../schemas/verify-otp.schema";
 
 export default function OtpVerificationPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialEmail = searchParams.get("email")?.trim() || "";
+  const searchParamEmail = searchParams.get("email")?.trim().toLowerCase() || "";
 
-  const [email, setEmail] = useState(initialEmail);
-  const [inputEmail, setInputEmail] = useState(initialEmail);
-  const [emailError, setEmailError] = useState("");
+  const [email, setEmail] = useState(searchParamEmail);
   const [otp, setOtp] = useState("");
+  const prevSearchParamEmailRef = useRef(searchParamEmail);
 
-  const { seconds, startTimer } = useOtpTimer({ email, defaultSeconds: 59 });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<RequestVerificationEmailFormValues>({
+    resolver: zodResolver(requestVerificationEmailSchema),
+    defaultValues: {
+      email: searchParamEmail,
+    },
+  });
+
+  const watchedEmail = watch("email");
+
+  useEffect(() => {
+    if (searchParamEmail !== prevSearchParamEmailRef.current) {
+      prevSearchParamEmailRef.current = searchParamEmail;
+      setEmail(searchParamEmail);
+      setValue("email", searchParamEmail);
+    }
+  }, [searchParamEmail, setValue]);
+
+  const { seconds, startTimer } = useOtpTimer({
+    email,
+    defaultSeconds: CUSTOMER_OTP_COOLDOWN_SECONDS,
+  });
   const { handleVerifyOtp, isLoading } = useVerifyOtp();
   const { handleResendOtp, isLoading: isResendLoading } = useResendOtp();
 
@@ -49,19 +81,12 @@ export default function OtpVerificationPage() {
     }
 
     setOtp("");
-    startTimer(59);
+    startTimer(CUSTOMER_OTP_COOLDOWN_SECONDS);
   };
 
-  const handleSendCode = async (event: FormEvent) => {
-    event.preventDefault();
-    const cleanEmail = inputEmail.trim();
+  const onSendVerificationCode = async (data: RequestVerificationEmailFormValues) => {
+    const cleanEmail = data.email.trim().toLowerCase();
 
-    if (!cleanEmail || !EMAIL_REGEX.test(cleanEmail)) {
-      setEmailError(AUTH_MESSAGES.ENTER_VALID_EMAIL);
-      return;
-    }
-
-    setEmailError("");
     const response = await handleResendOtp(cleanEmail);
     if (!response?.success) {
       return;
@@ -70,12 +95,13 @@ export default function OtpVerificationPage() {
     setEmail(cleanEmail);
     setSearchParams({ email: cleanEmail });
     setOtp("");
-    startTimer(59);
+    startTimer(CUSTOMER_OTP_COOLDOWN_SECONDS);
   };
 
   const handleChangeEmail = () => {
     setEmail("");
     setOtp("");
+    reset({ email: "" });
     setSearchParams({});
   };
 
@@ -109,7 +135,7 @@ export default function OtpVerificationPage() {
           </div>
 
           {!email ? (
-            <form onSubmit={handleSendCode} className="space-y-6" noValidate>
+            <form onSubmit={handleSubmit(onSendVerificationCode)} className="space-y-6" noValidate>
               <div className="text-center md:text-left space-y-1.5">
                 <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
                   Verify Your Email
@@ -120,7 +146,7 @@ export default function OtpVerificationPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="verification-email" error={!!emailError}>
+                <Label htmlFor="verification-email" error={!!errors.email}>
                   Email Address
                 </Label>
                 <div className="relative flex items-center">
@@ -128,29 +154,25 @@ export default function OtpVerificationPage() {
                   <Input
                     id="verification-email"
                     type="email"
-                    value={inputEmail}
-                    onChange={(e) => {
-                      setInputEmail(e.target.value);
-                      if (emailError) setEmailError("");
-                    }}
                     placeholder="e.g. alex@example.com"
                     disabled={isResendLoading}
                     className={cn(
                       "h-12 rounded-xl bg-spotq-cream pl-11 pr-4 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
-                      emailError && "border-destructive focus-visible:ring-destructive/30",
+                      errors.email && "border-destructive focus-visible:ring-destructive/30",
                     )}
+                    {...register("email")}
                   />
                 </div>
-                {emailError && (
+                {errors.email?.message && (
                   <p className="text-xs text-destructive mt-1.5" role="alert">
-                    {emailError}
+                    {errors.email.message}
                   </p>
                 )}
               </div>
 
               <Button
                 type="submit"
-                disabled={isResendLoading || !inputEmail.trim()}
+                disabled={isResendLoading || !watchedEmail?.trim()}
                 className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 shadow-sm active:translate-y-[1px] cursor-pointer"
               >
                 {isResendLoading ? (
