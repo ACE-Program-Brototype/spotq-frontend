@@ -17,6 +17,7 @@ import {
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -31,43 +32,43 @@ export type { AdminSidebarProps };
 const adminNavItems: NavItem[] = [
   {
     title: "Dashboard",
-    href: "/admin/dashboard",
+    href: ADMIN_ROUTES.DASHBOARD,
     icon: Grid,
   },
   {
     title: "Restaurants",
     icon: Store,
     children: [
-      { title: "Onboarding", href: "/admin/restaurants/onboarding" },
-      { title: "Restaurant Management", href: "/admin/restaurants/management" },
+      { title: "Onboarding", href: ADMIN_ROUTES.RESTAURANTS_ONBOARDING },
+      { title: "Restaurant Management", href: ADMIN_ROUTES.RESTAURANTS_MANAGEMENT },
     ],
   },
   {
     title: "Customers",
-    href: "/admin/customers",
+    href: ADMIN_ROUTES.CUSTOMERS,
     icon: Users,
   },
   {
     title: "Subscription",
-    href: "/admin/subscription",
+    href: ADMIN_ROUTES.SUBSCRIPTION,
     icon: CreditCard,
   },
   {
     title: "Payments",
     icon: CreditCard,
     children: [
-      { title: "Order Payments", href: "/admin/payments/orders" },
-      { title: "Subscription Payments", href: "/admin/payments/subscriptions" },
+      { title: "Order Payments", href: ADMIN_ROUTES.PAYMENTS.ORDERS },
+      { title: "Subscription Payments", href: ADMIN_ROUTES.PAYMENTS.SUBSCRIPTIONS },
     ],
   },
   {
     title: "Campaigns",
-    href: "/admin/campaigns",
+    href: ADMIN_ROUTES.CAMPAIGNS,
     icon: Megaphone,
   },
   {
     title: "Coupons",
-    href: "/admin/coupons",
+    href: ADMIN_ROUTES.COUPONS,
     icon: Tag,
   },
 ];
@@ -183,7 +184,7 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
 
             const isActive =
               location.pathname === item.href ||
-              (item.href === "/admin/dashboard" && location.pathname === "/admin");
+              (item.href === ADMIN_ROUTES.DASHBOARD && location.pathname === ADMIN_ROUTES.ROOT);
 
             return (
               <Link

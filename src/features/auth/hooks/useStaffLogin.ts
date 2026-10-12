@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { StaffLoginInput, StaffRestaurantOption } from "@/features/auth/types/auth.types";
@@ -65,7 +66,7 @@ export const useStaffLogin = () => {
 
         toast.success(response.message || "Staff login successful!");
 
-        navigate("/staff/dashboard", {
+        navigate(STAFF_ROUTES.DASHBOARD, {
           replace: true,
         });
 
@@ -112,7 +113,7 @@ export const useStaffLogin = () => {
 
         toast.success(response.message || "Staff login successful!");
 
-        navigate("/staff/dashboard", {
+        navigate(STAFF_ROUTES.DASHBOARD, {
           replace: true,
         });
 

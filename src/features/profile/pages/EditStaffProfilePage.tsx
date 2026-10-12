@@ -1,6 +1,7 @@
 import { HTTPError } from "ky";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import { EditStaffProfileForm } from "../components/EditStaffProfileForm";
 import { StaffProfileErrorState } from "../components/StaffProfileErrorState";
@@ -34,7 +35,7 @@ export function EditStaffProfileContent() {
       });
 
       toast.success(PROFILE_MESSAGES.STAFF_UPDATE_SUCCESS);
-      navigate("/staff/profile");
+      navigate(STAFF_ROUTES.PROFILE.ROOT);
     } catch (err: unknown) {
       let status: number | undefined;
 
@@ -64,7 +65,7 @@ export function EditStaffProfileContent() {
   };
 
   const handleCancel = () => {
-    navigate("/staff/profile");
+    navigate(STAFF_ROUTES.PROFILE.ROOT);
   };
 
   if (isLoading) {

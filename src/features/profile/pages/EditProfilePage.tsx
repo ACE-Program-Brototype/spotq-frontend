@@ -7,6 +7,7 @@
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { CustomerSidebar } from "../components/CustomerSidebar";
 import { EditProfileForm } from "../components/EditProfileForm";
@@ -25,7 +26,7 @@ export function EditProfilePage() {
     try {
       await updateProfileMutation.mutateAsync(payload);
       toast.success(PROFILE_MESSAGES.UPDATE_SUCCESS);
-      navigate("/profile");
+      navigate(CUSTOMER_ROUTES.PROFILE.ROOT);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : PROFILE_MESSAGES.UPDATE_FAILED;
       toast.error(errorMessage);
@@ -33,7 +34,7 @@ export function EditProfilePage() {
   };
 
   const handleCancel = () => {
-    navigate("/profile");
+    navigate(CUSTOMER_ROUTES.PROFILE.ROOT);
   };
 
   return (
@@ -44,7 +45,7 @@ export function EditProfilePage() {
         <div className="flex flex-1 w-full flex-col gap-6 min-w-0">
           <div className="flex flex-col gap-3">
             <Link
-              to="/profile"
+              to={CUSTOMER_ROUTES.PROFILE.ROOT}
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors self-start"
             >
               <ArrowLeft className="size-4" />

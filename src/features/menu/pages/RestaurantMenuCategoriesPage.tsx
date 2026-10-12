@@ -11,9 +11,9 @@ import { CategoryCard } from "../components/CategoryCard";
 import { CategoryListSkeleton } from "../components/CategoryListSkeleton";
 import { CreateCategoryModal } from "../components/CreateCategoryModal";
 import { EditCategoryModal } from "../components/EditCategoryModal";
+import { EmptyState, ErrorState } from "../components/MenuPageStateUI";
 import { useMenuCategories } from "../hooks/use-menu-categories";
 import type { MenuCategory } from "../types/menu-category.types";
-import { EmptyState, ErrorState } from "../components/MenuPageStateUI";
 
 export default function RestaurantMenuCategoriesPage() {
   const { categories, restaurantId, isLoading, isError, refetch } = useMenuCategories();
@@ -34,38 +34,38 @@ export default function RestaurantMenuCategoriesPage() {
   };
 
   const renderContent = () => {
-      if (isLoading) return <CategoryListSkeleton />;
-  
-      if (isError) {
-        return (
-          <ErrorState
-            title="Failed to load categories"
-            description="We encountered a problem loading your categories. Please check your connection and try again."
-            onRetry={refetch}
-          />
-        );
-      }
-  
-      if (categories.length === 0) {
-        return (
-          <EmptyState
-            icon={<Layers className="size-6" />}
-            title="No categories found"
-            description="No menu categories are currently available for this restaurant."
-            createLabel="Create Your First Category"
-            onCreateClick={() => setIsCreateModalOpen(true)}
-          />
-        );
-      }
-  
+    if (isLoading) return <CategoryListSkeleton />;
+
+    if (isError) {
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {categories.map((category) => (
-            <CategoryCard key={category.id} category={category} onEdit={handleEditClick} />
-          ))}
-        </div>
+        <ErrorState
+          title="Failed to load categories"
+          description="We encountered a problem loading your categories. Please check your connection and try again."
+          onRetry={refetch}
+        />
       );
-    };
+    }
+
+    if (categories.length === 0) {
+      return (
+        <EmptyState
+          icon={<Layers className="size-6" />}
+          title="No categories found"
+          description="No menu categories are currently available for this restaurant."
+          createLabel="Create Your First Category"
+          onCreateClick={() => setIsCreateModalOpen(true)}
+        />
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {categories.map((category) => (
+          <CategoryCard key={category.id} category={category} onEdit={handleEditClick} />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="flex-1 space-y-6 p-6 sm:p-8 bg-[#faf7f5]/40 min-h-full">

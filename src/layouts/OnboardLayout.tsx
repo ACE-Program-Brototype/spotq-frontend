@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import OnboardSidebar from "@/features/onboard/components/Onboardsidebar";
 import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 
@@ -32,25 +33,25 @@ export default function OnboardLayout() {
 
   const pathname = location.pathname;
 
-  if (pathname.includes("/restaurant/onboarding/documents") && !isBusinessInfoComplete) {
-    return <Navigate to="/restaurant/onboarding/business-information" replace />;
+  if (pathname.includes(RESTAURANT_ROUTES.ONBOARDING.DOCUMENTS) && !isBusinessInfoComplete) {
+    return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />;
   }
 
-  if (pathname.includes("/restaurant/onboarding/location") && !isDocumentsComplete) {
+  if (pathname.includes(RESTAURANT_ROUTES.ONBOARDING.LOCATION) && !isDocumentsComplete) {
     if (!isBusinessInfoComplete) {
-      return <Navigate to="/restaurant/onboarding/business-information" replace />;
+      return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />;
     }
-    return <Navigate to="/restaurant/onboarding/documents" replace />;
+    return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.DOCUMENTS} replace />;
   }
 
-  if (pathname.includes("/restaurant/onboarding/review") && !isLocationComplete) {
+  if (pathname.includes(RESTAURANT_ROUTES.ONBOARDING.REVIEW) && !isLocationComplete) {
     if (!isBusinessInfoComplete) {
-      return <Navigate to="/restaurant/onboarding/business-information" replace />;
+      return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />;
     }
     if (!isDocumentsComplete) {
-      return <Navigate to="/restaurant/onboarding/documents" replace />;
+      return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.DOCUMENTS} replace />;
     }
-    return <Navigate to="/restaurant/onboarding/location" replace />;
+    return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.LOCATION} replace />;
   }
 
   return (

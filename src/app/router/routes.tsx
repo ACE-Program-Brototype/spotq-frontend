@@ -2,10 +2,16 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import StaffAcceptInvitationPage from "@/features/auth/pages/StaffAcceptInvitationPage";
 import RootLayout from "@/layouts/RootLayout";
 import NotFoundPage from "../pages/NotFoundPage";
-import { adminRoutes } from "./admin.routes";
-import { customerRoutes } from "./customer.routes";
-import { restaurantRoutes } from "./restaurant.routes";
-import { staffRoutes } from "./staff.routes";
+import { adminRoutes } from "./admin/admin.routes";
+import { customerRoutes } from "./customer/customer.routes";
+import { restaurantRoutes } from "./restaurant/restaurant.routes";
+import {
+  ADMIN_ROUTES,
+  RESTAURANT_ROUTES,
+  ROOT_ROUTE_PATHS,
+  STAFF_ROUTES,
+} from "./routes.constants";
+import { staffRoutes } from "./staff/staff.routes";
 
 const router = createBrowserRouter(
   [
@@ -13,45 +19,51 @@ const router = createBrowserRouter(
       Component: RootLayout,
       children: [
         {
-          path: "subscription",
-          element: <Navigate to="/restaurant/subscription" replace />,
+          path: ROOT_ROUTE_PATHS.SUBSCRIPTION,
+          element: <Navigate to={RESTAURANT_ROUTES.SUBSCRIPTION} replace />,
         },
         ...customerRoutes,
         {
-          path: "invitations",
+          path: ROOT_ROUTE_PATHS.INVITATIONS.ROOT,
           children: [
             {
-              path: "accept",
+              path: ROOT_ROUTE_PATHS.INVITATIONS.ACCEPT,
               Component: StaffAcceptInvitationPage,
             },
           ],
         },
         {
-          path: "admin",
+          path: ROOT_ROUTE_PATHS.ADMIN,
           children: [
             {
               index: true,
-              element: <Navigate to="login" replace />,
+              element: <Navigate to={ADMIN_ROUTES.LOGIN} replace />,
             },
             ...adminRoutes,
           ],
         },
         {
-          path: "restaurant",
-          children: restaurantRoutes,
-        },
-        {
-          path: "staff",
+          path: ROOT_ROUTE_PATHS.RESTAURANT,
           children: [
             {
               index: true,
-              element: <Navigate to="login" replace />,
+              element: <Navigate to={RESTAURANT_ROUTES.LOGIN} replace />,
+            },
+            ...restaurantRoutes,
+          ],
+        },
+        {
+          path: ROOT_ROUTE_PATHS.STAFF,
+          children: [
+            {
+              index: true,
+              element: <Navigate to={STAFF_ROUTES.LOGIN} replace />,
             },
             ...staffRoutes,
           ],
         },
         {
-          path: "*",
+          path: ROOT_ROUTE_PATHS.CATCH_ALL,
           Component: NotFoundPage,
         },
       ],

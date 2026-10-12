@@ -1,3 +1,4 @@
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import LegalPageLayout from "@/layouts/LegalLayout";
 
 export default function RestaurantTermsPage() {
@@ -22,7 +23,7 @@ export default function RestaurantTermsPage() {
       description="Please read these terms carefully before registering and operating your restaurant on the SpotQ platform."
       lastUpdated="October 9, 2026"
       variant="restaurant"
-      backTo="/restaurant/email/verification"
+      backTo={RESTAURANT_ROUTES.LOGIN}
       backLabel="Back to Restaurant Portal"
     >
       <div className="space-y-4">

@@ -6,6 +6,7 @@
 
 import { AlertCircle, ArrowLeft, RotateCcw } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { MenuItemAddonsCard } from "@/features/menu/components/item-detail/MenuItemAddonsCard";
 import { MenuItemDetailHeader } from "@/features/menu/components/item-detail/MenuItemDetailHeader";
@@ -52,7 +53,7 @@ export function RestaurantMenuItemDetailPage() {
           </p>
           <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
             <Link
-              to="/restaurant/menu/items"
+              to={RESTAURANT_ROUTES.MENU.ITEMS}
               className="inline-flex items-center gap-2 rounded-xl bg-white border border-[#eddcd4] px-4 py-2.5 text-xs font-bold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
             >
               <ArrowLeft className="size-4" />

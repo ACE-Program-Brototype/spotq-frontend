@@ -1,6 +1,7 @@
 import { Eye, Pencil, Sparkles, Trash2, Utensils } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { type Column, DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -164,7 +165,7 @@ export function MenuItemTable({
         cell: ({ row: item }) => (
           <div className="flex items-center justify-end gap-1">
             <Link
-              to={`/restaurant/menu/items/${item.id}`}
+              to={RESTAURANT_ROUTES.MENU.DETAIL(item.id)}
               className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors"
               aria-label={`View details for ${item.name}`}
               title="View menu item"
@@ -184,7 +185,7 @@ export function MenuItemTable({
               </button>
             ) : (
               <Link
-                to={`/restaurant/menu/items/${item.id}/edit`}
+                to={RESTAURANT_ROUTES.MENU.EDIT(item.id)}
                 className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors"
                 aria-label={`Edit ${item.name}`}
                 title="Edit menu item"

@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { staffVerifyOtp } from "@/features/auth/services/auth.service";
 
@@ -12,7 +13,7 @@ export function useStaffVerifyOtp() {
     mutationFn: (data: { email: string; otp: string }) => staffVerifyOtp(data),
     onSuccess: (_, variables) => {
       toast.success(AUTH_MESSAGES.OTP_VERIFIED_SUCCESS);
-      navigate("/staff/forgot-password/reset-password", {
+      navigate(STAFF_ROUTES.FORGOT_PASSWORD_RESET, {
         state: { email: variables.email },
       });
     },

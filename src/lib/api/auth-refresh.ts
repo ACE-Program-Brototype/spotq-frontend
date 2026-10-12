@@ -1,5 +1,6 @@
 import ky from "ky";
 
+import { ADMIN_ROUTES, RESTAURANT_ROUTES, STAFF_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { ApiUser } from "@/features/auth/types/auth.types";
@@ -24,11 +25,11 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
 
     if (!currentRole && typeof window !== "undefined") {
       const path = window.location.pathname;
-      if (path.startsWith("/admin")) {
+      if (path.startsWith(ADMIN_ROUTES.ROOT)) {
         currentRole = "ADMIN";
-      } else if (path.startsWith("/restaurant")) {
+      } else if (path.startsWith(RESTAURANT_ROUTES.ROOT)) {
         currentRole = "RESTAURANT_ADMIN";
-      } else if (path.startsWith("/staff")) {
+      } else if (path.startsWith(STAFF_ROUTES.ROOT)) {
         currentRole = "STAFF";
       }
     }

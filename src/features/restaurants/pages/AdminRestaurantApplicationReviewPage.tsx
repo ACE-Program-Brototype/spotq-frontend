@@ -1,6 +1,7 @@
 import { AlertCircle, ArrowLeft, FileCheck2, ImageIcon, RefreshCw, Store } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { LoadingIndicator } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,7 +46,7 @@ export function AdminRestaurantApplicationReviewPage() {
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/admin/restaurants/onboarding")}
+            onClick={() => navigate(ADMIN_ROUTES.RESTAURANTS_ONBOARDING)}
             className="gap-2 text-slate-600 hover:text-slate-900 -ml-2 text-xs font-semibold cursor-pointer"
           >
             <ArrowLeft className="size-4" />
@@ -72,7 +73,7 @@ export function AdminRestaurantApplicationReviewPage() {
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => navigate("/admin/restaurants/onboarding")}
+                onClick={() => navigate(ADMIN_ROUTES.RESTAURANTS_ONBOARDING)}
                 className="rounded-xl text-xs font-bold cursor-pointer"
               >
                 Back to Applications

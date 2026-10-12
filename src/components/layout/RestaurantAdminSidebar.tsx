@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -32,7 +32,7 @@ export type { RestaurantAdminSidebarProps };
 export function RestaurantAdminSidebar({
   className,
   onNavigate,
-  basePath = "/restaurant",
+  basePath = RESTAURANT_ROUTES.ROOT,
   onLogout,
 }: RestaurantAdminSidebarProps) {
   const location = useLocation();
@@ -47,7 +47,7 @@ export function RestaurantAdminSidebar({
     } else {
       clearAuth();
       queryClient.clear();
-      navigate("/restaurant/email/verification", { replace: true });
+      navigate(RESTAURANT_ROUTES.LOGIN, { replace: true });
     }
   };
 

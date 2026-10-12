@@ -6,6 +6,7 @@
 import { ArrowLeft, Calendar, Clock, Edit2, Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -37,7 +38,7 @@ export function MenuItemDetailHeader({
         {/* Top Breadcrumb Bar */}
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <Link
-            to="/restaurant/menu/items"
+            to={RESTAURANT_ROUTES.MENU.ITEMS}
             className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-600 hover:text-[#9a3412] transition-colors group"
           >
             <ArrowLeft className="size-4 text-neutral-500 group-hover:-translate-x-0.5 transition-transform" />
@@ -116,7 +117,7 @@ export function MenuItemDetailHeader({
 
           <div className="flex items-center gap-2.5">
             <Link
-              to={`/restaurant/menu/items/${item.id}/edit`}
+              to={RESTAURANT_ROUTES.MENU.EDIT(item.id)}
               className={cn(
                 buttonVariants({ variant: "outline", size: "default" }),
                 "rounded-xl border-[#eddcd4] text-[#9a3412] hover:bg-[#fef3ec] hover:border-[#fae2d3] font-semibold text-xs sm:text-sm h-10 px-4 shadow-2xs gap-1.5",

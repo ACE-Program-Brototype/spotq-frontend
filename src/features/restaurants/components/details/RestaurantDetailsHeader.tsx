@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -112,7 +113,7 @@ export function RestaurantDetailsHeader({ restaurant }: RestaurantDetailsHeaderP
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => navigate("/admin/restaurants")}
+          onClick={() => navigate(ADMIN_ROUTES.RESTAURANTS)}
           className="gap-2 text-slate-600 hover:text-slate-900 -ml-2 text-xs font-semibold w-fit cursor-pointer"
           data-testid="restaurant-details-back-btn"
         >

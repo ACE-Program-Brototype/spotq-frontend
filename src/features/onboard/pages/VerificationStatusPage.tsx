@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import {
   getRestaurantVerificationStatus,
   type VerificationStatus,
@@ -45,7 +46,7 @@ export default function VerificationStatusPage() {
             }
             toast.success("Application approved! Redirecting to subscription...");
             setTimeout(() => {
-              navigate("/restaurant/subscription", { replace: true });
+              navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
             }, 1200);
           } else if (isManualRefresh) {
             toast.info(
@@ -74,16 +75,16 @@ export default function VerificationStatusPage() {
   };
 
   const handleEditApplication = () => {
-    navigate("/restaurant/onboarding/business-information");
+    navigate(RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION);
   };
 
   const handleGoToSubscription = () => {
-    navigate("/restaurant/subscription", { replace: true });
+    navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
   };
 
   const handleSignOut = () => {
     useAuthStore.getState().clearAuth();
-    navigate("/restaurant/email/verification", { replace: true });
+    navigate(RESTAURANT_ROUTES.LOGIN, { replace: true });
   };
 
   if (isLoading && !isRefreshing) {

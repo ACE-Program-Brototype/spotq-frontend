@@ -58,10 +58,7 @@ describe("restaurantRoutes structure and protection", () => {
     expect(restaurantRoutes[1].path).toBe("privacy");
 
     const authGroup = restaurantRoutes[2];
-    expect(authGroup.children?.map((child) => child.path)).toEqual([
-      "email/verification",
-      "otp/verification",
-    ]);
+    expect(authGroup.children?.map((child) => child.path)).toEqual(["login", "verify"]);
 
     const protectedGroup = restaurantRoutes[3];
     expect(protectedGroup).toBeDefined();
@@ -71,6 +68,30 @@ describe("restaurantRoutes structure and protection", () => {
     expect(protectedGroup.children?.map((child) => child.path ?? "admin-layout")).toContain(
       "onboarding",
     );
+
+    const adminLayout = protectedGroup.children?.[4];
+    expect(adminLayout?.children).toBeDefined();
+
+    const staffGroup = adminLayout?.children?.find((c) => c.path === "staff");
+    expect(staffGroup).toBeDefined();
+    expect(staffGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(staffGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([
+      "invitations",
+      ":staffId",
+      ":staffId/edit",
+    ]);
+
+    const menuGroup = adminLayout?.children?.find((c) => c.path === "menu");
+    expect(menuGroup).toBeDefined();
+    expect(menuGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(menuGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([
+      "items",
+      "items/create",
+      "items/:itemId",
+      "items/:itemId/edit",
+      "categories",
+      "modifiers",
+    ]);
   });
 
   it("redirects unauthenticated user accessing protected restaurant subscription route", () => {
@@ -79,7 +100,7 @@ describe("restaurantRoutes structure and protection", () => {
         <MemoryRouter initialEntries={["/restaurant/subscription"]}>
           <Routes>
             <Route path="/restaurant">
-              <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
               {restaurantRoutes.map((route, i) => {
                 const Layout = route.Component as ComponentType | undefined;
                 const groupKey = route.path ?? `group-${i}`;
@@ -137,7 +158,7 @@ describe("restaurantRoutes structure and protection", () => {
         <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
           <Routes>
             <Route path="/restaurant">
-              <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
               {restaurantRoutes.map((route, i) => {
                 const Layout = route.Component as ComponentType | undefined;
                 const groupKey = route.path ?? `group-${i}`;
@@ -203,7 +224,7 @@ describe("restaurantRoutes structure and protection", () => {
         <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
           <Routes>
             <Route path="/restaurant">
-              <Route path="email/verification" element={<div>Restaurant Email Verification</div>} />
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
               {restaurantRoutes.map((route, i) => {
                 const Layout = route.Component as ComponentType | undefined;
                 const groupKey = route.path ?? `group-${i}`;

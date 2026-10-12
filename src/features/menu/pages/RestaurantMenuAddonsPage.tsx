@@ -18,13 +18,11 @@ export default function RestaurantMenuAddonsPage() {
   const user = useAuthStore((state) => state.user);
   const restaurantId = user?.restaurantId || "";
 
-  const { addons, isLoading, isError, refetch } =
-    useRestaurantAddons(restaurantId);
+  const { addons, isLoading, isError, refetch } = useRestaurantAddons(restaurantId);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const renderContent = () => {
     if (isLoading) return <AddonListSkeleton />;
-
 
     if (isError) {
       return (
@@ -71,8 +69,7 @@ export default function RestaurantMenuAddonsPage() {
             </span>
           </div>
           <p className="text-sm text-neutral-500 mt-1">
-            Manage complementary items, toppings, and extras available for your
-            menu items.
+            Manage complementary items, toppings, and extras available for your menu items.
           </p>
         </div>
 
@@ -85,9 +82,7 @@ export default function RestaurantMenuAddonsPage() {
             disabled={isLoading}
             className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] text-xs font-medium"
           >
-            <RefreshCw
-              className={`size-3.5 mr-1.5 ${isLoading ? "animate-spin" : ""}`}
-            />
+            <RefreshCw className={`size-3.5 mr-1.5 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
 

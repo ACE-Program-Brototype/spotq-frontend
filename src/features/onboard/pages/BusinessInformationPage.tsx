@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import {
   type BusinessInformationFormValues,
   businessInformationSchema,
@@ -35,7 +36,7 @@ export default function BusinessInformationPage() {
 
   const onSubmit = (values: BusinessInformationFormValues) => {
     setBusinessInformation(values);
-    navigate("/restaurant/onboarding/documents");
+    navigate(RESTAURANT_ROUTES.ONBOARDING.DOCUMENTS);
   };
 
   return (

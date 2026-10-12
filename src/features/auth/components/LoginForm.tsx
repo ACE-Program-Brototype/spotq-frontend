@@ -3,6 +3,7 @@ import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -73,7 +74,7 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
           </Label>
           <button
             type="button"
-            onClick={() => navigate("/forgot-password")}
+            onClick={() => navigate(CUSTOMER_ROUTES.AUTH.FORGOT_PASSWORD)}
             className="text-xs font-semibold text-spotq-orange hover:text-spotq-orange/80 transition-colors"
           >
             Forgot Password?

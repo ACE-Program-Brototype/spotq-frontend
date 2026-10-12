@@ -1,6 +1,7 @@
 import { Eye, Mail, Phone, Store, User } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { type Column, DataTable } from "@/components/common/table";
 import { formatDate } from "@/lib/utils/date";
 import {
@@ -192,7 +193,7 @@ export function RestaurantTable({
         align: "right",
         cell: ({ row: restaurant }) => (
           <Link
-            to={`/admin/restaurants/${restaurant.id}`}
+            to={ADMIN_ROUTES.RESTAURANT_DETAIL(restaurant.id)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:text-[#0052cc] hover:border-[#0052cc]/30 border border-slate-200/80 rounded-xl transition-all shadow-2xs group"
             data-testid={`restaurant-details-btn-${restaurant.id}`}
             aria-label={`View details for ${restaurant.restaurant_name}`}
