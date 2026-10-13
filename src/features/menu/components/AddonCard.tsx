@@ -1,12 +1,24 @@
-import { Sparkles } from "lucide-react";
+import { Edit3, Loader2, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import type { MenuAddon } from "@/features/menu/types/menu.types";
 import { AddonThumbnail } from "./AddonThumpnail";
 
 export interface AddonCardProps {
   addon: MenuAddon;
+  onEdit?: (addon: MenuAddon) => void;
+  onToggleAvailability?: (addon: MenuAddon) => void;
+  isToggling?: boolean;
+  isStaffView?: boolean;
 }
 
-export function AddonCard({ addon }: AddonCardProps) {
+export function AddonCard({
+  addon,
+  onEdit,
+  onToggleAvailability,
+  isToggling = false,
+  isStaffView = false,
+}: AddonCardProps) {
   const price = Number(addon.price || 0);
 
   return (
@@ -18,6 +30,7 @@ export function AddonCard({ addon }: AddonCardProps) {
           <span>Modifier / Add-on</span>
         </div>
 
+        {/* Live Status Badge */}
         <span
           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
             addon.isAvailable
@@ -48,13 +61,69 @@ export function AddonCard({ addon }: AddonCardProps) {
         </div>
       </div>
 
-      {/* Footer: Price */}
-      <div className="flex items-center justify-between pt-3 border-t border-[#f3e6de]">
-        <span className="text-xs font-semibold text-neutral-500">Standard Price</span>
-        <span className="text-sm font-extrabold text-[#9a3412]">
-          ₹{Number.isFinite(price) ? price.toFixed(2) : "0.00"}
-        </span>
+      {/* Footer / Actions Area */}
+      <div className="pt-3 border-t border-[#f3e6de] flex items-center justify-between gap-3">
+        {/* Price Display */}
+        <div className="flex flex-col">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+            Price
+          </span>
+          <span className="text-sm font-extrabold text-[#9a3412]">
+            ₹{Number.isFinite(price) ? price.toFixed(2) : "0.00"}
+          </span>
+        </div>
+
+        {/* admin can edit the addon and change the availability status */}
+        {/* staff can only cahnge the status */}
+        {isStaffView ? (
+          <div className="flex items-center gap-2">
+            {isToggling && <Loader2 className="size-3.5 animate-spin text-[#e8631b]" />}
+            <div className="flex items-center gap-2 rounded-xl bg-[#faf7f5] border border-[#eddcd4] px-3 py-1.5">
+              <span className="text-xs font-semibold text-neutral-700">
+                {addon.isAvailable ? "Available" : "86'd"}
+              </span>
+              <Switch
+                checked={addon.isAvailable}
+                disabled={isToggling}
+                onChange={() => onToggleAvailability?.(addon)}
+                aria-label={`Toggle availability for ${addon.name}`}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            {onToggleAvailability && (
+              <div className="flex items-center gap-1.5 mr-1">
+                {isToggling ? (
+                  <Loader2 className="size-3.5 animate-spin text-[#e8631b]" />
+                ) : (
+                  <Switch
+                    checked={addon.isAvailable}
+                    disabled={isToggling}
+                    onChange={() => onToggleAvailability(addon)}
+                    aria-label={`Toggle availability for ${addon.name}`}
+                  />
+                )}
+              </div>
+            )}
+
+            {onEdit && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => onEdit(addon)}
+                className="rounded-xl border-[#eddcd4] text-[#9a3412] hover:bg-[#fef3ec] hover:border-[#fae2d3] font-semibold text-xs h-8.5 px-3 transition-colors shadow-2xs cursor-pointer"
+                aria-label={`Edit ${addon.name} addon`}
+              >
+                <Edit3 className="size-3.5 mr-1 text-[#e8631b]" />
+                <span>Edit</span>
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 }
+export default AddonCard;

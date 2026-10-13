@@ -170,6 +170,18 @@ export const MENU_MESSAGES = {
   ADDON_CREATED_SUCCESS: "Add-on created successfully.",
   ADDON_CREATE_FAILED: "Failed to create add-on.",
 
+  MODAL_EDIT_ADDON_TITLE: "Edit Add-on",
+  MODAL_EDIT_ADDON_DESC: "Update add-on details, pricing, and availability status.",
+  BTN_UPDATE_ADDON: "Save Changes",
+  BTN_UPDATING_ADDON: "Saving...",
+  ADDON_UPDATED_SUCCESS: "Add-on updated successfully.",
+  ADDON_UPDATE_FAILED: "Failed to update add-on.",
+  ADDON_MARKED_IN_STOCK: "Add-on marked as in stock",
+  ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as unavailable",
+  STAFF_ADDONS_TITLE: "Modifiers & Add-ons",
+  STAFF_ADDONS_SUBTITLE:
+    "Real-time 86'd stock monitoring and operational availability toggles for add-ons.",
+
   VALIDATION_ITEM_NAME_REQUIRED: "Menu item name is required",
   VALIDATION_ITEM_NAME_MAX: "Item name cannot exceed 255 characters",
   VALIDATION_CATEGORY_REQUIRED: "Please select a category",

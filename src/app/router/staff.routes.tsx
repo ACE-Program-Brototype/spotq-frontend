@@ -4,6 +4,7 @@ import StaffLoginPage from "@/features/auth/pages/StaffLoginPage";
 import StaffResetPasswordPage from "@/features/auth/pages/StaffResetPasswordPage";
 import StaffVerifyOtpPage from "@/features/auth/pages/StaffVerifyOtpPage";
 import StaffDashboardPage from "@/features/dashboard/pages/StaffDashboardPage";
+import StaffMenuAddonsPage from "@/features/menu/pages/StaffMenuAddonsPage";
 import StaffMenuItemsPage from "@/features/menu/pages/StaffMenuItemsPage";
 import EditStaffProfilePage from "@/features/profile/pages/EditStaffProfilePage";
 import StaffProfilePage from "@/features/profile/pages/StaffProfilePage";
@@ -69,6 +70,10 @@ export const staffRoutes: RouteObject[] = [
           {
             path: "menu/items",
             Component: StaffMenuItemsPage,
+          },
+          {
+            path: "menu/addons",
+            Component: StaffMenuAddonsPage,
           },
         ],
       },
