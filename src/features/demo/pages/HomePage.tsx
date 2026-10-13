@@ -12,80 +12,81 @@ import { cn } from "@/lib/utils/cn";
 
 const categories = ["Mandi", "Chinese", "Multi-Cuisine", "Pure Veg", "Open Now"];
 
-const sampleRestaurants = [
-  {
-    id: 1,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 2,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 3,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 4,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 5,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 6,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 7,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 8,
-    name: "Spice Route",
-    location: "Ernakulam",
-    description:
-      "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
-    image:
-      "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&auto=format&fit=crop&q=80",
-  },
-];
+const sampleRestaurants =
+  [
+    {
+      id: 1,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 2,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 3,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 4,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 5,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 6,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 7,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 8,
+      name: "Spice Route",
+      location: "Ernakulam",
+      description:
+        "Authentic North Indian cuisine bringing the rich traditions of the Spice Route to the heart of New Delhi.",
+      image:
+        "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&auto=format&fit=crop&q=80",
+    },
+  ];
 
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState("Pure Veg");

@@ -20,10 +20,32 @@ export default defineConfig(({ mode }) => {
       module: "restaurants",
       target:
         env.VITE_RESTAURANT_SERVICE_URL || env.RESTAURANT_SERVICE_URL || "http://localhost:3001",
+      customRewrite: (p: string) => {
+        if (/^\/api\/v1\/restaurants(\?|$)/.test(p)) {
+          return p;
+        }
+        return p.replace(/^\/api\/v1\/restaurants/, "");
+      },
     },
     {
       module: "users",
       target: env.VITE_USER_SERVICE_URL || env.USER_SERVICE_URL || "http://localhost:3000",
+    },
+    {
+      module: "auth/admin",
+      target: env.VITE_USER_SERVICE_URL || env.USER_SERVICE_URL || "http://localhost:3000",
+      customRewrite: (p: string) => p.replace(/^\/api\/v1\/auth\/admin/, "/admin"),
+    },
+    {
+      module: "auth/users",
+      target: env.VITE_USER_SERVICE_URL || env.USER_SERVICE_URL || "http://localhost:3000",
+      customRewrite: (p: string) => p.replace(/^\/api\/v1\/auth\/users/, ""),
+    },
+    {
+      module: "auth/restaurants",
+      target:
+        env.VITE_RESTAURANT_SERVICE_URL || env.RESTAURANT_SERVICE_URL || "http://localhost:3001",
+      customRewrite: (p: string) => p.replace(/^\/api\/v1\/auth\/restaurants/, ""),
     },
     {
       module: "admin/auth",
