@@ -1,4 +1,4 @@
-import { Edit3, Loader2, Sparkles } from "lucide-react";
+import { Edit3, Loader2, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import type { MenuAddon } from "@/features/menu/types/menu.types";
@@ -7,16 +7,20 @@ import { AddonThumbnail } from "./AddonThumpnail";
 export interface AddonCardProps {
   addon: MenuAddon;
   onEdit?: (addon: MenuAddon) => void;
+  onDelete?: (addon: MenuAddon) => void;
   onToggleAvailability?: (addon: MenuAddon) => void;
   isToggling?: boolean;
+  isDeleting?: boolean;
   isStaffView?: boolean;
 }
 
 export function AddonCard({
   addon,
   onEdit,
+  onDelete,
   onToggleAvailability,
   isToggling = false,
+  isDeleting = false,
   isStaffView = false,
 }: AddonCardProps) {
   const price = Number(addon.price || 0);
@@ -73,8 +77,8 @@ export function AddonCard({
           </span>
         </div>
 
-        {/* admin can edit the addon and change the availability status */}
-        {/* staff can only cahnge the status */}
+        {/* Staff view: only availability toggle */}
+        {/* Admin view: edit button + delete button (no toggle — availability managed via Edit modal) */}
         {isStaffView ? (
           <div className="flex items-center gap-2">
             {isToggling && <Loader2 className="size-3.5 animate-spin text-[#e8631b]" />}
@@ -92,21 +96,6 @@ export function AddonCard({
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            {onToggleAvailability && (
-              <div className="flex items-center gap-1.5 mr-1">
-                {isToggling ? (
-                  <Loader2 className="size-3.5 animate-spin text-[#e8631b]" />
-                ) : (
-                  <Switch
-                    checked={addon.isAvailable}
-                    disabled={isToggling}
-                    onChange={() => onToggleAvailability(addon)}
-                    aria-label={`Toggle availability for ${addon.name}`}
-                  />
-                )}
-              </div>
-            )}
-
             {onEdit && (
               <Button
                 type="button"
@@ -118,6 +107,25 @@ export function AddonCard({
               >
                 <Edit3 className="size-3.5 mr-1 text-[#e8631b]" />
                 <span>Edit</span>
+              </Button>
+            )}
+
+            {onDelete && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={isDeleting}
+                onClick={() => onDelete(addon)}
+                className="rounded-xl border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-semibold text-xs h-8.5 px-3 transition-colors shadow-2xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label={`Delete ${addon.name} addon`}
+              >
+                {isDeleting ? (
+                  <Loader2 className="size-3.5 mr-1 animate-spin" />
+                ) : (
+                  <Trash2 className="size-3.5 mr-1" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Delete"}</span>
               </Button>
             )}
           </div>

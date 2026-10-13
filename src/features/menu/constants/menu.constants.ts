@@ -178,6 +178,8 @@ export const MENU_MESSAGES = {
   ADDON_UPDATE_FAILED: "Failed to update add-on.",
   ADDON_MARKED_IN_STOCK: "Add-on marked as in stock",
   ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as unavailable",
+  ADDON_DELETED_SUCCESS: "Add-on deleted successfully.",
+  ADDON_DELETE_FAILED: "Failed to delete add-on.",
   STAFF_ADDONS_TITLE: "Modifiers & Add-ons",
   STAFF_ADDONS_SUBTITLE:
     "Real-time 86'd stock monitoring and operational availability toggles for add-ons.",

@@ -3,8 +3,19 @@
  * Displays existing menu add-ons with a creation action to open the Create Add-on Modal.
  */
 
-import { Plus, RefreshCw, Sparkles } from "lucide-react";
+import { Plus, RefreshCw, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { AddonCard } from "@/features/menu/components/AddonCard";
@@ -20,12 +31,24 @@ export default function RestaurantMenuAddonsPage() {
   const user = useAuthStore((state) => state.user);
   const restaurantId = user?.restaurantId || "";
 
-  const { addons, isLoading, isError, refetch, toggleAvailability, pendingAddonIds } =
-    useRestaurantAddons(restaurantId);
+  const {
+    addons,
+    isLoading,
+    isError,
+    refetch,
+    toggleAvailability,
+    pendingAddonIds,
+    deleteAddon,
+    deletingAddonId,
+  } = useRestaurantAddons(restaurantId);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedAddon, setSelectedAddon] = useState<MenuAddon | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Delete confirmation state
+  const [addonToDelete, setAddonToDelete] = useState<MenuAddon | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleEditClick = (addon: MenuAddon) => {
     setSelectedAddon(addon);
@@ -35,6 +58,26 @@ export default function RestaurantMenuAddonsPage() {
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setSelectedAddon(null);
+  };
+
+  // Opens the confirmation dialog — does NOT delete yet
+  const handleDeleteClick = (addon: MenuAddon) => {
+    setAddonToDelete(addon);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Called only when the user confirms inside the dialog
+  const handleConfirmDelete = () => {
+    if (addonToDelete) {
+      deleteAddon(addonToDelete.id);
+    }
+    setIsDeleteDialogOpen(false);
+    setAddonToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+    setAddonToDelete(null);
   };
 
   const renderContent = () => {
@@ -69,8 +112,10 @@ export default function RestaurantMenuAddonsPage() {
             key={addon.id}
             addon={addon}
             onEdit={handleEditClick}
+            onDelete={handleDeleteClick}
             onToggleAvailability={toggleAvailability}
             isToggling={pendingAddonIds.has(addon.id)}
+            isDeleting={deletingAddonId === addon.id}
           />
         ))}
       </div>
@@ -84,7 +129,7 @@ export default function RestaurantMenuAddonsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-              Modifiers & Add-ons
+              Modifiers &amp; Add-ons
             </h1>
             <span className="rounded-full bg-[#fef3ec] px-2.5 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
               {addons.length} total
@@ -124,6 +169,31 @@ export default function RestaurantMenuAddonsPage() {
 
       {/* Main Content Area */}
       {renderContent()}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogMedia className="bg-red-50">
+              <Trash2 className="size-5 text-red-500" />
+            </AlertDialogMedia>
+            <AlertDialogTitle>Delete Add-on?</AlertDialogTitle>
+            <AlertDialogDescription>
+              <span className="font-semibold text-neutral-800">{addonToDelete?.name}</span> will be
+              permanently removed. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelDelete}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-red-600 hover:bg-red-700 text-white border-none"
+            >
+              Yes, Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Edit Add-on Modal */}
       <EditAddonModal

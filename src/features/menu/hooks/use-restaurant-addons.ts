@@ -107,6 +107,40 @@ export function useRestaurantAddons(restaurantId: string) {
     },
   });
 
+  const deleteAddonMutation = useMutation({
+    mutationFn: (addonId: string) => menuService.deleteAddon(restaurantId, addonId),
+    onMutate: async (addonId) => {
+      await queryClient.cancelQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
+      const previousAddons = queryClient.getQueryData<MenuAddon[]>([
+        RESTAURANT_ADDONS_QUERY_KEY,
+        restaurantId,
+      ]);
+
+      // Optimistically remove from the list immediately
+      queryClient.setQueryData<MenuAddon[]>(
+        [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
+        (old) => old?.filter((addon) => addon.id !== addonId) || [],
+      );
+
+      return { previousAddons };
+    },
+    onError: (err: Error, _addonId, context) => {
+      if (context?.previousAddons) {
+        queryClient.setQueryData(
+          [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
+          context.previousAddons,
+        );
+      }
+      toast.error(err.message || MENU_MESSAGES.ADDON_DELETE_FAILED);
+    },
+    onSuccess: () => {
+      toast.success(MENU_MESSAGES.ADDON_DELETED_SUCCESS);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
+    },
+  });
+
   const toggleAvailability = useCallback(
     (addon: MenuAddon) => {
       if (!restaurantId || !addon.id) return;
@@ -119,6 +153,14 @@ export function useRestaurantAddons(restaurantId: string) {
       });
     },
     [restaurantId, pendingAddonIds, toggleAvailabilityMutation],
+  );
+
+  const deleteAddon = useCallback(
+    (addonId: string) => {
+      if (!restaurantId || !addonId) return;
+      deleteAddonMutation.mutate(addonId);
+    },
+    [restaurantId, deleteAddonMutation],
   );
 
   return {
@@ -134,5 +176,8 @@ export function useRestaurantAddons(restaurantId: string) {
     toggleAvailability,
     pendingAddonIds,
     isTogglingAvailability: pendingAddonIds.size > 0,
+    deleteAddon,
+    isDeleting: deleteAddonMutation.isPending,
+    deletingAddonId: deleteAddonMutation.variables,
   };
 }

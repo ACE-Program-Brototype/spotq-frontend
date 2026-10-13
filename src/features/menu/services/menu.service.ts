@@ -135,6 +135,16 @@ export const menuService = {
     return response.data;
   },
 
+  async deleteAddon(restaurantId: string, addonId: string): Promise<void> {
+    const response = await apiClient
+      .delete(MENU_ENDPOINTS.ADDON_DETAIL(restaurantId, addonId))
+      .json<ApiResponse<null>>();
+
+    if (!response.success) {
+      throw new Error(response.message || MENU_MESSAGES.ADDON_DELETE_FAILED);
+    }
+  },
+
   /**
    * Create a new menu item with nested variants and linked addons
    */

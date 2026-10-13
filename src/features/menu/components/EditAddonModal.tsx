@@ -35,6 +35,7 @@ export function EditAddonModal({ isOpen, addon, restaurantId, onClose }: EditAdd
     reset,
     formState: { errors },
   } = useForm<CreateAddonFormData>({
+    //it uses createAddonSchema since there are no new rules for update addon schema
     resolver: zodResolver(createAddonSchema),
     defaultValues: {
       name: "",
