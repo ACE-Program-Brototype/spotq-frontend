@@ -83,19 +83,13 @@ export const restaurantRoutes: RouteObject[] = [
         children: [
           {
             index: true,
-            Component: () => (
-              <Navigate to={RESTAURANT_ROUTE_PATHS.ONBOARDING.BUSINESS_INFORMATION} replace />
-            ),
+            element: <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />,
           },
           {
             Component: VerificationStatusLayout,
             children: [
               {
                 path: RESTAURANT_ROUTE_PATHS.ONBOARDING.STATUS,
-                Component: VerificationStatusPage,
-              },
-              {
-                path: RESTAURANT_ROUTE_PATHS.ONBOARDING.VERIFICATION_STATUS,
                 Component: VerificationStatusPage,
               },
             ],

@@ -22,7 +22,6 @@ export const RESTAURANT_ROUTE_PATHS = {
   ONBOARDING: {
     ROOT: "onboarding",
     STATUS: "status",
-    VERIFICATION_STATUS: "verification-status",
     BUSINESS_INFORMATION: "business-information",
     DOCUMENTS: "documents",
     LOCATION: "location",
@@ -71,7 +70,6 @@ export const RESTAURANT_ROUTES = {
   ONBOARDING: {
     ROOT: "/restaurant/onboarding",
     STATUS: "/restaurant/onboarding/status",
-    VERIFICATION_STATUS: "/restaurant/onboarding/verification-status",
     BUSINESS_INFORMATION: "/restaurant/onboarding/business-information",
     DOCUMENTS: "/restaurant/onboarding/documents",
     LOCATION: "/restaurant/onboarding/location",

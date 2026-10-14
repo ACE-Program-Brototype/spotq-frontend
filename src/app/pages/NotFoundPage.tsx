@@ -137,7 +137,7 @@ export function NotFoundPage() {
   const navConfig = getNavigationConfig(user, location.pathname);
 
   const handleGoBack = () => {
-    if (window.history.length > 1) {
+    if (typeof window !== "undefined" && window.history.state?.idx > 0) {
       navigate(-1);
     } else {
       navigate(navConfig.path);
@@ -145,7 +145,7 @@ export function NotFoundPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-between overflow-hidden bg-gradient-to-b from-[#fffbf8] via-[#fffdfb] to-[#faf5f0] text-neutral-900 select-none">
+    <div className="relative flex min-h-screen flex-col justify-between overflow-hidden bg-gradient-to-b from-[#fffbf8] via-[#fffdfb] to-[#faf5f0] text-neutral-900">
       {/* Decorative ambient background glows */}
       <div
         aria-hidden="true"

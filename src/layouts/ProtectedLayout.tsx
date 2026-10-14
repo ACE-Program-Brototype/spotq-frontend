@@ -66,10 +66,7 @@ export default function ProtectedLayout({
       user?.status === "REJECTED" ||
       (user?.onboardingStatus === "COMPLETED" && user?.status !== "VERIFIED")
     ) {
-      if (
-        !location.pathname.startsWith(RESTAURANT_ROUTES.ONBOARDING.STATUS) &&
-        !location.pathname.startsWith(RESTAURANT_ROUTES.ONBOARDING.VERIFICATION_STATUS)
-      ) {
+      if (!location.pathname.startsWith(RESTAURANT_ROUTES.ONBOARDING.STATUS)) {
         return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.STATUS} replace />;
       }
     } else if (

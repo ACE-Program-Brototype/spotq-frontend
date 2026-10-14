@@ -123,7 +123,14 @@ describe("NotFoundPage", () => {
     expect(staffLoginLink).toHaveAttribute("href", STAFF_ROUTES.LOGIN);
   });
 
-  it("handles Go Back button click", () => {
+  it("navigates back (-1) when in-app history state idx > 0", () => {
+    const originalState = window.history.state;
+    Object.defineProperty(window.history, "state", {
+      value: { idx: 1 },
+      configurable: true,
+      writable: true,
+    });
+
     render(
       <MemoryRouter initialEntries={["/unknown"]}>
         <NotFoundPage />
@@ -133,6 +140,38 @@ describe("NotFoundPage", () => {
     const goBackButton = screen.getByRole("button", { name: /Go Back/i });
     fireEvent.click(goBackButton);
 
-    expect(mockedNavigate).toHaveBeenCalled();
+    expect(mockedNavigate).toHaveBeenCalledWith(-1);
+
+    Object.defineProperty(window.history, "state", {
+      value: originalState,
+      configurable: true,
+      writable: true,
+    });
+  });
+
+  it("navigates to fallback path when history state idx is 0 or missing", () => {
+    const originalState = window.history.state;
+    Object.defineProperty(window.history, "state", {
+      value: { idx: 0 },
+      configurable: true,
+      writable: true,
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/unknown"]}>
+        <NotFoundPage />
+      </MemoryRouter>,
+    );
+
+    const goBackButton = screen.getByRole("button", { name: /Go Back/i });
+    fireEvent.click(goBackButton);
+
+    expect(mockedNavigate).toHaveBeenCalledWith(CUSTOMER_ROUTES.HOME);
+
+    Object.defineProperty(window.history, "state", {
+      value: originalState,
+      configurable: true,
+      writable: true,
+    });
   });
 });
