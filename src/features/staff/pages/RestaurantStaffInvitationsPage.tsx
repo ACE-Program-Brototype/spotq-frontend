@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { type Column, DataTable } from "@/components/common/table";
@@ -210,7 +211,7 @@ export default function RestaurantStaffInvitationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
-            to="/restaurant/staff"
+            to={RESTAURANT_ROUTES.STAFF.ROOT}
             className="rounded-xl p-2 text-neutral-500 hover:bg-[#fef3ec] hover:text-[#9a3412] transition-colors"
             title="Back to Staff Directory"
             aria-label="Back to Staff Directory"

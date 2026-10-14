@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { AuthDivider, GoogleLoginButton } from "../components";
 import { RegisterForm } from "../components/RegisterForm";
@@ -13,7 +14,8 @@ export default function RegisterPage() {
   const location = useLocation();
   const { handleRegister, isLoading: isRegistering } = useRegister();
 
-  const destination = (location?.state as { from?: { pathname: string } })?.from?.pathname || "/";
+  const destination =
+    (location?.state as { from?: { pathname: string } })?.from?.pathname || CUSTOMER_ROUTES.HOME;
 
   const { handleGoogleSuccess, isLoading: isGoogleAuth } = useGoogleAuth(destination);
 
@@ -71,7 +73,7 @@ export default function RegisterPage() {
             Already have an account?{" "}
             <button
               type="button"
-              onClick={() => navigate("/Login")}
+              onClick={() => navigate(CUSTOMER_ROUTES.AUTH.LOGIN)}
               className="font-bold text-spotq-orange hover:text-spotq-orange/80 transition-colors cursor-pointer"
             >
               <span className="hidden md:inline">Login</span>

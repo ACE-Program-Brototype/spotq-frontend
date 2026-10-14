@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import {
   MENU_ITEM_DETAIL_QUERY_KEY,
@@ -84,7 +85,7 @@ export function useMenuItemDetail(options?: UseMenuItemDetailOptions) {
       toast.success(MENU_MESSAGES.ITEM_DELETED_SUCCESS);
       queryClient.invalidateQueries({ queryKey: [MENU_ITEMS_QUERY_KEY] });
       queryClient.removeQueries({ queryKey });
-      navigate("/restaurant/menu/items", { replace: true });
+      navigate(RESTAURANT_ROUTES.MENU.ITEMS, { replace: true });
     },
     onError: (err) => {
       toast.error(err instanceof Error ? err.message : MENU_MESSAGES.ITEM_DELETE_FAILED);

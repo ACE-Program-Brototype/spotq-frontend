@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { SUBSCRIPTION_SUCCESS_TEXTS } from "@/features/subscription/constants/subscription.constants";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
@@ -116,7 +117,7 @@ export default function SubscriptionSuccessPage() {
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Button
               type="button"
-              onClick={() => navigate("/restaurant/dashboard", { replace: true })}
+              onClick={() => navigate(RESTAURANT_ROUTES.DASHBOARD, { replace: true })}
               className="w-full sm:flex-1 gap-2 bg-orange-600 text-white hover:bg-orange-700"
             >
               {SUBSCRIPTION_SUCCESS_TEXTS.DASHBOARD_BUTTON}
@@ -125,7 +126,7 @@ export default function SubscriptionSuccessPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/restaurant/staff")}
+              onClick={() => navigate(RESTAURANT_ROUTES.STAFF.ROOT)}
               className="w-full sm:flex-1 gap-2 border-neutral-300 text-neutral-700 hover:bg-neutral-100"
             >
               <Users className="h-4 w-4 text-neutral-500" />

@@ -1,5 +1,6 @@
 import { AlertCircle, ArrowLeft, RefreshCw, ShieldAlert, UserX } from "lucide-react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
@@ -31,7 +32,7 @@ export function StaffDetailErrorState({
             </div>
             <div className="pt-3">
               <Link
-                to="/restaurant/staff"
+                to={RESTAURANT_ROUTES.STAFF.ROOT}
                 className={cn(
                   buttonVariants({ variant: "default" }),
                   "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white",
@@ -65,7 +66,7 @@ export function StaffDetailErrorState({
             </div>
             <div className="pt-3">
               <Link
-                to="/restaurant/staff"
+                to={RESTAURANT_ROUTES.STAFF.ROOT}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "rounded-xl border-[#eddcd4]",
@@ -108,7 +109,7 @@ export function StaffDetailErrorState({
               </Button>
             )}
             <Link
-              to="/restaurant/staff"
+              to={RESTAURANT_ROUTES.STAFF.ROOT}
               className={cn(
                 buttonVariants({ variant: "outline" }),
                 "rounded-xl border-[#eddcd4] text-xs font-semibold",

@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { StaffNavbar } from "@/components/layout/StaffNavbar";
 import { StaffMobileNav, StaffSidebar } from "@/components/layout/StaffSidebar";
 
@@ -7,7 +8,7 @@ export function StaffLayout() {
   return (
     <div className="min-h-svh w-full max-w-full overflow-x-hidden bg-[#fdfcfb] text-neutral-900 pb-20 lg:pb-0 lg:flex">
       <aside className="hidden lg:block lg:w-64 lg:shrink-0 sticky top-0 h-svh">
-        <StaffSidebar basePath="/staff" />
+        <StaffSidebar basePath={STAFF_ROUTES.ROOT} />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 w-full max-w-full overflow-x-hidden">
@@ -18,7 +19,7 @@ export function StaffLayout() {
         </main>
       </div>
 
-      <StaffMobileNav basePath="/staff" />
+      <StaffMobileNav basePath={STAFF_ROUTES.ROOT} />
     </div>
   );
 }

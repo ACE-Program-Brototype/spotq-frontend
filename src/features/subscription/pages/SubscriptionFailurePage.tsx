@@ -1,5 +1,6 @@
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { SUBSCRIPTION_FAILURE_TEXTS } from "@/features/subscription/constants/subscription.constants";
 
@@ -57,7 +58,7 @@ export default function SubscriptionFailurePage() {
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Button
               type="button"
-              onClick={() => navigate("/restaurant/subscription", { replace: true })}
+              onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true })}
               className="w-full sm:flex-1 gap-2 bg-orange-600 text-white hover:bg-orange-700"
             >
               <RefreshCw className="h-4 w-4" />
@@ -66,7 +67,7 @@ export default function SubscriptionFailurePage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/restaurant/subscription", { replace: true })}
+              onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true })}
               className="w-full sm:flex-1 gap-2 border-neutral-300 text-neutral-700 hover:bg-neutral-100"
             >
               <ArrowLeft className="h-4 w-4 text-neutral-500" />

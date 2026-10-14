@@ -1,3 +1,4 @@
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import LegalPageLayout from "@/layouts/LegalLayout";
 
 export default function RestaurantPrivacyPage() {
@@ -7,7 +8,7 @@ export default function RestaurantPrivacyPage() {
       description="This policy outlines how SpotQ handles business, staff, operational, and customer dining data on behalf of our restaurant partners."
       lastUpdated="September 9, 2026"
       variant="restaurant"
-      backTo="/restaurant/email/verification"
+      backTo={RESTAURANT_ROUTES.LOGIN}
       backLabel="Back to Restaurant Portal"
     >
       <div className="space-y-4">

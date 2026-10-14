@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Button } from "@/components/ui/button";
@@ -58,7 +59,11 @@ const staffNavItems: StaffNavItem[] = [
   },
 ];
 
-export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: StaffSidebarProps) {
+export function StaffSidebar({
+  className,
+  onNavigate,
+  basePath = STAFF_ROUTES.ROOT,
+}: StaffSidebarProps) {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const { handleStaffLogout, isLoading } = useStaffLogout();
@@ -163,7 +168,7 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
 }
 
 export function StaffMobileNav({
-  basePath = "/staff",
+  basePath = STAFF_ROUTES.ROOT,
   className,
 }: {
   basePath?: string;

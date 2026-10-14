@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { type Column, DataTable } from "@/components/common/table";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils/date";
@@ -173,7 +174,7 @@ export function RestaurantApplicationTable({
         align: "right",
         cell: ({ row: app }) => (
           <Link
-            to={`/admin/restaurants/onboarding/${app.id}`}
+            to={ADMIN_ROUTES.RESTAURANTS_ONBOARDING_DETAIL(app.id)}
             className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-[#ff6b00] hover:bg-[#e05e00] transition-all shadow-2xs hover:shadow-xs cursor-pointer"
             data-testid={`review-application-btn-${app.id}`}
           >

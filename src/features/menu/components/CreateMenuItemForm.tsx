@@ -3,6 +3,7 @@ import { Clock, Loader2, Utensils } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -243,7 +244,7 @@ export function CreateMenuItemForm({
         });
       }
 
-      navigate("/restaurant/menu/items");
+      navigate(RESTAURANT_ROUTES.MENU.ITEMS);
     } catch {
       // Error handled by mutation hook toast
     }
@@ -448,7 +449,7 @@ export function CreateMenuItemForm({
         <Button
           type="button"
           variant="outline"
-          onClick={() => navigate("/restaurant/menu/items")}
+          onClick={() => navigate(RESTAURANT_ROUTES.MENU.ITEMS)}
           disabled={isSubmitting}
           className="border-neutral-200 text-neutral-700 hover:bg-neutral-50 px-5"
         >

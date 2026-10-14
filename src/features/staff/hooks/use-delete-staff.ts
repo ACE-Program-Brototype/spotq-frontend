@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { HTTPError } from "ky";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { STAFF_ENDPOINTS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import { STAFF_DETAIL_QUERY_KEY } from "@/features/staff/hooks/use-staff-detail";
@@ -38,7 +39,7 @@ export function useDeleteStaff({
       });
 
       toast.success(STAFF_MESSAGES.STAFF_DELETE_SUCCESS);
-      navigate("/restaurant/staff");
+      navigate(RESTAURANT_ROUTES.STAFF.ROOT);
       onSuccess?.();
     },
     onError: (err: Error) => {
@@ -54,7 +55,7 @@ export function useDeleteStaff({
       if (status === 401) {
         clearAuth();
         toast.error("Session expired. Please sign in again.");
-        navigate("/restaurant/email/verification", { replace: true });
+        navigate(RESTAURANT_ROUTES.LOGIN, { replace: true });
         onError?.(err);
         return;
       }

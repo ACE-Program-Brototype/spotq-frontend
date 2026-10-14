@@ -11,10 +11,11 @@ import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import StaffAuthLayout from "@/layouts/StaffAuthLayout";
 import StaffLayout from "@/layouts/StaffLayout";
+import { STAFF_ROUTE_PATHS, STAFF_ROUTES } from "./staff.routes.constants";
 
-const StaffAuthGuard = () => <AuthLayout redirectTo="/staff/dashboard" />;
+const StaffAuthGuard = () => <AuthLayout redirectTo={STAFF_ROUTES.DASHBOARD} />;
 const StaffProtectedLayout = () => (
-  <ProtectedLayout allowedRoles={["STAFF"]} redirectTo="/staff/login" />
+  <ProtectedLayout allowedRoles={["STAFF"]} redirectTo={STAFF_ROUTES.LOGIN} />
 );
 
 export const staffRoutes: RouteObject[] = [
@@ -22,22 +23,22 @@ export const staffRoutes: RouteObject[] = [
     Component: StaffAuthGuard,
     children: [
       {
-        path: "login",
+        path: STAFF_ROUTE_PATHS.AUTH.LOGIN,
         Component: StaffLoginPage,
       },
       {
         Component: StaffAuthLayout,
         children: [
           {
-            path: "forgot-password",
+            path: STAFF_ROUTE_PATHS.AUTH.FORGOT_PASSWORD,
             Component: StaffForgotPasswordPage,
           },
           {
-            path: "forgot-password/verify",
+            path: STAFF_ROUTE_PATHS.AUTH.FORGOT_PASSWORD_VERIFY,
             Component: StaffVerifyOtpPage,
           },
           {
-            path: "forgot-password/reset-password",
+            path: STAFF_ROUTE_PATHS.AUTH.FORGOT_PASSWORD_RESET,
             Component: StaffResetPasswordPage,
           },
         ],
@@ -51,23 +52,23 @@ export const staffRoutes: RouteObject[] = [
         Component: StaffLayout,
         children: [
           {
-            path: "dashboard",
+            path: STAFF_ROUTE_PATHS.DASHBOARD,
             Component: StaffDashboardPage,
           },
           {
-            path: "profile",
+            path: STAFF_ROUTE_PATHS.PROFILE.ROOT,
             Component: StaffProfilePage,
           },
           {
-            path: "profile/edit",
+            path: STAFF_ROUTE_PATHS.PROFILE.EDIT,
             Component: EditStaffProfilePage,
           },
           {
-            path: "menu",
+            path: STAFF_ROUTE_PATHS.MENU.ROOT,
             Component: StaffMenuItemsPage,
           },
           {
-            path: "menu/items",
+            path: STAFF_ROUTE_PATHS.MENU.ITEMS,
             Component: StaffMenuItemsPage,
           },
         ],

@@ -12,6 +12,7 @@ import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -148,7 +149,10 @@ export function EditStaffProfileForm({
             aria-label="Breadcrumbs"
             className="flex items-center gap-1.5 text-xs text-neutral-500 mb-1.5"
           >
-            <Link to="/staff/profile" className="hover:text-neutral-900 transition-colors">
+            <Link
+              to={STAFF_ROUTES.PROFILE.ROOT}
+              className="hover:text-neutral-900 transition-colors"
+            >
               Settings
             </Link>
             <ChevronRight className="size-3 text-neutral-400" />

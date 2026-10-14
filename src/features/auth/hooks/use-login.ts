@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import type { LoginFormValues } from "../schemas/login.schema";
 import { useAuthStore } from "../store/auth.store";
@@ -20,7 +21,7 @@ export const useLogin = () => {
       if (response.success && response.data) {
         toast.success(AUTH_MESSAGES.LOGIN_SUCCESS);
         setAuth({ ...response.data.user, role: "CUSTOMER" }, response.data.accessToken);
-        navigate("/", { replace: true });
+        navigate(CUSTOMER_ROUTES.HOME, { replace: true });
       } else {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }

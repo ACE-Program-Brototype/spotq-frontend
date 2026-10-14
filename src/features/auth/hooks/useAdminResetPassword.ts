@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { adminResetPassword } from "@/features/auth/services/auth.service";
 
@@ -12,7 +13,7 @@ export function useAdminResetPassword() {
     mutationFn: (data: { password: string }) => adminResetPassword(data),
     onSuccess: () => {
       toast.success(AUTH_MESSAGES.PASSWORD_RESET_SUCCESS);
-      navigate("/admin/login", { replace: true });
+      navigate(ADMIN_ROUTES.LOGIN, { replace: true });
     },
     onError: (error: Error) => {
       toast.error(error.message ?? AUTH_MESSAGES.GENERIC_ERROR);

@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { HTTPError } from "ky";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { staffDetailService } from "@/features/staff/services/staff-detail.service";
 import type { StaffDetail } from "@/features/staff/types/staff-detail.types";
@@ -57,7 +58,7 @@ export function useStaffDetail() {
   useEffect(() => {
     if (isUnauthorized) {
       clearAuth();
-      navigate("/restaurant/email/verification", { replace: true });
+      navigate(RESTAURANT_ROUTES.LOGIN, { replace: true });
     }
   }, [isUnauthorized, clearAuth, navigate]);
 
