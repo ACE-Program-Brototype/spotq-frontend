@@ -8,7 +8,6 @@ import {
   STAFF_ROUTES,
 } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import type { Role } from "@/features/auth/types/auth.types";
 import NotFoundPage from "./NotFoundPage";
 
 const mockedNavigate = jest.fn();
@@ -79,23 +78,6 @@ describe("NotFoundPage", () => {
       _id: "staff-1",
       email: "staff@spotq.com",
       role: "STAFF",
-    });
-
-    render(
-      <MemoryRouter initialEntries={["/staff/invalid"]}>
-        <NotFoundPage />
-      </MemoryRouter>,
-    );
-
-    const staffLink = screen.getByRole("link", { name: /Go to Staff Dashboard/i });
-    expect(staffLink).toHaveAttribute("href", STAFF_ROUTES.DASHBOARD);
-  });
-
-  it("redirects RESTAURANT_STAFF user to staff dashboard", () => {
-    useAuthStore.getState().setUser({
-      _id: "staff-2",
-      email: "res-staff@spotq.com",
-      role: "RESTAURANT_STAFF" as unknown as Role,
     });
 
     render(

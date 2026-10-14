@@ -56,7 +56,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "STAFF" || (role as string) === "RESTAURANT_STAFF") {
+  if (role === "STAFF") {
     return {
       path: STAFF_ROUTES.DASHBOARD,
       label: "Go to Staff Dashboard",
