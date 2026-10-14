@@ -31,10 +31,7 @@ export const customerRestaurantService = {
       searchParams.city = params.city.trim();
     }
 
-    if (
-      params?.cuisine?.trim() &&
-      params.cuisine.trim().toLowerCase() !== "all"
-    ) {
+    if (params?.cuisine?.trim() && params.cuisine.trim().toLowerCase() !== "all") {
       searchParams.cuisine = params.cuisine.trim();
     }
 

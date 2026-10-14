@@ -20,6 +20,17 @@ export const CUSTOMER_RESTAURANT_DEFAULTS = {
   CACHE_STALE_TIME_MS: 60_000,
 } as const;
 
+export const RESTAURANT_SKELETON_KEYS = [
+  "restaurant-sk-1",
+  "restaurant-sk-2",
+  "restaurant-sk-3",
+  "restaurant-sk-4",
+  "restaurant-sk-5",
+  "restaurant-sk-6",
+  "restaurant-sk-7",
+  "restaurant-sk-8",
+] as const;
+
 export const CUSTOMER_CUISINE_CATEGORIES = [
   "All",
   "Mandi",

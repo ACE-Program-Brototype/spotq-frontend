@@ -1,5 +1,4 @@
-import { ArrowRight, Clock, IndianRupee, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Clock, IndianRupee, MapPin } from "lucide-react";
 import { FALLBACK_CUISINE_IMAGES } from "../../constants/customer-restaurant.constants";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 
@@ -71,23 +70,15 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             ) : (
               <span className="text-neutral-400 italic">Casual Dining</span>
             )}
-            <span className="size-1 rounded-full bg-neutral-300" />
-            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
-              <Clock className="size-3" />
-              <span>Open</span>
-            </span>
           </div>
         </div>
 
-        {/* Action Button */}
-        <div className="pt-4 border-t border-neutral-100 mt-3 flex items-center justify-between">
-          <Link
-            to={`/restaurant/${restaurant.id}`}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#ff6b00] hover:text-[#e05e00] transition-colors"
-          >
-            <span>View Details</span>
-            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-          </Link>
+        {/* Card Footer */}
+        <div className="pt-3 border-t border-neutral-100 mt-3 flex items-center justify-between">
+          <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
+            <Clock className="size-3" />
+            <span>Open Now</span>
+          </span>
           <span className="text-[10px] text-neutral-400 font-medium">Live Queue</span>
         </div>
       </div>
