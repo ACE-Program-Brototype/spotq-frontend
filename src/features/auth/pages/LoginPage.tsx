@@ -89,7 +89,7 @@ export default function LoginPage() {
           <GoogleLoginButton onSuccess={handleGoogleSuccess} disabled={isLoading} />
 
           <p className="text-center text-sm text-gray-500">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <button
               type="button"
               onClick={() => navigate(CUSTOMER_ROUTES.AUTH.REGISTER)}
