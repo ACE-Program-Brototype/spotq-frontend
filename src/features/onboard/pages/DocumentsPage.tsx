@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import DocumentUploadCard from "../components/DocumentUploadCard";
 import ImageUploadSection from "../components/ImageUploadSection";
@@ -62,11 +63,11 @@ export default function DocumentsPage() {
       return;
     }
 
-    navigate("/restaurant/onboarding/location");
+    navigate(RESTAURANT_ROUTES.ONBOARDING.LOCATION);
   };
 
   const handleBack = () => {
-    navigate("/restaurant/onboarding/business-information");
+    navigate(RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION);
   };
 
   return (

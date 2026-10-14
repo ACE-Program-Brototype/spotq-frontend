@@ -14,10 +14,11 @@ import AdminRestaurantsPage from "@/features/restaurants/pages/AdminRestaurantsP
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
+import { ADMIN_ROUTE_PATHS, ADMIN_ROUTES } from "./admin.routes.constants";
 
-const AdminAuthLayout = () => <AuthLayout redirectTo="/admin/dashboard" />;
+const AdminAuthLayout = () => <AuthLayout redirectTo={ADMIN_ROUTES.DASHBOARD} />;
 const AdminProtectedLayout = () => (
-  <ProtectedLayout allowedRoles={["ADMIN"]} redirectTo="/admin/login" />
+  <ProtectedLayout allowedRoles={["ADMIN"]} redirectTo={ADMIN_ROUTES.LOGIN} />
 );
 
 export const adminRoutes: RouteObject[] = [
@@ -25,19 +26,19 @@ export const adminRoutes: RouteObject[] = [
     Component: AdminAuthLayout,
     children: [
       {
-        path: "login",
+        path: ADMIN_ROUTE_PATHS.AUTH.LOGIN,
         Component: AdminLoginPage,
       },
       {
-        path: "forgot-password",
+        path: ADMIN_ROUTE_PATHS.AUTH.FORGOT_PASSWORD,
         Component: AdminForgotPasswordPage,
       },
       {
-        path: "forgot-password/verify",
+        path: ADMIN_ROUTE_PATHS.AUTH.FORGOT_PASSWORD_VERIFY,
         Component: AdminVerifyOtpPage,
       },
       {
-        path: "forgot-password/reset-password",
+        path: ADMIN_ROUTE_PATHS.AUTH.FORGOT_PASSWORD_RESET,
         Component: AdminResetPasswordPage,
       },
     ],
@@ -49,35 +50,35 @@ export const adminRoutes: RouteObject[] = [
         Component: AdminLayout,
         children: [
           {
-            path: "dashboard",
+            path: ADMIN_ROUTE_PATHS.DASHBOARD,
             Component: AdminDashboardPage,
           },
           {
-            path: "restaurants",
+            path: ADMIN_ROUTE_PATHS.RESTAURANTS,
             Component: AdminRestaurantsPage,
           },
           {
-            path: "restaurants/management",
+            path: ADMIN_ROUTE_PATHS.RESTAURANTS_MANAGEMENT,
             Component: AdminRestaurantsPage,
           },
           {
-            path: "restaurants/onboarding",
+            path: ADMIN_ROUTE_PATHS.RESTAURANTS_ONBOARDING,
             Component: AdminRestaurantApplicationsPage,
           },
           {
-            path: "restaurants/onboarding/:id",
+            path: ADMIN_ROUTE_PATHS.RESTAURANTS_ONBOARDING_DETAIL,
             Component: AdminRestaurantApplicationReviewPage,
           },
           {
-            path: "restaurants/:id",
+            path: ADMIN_ROUTE_PATHS.RESTAURANT_DETAIL,
             Component: AdminRestaurantDetailsPage,
           },
           {
-            path: "customers",
+            path: ADMIN_ROUTE_PATHS.CUSTOMERS,
             Component: AdminCustomersPage,
           },
           {
-            path: "customers/:id",
+            path: ADMIN_ROUTE_PATHS.CUSTOMER_DETAIL,
             Component: AdminCustomerDetailsPage,
           },
         ],

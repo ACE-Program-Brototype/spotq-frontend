@@ -7,6 +7,7 @@ import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage"
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
 import CreateMenuItemPage from "@/features/menu/pages/CreateMenuItemPage";
 import EditMenuItemPage from "@/features/menu/pages/EditMenuItemPage";
+import RestaurantMenuAddonsPage from "@/features/menu/pages/RestaurantMenuAddonsPage";
 import RestaurantMenuCategoriesPage from "@/features/menu/pages/RestaurantMenuCategoriesPage";
 import RestaurantMenuItemDetailPage from "@/features/menu/pages/RestaurantMenuItemDetailPage";
 import RestaurantMenuItemsPage from "@/features/menu/pages/RestaurantMenuItemsPage";
@@ -26,60 +27,38 @@ import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RestaurantAdminLayout from "@/layouts/RestaurantAdminLayout";
+import VerificationStatusLayout from "@/layouts/VerificationStatusLayout";
 
-const RestaurantAuthGuard = () => <AuthLayout redirectTo="/restaurant/dashboard" />;
+import { RESTAURANT_ROUTE_PATHS, RESTAURANT_ROUTES } from "./restaurant.routes.constants";
+
+const RestaurantAuthGuard = () => <AuthLayout redirectTo={RESTAURANT_ROUTES.DASHBOARD} />;
 const RestaurantProtectedLayout = () => (
-  <ProtectedLayout
-    allowedRoles={["RESTAURANT_ADMIN"]}
-    redirectTo="/restaurant/email/verification"
-  />
+  <ProtectedLayout allowedRoles={["RESTAURANT_ADMIN"]} redirectTo={RESTAURANT_ROUTES.LOGIN} />
 );
 
 const StaffEditRedirect = () => {
   const { staffId } = useParams();
-  return <Navigate to={`/restaurant/staff/${staffId}`} replace />;
+  return <Navigate to={RESTAURANT_ROUTES.STAFF.DETAIL(staffId ?? "")} replace />;
 };
-
-const VerificationStatusLayout = () => (
-  <div className="min-h-screen bg-neutral-100">
-    <header className="border-b border-neutral-200 bg-white">
-      <div className="flex h-16 items-center px-6 sm:px-10">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500">
-            <span className="text-sm font-bold text-white">S</span>
-          </div>
-          <span className="text-lg">
-            <span className="font-bold text-neutral-900">SpotQ</span>{" "}
-            <span className="text-neutral-500">for restaurants</span>
-          </span>
-        </div>
-      </div>
-    </header>
-
-    <div className="mx-auto flex max-w-4xl justify-center px-6 py-10 sm:px-10">
-      <VerificationStatusPage />
-    </div>
-  </div>
-);
 
 export const restaurantRoutes: RouteObject[] = [
   {
-    path: "terms",
+    path: RESTAURANT_ROUTE_PATHS.TERMS,
     Component: RestaurantTermsPage,
   },
   {
-    path: "privacy",
+    path: RESTAURANT_ROUTE_PATHS.PRIVACY,
     Component: RestaurantPrivacyPage,
   },
   {
     Component: RestaurantAuthGuard,
     children: [
       {
-        path: "email/verification",
+        path: RESTAURANT_ROUTE_PATHS.AUTH.LOGIN,
         Component: RestaurantEmailVerificationPage,
       },
       {
-        path: "otp/verification",
+        path: RESTAURANT_ROUTE_PATHS.AUTH.VERIFY,
         Component: OtpVerificationPage,
       },
     ],
@@ -88,49 +67,50 @@ export const restaurantRoutes: RouteObject[] = [
     Component: RestaurantProtectedLayout,
     children: [
       {
-        path: "subscription",
+        path: RESTAURANT_ROUTE_PATHS.SUBSCRIPTION.INDEX,
         Component: RestaurantSubscriptionPage,
       },
       {
-        path: "subscription/success",
+        path: RESTAURANT_ROUTE_PATHS.SUBSCRIPTION.SUCCESS,
         Component: SubscriptionSuccessPage,
       },
       {
-        path: "subscription/failure",
+        path: RESTAURANT_ROUTE_PATHS.SUBSCRIPTION.FAILURE,
         Component: SubscriptionFailurePage,
       },
       {
-        path: "onboarding",
+        path: RESTAURANT_ROUTE_PATHS.ONBOARDING.ROOT,
         children: [
           {
             index: true,
-            Component: () => <Navigate to="business-information" replace />,
+            element: <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />,
           },
           {
-            path: "status",
             Component: VerificationStatusLayout,
-          },
-          {
-            path: "verification-status",
-            Component: VerificationStatusLayout,
+            children: [
+              {
+                path: RESTAURANT_ROUTE_PATHS.ONBOARDING.STATUS,
+                Component: VerificationStatusPage,
+              },
+            ],
           },
           {
             Component: OnboardLayout,
             children: [
               {
-                path: "business-information",
+                path: RESTAURANT_ROUTE_PATHS.ONBOARDING.BUSINESS_INFORMATION,
                 Component: BusinessInformationPage,
               },
               {
-                path: "documents",
+                path: RESTAURANT_ROUTE_PATHS.ONBOARDING.DOCUMENTS,
                 Component: DocumentsPage,
               },
               {
-                path: "location",
+                path: RESTAURANT_ROUTE_PATHS.ONBOARDING.LOCATION,
                 Component: LocationPage,
               },
               {
-                path: "review",
+                path: RESTAURANT_ROUTE_PATHS.ONBOARDING.REVIEW,
                 Component: ReviewPage,
               },
             ],
@@ -141,52 +121,70 @@ export const restaurantRoutes: RouteObject[] = [
         Component: RestaurantAdminLayout,
         children: [
           {
-            path: "dashboard",
+            path: RESTAURANT_ROUTE_PATHS.DASHBOARD,
             Component: RestaurantDashboardPage,
           },
           {
-            path: "profile",
+            path: RESTAURANT_ROUTE_PATHS.PROFILE,
             Component: RestaurantProfilePage,
           },
           {
-            path: "settings/account",
+            path: RESTAURANT_ROUTE_PATHS.SETTINGS_ACCOUNT,
             Component: RestaurantProfilePage,
           },
           {
-            path: "staff",
-            Component: RestaurantStaffPage,
+            path: RESTAURANT_ROUTE_PATHS.STAFF.ROOT,
+            children: [
+              {
+                index: true,
+                Component: RestaurantStaffPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.STAFF.INVITATIONS,
+                Component: RestaurantStaffInvitationsPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.STAFF.DETAIL,
+                Component: RestaurantStaffDetailPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.STAFF.EDIT,
+                Component: StaffEditRedirect,
+              },
+            ],
           },
           {
-            path: "staff/invitations",
-            Component: RestaurantStaffInvitationsPage,
-          },
-          {
-            path: "staff/:staffId",
-            Component: RestaurantStaffDetailPage,
-          },
-          {
-            path: "staff/:staffId/edit",
-            Component: StaffEditRedirect,
-          },
-          {
-            path: "menu/categories",
-            Component: RestaurantMenuCategoriesPage,
-          },
-          {
-            path: "menu/items",
-            Component: RestaurantMenuItemsPage,
-          },
-          {
-            path: "menu/items/create",
-            Component: CreateMenuItemPage,
-          },
-          {
-            path: "menu/items/:itemId/edit",
-            Component: EditMenuItemPage,
-          },
-          {
-            path: "menu/items/:itemId",
-            Component: RestaurantMenuItemDetailPage,
+            path: RESTAURANT_ROUTE_PATHS.MENU.ROOT,
+            children: [
+              {
+                index: true,
+                element: <Navigate to={RESTAURANT_ROUTES.MENU.ITEMS} replace />,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.MENU.ITEMS,
+                Component: RestaurantMenuItemsPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.MENU.CREATE,
+                Component: CreateMenuItemPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.MENU.DETAIL,
+                Component: RestaurantMenuItemDetailPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.MENU.EDIT,
+                Component: EditMenuItemPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.MENU.CATEGORIES,
+                Component: RestaurantMenuCategoriesPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.MENU.MODIFIERS,
+                Component: RestaurantMenuAddonsPage,
+              },
+            ],
           },
         ],
       },

@@ -5,6 +5,7 @@
 
 import { ArrowRight, Clock, Heart, ShieldCheck, Sparkles, Store, Utensils } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES, RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
@@ -65,7 +66,7 @@ export function AboutPage() {
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link
-              to="/"
+              to={CUSTOMER_ROUTES.HOME}
               className={cn(
                 buttonVariants({ size: "lg" }),
                 "rounded-full bg-[#ff6b00] hover:bg-[#e05e00] text-white font-bold shadow-sm h-11 px-6",
@@ -76,7 +77,7 @@ export function AboutPage() {
             </Link>
 
             <Link
-              to="/restaurant/email/verification"
+              to={RESTAURANT_ROUTES.LOGIN}
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
                 "rounded-full border-neutral-300 hover:bg-neutral-100 font-semibold h-11 px-6",
@@ -167,7 +168,7 @@ export function AboutPage() {
             hospitality from day one.
           </p>
           <Link
-            to="/restaurant/email/verification"
+            to={RESTAURANT_ROUTES.LOGIN}
             className={cn(
               buttonVariants(),
               "mt-5 rounded-full bg-[#ff6b00] hover:bg-[#e05e00] text-white font-bold px-6 h-10",

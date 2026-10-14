@@ -1,5 +1,6 @@
 import { RotateCcw } from "lucide-react";
 import { Navigate, useLocation } from "react-router-dom";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import StaffAuthCard from "@/features/auth/components/StaffAuthCard";
 import StaffResetPasswordForm from "@/features/auth/components/StaffResetPasswordForm";
 
@@ -8,7 +9,7 @@ export default function StaffResetPasswordPage() {
   const email = (location.state as { email?: string } | null)?.email;
 
   if (!email) {
-    return <Navigate to="/staff/forgot-password" replace />;
+    return <Navigate to={STAFF_ROUTES.FORGOT_PASSWORD} replace />;
   }
 
   return (

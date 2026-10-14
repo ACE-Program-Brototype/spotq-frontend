@@ -9,6 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { DataTable } from "@/components/common/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +36,7 @@ export function AdminCustomerDetailsPage() {
   const { data: customer, isLoading, isError, error, refetch } = useCustomerDetails(id);
 
   const handleBack = () => {
-    navigate("/admin/customers");
+    navigate(ADMIN_ROUTES.CUSTOMERS);
   };
 
   // Loading Skeleton State

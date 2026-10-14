@@ -93,10 +93,10 @@ export const AUTH_ENDPOINTS = {
   ADMIN_RESEND_OTP: "auth/admin/forgot-password/resend-otp",
   ADMIN_RESET_PASSWORD: "auth/admin/reset-password",
 
-  RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
-  RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
-  RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
-  RESTAURANT_ONBOARD: "restaurants/onboard",
+  RESTAURANT_SEND_OTP: "auth/restaurants/otp",
+  RESTAURANT_RESEND_OTP: "auth/restaurants/otp/resend",
+  RESTAURANT_VERIFY_OTP: "auth/restaurants/otp/verify",
+  RESTAURANT_ONBOARD: "restaurants/onboarding",
   RESTAURANT_REFRESH_TOKEN: "auth/restaurants/refresh-token",
   RESTAURANT_VERIFICATION_STATUS: "restaurants/verification-status",
 

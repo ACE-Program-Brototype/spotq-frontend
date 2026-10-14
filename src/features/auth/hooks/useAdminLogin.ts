@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
 import { loginAdmin } from "@/features/auth/services/auth.service";
@@ -16,7 +17,7 @@ export function useAdminLogin() {
     onSuccess: ({ access_token, user }) => {
       setAuth({ ...user, role: "ADMIN" }, access_token);
       toast.success(AUTH_MESSAGES.ADMIN_LOGIN_SUCCESS);
-      navigate("/admin/dashboard", { replace: true });
+      navigate(ADMIN_ROUTES.DASHBOARD, { replace: true });
     },
     onError: (error: Error) => {
       toast.error(error.message ?? AUTH_MESSAGES.LOGIN_FAILED);

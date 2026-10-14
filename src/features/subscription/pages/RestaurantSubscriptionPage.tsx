@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, HelpCircle, RefreshCw, ShieldCheck, Zap } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -50,7 +51,7 @@ export default function RestaurantSubscriptionPage() {
     ).toUpperCase();
 
     if (currentStatus === "PENDING" && currentUser?.onboardingStatus !== "COMPLETED") {
-      navigate("/restaurant/onboarding/business-information", { replace: true });
+      navigate(RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION, { replace: true });
       return;
     }
 
@@ -59,12 +60,12 @@ export default function RestaurantSubscriptionPage() {
       currentStatus === "UNDER_REVIEW" ||
       currentStatus === "REJECTED"
     ) {
-      navigate("/restaurant/onboarding/status", { replace: true });
+      navigate(RESTAURANT_ROUTES.ONBOARDING.STATUS, { replace: true });
       return;
     }
 
     if (currentUser && restaurantStatus?.isSubscriptionActive) {
-      navigate("/restaurant/dashboard", { replace: true });
+      navigate(RESTAURANT_ROUTES.DASHBOARD, { replace: true });
     }
   }, [restaurantStatus, navigate]);
 
@@ -95,7 +96,7 @@ export default function RestaurantSubscriptionPage() {
       queryClient.invalidateQueries({ queryKey: ["restaurant-status"] });
 
       // Direct the restaurant admin to subscription success page upon successful verification
-      navigate("/restaurant/subscription/success", {
+      navigate(RESTAURANT_ROUTES.SUBSCRIPTION_SUCCESS, {
         replace: true,
         state: {
           planCode: verificationResult.planCode,
@@ -106,7 +107,7 @@ export default function RestaurantSubscriptionPage() {
     },
     onError: (err) => {
       isNavigatingRef.current = true;
-      navigate("/restaurant/subscription/failure", {
+      navigate(RESTAURANT_ROUTES.SUBSCRIPTION_FAILURE, {
         replace: true,
         state: {
           errorMessage: err.message,
@@ -116,7 +117,7 @@ export default function RestaurantSubscriptionPage() {
     onAlreadyActive: () => {
       // Invalidate query to pull real authoritative subscription from backend without injecting synthetic data
       queryClient.invalidateQueries({ queryKey: ["restaurant-status"] });
-      navigate("/restaurant/dashboard", { replace: true });
+      navigate(RESTAURANT_ROUTES.DASHBOARD, { replace: true });
     },
   });
 

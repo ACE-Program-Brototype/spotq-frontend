@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import {
   type CompleteRestaurantOnboardingPayload,
@@ -40,7 +41,7 @@ export default function ReviewPage() {
   const isAllComplete = isBusinessInfoComplete && isDocumentsComplete && isLocationComplete;
 
   const handleBack = () => {
-    navigate("/restaurant/onboarding/location");
+    navigate(RESTAURANT_ROUTES.ONBOARDING.LOCATION);
   };
 
   const handleSubmit = async () => {
@@ -113,7 +114,7 @@ export default function ReviewPage() {
 
       toast.success(AUTH_MESSAGES.RESTAURANT_ONBOARD_SUCCESS);
 
-      navigate("/restaurant/onboarding/status", { replace: true });
+      navigate(RESTAURANT_ROUTES.ONBOARDING.STATUS, { replace: true });
     } catch (err) {
       const errorMsg =
         err instanceof Error ? err.message : "Failed to submit onboarding application.";
@@ -184,7 +185,7 @@ export default function ReviewPage() {
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/restaurant/onboarding/business-information")}
+                onClick={() => navigate(RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION)}
                 className="flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700"
               >
                 <svg
@@ -259,7 +260,7 @@ export default function ReviewPage() {
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/restaurant/onboarding/documents")}
+                onClick={() => navigate(RESTAURANT_ROUTES.ONBOARDING.DOCUMENTS)}
                 className="flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700"
               >
                 <svg
@@ -370,7 +371,7 @@ export default function ReviewPage() {
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/restaurant/onboarding/location")}
+                onClick={() => navigate(RESTAURANT_ROUTES.ONBOARDING.LOCATION)}
                 className="flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700"
               >
                 <svg

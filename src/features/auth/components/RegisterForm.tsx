@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Eye, EyeOff, Loader2, Lock, Mail, Phone, User } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,8 +16,6 @@ interface RegisterFormProps {
 export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const navigate = useNavigate();
 
   const {
     register,
@@ -228,21 +225,23 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
 
         <label htmlFor="termsAccepted" className="text-sm leading-5 text-gray-600 cursor-pointer">
           I agree to the{" "}
-          <button
-            type="button"
-            onClick={() => navigate("/terms-and-conditions")}
-            className="font-semibold text-spotq-orange hover:text-spotq-orange/80 cursor-pointer"
+          <a
+            href="/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-spotq-orange hover:text-spotq-orange/80 underline underline-offset-2"
           >
             Terms and Conditions
-          </button>{" "}
+          </a>{" "}
           and{" "}
-          <button
-            type="button"
-            onClick={() => navigate("/privacy-policy")}
-            className="font-semibold text-spotq-orange hover:text-spotq-orange/80 cursor-pointer"
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-spotq-orange hover:text-spotq-orange/80 underline underline-offset-2"
           >
             Privacy Policy
-          </button>
+          </a>
           .
         </label>
       </div>

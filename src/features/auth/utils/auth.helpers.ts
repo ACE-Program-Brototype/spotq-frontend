@@ -3,6 +3,12 @@
  * Determines canonical default landing path based on user role and onboarding status.
  */
 
+import {
+  ADMIN_ROUTES,
+  CUSTOMER_ROUTES,
+  RESTAURANT_ROUTES,
+  STAFF_ROUTES,
+} from "@/app/router/routes.constants";
 import type { Role } from "../types/auth.types";
 
 export const getRoleHome = (
@@ -13,21 +19,21 @@ export const getRoleHome = (
   const normalizedRole = role?.toUpperCase();
   switch (normalizedRole) {
     case "ADMIN":
-      return "/admin/dashboard";
+      return ADMIN_ROUTES.DASHBOARD;
     case "RESTAURANT_ADMIN":
       if (status === "ACTIVE" || status === "APPROVED" || status === "VERIFIED") {
-        return "/restaurant/dashboard";
+        return RESTAURANT_ROUTES.DASHBOARD;
       }
       if (status === "UNDER_REVIEW" || status === "SUBMITTED" || onboardingStatus === "COMPLETED") {
-        return "/restaurant/onboarding/status";
+        return RESTAURANT_ROUTES.ONBOARDING.STATUS;
       }
       if (status === "PENDING") {
-        return "/restaurant/onboarding/business-information";
+        return RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION;
       }
-      return "/restaurant/dashboard";
+      return RESTAURANT_ROUTES.DASHBOARD;
     case "STAFF":
-      return "/staff/dashboard";
+      return STAFF_ROUTES.DASHBOARD;
     default:
-      return "/";
+      return CUSTOMER_ROUTES.HOME;
   }
 };

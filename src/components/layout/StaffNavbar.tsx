@@ -6,6 +6,7 @@
 import { Bell, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,7 @@ export function StaffNavbar({ unreadNotifications = 1, className, ...props }: St
       {...props}
     >
       <Link
-        to="/staff/profile"
+        to={STAFF_ROUTES.PROFILE.ROOT}
         className="flex items-center gap-2.5 min-w-0 overflow-hidden pr-2 hover:opacity-85 transition-opacity"
       >
         <Avatar className="size-8.5 sm:size-9 bg-[#9a3412] text-white font-bold shrink-0 shadow-xs border border-[#eddcd4]">

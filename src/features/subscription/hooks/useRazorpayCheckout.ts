@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import {
   RAZORPAY_SCRIPT_URL,
   SUBSCRIPTION_MESSAGES,
@@ -179,7 +180,7 @@ export function useRazorpayCheckout({
         if (onAlreadyActive) {
           onAlreadyActive();
         } else {
-          window.location.assign("/restaurant/dashboard");
+          window.location.assign(RESTAURANT_ROUTES.DASHBOARD);
         }
         return;
       }

@@ -1,6 +1,7 @@
 import { isHTTPError } from "ky";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import type { NormalizedApiErrorData } from "@/lib/api/hooks/beforeError";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import type { LoginFormValues } from "../schemas/login.schema";
@@ -22,7 +23,7 @@ export const useLogin = () => {
       if (response.success && response.data) {
         toast.success(AUTH_MESSAGES.LOGIN_SUCCESS);
         setAuth({ ...response.data.user, role: "CUSTOMER" }, response.data.accessToken);
-        navigate("/", { replace: true });
+        navigate(CUSTOMER_ROUTES.HOME, { replace: true });
       } else {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }
@@ -50,7 +51,9 @@ export const useLogin = () => {
 
       if (isUnverified) {
         toast.info(AUTH_MESSAGES.EMAIL_NOT_VERIFIED_PROMPT);
-        navigate(`/verify-otp?email=${encodeURIComponent(values.email.trim().toLowerCase())}`);
+        navigate(
+          `${CUSTOMER_ROUTES.AUTH.VERIFY_OTP}?email=${encodeURIComponent(values.email.trim().toLowerCase())}`,
+        );
         return;
       }
 

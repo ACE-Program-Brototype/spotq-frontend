@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { HTTPError } from "ky";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { PROFILE_QUERY_KEYS, profileHooks } from "../constants/profile.constants";
 import { profileService } from "../services/profile.service";
@@ -53,7 +54,7 @@ export function useStaffProfile(options?: {
 
     if (isUnauthorized) {
       clearAuth();
-      navigate("/staff/login", { replace: true });
+      navigate(STAFF_ROUTES.LOGIN, { replace: true });
     }
   }, [isError, error, clearAuth, navigate]);
 

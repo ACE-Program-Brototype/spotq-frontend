@@ -3,6 +3,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useLocation } from "react-router-dom";
 
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
@@ -132,7 +133,7 @@ export function AdminVerifyOtpForm({ initialEmail }: AdminVerifyOtpFormProps) {
 
       <div className="pt-2 text-center">
         <Link
-          to="/admin/forgot-password"
+          to={ADMIN_ROUTES.FORGOT_PASSWORD}
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground hover:no-underline"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />

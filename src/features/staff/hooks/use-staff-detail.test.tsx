@@ -140,7 +140,7 @@ describe("useStaffDetail", () => {
 
     await waitFor(() => {
       expect(clearAuthSpy).toHaveBeenCalled();
-      expect(mockNavigate).toHaveBeenCalledWith("/restaurant/email/verification", {
+      expect(mockNavigate).toHaveBeenCalledWith("/restaurant/login", {
         replace: true,
       });
     });

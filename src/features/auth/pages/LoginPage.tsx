@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { AuthDivider, AuthHeroPanel, GoogleLoginButton, LoginForm } from "../components";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
@@ -19,7 +20,8 @@ export default function LoginPage() {
   const googleLoginMutation = useGoogleLoginMutation();
   const isLoading = isLoginLoading || googleLoginMutation.isPending;
 
-  const destination = (location.state as { from?: { pathname: string } })?.from?.pathname || "/";
+  const destination =
+    (location.state as { from?: { pathname: string } })?.from?.pathname || CUSTOMER_ROUTES.HOME;
 
   const onSubmit = async (values: LoginFormValues) => {
     if (isLoading) return;
@@ -86,19 +88,17 @@ export default function LoginPage() {
 
           <GoogleLoginButton onSuccess={handleGoogleSuccess} disabled={isLoading} />
 
-          <div className="text-center text-sm text-gray-500 space-y-2">
-            <p>
-              Don&apos;t have an account?{" "}
-              <button
-                type="button"
-                onClick={() => navigate("/register")}
-                className="font-bold text-spotq-orange hover:text-spotq-orange/80 transition-colors cursor-pointer"
-              >
-                <span className="hidden md:inline">Register now</span>
-                <span className="inline md:hidden">Register</span>
-              </button>
-            </p>
-          </div>
+          <p className="text-center text-sm text-gray-500">
+            Don&apos;t have an account?{" "}
+            <button
+              type="button"
+              onClick={() => navigate(CUSTOMER_ROUTES.AUTH.REGISTER)}
+              className="font-bold text-spotq-orange hover:text-spotq-orange/80 transition-colors cursor-pointer"
+            >
+              <span className="hidden md:inline">Register now</span>
+              <span className="inline md:hidden">Register</span>
+            </button>
+          </p>
         </div>
 
         <div className="h-6 md:hidden" />

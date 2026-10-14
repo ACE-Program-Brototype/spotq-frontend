@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,7 +71,7 @@ export function AdminLoginForm() {
             Key
           </Label>
           <Link
-            to="/admin/forgot-password"
+            to={ADMIN_ROUTES.FORGOT_PASSWORD}
             className="text-[11px] font-normal text-muted-foreground transition-colors hover:text-foreground hover:no-underline"
           >
             Forgot key?

@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import type { ForgotPasswordFormValues } from "@/features/auth/schemas/forgot-password.schema";
 import { adminForgotPassword } from "@/features/auth/services/auth.service";
@@ -13,7 +14,7 @@ export function useAdminForgotPassword() {
     mutationFn: (data: ForgotPasswordFormValues) => adminForgotPassword(data),
     onSuccess: (_, variables) => {
       toast.success(AUTH_MESSAGES.OTP_SENT_SUCCESS);
-      navigate("/admin/forgot-password/verify", {
+      navigate(ADMIN_ROUTES.FORGOT_PASSWORD_VERIFY, {
         state: { email: variables.email },
       });
     },

@@ -2,6 +2,8 @@ import { ArrowRight, LogIn, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
+
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Pagination } from "@/components/common/Pagination";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -169,7 +171,7 @@ export default function HomePage() {
                 Demo Login
               </Button>
               <Link
-                to="/login"
+                to={CUSTOMER_ROUTES.AUTH.LOGIN}
                 className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl bg-[#ff6b00] hover:bg-[#e05e00] text-white text-xs font-bold shadow-xs transition-colors"
               >
                 <LogIn className="size-3.5" />
@@ -235,7 +237,7 @@ export default function HomePage() {
 
               <div className="pt-4">
                 <Link
-                  to={`/restaurant/${res.id}`}
+                  to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(res.id)}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-[#ff6b00] hover:text-[#e05e00] transition-colors"
                 >
                   <span>View Details</span>
