@@ -8,6 +8,7 @@ import {
   STAFF_ROUTES,
 } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import type { Role } from "@/features/auth/types/auth.types";
 import NotFoundPage from "./NotFoundPage";
 
 const mockedNavigate = jest.fn();
@@ -90,6 +91,23 @@ describe("NotFoundPage", () => {
     expect(staffLink).toHaveAttribute("href", STAFF_ROUTES.DASHBOARD);
   });
 
+  it("redirects RESTAURANT_STAFF user to staff dashboard", () => {
+    useAuthStore.getState().setUser({
+      _id: "staff-2",
+      email: "res-staff@spotq.com",
+      role: "RESTAURANT_STAFF" as unknown as Role,
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/staff/invalid"]}>
+        <NotFoundPage />
+      </MemoryRouter>,
+    );
+
+    const staffLink = screen.getByRole("link", { name: /Go to Staff Dashboard/i });
+    expect(staffLink).toHaveAttribute("href", STAFF_ROUTES.DASHBOARD);
+  });
+
   it("redirects unauthenticated user on /restaurant/* to restaurant portal login", () => {
     render(
       <MemoryRouter initialEntries={["/restaurant/some-unknown-path"]}>
@@ -99,6 +117,18 @@ describe("NotFoundPage", () => {
 
     const portalLink = screen.getByRole("link", { name: /Go to Partner Portal/i });
     expect(portalLink).toHaveAttribute("href", RESTAURANT_ROUTES.LOGIN);
+  });
+
+  it("does not categorize /restaurants or /restaurants/123 into Partner Portal for guest", () => {
+    render(
+      <MemoryRouter initialEntries={["/restaurants/123"]}>
+        <NotFoundPage />
+      </MemoryRouter>,
+    );
+
+    const homeLink = screen.getByRole("link", { name: /Return to Home/i });
+    expect(homeLink).toHaveAttribute("href", CUSTOMER_ROUTES.HOME);
+    expect(screen.queryByRole("link", { name: /Go to Partner Portal/i })).not.toBeInTheDocument();
   });
 
   it("redirects unauthenticated user on /admin/* to admin sign in", () => {

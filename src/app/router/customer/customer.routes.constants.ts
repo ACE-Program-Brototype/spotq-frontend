@@ -40,7 +40,8 @@ export const CUSTOMER_ROUTE_PATHS = {
 export const CUSTOMER_ROUTES = {
   HOME: "/",
   ABOUT: "/about",
-  RESTAURANT_DETAIL: (id: string | number) => `/restaurant/${id}`,
+  RESTAURANTS: "/restaurants",
+  RESTAURANT_DETAIL: (id: string | number) => `/restaurants/${id}`,
 
   PROFILE: {
     ROOT: "/profile",

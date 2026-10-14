@@ -56,7 +56,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "STAFF") {
+  if (role === "STAFF" || (role as string) === "RESTAURANT_STAFF") {
     return {
       path: STAFF_ROUTES.DASHBOARD,
       label: "Go to Staff Dashboard",
@@ -80,8 +80,10 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
+  const isPathUnder = (root: string) => pathname === root || pathname.startsWith(`${root}/`);
+
   // Unauthenticated visitors - determine destination by route context
-  if (pathname.startsWith(ADMIN_ROUTES.ROOT)) {
+  if (isPathUnder(ADMIN_ROUTES.ROOT)) {
     return {
       path: ADMIN_ROUTES.LOGIN,
       label: "Go to Admin Sign In",
@@ -93,7 +95,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (pathname.startsWith(RESTAURANT_ROUTES.ROOT)) {
+  if (isPathUnder(RESTAURANT_ROUTES.ROOT)) {
     return {
       path: RESTAURANT_ROUTES.LOGIN,
       label: "Go to Partner Portal",
@@ -105,7 +107,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (pathname.startsWith(STAFF_ROUTES.ROOT)) {
+  if (isPathUnder(STAFF_ROUTES.ROOT)) {
     return {
       path: STAFF_ROUTES.LOGIN,
       label: "Go to Staff Sign In",
