@@ -78,4 +78,26 @@ describe("useOtpTimer", () => {
     expect(result.current.isExpired).toBe(true);
     expect(localStorage.getItem("spotq_otp_expiry_test@example.com")).toBeNull();
   });
+
+  it("does not start timer automatically when autoStart is false and no stored expiry exists", () => {
+    const { result } = renderHook(() =>
+      useOtpTimer({ email: "test@example.com", defaultSeconds: 60, autoStart: false }),
+    );
+
+    expect(result.current.seconds).toBe(0);
+    expect(result.current.isExpired).toBe(true);
+    expect(localStorage.getItem("spotq_otp_expiry_test@example.com")).toBeNull();
+  });
+
+  it("still recovers remaining seconds when autoStart is false and stored expiry exists", () => {
+    const futureExpiry = Date.now() + 25 * 1000;
+    localStorage.setItem("spotq_otp_expiry_test@example.com", String(futureExpiry));
+
+    const { result } = renderHook(() =>
+      useOtpTimer({ email: "test@example.com", defaultSeconds: 60, autoStart: false }),
+    );
+
+    expect(result.current.seconds).toBe(25);
+    expect(result.current.isExpired).toBe(false);
+  });
 });

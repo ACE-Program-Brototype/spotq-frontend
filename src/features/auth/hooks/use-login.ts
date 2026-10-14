@@ -42,12 +42,11 @@ export const useLogin = () => {
           : undefined);
 
       const isUnverified =
+        errorCode === "EMAIL_NOT_VERIFIED" ||
         (isHTTPError(err) &&
-          (err.response.status === 403 || errorCode === "EMAIL_NOT_VERIFIED") &&
-          (errorCode === "EMAIL_NOT_VERIFIED" ||
-            /email.*(?:not verified|verification)|not verified/i.test(err.message))) ||
-        (err instanceof Error &&
-          /email.*(?:not verified|verification)|not verified/i.test(err.message));
+          err.response.status === 403 &&
+          /email.*(?:not verified|verification)/i.test(err.message)) ||
+        (err instanceof Error && /email.*(?:not verified|verification)/i.test(err.message));
 
       if (isUnverified) {
         toast.info(AUTH_MESSAGES.EMAIL_NOT_VERIFIED_PROMPT);

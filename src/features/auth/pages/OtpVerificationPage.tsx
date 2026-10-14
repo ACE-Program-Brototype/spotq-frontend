@@ -55,6 +55,7 @@ export default function OtpVerificationPage() {
   const { seconds, startTimer } = useOtpTimer({
     email,
     defaultSeconds: CUSTOMER_OTP_COOLDOWN_SECONDS,
+    autoStart: false,
   });
   const { handleVerifyOtp, isLoading } = useVerifyOtp();
   const { handleResendOtp, isLoading: isResendLoading } = useResendOtp();

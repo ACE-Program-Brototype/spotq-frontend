@@ -101,4 +101,22 @@ describe("useLogin hook", () => {
     expect(toast.error).toHaveBeenCalledWith("Invalid email or password");
     expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  it("does not redirect non-email verification errors that contain not verified", async () => {
+    const error = new Error("Phone number is not verified");
+    mockMutateAsync.mockRejectedValue(error);
+
+    const { result } = renderHook(() => useLogin());
+
+    await act(async () => {
+      await result.current.handleLogin({
+        email: "user@example.com",
+        password: "ValidPassword123!",
+      });
+    });
+
+    expect(toast.error).toHaveBeenCalledWith("Phone number is not verified");
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(toast.info).not.toHaveBeenCalled();
+  });
 });
