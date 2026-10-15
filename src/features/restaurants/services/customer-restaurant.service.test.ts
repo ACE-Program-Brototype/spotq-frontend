@@ -42,7 +42,7 @@ describe("customerRestaurantService", () => {
 
     const result = await customerRestaurantService.getRestaurants();
 
-    expect(apiClient.get).toHaveBeenCalledWith("restaurants", {
+    expect(apiClient.get).toHaveBeenCalledWith("restaurants/customers", {
       searchParams: {
         page: 1,
         limit: 8,
@@ -78,7 +78,7 @@ describe("customerRestaurantService", () => {
       sortOrder: "asc",
     });
 
-    expect(apiClient.get).toHaveBeenCalledWith("restaurants", {
+    expect(apiClient.get).toHaveBeenCalledWith("restaurants/customers", {
       searchParams: {
         page: 2,
         limit: 8,
@@ -101,7 +101,7 @@ describe("customerRestaurantService", () => {
       cuisine: "All",
     });
 
-    expect(apiClient.get).toHaveBeenCalledWith("restaurants", {
+    expect(apiClient.get).toHaveBeenCalledWith("restaurants/customers", {
       searchParams: {
         page: 1,
         limit: 8,
@@ -124,7 +124,7 @@ describe("customerRestaurantService", () => {
       cuisine: "Mandi",
     });
 
-    expect(apiClient.get).toHaveBeenCalledWith("restaurants", {
+    expect(apiClient.get).toHaveBeenCalledWith("restaurants/customers", {
       searchParams: {
         page: 1,
         limit: 8,

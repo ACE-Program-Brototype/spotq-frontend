@@ -1,7 +1,7 @@
 import type { CustomerSortConfig } from "../types/customer-restaurant.types";
 
 export const CUSTOMER_RESTAURANT_ENDPOINTS = {
-  LIST: "restaurants",
+  LIST: "restaurants/customers",
 } as const;
 
 export const CUSTOMER_RESTAURANT_QUERY_KEYS = {
