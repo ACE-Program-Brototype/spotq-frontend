@@ -3,9 +3,9 @@
  */
 
 // Components - Creation & Management
-export * from "./components/AddonCard";
-export * from "./components/AddonListSkeleton";
-export * from "./components/AddonSelector";
+export * from "./components/addon/AddonCard";
+export * from "./components/addon/AddonListSkeleton";
+export * from "./components/addon/AddonSelector";
 export * from "./components/CategoryCard";
 export * from "./components/CategoryListSkeleton";
 export * from "./components/CreateAddonModal";

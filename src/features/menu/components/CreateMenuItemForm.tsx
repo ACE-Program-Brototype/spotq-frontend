@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { AddonSelector } from "@/features/menu/components/AddonSelector";
+import { AddonSelector } from "@/features/menu/components/addon/AddonSelector";
 import { ImageUploader } from "@/features/menu/components/ImageUploader";
 import { VariantManager } from "@/features/menu/components/VariantManager";
 import {

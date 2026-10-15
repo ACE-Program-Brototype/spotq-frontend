@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { AddonCard } from "@/features/menu/components/AddonCard";
-import { AddonListSkeleton } from "@/features/menu/components/AddonListSkeleton";
+import { AddonCard } from "@/features/menu/components/addon/AddonCard";
+import { AddonListSkeleton } from "@/features/menu/components/addon/AddonListSkeleton";
 import { CreateAddonModal } from "@/features/menu/components/CreateAddonModal";
 import { EditAddonModal } from "@/features/menu/components/EditAddonModal";
 import { useRestaurantAddons } from "@/features/menu/hooks/use-restaurant-addons";
