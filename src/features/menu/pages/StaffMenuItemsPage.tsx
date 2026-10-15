@@ -5,7 +5,7 @@
  */
 
 import { AlertCircle, ChefHat, RotateCcw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { StaffMenuItemDetailModal } from "../components/StaffMenuItemDetailModal";
@@ -16,7 +16,6 @@ import { StaffMenuStatsCards } from "../components/StaffMenuStatsCards";
 import { MENU_MESSAGES } from "../constants/menu.constants";
 import { useMenuCategories } from "../hooks/use-menu-categories";
 import { useStaffMenuItems } from "../hooks/use-staff-menu-items";
-import type { StaffMenuItem } from "../types/staff-menu-item.types";
 
 export default function StaffMenuItemsPage() {
   const { categories } = useMenuCategories();
@@ -52,20 +51,10 @@ export default function StaffMenuItemsPage() {
     pendingVariantIds,
   } = useStaffMenuItems();
 
-  const [selectedItemForDetails, setSelectedItemForDetails] = useState<StaffMenuItem | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
-  // Sync the selected item with the live query cache so the modal always reflects
-  // optimistic updates and server refetch results without needing a manual refresh.
-  const selectedItemId = selectedItemForDetails?.id ?? null;
-  useEffect(() => {
-    if (!selectedItemId) return;
-    const latest = items.find((i) => i.id === selectedItemId);
-    if (latest) {
-      setSelectedItemForDetails(latest);
-    }
-  }, [items, selectedItemId]);
-
-  const activeItem = selectedItemForDetails;
+  // get activeItem directly from the items array
+  const activeItem = items.find((i) => i.id === selectedItemId) ?? null;
 
   const isFiltered = Boolean(
     searchQuery.trim() || categoryFilter !== "ALL" || availabilityFilter !== "ALL",
@@ -209,7 +198,7 @@ export default function StaffMenuItemsPage() {
             onLimitChange={setLimit}
             onResetFilters={resetFilters}
             onToggleAvailability={toggleAvailability}
-            onViewDetails={(item) => setSelectedItemForDetails(item)}
+            onViewDetails={(item) => setSelectedItemId(item.id)}
             pendingItemIds={pendingItemIds}
             togglingItemId={togglingItemId}
           />
@@ -218,9 +207,9 @@ export default function StaffMenuItemsPage() {
 
       {/* Staff View Details & Variants Management Modal */}
       <StaffMenuItemDetailModal
-        isOpen={Boolean(selectedItemForDetails)}
+        isOpen={Boolean(selectedItemId)}
         item={activeItem}
-        onClose={() => setSelectedItemForDetails(null)}
+        onClose={() => setSelectedItemId(null)}
         onToggleVariant={toggleVariantAvailability}
         pendingVariantIds={pendingVariantIds}
         onToggleItemAvailability={toggleAvailability}
