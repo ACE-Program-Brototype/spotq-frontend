@@ -17,6 +17,7 @@ export * from "./components/item-detail/MenuItemAddonsCard";
 export * from "./components/item-detail/MenuItemDetailHeader";
 export * from "./components/item-detail/MenuItemDetailSkeleton";
 export * from "./components/item-detail/MenuItemHeroCard";
+export * from "./components/item-detail/MenuItemVariantRow";
 export * from "./components/item-detail/MenuItemVariantsCard";
 export * from "./components/MenuCategoryForm";
 export * from "./components/MenuItemFilters";

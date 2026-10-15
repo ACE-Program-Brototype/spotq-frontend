@@ -19,6 +19,8 @@ export const MENU_ENDPOINTS = {
   ADDONS: (restaurantId: string) => `restaurants/${restaurantId}/addons`,
   ADDON_DETAIL: (restaurantId: string, addonId: string) =>
     `restaurants/${restaurantId}/addons/${addonId}`,
+  VARIANT_STATUS: (restaurantId: string, itemId: string, variantId: string) =>
+    `restaurants/${restaurantId}/menu/items/${itemId}/variant/${variantId}/status`,
 } as const;
 
 export const MENU_ITEM_DETAIL_QUERY_KEY = "menu-item-detail" as const;
@@ -180,6 +182,9 @@ export const MENU_MESSAGES = {
   ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as unavailable",
   ADDON_DELETED_SUCCESS: "Add-on deleted successfully.",
   ADDON_DELETE_FAILED: "Failed to delete add-on.",
+  VARIANT_MARKED_IN_STOCK: "Variant marked as in stock",
+  VARIANT_MARKED_OUT_OF_STOCK: "Variant marked as 86'd / unavailable",
+  VARIANT_AVAILABILITY_UPDATE_FAILED: "Failed to update variant availability status",
   STAFF_ADDONS_TITLE: "Modifiers & Add-ons",
   STAFF_ADDONS_SUBTITLE:
     "Real-time 86'd stock monitoring and operational availability toggles for add-ons.",

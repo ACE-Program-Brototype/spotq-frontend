@@ -90,4 +90,28 @@ export const staffMenuService = {
 
     return normalizeCategoriesResponse(response?.data, restaurantId);
   },
+
+  /**
+   * Toggles variant availability status for restaurant staff.
+   * path is PATCH /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}/variant/{variantId}/status
+   */
+  async updateMenuItemVariantStatus(
+    restaurantId: string,
+    menuItemId: string,
+    variantId: string,
+  ): Promise<{ isAvailable: boolean }> {
+    if (!restaurantId || !menuItemId || !variantId) {
+      throw new Error("Restaurant ID, Menu Item ID, and Variant ID are required.");
+    }
+
+    const response = await apiClient
+      .patch(MENU_ENDPOINTS.VARIANT_STATUS(restaurantId, menuItemId, variantId))
+      .json<{ success: boolean; message?: string; data?: { isAvailable: boolean } }>();
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to update variant availability status");
+    }
+
+    return response.data ?? { isAvailable: true };
+  },
 };
