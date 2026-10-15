@@ -7,6 +7,7 @@ import type {
   CustomerRestaurantsApiResponse,
   CustomerRestaurantsListData,
   GetCustomerRestaurantsParams,
+  CustomerRestaurantItem
 } from "../types/customer-restaurant.types";
 
 export const customerRestaurantService = {
@@ -57,12 +58,23 @@ export const customerRestaurantService = {
       })
       .json<CustomerRestaurantsApiResponse>();
 
+    const rawData = response?.data;
+    const restaurants: CustomerRestaurantItem[] = Array.isArray(rawData)
+      ? rawData
+      : Array.isArray(
+        (rawData as unknown as { restaurants?: CustomerRestaurantItem[] })
+          ?.restaurants,
+      )
+        ? (rawData as unknown as { restaurants: CustomerRestaurantItem[] })
+          .restaurants
+        : [];
+
     return {
-      restaurants: response?.data ?? [],
+      restaurants,
       pagination: response?.pagination ?? {
         page: Number(searchParams.page) || 1,
         limit: Number(searchParams.limit) || 8,
-        total: response?.data?.length ?? 0,
+        total: restaurants.length,
         totalPages: 1,
       },
     };

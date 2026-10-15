@@ -31,10 +31,12 @@ export function HomePage() {
     refetch,
     page,
     searchQuery,
+    cityQuery,
     selectedCategory,
     selectedSort,
     isFiltered,
     handleSearchChange,
+    handleCityChange,
     handleCategoryChange,
     handleSortChange,
     handlePageChange,
@@ -141,6 +143,8 @@ export function HomePage() {
       <CustomerRestaurantFilters
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+        cityQuery={cityQuery}
+        onCityChange={handleCityChange}
         selectedSort={selectedSort}
         onSortChange={handleSortChange}
         isFiltered={isFiltered}
@@ -179,7 +183,7 @@ export function HomePage() {
             <span>Try Again</span>
           </Button>
         </div>
-      ) : restaurants.length === 0 ? (
+      ) : !Array.isArray(restaurants) || restaurants.length === 0 ? (
         <CustomerRestaurantEmptyState isFiltered={isFiltered} onResetFilters={resetFilters} />
       ) : (
         <div
@@ -193,15 +197,20 @@ export function HomePage() {
       )}
 
       {/* ── 5. Pagination Bar ── */}
-      {!isLoading && !isError && totalPages > 1 && (
-        <div className="pt-4 flex justify-center">
+      {!isLoading && !isError && Array.isArray(restaurants) && restaurants.length > 0 && (
+        <div
+          data-testid="restaurant-pagination"
+          className="mt-8 rounded-2xl border border-neutral-200/80 bg-white p-2 sm:p-3 shadow-2xs"
+        >
           <Pagination
-            totalItems={totalItems}
-            pageSize={CUSTOMER_RESTAURANT_DEFAULTS.LIMIT}
             currentPage={page}
             totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={CUSTOMER_RESTAURANT_DEFAULTS.LIMIT}
             onPageChange={handlePageChange}
-            theme="brand"
+            theme="customer"
+            showFirstLast={true}
+            className="w-full"
           />
         </div>
       )}

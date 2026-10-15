@@ -15,6 +15,7 @@ export interface UseCustomerRestaurantsOptions {
   initialLimit?: number;
   initialCategory?: string;
   initialSearch?: string;
+  initialCity?: string;
   initialSort?: CustomerSortOptionValue;
 }
 
@@ -25,6 +26,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
   const urlPage = Number(searchParams.get("page")) || undefined;
   const urlCategory = searchParams.get("category") || undefined;
   const urlSearch = searchParams.get("search") || undefined;
+  const urlCity = searchParams.get("city") || undefined;
   const urlSort = (searchParams.get("sort") as CustomerSortOptionValue) || undefined;
 
   const [page, setPage] = useState<number>(
@@ -35,6 +37,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     urlCategory ?? options?.initialCategory ?? CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY,
   );
   const [searchQuery, setSearchQuery] = useState<string>(urlSearch ?? options?.initialSearch ?? "");
+  const [cityQuery, setCityQuery] = useState<string>(urlCity ?? options?.initialCity ?? "");
   const [selectedSort, setSelectedSort] = useState<CustomerSortOptionValue>(
     urlSort ?? options?.initialSort ?? CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT,
   );
@@ -44,6 +47,11 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     const paramSearch = searchParams.get("search") ?? "";
     if (paramSearch !== searchQuery) {
       setSearchQuery(paramSearch);
+    }
+
+    const paramCity = searchParams.get("city") ?? "";
+    if (paramCity !== cityQuery) {
+      setCityQuery(paramCity);
     }
 
     const paramCategory =
@@ -63,16 +71,21 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     if (paramPage !== page) {
       setPage(paramPage);
     }
-  }, [searchParams, searchQuery, selectedCategory, selectedSort, page]);
+  }, [searchParams, searchQuery, cityQuery, selectedCategory, selectedSort, page]);
 
   const debouncedSearch = useDebounce(
     searchQuery.trim(),
+    CUSTOMER_RESTAURANT_DEFAULTS.SEARCH_DEBOUNCE_MS,
+  );
+  const debouncedCity = useDebounce(
+    cityQuery.trim(),
     CUSTOMER_RESTAURANT_DEFAULTS.SEARCH_DEBOUNCE_MS,
   );
 
   // Synchronize state changes back to URL search params
   const updateUrlParams = (
     nextSearch: string,
+    nextCity: string,
     nextCategory: string,
     nextSort: CustomerSortOptionValue,
     nextPage: number,
@@ -81,6 +94,10 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
 
     if (nextSearch.trim()) {
       nextParams.set("search", nextSearch.trim());
+    }
+
+    if (nextCity.trim()) {
+      nextParams.set("city", nextCity.trim());
     }
 
     if (nextCategory && nextCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY) {
@@ -108,6 +125,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     page,
     limit,
     search: debouncedSearch,
+    city: debouncedCity,
     cuisine: selectedCategory !== "All" ? selectedCategory : undefined,
     sortBy: currentSortConfig.sortBy,
     sortOrder: currentSortConfig.sortOrder,
@@ -120,6 +138,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
         page,
         limit,
         search: debouncedSearch || undefined,
+        city: debouncedCity || undefined,
         cuisine: selectedCategory !== "All" ? selectedCategory : undefined,
         sortBy: currentSortConfig.sortBy,
         sortOrder: currentSortConfig.sortOrder,
@@ -130,28 +149,35 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
   const handleSearchChange = (newSearch: string) => {
     setSearchQuery(newSearch);
     setPage(1);
-    updateUrlParams(newSearch, selectedCategory, selectedSort, 1);
+    updateUrlParams(newSearch, cityQuery, selectedCategory, selectedSort, 1);
+  };
+
+  const handleCityChange = (newCity: string) => {
+    setCityQuery(newCity);
+    setPage(1);
+    updateUrlParams(searchQuery, newCity, selectedCategory, selectedSort, 1);
   };
 
   const handleCategoryChange = (newCategory: string) => {
     setSelectedCategory(newCategory);
     setPage(1);
-    updateUrlParams(searchQuery, newCategory, selectedSort, 1);
+    updateUrlParams(searchQuery, cityQuery, newCategory, selectedSort, 1);
   };
 
   const handleSortChange = (newSort: CustomerSortOptionValue) => {
     setSelectedSort(newSort);
     setPage(1);
-    updateUrlParams(searchQuery, selectedCategory, newSort, 1);
+    updateUrlParams(searchQuery, cityQuery, selectedCategory, newSort, 1);
   };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    updateUrlParams(searchQuery, selectedCategory, selectedSort, newPage);
+    updateUrlParams(searchQuery, cityQuery, selectedCategory, selectedSort, newPage);
   };
 
   const resetFilters = () => {
     setSearchQuery("");
+    setCityQuery("");
     setSelectedCategory(CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY);
     setSelectedSort(CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT);
     setPage(1);
@@ -159,11 +185,13 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
   };
 
   const isFiltered = Boolean(
-    debouncedSearch || selectedCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY,
+    debouncedSearch ||
+      debouncedCity ||
+      selectedCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY,
   );
 
   return {
-    restaurants: query.data?.restaurants ?? [],
+    restaurants: Array.isArray(query.data?.restaurants) ? query.data.restaurants : [],
     pagination: query.data?.pagination,
     isLoading: query.isLoading,
     isFetching: query.isFetching,
@@ -173,11 +201,13 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     page,
     limit,
     searchQuery,
+    cityQuery,
     selectedCategory,
     selectedSort,
     currentSortConfig,
     isFiltered,
     handleSearchChange,
+    handleCityChange,
     handleCategoryChange,
     handleSortChange,
     handlePageChange,

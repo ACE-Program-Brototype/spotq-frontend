@@ -110,4 +110,30 @@ describe("customerRestaurantService", () => {
       },
     });
   });
+
+  it("attaches search, city, and cuisine query parameters simultaneously", async () => {
+    (apiClient.get as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({ success: true, data: [] }),
+    });
+
+    await customerRestaurantService.getRestaurants({
+      page: 1,
+      limit: 8,
+      search: "Shawarma",
+      city: "Kozhikode",
+      cuisine: "Mandi",
+    });
+
+    expect(apiClient.get).toHaveBeenCalledWith("restaurants", {
+      searchParams: {
+        page: 1,
+        limit: 8,
+        search: "Shawarma",
+        city: "Kozhikode",
+        cuisine: "Mandi",
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      },
+    });
+  });
 });

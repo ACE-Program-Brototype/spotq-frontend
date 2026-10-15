@@ -119,6 +119,71 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
     });
   });
 
+  it("renders pagination area when restaurants exist and displays page entries", async () => {
+    (customerRestaurantService.getRestaurants as jest.Mock).mockResolvedValue({
+      restaurants: [
+        {
+          id: "rest-1",
+          restaurantName: "Malabar Heritage Bistro",
+          city: "Kozhikode",
+          state: "Kerala",
+          cuisineType: "South Indian",
+          averageCost: 450,
+          createdAt: "2026-10-10T12:00:00.000Z",
+        },
+      ],
+      pagination: {
+        page: 1,
+        limit: 8,
+        total: 1,
+        totalPages: 1,
+      },
+    });
+
+    renderWithClient(<HomePage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("restaurant-pagination")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/Showing 1 to 1 of 1 entries/i)).toBeInTheDocument();
+  });
+
+  it("applies search, city, and cuisine filters simultaneously", async () => {
+    (customerRestaurantService.getRestaurants as jest.Mock).mockResolvedValue({
+      restaurants: [],
+      pagination: { page: 1, limit: 8, total: 0, totalPages: 0 },
+    });
+
+    const user = userEvent.setup();
+    renderWithClient(<HomePage />);
+
+    // Select cuisine pill
+    const mandiPill = screen.getByRole("button", { name: "Mandi" });
+    await user.click(mandiPill);
+
+    // Type search text
+    const searchInput = screen.getByPlaceholderText("Search restaurants or dishes...");
+    await user.type(searchInput, "Chicken");
+
+    // Type city text
+    const cityInput = screen.getByPlaceholderText("Filter by city...");
+    await user.type(cityInput, "Kozhikode");
+
+    await waitFor(
+      () => {
+        expect(customerRestaurantService.getRestaurants).toHaveBeenCalledWith(
+          expect.objectContaining({
+            cuisine: "Mandi",
+            search: "Chicken",
+            city: "Kozhikode",
+          }),
+        );
+      },
+      { timeout: 2000 },
+    );
+  });
+
   it("does not render fake demo login buttons in guest session banner", async () => {
     (customerRestaurantService.getRestaurants as jest.Mock).mockResolvedValue({
       restaurants: [],
