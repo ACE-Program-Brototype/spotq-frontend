@@ -30,3 +30,7 @@ export const useCartStore = create<CartState>()(
     },
   ),
 );
+
+if (typeof window !== "undefined") {
+  (window as unknown as { cartStore: typeof useCartStore }).cartStore = useCartStore;
+}
