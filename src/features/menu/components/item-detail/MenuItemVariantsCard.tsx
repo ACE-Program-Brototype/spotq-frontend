@@ -22,7 +22,7 @@ export function MenuItemVariantsCard({
   togglingVariantIds,
 }: MenuItemVariantsCardProps) {
   return (
-    <div className="rounded-3xl border border-[#eddcd4] bg-white p-6 sm:p-8 shadow-xs space-y-5">
+    <div className="rounded-3xl border border-[#eddcd4] bg-white p-4 sm:p-6 md:p-8 shadow-xs space-y-5">
       <div className="flex items-center justify-between gap-4 flex-wrap pb-3 border-b border-[#f3e6de]">
         <div className="flex items-center gap-2.5">
           <div className="flex size-9 items-center justify-center rounded-xl bg-[#fef3ec] text-[#e8631b] border border-[#fae2d3]">
@@ -49,9 +49,9 @@ export function MenuItemVariantsCard({
           <p className="text-xs text-neutral-500 font-medium">No portion variants configured.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-[#eddcd4]">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
+        <div className="overflow-x-auto md:rounded-2xl md:border md:border-[#eddcd4]">
+          <table className="w-full text-left text-xs border-collapse block md:table">
+            <thead className="hidden md:table-header-group">
               <tr className="bg-[#faf7f5] border-b border-[#eddcd4] text-neutral-600 font-bold uppercase tracking-wider text-[11px]">
                 <th className="py-3.5 px-4">Variant Name</th>
                 <th className="py-3.5 px-4">Portion / Description</th>
@@ -63,7 +63,7 @@ export function MenuItemVariantsCard({
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#f3e6de]">
+            <tbody className="grid grid-cols-1 sm:grid-cols-2 md:table-row-group gap-3 md:gap-0 md:divide-y md:divide-[#f3e6de]">
               {variants.map((variant) => (
                 <MenuItemVariantRow
                   key={variant.id}

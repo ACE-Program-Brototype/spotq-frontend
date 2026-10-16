@@ -348,9 +348,6 @@ export function useStaffMenuItems(options?: UseStaffMenuItemsOptions) {
           return next;
         });
       }
-      queryClient.invalidateQueries({
-        queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId],
-      });
     },
   });
 
