@@ -20,6 +20,7 @@ export const STAFF_ROUTE_PATHS = {
     ROOT: "menu",
     ITEMS: "menu/items",
   },
+  QUEUE: "queue",
 } as const;
 
 // Absolute paths and route builders for navigate() and <Link to="..." />
@@ -39,4 +40,5 @@ export const STAFF_ROUTES = {
     ROOT: "/staff/menu",
     ITEMS: "/staff/menu/items",
   },
+  QUEUE: "/staff/queue",
 } as const;

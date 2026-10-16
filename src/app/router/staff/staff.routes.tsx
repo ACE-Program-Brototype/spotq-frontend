@@ -7,6 +7,7 @@ import StaffDashboardPage from "@/features/dashboard/pages/StaffDashboardPage";
 import StaffMenuItemsPage from "@/features/menu/pages/StaffMenuItemsPage";
 import EditStaffProfilePage from "@/features/profile/pages/EditStaffProfilePage";
 import StaffProfilePage from "@/features/profile/pages/StaffProfilePage";
+import StaffQueuePage from "@/features/queue/pages/StaffQueuePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import StaffAuthLayout from "@/layouts/StaffAuthLayout";
@@ -70,6 +71,10 @@ export const staffRoutes: RouteObject[] = [
           {
             path: STAFF_ROUTE_PATHS.MENU.ITEMS,
             Component: StaffMenuItemsPage,
+          },
+          {
+            path: STAFF_ROUTE_PATHS.QUEUE,
+            Component: StaffQueuePage,
           },
         ],
       },
