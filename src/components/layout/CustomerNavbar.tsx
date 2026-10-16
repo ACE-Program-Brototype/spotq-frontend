@@ -11,6 +11,7 @@ import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { cn } from "@/lib/utils/cn";
 import type { CustomerMobileNavProps, CustomerNavbarProps } from "./types";
 
@@ -25,6 +26,7 @@ export function CustomerNavbar({
 }: CustomerNavbarProps) {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
+  const openDrawer = useCartStore((state) => state.openDrawer);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
@@ -86,7 +88,11 @@ export function CustomerNavbar({
           <Link
             to={CUSTOMER_ROUTES.CART}
             aria-label="Shopping Cart"
-            className="relative flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              openDrawer();
+            }}
+            className="relative flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
           >
             <ShoppingCart className="size-5" />
             {cartItemCount > 0 && (
