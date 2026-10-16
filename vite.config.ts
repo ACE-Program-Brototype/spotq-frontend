@@ -65,6 +65,12 @@ export default defineConfig(({ mode }) => {
       module: "queues",
       target: env.VITE_QUEUE_SERVICE_URL || env.QUEUE_SERVICE_URL || "http://localhost:3004",
     },
+    {
+      module: "storage",
+      target:
+        env.VITE_RESTAURANT_SERVICE_URL || env.RESTAURANT_SERVICE_URL || "http://localhost:3500",
+      preservePrefix: true,
+    },
   ];
 
   const proxyConfig = serviceEndpoints.reduce<

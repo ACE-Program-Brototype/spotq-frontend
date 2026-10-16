@@ -6,6 +6,9 @@ export interface CustomerRestaurantItem {
   cuisineType: string | null;
   averageCost: number | null;
   coverImage?: string | null;
+  isOpen?: boolean | null;
+  isOpened?: boolean | null;
+  acceptsQueue?: boolean | null;
   createdAt: string;
 }
 

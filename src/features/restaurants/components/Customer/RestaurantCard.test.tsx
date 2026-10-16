@@ -1,6 +1,17 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 import { RestaurantCard } from "./RestaurantCard";
+
+function renderWithProviders(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false, gcTime: 0 },
+    },
+  });
+
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+}
 
 const mockRestaurant: CustomerRestaurantItem = {
   id: "res-101",
@@ -14,7 +25,7 @@ const mockRestaurant: CustomerRestaurantItem = {
 
 describe("RestaurantCard", () => {
   it("renders restaurant information correctly", () => {
-    render(<RestaurantCard restaurant={mockRestaurant} />);
+    renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
     expect(screen.getByRole("heading", { name: "Royal Biryani House" })).toBeInTheDocument();
     expect(screen.getByText("Calicut")).toBeInTheDocument();
@@ -35,7 +46,7 @@ describe("RestaurantCard", () => {
       createdAt: "2026-10-10T10:00:00.000Z",
     };
 
-    render(<RestaurantCard restaurant={minimalRestaurant} />);
+    renderWithProviders(<RestaurantCard restaurant={minimalRestaurant} />);
 
     expect(screen.getByRole("heading", { name: "Simple Dhaba" })).toBeInTheDocument();
     expect(screen.getByText("Casual Dining")).toBeInTheDocument();
@@ -48,7 +59,7 @@ describe("RestaurantCard", () => {
       coverImage: "https://example.com/restaurant-cover.jpg",
     };
 
-    render(<RestaurantCard restaurant={restaurantWithImage} />);
+    renderWithProviders(<RestaurantCard restaurant={restaurantWithImage} />);
 
     const img = screen.getByRole("img", { name: "Royal Biryani House" }) as HTMLImageElement;
     expect(img).toBeInTheDocument();
@@ -60,8 +71,32 @@ describe("RestaurantCard", () => {
     expect(screen.getByRole("heading", { name: "Royal Biryani House" })).toBeInTheDocument();
   });
 
+  it("renders Closed badge when restaurant is closed", () => {
+    const closedRestaurant: CustomerRestaurantItem = {
+      ...mockRestaurant,
+      isOpen: false,
+    };
+
+    renderWithProviders(<RestaurantCard restaurant={closedRestaurant} />);
+
+    expect(screen.getByText("Closed")).toBeInTheDocument();
+    expect(screen.queryByText("Open Now")).not.toBeInTheDocument();
+  });
+
+  it("renders Queue Paused when acceptsQueue is false", () => {
+    const noQueueRestaurant: CustomerRestaurantItem = {
+      ...mockRestaurant,
+      acceptsQueue: false,
+    };
+
+    renderWithProviders(<RestaurantCard restaurant={noQueueRestaurant} />);
+
+    expect(screen.getByText("Queue Paused")).toBeInTheDocument();
+    expect(screen.queryByText("Live Queue")).not.toBeInTheDocument();
+  });
+
   it("does not render any links or triggers to detail page", () => {
-    render(<RestaurantCard restaurant={mockRestaurant} />);
+    renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
     expect(screen.queryByText(/View Details/i)).not.toBeInTheDocument();
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
