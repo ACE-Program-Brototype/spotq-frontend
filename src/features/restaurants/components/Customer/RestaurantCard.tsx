@@ -10,19 +10,11 @@ export interface RestaurantCardProps {
 
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const [imageError, setImageError] = useState(false);
-  const { data: presignedUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
 
-  const rawImage = restaurant.coverImage;
-  const isDirectUrl = Boolean(rawImage && /^(https?:\/\/|data:|blob:)/i.test(rawImage));
-  const s3ImageUrl = presignedUrl || (isDirectUrl ? rawImage : null);
-  const hasValidImage = Boolean(s3ImageUrl && !imageError);
-  const locationLabel = [restaurant.city, restaurant.state].filter(Boolean).join(", ");
-  const isOpen =
-    typeof restaurant.isOpen === "boolean"
-      ? restaurant.isOpen
-      : typeof restaurant.isOpened === "boolean"
-        ? restaurant.isOpened
-        : true;
+  const { data: imageUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
+  const locationLabel = `${restaurant.city || ""}${restaurant.city && restaurant.state ? ", " : ""}${restaurant.state || ""}`;
+
+  const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? true;
 
   return (
     <div
@@ -31,11 +23,11 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
     >
       {/* Cover Image Container */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
-        {isLoading && !isDirectUrl ? (
+        {isLoading ? (
           <Skeleton className="size-full rounded-none" />
-        ) : hasValidImage && s3ImageUrl ? (
+        ) : imageUrl && !imageError ? (
           <img
-            src={s3ImageUrl}
+            src={imageUrl}
             alt={restaurant.restaurantName}
             loading="lazy"
             onError={() => setImageError(true)}
@@ -69,7 +61,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             {locationLabel && (
               <span className="inline-flex items-center gap-1 text-[10px] font-medium text-neutral-400 shrink-0">
                 <MapPin className="size-3 text-neutral-400" />
-                <span className="max-w-[80px] truncate">{restaurant.city || locationLabel}</span>
+                <span className="max-w-[80px] truncate">{locationLabel}</span>
               </span>
             )}
           </div>
