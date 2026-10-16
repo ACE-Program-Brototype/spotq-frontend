@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { FALLBACK_CUISINE_IMAGES } from "../../constants/customer-restaurant.constants";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 import { RestaurantCard } from "./RestaurantCard";
 
@@ -17,7 +16,7 @@ describe("RestaurantCard", () => {
   it("renders restaurant information correctly", () => {
     render(<RestaurantCard restaurant={mockRestaurant} />);
 
-    expect(screen.getByText("Royal Biryani House")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Royal Biryani House" })).toBeInTheDocument();
     expect(screen.getByText("Calicut")).toBeInTheDocument();
     expect(screen.getByText("Biryani")).toBeInTheDocument();
     expect(screen.getByText("500 for two")).toBeInTheDocument();
@@ -38,18 +37,27 @@ describe("RestaurantCard", () => {
 
     render(<RestaurantCard restaurant={minimalRestaurant} />);
 
-    expect(screen.getByText("Simple Dhaba")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Simple Dhaba" })).toBeInTheDocument();
     expect(screen.getByText("Casual Dining")).toBeInTheDocument();
     expect(screen.queryByText("for two")).not.toBeInTheDocument();
   });
 
-  it("falls back to default image when image fails to load", () => {
-    render(<RestaurantCard restaurant={mockRestaurant} />);
+  it("renders cover image when provided and displays fallback placeholder on error", () => {
+    const restaurantWithImage: CustomerRestaurantItem = {
+      ...mockRestaurant,
+      coverImage: "https://example.com/restaurant-cover.jpg",
+    };
+
+    render(<RestaurantCard restaurant={restaurantWithImage} />);
 
     const img = screen.getByRole("img", { name: "Royal Biryani House" }) as HTMLImageElement;
+    expect(img).toBeInTheDocument();
+    expect(img.src).toBe("https://example.com/restaurant-cover.jpg");
+
     fireEvent.error(img);
 
-    expect(img.src).toBe(FALLBACK_CUISINE_IMAGES.default);
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Royal Biryani House" })).toBeInTheDocument();
   });
 
   it("does not render any links or triggers to detail page", () => {

@@ -1,25 +1,16 @@
-import { Clock, IndianRupee, MapPin } from "lucide-react";
-import { FALLBACK_CUISINE_IMAGES } from "../../constants/customer-restaurant.constants";
+import { Clock, IndianRupee, MapPin, Store } from "lucide-react";
+import { useState } from "react";
+import { resolveMediaUrl } from "@/features/profile/utils/profile.utils";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 
 export interface RestaurantCardProps {
   restaurant: CustomerRestaurantItem;
 }
 
-function resolveRestaurantImage(cuisine?: string | null): string {
-  if (cuisine) {
-    const normalized = cuisine.toLowerCase();
-    for (const [key, url] of Object.entries(FALLBACK_CUISINE_IMAGES)) {
-      if (key !== "default" && normalized.includes(key)) {
-        return url;
-      }
-    }
-  }
-  return FALLBACK_CUISINE_IMAGES.default;
-}
-
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
-  const imageUrl = resolveRestaurantImage(restaurant.cuisineType);
+  const [imageError, setImageError] = useState(false);
+  const s3ImageUrl = restaurant.coverImage ? resolveMediaUrl(restaurant.coverImage) : null;
+  const hasValidImage = Boolean(s3ImageUrl && !imageError);
   const locationLabel = [restaurant.city, restaurant.state].filter(Boolean).join(", ");
 
   return (
@@ -29,15 +20,24 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
     >
       {/* Cover Image Container */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
-        <img
-          src={imageUrl}
-          alt={restaurant.restaurantName}
-          loading="lazy"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src = FALLBACK_CUISINE_IMAGES.default;
-          }}
-          className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+        {hasValidImage ? (
+          <img
+            src={s3ImageUrl!}
+            alt={restaurant.restaurantName}
+            loading="lazy"
+            onError={() => setImageError(true)}
+            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex size-full flex-col items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900 p-4 text-white">
+            <div className="flex size-12 items-center justify-center rounded-2xl bg-[#ff6b00]/15 text-[#ff6b00] border border-[#ff6b00]/25 mb-2 shadow-2xs">
+              <Store className="size-6" />
+            </div>
+            <span className="text-xs font-bold text-neutral-200 line-clamp-1 text-center">
+              {restaurant.restaurantName}
+            </span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
         {restaurant.cuisineType && (
           <span className="absolute bottom-2.5 left-2.5 rounded-full bg-white/95 backdrop-blur-xs px-2.5 py-1 text-[10px] font-bold text-neutral-800 shadow-xs border border-white/50">

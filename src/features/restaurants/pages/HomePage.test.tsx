@@ -54,7 +54,7 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
     renderWithClient(<HomePage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Malabar Heritage Bistro")).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Malabar Heritage Bistro" })).toBeInTheDocument();
     });
 
     expect(screen.getByText("Kozhikode")).toBeInTheDocument();

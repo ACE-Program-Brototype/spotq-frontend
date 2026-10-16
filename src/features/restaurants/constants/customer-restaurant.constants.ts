@@ -48,22 +48,3 @@ export const CUSTOMER_SORT_OPTIONS: CustomerSortConfig[] = [
   { value: "price_asc", label: "Cost: Low to High", sortBy: "price", sortOrder: "asc" },
   { value: "price_desc", label: "Cost: High to Low", sortBy: "price", sortOrder: "desc" },
 ];
-
-export const FALLBACK_CUISINE_IMAGES: Record<string, string> = {
-  mandi:
-    "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
-  chinese:
-    "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&auto=format&fit=crop&q=80",
-  "multi-cuisine":
-    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
-  "pure veg":
-    "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80",
-  "south indian":
-    "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
-  "north indian":
-    "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&auto=format&fit=crop&q=80",
-  biryani:
-    "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80",
-  default:
-    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80",
-};
