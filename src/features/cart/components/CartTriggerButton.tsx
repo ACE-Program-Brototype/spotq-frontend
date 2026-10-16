@@ -14,6 +14,7 @@ export function CartTriggerButton({
   onClick,
 }: CartTriggerButtonProps) {
   const openDrawer = useCartStore((state) => state.openDrawer);
+  const isBadgePulsing = useCartStore((state) => state.isBadgePulsing);
 
   const handleClick = () => {
     if (onClick) {
@@ -37,7 +38,9 @@ export function CartTriggerButton({
       {itemCount > 0 && (
         <span
           data-testid="cart-badge-count"
-          className="absolute -right-0.5 -top-0.5 flex size-4.5 items-center justify-center rounded-full bg-[#ff6b00] text-[10px] font-bold text-white shadow-xs"
+          className={`absolute -right-0.5 -top-0.5 flex size-4.5 items-center justify-center rounded-full bg-[#ff6b00] text-[10px] font-bold text-white shadow-xs transition-all duration-300 ${
+            isBadgePulsing ? "scale-125 ring-2 ring-orange-300 animate-pulse" : "scale-100"
+          }`}
         >
           {itemCount}
         </span>

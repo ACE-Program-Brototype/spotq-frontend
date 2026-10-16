@@ -1,6 +1,7 @@
 export const CART_ENDPOINTS = {
   BASE: "carts",
   BY_ID: (cartId: string) => `carts/${cartId}`,
+  ADD_ITEM: (cartId: string) => `carts/${cartId}/items`,
 } as const;
 
 export const CART_STORAGE_KEYS = {
@@ -34,4 +35,39 @@ export const CART_UI_MESSAGES = {
   ITEM_COUNT_PLURAL: "items",
   ESTIMATED_TIME: "Est. Prep Time",
   FREE_CHARGES: "Free",
+
+  // Add Item to Cart UI messages
+  ADD_BUTTON_LABEL: "Add",
+  ADD_TO_CART: "Add to Cart",
+  ADDING_TO_CART: "Adding...",
+  CUSTOMIZE_ITEM: "Customize",
+  ITEM_ADDED_SUCCESS: "Item added to cart",
+  CUSTOMIZE_TITLE: "Customize Item",
+  CUSTOMIZE_SUBTITLE: "Select your preferred options and add-ons",
+  VARIANTS_HEADING: "Choice of Size / Variant",
+  VARIANTS_REQUIRED_BADGE: "Required",
+  VARIANTS_REQUIRED_HELPER: "Please select 1 option to proceed",
+  ADDONS_HEADING: "Add-ons",
+  ADDONS_OPTIONAL_BADGE: "Optional",
+  ADDONS_OPTIONAL_HELPER: "Select any optional extras",
+  SPECIAL_INSTRUCTIONS_LABEL_FULL: "Cooking Instructions",
+  SPECIAL_INSTRUCTIONS_PLACEHOLDER: "E.g. Less spicy, crispy, sauce on the side...",
+  SPECIAL_INSTRUCTIONS_MAX_LIMIT: 250,
+  CHARS_REMAINING: "characters remaining",
+  CHARS_COUNT: "characters",
+  QUANTITY_LABEL: "Quantity",
+  DECREASE_QUANTITY_ARIA: "Decrease quantity",
+  INCREASE_QUANTITY_ARIA: "Increase quantity",
+  CLOSE_MODAL_ARIA: "Close customization modal",
+  ITEM_OUT_OF_STOCK: "Out of Stock",
+  ITEM_UNAVAILABLE_MESSAGE: "This item or option is currently unavailable.",
+  SELECT_VARIANT_FIRST: "Select an option",
+
+  // Restaurant Mismatch Conflict Dialog
+  MISMATCH_DIALOG_TITLE: "Replace cart items?",
+  MISMATCH_DIALOG_DESCRIPTION:
+    "Your cart already contains items from another restaurant. Would you like to clear your existing cart and add this dish?",
+  MISMATCH_CLEAR_AND_ADD: "Clear Cart & Add",
+  MISMATCH_CANCEL: "Cancel",
+  MISMATCH_CLEARING: "Clearing cart...",
 } as const;

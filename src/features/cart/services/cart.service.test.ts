@@ -4,6 +4,7 @@ import { cartService } from "./cart.service";
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
+    post: jest.fn(),
   },
 }));
 
@@ -61,5 +62,51 @@ describe("cartService", () => {
     expect(result.items).toHaveLength(1);
     expect(result.items[0].addons).toHaveLength(1);
     expect(result.subtotal).toBe(538);
+  });
+
+  it("adds an item to an existing cart", async () => {
+    const mockAddData = {
+      cartId: "cart-123",
+      restaurantId: "rest-456",
+      itemCount: 3,
+      subtotal: 750,
+      updatedAt: "2026-10-16T10:05:00.000Z",
+      items: [
+        {
+          id: "item-2",
+          menuItemId: "dish-2",
+          quantity: 1,
+          unitPrice: 212,
+          totalPrice: 212,
+        },
+      ],
+    };
+
+    (apiClient.post as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        success: true,
+        statusCode: 201,
+        message: "Cart item added successfully",
+        data: mockAddData,
+      }),
+    });
+
+    const payload = {
+      restaurantId: "rest-456",
+      menuItemId: "dish-2",
+      variantId: null,
+      addonIds: [],
+      quantity: 1,
+      specialInstructions: "Extra crispy",
+    };
+
+    const result = await cartService.addItem("cart-123", payload);
+
+    expect(apiClient.post).toHaveBeenCalledWith("carts/cart-123/items", {
+      json: payload,
+    });
+    expect(result.cartId).toBe("cart-123");
+    expect(result.itemCount).toBe(3);
+    expect(result.subtotal).toBe(750);
   });
 });

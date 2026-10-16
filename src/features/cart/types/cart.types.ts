@@ -37,3 +37,29 @@ export interface ApiResponse<T> {
   message: string;
   data: T;
 }
+
+export interface AddCartItemInput {
+  restaurantId: string;
+  menuItemId: string;
+  variantId?: string | null;
+  addonIds?: string[];
+  quantity: number;
+  specialInstructions?: string | null;
+}
+
+export interface AddCartItemResponseItem {
+  id: string;
+  menuItemId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface AddCartItemData {
+  cartId: string;
+  restaurantId: string;
+  itemCount: number;
+  subtotal: number;
+  updatedAt: string;
+  items: AddCartItemResponseItem[];
+}

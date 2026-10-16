@@ -7,10 +7,15 @@ describe("useCartStore", () => {
     useCartStore.getState().resetCart();
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it("initializes with default state", () => {
     const state = useCartStore.getState();
     expect(state.cartId).toBeNull();
     expect(state.isDrawerOpen).toBe(false);
+    expect(state.isBadgePulsing).toBe(false);
   });
 
   it("updates cartId and persists to localStorage", () => {
@@ -48,5 +53,17 @@ describe("useCartStore", () => {
     const state = useCartStore.getState();
     expect(state.cartId).toBeNull();
     expect(state.isDrawerOpen).toBe(false);
+    expect(state.isBadgePulsing).toBe(false);
+  });
+
+  it("handles triggerBadgePulse and auto-resets after delay", () => {
+    jest.useFakeTimers();
+
+    expect(useCartStore.getState().isBadgePulsing).toBe(false);
+    useCartStore.getState().triggerBadgePulse();
+    expect(useCartStore.getState().isBadgePulsing).toBe(true);
+
+    jest.advanceTimersByTime(1200);
+    expect(useCartStore.getState().isBadgePulsing).toBe(false);
   });
 });

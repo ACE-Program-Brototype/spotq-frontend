@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { useCartStore } from "../store/cart.store";
 import { CartTriggerButton } from "./CartTriggerButton";
 
@@ -37,5 +37,19 @@ describe("CartTriggerButton component", () => {
     fireEvent.click(screen.getByTestId("cart-trigger-button"));
     expect(handleCustomClick).toHaveBeenCalledTimes(1);
     expect(useCartStore.getState().isDrawerOpen).toBe(false);
+  });
+
+  it("applies pulsing animation class when isBadgePulsing is true", () => {
+    render(<CartTriggerButton itemCount={2} />);
+
+    const badge = screen.getByTestId("cart-badge-count");
+    expect(badge).toHaveClass("scale-100");
+
+    act(() => {
+      useCartStore.getState().triggerBadgePulse();
+    });
+
+    expect(badge).toHaveClass("scale-125");
+    expect(badge).toHaveClass("animate-pulse");
   });
 });
