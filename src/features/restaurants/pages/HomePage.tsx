@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { getUserDisplayName, getUserInitials } from "@/features/auth/utils/user.utils";
 import { CustomerRestaurantEmptyState } from "../components/Customer/CustomerRestaurantEmptyState";
 import { CustomerRestaurantFilters } from "../components/Customer/CustomerRestaurantFilters";
 import { RestaurantCard } from "../components/Customer/RestaurantCard";
@@ -24,7 +25,8 @@ export function HomePage() {
 
   const {
     restaurants,
-    pagination,
+    totalItems,
+    totalPages,
     isLoading,
     isError,
     error,
@@ -43,19 +45,9 @@ export function HomePage() {
     resetFilters,
   } = useCustomerRestaurants();
 
-  const totalItems = pagination?.total ?? restaurants.length;
-  const totalPages =
-    pagination?.totalPages ?? (Math.ceil(totalItems / CUSTOMER_RESTAURANT_DEFAULTS.LIMIT) || 1);
-
-  // Real Authenticated User Identity Helpers
-  const displayName = user?.fullName || user?.name || user?.email?.split("@")[0] || "";
-  const nameParts = displayName.trim().split(/\s+/).filter(Boolean);
-  const initials =
-    nameParts.length >= 2
-      ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
-      : nameParts.length === 1 && nameParts[0].length >= 2
-        ? nameParts[0].slice(0, 2).toUpperCase()
-        : nameParts[0]?.[0]?.toUpperCase() || "CU";
+  // Authenticated user presentation helpers
+  const displayName = getUserDisplayName(user);
+  const initials = getUserInitials(user);
 
   return (
     <div className="space-y-8" data-testid="customer-home-page">

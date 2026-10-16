@@ -190,9 +190,15 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
       selectedCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY,
   );
 
+  const restaurants = Array.isArray(query.data?.restaurants) ? query.data.restaurants : [];
+  const totalItems = query.data?.pagination?.total ?? restaurants.length;
+  const totalPages = query.data?.pagination?.totalPages ?? (Math.ceil(totalItems / limit) || 1);
+
   return {
-    restaurants: Array.isArray(query.data?.restaurants) ? query.data.restaurants : [],
+    restaurants,
     pagination: query.data?.pagination,
+    totalItems,
+    totalPages,
     isLoading: query.isLoading,
     isFetching: query.isFetching,
     isError: query.isError,
