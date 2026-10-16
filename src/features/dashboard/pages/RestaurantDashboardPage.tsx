@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, ArrowRight, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { User } from "@/features/auth/types/auth.types";
@@ -55,14 +56,14 @@ export default function RestaurantDashboardPage() {
 
   useEffect(() => {
     if (!isLoadingStatus && needsSubscription) {
-      navigate("/restaurant/subscription", { replace: true });
+      navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
     }
   }, [isLoadingStatus, needsSubscription, navigate]);
 
   const handleLogout = () => {
     clearAuth();
     queryClient.clear();
-    navigate("/restaurant/email/verification", { replace: true });
+    navigate(RESTAURANT_ROUTES.LOGIN, { replace: true });
   };
 
   return (
@@ -108,7 +109,7 @@ export default function RestaurantDashboardPage() {
               </div>
               <Button
                 type="button"
-                onClick={() => navigate("/restaurant/subscription")}
+                onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
                 className="gap-2 bg-amber-600 text-white hover:bg-amber-700 shrink-0"
               >
                 Renew Plan
@@ -136,7 +137,7 @@ export default function RestaurantDashboardPage() {
               </div>
               <Button
                 type="button"
-                onClick={() => navigate("/restaurant/subscription")}
+                onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
                 className="gap-2 bg-orange-600 text-white hover:bg-orange-700 shrink-0"
               >
                 Choose Plan
@@ -167,7 +168,7 @@ export default function RestaurantDashboardPage() {
                 <span className="text-lg font-medium text-amber-700">Inactive</span>
                 <button
                   type="button"
-                  onClick={() => navigate("/restaurant/subscription")}
+                  onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
                   className="flex items-center gap-1 text-sm font-semibold text-orange-600 hover:underline"
                 >
                   <CreditCard className="h-4 w-4" />

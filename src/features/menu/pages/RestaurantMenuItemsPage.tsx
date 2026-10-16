@@ -1,6 +1,7 @@
 import { AlertCircle, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
@@ -81,7 +82,7 @@ export default function RestaurantMenuItemsPage() {
 
         <div className="flex items-center gap-2.5">
           <Link
-            to="/restaurant/menu/items/create"
+            to={RESTAURANT_ROUTES.MENU.CREATE}
             className={cn(
               buttonVariants({ size: "sm" }),
               "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs",

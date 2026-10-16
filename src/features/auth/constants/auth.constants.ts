@@ -57,6 +57,8 @@ export const AUTH_MESSAGES = {
   OTP_SENT_SUCCESS: "OTP sent successfully to your email.",
   OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
   OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
+  EMAIL_NOT_VERIFIED_PROMPT: "Please verify your email before signing in.",
+  ENTER_VALID_EMAIL: "Please enter a valid email address.",
   PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
   RESTAURANT_ONBOARD_SUCCESS:
     "Restaurant onboarding submitted successfully! Your application is now under verification.",
@@ -91,10 +93,10 @@ export const AUTH_ENDPOINTS = {
   ADMIN_RESEND_OTP: "auth/admin/forgot-password/resend-otp",
   ADMIN_RESET_PASSWORD: "auth/admin/reset-password",
 
-  RESTAURANT_SEND_OTP: "auth/restaurants/registration/email-otp",
-  RESTAURANT_RESEND_OTP: "auth/restaurants/registration/resend-email-otp",
-  RESTAURANT_VERIFY_OTP: "auth/restaurants/registration/email-otp/verify",
-  RESTAURANT_ONBOARD: "restaurants/onboard",
+  RESTAURANT_SEND_OTP: "auth/restaurants/otp",
+  RESTAURANT_RESEND_OTP: "auth/restaurants/otp/resend",
+  RESTAURANT_VERIFY_OTP: "auth/restaurants/otp/verify",
+  RESTAURANT_ONBOARD: "restaurants/onboarding",
   RESTAURANT_REFRESH_TOKEN: "auth/restaurants/refresh-token",
   RESTAURANT_VERIFICATION_STATUS: "restaurants/verification-status",
 
@@ -175,7 +177,8 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   "payments/plans",
 ] as const;
 
-export const RESTAURANT_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const RESTAURANT_OTP_LENGTH = 6;
 export const RESTAURANT_RESEND_COOLDOWN_SECONDS = 60;
 export const RESTAURANT_MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
+export const CUSTOMER_OTP_COOLDOWN_SECONDS = 59;

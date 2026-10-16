@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useStaffLogoutMutation } from "./use-auth-mutations";
@@ -20,7 +21,7 @@ export const useStaffLogout = () => {
 
       toast.success(response.message || AUTH_MESSAGES.LOGOUT_SUCCESS);
 
-      navigate("/staff/login", {
+      navigate(STAFF_ROUTES.LOGIN, {
         replace: true,
       });
     } catch (error: unknown) {
@@ -30,7 +31,7 @@ export const useStaffLogout = () => {
 
       toast.error(message);
 
-      navigate("/staff/login", {
+      navigate(STAFF_ROUTES.LOGIN, {
         replace: true,
       });
     }

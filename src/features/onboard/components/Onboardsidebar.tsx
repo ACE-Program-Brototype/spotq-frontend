@@ -1,23 +1,22 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 
 interface OnboardStep {
   path: string;
   label: string;
 }
 
-const ONBOARD_BASE_PATH = "/restaurant/onboarding";
-
 const STEPS: OnboardStep[] = [
-  { path: "business-information", label: "Business Information" },
-  { path: "documents", label: "Business Documents" },
-  { path: "location", label: "Location" },
-  { path: "review", label: "Review & Submit" },
+  { path: RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION, label: "Business Information" },
+  { path: RESTAURANT_ROUTES.ONBOARDING.DOCUMENTS, label: "Business Documents" },
+  { path: RESTAURANT_ROUTES.ONBOARDING.LOCATION, label: "Location" },
+  { path: RESTAURANT_ROUTES.ONBOARDING.REVIEW, label: "Review & Submit" },
 ];
 
 type StepState = "completed" | "active" | "upcoming";
 
 function getActiveStepIndex(pathname: string): number {
-  const index = STEPS.findIndex((step) => pathname.includes(`${ONBOARD_BASE_PATH}/${step.path}`));
+  const index = STEPS.findIndex((step) => pathname.includes(step.path));
   return index === -1 ? 0 : index;
 }
 
@@ -35,7 +34,7 @@ export default function OnboardSidebar() {
 
   const handleStepClick = (stepIndex: number, state: StepState) => {
     if (state !== "completed") return;
-    navigate(`${ONBOARD_BASE_PATH}/${STEPS[stepIndex].path}`);
+    navigate(STEPS[stepIndex].path);
   };
 
   return (

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -149,7 +150,7 @@ export function AdminResetPasswordForm() {
 
       <div className="pt-2 text-center">
         <Link
-          to="/admin/login"
+          to={ADMIN_ROUTES.LOGIN}
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground hover:no-underline"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />

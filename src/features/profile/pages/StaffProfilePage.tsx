@@ -1,5 +1,6 @@
 import { ChevronRight, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +25,7 @@ function StaffProfileContent() {
   const { profile, isLoading, isError, error, refetch, isFetching } = useStaffProfile();
 
   const handleEditProfile = () => {
-    navigate("/staff/profile/edit");
+    navigate(STAFF_ROUTES.PROFILE.EDIT);
   };
 
   return (
@@ -37,7 +38,7 @@ function StaffProfileContent() {
             aria-label="Breadcrumbs"
             className="flex items-center gap-1.5 text-xs text-neutral-500 mb-1.5"
           >
-            <Link to="/staff/dashboard" className="hover:text-neutral-900 transition-colors">
+            <Link to={STAFF_ROUTES.DASHBOARD} className="hover:text-neutral-900 transition-colors">
               Dashboard
             </Link>
             <ChevronRight className="size-3 text-neutral-400" />

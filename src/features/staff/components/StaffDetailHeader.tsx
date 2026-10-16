@@ -1,5 +1,6 @@
 import { ArrowLeft, ChevronRight, Trash2, UserCheck, UserX } from "lucide-react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import type { StaffDetailHeaderProps } from "@/features/staff/types/staff-detail.types";
@@ -20,7 +21,10 @@ export function StaffDetailHeader({
         <nav aria-label="Breadcrumbs">
           <ol className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium">
             <li>
-              <Link to="/restaurant/dashboard" className="hover:text-neutral-900 transition-colors">
+              <Link
+                to={RESTAURANT_ROUTES.DASHBOARD}
+                className="hover:text-neutral-900 transition-colors"
+              >
                 Home
               </Link>
             </li>
@@ -28,7 +32,10 @@ export function StaffDetailHeader({
               <ChevronRight className="size-3 text-neutral-400" />
             </li>
             <li>
-              <Link to="/restaurant/staff" className="hover:text-neutral-900 transition-colors">
+              <Link
+                to={RESTAURANT_ROUTES.STAFF.ROOT}
+                className="hover:text-neutral-900 transition-colors"
+              >
                 Staff
               </Link>
             </li>
@@ -44,7 +51,7 @@ export function StaffDetailHeader({
         </nav>
 
         <Link
-          to="/restaurant/staff"
+          to={RESTAURANT_ROUTES.STAFF.ROOT}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-neutral-900 transition-colors"
         >
           <ArrowLeft className="size-3.5" />

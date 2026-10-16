@@ -1,23 +1,35 @@
+import {
+  ADMIN_ROUTES,
+  CUSTOMER_ROUTES,
+  RESTAURANT_ROUTES,
+  STAFF_ROUTES,
+} from "@/app/router/routes.constants";
+
 export function redirectToPortalLogin(): void {
   if (typeof window === "undefined" || !window.location) return;
 
   const path = window.location.pathname || "";
-  const isAdminRoute = path.startsWith("/admin");
-  const isStaffRoute = path.startsWith("/staff");
-  const isRestaurantRoute = path.startsWith("/restaurant");
+  const isAdminRoute = path.startsWith(ADMIN_ROUTES.ROOT);
+  const isStaffRoute = path.startsWith(STAFF_ROUTES.ROOT);
+  const isRestaurantRoute = path.startsWith(RESTAURANT_ROUTES.ROOT);
 
-  if (isAdminRoute && path !== "/admin/login") {
-    window.location.href = "/admin/login";
-  } else if (isStaffRoute && path !== "/staff/login") {
-    window.location.href = "/staff/login";
+  if (isAdminRoute && path !== ADMIN_ROUTES.LOGIN) {
+    window.location.href = ADMIN_ROUTES.LOGIN;
+  } else if (isStaffRoute && path !== STAFF_ROUTES.LOGIN) {
+    window.location.href = STAFF_ROUTES.LOGIN;
   } else if (
     isRestaurantRoute &&
-    !path.startsWith("/restaurant/email") &&
-    !path.startsWith("/restaurant/otp") &&
-    !path.startsWith("/restaurant/onboarding")
+    !path.startsWith(RESTAURANT_ROUTES.LOGIN) &&
+    !path.startsWith(RESTAURANT_ROUTES.VERIFY) &&
+    !path.startsWith(RESTAURANT_ROUTES.ONBOARDING.ROOT)
   ) {
-    window.location.href = "/restaurant/email/verification";
-  } else if (!isAdminRoute && !isStaffRoute && !isRestaurantRoute && path !== "/login") {
-    window.location.href = "/login";
+    window.location.href = RESTAURANT_ROUTES.LOGIN;
+  } else if (
+    !isAdminRoute &&
+    !isStaffRoute &&
+    !isRestaurantRoute &&
+    path !== CUSTOMER_ROUTES.AUTH.LOGIN
+  ) {
+    window.location.href = CUSTOMER_ROUTES.AUTH.LOGIN;
   }
 }

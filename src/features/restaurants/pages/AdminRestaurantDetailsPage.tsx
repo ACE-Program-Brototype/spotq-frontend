@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { LoadingIndicator } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,7 +57,7 @@ export function AdminRestaurantDetailsPage() {
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/admin/restaurants")}
+            onClick={() => navigate(ADMIN_ROUTES.RESTAURANTS)}
             className="gap-2 text-slate-600 hover:text-slate-900 -ml-2 text-xs font-semibold"
           >
             <ArrowLeft className="size-4" />
@@ -83,7 +84,7 @@ export function AdminRestaurantDetailsPage() {
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => navigate("/admin/restaurants")}
+                onClick={() => navigate(ADMIN_ROUTES.RESTAURANTS)}
                 className="rounded-xl text-xs font-bold"
               >
                 Back to List

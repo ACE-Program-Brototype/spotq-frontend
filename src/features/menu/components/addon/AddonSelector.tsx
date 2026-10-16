@@ -1,6 +1,7 @@
 import { Search, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -94,7 +95,7 @@ export function AddonSelector({
             No add-ons created yet. Manage your modifiers and add-ons in the Modifiers section.
           </p>
           <Link
-            to="/restaurant/menu/modifiers"
+            to={RESTAURANT_ROUTES.MENU.MODIFIERS}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-[#e8631b] hover:text-[#9a3412] underline"
           >
             Manage Add-ons

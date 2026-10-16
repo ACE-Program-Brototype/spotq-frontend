@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import AdminVerifyOtpForm from "@/features/auth/components/AdminVerifyOtpForm";
 
 function AdminVerifyOtpPage() {
@@ -6,7 +7,7 @@ function AdminVerifyOtpPage() {
   const email = (location.state as { email?: string } | null)?.email;
 
   if (!email) {
-    return <Navigate to="/admin/forgot-password" replace />;
+    return <Navigate to={ADMIN_ROUTES.FORGOT_PASSWORD} replace />;
   }
   return (
     <main className="grid min-h-svh lg:grid-cols-2">

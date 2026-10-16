@@ -91,7 +91,7 @@ describe("useDeleteStaff", () => {
       }
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith("/restaurant/email/verification", { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith("/restaurant/login", { replace: true });
     expect(toast.error).toHaveBeenCalledWith("Session expired. Please sign in again.");
   });
 

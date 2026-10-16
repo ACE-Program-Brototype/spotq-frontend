@@ -2,6 +2,7 @@ import { ArrowLeft, Building2, CheckCircle2, ChevronRight, Loader2 } from "lucid
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Button } from "@/components/ui/button";
 import StaffLoginForm from "../components/StaffLoginForm";
@@ -32,7 +33,7 @@ export default function StaffLoginPage() {
         <div className="mx-auto flex h-full w-full max-w-[1440px] items-center px-4 sm:px-6 lg:px-8">
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(CUSTOMER_ROUTES.HOME)}
             className="flex items-center gap-2 rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[#b84b00]/30 cursor-pointer"
             aria-label="Go to SpotQ home"
           >

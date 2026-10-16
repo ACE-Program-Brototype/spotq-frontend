@@ -1,5 +1,6 @@
 import { AlertCircle, ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { CreateMenuItemForm } from "@/features/menu/components/CreateMenuItemForm";
@@ -24,11 +25,14 @@ export function EditMenuItemPage() {
     <div className="space-y-6 pb-12 max-w-4xl mx-auto">
       {/* Breadcrumb Navigation */}
       <div className="flex items-center gap-2 text-xs font-semibold text-neutral-400">
-        <Link to="/restaurant/dashboard" className="hover:text-neutral-700 transition-colors">
+        <Link to={RESTAURANT_ROUTES.DASHBOARD} className="hover:text-neutral-700 transition-colors">
           Dashboard
         </Link>
         <ChevronRight className="size-3" />
-        <Link to="/restaurant/menu/items" className="hover:text-neutral-700 transition-colors">
+        <Link
+          to={RESTAURANT_ROUTES.MENU.ITEMS}
+          className="hover:text-neutral-700 transition-colors"
+        >
           Menu Items
         </Link>
         <ChevronRight className="size-3" />
@@ -46,7 +50,7 @@ export function EditMenuItemPage() {
         <div>
           <button
             type="button"
-            onClick={() => navigate("/restaurant/menu/items")}
+            onClick={() => navigate(RESTAURANT_ROUTES.MENU.ITEMS)}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-500 hover:text-neutral-900 mb-2 transition-colors cursor-pointer"
           >
             <ArrowLeft className="size-3.5" />
@@ -86,7 +90,7 @@ export function EditMenuItemPage() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate("/restaurant/menu/items")}
+            onClick={() => navigate(RESTAURANT_ROUTES.MENU.ITEMS)}
             className="border-rose-300 text-rose-700 hover:bg-rose-100"
           >
             {MENU_MESSAGES.BTN_RETURN_TO_ITEMS}

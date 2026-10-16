@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { LoadingIndicator, Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,7 +83,7 @@ export default function StaffAcceptInvitationPage() {
           </div>
 
           <Link
-            to="/staff/login"
+            to={STAFF_ROUTES.LOGIN}
             className="text-xs font-semibold text-[#9a3412] hover:text-[#e8631b] transition-colors"
           >
             Already registered? Sign In &rarr;
@@ -134,7 +135,7 @@ export default function StaffAcceptInvitationPage() {
                   <RotateCcw className="size-3.5 mr-1.5" />
                   Retry Verification
                 </Button>
-                <Link to="/staff/login" className="w-full sm:w-auto">
+                <Link to={STAFF_ROUTES.LOGIN} className="w-full sm:w-auto">
                   <Button className="w-full sm:w-auto rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white text-xs font-semibold">
                     Go to Staff Login
                   </Button>
@@ -192,7 +193,7 @@ export default function StaffAcceptInvitationPage() {
 
                 <div className="text-center">
                   <Link
-                    to="/staff/login"
+                    to={STAFF_ROUTES.LOGIN}
                     className="text-xs font-semibold text-neutral-500 hover:text-neutral-800 transition-colors"
                   >
                     Not your account? Sign In &rarr;

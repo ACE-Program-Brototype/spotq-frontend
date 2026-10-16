@@ -2,9 +2,10 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import restaurantEmailVerificationBg from "@/features/auth/assets/restaurant-email-verification-bg.jpeg";
-import { RESTAURANT_EMAIL_REGEX } from "@/features/auth/constants/auth.constants";
+import { EMAIL_REGEX } from "@/features/auth/constants/auth.constants";
 import { useRestaurantEmailOtp } from "@/features/auth/hooks/useRestaurantEmailOtp";
 import type { EmailVerificationProps } from "@/features/auth/types/auth.types";
 import { useOnboardStore } from "@/features/onboard/store/onboard.store";
@@ -22,7 +23,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
 
   const trimmedEmail = email.trim();
   const isEmpty = trimmedEmail.length === 0;
-  const isValid = RESTAURANT_EMAIL_REGEX.test(trimmedEmail);
+  const isValid = EMAIL_REGEX.test(trimmedEmail);
   const showValidationError = touched && !isValid;
 
   const canSubmit = isValid && termsAccepted && !isSendingOtp;
@@ -54,7 +55,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
     try {
       await executeRequestOtp(pendingEmail);
       onCodeSent?.(pendingEmail);
-      navigate("/restaurant/otp/verification", {
+      navigate(RESTAURANT_ROUTES.VERIFY, {
         state: { email: pendingEmail },
         replace: false,
       });
@@ -161,7 +162,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
                 >
                   I agree to the{" "}
                   <a
-                    href="/restaurant/terms"
+                    href={RESTAURANT_ROUTES.TERMS}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-medium text-neutral-900 underline underline-offset-2 hover:text-orange-600"
@@ -170,7 +171,7 @@ export default function EmailVerification({ onCodeSent, requestOtp }: EmailVerif
                   </a>{" "}
                   and{" "}
                   <a
-                    href="/restaurant/privacy"
+                    href={RESTAURANT_ROUTES.PRIVACY}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-medium text-neutral-900 underline underline-offset-2 hover:text-orange-600"

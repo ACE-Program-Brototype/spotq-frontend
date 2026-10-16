@@ -4,12 +4,14 @@ export interface UseOtpTimerOptions {
   email?: string;
   defaultSeconds?: number;
   prefix?: string;
+  autoStart?: boolean;
 }
 
 export function useOtpTimer({
   email = "",
   defaultSeconds = 60,
   prefix = "spotq_otp_expiry",
+  autoStart = true,
 }: UseOtpTimerOptions = {}) {
   const normalizedEmail = email.trim().toLowerCase();
   const storageKey = useMemo(
@@ -44,9 +46,10 @@ export function useOtpTimer({
   const [seconds, setSeconds] = useState<number>(() => {
     if (storageKey) {
       const remaining = getRemainingSeconds(storageKey);
-      return remaining > 0 ? remaining : defaultSeconds;
+      if (remaining > 0) return remaining;
+      return autoStart ? defaultSeconds : 0;
     }
-    return defaultSeconds;
+    return autoStart ? defaultSeconds : 0;
   });
 
   const startTimer = useCallback(
@@ -76,7 +79,11 @@ export function useOtpTimer({
     if (!storageKey) return;
 
     if (!localStorage.getItem(storageKey)) {
-      startTimer();
+      if (autoStart) {
+        startTimer();
+      } else {
+        setSeconds(0);
+      }
     } else {
       setSeconds(getRemainingSeconds(storageKey));
     }
@@ -87,7 +94,7 @@ export function useOtpTimer({
     }, 500);
 
     return () => window.clearInterval(interval);
-  }, [storageKey, getRemainingSeconds, startTimer]);
+  }, [storageKey, getRemainingSeconds, startTimer, autoStart]);
 
   return {
     seconds,

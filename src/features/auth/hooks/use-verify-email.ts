@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useAuthStore } from "../store/auth.store";
 import { useVerifyEmailMutation } from "./use-auth-mutations";
@@ -24,7 +25,7 @@ export const useVerifyOtp = () => {
           setAuth(response.data.user, response.data.accessToken);
         }
 
-        navigate("/", {
+        navigate(CUSTOMER_ROUTES.HOME, {
           replace: true,
         });
       } else {

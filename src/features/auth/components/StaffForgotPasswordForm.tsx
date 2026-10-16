@@ -3,6 +3,7 @@ import { ArrowLeft, Loader2, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -81,7 +82,7 @@ export function StaffForgotPasswordForm() {
 
       <div className="pt-1 text-center">
         <Link
-          to="/staff/login"
+          to={STAFF_ROUTES.LOGIN}
           className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 transition-colors hover:text-gray-900"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />
