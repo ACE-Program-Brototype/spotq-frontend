@@ -3,21 +3,25 @@
  * Displays existing menu category cards with an Edit action to open the Edit Category Form.
  */
 
-import { AlertCircle, Layers, RefreshCw } from "lucide-react";
+import { Layers, Plus, RefreshCw } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 import { CategoryCard } from "../components/CategoryCard";
 import { CategoryListSkeleton } from "../components/CategoryListSkeleton";
+import { CreateCategoryModal } from "../components/CreateCategoryModal";
 import { EditCategoryModal } from "../components/EditCategoryModal";
+import { EmptyState, ErrorState } from "../components/MenuPageStateUI";
 import { useMenuCategories } from "../hooks/use-menu-categories";
 import type { MenuCategory } from "../types/menu-category.types";
 
 export default function RestaurantMenuCategoriesPage() {
   const { categories, restaurantId, isLoading, isError, refetch } = useMenuCategories();
 
-  // Edit Modal State
+  // Modal State
   const [selectedCategory, setSelectedCategory] = useState<MenuCategory | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleEditClick = (category: MenuCategory) => {
     setSelectedCategory(category);
@@ -27,6 +31,40 @@ export default function RestaurantMenuCategoriesPage() {
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
     setSelectedCategory(null);
+  };
+
+  const renderContent = () => {
+    if (isLoading) return <CategoryListSkeleton />;
+
+    if (isError) {
+      return (
+        <ErrorState
+          title="Failed to load categories"
+          description="We encountered a problem loading your categories. Please check your connection and try again."
+          onRetry={refetch}
+        />
+      );
+    }
+
+    if (categories.length === 0) {
+      return (
+        <EmptyState
+          icon={<Layers className="size-6" />}
+          title="No categories found"
+          description="No menu categories are currently available for this restaurant."
+          createLabel="Create Your First Category"
+          onCreateClick={() => setIsCreateModalOpen(true)}
+        />
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {categories.map((category) => (
+          <CategoryCard key={category.id} category={category} onEdit={handleEditClick} />
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -57,46 +95,23 @@ export default function RestaurantMenuCategoriesPage() {
             <RefreshCw className={`size-3.5 mr-1.5 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
+
+          <Button
+            type="button"
+            onClick={() => setIsCreateModalOpen(true)}
+            className={cn(
+              buttonVariants({ size: "sm" }),
+              "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs",
+            )}
+          >
+            <Plus className="size-4" />
+            <span>Create Category</span>
+          </Button>
         </div>
       </div>
 
       {/* Main Content Area */}
-      {isLoading ? (
-        <CategoryListSkeleton />
-      ) : isError ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-8 text-center space-y-3">
-          <AlertCircle className="size-8 text-rose-500 mx-auto" />
-          <h3 className="text-base font-bold text-neutral-900">Failed to load categories</h3>
-          <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-            We encountered a problem loading your menu categories. Please check your connection and
-            try again.
-          </p>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => refetch()}
-            className="rounded-xl border-rose-300 text-rose-700 hover:bg-rose-100/50 text-xs"
-          >
-            Try Again
-          </Button>
-        </div>
-      ) : categories.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#eddcd4] bg-white p-12 text-center space-y-3">
-          <div className="size-12 rounded-2xl bg-[#fef3ec] text-[#e8631b] flex items-center justify-center mx-auto border border-[#fae2d3]">
-            <Layers className="size-6" />
-          </div>
-          <h3 className="text-base font-bold text-neutral-900">No categories found</h3>
-          <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-            No menu categories are currently available for this restaurant.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {categories.map((category) => (
-            <CategoryCard key={category.id} category={category} onEdit={handleEditClick} />
-          ))}
-        </div>
-      )}
+      {renderContent()}
 
       {/* Edit Category Modal */}
       <EditCategoryModal
@@ -104,6 +119,13 @@ export default function RestaurantMenuCategoriesPage() {
         category={selectedCategory}
         restaurantId={restaurantId}
         onClose={handleCloseModal}
+      />
+
+      {/* Create Category Modal */}
+      <CreateCategoryModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        restaurantId={restaurantId}
       />
     </div>
   );

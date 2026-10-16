@@ -19,8 +19,13 @@ describe("RestaurantTermsPage", () => {
       screen.getByRole("heading", { name: /1\. restaurant partner registration/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /2\. queue & waitlist management obligations/i }),
+      screen.getByRole("heading", { name: /2\. business verification & statutory compliance/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /7\. contact & support/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /3\. menu management & pricing integrity/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /12\. partner support & inquiries/i }),
+    ).toBeInTheDocument();
   });
 });

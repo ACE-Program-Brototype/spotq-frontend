@@ -1,13 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import { menuService } from "@/features/menu/services/menu.service";
-import type { CreateAddonPayload, MenuAddon } from "@/features/menu/types/menu.types";
+import type {
+  CreateAddonPayload,
+  MenuAddon,
+  UpdateAddonPayload,
+} from "@/features/menu/types/menu.types";
 
 export const RESTAURANT_ADDONS_QUERY_KEY = "restaurantAddons";
 
 export function useRestaurantAddons(restaurantId: string) {
   const queryClient = useQueryClient();
+  const [pendingAddonIds, setPendingAddonIds] = useState<Set<string>>(new Set());
 
   const {
     data: addons = [],
@@ -37,6 +43,126 @@ export function useRestaurantAddons(restaurantId: string) {
     },
   });
 
+  const updateAddonMutation = useMutation({
+    mutationFn: ({ addonId, payload }: { addonId: string; payload: UpdateAddonPayload }) =>
+      menuService.updateAddon(restaurantId, addonId, payload),
+    onSuccess: (updatedAddon: MenuAddon) => {
+      queryClient.setQueryData(
+        [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
+        (old: MenuAddon[] | undefined) =>
+          old?.map((addon) => (addon.id === updatedAddon.id ? updatedAddon : addon)) || [],
+      );
+      queryClient.invalidateQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
+      toast.success(MENU_MESSAGES.ADDON_UPDATED_SUCCESS);
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || MENU_MESSAGES.ADDON_UPDATE_FAILED);
+    },
+  });
+
+  const toggleAvailabilityMutation = useMutation({
+    mutationFn: ({ addonId, isAvailable }: { addonId: string; isAvailable: boolean }) =>
+      menuService.updateAddon(restaurantId, addonId, { isAvailable }),
+    onMutate: async ({ addonId, isAvailable }) => {
+      await queryClient.cancelQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
+      const previousAddons = queryClient.getQueryData<MenuAddon[]>([
+        RESTAURANT_ADDONS_QUERY_KEY,
+        restaurantId,
+      ]);
+
+      queryClient.setQueryData<MenuAddon[]>(
+        [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
+        (old) =>
+          old?.map((addon) => (addon.id === addonId ? { ...addon, isAvailable } : addon)) || [],
+      );
+
+      return { previousAddons };
+    },
+    onError: (err: Error, { addonId }, context) => {
+      if (context?.previousAddons) {
+        queryClient.setQueryData(
+          [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
+          context.previousAddons,
+        );
+      }
+      setPendingAddonIds((prev) => {
+        const next = new Set(prev);
+        next.delete(addonId);
+        return next;
+      });
+      toast.error(err.message || MENU_MESSAGES.ADDON_UPDATE_FAILED);
+    },
+    onSuccess: (_data, { addonId, isAvailable }) => {
+      setPendingAddonIds((prev) => {
+        const next = new Set(prev);
+        next.delete(addonId);
+        return next;
+      });
+      toast.success(
+        isAvailable ? MENU_MESSAGES.ADDON_MARKED_IN_STOCK : MENU_MESSAGES.ADDON_MARKED_OUT_OF_STOCK,
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
+    },
+  });
+
+  const deleteAddonMutation = useMutation({
+    mutationFn: (addonId: string) => menuService.deleteAddon(restaurantId, addonId),
+    onMutate: async (addonId) => {
+      await queryClient.cancelQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
+      const previousAddons = queryClient.getQueryData<MenuAddon[]>([
+        RESTAURANT_ADDONS_QUERY_KEY,
+        restaurantId,
+      ]);
+
+      // Optimistically remove from the list immediately
+      queryClient.setQueryData<MenuAddon[]>(
+        [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
+        (old) => old?.filter((addon) => addon.id !== addonId) || [],
+      );
+
+      return { previousAddons };
+    },
+    onError: (err: Error, _addonId, context) => {
+      if (context?.previousAddons) {
+        queryClient.setQueryData(
+          [RESTAURANT_ADDONS_QUERY_KEY, restaurantId],
+          context.previousAddons,
+        );
+      }
+      toast.error(err.message || MENU_MESSAGES.ADDON_DELETE_FAILED);
+    },
+    onSuccess: () => {
+      toast.success(MENU_MESSAGES.ADDON_DELETED_SUCCESS);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [RESTAURANT_ADDONS_QUERY_KEY, restaurantId] });
+    },
+  });
+
+  const toggleAvailability = useCallback(
+    (addon: MenuAddon) => {
+      if (!restaurantId || !addon.id) return;
+      if (pendingAddonIds.has(addon.id)) return;
+
+      setPendingAddonIds((prev) => new Set(prev).add(addon.id));
+      toggleAvailabilityMutation.mutate({
+        addonId: addon.id,
+        isAvailable: !addon.isAvailable,
+      });
+    },
+    [restaurantId, pendingAddonIds, toggleAvailabilityMutation],
+  );
+
+  const deleteAddon = useCallback(
+    (addonId: string) => {
+      if (!restaurantId || !addonId) return;
+      deleteAddonMutation.mutate(addonId);
+    },
+    [restaurantId, deleteAddonMutation],
+  );
+
   return {
     addons,
     isLoading,
@@ -45,5 +171,13 @@ export function useRestaurantAddons(restaurantId: string) {
     refetch,
     createAddon: createAddonMutation.mutateAsync,
     isCreating: createAddonMutation.isPending,
+    updateAddon: updateAddonMutation.mutateAsync,
+    isUpdating: updateAddonMutation.isPending,
+    toggleAvailability,
+    pendingAddonIds,
+    isTogglingAvailability: pendingAddonIds.size > 0,
+    deleteAddon,
+    isDeleting: deleteAddonMutation.isPending,
+    deletingAddonId: deleteAddonMutation.variables,
   };
 }

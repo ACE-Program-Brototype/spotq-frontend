@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import {
+  ADMIN_ROUTES,
+  CUSTOMER_ROUTES,
+  RESTAURANT_ROUTES,
+  STAFF_ROUTES,
+} from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { Role } from "@/features/auth/types/auth.types";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
@@ -11,7 +17,7 @@ export interface ProtectedLayoutProps {
 
 export default function ProtectedLayout({
   allowedRoles,
-  redirectTo = "/login",
+  redirectTo = CUSTOMER_ROUTES.AUTH.LOGIN,
 }: ProtectedLayoutProps = {}) {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
@@ -60,20 +66,17 @@ export default function ProtectedLayout({
       user?.status === "REJECTED" ||
       (user?.onboardingStatus === "COMPLETED" && user?.status !== "VERIFIED")
     ) {
-      if (
-        !location.pathname.startsWith("/restaurant/onboarding/status") &&
-        !location.pathname.startsWith("/restaurant/onboarding/verification-status")
-      ) {
-        return <Navigate to="/restaurant/onboarding/status" replace />;
+      if (!location.pathname.startsWith(RESTAURANT_ROUTES.ONBOARDING.STATUS)) {
+        return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.STATUS} replace />;
       }
     } else if (
       user?.status === "PENDING" &&
-      !location.pathname.startsWith("/restaurant/onboarding")
+      !location.pathname.startsWith(RESTAURANT_ROUTES.ONBOARDING.ROOT)
     ) {
-      return <Navigate to="/restaurant/onboarding/business-information" replace />;
+      return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />;
     }
 
-    if (!location.pathname.startsWith("/restaurant")) {
+    if (!location.pathname.startsWith(RESTAURANT_ROUTES.ROOT)) {
       if (location.pathname === roleHome) {
         return null;
       }
@@ -81,7 +84,7 @@ export default function ProtectedLayout({
     }
   }
 
-  if (normalizedRole === "ADMIN" && !location.pathname.startsWith("/admin")) {
+  if (normalizedRole === "ADMIN" && !location.pathname.startsWith(ADMIN_ROUTES.ROOT)) {
     if (location.pathname === roleHome) {
       return null;
     }
@@ -90,8 +93,8 @@ export default function ProtectedLayout({
 
   if (
     (normalizedRole === "STAFF" || normalizedRole === "RESTAURANT_STAFF") &&
-    !location.pathname.startsWith("/staff") &&
-    !location.pathname.startsWith("/restaurant")
+    !location.pathname.startsWith(STAFF_ROUTES.ROOT) &&
+    !location.pathname.startsWith(RESTAURANT_ROUTES.ROOT)
   ) {
     if (location.pathname === roleHome) {
       return null;

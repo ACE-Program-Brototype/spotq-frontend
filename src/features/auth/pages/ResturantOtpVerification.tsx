@@ -2,6 +2,7 @@ import type { ClipboardEvent, KeyboardEvent } from "react";
 import { useCallback, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import restaurantOtpVerificationBg from "@/features/auth/assets/restaurant-otp-verification-bg.avif";
 
 import {
@@ -169,16 +170,16 @@ export default function OtpVerification({
 
       if (result.nextStep === "VERIFICATION_STATUS") {
         onGoToOnboarding?.();
-        navigate("/restaurant/onboarding/status", { replace: true });
+        navigate(RESTAURANT_ROUTES.ONBOARDING.STATUS, { replace: true });
       } else if (result.nextStep === "SUBSCRIPTION") {
         onGoToDashboard?.();
-        navigate("/restaurant/subscription", { replace: true });
+        navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
       } else if (result.nextStep === "DASHBOARD") {
         onGoToDashboard?.();
-        navigate("/restaurant/dashboard", { replace: true });
+        navigate(RESTAURANT_ROUTES.DASHBOARD, { replace: true });
       } else {
         onGoToOnboarding?.();
-        navigate("/restaurant/onboarding/business-information", { replace: true });
+        navigate(RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION, { replace: true });
       }
     } catch (err) {
       const code = (err as { code?: string })?.code;
@@ -225,11 +226,11 @@ export default function OtpVerification({
 
   const handleBack = useCallback(() => {
     onBack?.();
-    navigate("/restaurant/email/verification", { replace: false });
+    navigate(RESTAURANT_ROUTES.LOGIN, { replace: false });
   }, [navigate, onBack]);
 
   if (!email) {
-    return <Navigate to="/restaurant/email/verification" replace />;
+    return <Navigate to={RESTAURANT_ROUTES.LOGIN} replace />;
   }
 
   return (
@@ -392,7 +393,7 @@ export default function OtpVerification({
             <p className="mt-6 text-center text-xs text-neutral-500">
               By continuing, I agree to SpotQ's{" "}
               <Link
-                to="/restaurant/terms"
+                to={RESTAURANT_ROUTES.TERMS}
                 className="font-medium text-neutral-700 underline underline-offset-2 hover:text-orange-600"
               >
                 terms &amp; conditions

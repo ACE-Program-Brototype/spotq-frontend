@@ -7,6 +7,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import env from "@/config/env";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import type { AcceptInvitationFormValues } from "@/features/auth/schemas/accept-invitation.schema";
@@ -37,10 +38,10 @@ export function useAcceptInvitation() {
       if (res.data?.staff && res.data?.accessToken) {
         setAuth(res.data.staff, res.data.accessToken);
         toast.success(res.message || AUTH_MESSAGES.STAFF_REGISTRATION_SUCCESS);
-        navigate("/staff/dashboard", { replace: true });
+        navigate(STAFF_ROUTES.DASHBOARD, { replace: true });
       } else {
         toast.success(res.message || AUTH_MESSAGES.STAFF_REGISTRATION_LOGIN_PROMPT);
-        navigate("/staff/login", { replace: true });
+        navigate(STAFF_ROUTES.LOGIN, { replace: true });
       }
     },
     onError: (err: unknown) => {

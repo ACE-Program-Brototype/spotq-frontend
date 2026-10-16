@@ -6,7 +6,7 @@
 import { Bell, Home, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -82,7 +82,7 @@ export function CustomerNavbar({
       {...props}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0 select-none">
+        <Link to={CUSTOMER_ROUTES.HOME} className="flex items-center gap-2.5 shrink-0 select-none">
           <div className="flex size-10 items-center justify-center rounded-xl bg-white shadow-xs border border-neutral-100">
             <img src={spotqLogo} alt="spotQ" className="size-5.5 object-contain" />
           </div>
@@ -116,7 +116,7 @@ export function CustomerNavbar({
           </Button>
 
           <Link
-            to="/cart"
+            to={CUSTOMER_ROUTES.CART}
             aria-label="Shopping Cart"
             className="relative flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors"
           >
@@ -129,7 +129,7 @@ export function CustomerNavbar({
           </Link>
 
           <Link
-            to="/notifications"
+            to={CUSTOMER_ROUTES.NOTIFICATIONS}
             aria-label="Notifications"
             className="relative hidden sm:flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors"
           >
@@ -140,7 +140,11 @@ export function CustomerNavbar({
           </Link>
 
           {user ? (
-            <Link to="/profile" aria-label="My Profile" className="flex items-center gap-2 pl-1">
+            <Link
+              to={CUSTOMER_ROUTES.PROFILE.ROOT}
+              aria-label="My Profile"
+              className="flex items-center gap-2 pl-1"
+            >
               <Avatar className="size-8.5 bg-[#1c1714] text-white font-bold border border-neutral-200">
                 <AvatarFallback className="bg-[#1c1714] text-white text-xs font-bold">
                   {initials}
@@ -149,7 +153,7 @@ export function CustomerNavbar({
             </Link>
           ) : (
             <Link
-              to="/login"
+              to={CUSTOMER_ROUTES.AUTH.LOGIN}
               state={{ from: location }}
               className="flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors"
               aria-label="Sign In"
@@ -190,7 +194,7 @@ export function CustomerMobileNav({
   const navTabs = [
     {
       label: "Home",
-      href: "/",
+      href: CUSTOMER_ROUTES.HOME,
       icon: Home,
     },
     {
@@ -207,7 +211,7 @@ export function CustomerMobileNav({
     },
     {
       label: "Profile",
-      href: user ? "/profile" : "/login",
+      href: user ? CUSTOMER_ROUTES.PROFILE.ROOT : CUSTOMER_ROUTES.AUTH.LOGIN,
       icon: User,
     },
   ];

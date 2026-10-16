@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -77,7 +78,7 @@ export default function StaffLoginForm({
           </Label>
 
           <Link
-            to="/staff/forgot-password"
+            to={STAFF_ROUTES.FORGOT_PASSWORD}
             className="text-xs font-medium text-[#a94600] transition-colors hover:text-[#863800] hover:underline"
           >
             Forgot password?

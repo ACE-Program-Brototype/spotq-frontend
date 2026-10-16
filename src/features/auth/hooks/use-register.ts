@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import type { RegisterFormValues } from "../schemas/register.schema";
 import { useRegisterMutation } from "./use-auth-mutations";
@@ -20,7 +21,9 @@ export const useRegister = () => {
       if (response.success) {
         toast.success(response.message || AUTH_MESSAGES.OTP_SENT_SUCCESS);
 
-        navigate(`/verify-otp?email=${encodeURIComponent(values.email)}`, { replace: true });
+        navigate(`${CUSTOMER_ROUTES.AUTH.VERIFY_OTP}?email=${encodeURIComponent(values.email)}`, {
+          replace: true,
+        });
       } else {
         toast.error(response.message || AUTH_MESSAGES.GENERIC_ERROR);
       }

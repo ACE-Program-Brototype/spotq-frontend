@@ -15,9 +15,10 @@ import HomePage from "@/features/restaurants/pages/HomePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
+import { CUSTOMER_ROUTE_PATHS, CUSTOMER_ROUTES } from "./customer.routes.constants";
 
 const CustomerProtectedLayout = () => (
-  <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo="/login" />
+  <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo={CUSTOMER_ROUTES.AUTH.LOGIN} />
 );
 
 export const customerRoutes: RouteObject[] = [
@@ -25,15 +26,15 @@ export const customerRoutes: RouteObject[] = [
     Component: CustomerLayout,
     children: [
       {
-        path: "/",
+        path: CUSTOMER_ROUTE_PATHS.HOME,
         Component: HomePage,
       },
       {
-        path: "/about",
+        path: CUSTOMER_ROUTE_PATHS.ABOUT,
         Component: AboutPage,
       },
       {
-        path: "/profile",
+        path: CUSTOMER_ROUTE_PATHS.PROFILE.ROOT,
         Component: CustomerProtectedLayout,
         children: [
           {
@@ -41,7 +42,7 @@ export const customerRoutes: RouteObject[] = [
             Component: ViewProfilePage,
           },
           {
-            path: "edit",
+            path: CUSTOMER_ROUTE_PATHS.PROFILE.EDIT,
             Component: EditProfilePage,
           },
         ],
@@ -52,49 +53,41 @@ export const customerRoutes: RouteObject[] = [
     Component: AuthLayout,
     children: [
       {
-        path: "/login",
+        path: CUSTOMER_ROUTE_PATHS.AUTH.LOGIN,
         Component: LoginPage,
       },
       {
-        path: "/register",
+        path: CUSTOMER_ROUTE_PATHS.AUTH.REGISTER,
         Component: RegisterPage,
       },
       {
-        path: "/forgot-password",
+        path: CUSTOMER_ROUTE_PATHS.AUTH.FORGOT_PASSWORD,
         Component: ForgotPasswordPage,
       },
       {
-        path: "/forgot-password/verify",
+        path: CUSTOMER_ROUTE_PATHS.AUTH.FORGOT_PASSWORD_VERIFY,
         Component: VerifyOtpPage,
       },
       {
-        path: "/forgot-password/reset-password",
+        path: CUSTOMER_ROUTE_PATHS.AUTH.FORGOT_PASSWORD_RESET,
         Component: ResetPasswordPage,
       },
       {
-        path: "/verify-otp",
+        path: CUSTOMER_ROUTE_PATHS.AUTH.VERIFY_OTP,
         Component: OtpVerificationPage,
       },
     ],
   },
   {
-    path: "/terms",
+    path: CUSTOMER_ROUTE_PATHS.LEGAL.TERMS,
     Component: TermsAndConditionsPage,
   },
   {
-    path: "/privacy",
+    path: CUSTOMER_ROUTE_PATHS.LEGAL.PRIVACY,
     Component: PrivacyPolicyPage,
   },
   {
-    path: "/privacy-policy",
-    Component: PrivacyPolicyPage,
-  },
-  {
-    path: "/cookies",
-    Component: CookiePolicyPage,
-  },
-  {
-    path: "/cookie-policy",
+    path: CUSTOMER_ROUTE_PATHS.LEGAL.COOKIES,
     Component: CookiePolicyPage,
   },
 ];

@@ -2,6 +2,7 @@ import { AlertCircle, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ export function AdminCustomersPage() {
   const navigate = useNavigate();
 
   const handleViewDetails = (customer: Customer) => {
-    navigate(`/admin/customers/${customer.id}`);
+    navigate(ADMIN_ROUTES.CUSTOMER_DETAIL(customer.id));
   };
 
   // Action Confirmation state

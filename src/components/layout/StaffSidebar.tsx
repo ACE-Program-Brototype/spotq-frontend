@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   LogOut,
   Receipt,
+  Sparkles,
   Table as TableIcon,
   User,
   UsersRound,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Button } from "@/components/ui/button";
@@ -39,6 +41,12 @@ const staffNavItems: StaffNavItem[] = [
     mobileLabel: "Menu",
   },
   {
+    title: "Modifiers & Add-ons",
+    path: "/menu/addons",
+    icon: Sparkles,
+    mobileLabel: "Add-ons",
+  },
+  {
     title: "Queue Management",
     path: "/queue",
     icon: UsersRound,
@@ -58,7 +66,35 @@ const staffNavItems: StaffNavItem[] = [
   },
 ];
 
-export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: StaffSidebarProps) {
+// to highlisgt which nav item is seleced. even if the url is
+// menu/item/varient/available the menu nav item needs to be selected
+export function isStaffNavItemActive(
+  pathname: string,
+  itemPath: string,
+  basePath: string,
+): boolean {
+  const fullHref = `${basePath}${itemPath}`;
+
+  if (itemPath === "/menu") {
+    return (
+      pathname === `${basePath}/menu` ||
+      pathname === `${basePath}/menu/items` ||
+      pathname.startsWith(`${basePath}/menu/items/`)
+    );
+  }
+
+  return (
+    pathname === fullHref ||
+    pathname.startsWith(`${fullHref}/`) ||
+    (itemPath === "/dashboard" && (pathname === basePath || pathname === `${basePath}/`))
+  );
+}
+
+export function StaffSidebar({
+  className,
+  onNavigate,
+  basePath = STAFF_ROUTES.ROOT,
+}: StaffSidebarProps) {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const { handleStaffLogout, isLoading } = useStaffLogout();
@@ -85,11 +121,7 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
           {staffNavItems.map((item) => {
             const Icon = item.icon;
             const fullHref = `${basePath}${item.path}`;
-            const isActive =
-              location.pathname === fullHref ||
-              location.pathname.startsWith(`${fullHref}/`) ||
-              (item.path === "/dashboard" &&
-                (location.pathname === basePath || location.pathname === `${basePath}/`));
+            const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
 
             return (
               <Link
@@ -163,7 +195,7 @@ export function StaffSidebar({ className, onNavigate, basePath = "/staff" }: Sta
 }
 
 export function StaffMobileNav({
-  basePath = "/staff",
+  basePath = STAFF_ROUTES.ROOT,
   className,
 }: {
   basePath?: string;
@@ -182,11 +214,7 @@ export function StaffMobileNav({
       {staffNavItems.map((item) => {
         const Icon = item.icon;
         const fullHref = `${basePath}${item.path}`;
-        const isActive =
-          location.pathname === fullHref ||
-          location.pathname.startsWith(`${fullHref}/`) ||
-          (item.path === "/dashboard" &&
-            (location.pathname === basePath || location.pathname === `${basePath}/`));
+        const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
 
         return (
           <Link

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import { type LocationFormValues, locationSchema } from "../schemas/location.schema";
 import { useOnboardStore } from "../store/onboard.store";
@@ -56,11 +57,11 @@ export default function LocationPage() {
 
   const onSubmit = (values: LocationFormValues) => {
     setLocation(values);
-    navigate("/restaurant/onboarding/review");
+    navigate(RESTAURANT_ROUTES.ONBOARDING.REVIEW);
   };
 
   const handleBack = () => {
-    navigate("/restaurant/onboarding/documents");
+    navigate(RESTAURANT_ROUTES.ONBOARDING.DOCUMENTS);
   };
 
   return (

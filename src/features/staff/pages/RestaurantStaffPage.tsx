@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { type Column, DataTable } from "@/components/common/table";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -167,7 +168,7 @@ export default function RestaurantStaffPage() {
         cell: ({ row: staff }) => (
           <div className="flex items-center justify-end">
             <Link
-              to={`/restaurant/staff/${staff.id}`}
+              to={RESTAURANT_ROUTES.STAFF.DETAIL(staff.id)}
               className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors"
               aria-label={`View details for ${staff.name}`}
               title="View staff details"
@@ -209,7 +210,7 @@ export default function RestaurantStaffPage() {
             <RefreshCw className={`size-4 ${isLoading ? "animate-spin text-[#e8631b]" : ""}`} />
           </Button>
 
-          <Link to="/restaurant/staff/invitations">
+          <Link to={RESTAURANT_ROUTES.STAFF.INVITATIONS}>
             <Button
               variant="outline"
               size="sm"

@@ -6,6 +6,7 @@
 
 import { AlertCircle, Edit3, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { CustomerSidebar } from "../components/CustomerSidebar";
 import { ProfileHeroCard } from "../components/ProfileHeroCard";
@@ -34,7 +35,7 @@ export function ViewProfilePage() {
             </div>
 
             <Link
-              to="/profile/edit"
+              to={CUSTOMER_ROUTES.PROFILE.EDIT}
               aria-label={PROFILE_MESSAGES.EDIT_PROFILE}
               className="inline-flex items-center self-start sm:self-auto bg-[#ff6b00] hover:bg-[#e86100] text-white rounded-2xl font-bold gap-2 px-5 py-2.5 shadow-xs transition-all active:scale-98 text-sm"
             >

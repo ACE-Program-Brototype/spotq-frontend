@@ -6,6 +6,7 @@
 
 import { CreditCard, LogOut, ShoppingBag, Star, User as UserIcon, Users } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
@@ -29,27 +30,27 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   const navItems = [
     {
       label: "Profile",
-      href: "/profile",
+      href: CUSTOMER_ROUTES.PROFILE.ROOT,
       icon: UserIcon,
     },
     {
       label: "Orders",
-      href: "/orders",
+      href: CUSTOMER_ROUTES.ORDERS,
       icon: ShoppingBag,
     },
     {
       label: "Queues",
-      href: "/queues",
+      href: CUSTOMER_ROUTES.QUEUES,
       icon: Users,
     },
     {
       label: "Loyalties",
-      href: "/loyalties",
+      href: CUSTOMER_ROUTES.LOYALTIES,
       icon: Star,
     },
     {
       label: "Payments",
-      href: "/payments",
+      href: CUSTOMER_ROUTES.PAYMENTS,
       icon: CreditCard,
     },
   ];

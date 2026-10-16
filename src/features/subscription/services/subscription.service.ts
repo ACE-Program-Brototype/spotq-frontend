@@ -1,3 +1,4 @@
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { SUBSCRIPTION_ENDPOINTS } from "@/features/subscription/constants/subscription.constants";
 import type {
@@ -103,7 +104,7 @@ export const subscriptionService = {
       isSubscriptionActive: isSubActive,
       subscriptionPlanCode: sub?.planCode || null,
       subscriptionEndsAt: sub?.currentPeriodEnd || null,
-      navigationTarget: isSubActive ? "/restaurant/dashboard" : "/restaurant/subscription",
+      navigationTarget: isSubActive ? RESTAURANT_ROUTES.DASHBOARD : RESTAURANT_ROUTES.SUBSCRIPTION,
     };
   },
 };

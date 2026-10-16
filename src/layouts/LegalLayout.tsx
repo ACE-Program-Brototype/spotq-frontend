@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { CUSTOMER_ROUTES, RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { CustomerFooter } from "@/components/layout/CustomerFooter";
 import { CustomerNavbar } from "@/components/layout/CustomerNavbar";
@@ -27,6 +28,7 @@ export const LegalPageLayout = ({
   const currentYear = new Date().getFullYear();
 
   const isCustomer = variant === "customer";
+
   const defaultBackLabel = isCustomer ? "Back" : "Back to Restaurant Portal";
   const effectiveBackLabel = backLabel ?? defaultBackLabel;
 
@@ -36,9 +38,9 @@ export const LegalPageLayout = ({
     } else if (isCustomer && window.history.length > 1) {
       navigate(-1);
     } else if (!isCustomer) {
-      navigate("/restaurant/email/verification");
+      navigate(RESTAURANT_ROUTES.LOGIN);
     } else {
-      navigate("/");
+      navigate(CUSTOMER_ROUTES.HOME);
     }
   };
 
@@ -48,10 +50,7 @@ export const LegalPageLayout = ({
         <CustomerNavbar />
       ) : (
         <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#eddcd4] bg-white/95 px-4 sm:px-8 backdrop-blur shadow-2xs">
-          <Link
-            to="/restaurant/email/verification"
-            className="flex items-center gap-2.5 select-none"
-          >
+          <Link to={RESTAURANT_ROUTES.LOGIN} className="flex items-center gap-2.5 select-none">
             <div className="flex size-9 items-center justify-center rounded-xl bg-white shadow-xs border border-[#eddcd4]">
               <img src={spotqLogo} alt="spotQ" className="size-5 object-contain" />
             </div>
