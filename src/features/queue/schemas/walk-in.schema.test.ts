@@ -85,6 +85,20 @@ describe("walkInSchema", () => {
       }
     });
 
+    it("rejects dummy phone numbers not starting with 6-9", () => {
+      const invalidStartingDigits = ["0000000000", "1111111111", "5555555555", "+911234567890"];
+      for (const phone of invalidStartingDigits) {
+        const res = walkInSchema.safeParse({
+          ...validData,
+          guestPhone: phone,
+        });
+        expect(res.success).toBe(false);
+        if (!res.success) {
+          expect(res.error.issues[0].message).toBe("Please enter a valid 10-digit mobile number");
+        }
+      }
+    });
+
     it("rejects empty phone number", () => {
       const res = walkInSchema.safeParse({ ...validData, guestPhone: "" });
       expect(res.success).toBe(false);
@@ -103,6 +117,11 @@ describe("walkInSchema", () => {
       expect(normalizePhone("+91 98765 43210")).toBe("+919876543210");
       expect(normalizePhone("+91-9876543210")).toBe("+919876543210");
       expect(normalizePhone("+919876543210")).toBe("+919876543210");
+    });
+
+    it("falls back to trimmed raw string if fewer than 10 digits are provided", () => {
+      expect(normalizePhone("123")).toBe("123");
+      expect(normalizePhone("   98765   ")).toBe("98765");
     });
   });
 

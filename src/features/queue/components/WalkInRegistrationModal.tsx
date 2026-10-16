@@ -26,7 +26,7 @@ export function WalkInRegistrationModal({
   onSuccess,
 }: WalkInRegistrationModalProps) {
   const user = useAuthStore((state) => state.user);
-  const effectiveRestaurantId = propRestaurantId || user?.restaurantId || user?.id || "";
+  const effectiveRestaurantId = propRestaurantId || user?.restaurantId || "";
 
   const [selectedPreset, setSelectedPreset] = useState<number | "6+">(2);
   const guestNameRef = useRef<HTMLInputElement | null>(null);
@@ -57,26 +57,7 @@ export function WalkInRegistrationModal({
     reset: resetMutation,
   } = useRegisterWalkIn(effectiveRestaurantId);
 
-  // Auto-focus the guest name input upon modal opening and clear previous values
-  useEffect(() => {
-    if (isOpen) {
-      reset({
-        guestName: "",
-        guestPhone: "",
-        partySize: 2,
-        specialNotes: "",
-      });
-      setSelectedPreset(2);
-      resetMutation();
-      const timer = setTimeout(() => {
-        guestNameRef.current?.focus();
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, reset, resetMutation]);
-
-  const handleClose = useCallback(() => {
-    if (isSubmitting) return;
+  const resetModalState = useCallback(() => {
     reset({
       guestName: "",
       guestPhone: "",
@@ -85,8 +66,24 @@ export function WalkInRegistrationModal({
     });
     setSelectedPreset(2);
     resetMutation();
+  }, [reset, resetMutation]);
+
+  // Auto-focus the guest name input upon modal opening and clear previous values
+  useEffect(() => {
+    if (isOpen) {
+      resetModalState();
+      const timer = setTimeout(() => {
+        guestNameRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, resetModalState]);
+
+  const handleClose = useCallback(() => {
+    if (isSubmitting) return;
+    resetModalState();
     onClose();
-  }, [isSubmitting, reset, resetMutation, onClose]);
+  }, [isSubmitting, resetModalState, onClose]);
 
   // Handle ESC key
   useEffect(() => {
@@ -137,14 +134,7 @@ export function WalkInRegistrationModal({
       });
 
       // Clear the form fields after successful registration
-      reset({
-        guestName: "",
-        guestPhone: "",
-        partySize: 2,
-        specialNotes: "",
-      });
-      setSelectedPreset(2);
-      resetMutation();
+      resetModalState();
 
       // Trigger success callback and close modal
       onSuccess?.(response.data);
@@ -157,22 +147,23 @@ export function WalkInRegistrationModal({
   const { ref: formNameRef, ...nameFieldRest } = register("guestName");
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="walkin-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-150"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-150">
       {/* Backdrop overlay */}
       <button
         type="button"
-        aria-label="Close modal backdrop"
+        aria-hidden="true"
+        tabIndex={-1}
         onClick={handleClose}
         disabled={isSubmitting}
         className="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs cursor-default border-0 outline-none w-full h-full disabled:cursor-not-allowed"
       />
 
-      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white border border-[#eddcd4] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[92vh]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="walkin-modal-title"
+        className="relative z-10 w-full max-w-lg rounded-2xl bg-white border border-[#eddcd4] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[92vh]"
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#eddcd4] bg-[#fffcf9]">
           <div className="flex items-center gap-3">
@@ -313,6 +304,8 @@ export function WalkInRegistrationModal({
                     type="button"
                     onClick={() => handlePresetSelect(preset)}
                     disabled={isSubmitting}
+                    aria-pressed={isSelected}
+                    aria-label={`Party size ${preset}`}
                     className={`h-10 rounded-xl text-sm font-bold border transition-all flex items-center justify-center ${
                       isSelected
                         ? "bg-[#9a3412] text-white border-[#9a3412] shadow-xs"
@@ -343,13 +336,25 @@ export function WalkInRegistrationModal({
                     type="number"
                     min={6}
                     max={100}
-                    value={partySize}
+                    value={partySize ?? ""}
                     onChange={(e) => {
-                      const val = Number.parseInt(e.target.value, 10);
-                      if (!Number.isNaN(val)) {
-                        setValue("partySize", Math.min(100, Math.max(1, val)), {
+                      const raw = e.target.value;
+                      if (raw === "") {
+                        setValue("partySize", "" as unknown as number, {
                           shouldValidate: true,
                         });
+                        return;
+                      }
+                      const val = Number.parseInt(raw, 10);
+                      if (!Number.isNaN(val)) {
+                        setValue("partySize", Math.min(100, Math.max(6, val)), {
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
+                    onBlur={() => {
+                      if (!partySize || partySize < 6) {
+                        setValue("partySize", 6, { shouldValidate: true });
                       }
                     }}
                     disabled={isSubmitting}

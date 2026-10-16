@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { formatTime } from "@/lib/utils";
 import { WalkInRegistrationModal } from "../components/WalkInRegistrationModal";
 import type { QueueEntry } from "../types/queue.types";
 
@@ -174,10 +175,7 @@ export default function StaffQueuePage() {
                       <td className="px-4 py-3 text-neutral-500 text-xs">
                         <span className="inline-flex items-center gap-1">
                           <Clock className="size-3 text-neutral-400" />
-                          {new Date(entry.joinedAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {formatTime(entry.joinedAt)}
                         </span>
                       </td>
                     </tr>

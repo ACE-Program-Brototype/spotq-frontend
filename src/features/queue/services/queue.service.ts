@@ -14,7 +14,7 @@ export const queueService = {
     const payload = {
       guestName: input.guestName.trim(),
       guestPhone: normalizePhone(input.guestPhone),
-      partySize: Number(input.partySize),
+      partySize: input.partySize,
       specialNotes: input.specialNotes?.trim() || undefined,
     };
 

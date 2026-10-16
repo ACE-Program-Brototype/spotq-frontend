@@ -90,7 +90,7 @@ describe("StaffQueuePage", () => {
 
     await user.type(screen.getByLabelText(/guest name/i), "Samantha Reed");
     await user.type(screen.getByLabelText(/phone number/i), "9876543210");
-    await user.click(screen.getByRole("button", { name: "4" }));
+    await user.click(screen.getByRole("button", { name: "Party size 4" }));
     await user.type(screen.getByLabelText(/special notes/i), "High chair needed");
 
     const modal = screen.getByRole("dialog");

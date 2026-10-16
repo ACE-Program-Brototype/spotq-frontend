@@ -65,9 +65,11 @@ describe("WalkInRegistrationModal", () => {
     const user = userEvent.setup();
     renderModal({ isOpen: true, onClose: jest.fn() });
 
-    const preset4 = screen.getByRole("button", { name: "4" });
+    const preset4 = screen.getByRole("button", { name: "Party size 4" });
+    expect(preset4).toHaveAttribute("aria-pressed", "false");
     await user.click(preset4);
 
+    expect(preset4).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("4 Guests")).toBeInTheDocument();
   });
 
@@ -75,7 +77,7 @@ describe("WalkInRegistrationModal", () => {
     const user = userEvent.setup();
     renderModal({ isOpen: true, onClose: jest.fn() });
 
-    const preset6Plus = screen.getByRole("button", { name: "6+" });
+    const preset6Plus = screen.getByRole("button", { name: "Party size 6+" });
     await user.click(preset6Plus);
 
     expect(screen.getByText("Exact Party Size:")).toBeInTheDocument();
