@@ -72,6 +72,27 @@ export const AUTH_MESSAGES = {
   STAFF_INVITATION_VALIDATE_ERROR: "Could not validate the invitation link.",
 } as const;
 
+export const PUSH_NOTIFICATION_MESSAGES = {
+  UNSUPPORTED: "Push notifications are not supported in this browser.",
+  ENABLED_SUCCESS: "Notifications enabled successfully!",
+  BLOCKED_ERROR:
+    "Notifications are blocked in browser settings. Please enable them to receive updates.",
+  ENABLE_FAILED: "Could not enable notifications. Please try again.",
+  DEFAULT_TITLE: "SpotQ",
+} as const;
+
+export const NOTIFICATION_PERMISSIONS = {
+  GRANTED: "granted",
+  DENIED: "denied",
+  DEFAULT: "default",
+  UNSUPPORTED: "unsupported",
+} as const;
+
+export const NOTIFICATION_EVENTS = {
+  CHANGE: "change",
+  PERMISSION_NAME: "notifications",
+} as const;
+
 export const AUTH_ENDPOINTS = {
   LOGIN: "auth/users/login",
   GOOGLE_LOGIN: "auth/users/oauth/google",
@@ -182,3 +203,26 @@ export const RESTAURANT_OTP_LENGTH = 6;
 export const RESTAURANT_RESEND_COOLDOWN_SECONDS = 60;
 export const RESTAURANT_MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
 export const CUSTOMER_OTP_COOLDOWN_SECONDS = 59;
+
+export const DEVICE_STORAGE_KEYS = {
+  DEVICE_ID: "spotq_device_id",
+} as const;
+
+export const DEVICE_ENDPOINTS = {
+  DEVICES: "users/me/devices",
+  DEVICE_BY_ID: (deviceId: string) => `users/me/devices/${encodeURIComponent(deviceId)}`,
+} as const;
+
+export const DEVICE_QUERY_KEYS = {
+  ALL: ["customer-devices"] as const,
+  LIST: () => [...DEVICE_QUERY_KEYS.ALL, "list"] as const,
+} as const;
+
+export const DEVICE_MESSAGES = {
+  REGISTER_SUCCESS: "Device registered successfully",
+  DEACTIVATE_SUCCESS: "Device deactivated successfully",
+  FETCH_SUCCESS: "Devices retrieved successfully",
+} as const;
+
+export const UUID_V4_TEMPLATE = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+export const APP_VERSION = "1.0.0";
