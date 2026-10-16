@@ -64,7 +64,7 @@ export function MenuItemVariantRow({
           {!variant.isDefault && priceDelta !== 0 && (
             <span
               className={cn(
-                "text-[10px] font-bold",
+                "text-[10px] font-bold text-nowrap",
                 priceDelta > 0 ? "text-emerald-600" : "text-neutral-400",
               )}
             >
@@ -82,7 +82,7 @@ export function MenuItemVariantRow({
       <td className="py-3.5 px-4">
         <span
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold border",
+            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold border text-nowrap",
             variant.isAvailable
               ? "bg-emerald-50 text-emerald-700 border-emerald-200"
               : "bg-neutral-100 text-neutral-600 border-neutral-200",
@@ -90,7 +90,7 @@ export function MenuItemVariantRow({
         >
           <span
             className={cn(
-              "size-1.5 rounded-full",
+              "size-1.5 rounded-full ",
               variant.isAvailable ? "bg-emerald-500" : "bg-neutral-400",
             )}
           />

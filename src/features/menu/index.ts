@@ -7,6 +7,7 @@ export * from "./components/addon/AddonCard";
 export * from "./components/addon/AddonListSkeleton";
 export * from "./components/addon/AddonSelector";
 export * from "./components/addon/CreateAddonModal";
+export * from "./components/addon/DeleteAddonDialog";
 export * from "./components/CategoryCard";
 export * from "./components/CategoryListSkeleton";
 export * from "./components/CreateCategoryModal";

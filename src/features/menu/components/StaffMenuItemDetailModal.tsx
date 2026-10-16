@@ -5,7 +5,7 @@
  */
 
 import { Loader2, Power, PowerOff, Sparkles, Tag, Utensils, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MenuItemVariantsCard } from "@/features/menu/components/item-detail/MenuItemVariantsCard";
@@ -32,8 +32,6 @@ export function StaffMenuItemDetailModal({
   onToggleItemAvailability,
   isItemToggling = false,
 }: StaffMenuItemDetailModalProps) {
-  const [imageError, setImageError] = useState(false);
-
   // Close modal on Escape key press
   useEffect(() => {
     if (!isOpen) return;
@@ -57,8 +55,6 @@ export function StaffMenuItemDetailModal({
   );
 
   if (!isOpen || !item) return null;
-
-  const displayImage = item.image ?? item.imageUrl;
 
   // MenuItemVariantsCard uses this shape MenuItemDetailVariant
   const adaptedVariants: MenuItemDetailVariant[] = (item.variants || []).map((v) => ({
@@ -90,21 +86,11 @@ export function StaffMenuItemDetailModal({
         {/* Header Section */}
         <div className="flex items-start justify-between gap-4 border-b border-[#f3e6de] pb-5">
           <div className="flex items-start gap-3.5">
-            {displayImage && !imageError ? (
-              <div className="size-14 shrink-0 rounded-2xl overflow-hidden bg-[#faf7f5] border border-[#eddcd4]">
-                <img
-                  src={displayImage}
-                  alt={item.name}
-                  className="h-full w-full object-cover"
-                  onError={() => setImageError(true)}
-                />
-              </div>
-            ) : (
-              <div className="size-14 shrink-0 rounded-2xl bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center text-[#9a3412]">
-                <Utensils className="size-6" />
-              </div>
-            )}
+            <div className="size-14 shrink-0 rounded-2xl bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center text-[#9a3412]">
+              <Utensils className="size-6" />
+            </div>
 
+            {/* Item Details */}
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="inline-flex items-center gap-1 rounded-lg bg-[#fef3ec] px-2 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
