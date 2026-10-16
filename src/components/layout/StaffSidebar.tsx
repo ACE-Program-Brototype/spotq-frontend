@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   LogOut,
   Receipt,
+  Sparkles,
   Table as TableIcon,
   User,
   UsersRound,
@@ -40,6 +41,12 @@ const staffNavItems: StaffNavItem[] = [
     mobileLabel: "Menu",
   },
   {
+    title: "Modifiers & Add-ons",
+    path: "/menu/addons",
+    icon: Sparkles,
+    mobileLabel: "Add-ons",
+  },
+  {
     title: "Queue Management",
     path: "/queue",
     icon: UsersRound,
@@ -58,6 +65,30 @@ const staffNavItems: StaffNavItem[] = [
     mobileLabel: "Orders",
   },
 ];
+
+// to highlisgt which nav item is seleced. even if the url is
+// menu/item/varient/available the menu nav item needs to be selected
+export function isStaffNavItemActive(
+  pathname: string,
+  itemPath: string,
+  basePath: string,
+): boolean {
+  const fullHref = `${basePath}${itemPath}`;
+
+  if (itemPath === "/menu") {
+    return (
+      pathname === `${basePath}/menu` ||
+      pathname === `${basePath}/menu/items` ||
+      pathname.startsWith(`${basePath}/menu/items/`)
+    );
+  }
+
+  return (
+    pathname === fullHref ||
+    pathname.startsWith(`${fullHref}/`) ||
+    (itemPath === "/dashboard" && (pathname === basePath || pathname === `${basePath}/`))
+  );
+}
 
 export function StaffSidebar({
   className,
@@ -90,11 +121,7 @@ export function StaffSidebar({
           {staffNavItems.map((item) => {
             const Icon = item.icon;
             const fullHref = `${basePath}${item.path}`;
-            const isActive =
-              location.pathname === fullHref ||
-              location.pathname.startsWith(`${fullHref}/`) ||
-              (item.path === "/dashboard" &&
-                (location.pathname === basePath || location.pathname === `${basePath}/`));
+            const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
 
             return (
               <Link
@@ -187,11 +214,7 @@ export function StaffMobileNav({
       {staffNavItems.map((item) => {
         const Icon = item.icon;
         const fullHref = `${basePath}${item.path}`;
-        const isActive =
-          location.pathname === fullHref ||
-          location.pathname.startsWith(`${fullHref}/`) ||
-          (item.path === "/dashboard" &&
-            (location.pathname === basePath || location.pathname === `${basePath}/`));
+        const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
 
         return (
           <Link

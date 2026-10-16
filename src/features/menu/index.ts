@@ -3,12 +3,13 @@
  */
 
 // Components - Creation & Management
-export * from "./components/AddonCard";
-export * from "./components/AddonListSkeleton";
-export * from "./components/AddonSelector";
+export * from "./components/addon/AddonCard";
+export * from "./components/addon/AddonListSkeleton";
+export * from "./components/addon/AddonSelector";
+export * from "./components/addon/CreateAddonModal";
+export * from "./components/addon/DeleteAddonDialog";
 export * from "./components/CategoryCard";
 export * from "./components/CategoryListSkeleton";
-export * from "./components/CreateAddonModal";
 export * from "./components/CreateCategoryModal";
 export * from "./components/CreateMenuItemForm";
 export * from "./components/EditCategoryModal";
@@ -17,6 +18,7 @@ export * from "./components/item-detail/MenuItemAddonsCard";
 export * from "./components/item-detail/MenuItemDetailHeader";
 export * from "./components/item-detail/MenuItemDetailSkeleton";
 export * from "./components/item-detail/MenuItemHeroCard";
+export * from "./components/item-detail/MenuItemVariantRow";
 export * from "./components/item-detail/MenuItemVariantsCard";
 export * from "./components/MenuCategoryForm";
 export * from "./components/MenuItemFilters";

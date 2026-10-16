@@ -3,7 +3,7 @@
  * High-density tabular representation using the reusable DataTable component.
  */
 
-import { Clock, Loader2, Power, PowerOff, Tag, Utensils } from "lucide-react";
+import { Clock, Eye, Loader2, Power, PowerOff, Tag, Utensils } from "lucide-react";
 import { useMemo, useState } from "react";
 import { type Column, DataTable } from "@/components/common/table";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +49,7 @@ export interface StaffMenuItemTableProps {
   onLimitChange?: (limit: number) => void;
   onResetFilters?: () => void;
   onToggleAvailability?: (item: StaffMenuItem) => void;
+  onViewDetails?: (item: StaffMenuItem) => void;
   pendingItemIds?: Set<string>;
   togglingItemId?: string | null;
 }
@@ -67,6 +68,7 @@ export function StaffMenuItemTable({
   onLimitChange,
   onResetFilters,
   onToggleAvailability,
+  onViewDetails,
   pendingItemIds,
   togglingItemId,
 }: StaffMenuItemTableProps) {
@@ -216,7 +218,19 @@ export function StaffMenuItemTable({
           if (!onToggleAvailability) return null;
 
           return (
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-end gap-1.5">
+              {onViewDetails && (
+                <button
+                  type="button"
+                  onClick={() => onViewDetails(item)}
+                  className="rounded-lg p-1.5 text-neutral-400 hover:text-[#e8631b] hover:bg-[#fef3ec] transition-colors cursor-pointer"
+                  aria-label={`View details and variants for ${item.name}`}
+                  title="View details and variants"
+                >
+                  <Eye className="size-4" />
+                </button>
+              )}
+
               <Button
                 type="button"
                 variant="outline"
@@ -253,7 +267,7 @@ export function StaffMenuItemTable({
         },
       },
     ],
-    [onSort, onToggleAvailability, pendingItemIds, togglingItemId],
+    [onSort, onToggleAvailability, onViewDetails, pendingItemIds, togglingItemId],
   );
 
   return (

@@ -130,3 +130,11 @@ export interface CreateAddonPayload {
   imageKey?: string;
   isAvailable?: boolean;
 }
+
+export interface UpdateAddonPayload {
+  name?: string;
+  description?: string | null;
+  price?: number;
+  imageKey?: string | null;
+  isAvailable?: boolean;
+}

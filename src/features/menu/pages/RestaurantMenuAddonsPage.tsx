@@ -7,10 +7,13 @@ import { Plus, RefreshCw, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { AddonCard } from "@/features/menu/components/AddonCard";
-import { AddonListSkeleton } from "@/features/menu/components/AddonListSkeleton";
-import { CreateAddonModal } from "@/features/menu/components/CreateAddonModal";
+import { AddonCard } from "@/features/menu/components/addon/AddonCard";
+import { AddonListSkeleton } from "@/features/menu/components/addon/AddonListSkeleton";
+import { CreateAddonModal } from "@/features/menu/components/addon/CreateAddonModal";
+import { DeleteAddonDialog } from "@/features/menu/components/addon/DeleteAddonDialog";
+import { EditAddonModal } from "@/features/menu/components/addon/EditAddonModal";
 import { useRestaurantAddons } from "@/features/menu/hooks/use-restaurant-addons";
+import type { MenuAddon } from "@/features/menu/types/menu.types";
 import { cn } from "@/lib/utils/cn";
 import { EmptyState, ErrorState } from "../components/MenuPageStateUI";
 
@@ -18,8 +21,54 @@ export default function RestaurantMenuAddonsPage() {
   const user = useAuthStore((state) => state.user);
   const restaurantId = user?.restaurantId || "";
 
-  const { addons, isLoading, isError, refetch } = useRestaurantAddons(restaurantId);
+  const {
+    addons,
+    isLoading,
+    isError,
+    refetch,
+    toggleAvailability,
+    pendingAddonIds,
+    deleteAddon,
+    deletingAddonId,
+  } = useRestaurantAddons(restaurantId);
+
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedAddon, setSelectedAddon] = useState<MenuAddon | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Delete confirmation state
+  const [addonToDelete, setAddonToDelete] = useState<MenuAddon | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const handleEditClick = (addon: MenuAddon) => {
+    setSelectedAddon(addon);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedAddon(null);
+  };
+
+  // Opens the confirmation dialog — does NOT delete yet
+  const handleDeleteClick = (addon: MenuAddon) => {
+    setAddonToDelete(addon);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Called only when the user confirms inside the dialog
+  const handleConfirmDelete = () => {
+    if (addonToDelete) {
+      deleteAddon(addonToDelete.id);
+    }
+    setIsDeleteDialogOpen(false);
+    setAddonToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+    setAddonToDelete(null);
+  };
 
   const renderContent = () => {
     if (isLoading) return <AddonListSkeleton />;
@@ -49,7 +98,15 @@ export default function RestaurantMenuAddonsPage() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {addons.map((addon) => (
-          <AddonCard key={addon.id} addon={addon} />
+          <AddonCard
+            key={addon.id}
+            addon={addon}
+            onEdit={handleEditClick}
+            onDelete={handleDeleteClick}
+            onToggleAvailability={toggleAvailability}
+            isToggling={pendingAddonIds.has(addon.id)}
+            isDeleting={deletingAddonId === addon.id}
+          />
         ))}
       </div>
     );
@@ -62,7 +119,7 @@ export default function RestaurantMenuAddonsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-              Modifiers & Add-ons
+              Modifiers &amp; Add-ons
             </h1>
             <span className="rounded-full bg-[#fef3ec] px-2.5 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
               {addons.length} total
@@ -80,7 +137,7 @@ export default function RestaurantMenuAddonsPage() {
             size="sm"
             onClick={() => refetch()}
             disabled={isLoading}
-            className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] text-xs font-medium"
+            className="rounded-xl border-[#eddcd4] bg-white text-neutral-700 hover:bg-[#faf7f5] text-xs font-medium cursor-pointer"
           >
             <RefreshCw className={`size-3.5 mr-1.5 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
@@ -91,7 +148,7 @@ export default function RestaurantMenuAddonsPage() {
             onClick={() => setIsCreateModalOpen(true)}
             className={cn(
               buttonVariants({ size: "sm" }),
-              "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs",
+              "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs cursor-pointer",
             )}
           >
             <Plus className="size-4" />
@@ -102,6 +159,24 @@ export default function RestaurantMenuAddonsPage() {
 
       {/* Main Content Area */}
       {renderContent()}
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteAddonDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        addon={addonToDelete}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        isDeleting={Boolean(addonToDelete && deletingAddonId === addonToDelete.id)}
+      />
+
+      {/* Edit Add-on Modal */}
+      <EditAddonModal
+        isOpen={isEditModalOpen}
+        addon={selectedAddon}
+        restaurantId={restaurantId}
+        onClose={handleCloseEditModal}
+      />
 
       {/* Create Add-on Modal */}
       <CreateAddonModal
