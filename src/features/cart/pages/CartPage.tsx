@@ -2,16 +2,79 @@ import { AlertCircle, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants";
 import { Button, buttonVariants } from "@/components/ui/button";
+import type { MenuItemDetail } from "@/features/menu/types/menu-item.types";
 import { cn } from "@/lib/utils/cn";
 import { CartEmptyState } from "../components/CartEmptyState";
 import { CartItemList } from "../components/CartItemList";
 import { CartSkeleton } from "../components/CartSkeleton";
 import { CartSummaryCard } from "../components/CartSummaryCard";
+import { MenuItemCard } from "../components/MenuItemCard";
 import { CART_UI_MESSAGES } from "../constants/cart.constants";
 import { useCart } from "../hooks/use-cart";
 
+const POPULAR_MENU_ITEMS: MenuItemDetail[] = [
+  {
+    id: "56271820-f0b8-4c5c-8b9d-61a3da550a80",
+    restaurantId: "e2f4104e-97af-4ed2-88ad-92beef8f159d",
+    categoryId: "cat-1",
+    name: "Chicken briyano",
+    description: "Fragrant spiced basmati rice slow-cooked with tender chicken and aromatic herbs.",
+    isVegetarian: false,
+    price: 180,
+    isAvailable: true,
+    variants: [
+      {
+        id: "535a7210-96bb-4358-9f20-96605177c91f",
+        name: "Regular (1 Person)",
+        portion: "Serves 1",
+        price: 180,
+        isDefault: true,
+        isAvailable: true,
+      },
+      {
+        id: "var-biryani-family",
+        name: "Family Pack",
+        portion: "Serves 3-4",
+        price: 490,
+        isDefault: false,
+        isAvailable: true,
+      },
+    ],
+    addons: [
+      {
+        id: "addon-rel-1",
+        addonId: "5ca738ce-0791-46f4-a6c5-55e0b29dca25",
+        name: "Extra Raitha",
+        description: "Cooling spiced curd with cucumber and onions",
+        price: 8,
+        isAvailable: true,
+      },
+      {
+        id: "addon-rel-2",
+        addonId: "ce561fb8-b37f-4dbd-be85-8b80d7acef11",
+        name: "Crispy Papadam",
+        description: "Traditional roasted crunchy lentil wafer",
+        price: 2,
+        isAvailable: true,
+      },
+    ],
+  },
+  {
+    id: "2978ae89-a612-4d2e-bf6d-5bc2ca2cfea8",
+    restaurantId: "e2f4104e-97af-4ed2-88ad-92beef8f159d",
+    categoryId: "cat-1",
+    name: "Classic Garlic Naan",
+    description: "Tandoor baked artisan flatbread brushed with garlic butter and fresh coriander.",
+    isVegetarian: true,
+    price: 60,
+    isAvailable: true,
+    variants: [],
+    addons: [],
+  },
+];
+
 export function CartPage() {
-  const { items, itemCount, subtotal, isLoading, isError, refetch, isEmpty } = useCart();
+  const { cart, items, itemCount, subtotal, isLoading, isError, refetch, isEmpty } = useCart();
 
   return (
     <div data-testid="customer-cart-page" className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
@@ -89,6 +152,30 @@ export function CartPage() {
           </div>
         </div>
       )}
+
+      {/* Add More to Your Order Section */}
+      <div className="mt-10 pt-8 border-t border-neutral-200/80">
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-neutral-900 tracking-tight">
+            Add More to Your Order
+          </h2>
+          <p className="text-xs text-neutral-500 mt-0.5">
+            Popular dishes with customizations and 1-click quick add
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {POPULAR_MENU_ITEMS.map((dish) => (
+            <MenuItemCard
+              key={dish.id}
+              item={dish}
+              restaurantId={dish.restaurantId}
+              cartId={cart?.cartId}
+              onItemAdded={() => refetch()}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
