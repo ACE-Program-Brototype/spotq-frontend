@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Minus, Phone, Plus, User, UserPlus, Users, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,6 @@ export function WalkInRegistrationModal({
   const effectiveRestaurantId = propRestaurantId || user?.restaurantId || "";
 
   const [selectedPreset, setSelectedPreset] = useState<number | "6+">(2);
-  const guestNameRef = useRef<HTMLInputElement | null>(null);
 
   const {
     register,
@@ -68,14 +67,9 @@ export function WalkInRegistrationModal({
     resetMutation();
   }, [reset, resetMutation]);
 
-  // Auto-focus the guest name input upon modal opening and clear previous values
   useEffect(() => {
     if (isOpen) {
       resetModalState();
-      const timer = setTimeout(() => {
-        guestNameRef.current?.focus();
-      }, 50);
-      return () => clearTimeout(timer);
     }
   }, [isOpen, resetModalState]);
 
@@ -111,7 +105,7 @@ export function WalkInRegistrationModal({
   };
 
   const handleIncrement = () => {
-    const next = Math.min(100, (partySize || 6) + 1);
+    const next = Math.min(20, (partySize || 6) + 1);
     setValue("partySize", next, { shouldValidate: true });
   };
 
@@ -143,8 +137,6 @@ export function WalkInRegistrationModal({
       // Error handled by mutation error state and toast
     }
   };
-
-  const { ref: formNameRef, ...nameFieldRest } = register("guestName");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-150">
@@ -233,13 +225,10 @@ export function WalkInRegistrationModal({
             <Input
               id="guestName"
               placeholder="e.g. David Miller"
+              autoFocus
               disabled={isSubmitting}
               className="h-10 text-sm border-[#eddcd4] focus-visible:border-[#9a3412] focus-visible:ring-[#fed7aa]"
-              {...nameFieldRest}
-              ref={(el) => {
-                formNameRef(el);
-                guestNameRef.current = el;
-              }}
+              {...register("guestName")}
             />
             {errors.guestName && (
               <p className="text-xs font-medium text-red-600">{errors.guestName.message}</p>
@@ -335,7 +324,7 @@ export function WalkInRegistrationModal({
                   <Input
                     type="number"
                     min={6}
-                    max={100}
+                    max={20}
                     value={partySize ?? ""}
                     onChange={(e) => {
                       const raw = e.target.value;
@@ -347,7 +336,7 @@ export function WalkInRegistrationModal({
                       }
                       const val = Number.parseInt(raw, 10);
                       if (!Number.isNaN(val)) {
-                        setValue("partySize", Math.min(100, Math.max(6, val)), {
+                        setValue("partySize", Math.min(20, Math.max(6, val)), {
                           shouldValidate: true,
                         });
                       }
@@ -364,7 +353,7 @@ export function WalkInRegistrationModal({
                   <button
                     type="button"
                     onClick={handleIncrement}
-                    disabled={isSubmitting || partySize >= 100}
+                    disabled={isSubmitting || partySize >= 20}
                     className="size-8 rounded-lg border border-[#eddcd4] bg-white flex items-center justify-center text-neutral-700 hover:bg-[#faf7f5] disabled:opacity-40"
                     aria-label="Increase party size"
                   >

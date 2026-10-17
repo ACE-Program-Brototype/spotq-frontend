@@ -61,6 +61,18 @@ describe("WalkInRegistrationModal", () => {
     expect(screen.getByRole("button", { name: /add to queue/i })).toBeInTheDocument();
   });
 
+  it("applies autoFocus to guest name input without stealing focus from other inputs", async () => {
+    const user = userEvent.setup();
+    renderModal({ isOpen: true, onClose: jest.fn() });
+
+    const guestNameInput = screen.getByLabelText(/guest name/i);
+    expect(guestNameInput).toHaveFocus();
+
+    const phoneInput = screen.getByLabelText(/phone number/i);
+    await user.click(phoneInput);
+    expect(phoneInput).toHaveFocus();
+  });
+
   it("updates party size when preset buttons are clicked", async () => {
     const user = userEvent.setup();
     renderModal({ isOpen: true, onClose: jest.fn() });

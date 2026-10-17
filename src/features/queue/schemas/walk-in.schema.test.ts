@@ -126,8 +126,8 @@ describe("walkInSchema", () => {
   });
 
   describe("partySize", () => {
-    it("accepts party size between 1 and 100", () => {
-      for (const size of [1, 2, 4, 6, 20, 50, 100]) {
+    it("accepts party size between 1 and 20", () => {
+      for (const size of [1, 2, 4, 6, 10, 15, 20]) {
         const res = walkInSchema.safeParse({ ...validData, partySize: size });
         expect(res.success).toBe(true);
       }
@@ -138,9 +138,12 @@ describe("walkInSchema", () => {
       expect(res.success).toBe(false);
     });
 
-    it("rejects party size greater than 100", () => {
-      const res = walkInSchema.safeParse({ ...validData, partySize: 101 });
+    it("rejects party size greater than 20", () => {
+      const res = walkInSchema.safeParse({ ...validData, partySize: 21 });
       expect(res.success).toBe(false);
+      if (!res.success) {
+        expect(res.error.issues[0].message).toBe("Party size cannot exceed 20");
+      }
     });
   });
 
