@@ -43,8 +43,8 @@ interface EmptyStateProps {
   icon: ReactNode;
   title: string;
   description: string;
-  createLabel: string;
-  onCreateClick: () => void;
+  createLabel?: string;
+  onCreateClick?: () => void;
 }
 
 export function EmptyState({
@@ -61,13 +61,15 @@ export function EmptyState({
       </div>
       <h3 className="text-base font-bold text-neutral-900">{title}</h3>
       <p className="text-xs text-neutral-500 max-w-sm mx-auto">{description}</p>
-      <Button
-        type="button"
-        onClick={onCreateClick}
-        className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white text-xs font-semibold px-4 py-2"
-      >
-        {createLabel}
-      </Button>
+      {createLabel && onCreateClick && (
+        <Button
+          type="button"
+          onClick={onCreateClick}
+          className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white text-xs font-semibold px-4 py-2 cursor-pointer"
+        >
+          {createLabel}
+        </Button>
+      )}
     </div>
   );
 }

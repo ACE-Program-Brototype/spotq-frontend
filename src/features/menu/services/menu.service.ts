@@ -12,6 +12,7 @@ import type {
   MenuCategory,
   MenuItemDetails,
   MenuItemResponse,
+  UpdateAddonPayload,
   UpdateMenuItemPayload,
 } from "@/features/menu/types/menu.types";
 import { apiClient } from "@/lib/api/client";
@@ -100,6 +101,48 @@ export const menuService = {
     }
 
     return response.data;
+  },
+
+  /**
+   * Update an existing add-on for a restaurant
+   */
+  async updateAddon(
+    restaurantId: string,
+    addonId: string,
+    payload: UpdateAddonPayload,
+  ): Promise<MenuAddon> {
+    const jsonBody: UpdateAddonPayload = {};
+
+    // check if the key is present only then add it to the json body and trim the value if it is a string.
+    // update addon supports partial updates like isAvailable field only.
+    if (payload.name !== undefined) jsonBody.name = payload.name.trim();
+    if (payload.description !== undefined)
+      jsonBody.description = payload.description ? payload.description.trim() : null;
+    if (payload.price !== undefined) jsonBody.price = payload.price;
+    if (payload.imageKey !== undefined) jsonBody.imageKey = payload.imageKey || null;
+    if (payload.isAvailable !== undefined) jsonBody.isAvailable = payload.isAvailable;
+
+    const response = await apiClient
+      .patch(MENU_ENDPOINTS.ADDON_DETAIL(restaurantId, addonId), {
+        json: jsonBody,
+      })
+      .json<ApiResponse<MenuAddon>>();
+
+    if (!response.success) {
+      throw new Error(response.message || MENU_MESSAGES.ADDON_UPDATE_FAILED);
+    }
+
+    return response.data;
+  },
+
+  async deleteAddon(restaurantId: string, addonId: string): Promise<void> {
+    const response = await apiClient
+      .delete(MENU_ENDPOINTS.ADDON_DETAIL(restaurantId, addonId))
+      .json<ApiResponse<null>>();
+
+    if (!response.success) {
+      throw new Error(response.message || MENU_MESSAGES.ADDON_DELETE_FAILED);
+    }
   },
 
   /**

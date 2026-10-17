@@ -4,8 +4,8 @@
  */
 
 import { Bell, Home, Search, ShoppingCart, User } from "lucide-react";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -25,12 +25,43 @@ export function CustomerNavbar({
 }: CustomerNavbarProps) {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
-  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [searchQuery, setSearchQuery] = useState(
+    location.pathname === "/" ? (searchParams.get("search") ?? "") : "",
+  );
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setSearchQuery(searchParams.get("search") ?? "");
+    }
+  }, [searchParams, location.pathname]);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    onSearch?.(e.target.value);
+    const val = e.target.value;
+    setSearchQuery(val);
+    onSearch?.(val);
+
+    if (location.pathname === "/") {
+      const nextParams = new URLSearchParams(searchParams);
+      if (val.trim()) {
+        nextParams.set("search", val.trim());
+        nextParams.delete("page");
+      } else {
+        nextParams.delete("search");
+      }
+      setSearchParams(nextParams, { replace: true });
+    }
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && location.pathname !== "/") {
+      e.preventDefault();
+      const val = searchQuery.trim();
+      navigate(val ? `/?search=${encodeURIComponent(val)}` : "/");
+    }
   };
 
   const displayName = user?.fullName || user?.name || user?.email?.split("@")[0] || "";
@@ -65,6 +96,7 @@ export function CustomerNavbar({
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
               placeholder="Search for your favorite food or restaurant..."
               className="h-10 w-full rounded-full border border-neutral-200 bg-neutral-100/70 pl-11 pr-4 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-all focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
             />
@@ -140,6 +172,7 @@ export function CustomerNavbar({
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
               placeholder="Search food or restaurant..."
               className="h-9 w-full rounded-full border border-neutral-200 bg-white pl-9 pr-4 text-xs text-neutral-800 placeholder:text-neutral-400 focus:border-[#ff6b00] focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
             />

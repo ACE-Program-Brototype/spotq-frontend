@@ -28,6 +28,8 @@ export function RestaurantMenuItemDetailPage() {
     isDeleting,
     handleToggleItemAvailability,
     handleDeleteItem,
+    handleToggleVariant,
+    togglingVariantIds,
   } = useMenuItemDetail({ itemId });
 
   if (isLoading) {
@@ -90,7 +92,12 @@ export function RestaurantMenuItemDetailPage() {
       <MenuItemHeroCard item={item} />
 
       {/* Portion Sizes & Variants Matrix */}
-      <MenuItemVariantsCard variants={item.variants || []} basePrice={item.price} />
+      <MenuItemVariantsCard
+        variants={item.variants || []}
+        basePrice={item.price}
+        onToggleVariant={handleToggleVariant}
+        togglingVariantIds={togglingVariantIds}
+      />
 
       {/* Complementary Add-ons */}
       <MenuItemAddonsCard addons={item.addons || []} />

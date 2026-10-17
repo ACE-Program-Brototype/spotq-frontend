@@ -1,12 +1,14 @@
 /**
  * Staff Menu Items Page
  * Dedicated operational menu catalog for restaurant staff.
- * Provides real-time 86'd stock monitoring, category mapping, multi-attribute search, and sorting.
+ * Provides real-time 86'd stock monitoring, category mapping, multi-attribute search, sorting, and variant stock toggling.
  */
 
 import { AlertCircle, ChefHat, RotateCcw } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
+import { StaffMenuItemDetailModal } from "../components/StaffMenuItemDetailModal";
 import { StaffMenuItemFilters } from "../components/StaffMenuItemFilters";
 import { StaffMenuItemSkeleton } from "../components/StaffMenuItemSkeleton";
 import { StaffMenuItemTable } from "../components/StaffMenuItemTable";
@@ -45,7 +47,14 @@ export default function StaffMenuItemsPage() {
     toggleAvailability,
     pendingItemIds,
     togglingItemId,
+    toggleVariantAvailability,
+    pendingVariantIds,
   } = useStaffMenuItems();
+
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+  // get activeItem directly from the items array
+  const activeItem = items.find((i) => i.id === selectedItemId) ?? null;
 
   const isFiltered = Boolean(
     searchQuery.trim() || categoryFilter !== "ALL" || availabilityFilter !== "ALL",
@@ -189,11 +198,23 @@ export default function StaffMenuItemsPage() {
             onLimitChange={setLimit}
             onResetFilters={resetFilters}
             onToggleAvailability={toggleAvailability}
+            onViewDetails={(item) => setSelectedItemId(item.id)}
             pendingItemIds={pendingItemIds}
             togglingItemId={togglingItemId}
           />
         </div>
       )}
+
+      {/* Staff View Details & Variants Management Modal */}
+      <StaffMenuItemDetailModal
+        isOpen={Boolean(selectedItemId)}
+        item={activeItem}
+        onClose={() => setSelectedItemId(null)}
+        onToggleVariant={toggleVariantAvailability}
+        pendingVariantIds={pendingVariantIds}
+        onToggleItemAvailability={toggleAvailability}
+        isItemToggling={pendingItemIds.has(activeItem?.id || "")}
+      />
     </div>
   );
 }
