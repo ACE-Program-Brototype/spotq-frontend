@@ -48,4 +48,3 @@ export const CUSTOMER_SORT_OPTIONS: CustomerSortConfig[] = [
   { value: "price_asc", label: "Cost: Low to High", sortBy: "price", sortOrder: "asc" },
   { value: "price_desc", label: "Cost: High to Low", sortBy: "price", sortOrder: "desc" },
 ];
-
