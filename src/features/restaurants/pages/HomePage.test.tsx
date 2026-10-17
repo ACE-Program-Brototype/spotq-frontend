@@ -57,7 +57,7 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
       expect(screen.getByRole("heading", { name: "Malabar Heritage Bistro" })).toBeInTheDocument();
     });
 
-    expect(screen.getByText("Kozhikode")).toBeInTheDocument();
+    expect(screen.getByText(/Kozhikode/)).toBeInTheDocument();
     expect(screen.getByText(/450 for two/)).toBeInTheDocument();
     expect(screen.getAllByText("South Indian").length).toBeGreaterThan(0);
   });

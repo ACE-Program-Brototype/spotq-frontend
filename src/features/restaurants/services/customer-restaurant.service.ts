@@ -4,10 +4,10 @@ import {
   CUSTOMER_RESTAURANT_ENDPOINTS,
 } from "../constants/customer-restaurant.constants";
 import type {
+  CustomerRestaurantItem,
   CustomerRestaurantsApiResponse,
   CustomerRestaurantsListData,
   GetCustomerRestaurantsParams,
-  CustomerRestaurantItem
 } from "../types/customer-restaurant.types";
 
 export const customerRestaurantService = {
@@ -58,16 +58,9 @@ export const customerRestaurantService = {
       })
       .json<CustomerRestaurantsApiResponse>();
 
-    const rawData = response?.data;
-    const restaurants: CustomerRestaurantItem[] = Array.isArray(rawData)
-      ? rawData
-      : Array.isArray(
-        (rawData as unknown as { restaurants?: CustomerRestaurantItem[] })
-          ?.restaurants,
-      )
-        ? (rawData as unknown as { restaurants: CustomerRestaurantItem[] })
-          .restaurants
-        : [];
+    const restaurants: CustomerRestaurantItem[] = Array.isArray(response?.data)
+      ? response.data
+      : [];
 
     return {
       restaurants,

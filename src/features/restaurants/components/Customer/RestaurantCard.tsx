@@ -14,7 +14,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const { data: imageUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
   const locationLabel = `${restaurant.city || ""}${restaurant.city && restaurant.state ? ", " : ""}${restaurant.state || ""}`;
 
-  const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? true;
+  const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? null;
 
   return (
     <div
@@ -82,11 +82,13 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         <div className="pt-3 border-t border-neutral-100 mt-3 flex items-center justify-between">
           <span
             className={`inline-flex items-center gap-1 text-[11px] font-medium ${
-              isOpen ? "text-emerald-600" : "text-neutral-400"
+              isOpen === true ? "text-emerald-600" : "text-neutral-400"
             }`}
           >
             <Clock className="size-3" />
-            <span>{isOpen ? "Open Now" : "Closed"}</span>
+            <span>
+              {isOpen === true ? "Open Now" : isOpen === false ? "Closed" : "Status unavailable"}
+            </span>
           </span>
           <span className="text-[10px] text-neutral-400 font-medium">
             {restaurant.acceptsQueue === false ? "Queue Paused" : "Live Queue"}
