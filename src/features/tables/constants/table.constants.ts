@@ -1,0 +1,130 @@
+/**
+ * Table Feature Constants
+ * Centralized API endpoints, query keys, visual tokens, and business rule configurations.
+ */
+
+import type {
+  StaffUpdatableStatus,
+  TableStatus,
+  TableStatusTransitionRule,
+} from "../types/table.types";
+
+export const TABLE_STATUS = {
+  AVAILABLE: "AVAILABLE",
+  OCCUPIED: "OCCUPIED",
+  PARTIAL_OCCUPIED: "PARTIAL_OCCUPIED",
+  MAINTENANCE: "MAINTENANCE",
+} as const;
+
+export const TABLE_QUERY_KEYS = {
+  ALL: ["tables"] as const,
+  LIST: (restaurantId: string) => ["tables", restaurantId] as const,
+} as const;
+
+export const TABLE_ENDPOINTS = {
+  LIST: (restaurantId: string) => `restaurants/${restaurantId}/table`,
+  UPDATE_STATUS: (restaurantId: string, tableId: string) =>
+    `restaurants/${restaurantId}/table/${tableId}/status`,
+} as const;
+
+export interface StatusVisualConfig {
+  label: string;
+  badgeClass: string;
+  dotClass: string;
+  topBorderClass: string;
+  cardBorderClass: string;
+  cardBgClass: string;
+}
+
+export const TABLE_STATUS_CONFIG: Record<TableStatus, StatusVisualConfig> = {
+  AVAILABLE: {
+    label: "Available",
+    badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    dotClass: "bg-emerald-500",
+    topBorderClass: "border-t-4 border-emerald-600",
+    cardBorderClass: "border-neutral-200/90 hover:border-emerald-500/60",
+    cardBgClass: "bg-white",
+  },
+  OCCUPIED: {
+    label: "Occupied",
+    badgeClass: "bg-[#ffedd5] text-[#9a3412] border-[#fed7aa]",
+    dotClass: "bg-[#ea580c]",
+    topBorderClass: "border-t-4 border-[#9a3412]",
+    cardBorderClass: "border-2 border-[#9a3412] shadow-xs",
+    cardBgClass: "bg-[#fffcf9]",
+  },
+  MAINTENANCE: {
+    label: "Maintenance",
+    badgeClass: "bg-neutral-100 text-neutral-600 border-neutral-300",
+    dotClass: "bg-neutral-400",
+    topBorderClass: "border-t-4 border-neutral-400",
+    cardBorderClass: "border-neutral-200 hover:border-neutral-400/70",
+    cardBgClass: "bg-[#faf9f8]",
+  },
+  PARTIAL_OCCUPIED: {
+    label: "Partially Occupied",
+    badgeClass: "bg-amber-50 text-amber-800 border-amber-200",
+    dotClass: "bg-amber-500",
+    topBorderClass: "border-t-4 border-amber-500",
+    cardBorderClass: "border-amber-200/90 hover:border-amber-400",
+    cardBgClass: "bg-white",
+  },
+};
+
+/**
+ * Business Rule for Staff Table Status Updates:
+ * - Staff can change status to AVAILABLE only if current status is MAINTENANCE.
+ * - Staff can change status to MAINTENANCE only if current status is AVAILABLE.
+ * - OCCUPIED and PARTIAL_OCCUPIED are managed through orders / guest checkouts.
+ */
+export function getStaffStatusTransition(currentStatus: TableStatus): TableStatusTransitionRule {
+  switch (currentStatus) {
+    case "MAINTENANCE":
+      return {
+        allowed: true,
+        targetStatus: "AVAILABLE",
+        reason: "Restore table back into live dining rotation.",
+      };
+    case "AVAILABLE":
+      return {
+        allowed: true,
+        targetStatus: "MAINTENANCE",
+        reason: "Mark table for cleaning, repairs, or temporary hold.",
+      };
+    case "OCCUPIED":
+      return {
+        allowed: false,
+        targetStatus: null,
+        reason:
+          "Table is currently occupied by active diners. Please clear via Order Management or Queue checkout.",
+      };
+    case "PARTIAL_OCCUPIED":
+      return {
+        allowed: false,
+        targetStatus: null,
+        reason:
+          "Table has active diners seated. Status cannot be modified to Maintenance or Available while occupied.",
+      };
+    default:
+      return {
+        allowed: false,
+        targetStatus: null,
+        reason: "Status cannot be updated by staff.",
+      };
+  }
+}
+
+export const TABLE_MESSAGES = {
+  TITLE: "Table Management",
+  SUBTITLE: "Manage layout, status, and active orders.",
+  FALLBACK_RESTAURANT_ID: "23193584-340b-40bf-963e-ac67cbbebd08",
+  STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>
+    `Table ${code} status changed to ${TABLE_STATUS_CONFIG[newStatus].label}.`,
+  STATUS_UPDATE_FAILED: "Failed to update table status. Please try again.",
+  FETCH_FAILED: "Unable to load restaurant tables. Please check your connection and retry.",
+  NO_SECTIONS: "No dining sections available",
+  NO_SECTIONS_DESC: "Dining sections have not been configured for this restaurant.",
+  NO_TABLES_IN_SECTION: "No tables found in this section",
+  NO_TABLES_IN_SECTION_DESC:
+    "There are currently no active dining tables assigned to this section.",
+} as const;
