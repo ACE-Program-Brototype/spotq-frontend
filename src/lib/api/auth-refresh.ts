@@ -25,11 +25,12 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
 
     if (!currentRole && typeof window !== "undefined") {
       const path = window.location.pathname;
-      if (path.startsWith(ADMIN_ROUTES.ROOT)) {
+      const isPathUnder = (root: string) => path === root || path.startsWith(`${root}/`);
+      if (isPathUnder(ADMIN_ROUTES.ROOT)) {
         currentRole = "ADMIN";
-      } else if (path.startsWith(RESTAURANT_ROUTES.ROOT)) {
+      } else if (isPathUnder(RESTAURANT_ROUTES.ROOT) && !path.startsWith("/restaurants")) {
         currentRole = "RESTAURANT_ADMIN";
-      } else if (path.startsWith(STAFF_ROUTES.ROOT)) {
+      } else if (isPathUnder(STAFF_ROUTES.ROOT)) {
         currentRole = "STAFF";
       }
     }

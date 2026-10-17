@@ -136,4 +136,36 @@ describe("customerRestaurantService", () => {
       },
     });
   });
+
+  it("handles empty data and defaults pagination correctly", async () => {
+    (apiClient.get as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        success: true,
+        data: [],
+      }),
+    });
+
+    const result = await customerRestaurantService.getRestaurants();
+
+    expect(result.restaurants).toEqual([]);
+    expect(result.pagination).toEqual({
+      page: 1,
+      limit: 8,
+      total: 0,
+      totalPages: 1,
+    });
+  });
+
+  it("handles non-array or missing response data gracefully", async () => {
+    (apiClient.get as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        success: true,
+      }),
+    });
+
+    const result = await customerRestaurantService.getRestaurants();
+
+    expect(result.restaurants).toEqual([]);
+    expect(result.pagination.total).toBe(0);
+  });
 });

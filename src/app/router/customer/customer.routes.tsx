@@ -16,6 +16,7 @@ import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import { CUSTOMER_ROUTE_PATHS, CUSTOMER_ROUTES } from "./customer.routes.constants";
+import CustomerRestaurantDetailPage from "@/features/restaurants/pages/CustomerRestaurantDetailPage";
 
 const CustomerProtectedLayout = () => (
   <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo={CUSTOMER_ROUTES.AUTH.LOGIN} />
@@ -28,6 +29,14 @@ export const customerRoutes: RouteObject[] = [
       {
         path: CUSTOMER_ROUTE_PATHS.HOME,
         Component: HomePage,
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.RESTAURANTS,
+        Component: HomePage,
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.RESTAURANT_DETAIL,
+        Component: CustomerRestaurantDetailPage,
       },
       {
         path: CUSTOMER_ROUTE_PATHS.ABOUT,

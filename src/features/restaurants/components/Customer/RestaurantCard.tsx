@@ -1,5 +1,7 @@
 import { Clock, IndianRupee, MapPin, Store } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
@@ -14,12 +16,13 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const { data: imageUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
   const locationLabel = `${restaurant.city || ""}${restaurant.city && restaurant.state ? ", " : ""}${restaurant.state || ""}`;
 
-  const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? true;
+  const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? null;
 
   return (
-    <div
+    <Link
+      to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurant.id)}
       data-testid={`restaurant-card-${restaurant.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300 block focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
     >
       {/* Cover Image Container */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
@@ -82,17 +85,19 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         <div className="pt-3 border-t border-neutral-100 mt-3 flex items-center justify-between">
           <span
             className={`inline-flex items-center gap-1 text-[11px] font-medium ${
-              isOpen ? "text-emerald-600" : "text-neutral-400"
+              isOpen === true ? "text-emerald-600" : "text-neutral-400"
             }`}
           >
             <Clock className="size-3" />
-            <span>{isOpen ? "Open Now" : "Closed"}</span>
+            <span>
+              {isOpen === true ? "Open Now" : isOpen === false ? "Closed" : "Status unavailable"}
+            </span>
           </span>
           <span className="text-[10px] text-neutral-400 font-medium">
             {restaurant.acceptsQueue === false ? "Queue Paused" : "Live Queue"}
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

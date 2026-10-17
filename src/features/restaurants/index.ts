@@ -39,5 +39,7 @@ export * from "./services/customer-restaurant.service";
 export * from "./services/restaurant.service";
 export * from "./services/restaurant-application.service";
 export * from "./types/customer-restaurant.types";
+export * from "./types/customer-restaurant-details.types";
 export * from "./types/restaurant.types";
 export * from "./types/restaurant-application.types";
+export * from "./hooks/useCustomerRestaurantDetails";

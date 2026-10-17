@@ -3,11 +3,12 @@ import {
   CUSTOMER_RESTAURANT_DEFAULTS,
   CUSTOMER_RESTAURANT_ENDPOINTS,
 } from "../constants/customer-restaurant.constants";
+import type { CustomerRestaurantDetails } from "../types/customer-restaurant-details.types";
 import type {
+  CustomerRestaurantItem,
   CustomerRestaurantsApiResponse,
   CustomerRestaurantsListData,
   GetCustomerRestaurantsParams,
-  CustomerRestaurantItem
 } from "../types/customer-restaurant.types";
 
 export const customerRestaurantService = {
@@ -58,16 +59,9 @@ export const customerRestaurantService = {
       })
       .json<CustomerRestaurantsApiResponse>();
 
-    const rawData = response?.data;
-    const restaurants: CustomerRestaurantItem[] = Array.isArray(rawData)
-      ? rawData
-      : Array.isArray(
-        (rawData as unknown as { restaurants?: CustomerRestaurantItem[] })
-          ?.restaurants,
-      )
-        ? (rawData as unknown as { restaurants: CustomerRestaurantItem[] })
-          .restaurants
-        : [];
+    const restaurants: CustomerRestaurantItem[] = Array.isArray(response?.data)
+      ? response.data
+      : [];
 
     return {
       restaurants,
@@ -78,5 +72,21 @@ export const customerRestaurantService = {
         totalPages: 1,
       },
     };
+  },
+
+
+  async getRestaurantDetails(
+    restaurantId: string,
+    includeMenu = true,
+  ): Promise<CustomerRestaurantDetails> {
+    const response = await apiClient
+      .get(CUSTOMER_RESTAURANT_ENDPOINTS.DETAILS(restaurantId), {
+        searchParams: {
+          includeMenu: String(includeMenu),
+        },
+      })
+      .json<{ success: boolean; data: CustomerRestaurantDetails }>();
+
+    return response.data;
   },
 };

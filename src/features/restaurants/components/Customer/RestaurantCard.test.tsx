@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 import { RestaurantCard } from "./RestaurantCard";
 
@@ -10,7 +11,11 @@ function renderWithProviders(ui: React.ReactElement) {
     },
   });
 
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+  return render(
+    <MemoryRouter>
+      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    </MemoryRouter>,
+  );
 }
 
 const mockRestaurant: CustomerRestaurantItem = {
@@ -20,15 +25,24 @@ const mockRestaurant: CustomerRestaurantItem = {
   state: "Kerala",
   cuisineType: "Biryani, South Indian",
   averageCost: 500,
+  isOpen: true,
   createdAt: "2026-10-10T10:00:00.000Z",
 };
+
+jest.mock("../../hooks/usePresignedUrl", () => ({
+  usePresignedUrl: jest.fn((key?: string | null) => ({
+    data: key ?? null,
+    isLoading: false,
+    isError: false,
+  })),
+}));
 
 describe("RestaurantCard", () => {
   it("renders restaurant information correctly", () => {
     renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
     expect(screen.getByRole("heading", { name: "Royal Biryani House" })).toBeInTheDocument();
-    expect(screen.getByText("Calicut")).toBeInTheDocument();
+    expect(screen.getByText(/Calicut/)).toBeInTheDocument();
     expect(screen.getByText("Biryani")).toBeInTheDocument();
     expect(screen.getByText("500 for two")).toBeInTheDocument();
     expect(screen.getByText("Open Now")).toBeInTheDocument();
@@ -83,6 +97,32 @@ describe("RestaurantCard", () => {
     expect(screen.queryByText("Open Now")).not.toBeInTheDocument();
   });
 
+  it("renders Status unavailable and does not assume open when status is missing", () => {
+    const missingStatusRestaurant: CustomerRestaurantItem = {
+      ...mockRestaurant,
+      isOpen: undefined,
+      isOpened: undefined,
+    };
+
+    renderWithProviders(<RestaurantCard restaurant={missingStatusRestaurant} />);
+
+    expect(screen.getByText("Status unavailable")).toBeInTheDocument();
+    expect(screen.queryByText("Open Now")).not.toBeInTheDocument();
+    expect(screen.queryByText("Closed")).not.toBeInTheDocument();
+  });
+
+  it("renders open status using isOpened fallback when isOpen is undefined", () => {
+    const isOpenedRestaurant: CustomerRestaurantItem = {
+      ...mockRestaurant,
+      isOpen: undefined,
+      isOpened: true,
+    };
+
+    renderWithProviders(<RestaurantCard restaurant={isOpenedRestaurant} />);
+
+    expect(screen.getByText("Open Now")).toBeInTheDocument();
+  });
+
   it("renders Queue Paused when acceptsQueue is false", () => {
     const noQueueRestaurant: CustomerRestaurantItem = {
       ...mockRestaurant,
@@ -95,10 +135,11 @@ describe("RestaurantCard", () => {
     expect(screen.queryByText("Live Queue")).not.toBeInTheDocument();
   });
 
-  it("does not render any links or triggers to detail page", () => {
+  it("renders a link pointing to the restaurant detail page", () => {
     renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
-    expect(screen.queryByText(/View Details/i)).not.toBeInTheDocument();
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    const link = screen.getByRole("link");
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", `/restaurants/${mockRestaurant.id}`);
   });
 });
