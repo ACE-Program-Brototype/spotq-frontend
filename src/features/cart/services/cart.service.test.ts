@@ -56,7 +56,7 @@ describe("cartService", () => {
 
     const result = await cartService.getCart("cart-123");
 
-    expect(apiClient.get).toHaveBeenCalledWith("carts/cart-123");
+    expect(apiClient.get).toHaveBeenCalledWith("orders/carts/cart-123");
     expect(result.cartId).toBe("cart-123");
     expect(result.items).toHaveLength(1);
     expect(result.items[0].addons).toHaveLength(1);

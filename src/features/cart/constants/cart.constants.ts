@@ -1,6 +1,6 @@
 export const CART_ENDPOINTS = {
-  BASE: "carts",
-  BY_ID: (cartId: string) => `carts/${cartId}`,
+  BASE: "orders/carts",
+  BY_ID: (cartId: string) => `orders/carts/${cartId}`,
 } as const;
 
 export const CART_STORAGE_KEYS = {
