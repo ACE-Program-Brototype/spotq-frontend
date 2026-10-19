@@ -219,13 +219,17 @@ describe("device.utils", () => {
   });
 
   describe("playNotificationChime", () => {
-    it("safely attempts to play chime using Web Audio API when supported", () => {
+    it("safely attempts to play chime using Web Audio API when supported and closes context", () => {
+      let onEndedCallback: (() => void) | undefined;
       const mockOscillator = {
         type: "sine",
         frequency: { setValueAtTime: jest.fn() },
         connect: jest.fn(),
         start: jest.fn(),
         stop: jest.fn(),
+        set onended(cb: () => void) {
+          onEndedCallback = cb;
+        },
       };
       const mockGain = {
         gain: {
@@ -234,11 +238,13 @@ describe("device.utils", () => {
         },
         connect: jest.fn(),
       };
+      const mockClose = jest.fn().mockResolvedValue(undefined);
       const mockAudioContext = jest.fn().mockImplementation(() => ({
         currentTime: 0,
         createOscillator: jest.fn().mockReturnValue(mockOscillator),
         createGain: jest.fn().mockReturnValue(mockGain),
         destination: {},
+        close: mockClose,
       }));
 
       (window as unknown as { AudioContext: unknown }).AudioContext = mockAudioContext;
@@ -246,6 +252,9 @@ describe("device.utils", () => {
       expect(() => playNotificationChime()).not.toThrow();
       expect(mockAudioContext).toHaveBeenCalled();
       expect(mockOscillator.start).toHaveBeenCalledTimes(2);
+
+      onEndedCallback?.();
+      expect(mockClose).toHaveBeenCalled();
     });
 
     it("does not throw when AudioContext throws an error (e.g. autoplay restriction)", () => {

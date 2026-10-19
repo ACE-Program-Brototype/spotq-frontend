@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   onForegroundMessage,
@@ -22,6 +23,7 @@ import {
 import { useDeactivateDevice, useRegisterDevice } from "./use-device";
 
 export const usePushNotification = () => {
+  const navigate = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const registerDeviceMutation = useRegisterDevice();
   const deactivateDeviceMutation = useDeactivateDevice();
@@ -59,7 +61,6 @@ export const usePushNotification = () => {
   const registerDeviceMutate = registerDeviceMutation.mutate;
   const deactivateDeviceMutate = deactivateDeviceMutation.mutate;
 
-  // Real-time listener for browser permission state changes (e.g. Block / Allow in URL bar)
   useEffect(() => {
     if (typeof navigator === "undefined" || !("permissions" in navigator)) return;
 
@@ -98,7 +99,6 @@ export const usePushNotification = () => {
     };
   }, []);
 
-  // Main push notification lifecycle
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -107,16 +107,32 @@ export const usePushNotification = () => {
     let unsubForeground: (() => void) | null = null;
     let isSubscribed = true;
 
-    // 1. Listen for incoming foreground messages (show in-app toast & chime)
     onForegroundMessage((payload) => {
       const title =
         payload.notification?.title ||
         payload.data?.title ||
         PUSH_NOTIFICATION_MESSAGES.DEFAULT_TITLE;
       const body = payload.notification?.body || payload.data?.body || "";
+      const targetUrl = payload.data?.url || payload.data?.click_action;
 
       playNotificationChime();
-      toast.info(title, { description: body });
+      toast.info(title, {
+        description: body,
+        ...(targetUrl
+          ? {
+              action: {
+                label: "View",
+                onClick: () => {
+                  if (targetUrl.startsWith("http://") || targetUrl.startsWith("https://")) {
+                    window.location.href = targetUrl;
+                  } else {
+                    navigate(targetUrl);
+                  }
+                },
+              },
+            }
+          : {}),
+      });
     }).then((unsub) => {
       if (!isSubscribed) {
         unsub?.();
@@ -125,7 +141,6 @@ export const usePushNotification = () => {
       unsubForeground = unsub;
     });
 
-    // 2. The Single Source of Truth for device registration:
     onRegisteredFid((fid) => {
       if (!isSubscribed || !fid) return;
       registerDeviceMutate({ fid });
@@ -137,7 +152,6 @@ export const usePushNotification = () => {
       unsubRegistered = unsub;
     });
 
-    // 3. Listen for unregistration events
     onUnregisteredFid(() => {
       if (!isSubscribed) return;
       const deviceId = getOrCreateDeviceId();
@@ -150,7 +164,6 @@ export const usePushNotification = () => {
       unsubUnregistered = unsub;
     });
 
-    // 4. Automatically prompt or sync registration for authenticated customers
     const currentPermission = getNotificationPermission();
     if (
       currentPermission === NOTIFICATION_PERMISSIONS.GRANTED ||
@@ -167,7 +180,7 @@ export const usePushNotification = () => {
       unsubUnregistered?.();
       unsubForeground?.();
     };
-  }, [isAuthenticated, registerDeviceMutate, deactivateDeviceMutate]);
+  }, [isAuthenticated, registerDeviceMutate, deactivateDeviceMutate, navigate]);
 
   return {
     enableNotifications,

@@ -15,7 +15,6 @@ export const generateUUID = (): string => {
     return crypto.randomUUID();
   }
 
-  // RFC4122 version 4 compliant fallback
   return UUID_V4_TEMPLATE.replace(/[xy]/g, (char) => {
     const random = (Math.random() * 16) | 0;
     const value = char === "x" ? random : (random & 0x3) | 0x8;
@@ -153,8 +152,7 @@ export const requestPushNotificationPermission = async (): Promise<
 };
 
 /**
- * Plays a pleasant modern two-tone chime for incoming notifications using Web Audio API.
- * Safely fails if AudioContext is restricted or unsupported.
+ * Plays a modern two-tone chime for incoming notifications using Web Audio API.
  */
 export const playNotificationChime = (): void => {
   if (typeof window === "undefined") return;
@@ -169,7 +167,6 @@ export const playNotificationChime = (): void => {
     const ctx = new AudioContextClass();
     const now = ctx.currentTime;
 
-    // First note (D5 - 587.33 Hz)
     const osc1 = ctx.createOscillator();
     const gain1 = ctx.createGain();
     osc1.type = "sine";
@@ -181,7 +178,6 @@ export const playNotificationChime = (): void => {
     osc1.start(now);
     osc1.stop(now + 0.3);
 
-    // Second note (A5 - 880 Hz)
     const osc2 = ctx.createOscillator();
     const gain2 = ctx.createGain();
     osc2.type = "sine";
@@ -192,7 +188,14 @@ export const playNotificationChime = (): void => {
     gain2.connect(ctx.destination);
     osc2.start(now + 0.08);
     osc2.stop(now + 0.45);
+
+    const closeContext = () => {
+      ctx.close().catch(() => {});
+    };
+
+    osc2.onended = closeContext;
+    setTimeout(closeContext, 600);
   } catch {
-    // Autoplay or audio context initialization prevented by browser
+    // Suppress audio initialization failures (e.g. autoplay restriction)
   }
 };

@@ -3,6 +3,12 @@ import { toast } from "sonner";
 import { onForegroundMessage, onRegisteredFid, onUnregisteredFid } from "@/lib/firebase/firebase";
 import { usePushNotification } from "./use-push-notification";
 
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
+
 jest.mock("sonner", () => ({
   toast: {
     success: jest.fn(),
@@ -47,6 +53,7 @@ jest.mock("@/lib/firebase/firebase", () => ({
 describe("usePushNotification", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNavigate.mockReset();
     localStorage.clear();
     mockRegisterPushNotifications.mockReset();
     mockRegisterPushNotifications.mockResolvedValue(undefined);
@@ -121,6 +128,44 @@ describe("usePushNotification", () => {
       expect(toast.info).toHaveBeenCalledWith("SpotQ: Your Table is Ready!", {
         description: "Please proceed to the counter.",
       });
+    }
+  });
+
+  it("navigates to target URL when toast action is clicked on foreground push notification", async () => {
+    mockIsAuthenticated = true;
+    let messageCallback: ((payload: unknown) => void) | undefined;
+    (onForegroundMessage as jest.Mock).mockImplementation((cb) => {
+      messageCallback = cb;
+      return Promise.resolve(jest.fn());
+    });
+
+    renderHook(() => usePushNotification());
+
+    if (messageCallback) {
+      act(() => {
+        messageCallback?.({
+          notification: {
+            title: "Queue Update",
+            body: "Your order is ready",
+          },
+          data: {
+            url: "/customer/orders/123",
+          },
+        });
+      });
+
+      expect(toast.info).toHaveBeenCalledWith("Queue Update", {
+        description: "Your order is ready",
+        action: expect.objectContaining({
+          label: "View",
+          onClick: expect.any(Function),
+        }),
+      });
+
+      const toastCall = (toast.info as jest.Mock).mock.calls[0];
+      const action = toastCall[1].action;
+      action.onClick();
+      expect(mockNavigate).toHaveBeenCalledWith("/customer/orders/123");
     }
   });
 

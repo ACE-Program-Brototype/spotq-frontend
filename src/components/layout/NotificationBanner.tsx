@@ -24,7 +24,6 @@ export function NotificationBanner({
   const [dismissed, setDismissed] = useState(false);
   const [prevPermission, setPrevPermission] = useState(permission);
 
-  // Reset dismissal if permission changes (e.g. user toggles in browser settings)
   if (prevPermission !== permission) {
     setPrevPermission(permission);
     setDismissed(false);
@@ -34,7 +33,6 @@ export function NotificationBanner({
     return null;
   }
 
-  // Permission already granted or unsupported: no banner needed
   if (
     permission === NOTIFICATION_PERMISSIONS.GRANTED ||
     permission === NOTIFICATION_PERMISSIONS.UNSUPPORTED
