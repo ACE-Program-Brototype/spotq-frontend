@@ -21,7 +21,7 @@ import type { TableItem, TableStatus } from "../types/table.types";
 
 export default function StaffTablePage() {
   const user = useAuthStore((state) => state.user);
-  const restaurantId = user?.restaurantId || TABLE_MESSAGES.FALLBACK_RESTAURANT_ID;
+  const restaurantId = user?.restaurantId || "";
 
   const { tablesBySection, sections, stats, isLoading, isFetching, isError, error, refetch } =
     useTables(restaurantId);
@@ -49,7 +49,13 @@ export default function StaffTablePage() {
       const matchesSearch =
         !searchQuery.trim() ||
         table.tableCode.toLowerCase().includes(searchQuery.trim().toLowerCase());
-      const matchesStatus = statusFilter === "ALL" || table.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "ALL"
+          ? true
+          : statusFilter === TABLE_STATUS.OCCUPIED
+            ? table.status === TABLE_STATUS.OCCUPIED ||
+              table.status === TABLE_STATUS.PARTIAL_OCCUPIED
+            : table.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   }, [tablesBySection, activeSection, searchQuery, statusFilter]);
@@ -76,7 +82,7 @@ export default function StaffTablePage() {
           variant="outline"
           size="sm"
           onClick={() => refetch()}
-          disabled={isFetching}
+          disabled={!restaurantId || isFetching}
           className="h-10 px-3.5 rounded-xl border-[#eddcd4] text-neutral-700 hover:bg-[#faf7f5] font-semibold text-xs flex items-center gap-2"
         >
           <RefreshCw className={`size-3.5 text-[#9a3412] ${isFetching ? "animate-spin" : ""}`} />
@@ -85,7 +91,7 @@ export default function StaffTablePage() {
       </div>
 
       {/* Summary KPI Bar */}
-      {!isLoading && !isError && <TableSummaryBar stats={stats} />}
+      {Boolean(restaurantId) && !isLoading && !isError && <TableSummaryBar stats={stats} />}
 
       {/* Error Banner */}
       {isError && (
@@ -165,11 +171,22 @@ export default function StaffTablePage() {
           </div>
         )}
 
+        {/* Missing Restaurant Empty State */}
+        {!restaurantId && (
+          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-[#eddcd4] bg-[#faf7f5]/60">
+            <AlertCircle className="size-8 text-amber-600 mb-2" />
+            <h3 className="text-base font-bold text-neutral-900">{TABLE_MESSAGES.NO_RESTAURANT}</h3>
+            <p className="text-xs text-[#756c66] mt-0.5 max-w-sm">
+              {TABLE_MESSAGES.NO_RESTAURANT_DESC}
+            </p>
+          </div>
+        )}
+
         {/* Loading State */}
-        {isLoading && <TableSkeletonGrid count={8} />}
+        {Boolean(restaurantId) && isLoading && <TableSkeletonGrid count={8} />}
 
         {/* No Sections Empty State */}
-        {!isLoading && !isError && sections.length === 0 && (
+        {Boolean(restaurantId) && !isLoading && !isError && sections.length === 0 && (
           <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-[#eddcd4] bg-[#faf7f5]/60">
             <TableIcon className="size-8 text-[#9a3412] mb-2" />
             <h3 className="text-base font-bold text-neutral-900">{TABLE_MESSAGES.NO_SECTIONS}</h3>
@@ -180,38 +197,42 @@ export default function StaffTablePage() {
         )}
 
         {/* No Tables in Active Section or Matching Search */}
-        {!isLoading && !isError && sections.length > 0 && visibleTables.length === 0 && (
-          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-[#eddcd4] bg-[#faf7f5]/60">
-            <UtensilsCrossed className="size-8 text-[#9a3412] mb-2" />
-            <h3 className="text-base font-bold text-neutral-900">
-              {searchQuery || statusFilter !== "ALL"
-                ? "No matching tables"
-                : TABLE_MESSAGES.NO_TABLES_IN_SECTION}
-            </h3>
-            <p className="text-xs text-[#756c66] mt-0.5 max-w-sm">
-              {searchQuery || statusFilter !== "ALL"
-                ? "Try adjusting your search query or status filter."
-                : TABLE_MESSAGES.NO_TABLES_IN_SECTION_DESC}
-            </p>
-            {(searchQuery || statusFilter !== "ALL") && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearchQuery("");
-                  setStatusFilter("ALL");
-                }}
-                className="mt-4 h-8 px-3 rounded-xl border-[#eddcd4] text-xs font-semibold"
-              >
-                Reset Filters
-              </Button>
-            )}
-          </div>
-        )}
+        {Boolean(restaurantId) &&
+          !isLoading &&
+          !isError &&
+          sections.length > 0 &&
+          visibleTables.length === 0 && (
+            <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-[#eddcd4] bg-[#faf7f5]/60">
+              <UtensilsCrossed className="size-8 text-[#9a3412] mb-2" />
+              <h3 className="text-base font-bold text-neutral-900">
+                {searchQuery || statusFilter !== "ALL"
+                  ? "No matching tables"
+                  : TABLE_MESSAGES.NO_TABLES_IN_SECTION}
+              </h3>
+              <p className="text-xs text-[#756c66] mt-0.5 max-w-sm">
+                {searchQuery || statusFilter !== "ALL"
+                  ? "Try adjusting your search query or status filter."
+                  : TABLE_MESSAGES.NO_TABLES_IN_SECTION_DESC}
+              </p>
+              {(searchQuery || statusFilter !== "ALL") && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatusFilter("ALL");
+                  }}
+                  className="mt-4 h-8 px-3 rounded-xl border-[#eddcd4] text-xs font-semibold"
+                >
+                  Reset Filters
+                </Button>
+              )}
+            </div>
+          )}
 
         {/* Table Cards Grid */}
-        {!isLoading && !isError && visibleTables.length > 0 && (
+        {Boolean(restaurantId) && !isLoading && !isError && visibleTables.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4">
             {visibleTables.map((table) => (
               <TableCard key={table.id} table={table} onClick={setSelectedTable} />

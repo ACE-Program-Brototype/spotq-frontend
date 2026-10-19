@@ -117,11 +117,12 @@ export function getStaffStatusTransition(currentStatus: TableStatus): TableStatu
 export const TABLE_MESSAGES = {
   TITLE: "Table Management",
   SUBTITLE: "Manage layout, status, and active orders.",
-  FALLBACK_RESTAURANT_ID: "23193584-340b-40bf-963e-ac67cbbebd08",
   STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>
     `Table ${code} status changed to ${TABLE_STATUS_CONFIG[newStatus].label}.`,
   STATUS_UPDATE_FAILED: "Failed to update table status. Please try again.",
   FETCH_FAILED: "Unable to load restaurant tables. Please check your connection and retry.",
+  NO_RESTAURANT: "No restaurant assigned",
+  NO_RESTAURANT_DESC: "Your account is not associated with any restaurant.",
   NO_SECTIONS: "No dining sections available",
   NO_SECTIONS_DESC: "Dining sections have not been configured for this restaurant.",
   NO_TABLES_IN_SECTION: "No tables found in this section",

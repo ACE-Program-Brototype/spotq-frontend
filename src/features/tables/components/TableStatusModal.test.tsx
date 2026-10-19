@@ -180,4 +180,36 @@ describe("TableStatusModal", () => {
     fireEvent.click(screen.getByText("Cancel"));
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
+
+  it("dismisses modal when Escape key is pressed", () => {
+    const handleClose = jest.fn();
+    render(
+      <TableStatusModal
+        table={availableTable}
+        isOpen={true}
+        onClose={handleClose}
+        restaurantId={restaurantId}
+      />,
+      { wrapper: createWrapper() },
+    );
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onClose on other key presses", () => {
+    const handleClose = jest.fn();
+    render(
+      <TableStatusModal
+        table={availableTable}
+        isOpen={true}
+        onClose={handleClose}
+        restaurantId={restaurantId}
+      />,
+      { wrapper: createWrapper() },
+    );
+
+    fireEvent.keyDown(window, { key: "Enter" });
+    expect(handleClose).not.toHaveBeenCalled();
+  });
 });

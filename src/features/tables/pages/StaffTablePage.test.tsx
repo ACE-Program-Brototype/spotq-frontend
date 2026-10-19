@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { tableService } from "../services/table.service";
 import StaffTablePage from "./StaffTablePage";
 
@@ -11,15 +12,7 @@ jest.mock("../services/table.service", () => ({
 }));
 
 jest.mock("@/features/auth/store/auth.store", () => ({
-  useAuthStore: jest.fn((selector) =>
-    selector({
-      user: {
-        restaurantId: "23193584-340b-40bf-963e-ac67cbbebd08",
-        name: "Staff User",
-        role: "STAFF",
-      },
-    }),
-  ),
+  useAuthStore: jest.fn(),
 }));
 
 jest.mock("sonner", () => ({
@@ -66,6 +59,16 @@ describe("StaffTablePage", () => {
         currentOccupancy: 2,
         isActive: true,
       },
+      {
+        id: "table-4",
+        tableCode: "T4",
+        capacity: 4,
+        status: "PARTIAL_OCCUPIED",
+        sectionId: "sec-1",
+        tableShape: "SQUARE",
+        currentOccupancy: 1,
+        isActive: true,
+      },
     ],
     "Open Dining": [
       {
@@ -83,6 +86,15 @@ describe("StaffTablePage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (useAuthStore as unknown as jest.Mock).mockImplementation((selector) =>
+      selector({
+        user: {
+          restaurantId: "test-restaurant-id",
+          name: "Staff User",
+          role: "STAFF",
+        },
+      }),
+    );
   });
 
   it("renders page header, summary bar, section tabs, and table cards", async () => {
@@ -100,6 +112,7 @@ describe("StaffTablePage", () => {
     // Tables in Main Dining
     expect(await screen.findByText("T1")).toBeInTheDocument();
     expect(screen.getByText("T2")).toBeInTheDocument();
+    expect(screen.getByText("T4")).toBeInTheDocument();
   });
 
   it("switches sections when clicking a section tab", async () => {
@@ -141,5 +154,41 @@ describe("StaffTablePage", () => {
 
     expect(screen.getByText("T2")).toBeInTheDocument();
     expect(screen.queryByText("T1")).not.toBeInTheDocument();
+  });
+
+  it("displays both OCCUPIED and PARTIAL_OCCUPIED tables when Occupied filter is selected", async () => {
+    (tableService.getTablesBySection as jest.Mock).mockResolvedValue(mockSections);
+
+    renderPage();
+
+    expect(await screen.findByText("T1")).toBeInTheDocument();
+    expect(screen.getByText("T2")).toBeInTheDocument();
+    expect(screen.getByText("T4")).toBeInTheDocument();
+
+    // Click "Occupied" filter chip
+    fireEvent.click(screen.getByRole("button", { name: "Occupied" }));
+
+    // T2 (OCCUPIED) and T4 (PARTIAL_OCCUPIED) should remain visible
+    expect(screen.getByText("T2")).toBeInTheDocument();
+    expect(screen.getByText("T4")).toBeInTheDocument();
+    // T1 (AVAILABLE) should be filtered out
+    expect(screen.queryByText("T1")).not.toBeInTheDocument();
+  });
+
+  it("shows no restaurant message and does not fetch tables if user has no restaurantId", () => {
+    (useAuthStore as unknown as jest.Mock).mockImplementation((selector) =>
+      selector({
+        user: {
+          restaurantId: undefined,
+          name: "Unassigned Staff",
+          role: "STAFF",
+        },
+      }),
+    );
+
+    renderPage();
+
+    expect(screen.getByText("No restaurant assigned")).toBeInTheDocument();
+    expect(tableService.getTablesBySection).not.toHaveBeenCalled();
   });
 });

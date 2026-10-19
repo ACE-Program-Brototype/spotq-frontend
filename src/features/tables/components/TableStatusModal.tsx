@@ -1,4 +1,5 @@
 import { AlertCircle, CheckCircle2, Table as TableIcon, Users, Wrench, X } from "lucide-react";
+import { useEffect } from "react";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { getStaffStatusTransition, TABLE_STATUS_CONFIG } from "../constants/table.constants";
@@ -22,6 +23,20 @@ export function TableStatusModal({
   sectionName,
 }: TableStatusModalProps) {
   const { mutate: updateStatus, isPending, error: apiError } = useUpdateTableStatus(restaurantId);
+
+  // Close on Escape key press when not pending
+  useEffect(() => {
+    if (!isOpen || isPending) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isPending, onClose]);
 
   if (!isOpen || !table) return null;
 
