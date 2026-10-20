@@ -15,11 +15,16 @@ export const cartService = {
   },
 
   async addItem(
-    cartId: string | null | undefined,
-    payload: AddCartItemInput,
+    cartIdOrPayload: string | null | undefined | AddCartItemInput,
+    possiblePayload?: AddCartItemInput,
   ): Promise<AddCartItemData> {
+    const payload =
+      typeof cartIdOrPayload === "object" && cartIdOrPayload !== null
+        ? cartIdOrPayload
+        : (possiblePayload as AddCartItemInput);
+
     const response = await apiClient
-      .post(CART_ENDPOINTS.ADD_ITEM(cartId), { json: payload })
+      .post(CART_ENDPOINTS.ADD_ITEM, { json: payload })
       .json<ApiResponse<AddCartItemData>>();
     return response.data;
   },

@@ -112,7 +112,7 @@ export function CartItemRow({
         <div className="mt-2.5 flex items-center gap-2 text-xs text-neutral-500">
           <span className="font-medium text-neutral-700">{formatCurrency(item.unitPrice)}</span>
           <span className="text-neutral-400">&times;</span>
-          <span className="text-neutral-400 text-[11px]">ea</span>
+          <span className="text-neutral-400 text-[11px]">{CART_UI_MESSAGES.EACH_LABEL}</span>
         </div>
       </div>
 

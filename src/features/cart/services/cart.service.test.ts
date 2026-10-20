@@ -104,7 +104,7 @@ describe("cartService", () => {
 
     const result = await cartService.addItem("cart-123", payload);
 
-    expect(apiClient.post).toHaveBeenCalledWith("carts/cart-123/items", {
+    expect(apiClient.post).toHaveBeenCalledWith("carts/items", {
       json: payload,
     });
     expect(result.cartId).toBe("cart-123");

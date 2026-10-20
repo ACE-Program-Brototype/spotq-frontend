@@ -21,12 +21,9 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
 
   const [pendingItemIds, setPendingItemIds] = useState<Set<string>>(new Set());
 
-  // Store debounce timers per item
   const timersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
-  // Store baseline snapshots prior to debounced clicks
   const baselineSnapshotsRef = useRef<Map<string, Cart | null>>(new Map());
 
-  // Cleanup pending timers on unmount
   useEffect(() => {
     const currentTimers = timersRef.current;
     return () => {
@@ -66,7 +63,6 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
         await queryClient.invalidateQueries({ queryKey: ["cart", activeCartId] });
         options?.onSuccess?.(result, cartItemId, finalQuantity);
       } catch (err: unknown) {
-        // Rollback optimistic state
         if (baselineCart) {
           queryClient.setQueryData(["cart", activeCartId], baselineCart);
         }
@@ -92,20 +88,17 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
 
       const clampedQuantity = Math.max(0, Math.min(CART_LIMITS.MAX_QUANTITY, targetQuantity));
 
-      // Get current cached cart
       const currentCart = queryClient.getQueryData<Cart | null>(["cart", activeCartId]);
       if (!currentCart) return;
 
       const targetItem = currentCart.items.find((item) => item.cartItemId === cartItemId);
       if (!targetItem) return;
 
-      // Save initial snapshot for rollback if not already tracked
       if (!baselineSnapshotsRef.current.has(cartItemId)) {
         baselineSnapshotsRef.current.set(cartItemId, currentCart);
       }
       const baseline = baselineSnapshotsRef.current.get(cartItemId) ?? currentCart;
 
-      // Optimistically update React Query cache
       queryClient.setQueryData<Cart | null>(["cart", activeCartId], (prevCart) => {
         if (!prevCart) return prevCart;
 
@@ -141,7 +134,6 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
         };
       });
 
-      // Clear existing debounce timer for this item
       const existingTimer = timersRef.current.get(cartItemId);
       if (existingTimer) {
         clearTimeout(existingTimer);
@@ -149,7 +141,6 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
 
       setPendingItemIds((prev) => new Set(prev).add(cartItemId));
 
-      // Set new debounce timer
       const newTimer = setTimeout(() => {
         timersRef.current.delete(cartItemId);
         performServerUpdate(cartItemId, clampedQuantity, baseline);
@@ -185,7 +176,6 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
 
   const removeItem = useCallback(
     (cartItemId: string) => {
-      // Clear any pending debounce timer immediately
       const existingTimer = timersRef.current.get(cartItemId);
       if (existingTimer) {
         clearTimeout(existingTimer);
@@ -195,7 +185,6 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
       const currentCart = queryClient.getQueryData<Cart | null>(["cart", activeCartId]);
       const baseline = baselineSnapshotsRef.current.get(cartItemId) ?? currentCart ?? null;
 
-      // Optimistic removal
       queryClient.setQueryData<Cart | null>(["cart", activeCartId], (prevCart) => {
         if (!prevCart) return prevCart;
         const updatedItems = prevCart.items.filter((item) => item.cartItemId !== cartItemId);

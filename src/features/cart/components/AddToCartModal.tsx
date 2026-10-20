@@ -37,7 +37,6 @@ export function AddToCartModal({
   const [isMismatchOpen, setIsMismatchOpen] = useState<boolean>(false);
   const [isClearingAndAdding, setIsClearingAndAdding] = useState<boolean>(false);
 
-  // Initialize or reset state when modal opens or item changes
   useEffect(() => {
     if (isOpen && item) {
       const defaultVariant =
@@ -86,7 +85,6 @@ export function AddToCartModal({
   const unitPrice = basePrice + addonsTotal;
   const totalPrice = unitPrice * quantity;
 
-  // Validation: if item has variants, one must be selected
   const hasVariants = variants.length > 0;
   const isVariantSelected = !hasVariants || Boolean(selectedVariantId);
   const isSubmitDisabled = !isVariantSelected || isPending || !item?.isAvailable;
