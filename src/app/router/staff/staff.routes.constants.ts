@@ -15,6 +15,7 @@ export const STAFF_ROUTE_PATHS = {
     ITEMS: "menu/items",
   },
   QUEUE: "queue",
+  TABLES: "tables",
 } as const;
 
 export const STAFF_ROUTES = {
@@ -34,4 +35,5 @@ export const STAFF_ROUTES = {
     ITEMS: "/staff/menu/items",
   },
   QUEUE: "/staff/queue",
+  TABLES: "/staff/tables",
 } as const;
