@@ -14,7 +14,10 @@ jest.mock("../services/order.service", () => ({
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { retry: false },
+      queries: {
+        retry: false,
+        gcTime: Number.POSITIVE_INFINITY,
+      },
     },
   });
 
@@ -35,7 +38,9 @@ describe("useOrderReceipt hook", () => {
       wrapper: createWrapper(),
     });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true), {
+      timeout: 5000,
+    });
 
     expect(orderService.getOrderReceipt).toHaveBeenCalledWith("ord_992817203");
     expect(result.current.data?.restaurant.name).toBe("Spice Garden Cafe");

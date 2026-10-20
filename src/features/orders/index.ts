@@ -8,4 +8,3 @@ export * from "./hooks/use-order-receipt";
 export { default as OrderReceiptPage } from "./pages/OrderReceiptPage";
 export * from "./services/order.service";
 export * from "./types/order-receipt.types";
-export * from "./utils/receipt-download.utils";

@@ -8,8 +8,6 @@ export const ORDER_RECEIPT_MESSAGES = {
   PAGE_SUBTITLE: "Itemized tax invoice and bill summary",
   BACK_TO_HOME: "Back to Home",
   BACK_TO_ORDERS: "Back to Orders",
-  DOWNLOAD_RECEIPT: "Download Receipt",
-  DOWNLOADING: "Downloading...",
   ORDER_NUMBER_PREFIX: "Order #",
   TAX_INVOICE_TITLE: "Tax Invoice & Summary",
   ITEMS_HEADER: "Itemized Order Items",
@@ -29,8 +27,6 @@ export const ORDER_RECEIPT_MESSAGES = {
   ORDER_STATUS_LABEL: "Status",
   RESTAURANT_LABEL: "Restaurant",
   ORDER_ID_LABEL: "Order ID",
-  DOWNLOAD_SUCCESS: "Receipt downloaded successfully",
-  DOWNLOAD_ERROR: "Failed to download receipt",
 } as const;
 
 export const ORDER_STATUS_LABELS: Record<string, string> = {
