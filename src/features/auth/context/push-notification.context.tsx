@@ -138,7 +138,7 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
               onNavigate={navigate}
             />
           ),
-          { duration: 6000 },
+          { duration: 5000 },
         );
       } else {
         toast.info(title, {

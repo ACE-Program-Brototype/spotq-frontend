@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { CustomerFooter } from "@/components/layout/CustomerFooter";
 import { CustomerMobileNav, CustomerNavbar } from "@/components/layout/CustomerNavbar";
 import { NotificationBanner } from "@/components/layout/NotificationBanner";
-import { usePushNotification } from "@/features/auth/hooks/use-push-notification";
+import { usePushNotification } from "@/features/auth/context/push-notification.context";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
 

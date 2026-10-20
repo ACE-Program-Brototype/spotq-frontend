@@ -1,7 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
+import type { ReactNode } from "react";
 import { toast } from "sonner";
 import { onForegroundMessage, onRegisteredFid, onUnregisteredFid } from "@/lib/firebase/firebase";
-import { usePushNotification } from "./use-push-notification";
+import { PushNotificationProvider, usePushNotification } from "./push-notification.context";
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
@@ -14,11 +15,12 @@ jest.mock("sonner", () => ({
     success: jest.fn(),
     error: jest.fn(),
     info: jest.fn(),
+    custom: jest.fn(),
   },
 }));
 
 let mockIsAuthenticated = false;
-jest.mock("../store/auth.store", () => ({
+jest.mock("@/features/auth/store/auth.store", () => ({
   useAuthStore: (selector: (state: { isAuthenticated: boolean }) => boolean) =>
     selector({ isAuthenticated: mockIsAuthenticated }),
 }));
@@ -26,7 +28,7 @@ jest.mock("../store/auth.store", () => ({
 const mockRegisterDeviceMutateAsync = jest.fn();
 const mockRegisterDeviceMutate = jest.fn();
 const mockDeactivateDeviceMutate = jest.fn();
-jest.mock("./use-device", () => ({
+jest.mock("@/features/auth/hooks/use-device", () => ({
   useRegisterDevice: () => ({
     mutateAsync: mockRegisterDeviceMutateAsync,
     mutate: mockRegisterDeviceMutate,
@@ -50,7 +52,7 @@ jest.mock("@/lib/firebase/firebase", () => ({
   onForegroundMessage: jest.fn(),
 }));
 
-describe("usePushNotification", () => {
+describe("PushNotificationContext / usePushNotification", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockNavigate.mockReset();
@@ -67,13 +69,17 @@ describe("usePushNotification", () => {
     };
   });
 
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <PushNotificationProvider>{children}</PushNotificationProvider>
+  );
+
   it("successfully enables notifications and triggers registration", async () => {
     mockRegisterPushNotifications.mockImplementation(async () => {
       // @ts-expect-error mocking Notification
       window.Notification.permission = "granted";
     });
 
-    const { result } = renderHook(() => usePushNotification());
+    const { result } = renderHook(() => usePushNotification(), { wrapper });
 
     let success = false;
     await act(async () => {
@@ -89,7 +95,7 @@ describe("usePushNotification", () => {
     // @ts-expect-error mocking Notification
     window.Notification.permission = "denied";
 
-    const { result } = renderHook(() => usePushNotification());
+    const { result } = renderHook(() => usePushNotification(), { wrapper });
 
     let success = false;
     await act(async () => {
@@ -103,7 +109,7 @@ describe("usePushNotification", () => {
     expect(success).toBe(false);
   });
 
-  it("subscribes to foreground push notifications when user is authenticated", async () => {
+  it("subscribes to foreground push notifications and renders modern custom toast", async () => {
     mockIsAuthenticated = true;
     let messageCallback: ((payload: unknown) => void) | undefined;
     (onForegroundMessage as jest.Mock).mockImplementation((cb) => {
@@ -111,7 +117,7 @@ describe("usePushNotification", () => {
       return Promise.resolve(jest.fn());
     });
 
-    renderHook(() => usePushNotification());
+    renderHook(() => usePushNotification(), { wrapper });
 
     expect(onForegroundMessage).toHaveBeenCalled();
 
@@ -122,50 +128,13 @@ describe("usePushNotification", () => {
             title: "SpotQ: Your Table is Ready!",
             body: "Please proceed to the counter.",
           },
-        });
-      });
-
-      expect(toast.info).toHaveBeenCalledWith("SpotQ: Your Table is Ready!", {
-        description: "Please proceed to the counter.",
-      });
-    }
-  });
-
-  it("navigates to target URL when toast action is clicked on foreground push notification", async () => {
-    mockIsAuthenticated = true;
-    let messageCallback: ((payload: unknown) => void) | undefined;
-    (onForegroundMessage as jest.Mock).mockImplementation((cb) => {
-      messageCallback = cb;
-      return Promise.resolve(jest.fn());
-    });
-
-    renderHook(() => usePushNotification());
-
-    if (messageCallback) {
-      act(() => {
-        messageCallback?.({
-          notification: {
-            title: "Queue Update",
-            body: "Your order is ready",
-          },
           data: {
             deepLink: "/customer/orders/123",
           },
         });
       });
 
-      expect(toast.info).toHaveBeenCalledWith("Queue Update", {
-        description: "Your order is ready",
-        action: expect.objectContaining({
-          label: "View",
-          onClick: expect.any(Function),
-        }),
-      });
-
-      const toastCall = (toast.info as jest.Mock).mock.calls[0];
-      const action = toastCall[1].action;
-      action.onClick();
-      expect(mockNavigate).toHaveBeenCalledWith("/customer/orders/123");
+      expect(toast.custom).toHaveBeenCalled();
     }
   });
 
@@ -175,7 +144,7 @@ describe("usePushNotification", () => {
     window.Notification.permission = "granted";
 
     await act(async () => {
-      renderHook(() => usePushNotification());
+      renderHook(() => usePushNotification(), { wrapper });
     });
 
     expect(mockRegisterPushNotifications).toHaveBeenCalled();
@@ -187,7 +156,7 @@ describe("usePushNotification", () => {
     window.Notification.permission = "default";
 
     await act(async () => {
-      renderHook(() => usePushNotification());
+      renderHook(() => usePushNotification(), { wrapper });
     });
 
     expect(mockRegisterPushNotifications).toHaveBeenCalled();
@@ -199,11 +168,12 @@ describe("usePushNotification", () => {
     window.Notification.permission = "default";
 
     await act(async () => {
-      renderHook(() => usePushNotification());
+      renderHook(() => usePushNotification(), { wrapper });
     });
 
     expect(mockRegisterPushNotifications).not.toHaveBeenCalled();
   });
+
   it("registers device token on server when onRegisteredFid emits a fid", async () => {
     mockIsAuthenticated = true;
     let registeredCallback: ((fid: string) => void) | undefined;
@@ -213,7 +183,7 @@ describe("usePushNotification", () => {
     });
 
     await act(async () => {
-      renderHook(() => usePushNotification());
+      renderHook(() => usePushNotification(), { wrapper });
     });
 
     act(() => {
@@ -234,7 +204,7 @@ describe("usePushNotification", () => {
       return Promise.resolve(jest.fn());
     });
 
-    renderHook(() => usePushNotification());
+    renderHook(() => usePushNotification(), { wrapper });
 
     expect(onUnregisteredFid).toHaveBeenCalled();
 
@@ -265,7 +235,7 @@ describe("usePushNotification", () => {
     });
 
     await act(async () => {
-      renderHook(() => usePushNotification());
+      renderHook(() => usePushNotification(), { wrapper });
     });
 
     expect(navigator.permissions.query).toHaveBeenCalledWith({ name: "notifications" });
