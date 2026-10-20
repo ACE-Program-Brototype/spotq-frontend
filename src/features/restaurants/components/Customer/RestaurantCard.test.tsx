@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 import { RestaurantCard } from "./RestaurantCard";
 
@@ -10,7 +11,11 @@ function renderWithProviders(ui: React.ReactElement) {
     },
   });
 
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+  return render(
+    <MemoryRouter>
+      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    </MemoryRouter>,
+  );
 }
 
 const mockRestaurant: CustomerRestaurantItem = {
@@ -130,10 +135,11 @@ describe("RestaurantCard", () => {
     expect(screen.queryByText("Live Queue")).not.toBeInTheDocument();
   });
 
-  it("does not render any links or triggers to detail page", () => {
+  it("renders a link pointing to the restaurant detail page", () => {
     renderWithProviders(<RestaurantCard restaurant={mockRestaurant} />);
 
-    expect(screen.queryByText(/View Details/i)).not.toBeInTheDocument();
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    const link = screen.getByRole("link");
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", `/restaurants/${mockRestaurant.id}`);
   });
 });

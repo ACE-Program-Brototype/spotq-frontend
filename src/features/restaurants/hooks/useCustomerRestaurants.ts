@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
@@ -21,6 +21,8 @@ export interface UseCustomerRestaurantsOptions {
 
 export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const isInternalUpdate = useRef(false);
+  const isFirstMount = useRef(true);
 
   // Read initial values from URL query parameters if available
   const urlPage = Number(searchParams.get("page")) || undefined;
@@ -42,37 +44,6 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     urlSort ?? options?.initialSort ?? CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT,
   );
 
-  // Sync external search params changes (e.g. from navbar search or back/forward navigation)
-  useEffect(() => {
-    const paramSearch = searchParams.get("search") ?? "";
-    if (paramSearch !== searchQuery) {
-      setSearchQuery(paramSearch);
-    }
-
-    const paramCity = searchParams.get("city") ?? "";
-    if (paramCity !== cityQuery) {
-      setCityQuery(paramCity);
-    }
-
-    const paramCategory =
-      searchParams.get("category") ?? CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY;
-    if (paramCategory !== selectedCategory) {
-      setSelectedCategory(paramCategory);
-    }
-
-    const paramSort =
-      (searchParams.get("sort") as CustomerSortOptionValue) ??
-      CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT;
-    if (paramSort !== selectedSort) {
-      setSelectedSort(paramSort);
-    }
-
-    const paramPage = Number(searchParams.get("page")) || 1;
-    if (paramPage !== page) {
-      setPage(paramPage);
-    }
-  }, [searchParams, searchQuery, cityQuery, selectedCategory, selectedSort, page]);
-
   const debouncedSearch = useDebounce(
     searchQuery.trim(),
     CUSTOMER_RESTAURANT_DEFAULTS.SEARCH_DEBOUNCE_MS,
@@ -83,37 +54,76 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
   );
 
   // Synchronize state changes back to URL search params
-  const updateUrlParams = (
-    nextSearch: string,
-    nextCity: string,
-    nextCategory: string,
-    nextSort: CustomerSortOptionValue,
-    nextPage: number,
-  ) => {
-    const nextParams = new URLSearchParams();
+  const updateUrlParams = useCallback(
+    (
+      nextSearch: string,
+      nextCity: string,
+      nextCategory: string,
+      nextSort: CustomerSortOptionValue,
+      nextPage: number,
+    ) => {
+      const nextParams = new URLSearchParams();
 
-    if (nextSearch.trim()) {
-      nextParams.set("search", nextSearch.trim());
+      if (nextSearch.trim()) {
+        nextParams.set("search", nextSearch.trim());
+      }
+
+      if (nextCity.trim()) {
+        nextParams.set("city", nextCity.trim());
+      }
+
+      if (nextCategory && nextCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY) {
+        nextParams.set("category", nextCategory);
+      }
+
+      if (nextSort && nextSort !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT) {
+        nextParams.set("sort", nextSort);
+      }
+
+      if (nextPage > 1) {
+        nextParams.set("page", String(nextPage));
+      }
+
+      isInternalUpdate.current = true;
+      setSearchParams(nextParams, { replace: true });
+    },
+    [setSearchParams],
+  );
+
+  // Sync external changes only (e.g. browser back/forward or external navigation)
+  useEffect(() => {
+    if (isInternalUpdate.current) {
+      isInternalUpdate.current = false;
+      return;
     }
 
-    if (nextCity.trim()) {
-      nextParams.set("city", nextCity.trim());
-    }
+    const paramSearch = searchParams.get("search") ?? "";
+    setSearchQuery((prev) => (paramSearch !== prev ? paramSearch : prev));
 
-    if (nextCategory && nextCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY) {
-      nextParams.set("category", nextCategory);
-    }
+    const paramCity = searchParams.get("city") ?? "";
+    setCityQuery((prev) => (paramCity !== prev ? paramCity : prev));
 
-    if (nextSort && nextSort !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT) {
-      nextParams.set("sort", nextSort);
-    }
+    const paramCategory =
+      searchParams.get("category") ?? CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY;
+    setSelectedCategory((prev) => (paramCategory !== prev ? paramCategory : prev));
 
-    if (nextPage > 1) {
-      nextParams.set("page", String(nextPage));
-    }
+    const paramSort =
+      (searchParams.get("sort") as CustomerSortOptionValue) ??
+      CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT;
+    setSelectedSort((prev) => (paramSort !== prev ? paramSort : prev));
 
-    setSearchParams(nextParams, { replace: true });
-  };
+    const paramPage = Number(searchParams.get("page")) || 1;
+    setPage((prev) => (paramPage !== prev ? paramPage : prev));
+  }, [searchParams]);
+
+  // Debounced URL updates for text search queries (prevents history flooding and space truncation)
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    updateUrlParams(debouncedSearch, debouncedCity, selectedCategory, selectedSort, page);
+  }, [debouncedSearch, debouncedCity, selectedCategory, selectedSort, page, updateUrlParams]);
 
   const currentSortConfig = useMemo(() => {
     return (
@@ -133,7 +143,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
 
   const query = useQuery({
     queryKey,
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       customerRestaurantService.getRestaurants({
         page,
         limit,
@@ -142,6 +152,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
         cuisine: selectedCategory !== "All" ? selectedCategory : undefined,
         sortBy: currentSortConfig.sortBy,
         sortOrder: currentSortConfig.sortOrder,
+        signal,
       }),
     staleTime: CUSTOMER_RESTAURANT_DEFAULTS.CACHE_STALE_TIME_MS,
   });
@@ -149,13 +160,11 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
   const handleSearchChange = (newSearch: string) => {
     setSearchQuery(newSearch);
     setPage(1);
-    updateUrlParams(newSearch, cityQuery, selectedCategory, selectedSort, 1);
   };
 
   const handleCityChange = (newCity: string) => {
     setCityQuery(newCity);
     setPage(1);
-    updateUrlParams(searchQuery, newCity, selectedCategory, selectedSort, 1);
   };
 
   const handleCategoryChange = (newCategory: string) => {
@@ -181,6 +190,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     setSelectedCategory(CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY);
     setSelectedSort(CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT);
     setPage(1);
+    isInternalUpdate.current = true;
     setSearchParams(new URLSearchParams(), { replace: true });
   };
 

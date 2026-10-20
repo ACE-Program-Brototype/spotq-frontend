@@ -401,4 +401,48 @@ describe("auth-refresh", () => {
     expect(authState.user?.restaurantId).toBe("res-123");
     expect(authState.isAuthenticated).toBe(true);
   });
+
+  test("should use default refresh endpoint on /restaurants when unauthenticated and not confuse with partner /restaurant", async () => {
+    window.history.pushState({}, "", "/restaurants/res-123");
+
+    const mockPost = jest.fn().mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        data: {
+          access_token: "customer-token",
+        },
+      }),
+    });
+
+    (ky.post as jest.Mock) = mockPost;
+
+    const token = await getOrRefreshAccessToken();
+
+    expect(token).toBe("customer-token");
+    expect(mockPost).toHaveBeenCalledWith(
+      AUTH_ENDPOINTS.REFRESH_TOKEN,
+      expect.objectContaining({ credentials: "include" }),
+    );
+  });
+
+  test("should use restaurant refresh endpoint on /restaurant/dashboard when unauthenticated", async () => {
+    window.history.pushState({}, "", "/restaurant/dashboard");
+
+    const mockPost = jest.fn().mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        data: {
+          access_token: "restaurant-admin-token",
+        },
+      }),
+    });
+
+    (ky.post as jest.Mock) = mockPost;
+
+    const token = await getOrRefreshAccessToken();
+
+    expect(token).toBe("restaurant-admin-token");
+    expect(mockPost).toHaveBeenCalledWith(
+      AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN,
+      expect.objectContaining({ credentials: "include" }),
+    );
+  });
 });

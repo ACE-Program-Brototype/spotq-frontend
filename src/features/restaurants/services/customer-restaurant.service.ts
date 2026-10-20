@@ -55,6 +55,7 @@ export const customerRestaurantService = {
     const response = await apiClient
       .get(CUSTOMER_RESTAURANT_ENDPOINTS.LIST, {
         searchParams,
+        signal: params?.signal,
       })
       .json<CustomerRestaurantsApiResponse>();
 

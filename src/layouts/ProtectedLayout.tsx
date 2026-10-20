@@ -76,7 +76,12 @@ export default function ProtectedLayout({
       return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />;
     }
 
-    if (!location.pathname.startsWith(RESTAURANT_ROUTES.ROOT)) {
+    const isRestaurantPath =
+      (location.pathname === RESTAURANT_ROUTES.ROOT ||
+        location.pathname.startsWith(`${RESTAURANT_ROUTES.ROOT}/`)) &&
+      !location.pathname.startsWith("/restaurants");
+
+    if (!isRestaurantPath) {
       if (location.pathname === roleHome) {
         return null;
       }
@@ -84,17 +89,29 @@ export default function ProtectedLayout({
     }
   }
 
-  if (normalizedRole === "ADMIN" && !location.pathname.startsWith(ADMIN_ROUTES.ROOT)) {
+  const isAdminPath =
+    location.pathname === ADMIN_ROUTES.ROOT ||
+    location.pathname.startsWith(`${ADMIN_ROUTES.ROOT}/`);
+
+  if (normalizedRole === "ADMIN" && !isAdminPath) {
     if (location.pathname === roleHome) {
       return null;
     }
     return <Navigate to={roleHome} replace />;
   }
 
+  const isStaffPath =
+    location.pathname === STAFF_ROUTES.ROOT ||
+    location.pathname.startsWith(`${STAFF_ROUTES.ROOT}/`);
+  const isRestaurantPath =
+    (location.pathname === RESTAURANT_ROUTES.ROOT ||
+      location.pathname.startsWith(`${RESTAURANT_ROUTES.ROOT}/`)) &&
+    !location.pathname.startsWith("/restaurants");
+
   if (
     (normalizedRole === "STAFF" || normalizedRole === "RESTAURANT_STAFF") &&
-    !location.pathname.startsWith(STAFF_ROUTES.ROOT) &&
-    !location.pathname.startsWith(RESTAURANT_ROUTES.ROOT)
+    !isStaffPath &&
+    !isRestaurantPath
   ) {
     if (location.pathname === roleHome) {
       return null;

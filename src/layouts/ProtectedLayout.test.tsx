@@ -285,4 +285,29 @@ describe("ProtectedLayout", () => {
     expect(screen.getByText("Onboarding Status Page")).toBeInTheDocument();
     expect(screen.queryByText("Subscription Page")).not.toBeInTheDocument();
   });
+
+  it("redirects logged-in RESTAURANT_ADMIN attempting to access customer /restaurants to /restaurant/dashboard", () => {
+    useAuthStore.getState().setUser({
+      _id: "3",
+      name: "Restaurant Owner",
+      email: "restaurant@spotq.com",
+      role: "RESTAURANT_ADMIN",
+      status: "ACTIVE",
+      created_at: "2026-08-18T21:59:52.665Z",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/restaurants"]}>
+        <Routes>
+          <Route element={<ProtectedLayout />}>
+            <Route path="/restaurants" element={<div>Customer Restaurants Page</div>} />
+          </Route>
+          <Route path="/restaurant/dashboard" element={<div>Restaurant Dashboard Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Restaurant Dashboard Page")).toBeInTheDocument();
+    expect(screen.queryByText("Customer Restaurants Page")).not.toBeInTheDocument();
+  });
 });

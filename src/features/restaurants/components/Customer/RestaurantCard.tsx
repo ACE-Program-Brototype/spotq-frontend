@@ -1,6 +1,9 @@
 import { Clock, IndianRupee, MapPin, Store } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { resolveImageUrl } from "@/lib/utils/image.utils";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 
@@ -11,15 +14,27 @@ export interface RestaurantCardProps {
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const [imageError, setImageError] = useState(false);
 
-  const { data: imageUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
+  // Fast path: direct CDN resolution avoids N+1 network requests
+  const directUrl = resolveImageUrl(restaurant.coverImage);
+  const isDirect = Boolean(directUrl?.startsWith("http"));
+
+  // Fallback to presigned URL only if not a direct URL
+  const { data: presignedUrl, isLoading: presignedLoading } = usePresignedUrl(
+    !isDirect ? restaurant.coverImage : null,
+  );
+
+  const imageUrl = isDirect ? directUrl : presignedUrl;
+  const isLoading = !isDirect && presignedLoading;
+
   const locationLabel = `${restaurant.city || ""}${restaurant.city && restaurant.state ? ", " : ""}${restaurant.state || ""}`;
 
   const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? null;
 
   return (
-    <div
+    <Link
+      to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurant.id)}
       data-testid={`restaurant-card-${restaurant.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300 block focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
     >
       {/* Cover Image Container */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
@@ -95,6 +110,6 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
