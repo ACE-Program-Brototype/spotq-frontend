@@ -9,6 +9,7 @@ describe("customerRoutes structure", () => {
     expect(profileGroup?.path).toBe("/profile");
     expect(profileGroup?.children?.[0].index).toBe(true);
     expect(profileGroup?.children?.[1].path).toBe("edit");
+    expect(layoutGroup.children?.[3].path).toBe("/orders/:orderId/receipt");
 
     const authGroup = customerRoutes[1];
     expect(authGroup.children?.map((child) => child.path)).toEqual([
