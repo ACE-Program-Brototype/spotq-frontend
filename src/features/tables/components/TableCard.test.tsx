@@ -23,7 +23,6 @@ describe("TableCard", () => {
     tableShape: "SQUARE",
     currentOccupancy: 2,
     isActive: true,
-    occupiedDurationMinutes: 45,
   };
 
   const mockTableMaintenance: TableItem = {
@@ -46,14 +45,13 @@ describe("TableCard", () => {
     expect(screen.getByText("4 Seats")).toBeInTheDocument();
   });
 
-  it("renders occupancy ratio and duration for occupied table", () => {
+  it("renders occupancy ratio for occupied table", () => {
     const handleClick = jest.fn();
     render(<TableCard table={mockTableOccupied} onClick={handleClick} />);
 
     expect(screen.getByText("T2")).toBeInTheDocument();
     expect(screen.getByText("Occupied")).toBeInTheDocument();
     expect(screen.getByText("2/4")).toBeInTheDocument();
-    expect(screen.getByText("45m")).toBeInTheDocument();
   });
 
   it("renders maintenance status badge and capacity for maintenance table", () => {

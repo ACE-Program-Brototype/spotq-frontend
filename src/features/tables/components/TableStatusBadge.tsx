@@ -7,6 +7,7 @@ interface TableStatusBadgeProps {
   size?: "sm" | "md" | "lg";
   className?: string;
   showDot?: boolean;
+  useShortLabel?: boolean;
 }
 
 export function TableStatusBadge({
@@ -14,16 +15,18 @@ export function TableStatusBadge({
   size = "sm",
   className,
   showDot = true,
+  useShortLabel = false,
 }: TableStatusBadgeProps) {
   const config = TABLE_STATUS_CONFIG[status] || {
     label: status,
+    shortLabel: status,
     badgeClass: "bg-neutral-100 text-neutral-600 border-neutral-300",
     dotClass: "bg-neutral-400",
   };
 
   const sizeClasses = {
-    sm: "px-2.5 py-0.5 text-xs font-bold",
-    md: "px-3 py-1 text-xs font-bold",
+    sm: "px-2 py-0.5 text-[11px] sm:text-xs font-bold",
+    md: "px-2.5 py-1 text-xs font-bold",
     lg: "px-3.5 py-1.5 text-sm font-bold",
   };
 
@@ -33,10 +36,12 @@ export function TableStatusBadge({
     lg: "size-2.5",
   };
 
+  const displayLabel = useShortLabel && config.shortLabel ? config.shortLabel : config.label;
+
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border transition-all select-none shadow-2xs",
+        "inline-flex items-center gap-1 sm:gap-1.5 rounded-full border transition-all select-none shadow-2xs whitespace-nowrap shrink-0",
         config.badgeClass,
         sizeClasses[size],
         className,
@@ -53,7 +58,7 @@ export function TableStatusBadge({
           aria-hidden="true"
         />
       )}
-      <span>{config.label}</span>
+      <span className="truncate">{displayLabel}</span>
     </span>
   );
 }

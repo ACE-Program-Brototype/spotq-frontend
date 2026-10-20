@@ -29,6 +29,7 @@ export const TABLE_ENDPOINTS = {
 
 export interface StatusVisualConfig {
   label: string;
+  shortLabel?: string;
   badgeClass: string;
   dotClass: string;
   topBorderClass: string;
@@ -39,6 +40,7 @@ export interface StatusVisualConfig {
 export const TABLE_STATUS_CONFIG: Record<TableStatus, StatusVisualConfig> = {
   AVAILABLE: {
     label: "Available",
+    shortLabel: "Available",
     badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
     dotClass: "bg-emerald-500",
     topBorderClass: "border-t-4 border-emerald-600",
@@ -47,6 +49,7 @@ export const TABLE_STATUS_CONFIG: Record<TableStatus, StatusVisualConfig> = {
   },
   OCCUPIED: {
     label: "Occupied",
+    shortLabel: "Occupied",
     badgeClass: "bg-[#ffedd5] text-[#9a3412] border-[#fed7aa]",
     dotClass: "bg-[#ea580c]",
     topBorderClass: "border-t-4 border-[#9a3412]",
@@ -55,6 +58,7 @@ export const TABLE_STATUS_CONFIG: Record<TableStatus, StatusVisualConfig> = {
   },
   MAINTENANCE: {
     label: "Maintenance",
+    shortLabel: "Maintenance",
     badgeClass: "bg-neutral-100 text-neutral-600 border-neutral-300",
     dotClass: "bg-neutral-400",
     topBorderClass: "border-t-4 border-neutral-400",
@@ -63,6 +67,7 @@ export const TABLE_STATUS_CONFIG: Record<TableStatus, StatusVisualConfig> = {
   },
   PARTIAL_OCCUPIED: {
     label: "Partially Occupied",
+    shortLabel: "Partial",
     badgeClass: "bg-amber-50 text-amber-800 border-amber-200",
     dotClass: "bg-amber-500",
     topBorderClass: "border-t-4 border-amber-500",

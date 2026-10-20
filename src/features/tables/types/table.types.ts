@@ -18,8 +18,6 @@ export interface TableItem {
   currentOccupancy: number;
   isActive: boolean;
   sectionName?: string;
-  occupiedDurationMinutes?: number;
-  reservationTime?: string;
 }
 
 export type TablesGroupedBySection = Record<string, TableItem[]>;

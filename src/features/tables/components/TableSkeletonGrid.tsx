@@ -1,6 +1,6 @@
 export function TableSkeletonGrid({ count = 10 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4 animate-pulse">
+    <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3.5 sm:gap-4 animate-pulse">
       {Array.from({ length: count }).map((_, index) => (
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: Skeleton placeholders

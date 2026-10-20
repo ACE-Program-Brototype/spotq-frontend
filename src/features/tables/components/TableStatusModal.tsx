@@ -43,6 +43,9 @@ export function TableStatusModal({
   const transitionRule = getStaffStatusTransition(table.status);
   const targetStatus = transitionRule.targetStatus;
   const targetConfig = targetStatus ? TABLE_STATUS_CONFIG[targetStatus] : null;
+  const isAvailableTarget = targetStatus === "AVAILABLE";
+  const ActionIcon = isAvailableTarget ? CheckCircle2 : Wrench;
+  const actionLabel = isAvailableTarget ? "Set to Available" : "Set to Maintenance";
 
   const handleApplyStatusChange = () => {
     if (!targetStatus) return;
@@ -130,23 +133,19 @@ export function TableStatusModal({
               <span className="text-xs font-semibold text-neutral-700">Available Action:</span>
               <div
                 className={`p-3.5 rounded-xl border flex items-center gap-3 ${
-                  targetStatus === "AVAILABLE"
+                  isAvailableTarget
                     ? "border-emerald-200 bg-emerald-50/50"
                     : "border-neutral-200 bg-neutral-50"
                 }`}
               >
                 <div
                   className={`size-8 rounded-lg flex items-center justify-center shrink-0 ${
-                    targetStatus === "AVAILABLE"
+                    isAvailableTarget
                       ? "bg-emerald-100 text-emerald-700"
                       : "bg-neutral-200 text-neutral-700"
                   }`}
                 >
-                  {targetStatus === "AVAILABLE" ? (
-                    <CheckCircle2 className="size-4" />
-                  ) : (
-                    <Wrench className="size-4" />
-                  )}
+                  <ActionIcon className="size-4" />
                 </div>
                 <div className="flex-1">
                   <p className="text-xs font-bold text-neutral-900">
@@ -182,7 +181,7 @@ export function TableStatusModal({
               disabled={isPending}
               onClick={handleApplyStatusChange}
               className={`h-9 px-4 rounded-xl text-xs font-bold text-white shadow-sm flex items-center gap-1.5 ${
-                targetStatus === "AVAILABLE"
+                isAvailableTarget
                   ? "bg-emerald-700 hover:bg-emerald-800"
                   : "bg-neutral-800 hover:bg-neutral-900"
               }`}
@@ -192,15 +191,10 @@ export function TableStatusModal({
                   <Spinner className="size-3.5 mr-1" />
                   Updating...
                 </>
-              ) : targetStatus === "AVAILABLE" ? (
-                <>
-                  <CheckCircle2 className="size-4" />
-                  Set to Available
-                </>
               ) : (
                 <>
-                  <Wrench className="size-4" />
-                  Set to Maintenance
+                  <ActionIcon className="size-4" />
+                  {actionLabel}
                 </>
               )}
             </Button>

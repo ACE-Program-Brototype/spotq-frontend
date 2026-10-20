@@ -127,21 +127,24 @@ export default function StaffTablePage() {
             />
 
             {/* Search & Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-              <div className="relative flex-1 max-w-xs">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
+              <div className="relative w-full md:w-64 lg:w-72 shrink-0">
                 <Search className="size-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <Input
                   type="text"
                   placeholder="Search table code (e.g. T1)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 h-9 text-xs rounded-xl border-[#eddcd4] focus-visible:border-[#9a3412] focus-visible:ring-[#fed7aa]"
+                  className="pl-9 h-9 text-xs rounded-xl border-[#eddcd4] focus-visible:border-[#9a3412] focus-visible:ring-[#fed7aa] w-full"
                 />
               </div>
 
               {/* Status Filter Chips */}
-              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
-                <Filter className="size-3.5 text-neutral-400 shrink-0 mr-1" />
+              <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap sm:overflow-x-auto scrollbar-none shrink-0">
+                <span className="flex items-center gap-1 text-xs font-semibold text-neutral-500 mr-0.5 shrink-0">
+                  <Filter className="size-3.5 text-neutral-400 shrink-0" />
+                  <span className="hidden sm:inline">Filter:</span>
+                </span>
                 {(
                   [
                     { id: "ALL", label: "All" },
@@ -156,7 +159,7 @@ export default function StaffTablePage() {
                       key={opt.id}
                       type="button"
                       onClick={() => setStatusFilter(opt.id)}
-                      className={`h-8 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                      className={`h-8 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
                         isSelected
                           ? "bg-[#9a3412] text-white shadow-2xs"
                           : "bg-[#faf7f5] text-neutral-600 hover:bg-[#eddcd4]/50 border border-[#eddcd4]"
@@ -233,7 +236,7 @@ export default function StaffTablePage() {
 
         {/* Table Cards Grid */}
         {Boolean(restaurantId) && !isLoading && !isError && visibleTables.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3.5 sm:gap-4">
             {visibleTables.map((table) => (
               <TableCard key={table.id} table={table} onClick={setSelectedTable} />
             ))}
