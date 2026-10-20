@@ -1,4 +1,4 @@
-import { Download, ShieldCheck } from "lucide-react";
+import { Download } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ORDER_RECEIPT_MESSAGES } from "../constants/order-receipt.constants";
@@ -41,12 +41,7 @@ export function OrderReceiptCard({ receipt, onDownload, className }: OrderReceip
 
       <ReceiptBillBreakdown receipt={receipt} />
 
-      <div className="p-6 bg-white border-t border-neutral-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-          <ShieldCheck className="size-4 text-emerald-600" />
-          <span>{ORDER_RECEIPT_MESSAGES.OFFLINE_COPY_NOTICE}</span>
-        </div>
-
+      <div className="p-6 bg-white border-t border-neutral-100 flex items-center justify-end">
         <Button
           type="button"
           data-testid="download-receipt-button"

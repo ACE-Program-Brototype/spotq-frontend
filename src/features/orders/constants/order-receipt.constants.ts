@@ -25,7 +25,6 @@ export const ORDER_RECEIPT_MESSAGES = {
   ERROR_TITLE: "Unable to load receipt",
   ERROR_DESCRIPTION: "We could not find or retrieve receipt details for this order.",
   RETRY_BUTTON: "Try Again",
-  OFFLINE_COPY_NOTICE: "Official spotQ digital customer receipt",
   ORDER_DATE_LABEL: "Date & Time",
   ORDER_STATUS_LABEL: "Status",
   RESTAURANT_LABEL: "Restaurant",
