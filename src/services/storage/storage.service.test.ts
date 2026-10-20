@@ -294,7 +294,7 @@ describe("storage.service", () => {
       expect(apiClient.delete).not.toHaveBeenCalled();
     });
 
-    it("sends DELETE request with object key payload", async () => {
+    it("sends DELETE request with object key search parameters", async () => {
       (apiClient.delete as jest.Mock).mockReturnValue({
         json: jest.fn().mockResolvedValue({
           success: true,
@@ -305,7 +305,7 @@ describe("storage.service", () => {
       await deleteS3Object("restaurants/123/images/photo.jpg");
 
       expect(apiClient.delete).toHaveBeenCalledWith(STORAGE_ENDPOINTS.S3_OBJECT, {
-        json: { key: "restaurants/123/images/photo.jpg" },
+        searchParams: { key: "restaurants/123/images/photo.jpg" },
       });
     });
 

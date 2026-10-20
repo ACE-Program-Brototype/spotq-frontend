@@ -77,11 +77,8 @@ export default function DocumentUploadCard({
         documentKey: result.s3ObjectKey,
       });
 
-      // Best effort cleanup of previous document on replace
       if (oldDocumentKey && oldDocumentKey !== result.s3ObjectKey) {
-        deleteMutation.mutateAsync(oldDocumentKey).catch((cleanupErr) => {
-          console.warn("Failed to clean up replaced S3 document:", cleanupErr);
-        });
+        deleteMutation.mutate(oldDocumentKey);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload document. Please try again.");

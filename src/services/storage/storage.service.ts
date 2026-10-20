@@ -217,7 +217,7 @@ export async function deleteS3Object(key: string): Promise<void> {
 
   const response = await apiClient
     .delete(STORAGE_ENDPOINTS.S3_OBJECT, {
-      json: { key: trimmedKey },
+      searchParams: { key: trimmedKey },
     })
     .json<ApiResponse<unknown>>();
 
