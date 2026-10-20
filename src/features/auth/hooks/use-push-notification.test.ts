@@ -149,7 +149,7 @@ describe("usePushNotification", () => {
             body: "Your order is ready",
           },
           data: {
-            url: "/customer/orders/123",
+            deepLink: "/customer/orders/123",
           },
         });
       });

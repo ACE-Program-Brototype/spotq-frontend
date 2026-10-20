@@ -113,21 +113,17 @@ export const usePushNotification = () => {
         payload.data?.title ||
         PUSH_NOTIFICATION_MESSAGES.DEFAULT_TITLE;
       const body = payload.notification?.body || payload.data?.body || "";
-      const targetUrl = payload.data?.url || payload.data?.click_action;
+      const deepLink = payload.data?.deepLink || payload.data?.click_action;
 
       playNotificationChime();
       toast.info(title, {
         description: body,
-        ...(targetUrl
+        ...(deepLink
           ? {
               action: {
                 label: "View",
                 onClick: () => {
-                  if (targetUrl.startsWith("http://") || targetUrl.startsWith("https://")) {
-                    window.location.href = targetUrl;
-                  } else {
-                    navigate(targetUrl);
-                  }
+                  navigate(deepLink);
                 },
               },
             }

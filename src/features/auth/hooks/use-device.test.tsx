@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { DEVICE_QUERY_KEYS } from "../constants/auth.constants";
-import { deactivateDevice, getDevices, registerDevice } from "../services/device.service";
+import { deviceService } from "../services/device.service";
 import type {
   CustomerDeviceItem,
   CustomerDevicesResponse,
@@ -12,9 +12,11 @@ import type {
 import { useCustomerDevices, useDeactivateDevice, useRegisterDevice } from "./use-device";
 
 jest.mock("../services/device.service", () => ({
-  registerDevice: jest.fn(),
-  getDevices: jest.fn(),
-  deactivateDevice: jest.fn(),
+  deviceService: {
+    registerDevice: jest.fn(),
+    getDevices: jest.fn(),
+    deactivateDevice: jest.fn(),
+  },
 }));
 
 describe("Device Hooks", () => {
@@ -46,7 +48,7 @@ describe("Device Hooks", () => {
         },
       };
 
-      (registerDevice as jest.Mock).mockResolvedValue(mockResponse);
+      (deviceService.registerDevice as jest.Mock).mockResolvedValue(mockResponse);
       const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
 
       const { result } = renderHook(() => useRegisterDevice(), { wrapper });
@@ -58,7 +60,7 @@ describe("Device Hooks", () => {
         });
       });
 
-      expect(registerDevice).toHaveBeenCalledWith({
+      expect(deviceService.registerDevice).toHaveBeenCalledWith({
         deviceId: "test-device-id",
         platform: "WEB",
       });
@@ -90,13 +92,13 @@ describe("Device Hooks", () => {
         data: mockDevices,
       };
 
-      (getDevices as jest.Mock).mockResolvedValue(mockResponse);
+      (deviceService.getDevices as jest.Mock).mockResolvedValue(mockResponse);
 
       const { result } = renderHook(() => useCustomerDevices(), { wrapper });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(getDevices).toHaveBeenCalledTimes(1);
+      expect(deviceService.getDevices).toHaveBeenCalledTimes(1);
       expect(result.current.data).toEqual(mockResponse);
     });
 
@@ -106,7 +108,7 @@ describe("Device Hooks", () => {
       });
 
       expect(result.current.fetchStatus).toBe("idle");
-      expect(getDevices).not.toHaveBeenCalled();
+      expect(deviceService.getDevices).not.toHaveBeenCalled();
     });
   });
 
@@ -118,7 +120,7 @@ describe("Device Hooks", () => {
         data: null,
       };
 
-      (deactivateDevice as jest.Mock).mockResolvedValue(mockResponse);
+      (deviceService.deactivateDevice as jest.Mock).mockResolvedValue(mockResponse);
       const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
 
       const { result } = renderHook(() => useDeactivateDevice(), { wrapper });
@@ -127,7 +129,7 @@ describe("Device Hooks", () => {
         await result.current.mutateAsync("device-to-deactivate");
       });
 
-      expect(deactivateDevice).toHaveBeenCalledWith("device-to-deactivate");
+      expect(deviceService.deactivateDevice).toHaveBeenCalledWith("device-to-deactivate");
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: DEVICE_QUERY_KEYS.ALL,
       });

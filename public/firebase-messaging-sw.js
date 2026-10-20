@@ -45,7 +45,10 @@ if (firebaseConfig.apiKey && firebaseConfig.projectId) {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const clickAction = event.notification.data?.click_action || event.notification.data?.url || "/";
+  const clickAction =
+    event.notification.data?.deepLink ||
+    event.notification.data?.click_action ||
+    "/";
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {

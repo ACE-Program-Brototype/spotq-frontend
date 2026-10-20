@@ -23,8 +23,10 @@ import type {
 } from "@/features/auth/types/auth.types";
 import { mapApiAuthResponseToAuthResult } from "@/features/auth/utils/auth.mapper";
 import { apiClient } from "@/lib/api/client";
+import type { ApiResponse } from "@/types/api.types";
 import { getDeviceName } from "../utils/device.utils";
-import { deactivateDevice, deviceService, getDevices, registerDevice } from "./device.service";
+
+export type { ApiResponse };
 
 export type LoginResponse = {
   success: boolean;
@@ -33,13 +35,6 @@ export type LoginResponse = {
     access_token: string;
     user: User;
   };
-};
-
-export type ApiResponse<T = unknown> = {
-  success: boolean;
-  statusCode?: number;
-  message: string;
-  data?: T;
 };
 
 type StaffLoginApiRes = {
@@ -237,13 +232,7 @@ export const authService = {
       message: rawResponse.message,
     };
   },
-
-  registerDevice: deviceService.registerDevice,
-  getDevices: deviceService.getDevices,
-  deactivateDevice: deviceService.deactivateDevice,
 };
-
-export { deactivateDevice, deviceService, getDevices, registerDevice };
 
 export async function loginStaff(data: LoginFormValues): Promise<StaffLoginResponse> {
   const res = await apiClient

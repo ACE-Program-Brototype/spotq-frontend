@@ -1,18 +1,14 @@
+import type { ApiResponse } from "@/types/api.types";
+
+export type { ApiResponse };
 export type PlatformType = "ANDROID" | "IOS" | "WEB";
 
 export interface RegisterDeviceRequest {
-  deviceId: string; // Required: 1-255 chars (e.g. UUID stored in localStorage)
-  fid?: string | null; // Firebase Installation ID (FID)
-  platform: PlatformType; // Required: "WEB" for browser clients
-  appVersion?: string | null; // Optional: e.g. "1.0.0"
-  deviceName?: string | null; // Optional: e.g. "Chrome on macOS"
-}
-
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  message: string;
-  data: T;
-  statusCode?: number;
+  deviceId: string;
+  fid?: string | null;
+  platform: PlatformType;
+  appVersion?: string | null;
+  deviceName?: string | null;
 }
 
 export interface RegisterDeviceResponseData {

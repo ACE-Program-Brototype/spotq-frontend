@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DEVICE_QUERY_KEYS } from "../constants/auth.constants";
-import { deactivateDevice, getDevices, registerDevice } from "../services/device.service";
+import { deviceService } from "../services/device.service";
 import type {
   CustomerDevicesResponse,
   DeactivateDeviceResponse,
@@ -15,7 +15,7 @@ export const useRegisterDevice = () => {
   const queryClient = useQueryClient();
 
   return useMutation<RegisterDeviceResponse, Error, Partial<RegisterDeviceRequest> | undefined>({
-    mutationFn: (input) => registerDevice(input || undefined),
+    mutationFn: (input) => deviceService.registerDevice(input || undefined),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DEVICE_QUERY_KEYS.ALL });
     },
@@ -28,7 +28,7 @@ export const useRegisterDevice = () => {
 export const useCustomerDevices = (options?: { enabled?: boolean }) => {
   return useQuery<CustomerDevicesResponse, Error>({
     queryKey: DEVICE_QUERY_KEYS.LIST(),
-    queryFn: () => getDevices(),
+    queryFn: () => deviceService.getDevices(),
     enabled: options?.enabled ?? true,
   });
 };
@@ -40,7 +40,7 @@ export const useDeactivateDevice = () => {
   const queryClient = useQueryClient();
 
   return useMutation<DeactivateDeviceResponse, Error, string>({
-    mutationFn: (deviceId: string) => deactivateDevice(deviceId),
+    mutationFn: (deviceId: string) => deviceService.deactivateDevice(deviceId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DEVICE_QUERY_KEYS.ALL });
     },

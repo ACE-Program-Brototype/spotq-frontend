@@ -39,7 +39,3 @@ export const deviceService = {
       .json<DeactivateDeviceResponse>();
   },
 };
-
-export const registerDevice = deviceService.registerDevice;
-export const getDevices = deviceService.getDevices;
-export const deactivateDevice = deviceService.deactivateDevice;

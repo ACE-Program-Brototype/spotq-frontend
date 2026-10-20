@@ -12,6 +12,7 @@ import {
   unregister,
 } from "firebase/messaging";
 import env from "@/config/env";
+import { firebaseConfig } from "./firebase.config";
 
 let firebaseApp: FirebaseApp | null = null;
 let messagingInstance: Messaging | null = null;
@@ -34,15 +35,7 @@ export const getFirebaseApp = (): FirebaseApp | null => {
     return firebaseApp;
   }
 
-  firebaseApp = initializeApp({
-    apiKey: env.firebase.apiKey,
-    authDomain: env.firebase.authDomain,
-    projectId: env.firebase.projectId,
-    storageBucket: env.firebase.storageBucket,
-    messagingSenderId: env.firebase.messagingSenderId,
-    appId: env.firebase.appId,
-    measurementId: env.firebase.measurementId,
-  });
+  firebaseApp = initializeApp(firebaseConfig);
 
   return firebaseApp;
 };

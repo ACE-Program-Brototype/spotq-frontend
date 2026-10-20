@@ -6,7 +6,7 @@ import type {
   DeactivateDeviceResponse,
   RegisterDeviceResponse,
 } from "../types/device.types";
-import { deactivateDevice, deviceService, getDevices, registerDevice } from "./device.service";
+import { deviceService } from "./device.service";
 
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
@@ -44,7 +44,7 @@ describe("deviceService", () => {
         fid: "sample-fid-token",
       };
 
-      const result = await registerDevice(payload);
+      const result = await deviceService.registerDevice(payload);
 
       expect(apiClient.post).toHaveBeenCalledWith(DEVICE_ENDPOINTS.DEVICES, {
         json: payload,
@@ -106,7 +106,7 @@ describe("deviceService", () => {
       const mockJson = jest.fn().mockResolvedValue(mockResponse);
       (apiClient.get as jest.Mock).mockReturnValue({ json: mockJson });
 
-      const result = await getDevices();
+      const result = await deviceService.getDevices();
 
       expect(apiClient.get).toHaveBeenCalledWith(DEVICE_ENDPOINTS.DEVICES);
       expect(result).toEqual(mockResponse);
@@ -124,7 +124,7 @@ describe("deviceService", () => {
       const mockJson = jest.fn().mockResolvedValue(mockResponse);
       (apiClient.delete as jest.Mock).mockReturnValue({ json: mockJson });
 
-      const result = await deactivateDevice("device/with special@chars");
+      const result = await deviceService.deactivateDevice("device/with special@chars");
 
       expect(apiClient.delete).toHaveBeenCalledWith(
         "users/me/devices/device%2Fwith%20special%40chars",
