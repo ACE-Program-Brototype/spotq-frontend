@@ -44,6 +44,7 @@ export interface GetCustomerRestaurantsParams {
   maxPrice?: number;
   sortBy?: "createdAt" | "restaurantName" | "name" | "city" | "price" | "rating";
   sortOrder?: "asc" | "desc";
+  signal?: AbortSignal;
 }
 
 export type CustomerSortOptionValue = "newest" | "name_asc" | "price_asc" | "price_desc";

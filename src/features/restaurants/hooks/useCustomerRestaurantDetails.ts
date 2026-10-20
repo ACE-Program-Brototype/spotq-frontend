@@ -13,11 +13,11 @@ import type { CustomerRestaurantDetails } from "../types/customer-restaurant-det
 export function useCustomerRestaurantDetails(restaurantId?: string) {
   const query = useQuery<CustomerRestaurantDetails, Error>({
     queryKey: CUSTOMER_RESTAURANT_QUERY_KEYS.DETAILS(restaurantId ?? ""),
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       if (!restaurantId?.trim()) {
         throw new Error("Restaurant ID is required");
       }
-      return customerRestaurantService.getRestaurantDetails(restaurantId.trim());
+      return customerRestaurantService.getRestaurantDetails(restaurantId.trim(), true, signal);
     },
     enabled: Boolean(restaurantId && restaurantId.trim().length > 0),
     staleTime: CUSTOMER_RESTAURANT_DEFAULTS.CACHE_STALE_TIME_MS,

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { resolveImageUrl } from "@/lib/utils/image.utils";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 
@@ -13,7 +14,18 @@ export interface RestaurantCardProps {
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const [imageError, setImageError] = useState(false);
 
-  const { data: imageUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
+  // Fast path: direct CDN resolution avoids N+1 network requests
+  const directUrl = resolveImageUrl(restaurant.coverImage);
+  const isDirect = Boolean(directUrl?.startsWith("http"));
+
+  // Fallback to presigned URL only if not a direct URL
+  const { data: presignedUrl, isLoading: presignedLoading } = usePresignedUrl(
+    !isDirect ? restaurant.coverImage : null,
+  );
+
+  const imageUrl = isDirect ? directUrl : presignedUrl;
+  const isLoading = !isDirect && presignedLoading;
+
   const locationLabel = `${restaurant.city || ""}${restaurant.city && restaurant.state ? ", " : ""}${restaurant.state || ""}`;
 
   const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? null;

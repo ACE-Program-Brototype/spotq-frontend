@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
 import type { CustomerRestaurantMenuItem } from "@/features/restaurants/types/customer-restaurant-details.types";
+import { resolveImageUrl } from "@/lib/utils/image.utils";
 
 export interface MenuItemCardProps {
   item: CustomerRestaurantMenuItem;
@@ -11,7 +12,17 @@ export interface MenuItemCardProps {
 export function MenuItemCard({ item, onSelect }: MenuItemCardProps) {
   const [imageError, setImageError] = useState(false);
   const firstImageKey = item.images?.[0]?.objectKey;
-  const { data: imageUrl, isLoading: imageLoading } = usePresignedUrl(firstImageKey);
+
+  // Direct CDN resolution avoids N+1 network requests across 40+ dishes
+  const directUrl = resolveImageUrl(firstImageKey);
+  const isDirect = Boolean(directUrl?.startsWith("http"));
+
+  const { data: presignedUrl, isLoading: presignedLoading } = usePresignedUrl(
+    !isDirect ? firstImageKey : null,
+  );
+
+  const imageUrl = isDirect ? directUrl : presignedUrl;
+  const imageLoading = !isDirect && presignedLoading;
 
   const isSoldOut = !item.isAvailable;
 
@@ -35,9 +46,7 @@ export function MenuItemCard({ item, onSelect }: MenuItemCardProps) {
           />
         ) : (
           <div className="flex size-full flex-col items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-950 p-4 text-center">
-            <span className="text-xs font-semibold text-neutral-400">
-              {item.name}
-            </span>
+            <span className="text-xs font-semibold text-neutral-400">{item.name}</span>
           </div>
         )}
 

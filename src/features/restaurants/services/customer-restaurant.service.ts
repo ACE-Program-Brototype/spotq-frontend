@@ -3,13 +3,13 @@ import {
   CUSTOMER_RESTAURANT_DEFAULTS,
   CUSTOMER_RESTAURANT_ENDPOINTS,
 } from "../constants/customer-restaurant.constants";
-import type { CustomerRestaurantDetails } from "../types/customer-restaurant-details.types";
 import type {
   CustomerRestaurantItem,
   CustomerRestaurantsApiResponse,
   CustomerRestaurantsListData,
   GetCustomerRestaurantsParams,
 } from "../types/customer-restaurant.types";
+import type { CustomerRestaurantDetails } from "../types/customer-restaurant-details.types";
 
 export const customerRestaurantService = {
   /**
@@ -56,6 +56,7 @@ export const customerRestaurantService = {
     const response = await apiClient
       .get(CUSTOMER_RESTAURANT_ENDPOINTS.LIST, {
         searchParams,
+        signal: params?.signal,
       })
       .json<CustomerRestaurantsApiResponse>();
 
@@ -74,16 +75,17 @@ export const customerRestaurantService = {
     };
   },
 
-
   async getRestaurantDetails(
     restaurantId: string,
     includeMenu = true,
+    signal?: AbortSignal,
   ): Promise<CustomerRestaurantDetails> {
     const response = await apiClient
       .get(CUSTOMER_RESTAURANT_ENDPOINTS.DETAILS(restaurantId), {
         searchParams: {
           includeMenu: String(includeMenu),
         },
+        signal,
       })
       .json<{ success: boolean; data: CustomerRestaurantDetails }>();
 
