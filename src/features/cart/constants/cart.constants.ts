@@ -2,6 +2,9 @@ export const CART_ENDPOINTS = {
   BASE: "carts",
   BY_ID: (cartId: string) => `carts/${cartId}`,
   ADD_ITEM: (cartId: string) => `carts/${cartId}/items`,
+  UPDATE_ITEM_QUANTITY: (cartId: string, cartItemId: string) =>
+    `carts/${cartId}/items/${cartItemId}`,
+  REMOVE_ITEM: (cartId: string, cartItemId: string) => `carts/${cartId}/items/${cartItemId}`,
 } as const;
 
 export const CART_STORAGE_KEYS = {
@@ -63,6 +66,17 @@ export const CART_UI_MESSAGES = {
   ITEM_UNAVAILABLE_MESSAGE: "This item or option is currently unavailable.",
   SELECT_VARIANT_FIRST: "Select an option",
 
+  // Quantity Stepper & Update UI messages
+  UPDATE_QUANTITY_SUCCESS: "Cart updated",
+  REMOVE_ITEM_SUCCESS: "Item removed from cart",
+  REMOVE_CONFIRM_TITLE: "Remove item?",
+  REMOVE_CONFIRM_ACTION: "Remove",
+  KEEP_ITEM_ACTION: "Keep",
+  CONFIRM_REMOVE_ARIA: "Confirm remove item from cart",
+  CANCEL_REMOVE_ARIA: "Cancel remove item",
+  MAX_QUANTITY_REACHED_TOOLTIP: "Maximum limit reached (20)",
+  UPDATING_QUANTITY: "Updating...",
+
   // Restaurant Mismatch Conflict Dialog
   MISMATCH_DIALOG_TITLE: "Replace cart items?",
   MISMATCH_DIALOG_DESCRIPTION:
@@ -70,4 +84,10 @@ export const CART_UI_MESSAGES = {
   MISMATCH_CLEAR_AND_ADD: "Clear Cart & Add",
   MISMATCH_CANCEL: "Cancel",
   MISMATCH_CLEARING: "Clearing cart...",
+} as const;
+
+export const CART_LIMITS = {
+  MIN_QUANTITY: 1,
+  MAX_QUANTITY: 20,
+  DEBOUNCE_DELAY_MS: 300,
 } as const;

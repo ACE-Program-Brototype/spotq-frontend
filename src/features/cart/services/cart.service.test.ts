@@ -5,6 +5,8 @@ jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
     post: jest.fn(),
+    patch: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -108,5 +110,69 @@ describe("cartService", () => {
     expect(result.cartId).toBe("cart-123");
     expect(result.itemCount).toBe(3);
     expect(result.subtotal).toBe(750);
+  });
+
+  it("updates an item quantity in the cart", async () => {
+    const mockUpdateData = {
+      cartId: "cart-123",
+      restaurantId: "rest-456",
+      itemCount: 5,
+      subtotal: 1250,
+      updatedAt: "2026-10-16T10:10:00.000Z",
+      items: [
+        {
+          cartItemId: "item-1",
+          menuItemId: "dish-1",
+          quantity: 5,
+          unitPrice: 250,
+          totalPrice: 1250,
+        },
+      ],
+    };
+
+    (apiClient.patch as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        success: true,
+        statusCode: 200,
+        message: "Cart item updated successfully",
+        data: mockUpdateData,
+      }),
+    });
+
+    const result = await cartService.updateQuantity("cart-123", "item-1", 5);
+
+    expect(apiClient.patch).toHaveBeenCalledWith("carts/cart-123/items/item-1", {
+      json: { quantity: 5 },
+    });
+    expect(result.cartId).toBe("cart-123");
+    expect(result.itemCount).toBe(5);
+    expect(result.subtotal).toBe(1250);
+  });
+
+  it("removes an item from the cart", async () => {
+    const mockRemoveData = {
+      cartId: "cart-123",
+      restaurantId: "rest-456",
+      itemCount: 0,
+      subtotal: 0,
+      updatedAt: "2026-10-16T10:12:00.000Z",
+      items: [],
+    };
+
+    (apiClient.delete as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        success: true,
+        statusCode: 200,
+        message: "Cart item removed successfully",
+        data: mockRemoveData,
+      }),
+    });
+
+    const result = await cartService.removeItem("cart-123", "item-1");
+
+    expect(apiClient.delete).toHaveBeenCalledWith("carts/cart-123/items/item-1");
+    expect(result.cartId).toBe("cart-123");
+    expect(result.itemCount).toBe(0);
+    expect(result.subtotal).toBe(0);
   });
 });

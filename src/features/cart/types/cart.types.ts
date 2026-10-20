@@ -63,3 +63,24 @@ export interface AddCartItemData {
   updatedAt: string;
   items: AddCartItemResponseItem[];
 }
+
+export interface UpdateCartItemQuantityInput {
+  quantity: number;
+}
+
+export interface UpdateCartItemQuantityResponseItem {
+  cartItemId: string;
+  menuItemId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface UpdateCartItemQuantityData {
+  cartId: string;
+  restaurantId: string;
+  itemCount: number;
+  subtotal: number;
+  updatedAt: string;
+  items: UpdateCartItemQuantityResponseItem[];
+}
