@@ -67,6 +67,9 @@ export const CART_UI_MESSAGES = {
 
   UPDATE_QUANTITY_SUCCESS: "Cart updated",
   REMOVE_ITEM_SUCCESS: "Item removed from cart",
+  REMOVE_ITEM_ERROR: "Failed to remove item from cart",
+  REMOVING_ITEM: "Removing...",
+  REMOVE_ITEM_ARIA: "Remove item",
   REMOVE_CONFIRM_TITLE: "Remove item?",
   REMOVE_CONFIRM_ACTION: "Remove",
   KEEP_ITEM_ACTION: "Keep",

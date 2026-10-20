@@ -88,6 +88,17 @@ describe("CartItemRow component", () => {
 
     fireEvent.click(screen.getByTestId("quantity-stepper-decrement"));
     expect(handleDecrement).toHaveBeenCalledWith("item-123");
+
+    fireEvent.click(screen.getByTestId("remove-item-button-item-123"));
+    expect(handleRemove).toHaveBeenCalledWith("item-123");
+  });
+
+  it("renders RemoveItemButton with accessible label on each item row", () => {
+    render(<CartItemRow item={mockItem} />, { wrapper: createWrapper() });
+
+    const removeBtn = screen.getByTestId("remove-item-button-item-123");
+    expect(removeBtn).toBeInTheDocument();
+    expect(removeBtn).toHaveAttribute("aria-label", "Remove item");
   });
 
   it("renders cleanly without variant, addons, or special instructions when omitted", () => {

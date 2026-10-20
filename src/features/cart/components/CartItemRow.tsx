@@ -1,10 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils/currency";
 import { CART_UI_MESSAGES } from "../constants/cart.constants";
+import { useRemoveCartItem } from "../hooks/use-remove-cart-item";
 import { useUpdateCartQuantity } from "../hooks/use-update-cart-quantity";
 import type { CartItem } from "../types/cart.types";
 import { ItemPriceDisplay } from "./ItemPriceDisplay";
 import { QuantityStepper } from "./QuantityStepper";
+import { RemoveItemButton } from "./RemoveItemButton";
 
 export interface CartItemRowProps {
   item: CartItem;
@@ -25,10 +27,12 @@ export function CartItemRow({
   onRemove,
   isPending,
 }: CartItemRowProps) {
-  const hook = useUpdateCartQuantity({ cartId });
+  const updateHook = useUpdateCartQuantity({ cartId });
+  const removeHook = useRemoveCartItem({ cartId });
 
+  const isRemoving = removeHook.isItemRemoving(item.cartItemId);
   const effectiveIsPending =
-    isPending !== undefined ? isPending : hook.isItemPending(item.cartItemId);
+    isPending !== undefined ? isPending : updateHook.isItemPending(item.cartItemId) || isRemoving;
 
   const handleIncrement = () => {
     if (onIncrement) {
@@ -36,7 +40,7 @@ export function CartItemRow({
     } else if (onUpdateQuantity) {
       onUpdateQuantity(item.cartItemId, item.quantity + 1);
     } else {
-      hook.increment(item.cartItemId);
+      updateHook.increment(item.cartItemId);
     }
   };
 
@@ -46,7 +50,7 @@ export function CartItemRow({
     } else if (onUpdateQuantity) {
       onUpdateQuantity(item.cartItemId, item.quantity - 1);
     } else {
-      hook.decrement(item.cartItemId);
+      updateHook.decrement(item.cartItemId);
     }
   };
 
@@ -56,14 +60,16 @@ export function CartItemRow({
     } else if (onUpdateQuantity) {
       onUpdateQuantity(item.cartItemId, 0);
     } else {
-      hook.removeItem(item.cartItemId);
+      removeHook.removeItem(item.cartItemId);
     }
   };
 
   return (
     <div
       data-testid={`cart-item-row-${item.cartItemId}`}
-      className="group relative flex items-start justify-between gap-3 p-3.5 rounded-xl border border-neutral-200/70 bg-white hover:border-neutral-300 hover:shadow-xs transition-all duration-200"
+      className={`group relative flex items-start justify-between gap-3 p-3.5 rounded-xl border border-neutral-200/70 bg-white hover:border-neutral-300 hover:shadow-xs transition-all duration-300 ease-in-out ${
+        isRemoving ? "opacity-30 scale-95 pointer-events-none" : ""
+      }`}
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
@@ -117,11 +123,18 @@ export function CartItemRow({
       </div>
 
       <div className="flex flex-col items-end justify-between gap-3 shrink-0 self-stretch">
-        <ItemPriceDisplay
-          totalPrice={item.totalPrice}
-          unitPrice={item.unitPrice}
-          quantity={item.quantity}
-        />
+        <div className="flex items-center gap-2">
+          <ItemPriceDisplay
+            totalPrice={item.totalPrice}
+            unitPrice={item.unitPrice}
+            quantity={item.quantity}
+          />
+          <RemoveItemButton
+            cartItemId={item.cartItemId}
+            onRemove={handleRemove}
+            isPending={effectiveIsPending}
+          />
+        </div>
 
         <QuantityStepper
           quantity={item.quantity}

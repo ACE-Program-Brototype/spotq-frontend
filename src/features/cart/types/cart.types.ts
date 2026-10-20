@@ -84,3 +84,5 @@ export interface UpdateCartItemQuantityData {
   updatedAt: string;
   items: UpdateCartItemQuantityResponseItem[];
 }
+
+export type RemoveCartItemData = UpdateCartItemQuantityData;
