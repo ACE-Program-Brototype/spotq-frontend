@@ -1,3 +1,4 @@
+import env from "@/config/env";
 import { apiClient } from "@/lib/api/client";
 import { ORDER_RECEIPT_ENDPOINTS } from "../constants/order-receipt.constants";
 import { MOCK_ORDER_RECEIPT } from "../mocks/order-receipt.mock";
@@ -16,7 +17,7 @@ export const orderService = {
         return response.data;
       }
     } catch (error) {
-      if (MOCK_ORDER_IDS.has(orderId)) {
+      if (env.isDev && MOCK_ORDER_IDS.has(orderId)) {
         return {
           ...MOCK_ORDER_RECEIPT,
           order_id: orderId,
@@ -25,7 +26,7 @@ export const orderService = {
       throw error instanceof Error ? error : new Error("Order receipt not found");
     }
 
-    if (MOCK_ORDER_IDS.has(orderId)) {
+    if (env.isDev && MOCK_ORDER_IDS.has(orderId)) {
       return {
         ...MOCK_ORDER_RECEIPT,
         order_id: orderId,
