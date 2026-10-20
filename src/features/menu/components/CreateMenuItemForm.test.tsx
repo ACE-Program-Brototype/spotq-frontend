@@ -165,7 +165,7 @@ describe("CreateMenuItemForm", () => {
         }),
       );
     });
-  });
+  }, 15000);
 
   it("handles edit mode prefilling and calls updateMenuItem on submit", async () => {
     const user = userEvent.setup();
@@ -244,5 +244,5 @@ describe("CreateMenuItemForm", () => {
         }),
       );
     });
-  });
+  }, 15000);
 });

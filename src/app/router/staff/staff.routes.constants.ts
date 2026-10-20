@@ -1,9 +1,3 @@
-/**
- * Staff Route Paths and Navigation Helpers
- * Single source of truth for all /staff/* routes.
- */
-
-// Relative route paths used in React Router route definitions
 export const STAFF_ROUTE_PATHS = {
   AUTH: {
     LOGIN: "login",
@@ -20,9 +14,10 @@ export const STAFF_ROUTE_PATHS = {
     ROOT: "menu",
     ITEMS: "menu/items",
   },
+  QUEUE: "queue",
+  TABLES: "tables",
 } as const;
 
-// Absolute paths and route builders for navigate() and <Link to="..." />
 export const STAFF_ROUTES = {
   ROOT: "/staff",
   LOGIN: "/staff/login",
@@ -39,4 +34,6 @@ export const STAFF_ROUTES = {
     ROOT: "/staff/menu",
     ITEMS: "/staff/menu/items",
   },
+  QUEUE: "/staff/queue",
+  TABLES: "/staff/tables",
 } as const;
