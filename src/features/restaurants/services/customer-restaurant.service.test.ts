@@ -168,4 +168,50 @@ describe("customerRestaurantService", () => {
     expect(result.restaurants).toEqual([]);
     expect(result.pagination.total).toBe(0);
   });
+
+  describe("getRestaurantDetails", () => {
+    it("fetches customer restaurant details by ID with default includeMenu=true", async () => {
+      const mockDetails = {
+        id: "rest-123",
+        restaurantName: "Spice Symphony",
+        city: "New Delhi",
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: mockDetails,
+        }),
+      });
+
+      const result = await customerRestaurantService.getRestaurantDetails("rest-123");
+
+      expect(apiClient.get).toHaveBeenCalledWith("restaurants/rest-123", {
+        searchParams: {
+          includeMenu: "true",
+        },
+        signal: undefined,
+      });
+      expect(result).toEqual(mockDetails);
+    });
+
+    it("supports includeMenu=false and forwards AbortSignal", async () => {
+      const controller = new AbortController();
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: { id: "rest-456" },
+        }),
+      });
+
+      await customerRestaurantService.getRestaurantDetails("rest-456", false, controller.signal);
+
+      expect(apiClient.get).toHaveBeenCalledWith("restaurants/rest-456", {
+        searchParams: {
+          includeMenu: "false",
+        },
+        signal: controller.signal,
+      });
+    });
+  });
 });

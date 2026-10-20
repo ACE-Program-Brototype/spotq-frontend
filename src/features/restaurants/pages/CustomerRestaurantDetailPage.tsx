@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { RestaurantAboutSection } from "../components/Customer/details/RestaurantAboutSection";
 import { RestaurantDetailErrorState } from "../components/Customer/details/RestaurantDetailErrorState";
 import { RestaurantDetailSkeleton } from "../components/Customer/details/RestaurantDetailSkeleton";
 import { RestaurantHeroHeader } from "../components/Customer/details/RestaurantHeroHeader";
@@ -58,7 +59,10 @@ export default function CustomerRestaurantDetailPage() {
 
   const handleCategoryClick = (categoryId: string) => {
     setActiveCategoryId(categoryId);
-    const element = document.getElementById(`category-${categoryId}`);
+    const element =
+      categoryId === "restaurant-about"
+        ? document.getElementById("restaurant-about")
+        : document.getElementById(`category-${categoryId}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -118,6 +122,17 @@ export default function CustomerRestaurantDetailPage() {
                         </button>
                       );
                     })}
+
+                  <button
+                    type="button"
+                    onClick={() => handleCategoryClick("restaurant-about")}
+                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border-t border-neutral-100 mt-2 pt-3 ${activeCategoryId === "restaurant-about"
+                      ? "bg-[#ff6b00] text-white shadow-xs"
+                      : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                      }`}
+                  >
+                    Overview & Hours
+                  </button>
                 </nav>
               ) : (
                 <p className="text-xs text-neutral-400 italic">No categories available yet</p>
@@ -176,6 +191,11 @@ export default function CustomerRestaurantDetailPage() {
                 );
               })
             )}
+
+            {/* Restaurant Info & Operating Hours */}
+            <section id="restaurant-about" className="pt-8 border-t border-neutral-200/80 scroll-mt-28">
+              <RestaurantAboutSection restaurant={restaurant} />
+            </section>
           </main>
         </div>
       </div>
