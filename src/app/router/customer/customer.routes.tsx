@@ -1,22 +1,31 @@
+import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
-import ForgotPasswordPage from "@/features/auth/pages/ForgotPasswordPage";
-import LoginPage from "@/features/auth/pages/LoginPage";
-import OtpVerificationPage from "@/features/auth/pages/OtpVerificationPage";
-import RegisterPage from "@/features/auth/pages/RegisterPage";
-import ResetPasswordPage from "@/features/auth/pages/ResetPasswordPage";
-import VerifyOtpPage from "@/features/auth/pages/VerifyOtpPage";
-import AboutPage from "@/features/demo/pages/AboutPage";
-import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
-import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
-import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
-import EditProfilePage from "@/features/profile/pages/EditProfilePage";
-import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
-import HomePage from "@/features/restaurants/pages/HomePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import { CUSTOMER_ROUTE_PATHS, CUSTOMER_ROUTES } from "./customer.routes.constants";
-import CustomerRestaurantDetailPage from "@/features/restaurants/pages/CustomerRestaurantDetailPage";
+
+// Lazy-loaded customer discovery and detail pages
+const HomePage = lazy(() => import("@/features/restaurants/pages/HomePage"));
+const CustomerRestaurantDetailPage = lazy(
+  () => import("@/features/restaurants/pages/CustomerRestaurantDetailPage"),
+);
+const AboutPage = lazy(() => import("@/features/demo/pages/AboutPage"));
+const ViewProfilePage = lazy(() => import("@/features/profile/pages/ViewProfilePage"));
+const EditProfilePage = lazy(() => import("@/features/profile/pages/EditProfilePage"));
+
+// Lazy-loaded auth pages
+const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
+const RegisterPage = lazy(() => import("@/features/auth/pages/RegisterPage"));
+const ForgotPasswordPage = lazy(() => import("@/features/auth/pages/ForgotPasswordPage"));
+const VerifyOtpPage = lazy(() => import("@/features/auth/pages/VerifyOtpPage"));
+const ResetPasswordPage = lazy(() => import("@/features/auth/pages/ResetPasswordPage"));
+const OtpVerificationPage = lazy(() => import("@/features/auth/pages/OtpVerificationPage"));
+
+// Lazy-loaded legal pages
+const TermsAndConditionsPage = lazy(() => import("@/features/legal/pages/TermsAndConditionsPage"));
+const PrivacyPolicyPage = lazy(() => import("@/features/legal/pages/PrivacyPolicyPage"));
+const CookiePolicyPage = lazy(() => import("@/features/legal/pages/CookiePolicyPage"));
 
 const CustomerProtectedLayout = () => (
   <ProtectedLayout allowedRoles={["CUSTOMER"]} redirectTo={CUSTOMER_ROUTES.AUTH.LOGIN} />
