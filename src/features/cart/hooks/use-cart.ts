@@ -35,10 +35,12 @@ export function useCart(options?: UseCartOptions) {
           } catch {}
         }
 
-        if (statusCode === 410 || statusCode === 404 || statusCode === 409) {
-          toast.error(CART_UI_MESSAGES.EXPIRED_TITLE, {
-            description: errorMessage || CART_UI_MESSAGES.EXPIRED_MESSAGE,
-          });
+        if (statusCode === 410 || statusCode === 404 || statusCode === 409 || statusCode === 403) {
+          if (statusCode !== 403) {
+            toast.error(CART_UI_MESSAGES.EXPIRED_TITLE, {
+              description: errorMessage || CART_UI_MESSAGES.EXPIRED_MESSAGE,
+            });
+          }
           resetCart();
           return null;
         }

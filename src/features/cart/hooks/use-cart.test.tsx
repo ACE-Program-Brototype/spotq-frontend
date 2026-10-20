@@ -117,4 +117,28 @@ describe("useCart hook", () => {
     expect(toast.error).toHaveBeenCalled();
     expect(useCartStore.getState().cartId).toBeNull();
   });
+
+  it("resets stale cart without toast when server returns 403 forbidden", async () => {
+    useCartStore.getState().setCartId("cart-other-user");
+
+    const errorResponse = {
+      response: {
+        status: 403,
+        clone: () => ({
+          json: async () => ({ message: "Access to this cart is unauthorized" }),
+        }),
+      },
+    };
+
+    (cartService.getCart as jest.Mock).mockRejectedValue(errorResponse);
+
+    const { result } = renderHook(() => useCart(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(useCartStore.getState().cartId).toBeNull();
+    expect(result.current.cart).toBeNull();
+  });
 });
