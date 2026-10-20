@@ -8,6 +8,7 @@ import { CartEmptyState } from "./CartEmptyState";
 import { CartItemList } from "./CartItemList";
 import { CartSkeleton } from "./CartSkeleton";
 import { CartSummaryCard } from "./CartSummaryCard";
+import { ClearCartButton } from "./ClearCartButton";
 
 export function CartDrawer() {
   const isDrawerOpen = useCartStore((state) => state.isDrawerOpen);
@@ -82,16 +83,19 @@ export function CartDrawer() {
             </div>
           </div>
 
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={CART_UI_MESSAGES.CLOSE_DRAWER_ARIA}
-            onClick={closeDrawer}
-            className="rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800"
-          >
-            <X className="size-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            {!isEmpty && <ClearCartButton />}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label={CART_UI_MESSAGES.CLOSE_DRAWER_ARIA}
+              onClick={closeDrawer}
+              className="rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800"
+            >
+              <X className="size-5" />
+            </Button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-4">

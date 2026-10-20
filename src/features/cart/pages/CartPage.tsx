@@ -7,6 +7,7 @@ import { CartEmptyState } from "../components/CartEmptyState";
 import { CartItemList } from "../components/CartItemList";
 import { CartSkeleton } from "../components/CartSkeleton";
 import { CartSummaryCard } from "../components/CartSummaryCard";
+import { ClearCartButton } from "../components/ClearCartButton";
 import { CART_UI_MESSAGES } from "../constants/cart.constants";
 import { useCart } from "../hooks/use-cart";
 
@@ -36,15 +37,18 @@ export function CartPage() {
         </div>
 
         {!isEmpty && (
-          <Link
-            to={CUSTOMER_ROUTES.HOME}
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "text-xs font-semibold text-neutral-600 hover:text-neutral-900",
-            )}
-          >
-            {CART_UI_MESSAGES.BROWSE_MENU}
-          </Link>
+          <div className="flex items-center gap-2">
+            <ClearCartButton />
+            <Link
+              to={CUSTOMER_ROUTES.HOME}
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "text-xs font-semibold text-neutral-600 hover:text-neutral-900",
+              )}
+            >
+              {CART_UI_MESSAGES.BROWSE_MENU}
+            </Link>
+          </div>
         )}
       </div>
 

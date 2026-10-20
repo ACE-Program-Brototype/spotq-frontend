@@ -48,4 +48,11 @@ export const cartService = {
       .json<ApiResponse<UpdateCartItemQuantityData>>();
     return response.data;
   },
+
+  async clearCart(cartId: string): Promise<UpdateCartItemQuantityData> {
+    const response = await apiClient
+      .delete(CART_ENDPOINTS.BY_ID(cartId))
+      .json<ApiResponse<UpdateCartItemQuantityData>>();
+    return response.data;
+  },
 };

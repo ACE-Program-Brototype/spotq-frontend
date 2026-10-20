@@ -86,3 +86,4 @@ export interface UpdateCartItemQuantityData {
 }
 
 export type RemoveCartItemData = UpdateCartItemQuantityData;
+export type ClearCartData = UpdateCartItemQuantityData;

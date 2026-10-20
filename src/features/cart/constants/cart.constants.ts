@@ -85,6 +85,16 @@ export const CART_UI_MESSAGES = {
   MISMATCH_CLEAR_AND_ADD: "Clear Cart & Add",
   MISMATCH_CANCEL: "Cancel",
   MISMATCH_CLEARING: "Clearing cart...",
+
+  CLEAR_CART_BUTTON_LABEL: "Clear Cart",
+  CLEAR_CART_ARIA: "Clear all items from cart",
+  CLEAR_CART_DIALOG_TITLE: "Clear your cart?",
+  CLEAR_CART_DIALOG_DESCRIPTION:
+    "Are you sure you want to remove all items from your order? This action cannot be undone.",
+  CLEAR_CART_CONFIRM_ACTION: "Clear Cart",
+  CLEAR_CART_CANCEL_ACTION: "Cancel",
+  CLEAR_CART_SUCCESS: "Cart cleared",
+  CLEAR_CART_ERROR: "Failed to clear cart",
 } as const;
 
 export const CART_LIMITS = {
