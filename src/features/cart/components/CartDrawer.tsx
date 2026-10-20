@@ -1,5 +1,7 @@
 import { AlertCircle, ShoppingBag, X } from "lucide-react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants";
 import { Button } from "@/components/ui/button";
 import { CART_UI_MESSAGES } from "../constants/cart.constants";
 import { useCart } from "../hooks/use-cart";
@@ -11,6 +13,7 @@ import { CartSummaryCard } from "./CartSummaryCard";
 import { ClearCartButton } from "./ClearCartButton";
 
 export function CartDrawer() {
+  const navigate = useNavigate();
   const isDrawerOpen = useCartStore((state) => state.isDrawerOpen);
   const closeDrawer = useCartStore((state) => state.closeDrawer);
 
@@ -139,6 +142,7 @@ export function CartDrawer() {
               itemCount={itemCount}
               onCheckout={() => {
                 closeDrawer();
+                navigate(CUSTOMER_ROUTES.CART);
               }}
             />
           </div>

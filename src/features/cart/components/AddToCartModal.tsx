@@ -139,7 +139,6 @@ export function AddToCartModal({
         data-testid="add-to-cart-modal"
         className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       >
-        {/* Backdrop */}
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
           onClick={() => {
@@ -150,9 +149,7 @@ export function AddToCartModal({
           aria-hidden="true"
         />
 
-        {/* Modal Container */}
         <div className="relative flex max-h-[90vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150">
-          {/* Header */}
           <div className="relative border-b border-neutral-100 p-5 pr-12">
             <button
               type="button"
@@ -195,9 +192,7 @@ export function AddToCartModal({
             </div>
           </div>
 
-          {/* Scrollable Customization Content */}
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
-            {/* 1. Variants */}
             {hasVariants && (
               <VariantSelector
                 variants={variants}
@@ -207,7 +202,6 @@ export function AddToCartModal({
               />
             )}
 
-            {/* 2. Add-ons */}
             {addons.length > 0 && (
               <AddonCheckboxGroup
                 addons={addons}
@@ -217,14 +211,12 @@ export function AddToCartModal({
               />
             )}
 
-            {/* 3. Special Instructions */}
             <SpecialInstructionsInput
               value={specialInstructions}
               onChange={setSpecialInstructions}
               disabled={isPending}
             />
 
-            {/* 4. Quantity Stepper */}
             <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
               <span className="text-sm font-semibold text-neutral-900">
                 {CART_UI_MESSAGES.QUANTITY_LABEL}
@@ -264,7 +256,6 @@ export function AddToCartModal({
             </div>
           </div>
 
-          {/* Sticky Footer */}
           <div className="border-t border-neutral-100 bg-neutral-50/80 p-4 backdrop-blur-xs flex items-center justify-between gap-4">
             <div>
               <span className="block text-[11px] font-medium text-neutral-500 uppercase tracking-wider">
@@ -297,7 +288,6 @@ export function AddToCartModal({
         </div>
       </div>
 
-      {/* 409 Conflict Dialog */}
       <RestaurantMismatchDialog
         isOpen={isMismatchOpen}
         onClose={() => setIsMismatchOpen(false)}

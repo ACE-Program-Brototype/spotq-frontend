@@ -1,5 +1,6 @@
 import { AlertCircle, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
@@ -89,7 +90,13 @@ export function CartPage() {
           </div>
 
           <div className="lg:col-span-5 sticky top-20">
-            <CartSummaryCard subtotal={subtotal} itemCount={itemCount} onCheckout={() => {}} />
+            <CartSummaryCard
+              subtotal={subtotal}
+              itemCount={itemCount}
+              onCheckout={() => {
+                toast.info(CART_UI_MESSAGES.CHECKOUT_IN_PROGRESS);
+              }}
+            />
           </div>
         </div>
       )}

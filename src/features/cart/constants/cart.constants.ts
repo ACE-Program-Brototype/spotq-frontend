@@ -26,6 +26,7 @@ export const CART_UI_MESSAGES = {
   TAXES_AND_CHARGES: "Taxes & Platform Fees",
   GRAND_TOTAL: "To Pay",
   PROCEED_TO_CHECKOUT: "Proceed to Checkout",
+  CHECKOUT_IN_PROGRESS: "Checkout flow will be available in the upcoming release",
   CLOSE_DRAWER_ARIA: "Close Cart Drawer",
   EXPIRED_TITLE: "Cart Expired",
   EXPIRED_MESSAGE: "Your cart session has expired. Please add items again to start a new order.",

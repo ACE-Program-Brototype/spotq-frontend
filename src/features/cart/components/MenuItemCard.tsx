@@ -80,9 +80,7 @@ export function MenuItemCard({
         data-testid={`menu-item-card-${item.id}`}
         className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border border-neutral-200 bg-white p-4 shadow-xs hover:border-neutral-300 hover:shadow-sm transition-all sm:flex-row sm:items-center sm:gap-4 ${className}`}
       >
-        {/* Left: Info */}
         <div className="flex-1 space-y-1.5 pr-2">
-          {/* Dietary Type & Featured */}
           <div className="flex items-center gap-2">
             {item.isVegetarian !== undefined && (
               <span
@@ -118,7 +116,6 @@ export function MenuItemCard({
           )}
         </div>
 
-        {/* Right: Image & Add Button */}
         <div className="relative mt-3 flex shrink-0 flex-col items-center sm:mt-0 sm:w-28">
           <div className="relative size-24 sm:size-24 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center">
             {imageSrc ? (
@@ -173,7 +170,6 @@ export function MenuItemCard({
         </div>
       </div>
 
-      {/* Customization Modal */}
       {hasCustomizations && (
         <AddToCartModal
           isOpen={isModalOpen}
@@ -185,7 +181,6 @@ export function MenuItemCard({
         />
       )}
 
-      {/* 409 Mismatch Dialog for Quick Add */}
       {!hasCustomizations && (
         <RestaurantMismatchDialog
           isOpen={isMismatchOpen}

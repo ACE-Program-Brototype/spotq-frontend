@@ -26,7 +26,6 @@ export function RestaurantMismatchDialog({
       data-testid="restaurant-mismatch-dialog"
       className="fixed inset-0 z-60 flex items-center justify-center p-4"
     >
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
         onClick={() => {
@@ -37,7 +36,6 @@ export function RestaurantMismatchDialog({
         aria-hidden="true"
       />
 
-      {/* Modal Dialog Content */}
       <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-black/5 animate-in fade-in-0 zoom-in-95 duration-150">
         <div className="flex items-start gap-4">
           <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">

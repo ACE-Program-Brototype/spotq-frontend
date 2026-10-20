@@ -205,13 +205,13 @@ export function CustomerMobileNav({
     },
     {
       label: "Cart",
-      href: "/cart",
+      href: CUSTOMER_ROUTES.CART,
       icon: ShoppingCart,
       badge: cartItemCount,
     },
     {
       label: "Notifications",
-      href: "/notifications",
+      href: CUSTOMER_ROUTES.NOTIFICATIONS,
       icon: Bell,
       badge: unreadNotifications,
     },

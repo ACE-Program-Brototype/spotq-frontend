@@ -15,6 +15,7 @@ export interface UseClearCartOptions {
 export function useClearCart(options?: UseClearCartOptions) {
   const queryClient = useQueryClient();
   const storeCartId = useCartStore((state) => state.cartId);
+  const resetCart = useCartStore((state) => state.resetCart);
   const activeCartId = options?.cartId !== undefined ? options.cartId : storeCartId;
 
   const mutation = useMutation<UpdateCartItemQuantityData, Error, void, { previousCart?: Cart }>({
@@ -60,6 +61,7 @@ export function useClearCart(options?: UseClearCartOptions) {
           });
         }
       }
+      resetCart();
       toast.success(CART_UI_MESSAGES.CLEAR_CART_SUCCESS);
       options?.onSuccess?.(data);
     },
