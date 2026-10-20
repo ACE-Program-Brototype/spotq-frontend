@@ -1,4 +1,5 @@
 import { Clock, Heart, MapPin, Share2 } from "lucide-react";
+import { resolveImageUrl } from "@/lib/utils/image.utils";
 import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
 import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant-details.types";
 
@@ -10,21 +11,33 @@ export interface RestaurantHeroHeaderProps {
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export function RestaurantHeroHeader({ restaurant, onShare }: RestaurantHeroHeaderProps) {
-  const { data: coverImageUrl } = usePresignedUrl(restaurant.coverImage);
+  // Direct CDN URL avoids N+1 presigned URL roundtrip
+  const directCoverUrl = resolveImageUrl(restaurant.coverImage);
+  const isDirect = Boolean(directCoverUrl?.startsWith("http"));
+  const { data: presignedCoverUrl } = usePresignedUrl(!isDirect ? restaurant.coverImage : null);
+  const coverImageUrl = isDirect ? directCoverUrl : presignedCoverUrl;
 
   const todayIndex = new Date().getDay();
   const todayHours = restaurant.operatingHours?.find((h) => h.dayOfWeek === todayIndex);
   const dayName = DAYS[todayIndex];
-  const hoursLabel =
-    todayHours?.isOpen && todayHours.openTime && todayHours.closeTime
-      ? `${dayName}: ${todayHours.openTime} - ${todayHours.closeTime}`
-      : "Monday: 09:00 AM - 10:00 PM";
 
-  const locationLabel = restaurant.address
-    ? `${restaurant.address.addressLine1 ? `${restaurant.address.addressLine1}, ` : ""}${restaurant.address.city || ""}`
-    : "Connaught Place, New Delhi";
+  let hoursLabel = "Hours unavailable";
+  if (todayHours) {
+    if (todayHours.isOpen && todayHours.openTime && todayHours.closeTime) {
+      hoursLabel = `Today (${dayName}): ${todayHours.openTime} - ${todayHours.closeTime}`;
+    } else {
+      hoursLabel = `Closed Today (${dayName})`;
+    }
+  }
 
-  const cuisineTag = restaurant.cuisineType?.split(",")[0]?.trim() || "Family Restaurant";
+  const locationParts = [
+    restaurant.address?.addressLine1,
+    restaurant.address?.city,
+    restaurant.address?.state,
+  ].filter(Boolean);
+  const locationLabel = locationParts.length > 0 ? locationParts.join(", ") : null;
+
+  const cuisineTag = restaurant.cuisineType?.split(",")[0]?.trim() || "Multi-Cuisine";
 
   return (
     <div className="relative w-full h-72 sm:h-80 md:h-[380px] bg-neutral-900 overflow-hidden text-white">
@@ -47,14 +60,14 @@ export function RestaurantHeroHeader({ restaurant, onShare }: RestaurantHeroHead
         <button
           type="button"
           onClick={onShare}
-          className="size-9 rounded-full bg-black/40 text-white backdrop-blur-md hover:bg-black/60 border border-white/15 flex items-center justify-center transition-colors"
+          className="size-9 rounded-full bg-black/40 text-white backdrop-blur-md hover:bg-black/60 border border-white/15 flex items-center justify-center transition-colors cursor-pointer"
           aria-label="Share restaurant"
         >
           <Share2 className="size-4" />
         </button>
         <button
           type="button"
-          className="size-9 rounded-full bg-black/40 text-white backdrop-blur-md hover:bg-black/60 border border-white/15 flex items-center justify-center transition-colors"
+          className="size-9 rounded-full bg-black/40 text-white backdrop-blur-md hover:bg-black/60 border border-white/15 flex items-center justify-center transition-colors cursor-pointer"
           aria-label="Save to favorites"
         >
           <Heart className="size-4" />

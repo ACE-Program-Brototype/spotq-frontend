@@ -1,5 +1,6 @@
-import { Check, ShoppingCart, X } from "lucide-react";
+import { Check, Minus, Plus, ShoppingCart, X } from "lucide-react";
 import { useEffect, useId, useMemo, useState } from "react";
+import { resolveImageUrl } from "@/lib/utils/image.utils";
 import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
 import type {
   CustomerRestaurantAddon,
@@ -64,7 +65,10 @@ export function MenuItemCustomizationModal({
   }, [isOpen, onClose]);
 
   const firstImageKey = item?.images?.[0]?.objectKey;
-  const { data: imageUrl } = usePresignedUrl(firstImageKey);
+  const directImageUrl = resolveImageUrl(firstImageKey);
+  const isDirect = Boolean(directImageUrl?.startsWith("http"));
+  const { data: presignedImageUrl } = usePresignedUrl(!isDirect ? firstImageKey : null);
+  const imageUrl = isDirect ? directImageUrl : presignedImageUrl;
 
   if (!isOpen || !item) return null;
 
@@ -96,7 +100,12 @@ export function MenuItemCustomizationModal({
   const hasAddons = Boolean(item.addons && item.addons.length > 0);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-labelledby={modalId}>
+    <div
+      className="fixed inset-0 z-50 overflow-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={modalId}
+    >
       {/* 1. Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200"
@@ -110,12 +119,12 @@ export function MenuItemCustomizationModal({
           {/* Header with Close X */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
             <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-              Item Details
+              Item Customization
             </span>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+              className="rounded-full p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
               aria-label="Close dialog"
             >
               <X className="size-5" />
@@ -153,14 +162,23 @@ export function MenuItemCustomizationModal({
             {hasVariants && (
               <div>
                 <h3 className="text-sm font-bold text-neutral-900 mb-3">Select Size</h3>
-                <div className="space-y-2.5">
+                <div className="space-y-2.5" role="radiogroup" aria-label="Select Size">
                   {item.variants.map((variant) => {
                     const isSelected = selectedVariantId === variant.id;
                     return (
                       <div
                         key={variant.id}
+                        role="radio"
+                        aria-checked={isSelected}
+                        tabIndex={0}
                         onClick={() => setSelectedVariantId(variant.id)}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
+                        onKeyDown={(e) => {
+                          if (e.key === " " || e.key === "Enter") {
+                            e.preventDefault();
+                            setSelectedVariantId(variant.id);
+                          }
+                        }}
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00] ${
                           isSelected
                             ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs"
                             : "border-neutral-200 hover:border-neutral-300"
@@ -198,8 +216,17 @@ export function MenuItemCustomizationModal({
                     return (
                       <div
                         key={addon.id}
+                        role="checkbox"
+                        aria-checked={isChecked}
+                        tabIndex={0}
                         onClick={() => toggleAddon(addon.id)}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
+                        onKeyDown={(e) => {
+                          if (e.key === " " || e.key === "Enter") {
+                            e.preventDefault();
+                            toggleAddon(addon.id);
+                          }
+                        }}
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00] ${
                           isChecked
                             ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs"
                             : "border-neutral-200 hover:border-neutral-300"
@@ -230,15 +257,47 @@ export function MenuItemCustomizationModal({
             )}
           </div>
 
-          {/* Sticky Bottom Add to Cart Action */}
-          <div className="p-4 border-t border-neutral-100 bg-white shadow-lg">
+          {/* Sticky Bottom Add to Cart & Stepper Action */}
+          <div className="p-4 border-t border-neutral-100 bg-white shadow-lg space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-neutral-500">Quantity</span>
+              <div className="flex items-center gap-2 border border-neutral-200 rounded-xl p-1 bg-neutral-50">
+                <button
+                  type="button"
+                  aria-label="Decrease quantity"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1}
+                  className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:bg-white hover:shadow-xs disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  <Minus className="size-3.5" />
+                </button>
+                <span className="text-xs font-bold w-6 text-center text-neutral-900">
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  aria-label="Increase quantity"
+                  onClick={() => setQuantity((q) => Math.min(20, q + 1))}
+                  disabled={quantity >= 20}
+                  className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:bg-white hover:shadow-xs disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  <Plus className="size-3.5" />
+                </button>
+              </div>
+            </div>
+
             <button
               type="button"
               onClick={handleConfirm}
-              className="w-full h-12 bg-[#ff6b00] hover:bg-[#e05e00] text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]"
+              className="w-full h-12 bg-[#ff6b00] hover:bg-[#e05e00] text-white rounded-xl font-bold text-sm flex items-center justify-between px-5 shadow-sm transition-all active:scale-[0.99] cursor-pointer"
             >
-              <ShoppingCart className="size-4" />
-              <span>Add to Cart</span>
+              <div className="flex items-center gap-2">
+                <ShoppingCart className="size-4" />
+                <span>Add to Cart</span>
+              </div>
+              <span className="font-extrabold text-base tracking-tight">
+                ₹{totalPrice.toFixed(2)}
+              </span>
             </button>
           </div>
         </div>

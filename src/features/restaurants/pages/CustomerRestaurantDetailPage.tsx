@@ -22,8 +22,12 @@ export default function CustomerRestaurantDetailPage() {
   const [activeCategoryId, setActiveCategoryId] = useState<string>("main-course");
   const [customizingItem, setCustomizingItem] = useState<CustomerRestaurantMenuItem | null>(null);
 
-  // Sync active category when restaurant menu loads
+  // Sync active category and document title when restaurant menu loads
   useEffect(() => {
+    if (restaurant?.restaurantName) {
+      document.title = `${restaurant.restaurantName} | SpotQ`;
+    }
+
     if (restaurant?.menu && restaurant.menu.length > 0) {
       const firstWithItems =
         restaurant.menu.find((m) => m.items && m.items.length > 0) || restaurant.menu[0];
