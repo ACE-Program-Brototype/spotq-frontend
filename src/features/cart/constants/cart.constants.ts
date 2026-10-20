@@ -1,7 +1,7 @@
 export const CART_ENDPOINTS = {
   BASE: "carts",
   BY_ID: (cartId: string) => `carts/${cartId}`,
-  ADD_ITEM: (cartId: string) => `carts/${cartId}/items`,
+  ADD_ITEM: (cartId?: string | null) => (cartId ? `carts/${cartId}/items` : "carts/items"),
   UPDATE_ITEM_QUANTITY: (cartId: string, cartItemId: string) =>
     `carts/${cartId}/items/${cartItemId}`,
   REMOVE_ITEM: (cartId: string, cartItemId: string) => `carts/${cartId}/items/${cartItemId}`,

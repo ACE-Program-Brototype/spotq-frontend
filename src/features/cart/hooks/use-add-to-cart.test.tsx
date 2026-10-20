@@ -38,16 +38,46 @@ describe("useAddToCart hook", () => {
     jest.clearAllMocks();
   });
 
-  it("throws error when active cart ID is missing", async () => {
+  it("successfully creates a new cart when active cart ID is null", async () => {
+    const mockResponse = {
+      cartId: "cart-new-123",
+      restaurantId: "rest-1",
+      itemCount: 1,
+      subtotal: 200,
+      updatedAt: "2026-10-16T12:00:00.000Z",
+      items: [
+        {
+          id: "item-row-1",
+          menuItemId: "item-1",
+          quantity: 1,
+          unitPrice: 200,
+          totalPrice: 200,
+        },
+      ],
+    };
+
+    (cartService.addItem as jest.Mock).mockResolvedValue(mockResponse);
+
     const { result } = renderHook(() => useAddToCart(), { wrapper });
 
-    await expect(
-      result.current.mutateAsync({
+    await act(async () => {
+      await result.current.mutateAsync({
         restaurantId: "rest-1",
         menuItemId: "item-1",
         quantity: 1,
-      }),
-    ).rejects.toThrow("No active cart found");
+      });
+    });
+
+    expect(cartService.addItem).toHaveBeenCalledWith(null, {
+      restaurantId: "rest-1",
+      menuItemId: "item-1",
+      variantId: null,
+      addonIds: [],
+      quantity: 1,
+      specialInstructions: null,
+    });
+    expect(useCartStore.getState().cartId).toBe("cart-new-123");
+    expect(toast.success).toHaveBeenCalledWith(CART_UI_MESSAGES.ITEM_ADDED_SUCCESS);
   });
 
   it("successfully adds item, updates store, and invalidates query", async () => {

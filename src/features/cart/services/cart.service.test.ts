@@ -112,6 +112,42 @@ describe("cartService", () => {
     expect(result.subtotal).toBe(750);
   });
 
+  it("adds an item without cartId, hitting carts/items", async () => {
+    const mockAddData = {
+      cartId: "cart-created-1",
+      restaurantId: "rest-456",
+      itemCount: 1,
+      subtotal: 212,
+      updatedAt: "2026-10-16T10:05:00.000Z",
+      items: [],
+    };
+
+    (apiClient.post as jest.Mock).mockReturnValue({
+      json: jest.fn().mockResolvedValue({
+        success: true,
+        statusCode: 201,
+        message: "Cart item added successfully",
+        data: mockAddData,
+      }),
+    });
+
+    const payload = {
+      restaurantId: "rest-456",
+      menuItemId: "dish-2",
+      variantId: null,
+      addonIds: [],
+      quantity: 1,
+      specialInstructions: null,
+    };
+
+    const result = await cartService.addItem(null, payload);
+
+    expect(apiClient.post).toHaveBeenCalledWith("carts/items", {
+      json: payload,
+    });
+    expect(result.cartId).toBe("cart-created-1");
+  });
+
   it("updates an item quantity in the cart", async () => {
     const mockUpdateData = {
       cartId: "cart-123",

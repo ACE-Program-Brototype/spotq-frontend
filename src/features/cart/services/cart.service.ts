@@ -14,7 +14,10 @@ export const cartService = {
     return response.data;
   },
 
-  async addItem(cartId: string, payload: AddCartItemInput): Promise<AddCartItemData> {
+  async addItem(
+    cartId: string | null | undefined,
+    payload: AddCartItemInput,
+  ): Promise<AddCartItemData> {
     const response = await apiClient
       .post(CART_ENDPOINTS.ADD_ITEM(cartId), { json: payload })
       .json<ApiResponse<AddCartItemData>>();

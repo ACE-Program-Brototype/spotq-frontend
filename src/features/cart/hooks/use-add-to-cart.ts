@@ -24,9 +24,6 @@ export function useAddToCart(options?: UseAddToCartOptions) {
   return useMutation<AddCartItemData, Error, AddToCartVariables>({
     mutationFn: async (variables) => {
       const activeCartId = variables.targetCartId || currentCartId;
-      if (!activeCartId) {
-        throw new Error("No active cart found");
-      }
 
       return await cartService.addItem(activeCartId, {
         restaurantId: variables.restaurantId,
