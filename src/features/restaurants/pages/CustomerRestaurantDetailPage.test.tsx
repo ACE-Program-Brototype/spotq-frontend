@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { toast } from "sonner";
 import { customerRestaurantService } from "../services/customer-restaurant.service";
@@ -28,11 +27,7 @@ const mockRestaurantDetails: CustomerRestaurantDetails = {
   coverImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
   phone: "+91 98765 43210",
   email: "contact@spicesymphony.com",
-  rating: 4.8,
-  totalReviews: 320,
-  estimatedDeliveryTimeMinutes: 25,
-  distanceKm: 2.4,
-  averageCost: 650,
+          averageCost: 650,
   address: {
     id: "addr-1",
     addressLine1: "Connaught Place",
@@ -76,6 +71,7 @@ const mockRestaurantDetails: CustomerRestaurantDetails = {
           calories: 320,
           isVegetarian: true,
           isAvailable: true,
+          isFeatured: false,
           variants: [],
           addons: [],
           images: [],
@@ -97,6 +93,7 @@ const mockRestaurantDetails: CustomerRestaurantDetails = {
           calories: 450,
           isVegetarian: true,
           isAvailable: true,
+          isFeatured: false,
           variants: [
             { id: "v1", name: "Half", price: 200, isDefault: false, isAvailable: true },
             { id: "v2", name: "Full", price: 340, isDefault: true, isAvailable: true },

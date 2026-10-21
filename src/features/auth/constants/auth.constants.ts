@@ -175,6 +175,7 @@ export const PUBLIC_AUTH_ENDPOINTS = [
   AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
   AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
   "payments/plans",
+  "restaurants/customers",
 ] as const;
 
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

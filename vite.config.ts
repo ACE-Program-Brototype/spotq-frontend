@@ -21,10 +21,8 @@ export default defineConfig(({ mode }) => {
       target:
         env.VITE_RESTAURANT_SERVICE_URL || env.RESTAURANT_SERVICE_URL || "http://localhost:3001",
       customRewrite: (p: string) => {
-        if (/^\/api\/v1\/restaurants(\?|$)/.test(p)) {
-          return p;
-        }
-        return p.replace(/^\/api\/v1\/restaurants/, "");
+        const rewritten = p.replace(/^\/api\/v1\/restaurants/, "");
+        return rewritten === "" || rewritten.startsWith("?") ? `/${rewritten}` : rewritten;
       },
     },
     {
