@@ -1,4 +1,4 @@
-import { Receipt } from "lucide-react";
+import { Download, Receipt } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import { ORDER_RECEIPT_MESSAGES } from "../constants/order-receipt.constants";
 import type { OrderReceipt } from "../types/order-receipt.types";
@@ -8,6 +8,14 @@ export interface ReceiptBillBreakdownProps {
 }
 
 export function ReceiptBillBreakdown({ receipt }: ReceiptBillBreakdownProps) {
+  const handleDownload = () => {
+    window.print();
+  };
+
+  const taxLabel = receipt.tax_rate
+    ? `${ORDER_RECEIPT_MESSAGES.TAX_LABEL} (${receipt.tax_rate}%)`
+    : ORDER_RECEIPT_MESSAGES.TAX_LABEL;
+
   return (
     <div
       data-testid="receipt-bill-breakdown"
@@ -27,7 +35,7 @@ export function ReceiptBillBreakdown({ receipt }: ReceiptBillBreakdownProps) {
         </div>
 
         <div className="flex items-center justify-between text-neutral-600">
-          <span>{ORDER_RECEIPT_MESSAGES.TAX_LABEL}</span>
+          <span>{taxLabel}</span>
           <span data-testid="receipt-tax" className="font-medium text-neutral-900">
             {formatCurrency(receipt.tax_amount)}
           </span>
@@ -48,6 +56,18 @@ export function ReceiptBillBreakdown({ receipt }: ReceiptBillBreakdownProps) {
             {formatCurrency(receipt.total_amount)}
           </span>
         </div>
+      </div>
+
+      <div className="pt-3 print:hidden">
+        <button
+          type="button"
+          data-testid="receipt-download-button"
+          onClick={handleDownload}
+          className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-neutral-900 text-white font-medium text-sm hover:bg-neutral-800 active:scale-[0.99] transition-all shadow-xs cursor-pointer"
+        >
+          <Download className="size-4" />
+          <span>{ORDER_RECEIPT_MESSAGES.DOWNLOAD_BUTTON}</span>
+        </button>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ export interface ReceiptAddon {
 }
 
 export interface ReceiptItem {
+  id?: string;
   menu_item_id: string;
   name: string;
   variant_id: string | null;
@@ -38,6 +39,7 @@ export interface OrderReceipt {
   items: ReceiptItem[];
   sub_total: number;
   tax_amount: number;
+  tax_rate?: number;
   platform_fee: number;
   total_amount: number;
   created_at: string;

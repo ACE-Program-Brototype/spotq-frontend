@@ -37,4 +37,38 @@ describe("ReceiptItemList", () => {
     expect(screen.queryByTestId("receipt-item-addons")).not.toBeInTheDocument();
     expect(screen.queryByTestId("receipt-item-instructions")).not.toBeInTheDocument();
   });
+
+  it("handles duplicate menu items and variants without key collision issues", () => {
+    const duplicateItems = [
+      {
+        menu_item_id: "item_duplicate",
+        name: "Espresso",
+        variant_id: "var_1",
+        variant_name: "Single",
+        addons: [],
+        quantity: 1,
+        unit_price: 120,
+        line_total: 120,
+        special_instructions: "Extra hot",
+      },
+      {
+        menu_item_id: "item_duplicate",
+        name: "Espresso",
+        variant_id: "var_1",
+        variant_name: "Single",
+        addons: [],
+        quantity: 1,
+        unit_price: 120,
+        line_total: 120,
+        special_instructions: "Cold milk on side",
+      },
+    ];
+
+    render(<ReceiptItemList items={duplicateItems} />);
+
+    const rows = screen.getAllByTestId("receipt-item-row");
+    expect(rows).toHaveLength(2);
+    expect(screen.getByText("Extra hot")).toBeInTheDocument();
+    expect(screen.getByText("Cold milk on side")).toBeInTheDocument();
+  });
 });

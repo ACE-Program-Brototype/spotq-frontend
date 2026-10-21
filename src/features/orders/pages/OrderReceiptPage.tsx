@@ -10,7 +10,7 @@ export default function OrderReceiptPage() {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
 
-  const activeOrderId = orderId ?? "ord_992817203";
+  const activeOrderId = orderId ?? "";
   const { data: receipt, isLoading, isError, refetch } = useOrderReceipt(activeOrderId);
 
   const handleBack = () => {
@@ -24,9 +24,9 @@ export default function OrderReceiptPage() {
   return (
     <div
       data-testid="order-receipt-page"
-      className="min-h-screen bg-neutral-50/60 py-8 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen bg-neutral-50/60 py-8 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white"
     >
-      <div className="max-w-xl mx-auto mb-6">
+      <div className="max-w-xl mx-auto mb-6 print:hidden">
         <button
           type="button"
           data-testid="receipt-back-button"

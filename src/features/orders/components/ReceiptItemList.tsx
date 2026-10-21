@@ -20,9 +20,9 @@ export function ReceiptItemList({ items }: ReceiptItemListProps) {
       </div>
 
       <div className="divide-y divide-neutral-100">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <div
-            key={item.menu_item_id + (item.variant_id ?? "")}
+            key={item.id ?? `${item.menu_item_id}-${item.variant_id ?? "default"}-${index}`}
             data-testid="receipt-item-row"
             className="py-3.5 first:pt-1 last:pb-1 flex items-start justify-between gap-4"
           >
