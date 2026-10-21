@@ -43,3 +43,4 @@ export * from "./types/customer-restaurant-details.types";
 export * from "./types/restaurant.types";
 export * from "./types/restaurant-application.types";
 export * from "./hooks/useCustomerRestaurantDetails";
+export * from "./utils/restaurant.utils";

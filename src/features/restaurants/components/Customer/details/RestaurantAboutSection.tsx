@@ -1,5 +1,6 @@
 import { Clock, ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant-details.types";
+import { formatOperatingTime } from "@/features/restaurants/utils/restaurant.utils";
 
 export interface RestaurantAboutSectionProps {
   restaurant: CustomerRestaurantDetails;
@@ -80,7 +81,7 @@ export function RestaurantAboutSection({ restaurant }: RestaurantAboutSectionPro
                   <span>
                     {!schedule?.isOpen
                       ? "Closed"
-                      : `${schedule.openTime ?? "10:00 AM"} – ${schedule.closeTime ?? "11:00 PM"}`}
+                      : `${formatOperatingTime(schedule.openTime) || "10:00 AM"} – ${formatOperatingTime(schedule.closeTime) || "11:00 PM"}`}
                   </span>
                 </div>
               );

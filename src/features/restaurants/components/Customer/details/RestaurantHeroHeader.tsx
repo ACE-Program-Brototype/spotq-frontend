@@ -2,6 +2,7 @@ import { Clock, Heart, MapPin, Share2 } from "lucide-react";
 
 import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
 import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant-details.types";
+import { formatOperatingTime } from "@/features/restaurants/utils/restaurant.utils";
 
 export interface RestaurantHeroHeaderProps {
   restaurant: CustomerRestaurantDetails;
@@ -24,7 +25,9 @@ export function RestaurantHeroHeader({ restaurant, onShare }: RestaurantHeroHead
   let hoursLabel = "Hours unavailable";
   if (todayHours) {
     if (todayHours.isOpen && todayHours.openTime && todayHours.closeTime) {
-      hoursLabel = `Today (${dayName}): ${todayHours.openTime} - ${todayHours.closeTime}`;
+      const openFormatted = formatOperatingTime(todayHours.openTime);
+      const closeFormatted = formatOperatingTime(todayHours.closeTime);
+      hoursLabel = `Today (${dayName}): ${openFormatted} - ${closeFormatted}`;
     } else {
       hoursLabel = `Closed Today (${dayName})`;
     }
