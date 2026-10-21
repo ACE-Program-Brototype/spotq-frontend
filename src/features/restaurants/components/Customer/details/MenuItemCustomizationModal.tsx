@@ -1,6 +1,6 @@
 import { Check, Minus, Plus, ShoppingCart, X } from "lucide-react";
 import { useEffect, useId, useMemo, useState } from "react";
-import { resolveImageUrl } from "@/lib/utils/image.utils";
+
 import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
 import type {
   CustomerRestaurantAddon,
@@ -65,10 +65,10 @@ export function MenuItemCustomizationModal({
   }, [isOpen, onClose]);
 
   const firstImageKey = item?.images?.[0]?.objectKey;
-  const directImageUrl = resolveImageUrl(firstImageKey);
-  const isDirect = Boolean(directImageUrl?.startsWith("http"));
+  
+  const isDirect = Boolean(firstImageKey?.startsWith("http"));
   const { data: presignedImageUrl } = usePresignedUrl(!isDirect ? firstImageKey : null);
-  const imageUrl = isDirect ? directImageUrl : presignedImageUrl;
+  const imageUrl = isDirect ? firstImageKey : presignedImageUrl;
 
   if (!isOpen || !item) return null;
 

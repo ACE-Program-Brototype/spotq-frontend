@@ -55,9 +55,7 @@ export const customerRestaurantService = {
 
     const response = await apiClient
       .get(CUSTOMER_RESTAURANT_ENDPOINTS.LIST, {
-        searchParams,
-        signal: params?.signal,
-      })
+        searchParams })
       .json<CustomerRestaurantsApiResponse>();
 
     const restaurants: CustomerRestaurantItem[] = Array.isArray(response?.data)

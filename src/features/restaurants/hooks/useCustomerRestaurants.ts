@@ -143,7 +143,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
 
   const query = useQuery({
     queryKey,
-    queryFn: ({ signal }) =>
+    queryFn: () =>
       customerRestaurantService.getRestaurants({
         page,
         limit,
@@ -152,7 +152,6 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
         cuisine: selectedCategory !== "All" ? selectedCategory : undefined,
         sortBy: currentSortConfig.sortBy,
         sortOrder: currentSortConfig.sortOrder,
-        signal,
       }),
     staleTime: CUSTOMER_RESTAURANT_DEFAULTS.CACHE_STALE_TIME_MS,
   });

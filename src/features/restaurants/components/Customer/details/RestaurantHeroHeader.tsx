@@ -1,5 +1,5 @@
 import { Clock, Heart, MapPin, Share2 } from "lucide-react";
-import { resolveImageUrl } from "@/lib/utils/image.utils";
+
 import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
 import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant-details.types";
 
@@ -11,11 +11,11 @@ export interface RestaurantHeroHeaderProps {
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export function RestaurantHeroHeader({ restaurant, onShare }: RestaurantHeroHeaderProps) {
-  // Direct CDN URL avoids N+1 presigned URL roundtrip
-  const directCoverUrl = resolveImageUrl(restaurant.coverImage);
-  const isDirect = Boolean(directCoverUrl?.startsWith("http"));
+  
+  
+  const isDirect = Boolean(restaurant.coverImage?.startsWith("http"));
   const { data: presignedCoverUrl } = usePresignedUrl(!isDirect ? restaurant.coverImage : null);
-  const coverImageUrl = isDirect ? directCoverUrl : presignedCoverUrl;
+  const coverImageUrl = isDirect ? restaurant.coverImage : presignedCoverUrl;
 
   const todayIndex = new Date().getDay();
   const todayHours = restaurant.operatingHours?.find((h) => h.dayOfWeek === todayIndex);

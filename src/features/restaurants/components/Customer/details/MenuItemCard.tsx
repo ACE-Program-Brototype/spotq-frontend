@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
 import type { CustomerRestaurantMenuItem } from "@/features/restaurants/types/customer-restaurant-details.types";
-import { resolveImageUrl } from "@/lib/utils/image.utils";
 
 export interface MenuItemCardProps {
   item: CustomerRestaurantMenuItem;
@@ -13,15 +12,12 @@ export function MenuItemCard({ item, onSelect }: MenuItemCardProps) {
   const [imageError, setImageError] = useState(false);
   const firstImageKey = item.images?.[0]?.objectKey;
 
-  // Direct CDN resolution avoids N+1 network requests across 40+ dishes
-  const directUrl = resolveImageUrl(firstImageKey);
-  const isDirect = Boolean(directUrl?.startsWith("http"));
-
+  const isDirect = Boolean(firstImageKey?.startsWith("http"));
   const { data: presignedUrl, isLoading: presignedLoading } = usePresignedUrl(
     !isDirect ? firstImageKey : null,
   );
 
-  const imageUrl = isDirect ? directUrl : presignedUrl;
+  const imageUrl = isDirect ? firstImageKey : presignedUrl;
   const imageLoading = !isDirect && presignedLoading;
 
   const isSoldOut = !item.isAvailable;

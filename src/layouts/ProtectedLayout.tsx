@@ -76,11 +76,11 @@ export default function ProtectedLayout({
       return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />;
     }
 
-    const isRestaurantPath =
-      (location.pathname === RESTAURANT_ROUTES.ROOT ||
-        location.pathname.startsWith(`${RESTAURANT_ROUTES.ROOT}/`)) &&
-      !location.pathname.startsWith("/restaurants");
+   const isRestaurantPath =
+      location.pathname === RESTAURANT_ROUTES.ROOT ||
+      location.pathname.startsWith(`${RESTAURANT_ROUTES.ROOT}/`); 
 
+      
     if (!isRestaurantPath) {
       if (location.pathname === roleHome) {
         return null;
