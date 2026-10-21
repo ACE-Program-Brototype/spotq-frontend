@@ -1,10 +1,12 @@
 import { Loader2, Plus, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { MenuItemDetail } from "@/features/menu/types/menu-item.types";
 import { formatCurrency } from "@/lib/utils/currency";
 import { CART_UI_MESSAGES } from "../constants/cart.constants";
 import { useAddToCart } from "../hooks/use-add-to-cart";
+import { cartService } from "../services/cart.service";
 import { useCartStore } from "../store/cart.store";
 import { AddToCartModal } from "./AddToCartModal";
 import { RestaurantMismatchDialog } from "./RestaurantMismatchDialog";
@@ -28,6 +30,7 @@ export function MenuItemCard({
   const [isMismatchOpen, setIsMismatchOpen] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const resetCart = useCartStore((state) => state.resetCart);
+  const storeCartId = useCartStore((state) => state.cartId);
 
   const hasVariants = Boolean(item.variants && item.variants.length > 0);
   const hasAddons = Boolean(item.addons && item.addons.length > 0);
@@ -62,14 +65,23 @@ export function MenuItemCard({
     }
   };
 
-  const handleConfirmClearAndAdd = () => {
+  const handleConfirmClearAndAdd = async () => {
     setIsClearing(true);
-    resetCart();
-    quickAddToCart({
-      restaurantId,
-      menuItemId: item.id,
-      quantity: 1,
-    });
+    try {
+      const activeCartId = cartId || storeCartId;
+      if (activeCartId) {
+        await cartService.clearCart(activeCartId);
+      }
+      resetCart();
+      quickAddToCart({
+        restaurantId,
+        menuItemId: item.id,
+        quantity: 1,
+      });
+    } catch {
+      toast.error(CART_UI_MESSAGES.CLEAR_CART_ERROR);
+      setIsClearing(false);
+    }
   };
 
   const imageSrc = item.imageUrl || item.image || item.images?.[0]?.url;

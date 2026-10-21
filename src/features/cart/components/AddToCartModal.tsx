@@ -1,10 +1,12 @@
 import { Loader2, Minus, Plus, UtensilsCrossed, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { MenuItemDetail } from "@/features/menu/types/menu-item.types";
 import { formatCurrency } from "@/lib/utils/currency";
 import { CART_UI_MESSAGES } from "../constants/cart.constants";
 import { useAddToCart } from "../hooks/use-add-to-cart";
+import { cartService } from "../services/cart.service";
 import { useCartStore } from "../store/cart.store";
 import { AddonCheckboxGroup } from "./AddonCheckboxGroup";
 import { RestaurantMismatchDialog } from "./RestaurantMismatchDialog";
@@ -29,6 +31,7 @@ export function AddToCartModal({
   onSuccess,
 }: AddToCartModalProps) {
   const resetCart = useCartStore((state) => state.resetCart);
+  const storeCartId = useCartStore((state) => state.cartId);
 
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
@@ -61,6 +64,9 @@ export function AddToCartModal({
     },
     onConflict: () => {
       setIsMismatchOpen(true);
+      setIsClearingAndAdding(false);
+    },
+    onError: () => {
       setIsClearingAndAdding(false);
     },
   });
@@ -114,18 +120,27 @@ export function AddToCartModal({
     });
   };
 
-  const handleConfirmClearAndAdd = () => {
+  const handleConfirmClearAndAdd = async () => {
     if (!item) return;
     setIsClearingAndAdding(true);
-    resetCart();
-    addToCart({
-      restaurantId,
-      menuItemId: item.id,
-      variantId: selectedVariantId,
-      addonIds: selectedAddonIds,
-      quantity,
-      specialInstructions: specialInstructions.trim() || null,
-    });
+    try {
+      const activeCartId = cartId || storeCartId;
+      if (activeCartId) {
+        await cartService.clearCart(activeCartId);
+      }
+      resetCart();
+      addToCart({
+        restaurantId,
+        menuItemId: item.id,
+        variantId: selectedVariantId,
+        addonIds: selectedAddonIds,
+        quantity,
+        specialInstructions: specialInstructions.trim() || null,
+      });
+    } catch {
+      toast.error(CART_UI_MESSAGES.CLEAR_CART_ERROR);
+      setIsClearingAndAdding(false);
+    }
   };
 
   if (!isOpen || !item) return null;
