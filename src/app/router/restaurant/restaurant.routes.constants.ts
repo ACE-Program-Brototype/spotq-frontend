@@ -51,8 +51,7 @@ export const RESTAURANT_ROUTE_PATHS = {
 
   TABLE: {
     ROOT: "tables",
-
-  }
+  },
 } as const;
 
 // Absolute paths and route builders for navigate() and <Link to="..." />

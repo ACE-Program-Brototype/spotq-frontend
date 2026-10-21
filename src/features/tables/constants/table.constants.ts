@@ -134,3 +134,5 @@ export const TABLE_MESSAGES = {
   NO_TABLES_IN_SECTION_DESC:
     "There are currently no active dining tables assigned to this section.",
 } as const;
+
+export const ADMIN_TABLE_LIMIT = 9;

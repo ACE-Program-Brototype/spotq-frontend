@@ -20,6 +20,17 @@ export interface TableItem {
   sectionName?: string;
 }
 
+export type AdminTables = {
+  tables: TableItem;
+  stats: {
+    totalTables: number;
+    occupied: number;
+    available: number;
+    maintenance: number;
+  };
+  total: number;
+};
+
 export type TablesGroupedBySection = Record<string, TableItem[]>;
 
 export interface GetTablesResponse {
