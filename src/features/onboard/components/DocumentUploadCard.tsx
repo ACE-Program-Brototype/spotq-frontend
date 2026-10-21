@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { useDeleteS3Object } from "@/hooks/useDeleteS3Object";
+import { STORAGE_MESSAGES } from "@/services/storage/storage.constants";
 import { uploadFile } from "@/services/storage/storage.service";
 import type { DocumentItem } from "../types/onboard.types";
 
@@ -28,6 +30,8 @@ export default function DocumentUploadCard({
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
+  const deleteMutation = useDeleteS3Object();
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -54,6 +58,8 @@ export default function DocumentUploadCard({
       return;
     }
 
+    const oldDocumentKey = value?.documentKey;
+
     try {
       setIsUploading(true);
       setProgress(0);
@@ -70,6 +76,10 @@ export default function DocumentUploadCard({
         documentName: file.name,
         documentKey: result.s3ObjectKey,
       });
+
+      if (oldDocumentKey && oldDocumentKey !== result.s3ObjectKey) {
+        deleteMutation.mutate(oldDocumentKey);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload document. Please try again.");
     } finally {
@@ -78,10 +88,20 @@ export default function DocumentUploadCard({
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     setError(null);
-    onChange(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (value?.documentKey) {
+      try {
+        await deleteMutation.mutateAsync(value.documentKey);
+        onChange(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      } catch (err) {
+        setError(err instanceof Error ? err.message : STORAGE_MESSAGES.FAILED_TO_DELETE_S3_OBJECT);
+      }
+    } else {
+      onChange(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   return (
@@ -111,25 +131,48 @@ export default function DocumentUploadCard({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="rounded-xl border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-50"
+              disabled={isUploading || deleteMutation.isPending}
+              className="rounded-xl border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
             >
               Replace
             </button>
             <button
               type="button"
               onClick={handleRemove}
-              disabled={isUploading}
-              className="rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100"
+              disabled={isUploading || deleteMutation.isPending}
+              className="flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 disabled:opacity-50"
             >
-              Remove
+              {deleteMutation.isPending ? (
+                <>
+                  <svg
+                    className="h-3.5 w-3.5 animate-spin text-red-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  <span>Removing...</span>
+                </>
+              ) : (
+                "Remove"
+              )}
             </button>
           </div>
         ) : (
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
+            disabled={isUploading || deleteMutation.isPending}
             className="flex items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-orange-600 disabled:opacity-50"
           >
             <svg
