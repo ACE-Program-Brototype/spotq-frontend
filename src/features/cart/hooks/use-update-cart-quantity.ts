@@ -110,7 +110,7 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
             targetItem.quantity > 0
               ? targetItem.totalPrice / targetItem.quantity
               : targetItem.unitPrice;
-          const newTotalPrice = Math.round(unitRate * clampedQuantity);
+          const newTotalPrice = Number((unitRate * clampedQuantity).toFixed(2));
 
           updatedItems = prevCart.items.map((item) =>
             item.cartItemId === cartItemId
@@ -124,7 +124,9 @@ export function useUpdateCartQuantity(options?: UseUpdateCartQuantityOptions) {
         }
 
         const newCount = updatedItems.reduce((acc, i) => acc + i.quantity, 0);
-        const newSubtotal = updatedItems.reduce((acc, i) => acc + i.totalPrice, 0);
+        const newSubtotal = Number(
+          updatedItems.reduce((acc, i) => acc + i.totalPrice, 0).toFixed(2),
+        );
 
         return {
           ...prevCart,
