@@ -34,8 +34,13 @@ export function MenuItemCustomizationModal({
   // Find default variant or fallback to first
   const defaultVariant = useMemo(() => {
     if (!item?.variants || item.variants.length === 0) return null;
-    return item.variants.find((v) => v.isDefault) || item.variants[0];
+    return (
+      item.variants.find((v) => v.isDefault && v.isAvailable) ??
+      item.variants.find((v) => v.isAvailable) ??
+      null
+    );
   }, [item]);
+
 
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     defaultVariant?.id ?? null,
@@ -46,7 +51,8 @@ export function MenuItemCustomizationModal({
   // Reset state when a new item is opened
   useEffect(() => {
     if (item) {
-      const def = item.variants?.find((v) => v.isDefault) || item.variants?.[0] || null;
+      const def = item.variants?.find((v) => v.isDefault && v.isAvailable) ??
+      item.variants?.find((v)=> v.isAvailable)?? null;
       setSelectedVariantId(def?.id ?? null);
       setSelectedAddonIds([]);
       setQuantity(1);
@@ -79,9 +85,10 @@ export function MenuItemCustomizationModal({
   const addonsPrice = currentAddons.reduce((sum, a) => sum + a.price, 0);
   const totalPrice = (basePrice + addonsPrice) * quantity;
 
-  const toggleAddon = (addonId: string) => {
+  const toggleAddon = (addon: CustomerRestaurantAddon) => {
+    if(!addon.isAvailable) return;
     setSelectedAddonIds((prev) =>
-      prev.includes(addonId) ? prev.filter((id) => id !== addonId) : [...prev, addonId],
+      prev.includes(addon.id) ? prev.filter((id) => id !== addon.id) : [...prev, addon.id],
     );
   };
 
@@ -165,38 +172,66 @@ export function MenuItemCustomizationModal({
                 <div className="space-y-2.5" role="radiogroup" aria-label="Select Size">
                   {item.variants.map((variant) => {
                     const isSelected = selectedVariantId === variant.id;
+                    const isAvailable = variant.isAvailable;
+
                     return (
                       <div
                         key={variant.id}
                         role="radio"
                         aria-checked={isSelected}
-                        tabIndex={0}
-                        onClick={() => setSelectedVariantId(variant.id)}
+                        aria-disabled={!isAvailable}
+                        tabIndex={isAvailable ? 0 : -1}
+                        onClick={() => {
+                          if (!isAvailable) return;
+                          setSelectedVariantId(variant.id);
+                        }}
                         onKeyDown={(e) => {
                           if (e.key === " " || e.key === "Enter") {
                             e.preventDefault();
+                            if (!isAvailable) return;
                             setSelectedVariantId(variant.id);
                           }
                         }}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00] ${
-                          isSelected
-                            ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs"
-                            : "border-neutral-200 hover:border-neutral-300"
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                          !isAvailable
+                            ? "opacity-50 bg-neutral-50/70 border-neutral-200 cursor-not-allowed select-none"
+                            : isSelected
+                              ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
+                              : "border-neutral-200 hover:border-neutral-300 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div
                             className={`size-4.5 rounded-full border flex items-center justify-center ${
-                              isSelected ? "border-[#ff6b00]" : "border-neutral-300"
+                              !isAvailable
+                                ? "border-neutral-300 bg-neutral-100"
+                                : isSelected
+                                  ? "border-[#ff6b00]"
+                                  : "border-neutral-300"
                             }`}
                           >
-                            {isSelected && <div className="size-2.5 rounded-full bg-[#ff6b00]" />}
+                            {isSelected && isAvailable && (
+                              <div className="size-2.5 rounded-full bg-[#ff6b00]" />
+                            )}
                           </div>
-                          <span className="text-sm font-semibold text-neutral-800">
+                          <span
+                            className={`text-sm font-semibold ${
+                              !isAvailable ? "text-neutral-400 line-through" : "text-neutral-800"
+                            }`}
+                          >
                             {variant.name}
                           </span>
+                          {!isAvailable && (
+                            <span className="rounded-md bg-rose-100 px-1.5 py-0.5 text-[9px] font-bold text-rose-700 uppercase tracking-wider">
+                              Sold Out
+                            </span>
+                          )}
                         </div>
-                        <span className="text-sm font-bold text-neutral-900">
+                        <span
+                          className={`text-sm font-bold ${
+                            !isAvailable ? "text-neutral-400" : "text-neutral-900"
+                          }`}
+                        >
                           ₹{variant.price.toFixed(2)}
                         </span>
                       </div>
@@ -213,40 +248,64 @@ export function MenuItemCustomizationModal({
                 <div className="space-y-2.5">
                   {item.addons.map((addon) => {
                     const isChecked = selectedAddonIds.includes(addon.id);
+                    const isAvailable = addon.isAvailable;
+
                     return (
                       <div
                         key={addon.id}
                         role="checkbox"
                         aria-checked={isChecked}
-                        tabIndex={0}
-                        onClick={() => toggleAddon(addon.id)}
+                        aria-disabled={!isAvailable}
+                        tabIndex={isAvailable ? 0 : -1}
+                        onClick={() => {
+                          if (!isAvailable) return;
+                          toggleAddon(addon);
+                        }}
                         onKeyDown={(e) => {
                           if (e.key === " " || e.key === "Enter") {
                             e.preventDefault();
-                            toggleAddon(addon.id);
+                            if (!isAvailable) return;
+                            toggleAddon(addon);
                           }
                         }}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00] ${
-                          isChecked
-                            ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs"
-                            : "border-neutral-200 hover:border-neutral-300"
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                          !isAvailable
+                            ? "opacity-50 bg-neutral-50/70 border-neutral-200 cursor-not-allowed select-none"
+                            : isChecked
+                              ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
+                              : "border-neutral-200 hover:border-neutral-300 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div
                             className={`size-4.5 rounded-md border flex items-center justify-center ${
-                              isChecked
-                                ? "border-[#ff6b00] bg-[#ff6b00] text-white"
-                                : "border-neutral-300"
+                              !isAvailable
+                                ? "border-neutral-300 bg-neutral-100"
+                                : isChecked
+                                  ? "border-[#ff6b00] bg-[#ff6b00] text-white"
+                                  : "border-neutral-300"
                             }`}
                           >
-                            {isChecked && <Check className="size-3 stroke-[3]" />}
+                            {isChecked && isAvailable && <Check className="size-3 stroke-[3]" />}
                           </div>
-                          <span className="text-sm font-medium text-neutral-800">
+                          <span
+                            className={`text-sm font-medium ${
+                              !isAvailable ? "text-neutral-400 line-through" : "text-neutral-800"
+                            }`}
+                          >
                             {addon.name}
                           </span>
+                          {!isAvailable && (
+                            <span className="rounded-md bg-rose-100 px-1.5 py-0.5 text-[9px] font-bold text-rose-700 uppercase tracking-wider">
+                              Sold Out
+                            </span>
+                          )}
                         </div>
-                        <span className="text-sm font-bold text-neutral-900">
+                        <span
+                          className={`text-sm font-bold ${
+                            !isAvailable ? "text-neutral-400" : "text-neutral-900"
+                          }`}
+                        >
                           +₹{addon.price.toFixed(2)}
                         </span>
                       </div>
@@ -289,7 +348,8 @@ export function MenuItemCustomizationModal({
             <button
               type="button"
               onClick={handleConfirm}
-              className="w-full h-12 bg-[#ff6b00] hover:bg-[#e05e00] text-white rounded-xl font-bold text-sm flex items-center justify-between px-5 shadow-sm transition-all active:scale-[0.99] cursor-pointer"
+              disabled={hasVariants && (!currentVariant || !currentVariant.isAvailable)}
+              className="w-full h-12 bg-[#ff6b00] hover:bg-[#e05e00] text-white rounded-xl font-bold text-sm flex items-center justify-between px-5 shadow-sm transition-all active:scale-[0.99] cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
             >
               <div className="flex items-center gap-2">
                 <ShoppingCart className="size-4" />
