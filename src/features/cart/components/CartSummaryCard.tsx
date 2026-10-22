@@ -18,9 +18,6 @@ export function CartSummaryCard({
   disabled = false,
   className = "",
 }: CartSummaryCardProps) {
-  const taxesAndCharges = 0;
-  const grandTotal = subtotal + taxesAndCharges;
-
   return (
     <div
       data-testid="cart-summary-card"
@@ -45,15 +42,10 @@ export function CartSummaryCard({
           <span className="font-semibold text-neutral-800">{formatCurrency(subtotal)}</span>
         </div>
 
-        <div className="flex justify-between text-neutral-600">
-          <span>{CART_UI_MESSAGES.TAXES_AND_CHARGES}</span>
-          <span className="font-medium text-emerald-600">{CART_UI_MESSAGES.FREE_CHARGES}</span>
-        </div>
-
         <div className="border-t border-neutral-200/80 pt-2.5 flex justify-between items-center">
           <span className="text-sm font-bold text-neutral-900">{CART_UI_MESSAGES.GRAND_TOTAL}</span>
           <span className="text-base font-extrabold text-[#ff6b00]">
-            {formatCurrency(grandTotal)}
+            {formatCurrency(subtotal)}
           </span>
         </div>
       </div>
