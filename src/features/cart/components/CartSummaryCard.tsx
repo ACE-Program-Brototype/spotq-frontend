@@ -42,6 +42,11 @@ export function CartSummaryCard({
           <span className="font-semibold text-neutral-800">{formatCurrency(subtotal)}</span>
         </div>
 
+        <div className="flex justify-between text-neutral-500">
+          <span>{CART_UI_MESSAGES.TAXES_AND_CHARGES}</span>
+          <span className="italic">{CART_UI_MESSAGES.TAXES_CALCULATED_AT_CHECKOUT}</span>
+        </div>
+
         <div className="border-t border-neutral-200/80 pt-2.5 flex justify-between items-center">
           <span className="text-sm font-bold text-neutral-900">{CART_UI_MESSAGES.GRAND_TOTAL}</span>
           <span className="text-base font-extrabold text-[#ff6b00]">

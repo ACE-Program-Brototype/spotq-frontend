@@ -14,7 +14,8 @@ describe("CartSummaryCard", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByText("₹250.50")).toHaveLength(2);
     expect(screen.getByText(CART_UI_MESSAGES.GRAND_TOTAL)).toBeInTheDocument();
-    expect(screen.queryByText(CART_UI_MESSAGES.TAXES_AND_CHARGES)).not.toBeInTheDocument();
+    expect(screen.getByText(CART_UI_MESSAGES.TAXES_AND_CHARGES)).toBeInTheDocument();
+    expect(screen.getByText(CART_UI_MESSAGES.TAXES_CALCULATED_AT_CHECKOUT)).toBeInTheDocument();
   });
 
   it("handles singular item count label correctly", () => {

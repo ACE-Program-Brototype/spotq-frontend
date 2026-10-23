@@ -24,6 +24,7 @@ export const CART_UI_MESSAGES = {
   BILL_SUMMARY_HEADING: "Bill Details",
   ITEM_TOTAL: "Item Total",
   TAXES_AND_CHARGES: "Taxes & Platform Fees",
+  TAXES_CALCULATED_AT_CHECKOUT: "Calculated at checkout",
   GRAND_TOTAL: "To Pay",
   PROCEED_TO_CHECKOUT: "Proceed to Checkout",
   CHECKOUT_IN_PROGRESS: "Checkout flow will be available in the upcoming release",
