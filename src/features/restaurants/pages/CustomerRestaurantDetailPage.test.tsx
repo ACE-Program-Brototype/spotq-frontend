@@ -27,7 +27,7 @@ const mockRestaurantDetails: CustomerRestaurantDetails = {
   coverImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
   phone: "+91 98765 43210",
   email: "contact@spicesymphony.com",
-          averageCost: 650,
+  averageCost: 650,
   address: {
     id: "addr-1",
     addressLine1: "Connaught Place",
@@ -148,9 +148,9 @@ describe("CustomerRestaurantDetailPage", () => {
     renderWithProviders();
 
     // Verify skeleton animation placeholders are rendered
-    expect(screen.getAllByRole("generic").some((el) => el.className.includes("animate-pulse"))).toBe(
-      true,
-    );
+    expect(
+      screen.getAllByRole("generic").some((el) => el.className.includes("animate-pulse")),
+    ).toBe(true);
   });
 
   it("displays error state when restaurant details fetch fails", async () => {
@@ -242,9 +242,8 @@ describe("CustomerRestaurantDetailPage", () => {
     });
 
     // Paneer Butter Masala has variants, clicking Add to Cart opens customization modal
-    const addButtons = screen.getAllByRole("button", { name: /^Add to Cart$/i });
-    // Second item is Paneer Butter Masala
-    fireEvent.click(addButtons[1]);
+    const addButton = screen.getByRole("button", { name: /Add Paneer Butter Masala to cart/i });
+    fireEvent.click(addButton);
 
     // Modal dialog is opened
     expect(await screen.findByRole("dialog")).toBeInTheDocument();

@@ -31,7 +31,7 @@ export function MenuItemCustomizationModal({
 }: MenuItemCustomizationModalProps) {
   const modalId = useId();
 
-  // Find default variant or fallback to first
+  // Find default variant or fallback to first available variant
   const defaultVariant = useMemo(() => {
     if (!item?.variants || item.variants.length === 0) return null;
     return (
@@ -40,7 +40,6 @@ export function MenuItemCustomizationModal({
       null
     );
   }, [item]);
-
 
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     defaultVariant?.id ?? null,
@@ -51,13 +50,23 @@ export function MenuItemCustomizationModal({
   // Reset state when a new item is opened
   useEffect(() => {
     if (item) {
-      const def = item.variants?.find((v) => v.isDefault && v.isAvailable) ??
-      item.variants?.find((v)=> v.isAvailable)?? null;
-      setSelectedVariantId(def?.id ?? null);
+      setSelectedVariantId(defaultVariant?.id ?? null);
       setSelectedAddonIds([]);
       setQuantity(1);
     }
-  }, [item]);
+  }, [item, defaultVariant]);
+
+  // Lock background body scrolling when modal is open and displayed
+  useEffect(() => {
+    if (!isOpen || !item) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen, item]);
 
   // Handle Escape key to close drawer
   useEffect(() => {
@@ -71,28 +80,41 @@ export function MenuItemCustomizationModal({
   }, [isOpen, onClose]);
 
   const firstImageKey = item?.images?.[0]?.objectKey;
-  
   const isDirect = Boolean(firstImageKey?.startsWith("http"));
   const { data: presignedImageUrl } = usePresignedUrl(!isDirect ? firstImageKey : null);
   const imageUrl = isDirect ? firstImageKey : presignedImageUrl;
 
-  if (!isOpen || !item) return null;
+  const hasVariants = Boolean(item?.variants && item.variants.length > 0);
+  const hasAddons = Boolean(item?.addons && item.addons.length > 0);
 
-  const currentVariant = item.variants?.find((v) => v.id === selectedVariantId) ?? null;
-  const currentAddons = item.addons?.filter((a) => selectedAddonIds.includes(a.id)) ?? [];
+  const currentVariant = useMemo(() => {
+    if (!item?.variants || item.variants.length === 0) return null;
+    return item.variants.find((v) => v.id === selectedVariantId) ?? null;
+  }, [item?.variants, selectedVariantId]);
+
+  const currentAddons = useMemo(() => {
+    if (!item?.addons || item.addons.length === 0) return [];
+    return item.addons.filter((a) => selectedAddonIds.includes(a.id) && a.isAvailable);
+  }, [item?.addons, selectedAddonIds]);
+
+  const isVariantSelectionValid = !hasVariants || Boolean(currentVariant?.isAvailable);
+  const isOrderDisabled = !item?.isAvailable || !isVariantSelectionValid;
+
+  if (!isOpen || !item) return null;
 
   const basePrice = currentVariant ? currentVariant.price : item.price;
   const addonsPrice = currentAddons.reduce((sum, a) => sum + a.price, 0);
   const totalPrice = (basePrice + addonsPrice) * quantity;
 
   const toggleAddon = (addon: CustomerRestaurantAddon) => {
-    if(!addon.isAvailable) return;
+    if (!addon.isAvailable) return;
     setSelectedAddonIds((prev) =>
       prev.includes(addon.id) ? prev.filter((id) => id !== addon.id) : [...prev, addon.id],
     );
   };
 
   const handleConfirm = () => {
+    if (isOrderDisabled) return;
     onConfirm({
       item,
       selectedVariant: currentVariant,
@@ -102,9 +124,6 @@ export function MenuItemCustomizationModal({
     });
     onClose();
   };
-
-  const hasVariants = Boolean(item.variants && item.variants.length > 0);
-  const hasAddons = Boolean(item.addons && item.addons.length > 0);
 
   return (
     <div
@@ -175,31 +194,31 @@ export function MenuItemCustomizationModal({
                     const isAvailable = variant.isAvailable;
 
                     return (
-                      <div
+                      <label
                         key={variant.id}
-                        role="radio"
-                        aria-checked={isSelected}
-                        aria-disabled={!isAvailable}
-                        tabIndex={isAvailable ? 0 : -1}
-                        onClick={() => {
-                          if (!isAvailable) return;
-                          setSelectedVariantId(variant.id);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === " " || e.key === "Enter") {
-                            e.preventDefault();
-                            if (!isAvailable) return;
-                            setSelectedVariantId(variant.id);
-                          }
-                        }}
                         className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
                           !isAvailable
                             ? "opacity-50 bg-neutral-50/70 border-neutral-200 cursor-not-allowed select-none"
                             : isSelected
-                              ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
-                              : "border-neutral-200 hover:border-neutral-300 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
+                              ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs cursor-pointer focus-within:ring-2 focus-within:ring-[#ff6b00]"
+                              : "border-neutral-200 hover:border-neutral-300 cursor-pointer focus-within:ring-2 focus-within:ring-[#ff6b00]"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="menu-item-variant"
+                          value={variant.id}
+                          checked={isSelected}
+                          disabled={!isAvailable}
+                          aria-checked={isSelected}
+                          aria-disabled={!isAvailable}
+                          aria-label={`${variant.name} - ₹${variant.price.toFixed(2)}${!isAvailable ? " (Sold Out)" : ""}`}
+                          onChange={() => {
+                            if (!isAvailable) return;
+                            setSelectedVariantId(variant.id);
+                          }}
+                          className="sr-only"
+                        />
                         <div className="flex items-center gap-3">
                           <div
                             className={`size-4.5 rounded-full border flex items-center justify-center ${
@@ -234,7 +253,7 @@ export function MenuItemCustomizationModal({
                         >
                           ₹{variant.price.toFixed(2)}
                         </span>
-                      </div>
+                      </label>
                     );
                   })}
                 </div>
@@ -251,31 +270,31 @@ export function MenuItemCustomizationModal({
                     const isAvailable = addon.isAvailable;
 
                     return (
-                      <div
+                      <label
                         key={addon.id}
-                        role="checkbox"
-                        aria-checked={isChecked}
-                        aria-disabled={!isAvailable}
-                        tabIndex={isAvailable ? 0 : -1}
-                        onClick={() => {
-                          if (!isAvailable) return;
-                          toggleAddon(addon);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === " " || e.key === "Enter") {
-                            e.preventDefault();
-                            if (!isAvailable) return;
-                            toggleAddon(addon);
-                          }
-                        }}
                         className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
                           !isAvailable
                             ? "opacity-50 bg-neutral-50/70 border-neutral-200 cursor-not-allowed select-none"
                             : isChecked
-                              ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
-                              : "border-neutral-200 hover:border-neutral-300 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
+                              ? "border-[#ff6b00] bg-orange-50/20 shadow-2xs cursor-pointer focus-within:ring-2 focus-within:ring-[#ff6b00]"
+                              : "border-neutral-200 hover:border-neutral-300 cursor-pointer focus-within:ring-2 focus-within:ring-[#ff6b00]"
                         }`}
                       >
+                        <input
+                          type="checkbox"
+                          name="menu-item-addon"
+                          value={addon.id}
+                          checked={isChecked}
+                          disabled={!isAvailable}
+                          aria-checked={isChecked}
+                          aria-disabled={!isAvailable}
+                          aria-label={`${addon.name} - +₹${addon.price.toFixed(2)}${!isAvailable ? " (Sold Out)" : ""}`}
+                          onChange={() => {
+                            if (!isAvailable) return;
+                            toggleAddon(addon);
+                          }}
+                          className="sr-only"
+                        />
                         <div className="flex items-center gap-3">
                           <div
                             className={`size-4.5 rounded-md border flex items-center justify-center ${
@@ -308,7 +327,7 @@ export function MenuItemCustomizationModal({
                         >
                           +₹{addon.price.toFixed(2)}
                         </span>
-                      </div>
+                      </label>
                     );
                   })}
                 </div>
@@ -348,7 +367,7 @@ export function MenuItemCustomizationModal({
             <button
               type="button"
               onClick={handleConfirm}
-              disabled={hasVariants && (!currentVariant || !currentVariant.isAvailable)}
+              disabled={isOrderDisabled}
               className="w-full h-12 bg-[#ff6b00] hover:bg-[#e05e00] text-white rounded-xl font-bold text-sm flex items-center justify-between px-5 shadow-sm transition-all active:scale-[0.99] cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
             >
               <div className="flex items-center gap-2">

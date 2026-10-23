@@ -83,6 +83,7 @@ export function MenuItemCard({ item, onSelect }: MenuItemCardProps) {
 
         <button
           type="button"
+          aria-label={`Add ${item.name} to cart`}
           disabled={isSoldOut}
           onClick={() => onSelect(item)}
           className="bg-[#ff6b00] hover:bg-[#e05e00] text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm shadow-xs transition-all active:scale-95 disabled:pointer-events-none disabled:opacity-40"
