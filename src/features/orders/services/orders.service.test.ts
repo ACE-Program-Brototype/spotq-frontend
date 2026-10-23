@@ -24,6 +24,7 @@ describe("ordersService", () => {
               order_id: "9a123bc4-56de-78fa-9012-3456789abcde",
               order_number: "ORD-20261021-0001",
               restaurant_id: "3dc35af0-3ff5-4ee9-a60a-fbb47124731b",
+              restaurant_name: "Spice Garden",
               status: "COMPLETED",
               items_count: 2,
               total_amount: 540.0,
@@ -54,6 +55,7 @@ describe("ordersService", () => {
       expect(result.orders).toHaveLength(1);
       expect(result.orders[0].order_number).toBe("ORD-20261021-0001");
       expect(result.orders[0].restaurant_id).toBe("3dc35af0-3ff5-4ee9-a60a-fbb47124731b");
+      expect(result.orders[0].restaurant_name).toBe("Spice Garden");
       expect(result.orders[0].total_amount).toBe(540.0);
       expect(result.pagination.total_pages).toBe(1);
       expect(result.pagination.has_next).toBe(false);

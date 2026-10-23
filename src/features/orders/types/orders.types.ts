@@ -18,6 +18,7 @@ export interface OrderHistoryItem {
   order_id: string;
   order_number: string;
   restaurant_id: string;
+  restaurant_name: string;
   status: OrderStatus;
   items_count: number;
   total_amount: number;

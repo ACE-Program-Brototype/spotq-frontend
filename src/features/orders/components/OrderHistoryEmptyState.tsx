@@ -47,7 +47,7 @@ export function OrderHistoryEmptyState({
             onClick={onClearFilter}
             className="inline-flex items-center justify-center rounded-xl bg-neutral-200/80 hover:bg-neutral-300/80 px-4 py-2 text-xs sm:text-sm font-semibold text-neutral-800 transition-colors"
           >
-            Show All Orders
+            {ORDER_MESSAGES.SHOW_ALL_ORDERS}
           </button>
         )}
 

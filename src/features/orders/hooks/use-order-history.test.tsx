@@ -32,6 +32,7 @@ describe("useOrderHistory", () => {
       order_id: "9a123bc4-56de-78fa-9012-3456789abcde",
       order_number: "ORD-20261021-0001",
       restaurant_id: "3dc35af0-3ff5-4ee9-a60a-fbb47124731b",
+      restaurant_name: "Spice Garden",
       status: "COMPLETED",
       items_count: 2,
       total_amount: 540.0,

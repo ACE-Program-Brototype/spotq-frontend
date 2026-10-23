@@ -23,7 +23,7 @@ export function OrderPagination({
   const totalPages = Math.max(1, pagination.total_pages || 1);
   const totalOrders = pagination.total_orders || 0;
 
-  if (totalPages <= 1 && totalOrders <= 10) {
+  if (totalPages <= 1) {
     return null;
   }
 

@@ -2,10 +2,10 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { OrderPagination } from "./OrderPagination";
 
 describe("OrderPagination", () => {
-  it("does not render when totalPages is 1 and totalOrders is <= 10", () => {
+  it("does not render when totalPages is <= 1 regardless of total orders", () => {
     const { container } = render(
       <OrderPagination
-        pagination={{ current_page: 1, total_pages: 1, total_orders: 5, has_next: false }}
+        pagination={{ current_page: 1, total_pages: 1, total_orders: 25, has_next: false }}
         onPageChange={jest.fn()}
       />,
     );

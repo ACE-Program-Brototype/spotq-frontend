@@ -3,7 +3,7 @@
  * React Query integration for Customer Order History with URL searchParams synchronization.
  */
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -49,6 +49,7 @@ export function useOrderHistory(options?: UseOrderHistoryOptions) {
   const query = useQuery({
     queryKey,
     queryFn: () => ordersService.getOrderHistory({ page, limit, status }),
+    placeholderData: keepPreviousData,
   });
 
   const handleStatusChange = useCallback(

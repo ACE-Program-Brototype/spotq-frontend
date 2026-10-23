@@ -17,11 +17,29 @@ export interface OrderFilterChipsProps {
 function getChipIndicator(value: OrderFilterStatus, isSelected: boolean) {
   if (value === "ALL") return null;
 
+  if (value === "READY") {
+    return (
+      <span className="relative flex size-2 shrink-0">
+        <span
+          className={cn(
+            "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
+            isSelected ? "bg-white" : "bg-blue-400",
+          )}
+        />
+        <span
+          className={cn(
+            "relative inline-flex size-2 rounded-full",
+            isSelected ? "bg-white" : "bg-blue-600",
+          )}
+        />
+      </span>
+    );
+  }
+
   const colorMap: Record<string, string> = {
     COMPLETED: isSelected ? "bg-white" : "bg-emerald-500",
     CANCELLED: isSelected ? "bg-white" : "bg-rose-500",
     PREPARING: isSelected ? "bg-white animate-pulse" : "bg-amber-500 animate-pulse",
-    READY: isSelected ? "bg-white animate-ping" : "bg-blue-500 animate-ping",
     CONFIRMED: isSelected ? "bg-white" : "bg-indigo-500",
     SERVED: isSelected ? "bg-white" : "bg-purple-500",
     PLACED: isSelected ? "bg-white" : "bg-neutral-400",

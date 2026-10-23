@@ -44,6 +44,7 @@ const mockOrdersListResponse = {
         order_id: "9a123bc4-56de-78fa-9012-3456789abcde",
         order_number: "ORD-20261021-0001",
         restaurant_id: "3dc35af0-3ff5-4ee9-a60a-fbb47124731b",
+        restaurant_name: "Spice Garden",
         status: "COMPLETED",
         items_count: 2,
         total_amount: 540.0,
@@ -53,6 +54,7 @@ const mockOrdersListResponse = {
         order_id: "9a123bc4-56de-78fa-9012-3456789abcdf",
         order_number: "ORD-20261021-0002",
         restaurant_id: "3dc35af0-3ff5-4ee9-a60a-fbb47124731b",
+        restaurant_name: "Burger Bistro",
         status: "CANCELLED",
         items_count: 1,
         total_amount: 420.0,
@@ -93,8 +95,10 @@ describe("OrderHistoryPage Integration", () => {
       expect(screen.getByText("Order #ORD-20261021-0001")).toBeInTheDocument();
     });
 
+    expect(screen.getByText("Spice Garden")).toBeInTheDocument();
     expect(screen.getByText("₹540.00")).toBeInTheDocument();
     expect(screen.getByText("Order #ORD-20261021-0002")).toBeInTheDocument();
+    expect(screen.getByText("Burger Bistro")).toBeInTheDocument();
     expect(screen.getByText("₹420.00")).toBeInTheDocument();
   });
 

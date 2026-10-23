@@ -91,7 +91,7 @@ export function OrderHistoryPage() {
                 className="mt-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold px-5 py-2.5 gap-2"
               >
                 <RefreshCw className={`size-3.5 ${isFetching ? "animate-spin" : ""}`} />
-                <span>{isFetching ? "Retrying..." : ORDER_MESSAGES.RETRY}</span>
+                <span>{isFetching ? ORDER_MESSAGES.RETRYING : ORDER_MESSAGES.RETRY}</span>
               </Button>
             </div>
           ) : orders.length === 0 ? (

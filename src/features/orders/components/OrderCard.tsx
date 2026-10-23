@@ -4,14 +4,24 @@
  * itemization metrics, formatted timestamps, and clear pricing.
  */
 
-import { Calendar, CheckCircle2, Clock, Sparkles, UtensilsCrossed, XCircle } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Store,
+  UtensilsCrossed,
+  XCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
+import { ORDER_MESSAGES } from "../constants/orders.constants";
 import type { OrderHistoryItem, OrderStatus } from "../types/orders.types";
 
 export interface OrderCardProps {
   order: OrderHistoryItem;
   className?: string;
+  onSelect?: (order: OrderHistoryItem) => void;
 }
 
 export function getStatusBadge(status?: OrderStatus | string) {
@@ -97,7 +107,7 @@ export function getStatusBadge(status?: OrderStatus | string) {
   }
 }
 
-export function OrderCard({ order, className }: OrderCardProps) {
+export function OrderCard({ order, className, onSelect }: OrderCardProps) {
   const formattedAmount = `₹${order.total_amount.toFixed(2)}`;
   const formattedDate = formatDate(order.created_at);
   const itemsSummary = `${order.items_count} ${order.items_count === 1 ? "item" : "items"}`;
@@ -105,9 +115,24 @@ export function OrderCard({ order, className }: OrderCardProps) {
   return (
     <article
       data-testid={`order-card-${order.order_id}`}
-      aria-label={`Order ${order.order_number}, ${formattedAmount}, status ${order.status}`}
+      aria-label={`Order ${order.order_number}, ${order.restaurant_name ? `${order.restaurant_name}, ` : ""}${formattedAmount}, status ${order.status}`}
+      onClick={onSelect ? () => onSelect(order) : undefined}
+      onKeyDown={
+        onSelect
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelect(order);
+              }
+            }
+          : undefined
+      }
+      tabIndex={onSelect ? 0 : undefined}
+      role={onSelect ? "button" : undefined}
       className={cn(
-        "group relative flex flex-col justify-between overflow-hidden rounded-3xl bg-white p-5 sm:p-6 border border-neutral-200/80 shadow-xs hover:border-[#ff6b00]/40 hover:shadow-lg hover:shadow-neutral-200/40 hover:-translate-y-0.5 transition-all duration-200 select-none",
+        "group relative flex flex-col justify-between overflow-hidden rounded-3xl bg-white p-5 sm:p-6 border border-neutral-200/80 shadow-xs hover:border-[#ff6b00]/40 hover:shadow-lg hover:shadow-neutral-200/40 hover:-translate-y-0.5 transition-all duration-200",
+        onSelect &&
+          "cursor-pointer focus-visible:outline-2 focus-visible:outline-[#ff6b00] focus-visible:outline-offset-2",
         className,
       )}
     >
@@ -127,7 +152,12 @@ export function OrderCard({ order, className }: OrderCardProps) {
                   Order #{order.order_number}
                 </h3>
               </div>
-              <p className="text-xs font-medium text-neutral-400 mt-0.5">SpotQ Dining Order</p>
+              <div className="flex items-center gap-1.5 text-xs text-neutral-500 mt-0.5 min-w-0">
+                <Store className="size-3.5 text-neutral-400 shrink-0" />
+                <span className="truncate font-semibold text-neutral-700">
+                  {order.restaurant_name || ORDER_MESSAGES.DEFAULT_SUBTITLE}
+                </span>
+              </div>
             </div>
           </div>
 

@@ -35,4 +35,11 @@ describe("OrderFilterChips", () => {
     fireEvent.click(screen.getByRole("tab", { name: "Filter by Cancelled" }));
     expect(handleSelect).toHaveBeenCalledWith("CANCELLED");
   });
+
+  it("renders ping and solid indicator dots when READY status chip is rendered", () => {
+    const { container } = render(<OrderFilterChips selectedStatus="READY" onSelect={jest.fn()} />);
+
+    const pingElement = container.querySelector(".animate-ping");
+    expect(pingElement).toBeInTheDocument();
+  });
 });

@@ -89,4 +89,7 @@ export const ORDER_MESSAGES = {
   FETCH_ERROR_DESCRIPTION:
     "We encountered an issue retrieving your order history. Please check your connection and try again.",
   RETRY: "Try Again",
+  RETRYING: "Retrying...",
+  DEFAULT_SUBTITLE: "SpotQ Dining Order",
+  SHOW_ALL_ORDERS: "Show All Orders",
 } as const;
