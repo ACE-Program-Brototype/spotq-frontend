@@ -11,6 +11,7 @@ import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { cn } from "@/lib/utils/cn";
 import type { CustomerMobileNavProps, CustomerNavbarProps } from "./types";
 
@@ -27,6 +28,7 @@ export function CustomerNavbar({
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const openDrawer = useCartStore((state) => state.openDrawer);
 
   const [searchQuery, setSearchQuery] = useState(
     location.pathname === "/" ? (searchParams.get("search") ?? "") : "",
@@ -118,7 +120,11 @@ export function CustomerNavbar({
           <Link
             to={CUSTOMER_ROUTES.CART}
             aria-label="Shopping Cart"
-            className="relative flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              openDrawer();
+            }}
+            className="relative flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
           >
             <ShoppingCart className="size-5" />
             {cartItemCount > 0 && (
@@ -199,13 +205,13 @@ export function CustomerMobileNav({
     },
     {
       label: "Cart",
-      href: "/cart",
+      href: CUSTOMER_ROUTES.CART,
       icon: ShoppingCart,
       badge: cartItemCount,
     },
     {
       label: "Notifications",
-      href: "/notifications",
+      href: CUSTOMER_ROUTES.NOTIFICATIONS,
       icon: Bell,
       badge: unreadNotifications,
     },
