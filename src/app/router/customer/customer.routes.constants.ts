@@ -23,6 +23,7 @@ export const CUSTOMER_ROUTE_PATHS = {
   },
 
   CART: "/cart",
+  CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
   QUEUES: "/queues",
@@ -49,6 +50,7 @@ export const CUSTOMER_ROUTES = {
   },
 
   CART: "/cart",
+  CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
   QUEUES: "/queues",

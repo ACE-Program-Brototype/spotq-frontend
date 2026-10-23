@@ -16,7 +16,7 @@ export function CustomerLayout() {
   }
 
   return (
-    <div className="flex min-h-svh w-full max-w-full flex-col overflow-x-hidden bg-white text-neutral-900 pb-16 md:pb-0">
+    <div className="flex min-h-svh w-full max-w-full flex-col overflow-x-hidden bg-[#f5f6f8] text-neutral-900 pb-16 md:pb-0">
       <CustomerNavbar />
 
       <NotificationBanner {...pushNotification} />
