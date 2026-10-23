@@ -14,6 +14,7 @@ export interface CustomizationResult {
   selectedAddons: CustomerRestaurantAddon[];
   quantity: number;
   totalPrice: number;
+  specialInstructions?: string;
 }
 
 export interface MenuItemCustomizationModalProps {
@@ -21,6 +22,7 @@ export interface MenuItemCustomizationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (result: CustomizationResult) => void;
+  isSubmitting?: boolean;
 }
 
 export function MenuItemCustomizationModal({
@@ -28,6 +30,7 @@ export function MenuItemCustomizationModal({
   isOpen,
   onClose,
   onConfirm,
+  isSubmitting = false,
 }: MenuItemCustomizationModalProps) {
   const modalId = useId();
 
@@ -46,6 +49,7 @@ export function MenuItemCustomizationModal({
   );
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const [specialInstructions, setSpecialInstructions] = useState("");
 
   // Reset state when a new item is opened
   useEffect(() => {
@@ -53,6 +57,7 @@ export function MenuItemCustomizationModal({
       setSelectedVariantId(defaultVariant?.id ?? null);
       setSelectedAddonIds([]);
       setQuantity(1);
+      setSpecialInstructions("");
     }
   }, [item, defaultVariant]);
 
@@ -114,13 +119,14 @@ export function MenuItemCustomizationModal({
   };
 
   const handleConfirm = () => {
-    if (isOrderDisabled) return;
+    if (isOrderDisabled || isSubmitting) return;
     onConfirm({
       item,
       selectedVariant: currentVariant,
       selectedAddons: currentAddons,
       quantity,
       totalPrice,
+      ...(specialInstructions.trim() ? { specialInstructions: specialInstructions.trim() } : {}),
     });
     onClose();
   };
@@ -333,6 +339,25 @@ export function MenuItemCustomizationModal({
                 </div>
               </div>
             )}
+            {/* Special Instructions (Optional) */}
+            <div className="pt-2">
+              <label
+                htmlFor="special-instructions-input"
+                className="text-sm font-bold text-neutral-900 mb-2 flex items-center justify-between"
+              >
+                <span>Special Instructions</span>
+                <span className="text-[11px] font-normal text-neutral-400">Optional</span>
+              </label>
+              <textarea
+                id="special-instructions-input"
+                value={specialInstructions}
+                onChange={(e) => setSpecialInstructions(e.target.value)}
+                placeholder="e.g. Extra raitha please, less spicy, no onions..."
+                maxLength={250}
+                rows={2}
+                className="w-full rounded-xl border border-neutral-200 p-3 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 focus:border-[#ff6b00] focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30 transition-all resize-none"
+              />
+            </div>
           </div>
 
           {/* Sticky Bottom Add to Cart & Stepper Action */}
@@ -344,7 +369,7 @@ export function MenuItemCustomizationModal({
                   type="button"
                   aria-label="Decrease quantity"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  disabled={quantity <= 1}
+                  disabled={quantity <= 1 || isSubmitting}
                   className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:bg-white hover:shadow-xs disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
                 >
                   <Minus className="size-3.5" />
@@ -356,7 +381,7 @@ export function MenuItemCustomizationModal({
                   type="button"
                   aria-label="Increase quantity"
                   onClick={() => setQuantity((q) => Math.min(20, q + 1))}
-                  disabled={quantity >= 20}
+                  disabled={quantity >= 20 || isSubmitting}
                   className="size-7 rounded-lg flex items-center justify-center text-neutral-600 hover:bg-white hover:shadow-xs disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
                 >
                   <Plus className="size-3.5" />
@@ -367,12 +392,16 @@ export function MenuItemCustomizationModal({
             <button
               type="button"
               onClick={handleConfirm}
-              disabled={isOrderDisabled}
+              disabled={isOrderDisabled || isSubmitting}
               className="w-full h-12 bg-[#ff6b00] hover:bg-[#e05e00] text-white rounded-xl font-bold text-sm flex items-center justify-between px-5 shadow-sm transition-all active:scale-[0.99] cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
             >
               <div className="flex items-center gap-2">
-                <ShoppingCart className="size-4" />
-                <span>Add to Cart</span>
+                {isSubmitting ? (
+                  <span className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                ) : (
+                  <ShoppingCart className="size-4" />
+                )}
+                <span>{isSubmitting ? "Adding to Cart..." : "Add to Cart"}</span>
               </div>
               <span className="font-extrabold text-base tracking-tight">
                 ₹{totalPrice.toFixed(2)}

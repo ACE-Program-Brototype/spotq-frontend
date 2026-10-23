@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { RestaurantAboutSection } from "../components/Customer/details/RestaurantAboutSection";
-import { RestaurantDetailErrorState } from "../components/Customer/details/RestaurantDetailErrorState";
-import { RestaurantDetailSkeleton } from "../components/Customer/details/RestaurantDetailSkeleton";
-import { RestaurantHeroHeader } from "../components/Customer/details/RestaurantHeroHeader";
+import { type AddToCartPayload, useAddToCart } from "@/features/cart";
 import { MenuItemCard } from "../components/Customer/details/MenuItemCard";
 import {
   type CustomizationResult,
   MenuItemCustomizationModal,
 } from "../components/Customer/details/MenuItemCustomizationModal";
-import type { CustomerRestaurantMenuItem } from "../types/customer-restaurant-details.types";
+import { RestaurantAboutSection } from "../components/Customer/details/RestaurantAboutSection";
+import { RestaurantDetailErrorState } from "../components/Customer/details/RestaurantDetailErrorState";
+import { RestaurantDetailSkeleton } from "../components/Customer/details/RestaurantDetailSkeleton";
+import { RestaurantHeroHeader } from "../components/Customer/details/RestaurantHeroHeader";
 import { useCustomerRestaurantDetails } from "../hooks/useCustomerRestaurantDetails";
+import type { CustomerRestaurantMenuItem } from "../types/customer-restaurant-details.types";
 
 export default function CustomerRestaurantDetailPage() {
   const { restaurantId } = useParams<{ restaurantId: string }>();
 
-  // TanStack Query hook 
+  // TanStack Query hook
   const { restaurant, isLoading, isError, refetch } = useCustomerRestaurantDetails(restaurantId);
+
+  // Cart Mutation Hook
+  const addToCartMutation = useAddToCart();
 
   // Active Category & Item Customization State
   const [activeCategoryId, setActiveCategoryId] = useState<string>("main-course");
@@ -68,13 +72,37 @@ export default function CustomerRestaurantDetailPage() {
     }
   };
 
-  const handleAddToCart = (result: CustomizationResult) => {
-    toast.success(`Added ${result.item.name} to cart!`, {
-      description: result.selectedVariant
-        ? `${result.selectedVariant.name} • ₹${result.totalPrice.toFixed(2)}`
-        : `₹${result.totalPrice.toFixed(2)}`,
-    });
-    console.log("Item added to cart:", result);
+  const handleAddToCart = async (result: CustomizationResult) => {
+    if (!restaurant?.id) {
+      toast.error("Restaurant information is missing.");
+      return;
+    }
+
+    const payload: AddToCartPayload = {
+      restaurantId: restaurant.id,
+      menuItemId: result.item.id,
+      quantity: result.quantity,
+      addonIds: result.selectedAddons.map((addon) => addon.addonId || addon.id),
+      ...(result.specialInstructions?.trim()
+        ? { specialInstructions: result.specialInstructions.trim() }
+        : {}),
+    };
+
+    try {
+      await addToCartMutation.mutateAsync(payload);
+      toast.success(`Added ${result.item.name} to cart!`, {
+        description: result.selectedVariant
+          ? `${result.selectedVariant.name} • ₹${result.totalPrice.toFixed(2)}`
+          : `₹${result.totalPrice.toFixed(2)}`,
+      });
+      setCustomizingItem(null);
+    } catch (err: unknown) {
+      const errorMsg =
+        err instanceof Error ? err.message : "Failed to add item to cart. Please try again.";
+      toast.error("Failed to add to cart", {
+        description: errorMsg,
+      });
+    }
   };
 
   return (
@@ -113,10 +141,11 @@ export default function CustomerRestaurantDetailPage() {
                           key={category.id}
                           type="button"
                           onClick={() => handleCategoryClick(category.id)}
-                          className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${isActive
-                            ? "bg-[#ff6b00] text-white shadow-xs"
-                            : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
-                            }`}
+                          className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                            isActive
+                              ? "bg-[#ff6b00] text-white shadow-xs"
+                              : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                          }`}
                         >
                           {category.name}
                         </button>
@@ -126,10 +155,11 @@ export default function CustomerRestaurantDetailPage() {
                   <button
                     type="button"
                     onClick={() => handleCategoryClick("restaurant-about")}
-                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border-t border-neutral-100 mt-2 pt-3 ${activeCategoryId === "restaurant-about"
-                      ? "bg-[#ff6b00] text-white shadow-xs"
-                      : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
-                      }`}
+                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border-t border-neutral-100 mt-2 pt-3 ${
+                      activeCategoryId === "restaurant-about"
+                        ? "bg-[#ff6b00] text-white shadow-xs"
+                        : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                    }`}
                   >
                     Overview & Hours
                   </button>
@@ -193,7 +223,10 @@ export default function CustomerRestaurantDetailPage() {
             )}
 
             {/* Restaurant Info & Operating Hours */}
-            <section id="restaurant-about" className="pt-8 border-t border-neutral-200/80 scroll-mt-28">
+            <section
+              id="restaurant-about"
+              className="pt-8 border-t border-neutral-200/80 scroll-mt-28"
+            >
               <RestaurantAboutSection restaurant={restaurant} />
             </section>
           </main>
@@ -206,6 +239,7 @@ export default function CustomerRestaurantDetailPage() {
         isOpen={Boolean(customizingItem)}
         onClose={() => setCustomizingItem(null)}
         onConfirm={handleAddToCart}
+        isSubmitting={addToCartMutation.isPending}
       />
     </div>
   );

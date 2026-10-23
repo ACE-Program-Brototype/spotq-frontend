@@ -2,9 +2,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { toast } from "sonner";
+import { cartService } from "@/features/cart/services/cart.service";
 import { customerRestaurantService } from "../services/customer-restaurant.service";
 import type { CustomerRestaurantDetails } from "../types/customer-restaurant-details.types";
 import CustomerRestaurantDetailPage from "./CustomerRestaurantDetailPage";
+
+jest.mock("@/features/cart/services/cart.service", () => ({
+  cartService: {
+    addToCart: jest.fn().mockResolvedValue({ success: true }),
+  },
+}));
 
 jest.mock("../services/customer-restaurant.service", () => ({
   customerRestaurantService: {
@@ -262,22 +269,67 @@ describe("CustomerRestaurantDetailPage", () => {
     fireEvent.click(plusButton); // quantity = 2
     expect(screen.getByText("2")).toBeInTheDocument();
 
+    // Type special instructions
+    const instructionsInput = screen.getByPlaceholderText(/Extra raitha please/i);
+    fireEvent.change(instructionsInput, { target: { value: "Extra raitha please" } });
+
     // Total price: (₹200 variant + ₹30 addon) * 2 = ₹460.00
     const confirmBtn = screen.getByRole("button", { name: /Add to Cart.*460/i });
     expect(confirmBtn).toBeInTheDocument();
 
     fireEvent.click(confirmBtn);
 
+    // Verify API called with exact payload model
+    await waitFor(() => {
+      expect(cartService.addToCart).toHaveBeenCalledWith({
+        restaurantId: "rest-101",
+        menuItemId: "item-2",
+        quantity: 2,
+        addonIds: ["extra-butter"],
+        specialInstructions: "Extra raitha please",
+      });
+    });
+
     // Toast triggered and modal dismissed
-    expect(toast.success).toHaveBeenCalledWith(
-      "Added Paneer Butter Masala to cart!",
-      expect.objectContaining({
-        description: expect.stringContaining("₹460.00"),
-      }),
-    );
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(
+        "Added Paneer Butter Masala to cart!",
+        expect.objectContaining({
+          description: expect.stringContaining("₹460.00"),
+        }),
+      );
+    });
 
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+  });
+
+  it("handles cart addition error and displays error toast", async () => {
+    (cartService.addToCart as jest.Mock).mockRejectedValueOnce(new Error("Item out of stock"));
+    (customerRestaurantService.getRestaurantDetails as jest.Mock).mockResolvedValue(
+      mockRestaurantDetails,
+    );
+
+    renderWithProviders();
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Paneer Butter Masala" })).toBeInTheDocument();
+    });
+
+    const addButton = screen.getByRole("button", { name: /Add Paneer Butter Masala to cart/i });
+    fireEvent.click(addButton);
+
+    const confirmBtn = await screen.findByRole("button", { name: /Add to Cart/i });
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed to add to cart",
+        expect.objectContaining({
+          description: "Item out of stock",
+        }),
+      );
     });
   });
 
