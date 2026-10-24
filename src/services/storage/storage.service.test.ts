@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/api/client";
-import { STORAGE_ENDPOINTS } from "./storage.constants";
+import { STORAGE_ENDPOINTS, STORAGE_MESSAGES } from "./storage.constants";
 import {
+  deleteS3Object,
   getPresignedDownloadUrl,
   getPresignedUrl,
   uploadFile,
@@ -11,6 +12,7 @@ jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
     post: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -280,6 +282,55 @@ describe("storage.service", () => {
 
       await expect(getPresignedDownloadUrl("staff/avatars/invalid.png")).rejects.toThrow(
         "Failed to retrieve presigned download URL.",
+      );
+    });
+  });
+
+  describe("deleteS3Object", () => {
+    it("returns early without making network call if key is empty", async () => {
+      await deleteS3Object("");
+      await deleteS3Object("   ");
+
+      expect(apiClient.delete).not.toHaveBeenCalled();
+    });
+
+    it("sends DELETE request with object key search parameters", async () => {
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          message: "S3 object deleted successfully",
+        }),
+      });
+
+      await deleteS3Object("restaurants/123/images/photo.jpg");
+
+      expect(apiClient.delete).toHaveBeenCalledWith(STORAGE_ENDPOINTS.S3_OBJECT, {
+        searchParams: { key: "restaurants/123/images/photo.jpg" },
+      });
+    });
+
+    it("throws error when API returns success: false", async () => {
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+          message: "Forbidden entity access",
+        }),
+      });
+
+      await expect(deleteS3Object("restaurants/123/images/photo.jpg")).rejects.toThrow(
+        "Forbidden entity access",
+      );
+    });
+
+    it("throws fallback error when API fails without custom message", async () => {
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+        }),
+      });
+
+      await expect(deleteS3Object("restaurants/123/images/photo.jpg")).rejects.toThrow(
+        STORAGE_MESSAGES.FAILED_TO_DELETE_S3_OBJECT,
       );
     });
   });

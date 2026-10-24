@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { useDeleteS3Object } from "@/hooks/useDeleteS3Object";
+import { STORAGE_MESSAGES } from "@/services/storage/storage.constants";
 import { uploadFile } from "@/services/storage/storage.service";
 import type { RestaurantImageItem } from "../types/onboard.types";
 
@@ -21,8 +23,32 @@ export default function ImageUploadSection({
 }: ImageUploadSectionProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+
+  const deleteMutation = useDeleteS3Object();
+
+  const handleRemoveImage = async (index: number) => {
+    const img = images[index];
+    if (!img) return;
+
+    setError(null);
+
+    if (img.objectKey) {
+      try {
+        setDeletingIndex(index);
+        await deleteMutation.mutateAsync(img.objectKey);
+        onRemoveImage(index);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : STORAGE_MESSAGES.FAILED_TO_DELETE_S3_OBJECT);
+      } finally {
+        setDeletingIndex(null);
+      }
+    } else {
+      onRemoveImage(index);
+    }
+  };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -99,7 +125,7 @@ export default function ImageUploadSection({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          disabled={isUploading}
+          disabled={isUploading || deletingIndex !== null}
           className="flex items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-orange-600 disabled:opacity-50"
         >
           <svg
@@ -153,21 +179,42 @@ export default function ImageUploadSection({
               </div>
               <button
                 type="button"
-                onClick={() => onRemoveImage(index)}
-                className="ml-2 shrink-0 rounded-lg p-1 text-neutral-400 hover:bg-red-50 hover:text-red-600"
+                onClick={() => handleRemoveImage(index)}
+                disabled={isUploading || deletingIndex !== null}
+                className="ml-2 shrink-0 rounded-lg p-1 text-neutral-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
                 aria-label={`Remove photo ${img.fileName}`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  className="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+                {deletingIndex === index ? (
+                  <svg
+                    className="h-4 w-4 animate-spin text-red-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                )}
               </button>
             </div>
           ))}

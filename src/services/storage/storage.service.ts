@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { STORAGE_ENDPOINTS } from "./storage.constants";
+import { STORAGE_ENDPOINTS, STORAGE_MESSAGES } from "./storage.constants";
 
 export interface PresignedUrlRequest {
   entity_type: string;
@@ -203,4 +203,25 @@ export async function uploadFile(params: UploadFileParams): Promise<UploadFileRe
     s3ObjectKey: presignedResponse.s3ObjectKey,
     fileName: file.name,
   };
+}
+
+/**
+ * Deletes an object from AWS S3 via the backend storage API endpoint.
+ */
+export async function deleteS3Object(key: string): Promise<void> {
+  if (!key?.trim()) {
+    return;
+  }
+
+  const trimmedKey = key.trim();
+
+  const response = await apiClient
+    .delete(STORAGE_ENDPOINTS.S3_OBJECT, {
+      searchParams: { key: trimmedKey },
+    })
+    .json<ApiResponse<unknown>>();
+
+  if (!response?.success) {
+    throw new Error(response?.message || STORAGE_MESSAGES.FAILED_TO_DELETE_S3_OBJECT);
+  }
 }
