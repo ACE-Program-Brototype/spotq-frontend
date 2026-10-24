@@ -5,6 +5,7 @@ export * from "./components/TableStatusBadge";
 export * from "./components/TableStatusModal";
 export * from "./components/TableSummaryBar";
 export * from "./constants/table.constants";
+export * from "./hooks/useRestaurantTableDetails";
 export * from "./hooks/useTables";
 export * from "./hooks/useUpdateTableStatus";
 export { default as StaffTablePage } from "./pages/StaffTablePage";

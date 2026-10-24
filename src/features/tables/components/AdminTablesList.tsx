@@ -1,5 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { ADMIN_TABLE_LIMIT } from "../constants/table.constants";
@@ -15,25 +17,6 @@ const statusOptions: { value: "ALL" | TableStatus; label: string }[] = [
   { value: "PARTIAL_OCCUPIED", label: "Partially occupied" },
   { value: "MAINTENANCE", label: "Maintenance" },
 ];
-
-// const _statusLabels: Record<TableStatus, string> = {
-//   AVAILABLE: "Available",
-//   OCCUPIED: "Occupied",
-//   PARTIAL_OCCUPIED: "Partially occupied",
-//   MAINTENANCE: "Maintenance",
-// };
-
-// const _escapeHtml = (value: string) =>
-//   value.replace(/[&<>"']/g, (character) => {
-//     const entities: Record<string, string> = {
-//       "&": "&amp;",
-//       "<": "&lt;",
-//       ">": "&gt;",
-//       '"': "&quot;",
-//       "'": "&#39;",
-//     };
-//     return entities[character];
-//   });
 
 type AdminTablesListProps = {
   restaurantId: string;
@@ -64,6 +47,7 @@ export function AdminTablesList({
   isError,
   onRetry,
 }: AdminTablesListProps) {
+  const navigate = useNavigate();
   // const [viewTable, setViewTable] = useState<TableItem | null>(null);
   const [selectedTable, setSelectedTable] = useState<TableItem | null>(null);
 
@@ -115,7 +99,7 @@ export function AdminTablesList({
           <AdminTableCard
             key={table.id}
             table={table}
-            onView={() => {}}
+            onView={(table) => navigate(RESTAURANT_ROUTES.TABLE.VIEW(table.id))}
             onDownload={downloadTable}
             onPrint={printTable}
             onEdit={setSelectedTable}

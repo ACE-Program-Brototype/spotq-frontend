@@ -44,8 +44,7 @@ export const useRestaurantAdminTables = (
 
   const payload = query.data?.data;
   const tables = payload?.tables ?? [];
-  console.log(payload, tables);
-  console.log(payload);
+
   return {
     ...query,
     tables,
