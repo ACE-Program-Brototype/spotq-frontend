@@ -6,7 +6,20 @@ export type TableStatus = "AVAILABLE" | "OCCUPIED" | "PARTIAL_OCCUPIED" | "MAINT
 
 export type StaffUpdatableStatus = "AVAILABLE" | "MAINTENANCE";
 
-export type TableShape = "SQUARE" | "CIRCLE" | "RECTANGLE";
+export type TableShape = "CIRCLE" | "RECTANGLE";
+
+export interface RestaurantTableDetails {
+  tableId: string;
+  restaurantId: string;
+  sectionId: string;
+  sectionName: string;
+  tableCode: string;
+  capacity: number;
+  shape: TableShape;
+  currentOccupancy: number;
+  status: TableStatus;
+  createdAt: string;
+}
 
 export interface TableItem {
   id: string;
@@ -19,6 +32,17 @@ export interface TableItem {
   isActive: boolean;
   sectionName?: string;
 }
+
+export type AdminTables = {
+  tables: TableItem;
+  stats: {
+    totalTables: number;
+    occupied: number;
+    available: number;
+    maintenance: number;
+  };
+  total: number;
+};
 
 export type TablesGroupedBySection = Record<string, TableItem[]>;
 

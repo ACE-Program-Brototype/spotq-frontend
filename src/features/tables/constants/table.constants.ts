@@ -19,10 +19,13 @@ export const TABLE_STATUS = {
 export const TABLE_QUERY_KEYS = {
   ALL: ["tables"] as const,
   LIST: (restaurantId: string) => ["tables", restaurantId] as const,
+  DETAILS: (restaurantId: string, tableId: string) => ["tables", restaurantId, tableId] as const,
 } as const;
 
 export const TABLE_ENDPOINTS = {
   LIST: (restaurantId: string) => `restaurants/${restaurantId}/table`,
+  DETAILS: (restaurantId: string, tableId: string) =>
+    `restaurants/${restaurantId}/table/${tableId}`,
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}/status`,
 } as const;
@@ -134,3 +137,5 @@ export const TABLE_MESSAGES = {
   NO_TABLES_IN_SECTION_DESC:
     "There are currently no active dining tables assigned to this section.",
 } as const;
+
+export const ADMIN_TABLE_LIMIT = 9;

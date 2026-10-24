@@ -103,7 +103,9 @@ export function Pagination({
           <span>{entriesText}</span>
         ) : (
           <span>
-            Page <strong className="font-semibold text-foreground">{safeCurrent}</strong> of{" "}
+            Page
+            <strong className="font-semibold text-foreground">{safeCurrent}</strong>
+            of
             <strong className="font-semibold text-foreground">{safeTotal}</strong>
           </span>
         )}
