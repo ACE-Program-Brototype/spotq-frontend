@@ -23,12 +23,13 @@ import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
 import SubscriptionFailurePage from "@/features/subscription/pages/SubscriptionFailurePage";
 import SubscriptionSuccessPage from "@/features/subscription/pages/SubscriptionSuccessPage";
+import RestaurantTableDetailPage from "@/features/tables/pages/RestaurantTableDetailPage";
+import RestaurantTablePage from "@/features/tables/pages/RestaurantTablePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RestaurantAdminLayout from "@/layouts/RestaurantAdminLayout";
 import VerificationStatusLayout from "@/layouts/VerificationStatusLayout";
-
 import { RESTAURANT_ROUTE_PATHS, RESTAURANT_ROUTES } from "./restaurant.routes.constants";
 
 const RestaurantAuthGuard = () => <AuthLayout redirectTo={RESTAURANT_ROUTES.DASHBOARD} />;
@@ -185,6 +186,14 @@ export const restaurantRoutes: RouteObject[] = [
                 Component: RestaurantMenuAddonsPage,
               },
             ],
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.TABLE.ROOT,
+            Component: RestaurantTablePage,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.TABLE.VIEW,
+            Component: RestaurantTableDetailPage,
           },
         ],
       },

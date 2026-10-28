@@ -1,13 +1,44 @@
+import type { SuccessResponse } from "@/components/common";
 import { apiClient } from "@/lib/api/client";
 import { TABLE_ENDPOINTS } from "../constants/table.constants";
 import type {
+  AdminTables,
   GetTablesResponse,
+  RestaurantTableDetails,
   StaffUpdatableStatus,
+  TableStatus,
   TablesGroupedBySection,
   UpdateTableStatusResponse,
 } from "../types/table.types";
 
 export const tableService = {
+  async getTableDetails(restaurantId: string, tableId: string): Promise<RestaurantTableDetails> {
+    if (!restaurantId || !tableId) {
+      throw new Error("Restaurant ID and table ID are required to fetch table details");
+    }
+
+    const response = await apiClient
+      .get(TABLE_ENDPOINTS.DETAILS(restaurantId, tableId))
+      .json<SuccessResponse<RestaurantTableDetails>>();
+
+    return response.data;
+  },
+
+  async getTables(
+    restaurantId: string,
+    searchParams: { page: number; limit: number; status?: TableStatus },
+  ): Promise<AdminTables> {
+    if (!restaurantId) {
+      throw new Error("Restaurant Id is requried to fetch tables");
+    }
+
+    const response = await apiClient
+      .get(TABLE_ENDPOINTS.LIST(restaurantId), { searchParams })
+      .json<SuccessResponse<AdminTables>>();
+
+    return response.data;
+  },
+
   /**
    * Fetches tables for a restaurant grouped by sections.
    * Endpoint: GET /api/v1/restaurants/{restaurantId}/table

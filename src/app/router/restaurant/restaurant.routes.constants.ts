@@ -48,6 +48,11 @@ export const RESTAURANT_ROUTE_PATHS = {
     DETAIL: "items/:itemId",
     EDIT: "items/:itemId/edit",
   },
+
+  TABLE: {
+    ROOT: "tables",
+    VIEW: "tables/:tableId",
+  },
 } as const;
 
 // Absolute paths and route builders for navigate() and <Link to="..." />
@@ -100,5 +105,10 @@ export const RESTAURANT_ROUTES = {
     DETAIL_PATTERN: "/restaurant/menu/items/:itemId",
     DETAIL: (itemId: string) => `/restaurant/menu/items/${itemId}`,
     EDIT: (itemId: string) => `/restaurant/menu/items/${itemId}/edit`,
+  },
+
+  TABLE: {
+    ROOT: "/restaurant/tables",
+    VIEW: (tableId: string) => `/restaurant/tables/${tableId}`,
   },
 } as const;
