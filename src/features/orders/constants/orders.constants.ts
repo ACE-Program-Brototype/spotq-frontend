@@ -77,10 +77,6 @@ export const ORDER_MESSAGES = {
   PAGE_TITLE: "Order History",
   PAGE_SUBTITLE: "Track and re-visit your past dining and takeaway orders.",
   ALL_ORDERS: "All Orders",
-  ITEMS_LABEL: "Items",
-  TOTAL_AMOUNT: "Total Amount",
-  ORDER_SUMMARY: "Order Summary",
-  CLOSE: "Close",
   NO_ORDERS_TITLE: "No orders found",
   NO_ORDERS_SUBTITLE:
     "You haven't placed any orders matching this filter. Explore top restaurants and start ordering!",

@@ -24,10 +24,17 @@ describe("OrderCard", () => {
     expect(screen.getByText("2 items")).toBeInTheDocument();
   });
 
-  it("renders fallback text when restaurant_name is empty", () => {
-    render(<OrderCard order={{ ...mockOrder, restaurant_name: "" }} />);
-
+  it("renders fallback text when restaurant_name is empty or undefined", () => {
+    const { rerender } = render(<OrderCard order={{ ...mockOrder, restaurant_name: "" }} />);
     expect(screen.getByText("SpotQ Dining Order")).toBeInTheDocument();
+
+    rerender(<OrderCard order={{ ...mockOrder, restaurant_name: undefined }} />);
+    expect(screen.getByText("SpotQ Dining Order")).toBeInTheDocument();
+  });
+
+  it("handles null or undefined total_amount gracefully without throwing", () => {
+    render(<OrderCard order={{ ...mockOrder, total_amount: undefined as unknown as number }} />);
+    expect(screen.getByText("₹0.00")).toBeInTheDocument();
   });
 
   it("renders cancelled badge when order status is CANCELLED", () => {

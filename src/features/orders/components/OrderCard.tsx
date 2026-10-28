@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
-import { ORDER_MESSAGES } from "../constants/orders.constants";
+import { ORDER_MESSAGES, ORDER_STATUS } from "../constants/orders.constants";
 import type { OrderHistoryItem, OrderStatus } from "../types/orders.types";
 
 export interface OrderCardProps {
@@ -25,10 +25,10 @@ export interface OrderCardProps {
 }
 
 export function getStatusBadge(status?: OrderStatus | string) {
-  const normalized = (status ?? "PLACED").toUpperCase();
+  const normalized = (status ?? ORDER_STATUS.PLACED).toUpperCase();
 
   switch (normalized) {
-    case "COMPLETED":
+    case ORDER_STATUS.COMPLETED:
       return (
         <span
           data-testid="status-badge"
@@ -38,7 +38,7 @@ export function getStatusBadge(status?: OrderStatus | string) {
           <span>Completed</span>
         </span>
       );
-    case "SERVED":
+    case ORDER_STATUS.SERVED:
       return (
         <span
           data-testid="status-badge"
@@ -48,7 +48,7 @@ export function getStatusBadge(status?: OrderStatus | string) {
           <span>Served</span>
         </span>
       );
-    case "CANCELLED":
+    case ORDER_STATUS.CANCELLED:
       return (
         <span
           data-testid="status-badge"
@@ -58,7 +58,7 @@ export function getStatusBadge(status?: OrderStatus | string) {
           <span>Cancelled</span>
         </span>
       );
-    case "READY":
+    case ORDER_STATUS.READY:
       return (
         <span
           data-testid="status-badge"
@@ -71,7 +71,7 @@ export function getStatusBadge(status?: OrderStatus | string) {
           <span>Ready for Pickup</span>
         </span>
       );
-    case "PREPARING":
+    case ORDER_STATUS.PREPARING:
       return (
         <span
           data-testid="status-badge"
@@ -84,7 +84,7 @@ export function getStatusBadge(status?: OrderStatus | string) {
           <span>Preparing</span>
         </span>
       );
-    case "CONFIRMED":
+    case ORDER_STATUS.CONFIRMED:
       return (
         <span
           data-testid="status-badge"
@@ -108,7 +108,7 @@ export function getStatusBadge(status?: OrderStatus | string) {
 }
 
 export function OrderCard({ order, className, onSelect }: OrderCardProps) {
-  const formattedAmount = `₹${order.total_amount.toFixed(2)}`;
+  const formattedAmount = `₹${(order.total_amount ?? 0).toFixed(2)}`;
   const formattedDate = formatDate(order.created_at);
   const itemsSummary = `${order.items_count} ${order.items_count === 1 ? "item" : "items"}`;
 
