@@ -2,13 +2,13 @@ import { Armchair, Check, Clock3, Users } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { AdminTablesList } from "../components/AdminTablesList";
-import { ADMIN_TABLE_LIMIT } from "../constants/table.constants";
+import { ADMIN_TABLE_LIMIT, TABLE_STATUS } from "../constants/table.constants";
 import { useRestaurantAdminTables } from "../hooks/useRestaurantAdminTables";
-import type { TableStatus } from "../types/table.types";
+import type { TableStatusIncludingAll } from "../types/table.types";
 
 export default function RestaurantTablePage() {
   const restaurantId = useAuthStore((state) => state.user?.restaurantId || "");
-  const [status, setStatus] = useState<"ALL" | TableStatus>("ALL");
+  const [status, setStatus] = useState<TableStatusIncludingAll>(TABLE_STATUS.ALL);
   const [page, setPage] = useState(1);
   const tablesQuery = useRestaurantAdminTables(restaurantId, {
     page,

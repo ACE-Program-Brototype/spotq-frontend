@@ -6,6 +6,7 @@ import type {
   GetTablesResponse,
   RestaurantTableDetails,
   StaffUpdatableStatus,
+  TableStatus,
   TablesGroupedBySection,
   UpdateTableStatusResponse,
 } from "../types/table.types";
@@ -23,13 +24,16 @@ export const tableService = {
     return response.data;
   },
 
-  async getTables(restaurantId: string): Promise<AdminTables> {
+  async getTables(
+    restaurantId: string,
+    searchParams: { page: number; limit: number; status?: TableStatus },
+  ): Promise<AdminTables> {
     if (!restaurantId) {
       throw new Error("Restaurant Id is requried to fetch tables");
     }
 
     const response = await apiClient
-      .get(TABLE_ENDPOINTS.LIST(restaurantId))
+      .get(TABLE_ENDPOINTS.LIST(restaurantId), { searchParams })
       .json<SuccessResponse<AdminTables>>();
 
     return response.data;

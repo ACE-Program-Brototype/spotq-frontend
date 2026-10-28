@@ -1,54 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
-import type { SuccessResponse } from "@/components/common";
-import { apiClient } from "@/lib/api/client";
-import { TABLE_ENDPOINTS, TABLE_QUERY_KEYS } from "../constants/table.constants";
-import type { TableItem, TableStatus } from "../types/table.types";
+import { TABLE_QUERY_KEYS, TABLE_STATUS } from "../constants/table.constants";
+import { tableService } from "../services/table.service";
+import type { TableStatusIncludingAll } from "../types/table.types";
 
-type AdminTablesQueryOptions = {
+interface RestaurantAdminTablesOptions {
   page: number;
   limit: number;
-  status: "ALL" | TableStatus;
-};
+  status: TableStatusIncludingAll;
+}
 
-type TableListResponse = {
-  tables?: TableItem[];
-
-  total?: number;
-  stats?: TableStats;
-};
-
-type TableStats = {
-  totalTables?: number;
-  occupied?: number;
-  available?: number;
-  maintenance?: number;
-};
-
-export const useRestaurantAdminTables = (
+export function useRestaurantAdminTables(
   restaurantId: string,
-  { page, limit, status }: AdminTablesQueryOptions,
-) => {
-  const query = useQuery({
-    queryKey: [...TABLE_QUERY_KEYS.LIST(restaurantId), page, limit, status],
-    queryFn: async () => {
-      const searchParams: Record<string, string | number> = { page, limit };
-      if (status !== "ALL") searchParams.status = status;
+  { page, limit, status }: RestaurantAdminTablesOptions,
+) {
+  const normalizedRestaurantId = restaurantId.trim();
 
-      return apiClient
-        .get(TABLE_ENDPOINTS.LIST(restaurantId), { searchParams })
-        .json<SuccessResponse<TableListResponse>>();
-    },
-    enabled: Boolean(restaurantId),
+  const query = useQuery({
+    queryKey: [...TABLE_QUERY_KEYS.LIST(normalizedRestaurantId), page, limit, status],
+    queryFn: () =>
+      tableService.getTables(normalizedRestaurantId, {
+        page,
+        limit,
+        ...(status !== TABLE_STATUS.ALL && { status }),
+      }),
+    enabled: Boolean(normalizedRestaurantId),
     placeholderData: (previousData) => previousData,
   });
 
-  const payload = query.data?.data;
-  const tables = payload?.tables ?? [];
-
   return {
     ...query,
-    tables,
-    stats: payload?.stats,
-    total: payload?.total ?? 0,
+    tables: query.data?.tables ?? [],
+    stats: query.data?.stats,
+    total: query.data?.total ?? 0,
   };
-};
+}

@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { TABLE_SHAPE } from "../constants/table.constants";
 import { useRestaurantTableDetails } from "../hooks/useRestaurantTableDetails";
 
 export default function RestaurantTableDetailPage() {
@@ -70,7 +71,11 @@ export default function RestaurantTableDetailPage() {
   ];
   const shape = table.shape;
   const ShapeIcon =
-    shape === "CIRCLE" ? Circle : shape === "RECTANGLE" ? RectangleHorizontal : Armchair;
+    shape === TABLE_SHAPE.CIRCLE
+      ? Circle
+      : shape === TABLE_SHAPE.SQUARE
+        ? RectangleHorizontal
+        : Armchair;
 
   return (
     <main

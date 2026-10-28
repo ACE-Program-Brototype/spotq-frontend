@@ -4,18 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
-import { ADMIN_TABLE_LIMIT } from "../constants/table.constants";
-import type { TableItem, TableStatus } from "../types/table.types";
+import { ADMIN_TABLE_LIMIT, TABLE_STATUS } from "../constants/table.constants";
+import type { TableItem, TableStatusIncludingAll } from "../types/table.types";
 import { AdminTableCard } from "./AdminTableCard";
 import { TableSkeletonGrid } from "./TableSkeletonGrid";
 import { TableStatusModal } from "./TableStatusModal";
 
-const statusOptions: { value: "ALL" | TableStatus; label: string }[] = [
-  { value: "ALL", label: "All tables" },
-  { value: "AVAILABLE", label: "Available" },
-  { value: "OCCUPIED", label: "Occupied" },
-  { value: "PARTIAL_OCCUPIED", label: "Partially occupied" },
-  { value: "MAINTENANCE", label: "Maintenance" },
+const statusOptions: { value: TableStatusIncludingAll; label: string }[] = [
+  { value: TABLE_STATUS.ALL, label: "All tables" },
+  { value: TABLE_STATUS.AVAILABLE, label: "Available" },
+  { value: TABLE_STATUS.OCCUPIED, label: "Occupied" },
+  { value: TABLE_STATUS.PARTIAL_OCCUPIED, label: "Partially occupied" },
+  { value: TABLE_STATUS.MAINTENANCE, label: "Maintenance" },
 ];
 
 type AdminTablesListProps = {
@@ -25,8 +25,8 @@ type AdminTablesListProps = {
   totalPages: number;
   page: number;
   onPageChange: (page: number) => void;
-  status: "ALL" | TableStatus;
-  onStatusChange: (status: "ALL" | TableStatus) => void;
+  status: TableStatusIncludingAll;
+  onStatusChange: (status: TableStatusIncludingAll) => void;
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -48,16 +48,7 @@ export function AdminTablesList({
   onRetry,
 }: AdminTablesListProps) {
   const navigate = useNavigate();
-  // const [viewTable, setViewTable] = useState<TableItem | null>(null);
   const [selectedTable, setSelectedTable] = useState<TableItem | null>(null);
-
-  const downloadTable = (_table: TableItem) => {
-    console.log(`[ERROR]: Download not implemented`);
-  };
-
-  const printTable = (_table: TableItem) => {
-    console.log(`[ERROR]: Print not implemented`);
-  };
 
   const renderTableContent = () => {
     if (!restaurantId) {
@@ -100,8 +91,6 @@ export function AdminTablesList({
             key={table.id}
             table={table}
             onView={(table) => navigate(RESTAURANT_ROUTES.TABLE.VIEW(table.id))}
-            onDownload={downloadTable}
-            onPrint={printTable}
             onEdit={setSelectedTable}
           />
         ))}
@@ -129,7 +118,7 @@ export function AdminTablesList({
               <select
                 aria-label="Filter tables"
                 value={status}
-                onChange={(event) => onStatusChange(event.target.value as "ALL" | TableStatus)}
+                onChange={(event) => onStatusChange(event.target.value as TableStatusIncludingAll)}
                 className="h-9 w-full appearance-none rounded-xl border border-[#e8e2dd] bg-white py-1 pl-3 pr-8 text-sm text-[#4d554e] outline-none focus:ring-2 focus:ring-orange-200 sm:w-auto"
               >
                 {statusOptions.map((option) => (

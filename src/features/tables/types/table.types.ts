@@ -1,12 +1,10 @@
-/**
- * Table Feature Domain & API Types
- */
-
 export type TableStatus = "AVAILABLE" | "OCCUPIED" | "PARTIAL_OCCUPIED" | "MAINTENANCE";
+
+export type TableStatusIncludingAll = TableStatus | "ALL";
 
 export type StaffUpdatableStatus = "AVAILABLE" | "MAINTENANCE";
 
-export type TableShape = "CIRCLE" | "RECTANGLE";
+export type TableShape = "CIRCLE" | "SQUARE";
 
 export interface RestaurantTableDetails {
   tableId: string;
@@ -34,7 +32,7 @@ export interface TableItem {
 }
 
 export type AdminTables = {
-  tables: TableItem;
+  tables: TableItem[];
   stats: {
     totalTables: number;
     occupied: number;
