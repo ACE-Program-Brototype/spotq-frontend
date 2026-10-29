@@ -1,12 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
-import { useState } from "react";
+import { Lock, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField, FormInput, PasswordField, SubmitButton } from "@/components/common/form";
 import { cn } from "@/lib/utils/cn";
 import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
 
@@ -17,7 +14,6 @@ interface LoginFormProps {
 
 export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -37,22 +33,17 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6" noValidate>
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <Label htmlFor="email" error={!!errors.email}>
-            Email Address
-          </Label>
-        </div>
+      <FormField id="email" label="Email Address" error={errors.email?.message}>
         <div className="relative flex items-center">
-          <Mail className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
-          <Input
+          <FormInput
             id="email"
             type="email"
             placeholder="e.g. alex@example.com"
             disabled={isLoading}
+            leadingIcon={<Mail className="hidden md:block size-5 text-gray-400" />}
+            error={errors.email?.message}
             className={cn(
               "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
-              errors.email && "border-destructive focus-visible:ring-destructive/30",
             )}
             {...register("email")}
           />
@@ -60,18 +51,13 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
             @
           </span>
         </div>
-        {errors.email && (
-          <p className="text-xs text-destructive mt-1.5" role="alert">
-            {errors.email.message}
-          </p>
-        )}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <Label htmlFor="password" error={!!errors.password}>
-            Password
-          </Label>
+      <FormField
+        id="password"
+        label="Password"
+        error={errors.password?.message}
+        labelAction={
           <button
             type="button"
             onClick={() => navigate(CUSTOMER_ROUTES.AUTH.FORGOT_PASSWORD)}
@@ -79,54 +65,30 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
           >
             Forgot Password?
           </button>
-        </div>
-        <div className="relative flex items-center">
-          <Lock className="hidden md:block absolute left-3.5 size-5 text-gray-400 pointer-events-none" />
-          <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-            disabled={isLoading}
-            className={cn(
-              "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 pr-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
-              errors.password && "border-destructive focus-visible:ring-destructive/30",
-            )}
-            {...register("password")}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3.5 p-1 rounded-full hover:bg-gray-100/50 transition-colors cursor-pointer text-gray-400 focus:outline-none"
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-          </button>
-        </div>
-        {errors.password && (
-          <p className="text-xs text-destructive mt-1.5" role="alert">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
+        }
+      >
+        <PasswordField
+          id="password"
+          placeholder="••••••••"
+          disabled={isLoading}
+          leadingIcon={<Lock className="hidden md:block size-5 text-gray-400" />}
+          error={errors.password?.message}
+          className={cn(
+            "h-12 rounded-xl bg-spotq-cream pl-4 md:pl-11 border-spotq-border focus-visible:border-spotq-orange focus-visible:ring-spotq-orange/50",
+          )}
+          {...register("password")}
+        />
+      </FormField>
 
-      <Button
-        type="submit"
+      <SubmitButton
         size="lg"
-        disabled={isLoading}
+        isLoading={isLoading}
+        loadingText="Logging in..."
         className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
       >
-        {isLoading ? (
-          <>
-            <Loader2 className="size-5 animate-spin" />
-            <span>Logging in...</span>
-          </>
-        ) : (
-          <>
-            <span>Login</span>
-            <span className="text-lg leading-none">→</span>
-          </>
-        )}
-      </Button>
+        <span>Login</span>
+        <span className="text-lg leading-none">→</span>
+      </SubmitButton>
     </form>
   );
 };
