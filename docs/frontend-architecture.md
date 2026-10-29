@@ -111,3 +111,4 @@ To maintain long-term maintainability, source files must adhere to a **300-line 
 Files exceeding 300 lines are only permitted when splitting would introduce unnecessary fragmentation or impair readability:
 - Static legal text pages (`RestaurantTermsPage.tsx`, `TermsAndConditionsPage.tsx`) containing continuous regulatory prose.
 - Complex end-to-end component test suites (`DataTable.test.tsx`, `EditStaffProfilePage.test.tsx`) asserting extensive integration scenarios.
+

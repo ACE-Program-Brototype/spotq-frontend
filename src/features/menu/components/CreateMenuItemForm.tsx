@@ -9,7 +9,7 @@ import { AddonSelector } from "@/features/menu/components/addon/AddonSelector";
 import { ImageUploader } from "@/features/menu/components/ImageUploader";
 import { MenuItemGeneralInfoSection } from "@/features/menu/components/MenuItemGeneralInfoSection";
 import { VariantManager } from "@/features/menu/components/VariantManager";
-import { type DietaryType, MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import { useCreateMenuItem } from "@/features/menu/hooks/use-create-menu-item";
 import { useMenuCategories } from "@/features/menu/hooks/use-menu-categories";
 import { useUpdateMenuItem } from "@/features/menu/hooks/use-update-menu-item";
@@ -18,6 +18,7 @@ import {
   createMenuItemSchema,
 } from "@/features/menu/schemas/create-menu-item.schema";
 import type { MenuItemDetails } from "@/features/menu/types/menu.types";
+import { getMenuItemFormDefaultValues } from "@/features/menu/utils/menu-form.utils";
 
 export interface CreateMenuItemFormProps {
   restaurantId: string;
@@ -25,15 +26,6 @@ export interface CreateMenuItemFormProps {
   menuItemId?: string;
   initialData?: MenuItemDetails | null;
 }
-
-const parseVariantNamePortion = (fullName: string = "") => {
-  if (!fullName) return { name: "", portion: "" };
-  const match = fullName.match(/^(.*?)\s*\((.*?)\)$/);
-  if (match) {
-    return { name: match[1].trim(), portion: match[2].trim() };
-  }
-  return { name: fullName.trim(), portion: "" };
-};
 
 export function CreateMenuItemForm({
   restaurantId,
@@ -52,80 +44,10 @@ export function CreateMenuItemForm({
   const isSubmitting = mode === "edit" ? isUpdating : isCreating;
   const isInitializedRef = useRef(false);
 
-  const defaultValues = useMemo<CreateMenuItemFormData>(() => {
-    if (initialData) {
-      const parsedVariants =
-        initialData.variants && initialData.variants.length > 0
-          ? initialData.variants.map((v) => {
-              const { name, portion } = parseVariantNamePortion(v.name);
-              return {
-                id: v.id,
-                name,
-                portion,
-                price: v.price,
-                sku: v.sku || "",
-                isDefault: v.isDefault,
-                isAvailable: v.isAvailable,
-              };
-            })
-          : [
-              {
-                name: "",
-                portion: "",
-                price: undefined as never,
-                sku: "",
-                isDefault: true,
-                isAvailable: true,
-              },
-            ];
-
-      const selectedAddonIds = initialData.addons?.map((a) => a.addonId) ?? [];
-      const addonOverrides: Record<string, number | null> = {};
-      initialData.addons?.forEach((a) => {
-        if (a.priceOverride !== null && a.priceOverride !== undefined) {
-          addonOverrides[a.addonId] = a.priceOverride;
-        }
-      });
-
-      const initialDietaryType: DietaryType =
-        initialData.dietaryType || (initialData.isVegetarian ? "VEG" : "NON_VEG");
-
-      return {
-        name: initialData.name || "",
-        categoryId: initialData.categoryId || "",
-        description: initialData.description || "",
-        dietaryType: initialDietaryType,
-        preparationTime: initialData.preparationTime ?? undefined,
-        imageUrl: initialData.images?.[0]?.objectKey || "",
-        isAvailable: initialData.isAvailable ?? true,
-        variants: parsedVariants,
-        selectedAddonIds,
-        addonOverrides,
-      };
-    }
-
-    return {
-      name: "",
-      categoryId: "",
-      description: "",
-      dietaryType: "VEG" as DietaryType,
-      preparationTime: undefined,
-      imageUrl: "",
-      isAvailable: true,
-      variants: [
-        {
-          name: "",
-          portion: "",
-          price: undefined as never,
-          sku: "",
-          isDefault: true,
-          isAvailable: true,
-        },
-      ],
-      selectedAddonIds: [],
-      addonOverrides: {},
-    };
-  }, [initialData]);
+  const defaultValues = useMemo<CreateMenuItemFormData>(
+    () => getMenuItemFormDefaultValues(initialData),
+    [initialData],
+  );
 
   const form = useForm<CreateMenuItemFormData>({
     resolver: zodResolver(createMenuItemSchema),
