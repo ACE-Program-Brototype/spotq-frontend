@@ -35,7 +35,7 @@ export type ApiUser = {
 export type DeviceInput = {
   deviceName?: string;
   platform?: "ANDROID" | "IOS" | "WEB";
-  fcmToken?: string;
+  fid?: string;
 };
 
 export type LoginInput = {

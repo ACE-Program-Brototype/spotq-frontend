@@ -39,7 +39,7 @@ describe("TableStatusModal", () => {
     capacity: 4,
     status: "AVAILABLE",
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    tableShape: "CIRCLE",
     currentOccupancy: 0,
     isActive: true,
   };
@@ -50,7 +50,7 @@ describe("TableStatusModal", () => {
     capacity: 2,
     status: "MAINTENANCE",
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    tableShape: "CIRCLE",
     currentOccupancy: 0,
     isActive: false,
   };
@@ -61,7 +61,7 @@ describe("TableStatusModal", () => {
     capacity: 6,
     status: "OCCUPIED",
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    tableShape: "CIRCLE",
     currentOccupancy: 4,
     isActive: true,
   };

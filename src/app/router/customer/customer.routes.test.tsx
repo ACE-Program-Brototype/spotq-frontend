@@ -12,6 +12,7 @@ describe("customerRoutes structure", () => {
     const ordersGroup = layoutGroup.children?.[3];
     expect(ordersGroup?.path).toBe("/orders");
     expect(ordersGroup?.children?.[0].index).toBe(true);
+    expect(layoutGroup.children?.[4].path).toBe("/orders/:orderId/receipt");
 
     const authGroup = customerRoutes[1];
     expect(authGroup.children?.map((child) => child.path)).toEqual([

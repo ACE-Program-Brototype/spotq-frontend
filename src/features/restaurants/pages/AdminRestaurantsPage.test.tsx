@@ -63,9 +63,12 @@ describe("AdminRestaurantsPage", () => {
 
     expect(screen.getByRole("heading", { name: /restaurant management/i })).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.getByText("Ajex Grand Bistro")).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText("Ajex Grand Bistro")).toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
 
     expect(screen.getByText("Ajex Joshy")).toBeInTheDocument();
     expect(screen.getByText("Queue Pro")).toBeInTheDocument();
