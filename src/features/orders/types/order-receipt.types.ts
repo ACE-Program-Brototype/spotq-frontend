@@ -1,3 +1,5 @@
+import type { OrderStatus } from "./orders.types";
+
 export interface ReceiptAddon {
   addon_id: string;
   name: string;
@@ -21,15 +23,6 @@ export interface ReceiptRestaurant {
   restaurant_id: string;
   name: string;
 }
-
-export type OrderStatus =
-  | "PLACED"
-  | "CONFIRMED"
-  | "PREPARING"
-  | "READY"
-  | "SERVED"
-  | "COMPLETED"
-  | "CANCELLED";
 
 export interface OrderReceipt {
   order_id: string;
