@@ -4,5 +4,6 @@ export * from "./form";
 export * from "./LoadingIndicator";
 export * from "./MediaPreviewModal";
 export * from "./Pagination";
+export * from "./skeletons";
 export * from "./table";
 export * from "./types";
