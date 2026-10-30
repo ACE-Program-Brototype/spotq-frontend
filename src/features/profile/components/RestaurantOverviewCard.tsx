@@ -27,7 +27,7 @@ const FALLBACK_COVER =
   "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='400' viewBox='0 0 1200 400'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%231c1917'/%3E%3Cstop offset='50%25' stop-color='%2344403c'/%3E%3Cstop offset='100%25' stop-color='%231c1917'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23g)'/%3E%3Ccircle cx='600' cy='200' r='120' fill='%23e8631b' opacity='0.15'/%3E%3Cpath d='M600 130 L640 250 L560 250 Z' fill='%23e8631b' opacity='0.2'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23e7e5e4' font-family='sans-serif' font-size='28' font-weight='bold' opacity='0.4'%3ESpotQ Restaurant Cover%3C/text%3E%3C/svg%3E";
 
 const FALLBACK_LOGO =
-  "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='100%25' height='100%25' rx='32' fill='%23fef3ec'/%3E%3Crect x='8' y='8' width='184' height='184' rx='28' fill='none' stroke='%23fae2d3' stroke-width='4'/%3E%3Cpath d='M600 140 L100 60 L140 140 Z' fill='%23e8631b'/%3E%3Ccircle cx='100' cy='115' r='18' fill='%23ffffff'/%3E%3C/svg%3E";
+  "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='100%25' height='100%25' rx='32' fill='%23fef3ec'/%3E%3Crect x='8' y='8' width='184' height='184' rx='28' fill='none' stroke='%23fae2d3' stroke-width='4'/%3E%3Cpath d='M60 140 L100 60 L140 140 Z' fill='%23e8631b'/%3E%3Ccircle cx='100' cy='115' r='18' fill='%23ffffff'/%3E%3C/svg%3E";
 
 export function RestaurantOverviewCard({
   restaurant,
