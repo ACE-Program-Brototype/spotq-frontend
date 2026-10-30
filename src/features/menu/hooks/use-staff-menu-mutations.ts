@@ -135,7 +135,7 @@ export function useStaffMenuMutations({ restaurantId }: UseStaffMenuMutationsOpt
       );
     },
     onSuccess: (data, variables) => {
-      const isAvailable = data?.isAvailable ?? true;
+      const isAvailable = data.isAvailable;
 
       // Update value in cache to avoid stale data
       queryClient.setQueriesData(
