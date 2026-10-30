@@ -2,6 +2,7 @@ import { ChevronDown, Clock3, UtensilsCrossed } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
+import { formatCurrency } from "@/lib/utils";
 import type { CustomerRestaurantMenuItem } from "../../types/customer-restaurant.types";
 
 interface RestaurantMenuItemCardProps {
@@ -46,7 +47,7 @@ function AddonOption({
         </label>
       </div>
       <span className="shrink-0 font-semibold">
-        {addon.price > 0 ? `+₹${addon.price}` : "Free"}
+        {addon.price > 0 ? `+${formatCurrency(addon.price)}` : "Free"}
       </span>
     </div>
   );
@@ -100,6 +101,8 @@ export function RestaurantMenuItemCard({ item }: RestaurantMenuItemCardProps) {
               <div className="flex items-center gap-2">
                 <span
                   className={`size-2 rounded-full border ${item.isVegetarian ? "border-green-600 bg-green-600" : "border-red-600 bg-red-600"}`}
+                  role="img"
+                  aria-label={item.isVegetarian ? "Vegetarian" : "Non-Vegetarian"}
                 />
                 <h3 className="truncate font-bold text-stone-900">{item.name}</h3>
               </div>

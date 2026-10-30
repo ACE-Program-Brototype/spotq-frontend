@@ -6,10 +6,10 @@ export interface CustomerRestaurantItem {
   cuisineType: string | null;
   averageCost: number | null;
   coverImage?: string | null;
-  isOpen?: boolean | null;
-  isOpened?: boolean | null;
-  acceptsQueue?: boolean | null;
-  type?: "QUEUE_PRO" | "SELF_PRO" | string;
+  isOpened: boolean;
+  isPreorder: boolean;
+  acceptsQueue: boolean;
+  type?: string;
   createdAt: string;
 }
 
@@ -46,15 +46,15 @@ export interface CustomerRestaurantMenuItem {
   isVegetarian: boolean;
   isFeatured: boolean;
   isAvailable: boolean;
-  images?: Array<{ id: string; objectKey: string; displayOrder?: number }>;
-  variants?: Array<{
+  images: Array<{ id: string; objectKey: string; displayOrder: number }>;
+  variants: Array<{
     id: string;
     name: string;
     price: number;
     isDefault: boolean;
     isAvailable: boolean;
   }>;
-  addons?: Array<{
+  addons: Array<{
     id: string;
     addonId: string;
     name: string;
@@ -73,41 +73,54 @@ export interface CustomerRestaurantMenuCategory {
   items: CustomerRestaurantMenuItem[];
 }
 
-export interface CustomerRestaurantDetails extends CustomerRestaurantItem {
+export interface CustomerRestaurantDetails
+  extends Omit<CustomerRestaurantItem, "id" | "createdAt" | "coverImageKey"> {
+  restaurantId: string;
   phone: string;
   email: string;
-  description?: string | null;
-  address?: {
-    id?: string;
-    addressLine1?: string;
-    addressLine2?: string | null;
-    city?: string;
-    state?: string;
-    country?: string;
-    pincode?: string;
-    latitude?: number;
-    longitude?: number;
-  } | null;
-  settings?: {
-    isOpened?: boolean;
-    isPreorder?: boolean;
-    acceptsQueue?: boolean;
-    acceptsQrOrders?: boolean;
-  };
+  description: string;
+  coverImage: string;
+  address: CustomerRestaurantAddress;
+  settings?: CustomerRestaurantSettings;
   operatingHours?: CustomerRestaurantOperatingHour[];
-  images?: Array<{ id: string; objectKey: string; displayOrder?: number }>;
+  images?: Array<{ id: string; objectKey: string; displayOrder: number }>;
   menu?: CustomerRestaurantMenuCategory[];
-  queue?: {
-    isGuestUser: boolean;
-    hasJoinedAnyQueue: boolean;
-    hasJoinedThisRestaurantQueue: boolean;
-  };
+  queue?: CustomerRestaurantQueue;
+}
+
+/** Original payload shape for the restaurant details endpoint. */
+export type CustomerRestaurantDetailsResponse = Omit<CustomerRestaurantDetails, "id">;
+
+export interface CustomerRestaurantAddress {
+  id: string;
+  addressLine1: string;
+  addressLine2: string | null;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface CustomerRestaurantSettings {
+  isOpened: boolean;
+  isPreorder: boolean;
+  acceptsQueue: boolean;
+  acceptsQrOrders: boolean;
+}
+
+export interface CustomerRestaurantQueue {
+  isGuestUser: boolean;
+  hasJoinedAnyQueue: boolean;
+  hasJoinedThisRestaurantQueue: boolean;
+  isQueueStatusAvailable?: boolean;
 }
 
 export interface CustomerRestaurantDetailsApiResponse {
   success: boolean;
   message?: string;
-  data: CustomerRestaurantDetails;
+  data: CustomerRestaurantDetailsResponse;
   statusCode?: number;
 }
 

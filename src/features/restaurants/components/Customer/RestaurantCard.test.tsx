@@ -26,7 +26,9 @@ const mockRestaurant: CustomerRestaurantItem = {
   state: "Kerala",
   cuisineType: "Biryani, South Indian",
   averageCost: 500,
-  isOpen: true,
+  isOpened: true,
+  isPreorder: false,
+  acceptsQueue: true,
   createdAt: "2026-10-10T10:00:00.000Z",
 };
 
@@ -45,7 +47,7 @@ describe("RestaurantCard", () => {
     expect(screen.getByRole("heading", { name: "Royal Biryani House" })).toBeInTheDocument();
     expect(screen.getByText(/Calicut/)).toBeInTheDocument();
     expect(screen.getByText("Biryani")).toBeInTheDocument();
-    expect(screen.getByText("500 for two")).toBeInTheDocument();
+    expect(screen.getByText(/₹500\.00 average/)).toBeInTheDocument();
     expect(screen.getByText("Open Now")).toBeInTheDocument();
     expect(screen.getByText("Live Queue")).toBeInTheDocument();
   });
@@ -58,6 +60,9 @@ describe("RestaurantCard", () => {
       state: null,
       cuisineType: null,
       averageCost: null,
+      isOpened: true,
+      isPreorder: false,
+      acceptsQueue: true,
       createdAt: "2026-10-10T10:00:00.000Z",
     };
 
@@ -89,7 +94,7 @@ describe("RestaurantCard", () => {
   it("renders Closed badge when restaurant is closed", () => {
     const closedRestaurant: CustomerRestaurantItem = {
       ...mockRestaurant,
-      isOpen: false,
+      isOpened: false,
     };
 
     renderWithProviders(<RestaurantCard restaurant={closedRestaurant} />);
@@ -99,23 +104,21 @@ describe("RestaurantCard", () => {
   });
 
   it("renders Status unavailable and does not assume open when status is missing", () => {
-    const missingStatusRestaurant: CustomerRestaurantItem = {
+    const unavailableStatusRestaurant = {
       ...mockRestaurant,
-      isOpen: undefined,
       isOpened: undefined,
-    };
+    } as unknown as CustomerRestaurantItem;
 
-    renderWithProviders(<RestaurantCard restaurant={missingStatusRestaurant} />);
+    renderWithProviders(<RestaurantCard restaurant={unavailableStatusRestaurant} />);
 
     expect(screen.getByText("Status unavailable")).toBeInTheDocument();
     expect(screen.queryByText("Open Now")).not.toBeInTheDocument();
     expect(screen.queryByText("Closed")).not.toBeInTheDocument();
   });
 
-  it("renders open status using isOpened fallback when isOpen is undefined", () => {
+  it("renders open status when isOpened is true", () => {
     const isOpenedRestaurant: CustomerRestaurantItem = {
       ...mockRestaurant,
-      isOpen: undefined,
       isOpened: true,
     };
 

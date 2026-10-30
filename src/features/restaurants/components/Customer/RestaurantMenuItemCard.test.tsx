@@ -13,7 +13,9 @@ const item: CustomerRestaurantMenuItem = {
   isVegetarian: true,
   isFeatured: false,
   isAvailable: false,
+  images: [],
   variants: [{ id: "variant-1", name: "Regular", price: 280, isDefault: true, isAvailable: true }],
+  addons: [],
 };
 
 describe("RestaurantMenuItemCard", () => {

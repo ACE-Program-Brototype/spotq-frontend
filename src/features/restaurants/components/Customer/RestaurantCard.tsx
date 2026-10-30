@@ -1,8 +1,9 @@
-import { Clock, IndianRupee, MapPin, Store } from "lucide-react";
+import { Clock, MapPin, Store } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/lib/utils";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 
@@ -15,9 +16,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
   const { data: imageUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
   const locationLabel = `${restaurant.city || ""}${restaurant.city && restaurant.state ? ", " : ""}${restaurant.state || ""}`;
-
-  const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? null;
-
+  const isOpen = restaurant.isOpened ?? null;
   return (
     <Link
       to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurant.id)}
@@ -72,8 +71,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-500">
             {restaurant.averageCost ? (
               <span className="inline-flex items-center gap-0.5 font-semibold text-neutral-700">
-                <IndianRupee className="size-3 text-neutral-500" />
-                <span>{restaurant.averageCost} for two</span>
+                <span>{formatCurrency(restaurant.averageCost)} average</span>
               </span>
             ) : (
               <span className="text-neutral-400 italic">Casual Dining</span>

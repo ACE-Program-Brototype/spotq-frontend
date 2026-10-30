@@ -4,11 +4,14 @@ import type { CustomerRestaurantDetails } from "../../types/customer-restaurant.
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 function prettyTime(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return "-";
   const [hour, minute] = value.split(":");
   const date = new Date();
   date.setHours(Number(hour), Number(minute), 0, 0);
-  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const formattedHour = date.getHours() % 12 || 12;
+  const formattedMinute = String(date.getMinutes()).padStart(2, "0");
+  const period = date.getHours() < 12 ? "AM" : "PM";
+  return `${formattedHour}:${formattedMinute} ${period}`;
 }
 
 interface RestaurantOverviewProps {
@@ -53,7 +56,7 @@ export function RestaurantOverview({ restaurant }: RestaurantOverviewProps) {
                     <span className="text-stone-600">{DAYS[hour.dayOfWeek % 7]}</span>
                     <span className={hour.isOpen ? "font-medium text-stone-800" : "text-stone-400"}>
                       {hour.isOpen
-                        ? `${prettyTime(hour.openTime)} – ${prettyTime(hour.closeTime)}`
+                        ? `${prettyTime(hour.openTime)} - ${prettyTime(hour.closeTime)}`
                         : "Closed"}
                     </span>
                   </div>
@@ -90,25 +93,34 @@ export function RestaurantOverview({ restaurant }: RestaurantOverviewProps) {
             Open in Google Maps <ExternalLink className="size-3" />
           </a>
           <div className="my-4 border-t border-stone-100" />
-          <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
-            Phone number
-          </p>
-          <a
-            href={`tel:${restaurant.phone}`}
-            className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-stone-800"
-          >
-            <Phone className="size-4 text-[#f26500]" />
-            {restaurant.phone || "Not available"}
-          </a>
-          <p className="mt-4 text-[11px] font-bold uppercase tracking-wider text-stone-400">
-            Email
-          </p>
-          <a
-            href={`mailto:${restaurant.email}`}
-            className="mt-1 block break-all text-sm text-stone-700"
-          >
-            {restaurant.email}
-          </a>
+          {restaurant.phone && (
+            <>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
+                Phone number
+              </p>
+              <a
+                href={`tel:${restaurant.phone}`}
+                className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-stone-800"
+              >
+                <Phone className="size-4 text-[#f26500]" />
+                {restaurant.phone || "Not available"}
+              </a>
+            </>
+          )}
+          {restaurant.email && (
+            <>
+              <p className="mt-4 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+                Email
+              </p>
+              <a
+                href={`mailto:${restaurant.email}`}
+                className="mt-1 block break-all text-sm text-stone-700"
+              >
+                {restaurant.email}
+              </a>
+            </>
+          )}
+
           <div className="mt-5 flex flex-wrap gap-2">
             {restaurant.settings?.isPreorder && (
               <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">

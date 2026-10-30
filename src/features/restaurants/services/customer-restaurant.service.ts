@@ -20,7 +20,8 @@ export const customerRestaurantService = {
     if (!response?.success || !response.data) {
       throw new Error(response?.message || "Failed to load restaurant details.");
     }
-    return response.data;
+    const restaurant = response.data;
+    return restaurant;
   },
 
   /**
