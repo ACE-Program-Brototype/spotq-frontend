@@ -164,7 +164,7 @@ export async function validateStaffInvitation(
         }>
       >();
 
-    const valid = response.data?.valid ?? response.success ?? true;
+    const valid = Boolean(response.data?.valid ?? response.success ?? false);
     const email = response.data?.email ?? "";
     const restaurantName = response.data?.restaurantName ?? "SpotQ Restaurant";
     const isExistingStaff = Boolean(response.data?.isExistingStaff);
@@ -217,7 +217,7 @@ export async function acceptStaffInvitation(
   const accessToken = rawRes.data?.accessToken;
 
   return {
-    success: rawRes.success ?? true,
+    success: Boolean(rawRes.success),
     message: rawRes.message ?? AUTH_MESSAGES.STAFF_INVITATION_ACCEPT_SUCCESS,
     data: staff && accessToken ? { staff, accessToken } : undefined,
   };

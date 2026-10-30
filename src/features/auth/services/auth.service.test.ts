@@ -272,6 +272,17 @@ describe("auth.service", () => {
       expect(res.valid).toBe(false);
     });
 
+    it("validateStaffInvitation defaults to valid: false when payload lacks valid flag", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          data: {},
+        }),
+      });
+
+      const res = await validateStaffInvitation("empty-token");
+      expect(res.valid).toBe(false);
+    });
+
     it("acceptStaffInvitation calls correct endpoint and payload", async () => {
       const mockStaff = {
         _id: "staff-1",
@@ -309,6 +320,19 @@ describe("auth.service", () => {
       expect(res.success).toBe(true);
       expect(res.data?.staff).toEqual(mockStaff);
       expect(res.data?.accessToken).toBe("jwt-token-xyz");
+    });
+
+    it("acceptStaffInvitation defaults to success: false when success is absent", async () => {
+      mockPost.mockReturnValueOnce({
+        json: jest.fn().mockResolvedValueOnce({
+          data: {},
+        }),
+      });
+
+      const res = await acceptStaffInvitation({
+        token: "token-123",
+      });
+      expect(res.success).toBe(false);
     });
   });
 
