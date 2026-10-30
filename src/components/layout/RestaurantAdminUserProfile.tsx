@@ -11,7 +11,7 @@ export interface RestaurantAdminUserProfileProps {
 
 export function RestaurantAdminUserProfile({
   userName = "Jane Doe",
-  userRole = "Global Admin",
+  userRole = "Restaurant Admin",
   initials,
   onLogout,
 }: RestaurantAdminUserProfileProps) {

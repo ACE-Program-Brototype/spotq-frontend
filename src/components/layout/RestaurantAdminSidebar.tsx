@@ -182,6 +182,7 @@ export function RestaurantAdminSidebar({
 
       <RestaurantAdminUserProfile
         userName={user?.name}
+        userRole={user?.role ? user.role.replace(/_/g, " ") : "Restaurant Admin"}
         initials={initials}
         onLogout={handleLogout}
       />
