@@ -62,6 +62,16 @@ describe("Form Primitives", () => {
       expect(screen.queryByText("Must be at least 3 chars")).toBeNull();
       expect(screen.getByRole("alert")).toHaveTextContent("Username is taken");
     });
+
+    it("supports htmlFor as alias for target input association", () => {
+      render(
+        <FormField htmlFor="custom-input" label="Custom Field">
+          <input id="custom-input" />
+        </FormField>,
+      );
+      const label = screen.getByText("Custom Field");
+      expect(label).toHaveAttribute("for", "custom-input");
+    });
   });
 
   describe("FormInput", () => {

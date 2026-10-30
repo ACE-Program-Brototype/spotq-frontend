@@ -5,6 +5,7 @@ import { FormError } from "./FormError";
 
 export interface FormFieldProps {
   id?: string;
+  htmlFor?: string;
   label?: ReactNode;
   labelAction?: ReactNode;
   labelClassName?: string;
@@ -18,6 +19,7 @@ export interface FormFieldProps {
 
 export function FormField({
   id,
+  htmlFor,
   label,
   labelAction,
   labelClassName,
@@ -28,15 +30,16 @@ export function FormField({
   className,
   children,
 }: FormFieldProps) {
-  const errorId = id ? `${id}-error` : undefined;
-  const effectiveHintId = hintId || (id ? `${id}-hint` : undefined);
+  const targetId = htmlFor || id;
+  const errorId = targetId ? `${targetId}-error` : undefined;
+  const effectiveHintId = hintId || (targetId ? `${targetId}-hint` : undefined);
 
   return (
     <div data-slot="form-field" className={cn("space-y-2", className)}>
       {(label || labelAction) && (
         <div className="flex items-center justify-between">
           {label && (
-            <Label htmlFor={id} error={Boolean(error)} className={labelClassName}>
+            <Label htmlFor={targetId} error={Boolean(error)} className={labelClassName}>
               {label}
               {required && <span className="text-destructive ml-0.5">*</span>}
             </Label>
