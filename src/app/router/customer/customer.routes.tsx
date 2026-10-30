@@ -13,6 +13,7 @@ import OrderHistoryPage from "@/features/orders/pages/OrderHistoryPage";
 import OrderReceiptPage from "@/features/orders/pages/OrderReceiptPage";
 import EditProfilePage from "@/features/profile/pages/EditProfilePage";
 import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
+import CustomerRestaurantDetailsPage from "@/features/restaurants/pages/CustomerRestaurantDetailsPage";
 import HomePage from "@/features/restaurants/pages/HomePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
@@ -30,6 +31,10 @@ export const customerRoutes: RouteObject[] = [
       {
         path: CUSTOMER_ROUTE_PATHS.HOME,
         Component: HomePage,
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.RESTAURANT_DETAIL,
+        Component: CustomerRestaurantDetailsPage,
       },
       {
         path: CUSTOMER_ROUTE_PATHS.ABOUT,

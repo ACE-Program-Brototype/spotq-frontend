@@ -1,5 +1,7 @@
 import { Clock, IndianRupee, MapPin, Store } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
@@ -17,9 +19,10 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? null;
 
   return (
-    <div
+    <Link
+      to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurant.id)}
       data-testid={`restaurant-card-${restaurant.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00] focus-visible:ring-offset-2"
     >
       {/* Cover Image Container */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
@@ -95,6 +98,6 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
