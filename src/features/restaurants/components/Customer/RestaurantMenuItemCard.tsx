@@ -116,6 +116,11 @@ export function RestaurantMenuItemCard({ item }: RestaurantMenuItemCardProps) {
                 {item.isFeatured && (
                   <span className="font-semibold text-[#ff6b00]">Chef’s pick</span>
                 )}
+                {!item.isAvailable && (
+                  <span className="rounded-full bg-stone-100 px-2 py-1 font-semibold text-stone-600">
+                    Currently unavailable
+                  </span>
+                )}
               </div>
             </div>
             <div className="shrink-0 text-right">
@@ -124,7 +129,7 @@ export function RestaurantMenuItemCard({ item }: RestaurantMenuItemCardProps) {
           </div>
         </div>
       </div>
-      {(availableVariants.length > 0 || availableAddons.length > 0) && (
+      {item.isAvailable && (availableVariants.length > 0 || availableAddons.length > 0) && (
         <details className="group/options border-t border-stone-100 px-4 py-3 sm:px-5">
           <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold text-stone-600 [&::-webkit-details-marker]:hidden">
             <span>
