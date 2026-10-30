@@ -206,14 +206,24 @@ export default function RestaurantStaffPage() {
                   ? "No staff members match your filter criteria. Try adjusting your search query or status filter."
                   : "You haven't added any staff members to your restaurant yet."}
               </p>
-              <div className="mt-5">
-                <Button
-                  onClick={() => setIsInviteModalOpen(true)}
-                  className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white"
-                >
-                  <UserPlus className="size-4 mr-2" />
-                  Invite First Staff Member
-                </Button>
+              <div className="mt-5 flex items-center justify-center gap-3">
+                {searchQuery || statusFilter !== "ALL" ? (
+                  <Button
+                    onClick={resetFilters}
+                    variant="outline"
+                    className="rounded-xl border-[#eddcd4]"
+                  >
+                    Clear Filters
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => setIsInviteModalOpen(true)}
+                    className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white"
+                  >
+                    <UserPlus className="size-4 mr-2" />
+                    Invite First Staff Member
+                  </Button>
+                )}
               </div>
             </div>
           }
