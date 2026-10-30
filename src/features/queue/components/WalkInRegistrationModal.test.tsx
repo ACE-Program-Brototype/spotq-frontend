@@ -172,4 +172,19 @@ describe("WalkInRegistrationModal", () => {
 
     expect(onClose).toHaveBeenCalled();
   });
+
+  it("handles clearing and resetting custom party size on blur cleanly", async () => {
+    const user = userEvent.setup();
+    renderModal({ isOpen: true, onClose: jest.fn() });
+
+    await user.click(screen.getByRole("button", { name: /party size 6\+/i }));
+    const numberInput = screen.getByRole("spinbutton");
+    expect(numberInput).toHaveValue(6);
+
+    await user.clear(numberInput);
+    expect(numberInput).toHaveValue(null);
+
+    await user.tab();
+    expect(numberInput).toHaveValue(6);
+  });
 });

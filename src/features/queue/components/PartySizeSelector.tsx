@@ -33,7 +33,9 @@ export function PartySizeSelector({
           Party Size <span className="text-red-500">*</span>
         </span>
         <span className="text-xs font-semibold text-[#9a3412]">
-          {partySize} {partySize === 1 ? "Guest" : "Guests"}
+          {!partySize || Number.isNaN(partySize)
+            ? ""
+            : `${partySize} ${partySize === 1 ? "Guest" : "Guests"}`}
         </span>
       </div>
 
@@ -82,7 +84,7 @@ export function PartySizeSelector({
               type="number"
               min={6}
               max={20}
-              value={partySize ?? ""}
+              value={partySize && !Number.isNaN(partySize) ? partySize : ""}
               onChange={(e) => onDirectChange(e.target.value)}
               onBlur={onBlur}
               disabled={isSubmitting}

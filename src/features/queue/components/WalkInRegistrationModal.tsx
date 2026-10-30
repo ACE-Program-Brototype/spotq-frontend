@@ -116,8 +116,8 @@ export function WalkInRegistrationModal({
   };
 
   const handleDirectPartySizeChange = (raw: string) => {
-    if (raw === "") {
-      setValue("partySize", "" as unknown as number, { shouldValidate: true });
+    if (raw.trim() === "") {
+      setValue("partySize", Number.NaN, { shouldValidate: true });
       return;
     }
     const val = Number.parseInt(raw, 10);
@@ -127,7 +127,7 @@ export function WalkInRegistrationModal({
   };
 
   const handlePartySizeBlur = () => {
-    if (!partySize || partySize < 6) {
+    if (!partySize || Number.isNaN(partySize) || partySize < 6) {
       setValue("partySize", 6, { shouldValidate: true });
     }
   };
