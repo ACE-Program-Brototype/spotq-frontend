@@ -7,6 +7,7 @@
 export const CUSTOMER_ROUTE_PATHS = {
   HOME: "/",
   ABOUT: "/about",
+  RESTAURANT_DETAIL: "/restaurants/:id",
 
   PROFILE: {
     ROOT: "/profile",

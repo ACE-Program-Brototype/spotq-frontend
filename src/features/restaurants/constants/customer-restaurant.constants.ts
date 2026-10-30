@@ -2,11 +2,13 @@ import type { CustomerSortConfig } from "../types/customer-restaurant.types";
 
 export const CUSTOMER_RESTAURANT_ENDPOINTS = {
   LIST: "restaurants/customers",
+  DETAILS: (id: string) => `restaurants/customers/${encodeURIComponent(id)}`,
 } as const;
 
 export const CUSTOMER_RESTAURANT_QUERY_KEYS = {
   ALL: ["customer", "restaurants"] as const,
   LIST: (params: unknown) => ["customer", "restaurants", params] as const,
+  DETAILS: (id: string) => ["customer", "restaurant", id] as const,
 } as const;
 
 export const CUSTOMER_RESTAURANT_DEFAULTS = {
