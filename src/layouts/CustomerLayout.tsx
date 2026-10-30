@@ -6,10 +6,12 @@ import { NotificationBanner } from "@/components/layout/NotificationBanner";
 import { usePushNotification } from "@/features/auth/context/push-notification.context";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
+import { useCartStore } from "@/features/cart/store/cart.store";
 
 export function CustomerLayout() {
   const { isAuthenticated, user } = useAuthStore();
   const pushNotification = usePushNotification();
+  const cartItemCount = useCartStore((state) => state.totalCount);
 
   if (isAuthenticated && user?.role && user.role !== "CUSTOMER") {
     return <Navigate to={getRoleHome(user.role)} replace />;
@@ -17,7 +19,7 @@ export function CustomerLayout() {
 
   return (
     <div className="flex min-h-svh w-full max-w-full flex-col overflow-x-hidden bg-white text-neutral-900 pb-16 md:pb-0">
-      <CustomerNavbar />
+      <CustomerNavbar cartItemCount={cartItemCount} />
 
       <NotificationBanner {...pushNotification} />
 
@@ -27,7 +29,7 @@ export function CustomerLayout() {
 
       <CustomerFooter />
 
-      <CustomerMobileNav />
+      <CustomerMobileNav cartItemCount={cartItemCount} />
     </div>
   );
 }
