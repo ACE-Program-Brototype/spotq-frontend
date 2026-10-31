@@ -1,9 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { customerRestaurantService } from "@/features/restaurants/services/customer-restaurant.service";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuItem,
@@ -18,12 +17,6 @@ jest.mock("sonner", () => ({
   toast: {
     success: jest.fn(),
     error: jest.fn(),
-  },
-}));
-
-jest.mock("@/features/restaurants/services/customer-restaurant.service", () => ({
-  customerRestaurantService: {
-    getRestaurantDetails: jest.fn(),
   },
 }));
 
@@ -138,27 +131,19 @@ describe("RestaurantMenuItemCard", () => {
       ...baseRestaurant,
       restaurantId: "rest-queue-1",
       type: "QUEUE_PRO",
-    };
-
-    (customerRestaurantService.getRestaurantDetails as jest.Mock).mockResolvedValueOnce({
-      ...queueProRestaurant,
       queue: {
         isGuestUser: false,
         hasJoinedAnyQueue: false,
         hasJoinedThisRestaurantQueue: false,
       },
-    });
+    };
 
     render(<RestaurantMenuItemCard item={availableItem} restaurant={queueProRestaurant} />);
 
     const addToCartBtn = screen.getByRole("button", { name: /add to cart/i });
     await user.click(addToCartBtn);
 
-    await waitFor(() => {
-      expect(customerRestaurantService.getRestaurantDetails).toHaveBeenCalledWith("rest-queue-1");
-      expect(toast.error).toHaveBeenCalledWith(CART_MESSAGES.QUEUE_REQUIRED);
-    });
-
+    expect(toast.error).toHaveBeenCalledWith(CART_MESSAGES.QUEUE_REQUIRED);
     expect(useCartStore.getState().items).toHaveLength(0);
   });
 
@@ -168,27 +153,19 @@ describe("RestaurantMenuItemCard", () => {
       ...baseRestaurant,
       restaurantId: "rest-queue-1",
       type: "QUEUE_PRO",
-    };
-
-    (customerRestaurantService.getRestaurantDetails as jest.Mock).mockResolvedValueOnce({
-      ...queueProRestaurant,
       queue: {
         isGuestUser: false,
         hasJoinedAnyQueue: true,
         hasJoinedThisRestaurantQueue: false,
       },
-    });
+    };
 
     render(<RestaurantMenuItemCard item={availableItem} restaurant={queueProRestaurant} />);
 
     const addToCartBtn = screen.getByRole("button", { name: /add to cart/i });
     await user.click(addToCartBtn);
 
-    await waitFor(() => {
-      expect(customerRestaurantService.getRestaurantDetails).toHaveBeenCalledWith("rest-queue-1");
-      expect(toast.error).toHaveBeenCalledWith(CART_MESSAGES.QUEUE_ALREADY_IN_OTHER);
-    });
-
+    expect(toast.error).toHaveBeenCalledWith(CART_MESSAGES.QUEUE_ALREADY_IN_OTHER);
     expect(useCartStore.getState().items).toHaveLength(0);
   });
 
@@ -198,27 +175,19 @@ describe("RestaurantMenuItemCard", () => {
       ...baseRestaurant,
       restaurantId: "rest-queue-1",
       type: "QUEUE_PRO",
-    };
-
-    (customerRestaurantService.getRestaurantDetails as jest.Mock).mockResolvedValueOnce({
-      ...queueProRestaurant,
       queue: {
         isGuestUser: false,
         hasJoinedAnyQueue: true,
         hasJoinedThisRestaurantQueue: true,
       },
-    });
+    };
 
     render(<RestaurantMenuItemCard item={availableItem} restaurant={queueProRestaurant} />);
 
     const addToCartBtn = screen.getByRole("button", { name: /add to cart/i });
     await user.click(addToCartBtn);
 
-    await waitFor(() => {
-      expect(customerRestaurantService.getRestaurantDetails).toHaveBeenCalledWith("rest-queue-1");
-      expect(toast.success).toHaveBeenCalledWith(CART_MESSAGES.ITEM_ADDED);
-    });
-
+    expect(toast.success).toHaveBeenCalledWith(CART_MESSAGES.ITEM_ADDED);
     expect(useCartStore.getState().items).toHaveLength(1);
     expect(useCartStore.getState().restaurantId).toBe("rest-queue-1");
   });

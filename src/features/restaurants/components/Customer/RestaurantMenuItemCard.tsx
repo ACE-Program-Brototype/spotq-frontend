@@ -1,12 +1,4 @@
-import {
-  ChevronDown,
-  Clock3,
-  Loader2,
-  Minus,
-  Plus,
-  ShoppingCart,
-  UtensilsCrossed,
-} from "lucide-react";
+import { ChevronDown, Clock3, Minus, Plus, ShoppingCart, UtensilsCrossed } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,7 +7,6 @@ import { CartRestaurantMismatchDialog } from "@/features/cart/components/CartRes
 import { CART_MESSAGES, RESTAURANT_TYPES } from "@/features/cart/constants/cart.constants";
 import { useCartStore } from "@/features/cart/store/cart.store";
 import type { AddCartItemInput } from "@/features/cart/types/cart.types";
-import { customerRestaurantService } from "@/features/restaurants/services/customer-restaurant.service";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuItem,
@@ -25,7 +16,7 @@ import { formatCurrency } from "@/lib/utils";
 
 interface RestaurantMenuItemCardProps {
   item: CustomerRestaurantMenuItem;
-  restaurant?: CustomerRestaurantDetails;
+  restaurant: CustomerRestaurantDetails;
 }
 
 function AddonOption({
@@ -92,7 +83,6 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
   );
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [isAdding, setIsAdding] = useState(false);
   const [mismatchDialogOpen, setMismatchDialogOpen] = useState(false);
   const [pendingPayload, setPendingPayload] = useState<AddCartItemInput | null>(null);
 
@@ -112,7 +102,7 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
     );
   };
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (!item.isAvailable) {
       toast.error(CART_MESSAGES.ITEM_UNAVAILABLE);
       return;
@@ -123,39 +113,27 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
       return;
     }
 
-    // Acceptance criteria 6: Queue Pro eligibility validation & live revalidation
+    // Queue Pro eligibility validation
     const isQueuePro =
-      restaurant?.type?.toUpperCase() === RESTAURANT_TYPES.QUEUE_PRO ||
-      restaurant?.type === "Queue Pro";
+      restaurant.type?.toUpperCase() === RESTAURANT_TYPES.QUEUE_PRO ||
+      restaurant.type === "Queue Pro";
 
-    if (isQueuePro && restaurant?.restaurantId) {
-      setIsAdding(true);
-      try {
-        const freshDetails = await customerRestaurantService.getRestaurantDetails(
-          restaurant.restaurantId,
-        );
-        const queue = freshDetails?.queue;
+    if (isQueuePro) {
+      const queue = restaurant.queue;
 
-        if (!queue || queue.isGuestUser || !queue.hasJoinedThisRestaurantQueue) {
-          if (queue?.hasJoinedAnyQueue && !queue.hasJoinedThisRestaurantQueue) {
-            toast.error(CART_MESSAGES.QUEUE_ALREADY_IN_OTHER);
-          } else {
-            toast.error(CART_MESSAGES.QUEUE_REQUIRED);
-          }
-          setIsAdding(false);
-          return;
+      if (!queue || queue.isGuestUser || !queue.hasJoinedThisRestaurantQueue) {
+        if (queue?.hasJoinedAnyQueue && !queue.hasJoinedThisRestaurantQueue) {
+          toast.error(CART_MESSAGES.QUEUE_ALREADY_IN_OTHER);
+        } else {
+          toast.error(CART_MESSAGES.QUEUE_REQUIRED);
         }
-      } catch {
-        toast.error(CART_MESSAGES.QUEUE_REQUIRED);
-        setIsAdding(false);
         return;
       }
-      setIsAdding(false);
     }
 
     const payload: AddCartItemInput = {
-      restaurantId: restaurant?.restaurantId ?? "default-restaurant",
-      restaurantName: restaurant?.restaurantName ?? "Restaurant",
+      restaurantId: restaurant.restaurantId,
+      restaurantName: restaurant.restaurantName,
       menuItemId: item.id,
       name: item.name,
       imageUrl: imageUrl ?? null,
@@ -337,7 +315,7 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                 type="button"
                 variant="ghost"
                 size="icon"
-                disabled={quantity <= 1 || isAdding}
+                disabled={quantity <= 1}
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 aria-label={CART_MESSAGES.DECREASE_QUANTITY}
                 className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900 disabled:opacity-40"
@@ -356,7 +334,6 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                 type="button"
                 variant="ghost"
                 size="icon"
-                disabled={isAdding}
                 onClick={() => setQuantity((q) => q + 1)}
                 aria-label={CART_MESSAGES.INCREASE_QUANTITY}
                 className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900"
@@ -367,21 +344,11 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
 
             <Button
               type="button"
-              disabled={isAdding}
               onClick={handleAddToCart}
-              className="rounded-xl bg-[#ff6b00] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#e05e00] transition disabled:opacity-50"
+              className="rounded-xl bg-[#ff6b00] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#e05e00] transition"
             >
-              {isAdding ? (
-                <>
-                  <Loader2 className="mr-1.5 size-3.5 animate-spin" />
-                  Adding...
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="mr-1.5 size-3.5" />
-                  Add to Cart ({formatCurrency(totalItemPrice)})
-                </>
-              )}
+              <ShoppingCart className="mr-1.5 size-3.5" />
+              Add to Cart ({formatCurrency(totalItemPrice)})
             </Button>
           </div>
         )}

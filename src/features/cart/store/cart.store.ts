@@ -2,35 +2,9 @@ import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { CART_STORAGE_KEY } from "../constants/cart.constants";
 import type { AddCartItemInput, CartItem, CartState, CartStore } from "../types/cart.types";
+import { calculateCartTotals, calculateUnitPrice, generateCartItemId } from "../utils/cart.utils";
 
-export function generateCartItemId(
-  menuItemId: string,
-  variantId?: string | null,
-  addonIds: string[] = [],
-): string {
-  const sortedAddonIds = [...addonIds].sort().join(",");
-  return `${menuItemId}_v:${variantId || "none"}_a:${sortedAddonIds}`;
-}
-
-export function calculateCartTotals(items: CartItem[]): {
-  totalCount: number;
-  totalAmount: number;
-} {
-  return items.reduce(
-    (acc, item) => {
-      acc.totalCount += item.quantity;
-      acc.totalAmount += item.subtotal;
-      return acc;
-    },
-    { totalCount: 0, totalAmount: 0 },
-  );
-}
-
-function calculateUnitPrice(input: AddCartItemInput): number {
-  const baseOrVariantPrice = input.selectedVariant?.price ?? input.basePrice;
-  const addonsPrice = input.selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
-  return baseOrVariantPrice + addonsPrice;
-}
+export { calculateCartTotals, calculateUnitPrice, generateCartItemId };
 
 const initialCartState: CartState = {
   restaurantId: null,
@@ -51,7 +25,7 @@ export const useCartStore = create<CartStore>()(
           const state = get();
           const quantityToAdd = Math.max(1, input.quantity ?? 1);
 
-          // Acceptance criteria 2: Single-restaurant cart validation
+          // Single-restaurant cart validation
           if (
             state.items.length > 0 &&
             state.restaurantId &&

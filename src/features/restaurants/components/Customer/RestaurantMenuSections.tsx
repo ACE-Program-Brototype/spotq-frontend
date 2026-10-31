@@ -6,7 +6,7 @@ import { RestaurantMenuItemCard } from "./RestaurantMenuItemCard";
 
 interface RestaurantMenuSectionsProps {
   categories: CustomerRestaurantMenuCategory[];
-  restaurant?: CustomerRestaurantDetails;
+  restaurant: CustomerRestaurantDetails;
 }
 
 export function RestaurantMenuSections({ categories, restaurant }: RestaurantMenuSectionsProps) {
