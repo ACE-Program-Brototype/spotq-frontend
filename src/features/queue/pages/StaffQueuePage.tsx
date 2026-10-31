@@ -1,9 +1,21 @@
-import { Clock, MessageSquare, Sparkles, UserPlus, Users } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  FastForward,
+  MessageSquare,
+  Sparkles,
+  UserPlus,
+  Users,
+  XCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { formatTime } from "@/lib/utils";
+import { CancelQueueModal } from "../components/CancelQueueModal";
+import { SeatPartyModal } from "../components/SeatPartyModal";
+import { SkipPartyModal } from "../components/SkipPartyModal";
 import { WalkInRegistrationModal } from "../components/WalkInRegistrationModal";
 import type { QueueEntry } from "../types/queue.types";
 
@@ -14,11 +26,66 @@ export default function StaffQueuePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [queueEntries, setQueueEntries] = useState<QueueEntry[]>([]);
 
+  const [selectedEntry, setSelectedEntry] = useState<QueueEntry | null>(null);
+  const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
+  const [isSkipModalOpen, setIsSkipModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
   const handleRegistrationSuccess = (newEntry: QueueEntry) => {
     setQueueEntries((prev) => [
       newEntry,
       ...prev.filter((e) => e.queueEntryId !== newEntry.queueEntryId),
     ]);
+  };
+
+  const handleSeatSuccess = (seatedEntryId: string) => {
+    setQueueEntries((prev) =>
+      prev
+        .filter((e) => e.queueEntryId !== seatedEntryId)
+        .map((entry, index) => ({
+          ...entry,
+          position: index + 1,
+        })),
+    );
+  };
+
+  const handleSkipSuccess = (skippedEntryId: string, isReordered: boolean) => {
+    if (!isReordered) {
+      setQueueEntries((prev) =>
+        prev
+          .filter((e) => e.queueEntryId !== skippedEntryId)
+          .map((entry, index) => ({
+            ...entry,
+            position: index + 1,
+          })),
+      );
+    }
+  };
+
+  const handleCancelSuccess = (cancelledEntryId: string) => {
+    setQueueEntries((prev) =>
+      prev
+        .filter((e) => e.queueEntryId !== cancelledEntryId)
+        .map((entry, index) => ({
+          ...entry,
+          position: index + 1,
+        })),
+    );
+  };
+
+  const openSeatModal = (entry: QueueEntry) => {
+    setSelectedEntry(entry);
+    setIsSeatModalOpen(true);
+  };
+
+  const openSkipModal = (entry: QueueEntry) => {
+    setSelectedEntry(entry);
+    setIsSkipModalOpen(true);
+  };
+
+  const openCancelModal = (entry: QueueEntry) => {
+    setSelectedEntry(entry);
+    setIsCancelModalOpen(true);
   };
 
   return (
@@ -133,6 +200,9 @@ export default function StaffQueuePage() {
                     <th scope="col" className="px-4 py-3">
                       Joined At
                     </th>
+                    <th scope="col" className="px-4 py-3 text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f3e6de]">
@@ -178,6 +248,42 @@ export default function StaffQueuePage() {
                           {formatTime(entry.joinedAt)}
                         </span>
                       </td>
+                      <td className="px-4 py-3 text-right">
+                        {entry.status === "WAITING" && (
+                          <div className="flex items-center justify-end gap-1.5">
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openSeatModal(entry)}
+                              className="h-7 px-2.5 text-[11px] font-bold text-emerald-700 border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+                            >
+                              <CheckCircle2 className="size-3 mr-1" />
+                              Seat
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openSkipModal(entry)}
+                              className="h-7 px-2 text-[11px] font-bold text-amber-700 border-amber-300 hover:bg-amber-50 hover:text-amber-800"
+                            >
+                              <FastForward className="size-3 mr-1" />
+                              Skip
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openCancelModal(entry)}
+                              className="h-7 px-2 text-[11px] font-bold text-red-700 border-red-300 hover:bg-red-50 hover:text-red-800"
+                            >
+                              <XCircle className="size-3 mr-1" />
+                              Cancel
+                            </Button>
+                          </div>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -193,6 +299,33 @@ export default function StaffQueuePage() {
         onClose={() => setIsModalOpen(false)}
         restaurantId={restaurantId}
         onSuccess={handleRegistrationSuccess}
+      />
+
+      {/* Seat Party Modal */}
+      <SeatPartyModal
+        isOpen={isSeatModalOpen}
+        onClose={() => setIsSeatModalOpen(false)}
+        entry={selectedEntry}
+        restaurantId={restaurantId}
+        onSuccess={handleSeatSuccess}
+      />
+
+      {/* Skip Party Modal */}
+      <SkipPartyModal
+        isOpen={isSkipModalOpen}
+        onClose={() => setIsSkipModalOpen(false)}
+        entry={selectedEntry}
+        restaurantId={restaurantId}
+        onSuccess={handleSkipSuccess}
+      />
+
+      {/* Cancel Queue Modal */}
+      <CancelQueueModal
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        entry={selectedEntry}
+        restaurantId={restaurantId}
+        onSuccess={handleCancelSuccess}
       />
     </div>
   );
