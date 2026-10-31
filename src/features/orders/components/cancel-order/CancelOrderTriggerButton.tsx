@@ -7,10 +7,10 @@
 import { MoreVertical, Trash2 } from "lucide-react";
 import type * as React from "react";
 import { useEffect, useRef, useState } from "react";
+import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
+import { ORDER_STATUS } from "@/features/orders/constants/orders.constants";
+import type { OrderStatus } from "@/features/orders/types/orders.types";
 import { cn } from "@/lib/utils/cn";
-import { CANCEL_ORDER_MESSAGES } from "../../constants/cancel-order.constants";
-import { ORDER_STATUS } from "../../constants/orders.constants";
-import type { OrderStatus } from "../../types/orders.types";
 import { CancelOrderModal } from "./CancelOrderModal";
 
 export interface CancelOrderTriggerButtonProps {
@@ -162,5 +162,3 @@ export function CancelOrderTriggerButton({
     </>
   );
 }
-
-export default CancelOrderTriggerButton;

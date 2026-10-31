@@ -7,14 +7,14 @@
 import { AlertDialog as AlertDialogPrimitive } from "@base-ui/react/alert-dialog";
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils/cn";
 import {
   CANCEL_ORDER_MESSAGES,
   CANCEL_ORDER_REASON_OPTIONS,
   CANCEL_ORDER_REASONS,
-} from "../../constants/cancel-order.constants";
-import { useCancelOrder } from "../../hooks/use-cancel-order";
-import type { CancelOrderReasonKey } from "../../types/cancel-order.types";
+} from "@/features/orders/constants/cancel-order.constants";
+import { useCancelOrder } from "@/features/orders/hooks/use-cancel-order";
+import type { CancelOrderReasonKey } from "@/features/orders/types/cancel-order.types";
+import { cn } from "@/lib/utils/cn";
 import { CancellationReasonSelect } from "./CancellationReasonSelect";
 import { CancellationWarningCard } from "./CancellationWarningCard";
 import { CancelOrderActions } from "./CancelOrderActions";
@@ -43,14 +43,6 @@ export function CancelOrderModal({
       onOpenChange(false);
       resetState();
       onSuccess?.();
-    },
-    onError: (err) => {
-      // 409 Conflict indicates the kitchen already started preparing
-      const status = (err as { status?: number }).status;
-      if (status === 409) {
-        onOpenChange(false);
-        resetState();
-      }
     },
   });
 
@@ -184,5 +176,3 @@ export function CancelOrderModal({
     </AlertDialogPrimitive.Root>
   );
 }
-
-export default CancelOrderModal;

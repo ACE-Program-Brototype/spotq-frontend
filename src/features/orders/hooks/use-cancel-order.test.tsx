@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import {
   CANCEL_ORDER_MESSAGES,
   CANCEL_ORDER_QUERY_KEYS,
-} from "../constants/cancel-order.constants";
-import { orderService } from "../services/order.service";
-import type { CancelOrderResponseData } from "../types/cancel-order.types";
+} from "@/features/orders/constants/cancel-order.constants";
+import { orderService } from "@/features/orders/services/order.service";
+import type { CancelOrderResponseData } from "@/features/orders/types/cancel-order.types";
 import { useCancelOrder } from "./use-cancel-order";
 
-jest.mock("../services/order.service");
+jest.mock("@/features/orders/services/order.service");
 jest.mock("sonner", () => ({
   toast: {
     success: jest.fn(),
@@ -72,6 +72,36 @@ describe("useCancelOrder", () => {
     });
     expect(toast.success).toHaveBeenCalledWith(CANCEL_ORDER_MESSAGES.TOAST_SUCCESS);
     expect(onSuccess).toHaveBeenCalledWith(mockCancelledData);
+  });
+
+  it("handles 400 Bad Request when kitchen has already started preparing by invalidating customer orders cache", async () => {
+    const error400 = createMockError(
+      400,
+      "Order is already in preparation and cannot be cancelled",
+    );
+    (orderService.cancelOrder as jest.Mock).mockRejectedValueOnce(error400);
+    const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
+
+    const onError = jest.fn();
+    const { result } = renderHook(() => useCancelOrder("ord_cancel_999", { onError }), { wrapper });
+
+    await act(async () => {
+      try {
+        await result.current.mutateAsync({
+          cancellation_reason: "Changed my mind",
+        });
+      } catch {
+        // Handled in mutation onError
+      }
+    });
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Order is already in preparation and cannot be cancelled",
+    );
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: CANCEL_ORDER_QUERY_KEYS.ORDERS_ROOT,
+    });
+    expect(onError).toHaveBeenCalledWith(error400);
   });
 
   it("handles 409 Conflict race condition by invalidating customer orders cache and showing error toast", async () => {

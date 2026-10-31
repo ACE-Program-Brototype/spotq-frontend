@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { CANCEL_ORDER_MESSAGES } from "../../constants/cancel-order.constants";
+import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
 import { CancellationWarningCard } from "./CancellationWarningCard";
 
 describe("CancellationWarningCard", () => {

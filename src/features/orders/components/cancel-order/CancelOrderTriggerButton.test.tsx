@@ -3,15 +3,15 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { CANCEL_ORDER_MESSAGES } from "../../constants/cancel-order.constants";
-import { ORDER_STATUS } from "../../constants/orders.constants";
+import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
+import { ORDER_STATUS } from "@/features/orders/constants/orders.constants";
 import {
   CancelOrderTriggerButton,
   getDisabledTooltip,
   isOrderCancellable,
 } from "./CancelOrderTriggerButton";
 
-jest.mock("../../services/order.service");
+jest.mock("@/features/orders/services/order.service");
 
 describe("CancelOrderTriggerButton", () => {
   let queryClient: QueryClient;

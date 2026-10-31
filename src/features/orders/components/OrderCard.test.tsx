@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import type React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { CANCEL_ORDER_MESSAGES } from "../constants/cancel-order.constants";
-import type { OrderHistoryItem } from "../types/orders.types";
+import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
+import type { OrderHistoryItem } from "@/features/orders/types/orders.types";
 import { OrderCard } from "./OrderCard";
 
-jest.mock("../services/order.service");
+jest.mock("@/features/orders/services/order.service");
 
 describe("OrderCard", () => {
   let queryClient: QueryClient;

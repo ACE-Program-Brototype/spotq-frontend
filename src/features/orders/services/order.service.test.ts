@@ -1,5 +1,5 @@
+import { MOCK_ORDER_RECEIPT } from "@/features/orders/mocks/order-receipt.mock";
 import { apiClient } from "@/lib/api/client";
-import { MOCK_ORDER_RECEIPT } from "../mocks/order-receipt.mock";
 import { orderService } from "./order.service";
 
 jest.mock("@/lib/api/client", () => ({

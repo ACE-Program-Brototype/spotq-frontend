@@ -4,7 +4,7 @@ import {
   CANCEL_ORDER_REASON_OPTIONS,
   CANCEL_ORDER_REASONS,
   MAX_CANCELLATION_NOTE_LENGTH,
-} from "../../constants/cancel-order.constants";
+} from "@/features/orders/constants/cancel-order.constants";
 import { CancellationReasonSelect } from "./CancellationReasonSelect";
 
 describe("CancellationReasonSelect", () => {

@@ -3,8 +3,8 @@
  * Interfaces matching the Cancel Order API payload and response.
  */
 
-import type { CANCEL_ORDER_REASONS } from "../constants/cancel-order.constants";
-import type { ORDER_STATUS } from "../constants/orders.constants";
+import type { CANCEL_ORDER_REASONS } from "@/features/orders/constants/cancel-order.constants";
+import type { ORDER_STATUS } from "@/features/orders/constants/orders.constants";
 
 export type CancelOrderReasonKey = (typeof CANCEL_ORDER_REASONS)[keyof typeof CANCEL_ORDER_REASONS];
 

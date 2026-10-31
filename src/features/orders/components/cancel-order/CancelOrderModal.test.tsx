@@ -7,11 +7,11 @@ import {
   CANCEL_ORDER_MESSAGES,
   CANCEL_ORDER_REASON_OPTIONS,
   CANCEL_ORDER_REASONS,
-} from "../../constants/cancel-order.constants";
-import { orderService } from "../../services/order.service";
+} from "@/features/orders/constants/cancel-order.constants";
+import { orderService } from "@/features/orders/services/order.service";
 import { CancelOrderModal } from "./CancelOrderModal";
 
-jest.mock("../../services/order.service");
+jest.mock("@/features/orders/services/order.service");
 
 describe("CancelOrderModal", () => {
   let queryClient: QueryClient;
@@ -163,12 +163,15 @@ describe("CancelOrderModal", () => {
     });
   });
 
-  it("closes modal on 409 conflict error (already preparing)", async () => {
+  it("keeps modal open when cancel order fails", async () => {
     const user = userEvent.setup();
     const onOpenChange = jest.fn();
 
-    const error409 = Object.assign(new Error("ORDER_ALREADY_PREPARING"), { status: 409 });
-    (orderService.cancelOrder as jest.Mock).mockRejectedValueOnce(error409);
+    const error400 = Object.assign(
+      new Error("Order is already in preparation and cannot be cancelled"),
+      { status: 400 },
+    );
+    (orderService.cancelOrder as jest.Mock).mockRejectedValueOnce(error400);
 
     render(<CancelOrderModal open={true} onOpenChange={onOpenChange} orderId="ord_test_123" />, {
       wrapper,
@@ -178,7 +181,9 @@ describe("CancelOrderModal", () => {
     await user.click(screen.getByTestId("confirm-cancel-button"));
 
     await waitFor(() => {
-      expect(onOpenChange).toHaveBeenCalledWith(false);
+      expect(orderService.cancelOrder).toHaveBeenCalled();
     });
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
   });
 });

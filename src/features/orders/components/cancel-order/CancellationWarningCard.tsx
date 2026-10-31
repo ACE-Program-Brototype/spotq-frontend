@@ -4,7 +4,7 @@
  */
 
 import { AlertTriangle, Info } from "lucide-react";
-import { CANCEL_ORDER_MESSAGES } from "../../constants/cancel-order.constants";
+import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
 
 export interface CancellationWarningCardProps {
   className?: string;
@@ -48,5 +48,3 @@ export function CancellationWarningCard({ className = "" }: CancellationWarningC
     </section>
   );
 }
-
-export default CancellationWarningCard;

@@ -6,14 +6,14 @@
 
 import type * as React from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils/cn";
 import {
   CANCEL_ORDER_MESSAGES,
   CANCEL_ORDER_REASON_OPTIONS,
   CANCEL_ORDER_REASONS,
   MAX_CANCELLATION_NOTE_LENGTH,
-} from "../../constants/cancel-order.constants";
-import type { CancelOrderReasonKey } from "../../types/cancel-order.types";
+} from "@/features/orders/constants/cancel-order.constants";
+import type { CancelOrderReasonKey } from "@/features/orders/types/cancel-order.types";
+import { cn } from "@/lib/utils/cn";
 
 export interface CancellationReasonSelectProps {
   selectedReason: CancelOrderReasonKey | null;
@@ -119,5 +119,3 @@ export function CancellationReasonSelect({
     </div>
   );
 }
-
-export default CancellationReasonSelect;

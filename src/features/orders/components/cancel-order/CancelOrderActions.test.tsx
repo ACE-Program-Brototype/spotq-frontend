@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CANCEL_ORDER_MESSAGES } from "../../constants/cancel-order.constants";
+import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
 import { CancelOrderActions } from "./CancelOrderActions";
 
 describe("CancelOrderActions", () => {

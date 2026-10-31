@@ -1,12 +1,15 @@
-import { apiClient } from "@/lib/api/client";
-import { CANCEL_ORDER_ENDPOINTS } from "../constants/cancel-order.constants";
-import { ORDER_RECEIPT_ENDPOINTS } from "../constants/order-receipt.constants";
+import { CANCEL_ORDER_ENDPOINTS } from "@/features/orders/constants/cancel-order.constants";
+import { ORDER_RECEIPT_ENDPOINTS } from "@/features/orders/constants/order-receipt.constants";
 import type {
   CancelOrderApiResponse,
   CancelOrderRequestDto,
   CancelOrderResponseData,
-} from "../types/cancel-order.types";
-import type { OrderReceipt, OrderReceiptApiResponse } from "../types/order-receipt.types";
+} from "@/features/orders/types/cancel-order.types";
+import type {
+  OrderReceipt,
+  OrderReceiptApiResponse,
+} from "@/features/orders/types/order-receipt.types";
+import { apiClient } from "@/lib/api/client";
 
 export const orderService = {
   async getOrderReceipt(orderId: string): Promise<OrderReceipt> {

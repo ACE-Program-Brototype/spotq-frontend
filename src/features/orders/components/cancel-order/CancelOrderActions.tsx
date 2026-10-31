@@ -7,7 +7,7 @@
 import { Loader2 } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { CANCEL_ORDER_MESSAGES } from "../../constants/cancel-order.constants";
+import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
 
 export interface CancelOrderActionsProps {
   onKeepOrder: () => void;
@@ -59,5 +59,3 @@ export const CancelOrderActions = React.forwardRef<HTMLButtonElement, CancelOrde
     );
   },
 );
-
-export default CancelOrderActions;

@@ -13,11 +13,11 @@ import {
   UtensilsCrossed,
   XCircle,
 } from "lucide-react";
+import { CancelOrderTriggerButton } from "@/features/orders/components/cancel-order";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
 import { ORDER_MESSAGES, ORDER_STATUS } from "../constants/orders.constants";
 import type { OrderHistoryItem, OrderStatus } from "../types/orders.types";
-import { CancelOrderTriggerButton } from "./cancel-order/CancelOrderTriggerButton";
 
 export interface OrderCardProps {
   order: OrderHistoryItem;
