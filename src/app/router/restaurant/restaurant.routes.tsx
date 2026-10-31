@@ -1,7 +1,7 @@
 import { Navigate, type RouteObject, useParams } from "react-router-dom";
 
-import RestaurantEmailVerificationPage from "@/features/auth/pages/RestaurantEmailVerification";
-import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
+import RestaurantEmailVerificationPage from "@/features/auth/pages/restaurant/RestaurantEmailVerification";
+import OtpVerificationPage from "@/features/auth/pages/restaurant/ResturantOtpVerification";
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";

@@ -4,6 +4,7 @@ import { staffMenuService } from "./staff-menu.service";
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
+    patch: jest.fn(),
   },
 }));
 
@@ -222,6 +223,42 @@ describe("staffMenuService", () => {
       const result = await staffMenuService.getStaffCategories(mockRestaurantId);
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe("updateMenuItemVariantStatus", () => {
+    it("throws error when parameters are missing", async () => {
+      await expect(
+        staffMenuService.updateMenuItemVariantStatus("", "item-1", "var-1"),
+      ).rejects.toThrow("Restaurant ID, Menu Item ID, and Variant ID are required.");
+    });
+
+    it("returns variant status on success", async () => {
+      const mockJson = jest.fn().mockResolvedValue({
+        success: true,
+        data: { isAvailable: false },
+      });
+      (apiClient.patch as jest.Mock).mockReturnValue({ json: mockJson });
+
+      const result = await staffMenuService.updateMenuItemVariantStatus(
+        mockRestaurantId,
+        "item-1",
+        "var-1",
+      );
+
+      expect(result).toEqual({ isAvailable: false });
+    });
+
+    it("throws error when data is missing or isAvailable is not boolean", async () => {
+      const mockJson = jest.fn().mockResolvedValue({
+        success: true,
+        data: null,
+      });
+      (apiClient.patch as jest.Mock).mockReturnValue({ json: mockJson });
+
+      await expect(
+        staffMenuService.updateMenuItemVariantStatus(mockRestaurantId, "item-1", "var-1"),
+      ).rejects.toThrow("Failed to update variant availability status");
     });
   });
 });

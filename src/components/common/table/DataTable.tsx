@@ -1,20 +1,13 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronRight } from "lucide-react";
-import type React from "react";
-import { Fragment, useCallback, useId, useMemo, useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useCallback, useId, useMemo, useState } from "react";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils/cn";
 import type { Column, DataTableProps, SortDirection } from "./DataTable.types";
 import { DataTableEmptyState } from "./DataTableEmptyState";
+import { DataTableHeader } from "./DataTableHeader";
 import { DataTablePagination } from "./DataTablePagination";
+import { DataTableRow } from "./DataTableRow";
 import { DataTableSkeleton } from "./DataTableSkeleton";
+import { sortData } from "./dataTableSort";
 
 export function DataTable<T>({
   data,
@@ -55,7 +48,7 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   const instanceId = useId();
 
-  // Internal client-side sort state (used when onSort is not provided)
+  // Internal client-side sort state
   const [internalSortBy, setInternalSortBy] = useState<string | null>(defaultSortBy || null);
   const [internalSortOrder, setInternalSortOrder] = useState<SortDirection>(defaultSortOrder);
 
@@ -65,7 +58,7 @@ export function DataTable<T>({
   // Uncontrolled expansion state
   const [internalExpandedKeys, setInternalExpandedKeys] = useState<Set<string>>(new Set());
 
-  // Determine active sort state
+  // Active sort state
   const isServerSort = typeof onSort === "function";
   const activeSortBy = isServerSort ? controlledSortBy : internalSortBy;
   const activeSortOrder = isServerSort ? controlledSortOrder : internalSortOrder;
@@ -108,61 +101,10 @@ export function DataTable<T>({
     }
   };
 
-  // Internal sort comparator for client-side mode
+  // Internal sorted data memo
   const sortedData = useMemo(() => {
-    if (isServerSort || !activeSortBy || !activeSortOrder) {
-      return data;
-    }
-
-    const sortColumn = columns.find(
-      (c, idx) => (c.sortKey || resolveColKey(c, idx)) === activeSortBy,
-    );
-    if (!sortColumn) return data;
-
-    return [...data].sort((a, b) => {
-      let aVal: unknown;
-      let bVal: unknown;
-
-      if (typeof sortColumn.accessor === "function") {
-        aVal = sortColumn.accessor(a);
-        bVal = sortColumn.accessor(b);
-      } else if (sortColumn.accessor && typeof a === "object" && a !== null) {
-        // biome-ignore lint/suspicious/noExplicitAny: dynamic accessor
-        aVal = (a as any)[sortColumn.accessor];
-        // biome-ignore lint/suspicious/noExplicitAny: dynamic accessor
-        bVal = (b as any)[sortColumn.accessor];
-      }
-
-      // Handle nullish values
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return 1;
-      if (bVal == null) return -1;
-
-      // Numbers
-      if (typeof aVal === "number" && typeof bVal === "number") {
-        return activeSortOrder === "asc" ? aVal - bVal : bVal - aVal;
-      }
-
-      // Dates (chronological sort)
-      if (aVal instanceof Date && bVal instanceof Date) {
-        return activeSortOrder === "asc"
-          ? aVal.getTime() - bVal.getTime()
-          : bVal.getTime() - aVal.getTime();
-      }
-
-      // Booleans
-      if (typeof aVal === "boolean" && typeof bVal === "boolean") {
-        const aNum = aVal ? 1 : 0;
-        const bNum = bVal ? 1 : 0;
-        return activeSortOrder === "asc" ? aNum - bNum : bNum - aNum;
-      }
-
-      // Strings (case-insensitive)
-      const aStr = String(aVal);
-      const bStr = String(bVal);
-      const comp = aStr.localeCompare(bStr, undefined, { numeric: true, sensitivity: "base" });
-      return activeSortOrder === "asc" ? comp : -comp;
-    });
+    if (isServerSort) return data;
+    return sortData(data, columns, activeSortBy, activeSortOrder, resolveColKey);
   }, [data, isServerSort, activeSortBy, activeSortOrder, columns, resolveColKey]);
 
   // Selection keys set
@@ -199,7 +141,7 @@ export function DataTable<T>({
     }
   };
 
-  // Select all rows handler (preserves selections across other pages)
+  // Select all rows handler
   const handleSelectAll = (checked: boolean) => {
     const nextSet = new Set(currentSelectedSet);
     sortedData.forEach((row, idx) => {
@@ -240,17 +182,14 @@ export function DataTable<T>({
     });
   };
 
-  // Determine "select all" state
   const isAllSelected =
     sortedData.length > 0 &&
     sortedData.every((row, idx) => currentSelectedSet.has(resolveRowId(row, idx)));
   const isSomeSelected =
     !isAllSelected && sortedData.some((row, idx) => currentSelectedSet.has(resolveRowId(row, idx)));
 
-  // Total columns count (including selection & expander columns)
   const totalColumnCount = columns.length + (selectable ? 1 : 0) + (renderExpandedRow ? 1 : 0);
 
-  // Active theme sort icon color
   const sortIconColorClass = {
     admin: "text-[#0052cc]",
     restaurant: "text-[#ff6b00]",
@@ -275,105 +214,21 @@ export function DataTable<T>({
       >
         {caption && <caption className="sr-only">{caption}</caption>}
 
-        {/* TABLE HEADER */}
-        <TableHeader className={headerClassName}>
-          <TableRow>
-            {/* Expander Column Header */}
-            {renderExpandedRow && (
-              <TableHead className="w-10 px-3 text-center">
-                <span className="sr-only">Expand</span>
-              </TableHead>
-            )}
+        <DataTableHeader
+          columns={columns}
+          selectable={selectable}
+          renderExpandedRow={renderExpandedRow}
+          isAllSelected={isAllSelected}
+          isSomeSelected={isSomeSelected}
+          onSelectAll={handleSelectAll}
+          activeSortBy={activeSortBy}
+          activeSortOrder={activeSortOrder}
+          onSortClick={handleSortClick}
+          resolveColKey={resolveColKey}
+          sortIconColorClass={sortIconColorClass}
+          headerClassName={headerClassName}
+        />
 
-            {/* Selection Column Header */}
-            {selectable && (
-              <TableHead className="w-12 px-4">
-                <div className="flex items-center justify-center">
-                  <Checkbox
-                    checked={isAllSelected}
-                    indeterminate={isSomeSelected}
-                    onCheckedChange={() => {
-                      // If already all selected -> deselect all. If some or none -> select all.
-                      handleSelectAll(!isAllSelected);
-                    }}
-                    aria-label="Select all rows"
-                    data-testid="data-table-select-all"
-                  />
-                </div>
-              </TableHead>
-            )}
-
-            {/* Dynamic Column Headers */}
-            {columns.map((col, colIdx) => {
-              const colKey = col.sortKey || resolveColKey(col, colIdx);
-              const isSorted = activeSortBy === colKey;
-              const direction = isSorted ? activeSortOrder : null;
-
-              const headerContent =
-                typeof col.header === "function"
-                  ? col.header({ column: col, sortDirection: direction })
-                  : col.header;
-
-              const alignClass =
-                col.align === "right"
-                  ? "text-right justify-end"
-                  : col.align === "center"
-                    ? "text-center justify-center"
-                    : "text-left justify-start";
-
-              return (
-                <TableHead
-                  key={colKey}
-                  style={col.width ? { width: col.width } : undefined}
-                  className={cn(
-                    col.align === "right" && "text-right",
-                    col.align === "center" && "text-center",
-                    col.headerClassName,
-                  )}
-                  aria-sort={
-                    col.sortable
-                      ? direction === "asc"
-                        ? "ascending"
-                        : direction === "desc"
-                          ? "descending"
-                          : "none"
-                      : undefined
-                  }
-                >
-                  {col.sortable ? (
-                    <button
-                      type="button"
-                      onClick={() => handleSortClick(col, colIdx)}
-                      className={cn(
-                        "inline-flex items-center gap-1.5 font-bold uppercase transition-colors group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-sm px-1 -mx-1",
-                        alignClass,
-                        isSorted
-                          ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground",
-                      )}
-                      aria-label={`Sort by ${typeof col.header === "string" ? col.header : colKey}`}
-                    >
-                      <span>{headerContent}</span>
-                      {direction === "asc" ? (
-                        <ArrowUp className={cn("size-3.5 stroke-[2.5]", sortIconColorClass)} />
-                      ) : direction === "desc" ? (
-                        <ArrowDown className={cn("size-3.5 stroke-[2.5]", sortIconColorClass)} />
-                      ) : (
-                        <ArrowUpDown className="size-3 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
-                      )}
-                    </button>
-                  ) : (
-                    <div className={cn("inline-flex items-center font-bold uppercase", alignClass)}>
-                      {headerContent}
-                    </div>
-                  )}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        </TableHeader>
-
-        {/* TABLE BODY */}
         {isLoading ? (
           loadingRenderer ? (
             <TableBody className={bodyClassName}>
@@ -411,134 +266,30 @@ export function DataTable<T>({
           />
         ) : (
           <TableBody className={bodyClassName} data-testid="data-table-body">
-            {sortedData.map((row, rowIdx) => {
-              const rowId = resolveRowId(row, rowIdx);
-              const isSelected = currentSelectedSet.has(rowId);
-              const isExpanded = currentExpandedSet.has(rowId);
-
-              const computedRowClass =
-                typeof rowClassName === "function" ? rowClassName(row, rowIdx) : rowClassName;
-
-              return (
-                <Fragment key={rowId}>
-                  <TableRow
-                    data-state={isSelected ? "selected" : undefined}
-                    aria-selected={selectable ? isSelected : undefined}
-                    tabIndex={onRowClick ? 0 : undefined}
-                    onClick={(e) => onRowClick?.(row, e)}
-                    onKeyDown={(e) => {
-                      if (
-                        onRowClick &&
-                        (e.key === "Enter" || e.key === " ") &&
-                        e.target === e.currentTarget
-                      ) {
-                        e.preventDefault();
-                        onRowClick(row, e);
-                      }
-                    }}
-                    className={cn(
-                      onRowClick &&
-                        "cursor-pointer focus:outline-none focus-visible:bg-muted/60 focus-visible:ring-1 focus-visible:ring-ring",
-                      computedRowClass,
-                    )}
-                    data-testid={
-                      getRowTestId ? getRowTestId(row, rowIdx) : `data-table-row-${rowId}`
-                    }
-                  >
-                    {/* Expand Toggle Cell */}
-                    {renderExpandedRow && (
-                      <TableCell className="w-10 px-3 text-center">
-                        <button
-                          type="button"
-                          aria-expanded={isExpanded}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleExpand(rowId, row);
-                          }}
-                          className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
-                          aria-label={isExpanded ? "Collapse row" : "Expand row"}
-                        >
-                          {isExpanded ? (
-                            <ChevronDown className="size-4" />
-                          ) : (
-                            <ChevronRight className="size-4" />
-                          )}
-                        </button>
-                      </TableCell>
-                    )}
-
-                    {/* Selection Checkbox Cell */}
-                    {selectable && (
-                      <TableCell className="w-12 px-4" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-center">
-                          <Checkbox
-                            checked={isSelected}
-                            onCheckedChange={(checked) =>
-                              handleRowSelect(rowId, row, checked === true)
-                            }
-                            aria-label={`Select row ${rowIdx + 1}`}
-                            data-testid={`data-table-select-row-${rowId}`}
-                          />
-                        </div>
-                      </TableCell>
-                    )}
-
-                    {/* Dynamic Data Cells */}
-                    {columns.map((col, colIdx) => {
-                      const colKey = col.sortKey || resolveColKey(col, colIdx);
-
-                      // Resolve raw cell value
-                      let value: unknown;
-                      if (typeof col.accessor === "function") {
-                        value = col.accessor(row);
-                      } else if (col.accessor && typeof row === "object" && row !== null) {
-                        // biome-ignore lint/suspicious/noExplicitAny: dynamic accessor
-                        value = (row as any)[col.accessor];
-                      }
-
-                      // Render cell content
-                      let cellContent: React.ReactNode;
-                      if (col.cell) {
-                        cellContent = col.cell({ row, value, index: rowIdx });
-                      } else if (value instanceof Date) {
-                        cellContent = value.toLocaleDateString();
-                      } else if (typeof value === "boolean") {
-                        cellContent = value ? "Yes" : "No";
-                      } else {
-                        cellContent = value as React.ReactNode;
-                      }
-
-                      return (
-                        <TableCell
-                          key={colKey}
-                          className={cn(
-                            col.align === "right" && "text-right",
-                            col.align === "center" && "text-center",
-                            col.className,
-                          )}
-                        >
-                          {cellContent}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-
-                  {/* Render Expanded Row */}
-                  {renderExpandedRow && isExpanded && (
-                    <TableRow className="bg-muted/30 hover:bg-muted/30">
-                      <TableCell colSpan={totalColumnCount} className="p-4">
-                        {renderExpandedRow(row, rowIdx)}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </Fragment>
-              );
-            })}
+            {sortedData.map((row, rowIdx) => (
+              <DataTableRow
+                key={resolveRowId(row, rowIdx)}
+                row={row}
+                rowIdx={rowIdx}
+                rowId={resolveRowId(row, rowIdx)}
+                columns={columns}
+                totalColumnCount={totalColumnCount}
+                isSelected={currentSelectedSet.has(resolveRowId(row, rowIdx))}
+                isExpanded={currentExpandedSet.has(resolveRowId(row, rowIdx))}
+                selectable={selectable}
+                renderExpandedRow={renderExpandedRow}
+                onRowClick={onRowClick}
+                rowClassName={rowClassName}
+                getRowTestId={getRowTestId}
+                onRowSelect={handleRowSelect}
+                onToggleExpand={handleToggleExpand}
+                resolveColKey={resolveColKey}
+              />
+            ))}
           </TableBody>
         )}
       </Table>
 
-      {/* PAGINATION TOOLBAR */}
       {pagination && !isLoading && (
         <DataTablePagination {...pagination} theme={pagination.theme || theme} />
       )}

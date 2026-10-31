@@ -8,14 +8,14 @@ const mockHandleVerifyOtp = jest.fn();
 const mockHandleResendOtp = jest.fn();
 const mockStartTimer = jest.fn();
 
-jest.mock("../hooks/use-verify-email", () => ({
+jest.mock("@/features/auth/hooks/use-verify-email", () => ({
   useVerifyOtp: () => ({
     handleVerifyOtp: mockHandleVerifyOtp,
     isLoading: false,
   }),
 }));
 
-jest.mock("../hooks/use-resend-otp", () => ({
+jest.mock("@/features/auth/hooks/use-resend-otp", () => ({
   useResendOtp: () => ({
     handleResendOtp: mockHandleResendOtp,
     isLoading: false,
@@ -23,7 +23,7 @@ jest.mock("../hooks/use-resend-otp", () => ({
 }));
 
 let mockSeconds = 0;
-jest.mock("../hooks/useOtpTimer", () => ({
+jest.mock("@/features/auth/hooks/useOtpTimer", () => ({
   useOtpTimer: () => ({
     seconds: mockSeconds,
     startTimer: mockStartTimer,

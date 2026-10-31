@@ -16,6 +16,10 @@ Frontend application for the **spotQ** platform, built with React and TypeScript
 * Ky http - client
 * Tailwind / shadcn
 
+## Architecture & Engineering Standards
+
+For detailed architecture patterns, reusable form & skeleton primitives, Material Design 3 guidelines, and file decomposition rules, see:
+* [Frontend Architecture Guide](docs/frontend-architecture.md)
 
 ## Getting Started
 

@@ -7,17 +7,17 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils/cn";
-import { OtpHeroPanel } from "../components/OtpHeroPanel";
-import { OtpInput } from "../components/OtpInput";
-import { CUSTOMER_OTP_COOLDOWN_SECONDS } from "../constants/auth.constants";
-import { useResendOtp } from "../hooks/use-resend-otp";
-import { useVerifyOtp } from "../hooks/use-verify-email";
-import { useOtpTimer } from "../hooks/useOtpTimer";
+import { OtpHeroPanel } from "@/features/auth/components/OtpHeroPanel";
+import { OtpInput } from "@/features/auth/components/OtpInput";
+import { CUSTOMER_OTP_COOLDOWN_SECONDS } from "@/features/auth/constants/auth.constants";
+import { useResendOtp } from "@/features/auth/hooks/use-resend-otp";
+import { useVerifyOtp } from "@/features/auth/hooks/use-verify-email";
+import { useOtpTimer } from "@/features/auth/hooks/useOtpTimer";
 import {
   type RequestVerificationEmailFormValues,
   requestVerificationEmailSchema,
-} from "../schemas/verify-otp.schema";
+} from "@/features/auth/schemas/verify-otp.schema";
+import { cn } from "@/lib/utils/cn";
 
 export default function OtpVerificationPage() {
   const navigate = useNavigate();

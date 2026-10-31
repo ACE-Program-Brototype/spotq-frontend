@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
-import { AuthHeroPanel, VerifyOtpForm } from "../components";
+import { AuthHeroPanel, VerifyOtpForm } from "@/features/auth/components";
 
 export default function VerifyOtpPage() {
   const navigate = useNavigate();

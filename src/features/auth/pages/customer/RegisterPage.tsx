@@ -2,12 +2,12 @@ import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
-import { AuthDivider, GoogleLoginButton } from "../components";
-import { RegisterForm } from "../components/RegisterForm";
-import { RegisterHeroPanel } from "../components/RegisterHeroPanle";
-import { useGoogleAuth } from "../hooks/use-google.auth";
-import { useRegister } from "../hooks/use-register";
-import type { RegisterFormValues } from "../schemas/register.schema";
+import { AuthDivider, GoogleLoginButton } from "@/features/auth/components";
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
+import { RegisterHeroPanel } from "@/features/auth/components/RegisterHeroPanle";
+import { useGoogleAuth } from "@/features/auth/hooks/use-google.auth";
+import { useRegister } from "@/features/auth/hooks/use-register";
+import type { RegisterFormValues } from "@/features/auth/schemas/register.schema";
 
 export default function RegisterPage() {
   const navigate = useNavigate();

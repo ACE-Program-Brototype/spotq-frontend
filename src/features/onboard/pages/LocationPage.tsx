@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { FormField, FormInput } from "@/components/common/form";
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import { type LocationFormValues, locationSchema } from "../schemas/location.schema";
 import { useOnboardStore } from "../store/onboard.store";
@@ -81,212 +82,113 @@ export default function LocationPage() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-6 space-y-4">
-          {/* Address Line 1 */}
-          <div>
-            <fieldset
-              className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                errors.address_line1 ? "border-red-400" : "border-neutral-300"
-              }`}
-            >
-              <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                <label htmlFor="address_line1">Address Line 1*</label>
-              </legend>
-              <input
-                id="address_line1"
+          <FormField
+            id="address_line1"
+            label="Address Line 1"
+            required
+            error={errors.address_line1?.message}
+          >
+            <FormInput
+              id="address_line1"
+              type="text"
+              placeholder="Building, street, door no."
+              error={Boolean(errors.address_line1)}
+              {...register("address_line1")}
+            />
+          </FormField>
+
+          <FormField
+            id="address_line2"
+            label="Address Line 2 (Optional)"
+            error={errors.address_line2?.message}
+          >
+            <FormInput
+              id="address_line2"
+              type="text"
+              placeholder="Area, landmark, suburb"
+              error={Boolean(errors.address_line2)}
+              {...register("address_line2")}
+            />
+          </FormField>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField id="city" label="City" required error={errors.city?.message}>
+              <FormInput
+                id="city"
                 type="text"
-                placeholder="Building, street, door no."
-                {...register("address_line1")}
-                className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
+                placeholder="Enter city"
+                error={Boolean(errors.city)}
+                {...register("city")}
               />
-            </fieldset>
-            {errors.address_line1 && (
-              <p role="alert" className="mt-1.5 text-xs text-red-600">
-                {errors.address_line1.message}
-              </p>
-            )}
-          </div>
+            </FormField>
 
-          {/* Address Line 2 */}
-          <div>
-            <fieldset
-              className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                errors.address_line2 ? "border-red-400" : "border-neutral-300"
-              }`}
-            >
-              <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                <label htmlFor="address_line2">Address Line 2 (Optional)</label>
-              </legend>
-              <input
-                id="address_line2"
+            <FormField id="state" label="State" required error={errors.state?.message}>
+              <FormInput
+                id="state"
                 type="text"
-                placeholder="Area, landmark, suburb"
-                {...register("address_line2")}
-                className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
+                placeholder="Enter state"
+                error={Boolean(errors.state)}
+                {...register("state")}
               />
-            </fieldset>
-            {errors.address_line2 && (
-              <p role="alert" className="mt-1.5 text-xs text-red-600">
-                {errors.address_line2.message}
-              </p>
-            )}
+            </FormField>
           </div>
 
-          {/* City & State */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <fieldset
-                className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                  errors.city ? "border-red-400" : "border-neutral-300"
-                }`}
-              >
-                <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                  <label htmlFor="city">City*</label>
-                </legend>
-                <input
-                  id="city"
-                  type="text"
-                  placeholder="Enter city"
-                  {...register("city")}
-                  className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
-                />
-              </fieldset>
-              {errors.city && (
-                <p role="alert" className="mt-1.5 text-xs text-red-600">
-                  {errors.city.message}
-                </p>
-              )}
-            </div>
+            <FormField id="country" label="Country" required error={errors.country?.message}>
+              <FormInput
+                id="country"
+                type="text"
+                placeholder="Enter country"
+                error={Boolean(errors.country)}
+                {...register("country")}
+              />
+            </FormField>
 
-            <div>
-              <fieldset
-                className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                  errors.state ? "border-red-400" : "border-neutral-300"
-                }`}
-              >
-                <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                  <label htmlFor="state">State*</label>
-                </legend>
-                <input
-                  id="state"
-                  type="text"
-                  placeholder="Enter state"
-                  {...register("state")}
-                  className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
-                />
-              </fieldset>
-              {errors.state && (
-                <p role="alert" className="mt-1.5 text-xs text-red-600">
-                  {errors.state.message}
-                </p>
-              )}
-            </div>
+            <FormField id="pincode" label="Pincode" required error={errors.pincode?.message}>
+              <FormInput
+                id="pincode"
+                type="text"
+                placeholder="Enter pincode"
+                error={Boolean(errors.pincode)}
+                {...register("pincode")}
+              />
+            </FormField>
           </div>
 
-          {/* Country & Pincode */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <fieldset
-                className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                  errors.country ? "border-red-400" : "border-neutral-300"
-                }`}
-              >
-                <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                  <label htmlFor="country">Country*</label>
-                </legend>
-                <input
-                  id="country"
-                  type="text"
-                  placeholder="Enter country"
-                  {...register("country")}
-                  className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
-                />
-              </fieldset>
-              {errors.country && (
-                <p role="alert" className="mt-1.5 text-xs text-red-600">
-                  {errors.country.message}
-                </p>
-              )}
-            </div>
+            <FormField
+              id="latitude"
+              label="Latitude (-90 to 90)"
+              required
+              error={errors.latitude?.message}
+            >
+              <FormInput
+                id="latitude"
+                type="number"
+                step="any"
+                placeholder="e.g. 12.9716"
+                error={Boolean(errors.latitude)}
+                {...register("latitude", { valueAsNumber: true })}
+              />
+            </FormField>
 
-            <div>
-              <fieldset
-                className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                  errors.pincode ? "border-red-400" : "border-neutral-300"
-                }`}
-              >
-                <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                  <label htmlFor="pincode">Pincode*</label>
-                </legend>
-                <input
-                  id="pincode"
-                  type="text"
-                  placeholder="Enter pincode"
-                  {...register("pincode")}
-                  className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
-                />
-              </fieldset>
-              {errors.pincode && (
-                <p role="alert" className="mt-1.5 text-xs text-red-600">
-                  {errors.pincode.message}
-                </p>
-              )}
-            </div>
+            <FormField
+              id="longitude"
+              label="Longitude (-180 to 180)"
+              required
+              error={errors.longitude?.message}
+            >
+              <FormInput
+                id="longitude"
+                type="number"
+                step="any"
+                placeholder="e.g. 77.5946"
+                error={Boolean(errors.longitude)}
+                {...register("longitude", { valueAsNumber: true })}
+              />
+            </FormField>
           </div>
 
-          {/* Latitude & Longitude */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <fieldset
-                className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                  errors.latitude ? "border-red-400" : "border-neutral-300"
-                }`}
-              >
-                <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                  <label htmlFor="latitude">Latitude (-90 to 90)*</label>
-                </legend>
-                <input
-                  id="latitude"
-                  type="number"
-                  step="any"
-                  placeholder="e.g. 12.9716"
-                  {...register("latitude", { valueAsNumber: true })}
-                  className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
-                />
-              </fieldset>
-              {errors.latitude && (
-                <p role="alert" className="mt-1.5 text-xs text-red-600">
-                  {errors.latitude.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <fieldset
-                className={`relative rounded-2xl border px-4 pb-2 pt-0.5 transition-colors focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 ${
-                  errors.longitude ? "border-red-400" : "border-neutral-300"
-                }`}
-              >
-                <legend className="ml-1 px-1.5 text-xs font-semibold text-neutral-600">
-                  <label htmlFor="longitude">Longitude (-180 to 180)*</label>
-                </legend>
-                <input
-                  id="longitude"
-                  type="number"
-                  step="any"
-                  placeholder="e.g. 77.5946"
-                  {...register("longitude", { valueAsNumber: true })}
-                  className="w-full bg-transparent py-1 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
-                />
-              </fieldset>
-              {errors.longitude && (
-                <p role="alert" className="mt-1.5 text-xs text-red-600">
-                  {errors.longitude.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Attribution */}
           <p className="text-[11px] text-neutral-400 text-center pt-1">
             Search powered by{" "}
             <a
@@ -299,7 +201,6 @@ export default function LocationPage() {
             </a>
           </p>
 
-          {/* Action Buttons */}
           <div className="mt-8 flex gap-3 pt-2">
             <button
               type="button"
