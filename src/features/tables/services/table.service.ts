@@ -1,20 +1,48 @@
 import type { SuccessResponse } from "@/components/common";
 import { apiClient } from "@/lib/api/client";
-import { TABLE_ENDPOINTS } from "../constants/table.constants";
+import { TABLE_ENDPOINTS, TABLE_SERVICE_ERRORS } from "../constants/table.constants";
 import type {
   AdminTables,
+  CreateTablePayload,
+  CreateTableResponse,
+  GetTableSectionResponse,
   GetTablesResponse,
   RestaurantTableDetails,
   StaffUpdatableStatus,
+  TableItem,
+  TableSectionAll,
   TableStatus,
   TablesGroupedBySection,
   UpdateTableStatusResponse,
 } from "../types/table.types";
 
 export const tableService = {
+  async createTable(restaurantId: string, payload: CreateTablePayload): Promise<TableItem> {
+    if (!restaurantId) {
+      throw new Error(TABLE_SERVICE_ERRORS.CREATE_RESTAURANT_ID_REQUIRED);
+    }
+
+    const response = await apiClient
+      .post(TABLE_ENDPOINTS.LIST(restaurantId), {
+        json: {
+          tableCode: payload.tableCode.trim(),
+          capacity: payload.capacity,
+          sectionId: payload.sectionId.trim(),
+          tableType: payload.tableShape,
+        },
+      })
+      .json<CreateTableResponse>();
+
+    if (!response.success) {
+      throw new Error(response.message || TABLE_SERVICE_ERRORS.CREATE_FAILED);
+    }
+
+    return response.data;
+  },
+
   async getTableDetails(restaurantId: string, tableId: string): Promise<RestaurantTableDetails> {
     if (!restaurantId || !tableId) {
-      throw new Error("Restaurant ID and table ID are required to fetch table details");
+      throw new Error(TABLE_SERVICE_ERRORS.DETAILS_IDS_REQUIRED);
     }
 
     const response = await apiClient
@@ -29,7 +57,7 @@ export const tableService = {
     searchParams: { page: number; limit: number; status?: TableStatus },
   ): Promise<AdminTables> {
     if (!restaurantId) {
-      throw new Error("Restaurant Id is requried to fetch tables");
+      throw new Error(TABLE_SERVICE_ERRORS.LIST_RESTAURANT_ID_REQUIRED);
     }
 
     const response = await apiClient
@@ -52,7 +80,19 @@ export const tableService = {
       .get(TABLE_ENDPOINTS.LIST(restaurantId))
       .json<GetTablesResponse>();
 
-    return response?.data?.sections || {};
+    return response.sections || {};
+  },
+
+  async getTableSections(restaurantId: string): Promise<TableSectionAll[]> {
+    if (!restaurantId) {
+      throw new Error(TABLE_SERVICE_ERRORS.SECTIONS_RESTAURANT_ID_REQUIRED);
+    }
+
+    const response = await apiClient
+      .get(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId))
+      .json<SuccessResponse<GetTableSectionResponse>>();
+
+    return response.data.sections || [];
   },
 
   /**
@@ -66,7 +106,7 @@ export const tableService = {
     status: StaffUpdatableStatus,
   ): Promise<UpdateTableStatusResponse> {
     if (!restaurantId || !tableId) {
-      throw new Error("Restaurant ID and Table ID are required to update status");
+      throw new Error(TABLE_SERVICE_ERRORS.UPDATE_IDS_REQUIRED);
     }
 
     return apiClient
