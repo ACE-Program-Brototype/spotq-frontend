@@ -1,8 +1,8 @@
 import { Minus, Plus, Trash2, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
+import type { CartItem } from "@/features/cart/types/cart.types";
 import { formatCurrency } from "@/lib/utils";
-import { CART_MESSAGES } from "../constants/cart.constants";
-import type { CartItem } from "../types/cart.types";
 
 interface CartItemCardProps {
   item: CartItem;

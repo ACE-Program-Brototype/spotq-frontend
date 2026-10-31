@@ -2,8 +2,8 @@ import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
 import { formatCurrency } from "@/lib/utils";
-import { CART_MESSAGES } from "../constants/cart.constants";
 
 interface CartSummaryProps {
   restaurantId: string | null;

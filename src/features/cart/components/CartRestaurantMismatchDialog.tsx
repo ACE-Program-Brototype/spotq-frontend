@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CART_MESSAGES } from "../constants/cart.constants";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
 
 interface CartRestaurantMismatchDialogProps {
   open: boolean;

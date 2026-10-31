@@ -1,8 +1,17 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import { CART_STORAGE_KEY } from "../constants/cart.constants";
-import type { AddCartItemInput, CartItem, CartState, CartStore } from "../types/cart.types";
-import { calculateCartTotals, calculateUnitPrice, generateCartItemId } from "../utils/cart.utils";
+import { CART_STORAGE_KEY } from "@/features/cart/constants/cart.constants";
+import type {
+  AddCartItemInput,
+  CartItem,
+  CartState,
+  CartStore,
+} from "@/features/cart/types/cart.types";
+import {
+  calculateCartTotals,
+  calculateUnitPrice,
+  generateCartItemId,
+} from "@/features/cart/utils/cart.utils";
 
 export { calculateCartTotals, calculateUnitPrice, generateCartItemId };
 

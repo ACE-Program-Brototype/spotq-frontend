@@ -1,4 +1,4 @@
-import type { AddCartItemInput, CartItem } from "../types/cart.types";
+import type { AddCartItemInput, CartItem } from "@/features/cart/types/cart.types";
 
 export function generateCartItemId(
   menuItemId: string,

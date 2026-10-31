@@ -2,7 +2,7 @@ import { ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
-import { CART_MESSAGES } from "../constants/cart.constants";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
 
 interface CartEmptyStateProps {
   onContinueShopping?: () => void;

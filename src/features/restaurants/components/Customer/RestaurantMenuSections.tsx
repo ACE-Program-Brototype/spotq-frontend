@@ -1,7 +1,7 @@
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuCategory,
-} from "../../types/customer-restaurant.types";
+} from "@/features/restaurants/types/customer-restaurant.types";
 import { RestaurantMenuItemCard } from "./RestaurantMenuItemCard";
 
 interface RestaurantMenuSectionsProps {

@@ -1,4 +1,4 @@
-import type { AddCartItemInput } from "../types/cart.types";
+import type { AddCartItemInput } from "@/features/cart/types/cart.types";
 import { calculateCartTotals, generateCartItemId, useCartStore } from "./cart.store";
 
 describe("useCartStore", () => {

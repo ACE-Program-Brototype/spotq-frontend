@@ -6,7 +6,7 @@ import { useCartStore } from "@/features/cart/store/cart.store";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuItem,
-} from "../../types/customer-restaurant.types";
+} from "@/features/restaurants/types/customer-restaurant.types";
 import { RestaurantMenuItemCard } from "./RestaurantMenuItemCard";
 
 jest.mock("@/hooks/usePresignedUrl", () => ({

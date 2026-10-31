@@ -2,11 +2,11 @@ import { ArrowLeft, Store } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
-import { CartEmptyState } from "../components/CartEmptyState";
-import { CartItemCard } from "../components/CartItemCard";
-import { CartSummary } from "../components/CartSummary";
-import { CART_MESSAGES } from "../constants/cart.constants";
-import { useCartStore } from "../store/cart.store";
+import { CartEmptyState } from "@/features/cart/components/CartEmptyState";
+import { CartItemCard } from "@/features/cart/components/CartItemCard";
+import { CartSummary } from "@/features/cart/components/CartSummary";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
+import { useCartStore } from "@/features/cart/store/cart.store";
 
 export function CartPage() {
   const {

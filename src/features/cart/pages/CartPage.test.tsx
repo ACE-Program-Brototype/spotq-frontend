@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { CART_MESSAGES } from "../constants/cart.constants";
-import { useCartStore } from "../store/cart.store";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { CartPage } from "./CartPage";
 
 describe("CartPage", () => {
