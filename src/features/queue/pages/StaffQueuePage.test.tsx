@@ -106,4 +106,55 @@ describe("StaffQueuePage", () => {
       expect(screen.getByText("WAITING")).toBeInTheDocument();
     });
   });
+
+  it("renders Seat, Skip, and Cancel actions for waiting parties and opens modals", async () => {
+    const user = userEvent.setup();
+    const mockResponse = {
+      success: true,
+      message: "Walk-in guest successfully registered to queue",
+      data: {
+        queueEntryId: "queue-entry-777",
+        restaurantId: mockRestaurantId,
+        userId: null,
+        guestName: "Marcus Vance",
+        guestPhone: "+919876543211",
+        partySize: 2,
+        specialNotes: null,
+        registrationType: "WALK_IN",
+        position: 1,
+        estimatedWaitMinutes: 5,
+        status: "WAITING",
+        joinedAt: "2026-10-16T12:00:00.000Z",
+      },
+    };
+
+    (queueService.registerWalkIn as jest.Mock).mockResolvedValue(mockResponse);
+
+    renderPage();
+
+    const addBtns = screen.getAllByRole("button", { name: /add to queue/i });
+    await user.click(addBtns[0]);
+
+    await user.type(screen.getByLabelText(/guest name/i), "Marcus Vance");
+    await user.type(screen.getByLabelText(/phone number/i), "9876543211");
+    await user.click(screen.getByRole("button", { name: "Party size 2" }));
+
+    const modal = screen.getByRole("dialog");
+    await user.click(within(modal).getByRole("button", { name: /add to queue/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Marcus Vance")).toBeInTheDocument();
+    });
+
+    const seatBtn = screen.getByRole("button", { name: /seat/i });
+    const skipBtn = screen.getByRole("button", { name: /skip/i });
+    const cancelBtn = screen.getByRole("button", { name: /cancel/i });
+
+    expect(seatBtn).toBeInTheDocument();
+    expect(skipBtn).toBeInTheDocument();
+    expect(cancelBtn).toBeInTheDocument();
+
+    await user.click(seatBtn);
+    expect(screen.getByText("Seat Party")).toBeInTheDocument();
+  });
 });
