@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Button } from "@/components/ui/button";
-import StaffLoginForm from "../components/StaffLoginForm";
-import { useStaffLogin } from "../hooks/useStaffLogin";
+import StaffLoginForm from "@/features/auth/components/StaffLoginForm";
+import { useStaffLogin } from "@/features/auth/hooks/useStaffLogin";
 
 export default function StaffLoginPage() {
   const navigate = useNavigate();

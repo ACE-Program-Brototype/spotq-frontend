@@ -1,10 +1,10 @@
 import type { RouteObject } from "react-router-dom";
-import ForgotPasswordPage from "@/features/auth/pages/ForgotPasswordPage";
-import LoginPage from "@/features/auth/pages/LoginPage";
-import OtpVerificationPage from "@/features/auth/pages/OtpVerificationPage";
-import RegisterPage from "@/features/auth/pages/RegisterPage";
-import ResetPasswordPage from "@/features/auth/pages/ResetPasswordPage";
-import VerifyOtpPage from "@/features/auth/pages/VerifyOtpPage";
+import ForgotPasswordPage from "@/features/auth/pages/customer/ForgotPasswordPage";
+import LoginPage from "@/features/auth/pages/customer/LoginPage";
+import OtpVerificationPage from "@/features/auth/pages/customer/OtpVerificationPage";
+import RegisterPage from "@/features/auth/pages/customer/RegisterPage";
+import ResetPasswordPage from "@/features/auth/pages/customer/ResetPasswordPage";
+import VerifyOtpPage from "@/features/auth/pages/customer/VerifyOtpPage";
 import AboutPage from "@/features/demo/pages/AboutPage";
 import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
 import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";

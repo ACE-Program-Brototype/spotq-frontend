@@ -1,9 +1,9 @@
 import type { RouteObject } from "react-router-dom";
 
-import AdminForgotPasswordPage from "@/features/auth/pages/AdminForgotPasswordPage";
-import AdminLoginPage from "@/features/auth/pages/AdminLoginPage";
-import AdminResetPasswordPage from "@/features/auth/pages/AdminResetPasswordPage";
-import AdminVerifyOtpPage from "@/features/auth/pages/AdminVerifyOtpPage";
+import AdminForgotPasswordPage from "@/features/auth/pages/admin/AdminForgotPasswordPage";
+import AdminLoginPage from "@/features/auth/pages/admin/AdminLoginPage";
+import AdminResetPasswordPage from "@/features/auth/pages/admin/AdminResetPasswordPage";
+import AdminVerifyOtpPage from "@/features/auth/pages/admin/AdminVerifyOtpPage";
 import AdminCustomerDetailsPage from "@/features/customers/pages/AdminCustomerDetailsPage";
 import AdminCustomersPage from "@/features/customers/pages/AdminCustomersPage";
 import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";

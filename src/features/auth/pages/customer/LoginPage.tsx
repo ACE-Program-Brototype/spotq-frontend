@@ -4,12 +4,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
-import { AuthDivider, AuthHeroPanel, GoogleLoginButton, LoginForm } from "../components";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { useGoogleLoginMutation } from "../hooks/use-auth-mutations";
-import { useLogin } from "../hooks/use-login";
-import type { LoginFormValues } from "../schemas/login.schema";
-import { useAuthStore } from "../store/auth.store";
+import {
+  AuthDivider,
+  AuthHeroPanel,
+  GoogleLoginButton,
+  LoginForm,
+} from "@/features/auth/components";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import { useGoogleLoginMutation } from "@/features/auth/hooks/use-auth-mutations";
+import { useLogin } from "@/features/auth/hooks/use-login";
+import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 
 export default function LoginPage() {
   const navigate = useNavigate();

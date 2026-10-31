@@ -15,7 +15,9 @@ import { useOtpInput } from "@/features/auth/hooks/useOtpInput";
 import { useOtpTimer } from "@/features/auth/hooks/useOtpTimer";
 import { useRestaurantResendOtp } from "@/features/auth/hooks/useRestaurantResendOtp";
 import { useRestaurantVerifyOtp } from "@/features/auth/hooks/useRestaurantVerifyOtp";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { OtpVerificationProps, VerifyOtpResponse } from "@/features/auth/types/auth.types";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 
 export default function OtpVerification({
   email: emailProp,
@@ -80,6 +82,23 @@ export default function OtpVerification({
 
     try {
       const result = await verifyOtp(email, otp);
+      const token = result.accessToken ?? result.access_token ?? "";
+      const restaurantId = result.restaurantId;
+
+      useOnboardStore.getState().resetOnboardStore();
+      useAuthStore.getState().setAuth(
+        {
+          email,
+          role: "RESTAURANT_ADMIN",
+          status:
+            result.nextStep === "DASHBOARD" || result.nextStep === "SUBSCRIPTION"
+              ? "ACTIVE"
+              : "PENDING",
+          onboardingStatus: result.nextStep === "ONBOARDING" ? "PENDING" : "COMPLETED",
+          restaurantId,
+        },
+        token,
+      );
 
       if (result.nextStep === "VERIFICATION_STATUS") {
         onGoToOnboarding?.();
