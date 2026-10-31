@@ -69,8 +69,11 @@ export const ORDER_ENDPOINTS = {
 } as const;
 
 export const ORDER_QUERY_KEYS = {
+  ROOT: ["customer", "orders"] as const,
   HISTORY: (params?: { page?: number; limit?: number; status?: string }) =>
     ["customer", "orders", "history", params] as const,
+  RECEIPT: (orderId?: string | null) => ["order-receipt", orderId] as const,
+  DETAIL: (orderId?: string | null) => ["order", orderId] as const,
 } as const;
 
 export const ORDER_MESSAGES = {

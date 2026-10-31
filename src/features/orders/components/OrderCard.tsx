@@ -13,6 +13,7 @@ import {
   UtensilsCrossed,
   XCircle,
 } from "lucide-react";
+import { CancelOrderTriggerButton } from "@/features/orders/components/cancel-order";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
 import { ORDER_MESSAGES, ORDER_STATUS } from "../constants/orders.constants";
@@ -161,7 +162,14 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
             </div>
           </div>
 
-          <div className="self-start sm:self-auto shrink-0">{getStatusBadge(order.status)}</div>
+          <div className="self-start sm:self-auto shrink-0 flex items-center gap-2">
+            {getStatusBadge(order.status)}
+            <CancelOrderTriggerButton
+              orderId={order.order_id}
+              orderNumber={order.order_number}
+              status={order.status}
+            />
+          </div>
         </div>
 
         {/* Info Pills / Details Grid */}
