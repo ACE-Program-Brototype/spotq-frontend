@@ -1,11 +1,15 @@
-import type { CustomerRestaurantMenuCategory } from "../../types/customer-restaurant.types";
+import type {
+  CustomerRestaurantDetails,
+  CustomerRestaurantMenuCategory,
+} from "@/features/restaurants/types/customer-restaurant.types";
 import { RestaurantMenuItemCard } from "./RestaurantMenuItemCard";
 
 interface RestaurantMenuSectionsProps {
   categories: CustomerRestaurantMenuCategory[];
+  restaurant: CustomerRestaurantDetails;
 }
 
-export function RestaurantMenuSections({ categories }: RestaurantMenuSectionsProps) {
+export function RestaurantMenuSections({ categories, restaurant }: RestaurantMenuSectionsProps) {
   if (!categories.length) {
     return (
       <section className="rounded-2xl border border-dashed border-stone-300 p-10 text-center text-stone-500">
@@ -31,7 +35,7 @@ export function RestaurantMenuSections({ categories }: RestaurantMenuSectionsPro
           </div>
           <div className="space-y-4">
             {category.items.map((item) => (
-              <RestaurantMenuItemCard key={item.id} item={item} />
+              <RestaurantMenuItemCard key={item.id} item={item} restaurant={restaurant} />
             ))}
           </div>
         </section>

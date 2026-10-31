@@ -29,7 +29,7 @@ function RestaurantDetailsContent({ restaurant }: { restaurant: CustomerRestaura
           onActiveChange={setActiveId}
         />
         <div className="min-w-0 space-y-10">
-          <RestaurantMenuSections categories={categories} />
+          <RestaurantMenuSections categories={categories} restaurant={restaurant} />
           <RestaurantOverview restaurant={restaurant} />
         </div>
       </div>
