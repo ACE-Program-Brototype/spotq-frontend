@@ -1,6 +1,15 @@
+import { CANCEL_ORDER_ENDPOINTS } from "@/features/orders/constants/cancel-order.constants";
+import { ORDER_RECEIPT_ENDPOINTS } from "@/features/orders/constants/order-receipt.constants";
+import type {
+  CancelOrderApiResponse,
+  CancelOrderRequestDto,
+  CancelOrderResponseData,
+} from "@/features/orders/types/cancel-order.types";
+import type {
+  OrderReceipt,
+  OrderReceiptApiResponse,
+} from "@/features/orders/types/order-receipt.types";
 import { apiClient } from "@/lib/api/client";
-import { ORDER_RECEIPT_ENDPOINTS } from "../constants/order-receipt.constants";
-import type { OrderReceipt, OrderReceiptApiResponse } from "../types/order-receipt.types";
 
 export const orderService = {
   async getOrderReceipt(orderId: string): Promise<OrderReceipt> {
@@ -13,5 +22,18 @@ export const orderService = {
     }
 
     throw new Error("Order receipt not found");
+  },
+
+  async cancelOrder(
+    orderId: string,
+    payload: CancelOrderRequestDto,
+  ): Promise<CancelOrderResponseData> {
+    const response = await apiClient
+      .post(CANCEL_ORDER_ENDPOINTS.CANCEL(orderId), {
+        json: payload,
+      })
+      .json<CancelOrderApiResponse>();
+
+    return response.data;
   },
 };

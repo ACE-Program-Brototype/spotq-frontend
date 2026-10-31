@@ -4,6 +4,8 @@ import {
   CUSTOMER_RESTAURANT_ENDPOINTS,
 } from "../constants/customer-restaurant.constants";
 import type {
+  CustomerRestaurantDetails,
+  CustomerRestaurantDetailsApiResponse,
   CustomerRestaurantItem,
   CustomerRestaurantsApiResponse,
   CustomerRestaurantsListData,
@@ -11,6 +13,17 @@ import type {
 } from "../types/customer-restaurant.types";
 
 export const customerRestaurantService = {
+  async getRestaurantDetails(id: string): Promise<CustomerRestaurantDetails> {
+    const response = await apiClient
+      .get(CUSTOMER_RESTAURANT_ENDPOINTS.DETAILS(id))
+      .json<CustomerRestaurantDetailsApiResponse>();
+    if (!response?.success || !response.data) {
+      throw new Error(response?.message || "Failed to load restaurant details.");
+    }
+    const restaurant = response.data;
+    return restaurant;
+  },
+
   /**
    * Fetches paginated restaurant list for customers with optional search, category, and sorting filters.
    */
