@@ -44,13 +44,19 @@ export type AdminTables = {
 
 export type TablesGroupedBySection = Record<string, TableItem[]>;
 
+export type TableSectionAll = {
+  id: string;
+  name: string;
+};
+
 export interface GetTablesResponse {
-  success: boolean;
-  message: string;
-  statusCode: number;
-  data: {
-    sections: TablesGroupedBySection;
-  };
+  mode: string;
+  sections: TablesGroupedBySection;
+}
+
+export interface GetTableSectionResponse {
+  mode: string;
+  sections: Array<TableSectionAll>;
 }
 
 export interface UpdateTableStatusInput {
@@ -67,6 +73,20 @@ export interface UpdateTableStatusResponse {
   message: string;
   statusCode: number;
   data?: TableItem;
+}
+
+export interface CreateTablePayload {
+  tableCode: string;
+  capacity: number;
+  sectionId: string;
+  tableShape: TableShape;
+}
+
+export interface CreateTableResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: TableItem;
 }
 
 export interface TableStatusTransitionRule {

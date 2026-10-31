@@ -17,26 +17,24 @@ describe("tableService", () => {
   });
 
   describe("getTablesBySection", () => {
-    it("fetches tables and returns sections record", async () => {
+    it("fetches tables grouped by section", async () => {
       const mockResponse = {
         success: true,
         message: "Table Fetched Successfully",
         statusCode: 200,
-        data: {
-          sections: {
-            Ta: [
-              {
-                id: "6eefd8a8-fa42-4564-b993-a7d3914ef1d1",
-                tableCode: "T1",
-                capacity: 2,
-                status: "AVAILABLE",
-                sectionId: "5b2d0e5e-7152-4e7d-8447-00b67bff25e5",
-                tableShape: "SQUARE",
-                currentOccupancy: 0,
-                isActive: true,
-              },
-            ],
-          },
+        sections: {
+          Dining: [
+            {
+              id: "6eefd8a8-fa42-4564-b993-a7d3914ef1d1",
+              tableCode: "T1",
+              capacity: 2,
+              status: "AVAILABLE",
+              sectionId: "5b2d0e5e-7152-4e7d-8447-00b67bff25e5",
+              tableShape: "SQUARE",
+              currentOccupancy: 0,
+              isActive: true,
+            },
+          ],
         },
       };
 
@@ -47,7 +45,7 @@ describe("tableService", () => {
       const result = await tableService.getTablesBySection(restaurantId);
 
       expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.LIST(restaurantId));
-      expect(result).toEqual(mockResponse.data.sections);
+      expect(result).toEqual(mockResponse.sections);
     });
 
     it("throws error if restaurantId is missing", async () => {

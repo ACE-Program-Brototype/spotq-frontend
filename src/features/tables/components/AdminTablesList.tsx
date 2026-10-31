@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
@@ -61,9 +61,9 @@ export function AdminTablesList({
 
     if (isLoading) {
       return (
-        <p className="p-12 text-center text-sm text-[#858b85]">
+        <div className="p-12 text-center text-sm text-[#858b85]">
           <TableSkeletonGrid />
-        </p>
+        </div>
       );
     }
 
@@ -114,6 +114,13 @@ export function AdminTablesList({
             </p>
           </div>
           <div className="flex w-full gap-2 sm:w-auto">
+            <Button
+              className="h-9 gap-2 rounded-xl bg-[#b4532a] px-3 text-white hover:bg-[#963f1d]"
+              onClick={() => navigate(RESTAURANT_ROUTES.TABLE.CREATE)}
+            >
+              <Plus className="size-4" />
+              Create Table
+            </Button>
             <div className="relative w-full sm:w-auto">
               <select
                 aria-label="Filter tables"
