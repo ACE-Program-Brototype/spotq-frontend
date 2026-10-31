@@ -27,12 +27,8 @@ export default function CreateTablePage() {
   const { sections } = sectionsQuery;
 
   const onSubmit = async (data: CreateTableFormData) => {
-    try {
-      await createTableMutation.mutateAsync(data);
-      navigate(RESTAURANT_ROUTES.TABLE.ROOT);
-    } catch {
-      // The mutation hook reports errors to the user.
-    }
+    await createTableMutation.mutateAsync(data);
+    navigate(RESTAURANT_ROUTES.TABLE.ROOT);
   };
 
   const fieldClass =
