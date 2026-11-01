@@ -1,5 +1,6 @@
 const env = {
   apiUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:10000/api/v1",
+  wsUrl: import.meta.env.VITE_WS_URL || "http://localhost:10000",
   locationIqToken: import.meta.env.VITE_LOCATIONIQ_ACCESS_TOKEN || "",
   cdnBaseUrl:
     import.meta.env.VITE_CDN_BASE_URL ||
