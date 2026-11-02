@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import { QUEUE_QUERY_KEYS } from "../constants/queue.constants";
+import { QUEUE_ETA_CONFIG, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
 import { queueService } from "../services/queue.service";
 import type { QueueEtaResponse } from "../types/queue.types";
 
@@ -16,7 +16,7 @@ export function useQueueEta(
   partySize: number,
   options?: UseQueueEtaOptions,
 ) {
-  const debouncedPartySize = useDebounce(partySize, 300);
+  const debouncedPartySize = useDebounce(partySize, QUEUE_ETA_CONFIG.DEBOUNCE_MS);
 
   const isEnabled =
     (options?.enabled ?? true) &&
@@ -29,7 +29,7 @@ export function useQueueEta(
     queryKey: QUEUE_QUERY_KEYS.CUSTOMER_ETA(restaurantId || "", debouncedPartySize),
     queryFn: () => queueService.getQueueEta(restaurantId || "", debouncedPartySize),
     enabled: isEnabled,
-    staleTime: 15_000,
-    retry: 1,
+    staleTime: QUEUE_ETA_CONFIG.STALE_TIME_MS,
+    retry: QUEUE_ETA_CONFIG.RETRY_COUNT,
   });
 }

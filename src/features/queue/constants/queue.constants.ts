@@ -27,6 +27,12 @@ export const QUEUE_MESSAGES = {
 
 export const PARTY_SIZE_PRESETS = [1, 2, 3, 4, 5, "6+"] as const;
 
+export const QUEUE_ETA_CONFIG = {
+  DEBOUNCE_MS: 300,
+  STALE_TIME_MS: 15_000,
+  RETRY_COUNT: 1,
+} as const;
+
 export const COUNTRY_DIAL_CODES = [
   { code: "+91", label: "India (+91)", flag: "🇮🇳" },
   { code: "+1", label: "USA / Canada (+1)", flag: "🇺🇸" },
