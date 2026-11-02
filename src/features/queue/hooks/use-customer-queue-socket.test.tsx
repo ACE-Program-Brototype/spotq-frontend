@@ -136,7 +136,7 @@ describe("useCustomerQueueSocket", () => {
     );
 
     const ringPayload = {
-      event: "CUSTOMER_RING_TRIGGERED",
+      event: "ticket:called",
       queueEntryId: "entry-123",
       restaurantId: "rest-999",
       ringCount: 1,
@@ -145,9 +145,9 @@ describe("useCustomerQueueSocket", () => {
 
     act(() => {
       // First arrival
-      eventHandlers[QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED](ringPayload);
+      eventHandlers[QUEUE_WS_EVENTS.TICKET_CALLED](ringPayload);
       // Duplicate arrival
-      eventHandlers[QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED](ringPayload);
+      eventHandlers[QUEUE_WS_EVENTS.TICKET_CALLED](ringPayload);
     });
 
     expect(ringMedia.playChime).toHaveBeenCalledTimes(1);
@@ -178,10 +178,6 @@ describe("useCustomerQueueSocket", () => {
 
     expect(mockSocket.off).toHaveBeenCalledWith(
       QUEUE_WS_EVENTS.TICKET_CALLED,
-      expect.any(Function),
-    );
-    expect(mockSocket.off).toHaveBeenCalledWith(
-      QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED,
       expect.any(Function),
     );
     expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);

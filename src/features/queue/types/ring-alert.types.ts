@@ -9,10 +9,7 @@ export interface CustomerRingPayload {
   ringCount?: number;
   lastRingedAt?: string;
   message?: string;
-  assignedTableIds?: string[];
-  tableNumbers?: string[];
-  responseDeadline?: string;
-  timeoutSeconds?: number;
+  deepLink?: string;
 }
 
 export interface CustomerRingAlertState {
@@ -22,7 +19,6 @@ export interface CustomerRingAlertState {
   ringCount: number;
   lastRingedAt?: string;
   message: string;
-  assignedTableIds?: string[];
 }
 
 export interface ActiveCustomerTicket {

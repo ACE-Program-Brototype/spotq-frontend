@@ -2,11 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useCustomerQueueSocket } from "../hooks/use-customer-queue-socket";
 import type { ActiveCustomerTicket, CustomerRingPayload } from "../types/ring-alert.types";
-import {
-  clearActiveCustomerTicket,
-  getActiveCustomerTicket,
-  setActiveCustomerTicket,
-} from "../utils/active-queue.utils";
+import { clearActiveCustomerTicket, getActiveCustomerTicket } from "../utils/active-queue.utils";
 import { CustomerRingAlertModal } from "./CustomerRingAlertModal";
 
 export interface CustomerRingAlertContainerProps {
@@ -18,15 +14,15 @@ export interface CustomerRingAlertContainerProps {
 }
 
 export function CustomerRingAlertContainer({
-  queueEntryId: propQueueEntryId,
-  restaurantId: propRestaurantId,
+  queueEntryId,
+  restaurantId,
 }: CustomerRingAlertContainerProps = {}) {
   const accessToken = useAuthStore((state) => state.accessToken);
   const [activeTicket, setActiveTicket] = useState<ActiveCustomerTicket | null>(() => {
-    if (propQueueEntryId) {
+    if (queueEntryId) {
       return {
-        queueEntryId: propQueueEntryId,
-        restaurantId: propRestaurantId || "",
+        queueEntryId,
+        restaurantId: restaurantId || "",
       };
     }
     return getActiveCustomerTicket();
@@ -35,44 +31,30 @@ export function CustomerRingAlertContainer({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ringData, setRingData] = useState<CustomerRingPayload | null>(null);
 
-  // Sync ticket when propQueueEntryId changes or from URL search params
+  // Sync ticket when props change
   useEffect(() => {
-    if (propQueueEntryId) {
+    if (queueEntryId) {
       setActiveTicket({
-        queueEntryId: propQueueEntryId,
-        restaurantId: propRestaurantId || "",
+        queueEntryId,
+        restaurantId: restaurantId || "",
       });
       return;
     }
 
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const urlTicketId = params.get("ticketId") || params.get("queueEntryId");
-      if (urlTicketId) {
-        const ticket: ActiveCustomerTicket = {
-          queueEntryId: urlTicketId,
-          restaurantId: params.get("restaurantId") || "",
-        };
-        setActiveCustomerTicket(ticket);
-        setActiveTicket(ticket);
-        return;
-      }
-    }
-
     setActiveTicket(getActiveCustomerTicket());
-  }, [propQueueEntryId, propRestaurantId]);
+  }, [queueEntryId, restaurantId]);
 
   // Sync with storage changes across tabs/windows
   useEffect(() => {
     const handleStorageChange = () => {
-      if (!propQueueEntryId) {
+      if (!queueEntryId) {
         setActiveTicket(getActiveCustomerTicket());
       }
     };
 
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, [propQueueEntryId]);
+  }, [queueEntryId]);
 
   const handleRing = useCallback((data: CustomerRingPayload) => {
     setRingData(data);
@@ -111,7 +93,6 @@ export function CustomerRingAlertContainer({
       onClose={handleCloseModal}
       message={ringData?.message}
       ringCount={ringData?.ringCount ?? 1}
-      assignedTableIds={ringData?.assignedTableIds || ringData?.tableNumbers}
       queueNumber={activeTicket?.queueNumber}
     />
   );

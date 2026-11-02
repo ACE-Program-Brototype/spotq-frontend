@@ -8,7 +8,6 @@ export const QUEUE_WS_EVENTS = {
 
   // Server to Client
   TICKET_CALLED: "ticket:called",
-  CUSTOMER_RING_TRIGGERED: "CUSTOMER_RING_TRIGGERED",
   TICKET_SEATED: "ticket:seated",
   TICKET_CANCELLED: "ticket:cancelled",
   QUEUE_POSITION_UPDATED: "queue:position-updated",

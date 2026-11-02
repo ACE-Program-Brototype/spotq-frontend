@@ -64,14 +64,14 @@ describe("CustomerRingAlertContainer", () => {
         queueEntryId: "entry-101",
         restaurantId: "rest-1",
         ringCount: 1,
-        message: "Your table is ready!",
-        assignedTableIds: ["T-12"],
+        message: "Your table is ready! Please proceed to the host stand.",
       });
     });
 
     expect(screen.getByRole("alertdialog")).toBeInTheDocument();
-    expect(screen.getByText("Your Table is Ready!")).toBeInTheDocument();
-    expect(screen.getByText("T-12")).toBeInTheDocument();
+    expect(
+      screen.getByText("Your table is ready! Please proceed to the host stand."),
+    ).toBeInTheDocument();
   });
 
   it("closes modal when clicking I'm Heading Over", async () => {
@@ -121,5 +121,30 @@ describe("CustomerRingAlertContainer", () => {
 
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
     expect(localStorage.getItem(ACTIVE_QUEUE_STORAGE_KEY)).toBeNull();
+  });
+
+  it("displays queueNumber badge from stored active ticket", () => {
+    localStorage.setItem(
+      ACTIVE_QUEUE_STORAGE_KEY,
+      JSON.stringify({
+        queueEntryId: "entry-101",
+        restaurantId: "rest-1",
+        queueNumber: "A-42",
+      }),
+    );
+
+    render(<CustomerRingAlertContainer />);
+
+    act(() => {
+      mockSocketCallbacks.onRing?.({
+        event: "ticket:called",
+        queueEntryId: "entry-101",
+        restaurantId: "rest-1",
+        ringCount: 1,
+      });
+    });
+
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+    expect(screen.getByText("Ticket A-42")).toBeInTheDocument();
   });
 });

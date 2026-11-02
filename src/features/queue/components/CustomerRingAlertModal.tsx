@@ -1,6 +1,7 @@
 import { BellRing, Check, MapPin, Sparkles, Utensils } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { RING_ALERT_MESSAGES } from "../constants/ring-alert.constants";
 import { ringMedia } from "../utils/ring-sound.utils";
 
 export interface CustomerRingAlertModalProps {
@@ -15,7 +16,7 @@ export interface CustomerRingAlertModalProps {
 export function CustomerRingAlertModal({
   isOpen,
   onClose,
-  message = "Your table is ready! Please proceed to the host desk now to be seated.",
+  message = RING_ALERT_MESSAGES.DEFAULT_MESSAGE,
   ringCount = 1,
   assignedTableIds = [],
   queueNumber,
@@ -55,7 +56,7 @@ export function CustomerRingAlertModal({
       {/* Dimmed backdrop */}
       <button
         type="button"
-        aria-label="Dismiss alert backdrop"
+        aria-label={RING_ALERT_MESSAGES.DISMISS_BACKDROP_LABEL}
         className="fixed inset-0 bg-neutral-950/75 backdrop-blur-sm transition-opacity animate-in fade-in duration-200 cursor-default"
         onClick={handleConfirm}
       />
@@ -74,12 +75,12 @@ export function CustomerRingAlertModal({
         <div className="space-y-2">
           {queueNumber && (
             <span className="inline-flex items-center gap-1 text-xs font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200">
-              <Sparkles className="size-3" /> Ticket {queueNumber}
+              <Sparkles className="size-3" /> {RING_ALERT_MESSAGES.TICKET_PREFIX} {queueNumber}
             </span>
           )}
 
           <h2 id="ring-alert-title" className="text-2xl font-black text-neutral-900 tracking-tight">
-            Your Table is Ready!
+            {RING_ALERT_MESSAGES.TITLE}
           </h2>
 
           <p
@@ -92,7 +93,7 @@ export function CustomerRingAlertModal({
           {ringCount > 1 && (
             <div className="pt-1">
               <span className="inline-block text-[11px] font-bold px-2.5 py-0.5 bg-amber-100 text-amber-900 rounded-full">
-                Call #{ringCount} from Host
+                {RING_ALERT_MESSAGES.CALL_BADGE(ringCount)}
               </span>
             </div>
           )}
@@ -103,7 +104,11 @@ export function CustomerRingAlertModal({
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-3.5 space-y-1.5">
             <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-neutral-500 uppercase tracking-wider">
               <Utensils className="size-3.5 text-orange-600" />
-              <span>Assigned Table{assignedTableIds.length > 1 ? "s" : ""}</span>
+              <span>
+                {assignedTableIds.length > 1
+                  ? RING_ALERT_MESSAGES.ASSIGNED_TABLE_PLURAL
+                  : RING_ALERT_MESSAGES.ASSIGNED_TABLE_SINGULAR}
+              </span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
               {assignedTableIds.map((tableId) => (
@@ -121,7 +126,7 @@ export function CustomerRingAlertModal({
         {/* Location Notice */}
         <div className="flex items-center justify-center gap-2 text-xs font-semibold text-neutral-600 bg-orange-50/70 rounded-xl p-3 border border-orange-100">
           <MapPin className="size-4 text-orange-600 shrink-0" />
-          <span>Please check in with the host at the entrance</span>
+          <span>{RING_ALERT_MESSAGES.LOCATION_NOTICE}</span>
         </div>
 
         {/* Primary Action Button */}
@@ -132,7 +137,7 @@ export function CustomerRingAlertModal({
             className="w-full h-12 rounded-xl bg-[#ea580c] hover:bg-[#c2410c] active:scale-[0.99] text-white font-bold text-sm shadow-md shadow-orange-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Check className="size-5" />
-            <span>I'm Heading Over</span>
+            <span>{RING_ALERT_MESSAGES.ACTION_BUTTON}</span>
           </Button>
         </div>
       </div>

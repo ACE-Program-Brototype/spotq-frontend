@@ -76,7 +76,7 @@ export function useCustomerQueueSocket(
       console.log(`[Socket] Disconnected: ${reason}`);
     });
 
-    // 2. Ring Alert Event Handler (Listens for both ticket:called and CUSTOMER_RING_TRIGGERED)
+    // 2. Ring Alert Event Handler (Listens for ticket:called)
     const handleRingTriggered = (data: CustomerRingPayload) => {
       if (!data || data.queueEntryId !== queueEntryId) return;
 
@@ -95,7 +95,6 @@ export function useCustomerQueueSocket(
     };
 
     socket.on(QUEUE_WS_EVENTS.TICKET_CALLED, handleRingTriggered);
-    socket.on(QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED, handleRingTriggered);
 
     // 3. Seated and Cancelled Event Handlers
     socket.on(QUEUE_WS_EVENTS.TICKET_SEATED, (payload) => {
@@ -110,7 +109,6 @@ export function useCustomerQueueSocket(
 
     return () => {
       socket.off(QUEUE_WS_EVENTS.TICKET_CALLED, handleRingTriggered);
-      socket.off(QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED, handleRingTriggered);
       socket.off(QUEUE_WS_EVENTS.TICKET_SEATED);
       socket.off(QUEUE_WS_EVENTS.TICKET_CANCELLED);
       socket.disconnect();

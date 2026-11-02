@@ -2,6 +2,7 @@ export { CustomerRingAlertContainer } from "./components/CustomerRingAlertContai
 export { CustomerRingAlertModal } from "./components/CustomerRingAlertModal";
 export { WalkInRegistrationModal } from "./components/WalkInRegistrationModal";
 export * from "./constants/queue.constants";
+export * from "./constants/ring-alert.constants";
 export * from "./constants/websocket.constants";
 export { useCustomerQueueSocket } from "./hooks/use-customer-queue-socket";
 export { useRegisterWalkIn } from "./hooks/use-register-walk-in";
