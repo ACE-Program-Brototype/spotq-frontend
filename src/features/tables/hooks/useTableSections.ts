@@ -3,10 +3,10 @@ import { TABLE_QUERY_KEYS } from "../constants/table.constants";
 import { tableService } from "../services/table.service";
 
 export function useTableSections(restaurantId: string) {
-  const normalizedRestaurantId = restaurantId.trim();
+  const normalizedRestaurantId = (restaurantId ?? "").trim();
 
   const query = useQuery({
-    queryKey: [...TABLE_QUERY_KEYS.LIST(normalizedRestaurantId), "sections"],
+    queryKey: TABLE_QUERY_KEYS.SECTIONS(normalizedRestaurantId),
     queryFn: () => tableService.getTableSections(normalizedRestaurantId),
     enabled: Boolean(normalizedRestaurantId),
   });

@@ -27,8 +27,12 @@ export default function CreateTablePage() {
   const { sections } = sectionsQuery;
 
   const onSubmit = async (data: CreateTableFormData) => {
-    await createTableMutation.mutateAsync(data);
-    navigate(RESTAURANT_ROUTES.TABLE.ROOT);
+    try {
+      await createTableMutation.mutateAsync(data);
+      navigate(RESTAURANT_ROUTES.TABLE.ROOT);
+    } catch {
+      // Error notification is handled by useCreateTable.
+    }
   };
 
   const fieldClass =

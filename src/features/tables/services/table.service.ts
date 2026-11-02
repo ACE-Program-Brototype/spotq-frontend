@@ -4,7 +4,6 @@ import { TABLE_ENDPOINTS, TABLE_SERVICE_ERRORS } from "../constants/table.consta
 import type {
   AdminTables,
   CreateTablePayload,
-  CreateTableResponse,
   GetTableSectionResponse,
   GetTablesResponse,
   RestaurantTableDetails,
@@ -23,7 +22,7 @@ export const tableService = {
     }
 
     const response = await apiClient
-      .post(TABLE_ENDPOINTS.LIST(restaurantId), {
+      .post(TABLE_ENDPOINTS.CREATE(restaurantId), {
         json: {
           tableCode: payload.tableCode.trim(),
           capacity: payload.capacity,
@@ -31,7 +30,7 @@ export const tableService = {
           tableType: payload.tableShape,
         },
       })
-      .json<CreateTableResponse>();
+      .json<SuccessResponse<TableItem>>();
 
     if (!response.success) {
       throw new Error(response.message || TABLE_SERVICE_ERRORS.CREATE_FAILED);
@@ -78,9 +77,9 @@ export const tableService = {
 
     const response = await apiClient
       .get(TABLE_ENDPOINTS.LIST(restaurantId))
-      .json<GetTablesResponse>();
+      .json<SuccessResponse<GetTablesResponse>>();
 
-    return response.sections || {};
+    return response.data.sections || {};
   },
 
   async getTableSections(restaurantId: string): Promise<TableSectionAll[]> {

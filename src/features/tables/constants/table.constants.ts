@@ -34,6 +34,7 @@ export const TABLE_SHAPE = {
 export const TABLE_QUERY_KEYS = {
   ALL: ["tables"] as const,
   LIST: (restaurantId: string) => ["tables", restaurantId] as const,
+  SECTIONS: (restuaurantId: string) => ["tables", restuaurantId, "sections"] as const,
   DETAILS: (restaurantId: string, tableId: string) => ["tables", restaurantId, tableId] as const,
 } as const;
 
@@ -57,6 +58,7 @@ export const CREATE_TABLE_VALIDATION_MESSAGES = {
 
 export const TABLE_ENDPOINTS = {
   LIST: (restaurantId: string) => `restaurants/${restaurantId}/table`,
+  CREATE: (restaurantId: string) => `restaurants/${restaurantId}/table`,
   DETAILS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}`,
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
@@ -157,6 +159,8 @@ export function getStaffStatusTransition(currentStatus: TableStatus): TableStatu
 }
 
 export const TABLE_MESSAGES = {
+  CREATE_SUCCESS: "Table created successfully.",
+  CREATE_FAILED: "Unable to create table.",
   TITLE: "Table Management",
   SUBTITLE: "Manage layout, status, and active orders.",
   STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>

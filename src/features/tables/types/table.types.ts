@@ -82,13 +82,6 @@ export interface CreateTablePayload {
   tableShape: TableShape;
 }
 
-export interface CreateTableResponse {
-  success: boolean;
-  message: string;
-  statusCode: number;
-  data: TableItem;
-}
-
 export interface TableStatusTransitionRule {
   allowed: boolean;
   targetStatus: StaffUpdatableStatus | null;

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TABLE_QUERY_KEYS } from "../constants/table.constants";
+import { TABLE_MESSAGES, TABLE_QUERY_KEYS } from "../constants/table.constants";
 import { tableService } from "../services/table.service";
 import type { CreateTablePayload } from "../types/table.types";
 
@@ -11,10 +11,10 @@ export function useCreateTable(restaurantId: string) {
     mutationFn: (payload: CreateTablePayload) => tableService.createTable(restaurantId, payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.LIST(restaurantId) });
-      toast.success("Table created successfully.");
+      toast.success(TABLE_MESSAGES.CREATE_SUCCESS);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Unable to create table.");
+      toast.error(error instanceof Error ? error.message : TABLE_MESSAGES.CREATE_FAILED);
     },
   });
 }
