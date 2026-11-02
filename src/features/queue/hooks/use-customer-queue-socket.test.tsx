@@ -57,7 +57,6 @@ describe("useCustomerQueueSocket", () => {
       expect.any(String),
       expect.objectContaining({
         path: "/ws/queues",
-        auth: { token: "mock-token" },
         query: expect.objectContaining({
           token: "mock-token",
           ticketId: "entry-123",

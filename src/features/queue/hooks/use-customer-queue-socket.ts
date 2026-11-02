@@ -39,9 +39,6 @@ export function useCustomerQueueSocket(
       path: QUEUE_WS_CONFIG.DEFAULT_PATH,
       transports: ["websocket", "polling"],
       withCredentials: true,
-      auth: {
-        token: accessToken || undefined,
-      },
       query: {
         token: accessToken || undefined,
         ticketId: queueEntryId,
