@@ -34,15 +34,36 @@ export const TABLE_SHAPE = {
 export const TABLE_QUERY_KEYS = {
   ALL: ["tables"] as const,
   LIST: (restaurantId: string) => ["tables", restaurantId] as const,
+  SECTIONS: (restuaurantId: string) => ["tables", restuaurantId, "sections"] as const,
   DETAILS: (restaurantId: string, tableId: string) => ["tables", restaurantId, tableId] as const,
+} as const;
+
+export const TABLE_SERVICE_ERRORS = {
+  CREATE_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to create a table",
+  CREATE_FAILED: "Unable to create table",
+  DETAILS_IDS_REQUIRED: "Restaurant ID and table ID are required to fetch table details",
+  LIST_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to fetch tables",
+  SECTIONS_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to fetch table sections",
+  UPDATE_IDS_REQUIRED: "Restaurant ID and Table ID are required to update status",
+} as const;
+
+export const CREATE_TABLE_VALIDATION_MESSAGES = {
+  TABLE_CODE_REQUIRED: "Table name or code is required",
+  SECTION_REQUIRED: "Select a dining section",
+  CAPACITY_NUMBER: "Seating capacity must be a number",
+  CAPACITY_INTEGER: "Seating capacity must be a whole number",
+  CAPACITY_MIN: "Seating capacity must be at least 1",
+  CAPACITY_MAX: "Seating capacity cannot exceed 100",
 } as const;
 
 export const TABLE_ENDPOINTS = {
   LIST: (restaurantId: string) => `restaurants/${restaurantId}/table`,
+  CREATE: (restaurantId: string) => `restaurants/${restaurantId}/table`,
   DETAILS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}`,
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}/status`,
+  TABLE_SECTION: (restaurantId: string) => `restaurants/${restaurantId}/table-sections`,
 } as const;
 
 export interface StatusVisualConfig {
@@ -138,6 +159,8 @@ export function getStaffStatusTransition(currentStatus: TableStatus): TableStatu
 }
 
 export const TABLE_MESSAGES = {
+  CREATE_SUCCESS: "Table created successfully.",
+  CREATE_FAILED: "Unable to create table.",
   TITLE: "Table Management",
   SUBTITLE: "Manage layout, status, and active orders.",
   STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>
