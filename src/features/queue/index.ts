@@ -1,7 +1,15 @@
+export { CustomerRingAlertContainer } from "./components/CustomerRingAlertContainer";
+export { CustomerRingAlertModal } from "./components/CustomerRingAlertModal";
 export { WalkInRegistrationModal } from "./components/WalkInRegistrationModal";
 export * from "./constants/queue.constants";
+export * from "./constants/ring-alert.constants";
+export * from "./constants/websocket.constants";
+export { useCustomerQueueSocket } from "./hooks/use-customer-queue-socket";
 export { useRegisterWalkIn } from "./hooks/use-register-walk-in";
 export { default as StaffQueuePage } from "./pages/StaffQueuePage";
 export * from "./schemas/walk-in.schema";
 export { queueService } from "./services/queue.service";
 export * from "./types/queue.types";
+export * from "./types/ring-alert.types";
+export * from "./utils/active-queue.utils";
+export { ringMedia } from "./utils/ring-sound.utils";
