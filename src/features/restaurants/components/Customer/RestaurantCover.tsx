@@ -1,6 +1,7 @@
 import { Clock3, MapPin } from "lucide-react";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import { formatCurrency } from "@/lib/utils";
+import { RESTAURANT_PLAN_TYPES } from "../../constants/customer-restaurant.constants";
 import type { CustomerRestaurantDetails } from "../../types/customer-restaurant.types";
 
 const FALLBACK_COVER =
@@ -13,6 +14,7 @@ interface RestaurantCoverProps {
 export function RestaurantCover({ restaurant }: RestaurantCoverProps) {
   const { data: imageUrl } = usePresignedUrl(restaurant.coverImage);
   const isOpen = restaurant.isOpened ?? restaurant.settings?.isOpened;
+  const planType = restaurant.type ?? restaurant.subscriptionType;
 
   return (
     <div className="relative h-[300px] overflow-hidden rounded-[28px] bg-stone-900 sm:h-[360px] lg:h-[420px]">
@@ -42,13 +44,13 @@ export function RestaurantCover({ restaurant }: RestaurantCoverProps) {
           {restaurant.description}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {restaurant.type && (
+          {planType && (
             <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
-              {restaurant.type === "QUEUE_PRO"
-                ? "Queue Pro"
-                : restaurant.type === "SELF_PRO"
-                  ? "Self Pro"
-                  : restaurant.type}
+              {planType === RESTAURANT_PLAN_TYPES.QUEUE_PRO
+                ? RESTAURANT_PLAN_TYPES.QUEUE_PRO_DISPLAY
+                : planType === RESTAURANT_PLAN_TYPES.SELF_PRO
+                  ? RESTAURANT_PLAN_TYPES.SELF_PRO_DISPLAY
+                  : planType}
             </span>
           )}
           {(restaurant.cuisineType || "Local favorites").split(",").map((cuisine) => (

@@ -1,7 +1,13 @@
 import { apiClient } from "@/lib/api/client";
 import { QUEUE_ENDPOINTS } from "../constants/queue.constants";
 import { normalizePhone } from "../schemas/walk-in.schema";
-import type { RegisterWalkInInput, RegisterWalkInResponse } from "../types/queue.types";
+import type {
+  JoinQueueInput,
+  JoinQueueResponse,
+  QueueEtaResponse,
+  RegisterWalkInInput,
+  RegisterWalkInResponse,
+} from "../types/queue.types";
 
 export const queueService = {
   /**
@@ -23,5 +29,35 @@ export const queueService = {
         json: payload,
       })
       .json<RegisterWalkInResponse>();
+  },
+
+  /**
+   * Fetches estimated waiting time for a prospective party size.
+   */
+  async getQueueEta(restaurantId: string, partySize: number): Promise<QueueEtaResponse> {
+    return apiClient
+      .get(QUEUE_ENDPOINTS.GET_ETA(restaurantId), {
+        searchParams: { partySize },
+      })
+      .json<QueueEtaResponse>();
+  },
+
+  /**
+   * Submits a customer queue registration request.
+   */
+  async joinQueue(restaurantId: string, input: JoinQueueInput): Promise<JoinQueueResponse> {
+    const payload = {
+      guestName: input.guestName.trim(),
+      guestPhone: input.guestPhone.trim(),
+      partySize: input.partySize,
+      specialNotes: input.specialNotes?.trim() || undefined,
+      fid: input.fid?.trim() || undefined,
+    };
+
+    return apiClient
+      .post(QUEUE_ENDPOINTS.JOIN_QUEUE(restaurantId), {
+        json: payload,
+      })
+      .json<JoinQueueResponse>();
   },
 };

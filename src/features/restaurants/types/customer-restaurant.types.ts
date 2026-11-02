@@ -10,6 +10,7 @@ export interface CustomerRestaurantItem {
   isPreorder: boolean;
   acceptsQueue: boolean;
   type?: string;
+  subscriptionType?: string;
   createdAt: string;
 }
 
@@ -111,9 +112,9 @@ export interface CustomerRestaurantSettings {
 }
 
 export interface CustomerRestaurantQueue {
-  isGuestUser: boolean;
-  hasJoinedAnyQueue: boolean;
-  hasJoinedThisRestaurantQueue: boolean;
+  isGuestUser?: boolean;
+  hasJoinedAnyQueue?: boolean | null;
+  hasJoinedThisRestaurantQueue?: boolean | null;
   isQueueStatusAvailable?: boolean;
 }
 

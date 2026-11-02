@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { JoinQueueModal } from "@/features/queue/components/JoinQueueModal";
 import { RestaurantCover } from "../components/Customer/RestaurantCover";
 import { RestaurantMenuNavigation } from "../components/Customer/RestaurantMenuNavigation";
 import { RestaurantMenuSections } from "../components/Customer/RestaurantMenuSections";
@@ -17,6 +18,7 @@ function RestaurantDetailsContent({ restaurant }: { restaurant: CustomerRestaura
     [restaurant.menu],
   );
   const [activeId, setActiveId] = useState(categories[0]?.id ?? "overview");
+  const [isJoinQueueOpen, setIsJoinQueueOpen] = useState(false);
 
   return (
     <>
@@ -27,12 +29,20 @@ function RestaurantDetailsContent({ restaurant }: { restaurant: CustomerRestaura
           restaurant={restaurant}
           activeId={activeId}
           onActiveChange={setActiveId}
+          onJoinQueueClick={() => setIsJoinQueueOpen(true)}
         />
         <div className="min-w-0 space-y-10">
           <RestaurantMenuSections categories={categories} restaurant={restaurant} />
           <RestaurantOverview restaurant={restaurant} />
         </div>
       </div>
+
+      <JoinQueueModal
+        isOpen={isJoinQueueOpen}
+        onClose={() => setIsJoinQueueOpen(false)}
+        restaurantId={restaurant.restaurantId}
+        restaurantName={restaurant.restaurantName}
+      />
     </>
   );
 }

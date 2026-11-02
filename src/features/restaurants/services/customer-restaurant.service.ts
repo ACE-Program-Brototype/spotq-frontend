@@ -21,7 +21,10 @@ export const customerRestaurantService = {
       throw new Error(response?.message || "Failed to load restaurant details.");
     }
     const restaurant = response.data;
-    return restaurant;
+    return {
+      ...restaurant,
+      type: restaurant.type ?? restaurant.subscriptionType,
+    };
   },
 
   /**
