@@ -10,7 +10,6 @@ interface JoinQueueGuestFieldsProps {
   nameError?: string;
   phoneError?: string;
   countryCode: string;
-  onCountryCodeChange: (code: string) => void;
 }
 
 export function JoinQueueGuestFields({
@@ -19,7 +18,6 @@ export function JoinQueueGuestFields({
   nameError,
   phoneError,
   countryCode,
-  onCountryCodeChange,
 }: JoinQueueGuestFieldsProps) {
   return (
     <>
@@ -63,8 +61,7 @@ export function JoinQueueGuestFields({
             id="countryCode"
             aria-label="Country Dial Code"
             disabled={isSubmitting}
-            value={countryCode}
-            onChange={(e) => onCountryCodeChange(e.target.value)}
+            {...register("countryCode")}
             className="h-10 rounded-xl border border-neutral-200 bg-white px-2.5 text-xs font-semibold text-neutral-800 shadow-2xs focus-visible:border-orange-500 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-orange-200 disabled:opacity-60 cursor-pointer"
           >
             {COUNTRY_DIAL_CODES.map((item) => (

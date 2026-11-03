@@ -68,24 +68,22 @@ export function useCustomerQueueSocket(
       return;
     }
 
-    if (isAuthenticated && !resolvedToken) {
+    if (!resolvedToken) {
       return;
     }
 
     const queryParams: Record<string, string> = {
       ticketId: queueEntryId,
+      token: resolvedToken,
     };
-    if (resolvedToken) {
-      queryParams.token = resolvedToken;
-    }
 
     const socket: Socket = io(env.wsUrl, {
       path: QUEUE_WS_CONFIG.DEFAULT_PATH,
       transports: ["websocket", "polling"],
       withCredentials: true,
       query: queryParams,
-      auth: resolvedToken ? { token: resolvedToken } : undefined,
-      extraHeaders: resolvedToken ? { Authorization: `Bearer ${resolvedToken}` } : undefined,
+      auth: { token: resolvedToken },
+      extraHeaders: { Authorization: `Bearer ${resolvedToken}` },
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
@@ -171,7 +169,7 @@ export function useCustomerQueueSocket(
       ringMedia.stopAll();
       setIsConnected(false);
     };
-  }, [queueEntryId, resolvedToken, isAuthenticated]);
+  }, [queueEntryId, resolvedToken]);
 
   return {
     socket: socketRef.current,

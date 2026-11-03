@@ -2,8 +2,6 @@ export const QUEUE_QUERY_KEYS = {
   QUEUE: "staff-queue",
   CUSTOMER_ETA: (restaurantId: string, partySize: number) =>
     ["queue", "eta", restaurantId, partySize] as const,
-  CUSTOMER_STATUS: (restaurantId: string, queueEntryId: string) =>
-    ["queue", "status", restaurantId, queueEntryId] as const,
 } as const;
 
 export const QUEUE_ENDPOINTS = {

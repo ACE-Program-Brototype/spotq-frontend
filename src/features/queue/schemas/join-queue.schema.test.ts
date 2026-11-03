@@ -42,6 +42,39 @@ describe("joinQueueSchema", () => {
     expect(isValidLocalPhone("123", "+1")).toBe(false); // too short
   });
 
+  it("validates foreign phone numbers in joinQueueSchema with selected countryCode", () => {
+    // Valid US number with +1
+    expect(
+      joinQueueSchema.safeParse({ ...validData, countryCode: "+1", phone: "4155552671" }).success,
+    ).toBe(true);
+
+    // Invalid short number with +1
+    const invalidShort = joinQueueSchema.safeParse({
+      ...validData,
+      countryCode: "+1",
+      phone: "123",
+    });
+    expect(invalidShort.success).toBe(false);
+    if (!invalidShort.success) {
+      expect(invalidShort.error.issues[0].message).toBe(
+        "Please enter a valid phone number (6-14 digits)",
+      );
+    }
+
+    // Invalid Indian number with +91 (e.g. starting with 2)
+    const invalidIndian = joinQueueSchema.safeParse({
+      ...validData,
+      countryCode: "+91",
+      phone: "2123456789",
+    });
+    expect(invalidIndian.success).toBe(false);
+    if (!invalidIndian.success) {
+      expect(invalidIndian.error.issues[0].message).toBe(
+        "Please enter a valid 10-digit mobile number",
+      );
+    }
+  });
+
   it("validates partySize limits (1 - 20)", () => {
     expect(joinQueueSchema.safeParse({ ...validData, partySize: 0 }).success).toBe(false);
     expect(joinQueueSchema.safeParse({ ...validData, partySize: 1 }).success).toBe(true);

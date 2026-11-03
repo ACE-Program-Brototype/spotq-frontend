@@ -102,6 +102,27 @@ describe("RestaurantMenuNavigation", () => {
     expect(joinBtn).toBeDisabled();
   });
 
+  it("renders disabled button with 'Restaurant Closed' when restaurant is closed", () => {
+    const restaurant = {
+      ...baseRestaurant,
+      subscriptionType: "QUEUE_PRO",
+      isOpened: false,
+    };
+
+    render(
+      <RestaurantMenuNavigation
+        categories={restaurant.menu ?? []}
+        restaurant={restaurant}
+        activeId="cat-1"
+        onActiveChange={jest.fn()}
+      />,
+    );
+
+    const closedBtn = screen.getByRole("button", { name: /Restaurant Closed/i });
+    expect(closedBtn).toBeInTheDocument();
+    expect(closedBtn).toBeDisabled();
+  });
+
   it("does not render Join Queue button when restaurant is not QUEUE_PRO", () => {
     const restaurant = {
       ...baseRestaurant,

@@ -33,10 +33,10 @@ export function PartySizeSelector({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-xs font-bold text-neutral-800 flex items-center gap-1">
-          <Users className="size-3.5 text-[#9a3412]" />
+          <Users className="size-3.5 text-orange-600" />
           Party Size <span className="text-red-500">*</span>
         </span>
-        <span className="text-xs font-semibold text-[#9a3412]">
+        <span className="text-xs font-semibold text-orange-600">
           {!partySize || Number.isNaN(partySize)
             ? ""
             : `${partySize} ${partySize === 1 ? "Guest" : "Guests"}`}
@@ -60,8 +60,8 @@ export function PartySizeSelector({
               aria-label={`Party size ${preset}`}
               className={`h-10 rounded-xl text-sm font-bold border transition-all flex items-center justify-center ${
                 isSelected
-                  ? "bg-[#9a3412] text-white border-[#9a3412] shadow-xs"
-                  : "bg-[#faf7f5] text-neutral-700 border-[#eddcd4] hover:bg-[#eddcd4]/50"
+                  ? "bg-orange-600 text-white border-orange-600 shadow-xs"
+                  : "bg-neutral-50 text-neutral-700 border-neutral-200 hover:bg-neutral-100"
               }`}
             >
               {preset}
@@ -71,14 +71,14 @@ export function PartySizeSelector({
       </div>
 
       {selectedPreset === "6+" && (
-        <div className="flex items-center justify-between p-2.5 rounded-xl border border-[#eddcd4] bg-[#fffcf9] mt-2">
+        <div className="flex items-center justify-between p-2.5 rounded-xl border border-orange-200/80 bg-orange-50/40 mt-2">
           <span className="text-xs font-medium text-neutral-700">Exact Party Size:</span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onDecrement}
               disabled={isSubmitting || partySize <= MIN_CUSTOM_PARTY_SIZE}
-              className="size-8 rounded-lg border border-[#eddcd4] bg-white flex items-center justify-center text-neutral-700 hover:bg-[#faf7f5] disabled:opacity-40"
+              className="size-8 rounded-lg border border-neutral-200 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40"
               aria-label="Decrease party size"
             >
               <Minus className="size-3.5" />
@@ -92,14 +92,14 @@ export function PartySizeSelector({
               onChange={(e) => onDirectChange(e.target.value)}
               onBlur={onBlur}
               disabled={isSubmitting}
-              className="w-16 h-8 text-center font-bold text-sm border-[#eddcd4]"
+              className="w-16 h-8 text-center font-bold text-sm border-neutral-200 focus-visible:border-orange-500 focus-visible:ring-orange-200"
             />
 
             <button
               type="button"
               onClick={onIncrement}
               disabled={isSubmitting || partySize >= MAX_PARTY_SIZE}
-              className="size-8 rounded-lg border border-[#eddcd4] bg-white flex items-center justify-center text-neutral-700 hover:bg-[#faf7f5] disabled:opacity-40"
+              className="size-8 rounded-lg border border-neutral-200 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40"
               aria-label="Increase party size"
             >
               <Plus className="size-3.5" />

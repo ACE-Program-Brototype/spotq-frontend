@@ -62,4 +62,5 @@ export const CUSTOMER_QUEUE_BUTTON_LABELS = {
   JOIN_QUEUE: "Join Queue",
   JOINED_THIS_QUEUE: "Joined this queue",
   CANT_JOIN_QUEUE: "Can't join queue",
+  RESTAURANT_CLOSED: "Restaurant Closed",
 } as const;

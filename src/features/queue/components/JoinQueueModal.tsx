@@ -38,7 +38,6 @@ export function JoinQueueModal({
   const user = useAuthStore((state) => state.user);
 
   const [selectedPreset, setSelectedPreset] = useState<number | "6+">(2);
-  const [countryCode, setCountryCode] = useState("+91");
 
   const {
     register,
@@ -59,6 +58,7 @@ export function JoinQueueModal({
   });
 
   const partySize = watch("partySize");
+  const countryCode = watch("countryCode");
 
   // Fetch Live ETA estimate with 300ms debounce
   const {
@@ -81,7 +81,6 @@ export function JoinQueueModal({
         specialNotes: "",
       });
       setSelectedPreset(2);
-      setCountryCode("+91");
     }
   }, [isOpen, user, reset]);
 
@@ -139,11 +138,6 @@ export function JoinQueueModal({
     if (!partySize || Number.isNaN(partySize) || partySize < MIN_CUSTOM_PARTY_SIZE) {
       setValue("partySize", MIN_CUSTOM_PARTY_SIZE, { shouldValidate: true });
     }
-  };
-
-  const handleCountryCodeChange = (code: string) => {
-    setCountryCode(code);
-    setValue("countryCode", code, { shouldValidate: true });
   };
 
   const onSubmit = async (data: JoinQueueFormData) => {
@@ -261,7 +255,6 @@ export function JoinQueueModal({
             nameError={errors.guestName?.message}
             phoneError={errors.phone?.message}
             countryCode={countryCode}
-            onCountryCodeChange={handleCountryCodeChange}
           />
 
           {/* Party Size Selection */}

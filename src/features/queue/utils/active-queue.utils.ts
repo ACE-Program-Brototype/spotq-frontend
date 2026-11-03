@@ -1,3 +1,4 @@
+import env from "@/config/env";
 import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
 import type { ActiveCustomerTicket } from "../types/ring-alert.types";
 
@@ -8,8 +9,12 @@ export function setActiveCustomerTicket(ticket: ActiveCustomerTicket): void {
   if (typeof window === "undefined" || !window.localStorage) return;
   try {
     localStorage.setItem(ACTIVE_QUEUE_STORAGE_KEY, JSON.stringify(ticket));
+    // Dispatch in-tab storage event so current tab listeners immediately sync
+    window.dispatchEvent(new Event("storage"));
   } catch (err) {
-    console.warn("Failed to persist active customer ticket:", err);
+    if (env.isDev) {
+      console.warn("Failed to persist active customer ticket:", err);
+    }
   }
 }
 
@@ -34,5 +39,7 @@ export function clearActiveCustomerTicket(): void {
   if (typeof window === "undefined" || !window.localStorage) return;
   try {
     localStorage.removeItem(ACTIVE_QUEUE_STORAGE_KEY);
+    // Dispatch in-tab storage event so current tab listeners immediately sync
+    window.dispatchEvent(new Event("storage"));
   } catch {}
 }
