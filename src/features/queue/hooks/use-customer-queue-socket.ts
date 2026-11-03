@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import env from "@/config/env";
+import { useAuthStore } from "@/features/auth/store/auth.store";
+import { getOrRefreshAccessToken } from "@/lib/api/auth-refresh";
 import { QUEUE_WS_CONFIG, QUEUE_WS_EVENTS } from "../constants/websocket.constants";
 import type { CustomerRingPayload } from "../types/ring-alert.types";
 import { ringMedia } from "../utils/ring-sound.utils";
@@ -16,14 +18,45 @@ export function useCustomerQueueSocket(
   accessToken?: string | null,
   options?: UseCustomerQueueSocketOptions,
 ) {
+  const authStoreToken = useAuthStore((state) => state.accessToken);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const [resolvedToken, setResolvedToken] = useState<string | null>(
+    accessToken || authStoreToken || null,
+  );
   const [isConnected, setIsConnected] = useState(false);
   const [lastRingData, setLastRingData] = useState<CustomerRingPayload | null>(null);
   const socketRef = useRef<Socket | null>(null);
   const lastProcessedRingKeyRef = useRef<string | null>(null);
 
-  // Preserve latest callbacks in refs to avoid socket reconnect churn
   const optionsRef = useRef(options);
   optionsRef.current = options;
+
+  useEffect(() => {
+    let isCancelled = false;
+    const currentToken = accessToken || authStoreToken;
+    if (currentToken) {
+      setResolvedToken(currentToken);
+      return;
+    }
+
+    if (isAuthenticated) {
+      getOrRefreshAccessToken()
+        .then((freshToken) => {
+          if (!isCancelled && freshToken) {
+            setResolvedToken(freshToken);
+          }
+        })
+        .catch((err) => {
+          if (env.isDev) {
+            console.warn("[Socket] Failed to refresh access token for customer queue socket:", err);
+          }
+        });
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [accessToken, authStoreToken, isAuthenticated]);
 
   useEffect(() => {
     if (!queueEntryId) {
@@ -35,14 +68,22 @@ export function useCustomerQueueSocket(
       return;
     }
 
+    if (!resolvedToken) {
+      return;
+    }
+
+    const queryParams: Record<string, string> = {
+      ticketId: queueEntryId,
+      token: resolvedToken,
+    };
+
     const socket: Socket = io(env.wsUrl, {
       path: QUEUE_WS_CONFIG.DEFAULT_PATH,
       transports: ["websocket", "polling"],
       withCredentials: true,
-      query: {
-        token: accessToken || undefined,
-        ticketId: queueEntryId,
-      },
+      query: queryParams,
+      auth: { token: resolvedToken },
+      extraHeaders: { Authorization: `Bearer ${resolvedToken}` },
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
@@ -50,6 +91,12 @@ export function useCustomerQueueSocket(
     });
 
     socketRef.current = socket;
+
+    socket.on("connect_error", (error) => {
+      if (env.isDev) {
+        console.warn(`[Socket] Connection error: ${error.message}`);
+      }
+    });
 
     // 1. Connection & Reconnection Handler
     socket.on("connect", () => {
@@ -61,11 +108,15 @@ export function useCustomerQueueSocket(
         { ticketId: queueEntryId },
         (response?: { success: boolean; room?: string; error?: string }) => {
           if (response?.success) {
-            console.log(
-              `[Socket] Joined customer room ${response.room || `ticket:${queueEntryId}`}`,
-            );
+            if (env.isDev) {
+              console.log(
+                `[Socket] Joined customer room ${response.room || `ticket:${queueEntryId}`}`,
+              );
+            }
           } else if (response?.error) {
-            console.warn(`[Socket] Failed to join ticket room: ${response.error}`);
+            if (env.isDev) {
+              console.warn(`[Socket] Failed to join ticket room: ${response.error}`);
+            }
           }
         },
       );
@@ -73,7 +124,9 @@ export function useCustomerQueueSocket(
 
     socket.on("disconnect", (reason) => {
       setIsConnected(false);
-      console.log(`[Socket] Disconnected: ${reason}`);
+      if (env.isDev) {
+        console.log(`[Socket] Disconnected: ${reason}`);
+      }
     });
 
     // 2. Ring Alert Event Handler (Listens for ticket:called)
@@ -116,7 +169,7 @@ export function useCustomerQueueSocket(
       ringMedia.stopAll();
       setIsConnected(false);
     };
-  }, [queueEntryId, accessToken]);
+  }, [queueEntryId, resolvedToken]);
 
   return {
     socket: socketRef.current,

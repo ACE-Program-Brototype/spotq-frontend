@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PARTY_SIZE_LIMITS } from "../constants/queue.constants";
 
 export function isValidPhone(phone: string): boolean {
   const trimmed = phone.trim().replace(/[\s-]/g, "");
@@ -39,8 +40,8 @@ export const walkInSchema = z.object({
       message: "Party size must be a valid number",
     })
     .int("Party size must be a whole number")
-    .min(1, "Party size must be at least 1")
-    .max(20, "Party size cannot exceed 20"),
+    .min(PARTY_SIZE_LIMITS.MIN, `Party size must be at least ${PARTY_SIZE_LIMITS.MIN}`)
+    .max(PARTY_SIZE_LIMITS.MAX, `Party size cannot exceed ${PARTY_SIZE_LIMITS.MAX}`),
   specialNotes: z.string().trim().max(250, "Special notes cannot exceed 250 characters").optional(),
 });
 

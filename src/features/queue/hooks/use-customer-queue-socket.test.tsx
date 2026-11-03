@@ -50,6 +50,13 @@ describe("useCustomerQueueSocket", () => {
     expect(result.current.isConnected).toBe(false);
   });
 
+  it("does not connect if token is null or undefined", () => {
+    const { result } = renderHook(() => useCustomerQueueSocket("entry-123", null));
+
+    expect(io).not.toHaveBeenCalled();
+    expect(result.current.isConnected).toBe(false);
+  });
+
   it("connects and emits join:ticket on connect event", () => {
     renderHook(() => useCustomerQueueSocket("entry-123", "mock-token"));
 

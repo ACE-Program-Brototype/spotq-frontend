@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CartRestaurantMismatchDialog } from "@/features/cart/components/CartRestaurantMismatchDialog";
-import { CART_MESSAGES, RESTAURANT_TYPES } from "@/features/cart/constants/cart.constants";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
 import { useCartStore } from "@/features/cart/store/cart.store";
 import type { AddCartItemInput } from "@/features/cart/types/cart.types";
 import type {
@@ -13,6 +13,7 @@ import type {
 } from "@/features/restaurants/types/customer-restaurant.types";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import { formatCurrency } from "@/lib/utils";
+import { RESTAURANT_PLAN_TYPES } from "../../constants/customer-restaurant.constants";
 
 interface RestaurantMenuItemCardProps {
   item: CustomerRestaurantMenuItem;
@@ -114,9 +115,10 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
     }
 
     // Queue Pro eligibility validation
+    const planType = restaurant.type ?? restaurant.subscriptionType;
     const isQueuePro =
-      restaurant.type?.toUpperCase() === RESTAURANT_TYPES.QUEUE_PRO ||
-      restaurant.type === "Queue Pro";
+      planType?.toUpperCase() === RESTAURANT_PLAN_TYPES.QUEUE_PRO ||
+      planType === RESTAURANT_PLAN_TYPES.QUEUE_PRO_DISPLAY;
 
     if (isQueuePro) {
       const queue = restaurant.queue;

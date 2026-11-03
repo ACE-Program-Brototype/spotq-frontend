@@ -1,12 +1,18 @@
 export { CustomerRingAlertContainer } from "./components/CustomerRingAlertContainer";
 export { CustomerRingAlertModal } from "./components/CustomerRingAlertModal";
+export { JoinQueueGuestFields } from "./components/JoinQueueGuestFields";
+export { JoinQueueModal } from "./components/JoinQueueModal";
+export { QueueEtaPreview } from "./components/QueueEtaPreview";
 export { WalkInRegistrationModal } from "./components/WalkInRegistrationModal";
 export * from "./constants/queue.constants";
 export * from "./constants/ring-alert.constants";
 export * from "./constants/websocket.constants";
 export { useCustomerQueueSocket } from "./hooks/use-customer-queue-socket";
+export { useJoinQueue } from "./hooks/use-join-queue";
+export { useQueueEta } from "./hooks/use-queue-eta";
 export { useRegisterWalkIn } from "./hooks/use-register-walk-in";
 export { default as StaffQueuePage } from "./pages/StaffQueuePage";
+export * from "./schemas/join-queue.schema";
 export * from "./schemas/walk-in.schema";
 export { queueService } from "./services/queue.service";
 export * from "./types/queue.types";

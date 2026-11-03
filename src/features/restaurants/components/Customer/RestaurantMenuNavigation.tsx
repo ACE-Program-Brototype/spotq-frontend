@@ -1,5 +1,9 @@
 import { ShoppingBag, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  CUSTOMER_QUEUE_BUTTON_LABELS,
+  RESTAURANT_PLAN_TYPES,
+} from "../../constants/customer-restaurant.constants";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuCategory,
@@ -10,6 +14,7 @@ interface RestaurantMenuNavigationProps {
   restaurant: CustomerRestaurantDetails;
   activeId: string;
   onActiveChange: (id: string) => void;
+  onJoinQueueClick?: () => void;
 }
 
 export function RestaurantMenuNavigation({
@@ -17,13 +22,20 @@ export function RestaurantMenuNavigation({
   restaurant,
   activeId,
   onActiveChange,
+  onJoinQueueClick,
 }: RestaurantMenuNavigationProps) {
-  const showQueueButton = restaurant.type === "QUEUE_PRO";
-  const queueButtonLabel = restaurant.queue?.hasJoinedThisRestaurantQueue
-    ? "Joined this queue"
-    : restaurant.queue?.hasJoinedAnyQueue
-      ? "Can't join queue"
-      : "Join Queue";
+  const planType = restaurant.subscriptionType ?? restaurant.type;
+  const showQueueButton = planType === RESTAURANT_PLAN_TYPES.QUEUE_PRO;
+  const isRestaurantOpen = (restaurant.isOpened ?? restaurant.settings?.isOpened) !== false;
+  const isJoinedThisQueue = Boolean(restaurant.queue?.hasJoinedThisRestaurantQueue);
+  const isJoinedOtherQueue = Boolean(restaurant.queue?.hasJoinedAnyQueue) && !isJoinedThisQueue;
+  const queueButtonLabel = !isRestaurantOpen
+    ? CUSTOMER_QUEUE_BUTTON_LABELS.RESTAURANT_CLOSED
+    : isJoinedThisQueue
+      ? CUSTOMER_QUEUE_BUTTON_LABELS.JOINED_THIS_QUEUE
+      : isJoinedOtherQueue
+        ? CUSTOMER_QUEUE_BUTTON_LABELS.CANT_JOIN_QUEUE
+        : CUSTOMER_QUEUE_BUTTON_LABELS.JOIN_QUEUE;
   const scrollTo = (id: string) => {
     onActiveChange(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -56,8 +68,15 @@ export function RestaurantMenuNavigation({
       </div>
       {showQueueButton && (
         <Button
-          disabled={!restaurant.settings?.acceptsQueue || restaurant.queue?.hasJoinedAnyQueue}
-          className="w-full rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 disabled:bg-stone-300"
+          type="button"
+          onClick={onJoinQueueClick}
+          disabled={
+            !isRestaurantOpen ||
+            !restaurant.settings?.acceptsQueue ||
+            isJoinedThisQueue ||
+            isJoinedOtherQueue
+          }
+          className="w-full rounded-xl bg-orange-600 font-bold text-white hover:bg-orange-700 disabled:bg-stone-300 cursor-pointer shadow-sm transition"
         >
           <Users className="mr-2 size-4" />
           {queueButtonLabel}

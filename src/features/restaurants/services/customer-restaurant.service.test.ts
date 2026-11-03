@@ -168,4 +168,27 @@ describe("customerRestaurantService", () => {
     expect(result.restaurants).toEqual([]);
     expect(result.pagination.total).toBe(0);
   });
+
+  describe("getRestaurantDetails", () => {
+    it("maps subscriptionType to type when type is not explicitly provided", async () => {
+      const mockDetailsResponse = {
+        success: true,
+        data: {
+          restaurantId: "rest-100",
+          restaurantName: "Al-Reem",
+          subscriptionType: "QUEUE_PRO",
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockDetailsResponse),
+      });
+
+      const result = await customerRestaurantService.getRestaurantDetails("rest-100");
+
+      expect(apiClient.get).toHaveBeenCalledWith("restaurants/customers/rest-100");
+      expect(result.type).toBe("QUEUE_PRO");
+      expect(result.subscriptionType).toBe("QUEUE_PRO");
+    });
+  });
 });
