@@ -127,48 +127,46 @@ describe("transactionService", () => {
   });
 
   describe("getTransactionDetail", () => {
-    it("calls apiClient.get with valid transaction ID and returns details", async () => {
+    it("calls apiClient.get with valid transaction ID and returns mapped details", async () => {
       const mockDetailResponse = {
         success: true,
         message: "Transaction details retrieved successfully",
         data: {
-          id: "8e329a17-6421-4f3a-bfda-90e94bb10022",
-          status: "SUCCESS",
-          createdAt: "2026-10-27T14:15:00.000Z",
-          customer: {
-            id: "cust-1",
-            name: "Rahul Sharma",
-            contact: "•••••• 4821",
-            tableNumber: "T-04",
-            tokenNumber: "TK-28",
-          },
-          order: {
-            id: "order-1",
+          transaction: {
+            id: "8e329a17-6421-4f3a-bfda-90e94bb10022",
+            orderId: "order-1",
             orderNumber: "SQ-98214",
-            status: "COMPLETED",
+            customer: {
+              name: "Rahul Sharma",
+              phoneMasked: "•••••• 4821",
+              tableNumber: "T-04",
+              tokenNumber: "TK-28",
+            },
+            amountPaise: 86800,
+            amountFormatted: "₹868.00",
+            currency: "INR",
+            status: "SUCCESS",
+            paymentMethod: "UPI",
+            upiVpa: "rahul@okaxis",
+            card: null,
+            razorpayPaymentId: "pay_OEd1m8F05s9jKa",
+            razorpayOrderId: "order_ODZ1k8F05s9jKz",
+            bankReference: "429182910291",
+            billingBreakdown: {
+              subtotalPaise: 82000,
+              gstPaise: 4800,
+              discountPaise: 0,
+              grandTotalPaise: 86800,
+            },
+            settlement: {
+              status: "PENDING_EOD",
+              settlementId: null,
+              scheduledPayout: "Next Business Day",
+            },
+            refund: null,
+            createdAt: "2026-10-27T14:15:00.000Z",
+            updatedAt: "2026-10-27T14:15:00.000Z",
           },
-          financialBreakdown: {
-            subtotalPaise: 82000,
-            subtotalFormatted: "₹820.00",
-            gstPaise: 4800,
-            gstPercentage: 5,
-            gstFormatted: "₹48.00",
-            discountPaise: 0,
-            discountFormatted: "₹0.00",
-            totalPaise: 86800,
-            totalFormatted: "₹868.00",
-          },
-          gateway: {
-            name: "Razorpay",
-            paymentId: "pay_OEd1m8F05s9jKa",
-            orderId: "order_ODZ1k8F05s9jKz",
-            method: "UPI",
-            vpaOrCard: "rahul@okaxis",
-            bankRrn: "429182910291",
-            settlementStatus: "PENDING_EOD",
-            expectedSettlementDate: "2026-10-28",
-          },
-          refund: null,
         },
       };
 
@@ -183,7 +181,12 @@ describe("transactionService", () => {
       expect(apiClient.get).toHaveBeenCalledWith(
         TRANSACTION_ENDPOINTS.DETAIL("8e329a17-6421-4f3a-bfda-90e94bb10022"),
       );
-      expect(result).toEqual(mockDetailResponse.data);
+      expect(result.id).toBe("8e329a17-6421-4f3a-bfda-90e94bb10022");
+      expect(result.order.orderNumber).toBe("SQ-98214");
+      expect(result.customer.name).toBe("Rahul Sharma");
+      expect(result.customer.contact).toBe("•••••• 4821");
+      expect(result.financialBreakdown.subtotalPaise).toBe(82000);
+      expect(result.gateway.paymentId).toBe("pay_OEd1m8F05s9jKa");
     });
 
     it("throws error when transaction ID is empty", async () => {

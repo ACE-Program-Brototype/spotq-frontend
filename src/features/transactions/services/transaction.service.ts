@@ -16,6 +16,11 @@ import type {
   ListTransactionsData,
   TransactionDetail,
 } from "../types/transaction.types";
+import {
+  type ApiTransactionDetailItem,
+  type ApiTransactionDetailResponse,
+  mapApiTransactionDetailToDetail,
+} from "../utils/transaction.mapper";
 
 export const transactionService = {
   /**
@@ -89,12 +94,12 @@ export const transactionService = {
 
     const response = await apiClient
       .get(TRANSACTION_ENDPOINTS.DETAIL(id.trim()))
-      .json<ApiResponse<TransactionDetail>>();
+      .json<ApiResponse<ApiTransactionDetailItem | ApiTransactionDetailResponse>>();
 
     if (!response.data) {
       throw new Error(response.message || "Failed to load transaction details");
     }
 
-    return response.data;
+    return mapApiTransactionDetailToDetail(response.data);
   },
 };
