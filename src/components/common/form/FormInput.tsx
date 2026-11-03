@@ -41,7 +41,7 @@ export function FormInput({
   }
 
   return (
-    <div className="relative flex items-center">
+    <div className="relative flex items-center w-full">
       {leadingIcon && (
         <span className="pointer-events-none absolute left-3 flex items-center text-muted-foreground [&_svg]:size-4">
           {leadingIcon}

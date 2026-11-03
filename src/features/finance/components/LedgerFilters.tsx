@@ -78,7 +78,7 @@ export function LedgerFilters({
         </select>
       </label>
       {datePreset === "CUSTOM" && (
-        <div className="col-span-1 grid min-w-0 grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 lg:col-span-3 2xl:col-span-2">
+        <div className="col-span-1 flex min-w-0 flex-wrap gap-2 sm:col-span-2 lg:col-span-3 2xl:col-span-2">
           <Input
             aria-label="Start date"
             type="date"
@@ -86,7 +86,7 @@ export function LedgerFilters({
             onChange={(event) =>
               setFilters((state) => ({ ...state, customStart: event.target.value, page: 1 }))
             }
-            className="w-full min-w-0"
+            className="w-max"
           />
           <Input
             aria-label="End date"
@@ -95,7 +95,7 @@ export function LedgerFilters({
             onChange={(event) =>
               setFilters((state) => ({ ...state, customEnd: event.target.value, page: 1 }))
             }
-            className="w-full min-w-0"
+            className="w-max"
           />
         </div>
       )}
