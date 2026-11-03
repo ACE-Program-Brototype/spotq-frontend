@@ -27,6 +27,15 @@ export const QUEUE_MESSAGES = {
 
 export const PARTY_SIZE_PRESETS = [1, 2, 3, 4, 5, "6+"] as const;
 
+export const PARTY_SIZE_LIMITS = {
+  MIN: 1,
+  MIN_CUSTOM: 6,
+  MAX: 20,
+} as const;
+
+export const MIN_CUSTOM_PARTY_SIZE = PARTY_SIZE_LIMITS.MIN_CUSTOM;
+export const MAX_PARTY_SIZE = PARTY_SIZE_LIMITS.MAX;
+
 export const QUEUE_ETA_CONFIG = {
   DEBOUNCE_MS: 300,
   STALE_TIME_MS: 15_000,

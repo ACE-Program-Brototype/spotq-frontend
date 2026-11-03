@@ -47,7 +47,9 @@ export function useCustomerQueueSocket(
           }
         })
         .catch((err) => {
-          console.warn("[Socket] Failed to refresh access token for customer queue socket:", err);
+          if (env.isDev) {
+            console.warn("[Socket] Failed to refresh access token for customer queue socket:", err);
+          }
         });
     }
 
@@ -93,7 +95,9 @@ export function useCustomerQueueSocket(
     socketRef.current = socket;
 
     socket.on("connect_error", (error) => {
-      console.warn(`[Socket] Connection error: ${error.message}`);
+      if (env.isDev) {
+        console.warn(`[Socket] Connection error: ${error.message}`);
+      }
     });
 
     // 1. Connection & Reconnection Handler
@@ -106,11 +110,15 @@ export function useCustomerQueueSocket(
         { ticketId: queueEntryId },
         (response?: { success: boolean; room?: string; error?: string }) => {
           if (response?.success) {
-            console.log(
-              `[Socket] Joined customer room ${response.room || `ticket:${queueEntryId}`}`,
-            );
+            if (env.isDev) {
+              console.log(
+                `[Socket] Joined customer room ${response.room || `ticket:${queueEntryId}`}`,
+              );
+            }
           } else if (response?.error) {
-            console.warn(`[Socket] Failed to join ticket room: ${response.error}`);
+            if (env.isDev) {
+              console.warn(`[Socket] Failed to join ticket room: ${response.error}`);
+            }
           }
         },
       );
@@ -118,7 +126,9 @@ export function useCustomerQueueSocket(
 
     socket.on("disconnect", (reason) => {
       setIsConnected(false);
-      console.log(`[Socket] Disconnected: ${reason}`);
+      if (env.isDev) {
+        console.log(`[Socket] Disconnected: ${reason}`);
+      }
     });
 
     // 2. Ring Alert Event Handler (Listens for ticket:called)

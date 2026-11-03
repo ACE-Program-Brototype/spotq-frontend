@@ -6,6 +6,7 @@ import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { MAX_PARTY_SIZE, MIN_CUSTOM_PARTY_SIZE } from "../constants/queue.constants";
 import { useJoinQueue } from "../hooks/use-join-queue";
 import { useQueueEta } from "../hooks/use-queue-eta";
 import {
@@ -103,8 +104,8 @@ export function JoinQueueModal({
   const handlePresetSelect = (preset: number | "6+") => {
     setSelectedPreset(preset);
     if (preset === "6+") {
-      if (partySize < 6) {
-        setValue("partySize", 6, { shouldValidate: true });
+      if (partySize < MIN_CUSTOM_PARTY_SIZE) {
+        setValue("partySize", MIN_CUSTOM_PARTY_SIZE, { shouldValidate: true });
       }
     } else {
       setValue("partySize", preset, { shouldValidate: true });
@@ -112,12 +113,12 @@ export function JoinQueueModal({
   };
 
   const handleIncrement = () => {
-    const next = Math.min(20, (partySize || 6) + 1);
+    const next = Math.min(MAX_PARTY_SIZE, (partySize || MIN_CUSTOM_PARTY_SIZE) + 1);
     setValue("partySize", next, { shouldValidate: true });
   };
 
   const handleDecrement = () => {
-    const next = Math.max(6, (partySize || 6) - 1);
+    const next = Math.max(MIN_CUSTOM_PARTY_SIZE, (partySize || MIN_CUSTOM_PARTY_SIZE) - 1);
     setValue("partySize", next, { shouldValidate: true });
   };
 
@@ -128,13 +129,15 @@ export function JoinQueueModal({
     }
     const val = Number.parseInt(raw, 10);
     if (!Number.isNaN(val)) {
-      setValue("partySize", Math.min(20, Math.max(6, val)), { shouldValidate: true });
+      setValue("partySize", Math.min(MAX_PARTY_SIZE, Math.max(MIN_CUSTOM_PARTY_SIZE, val)), {
+        shouldValidate: true,
+      });
     }
   };
 
   const handlePartySizeBlur = () => {
-    if (!partySize || Number.isNaN(partySize) || partySize < 6) {
-      setValue("partySize", 6, { shouldValidate: true });
+    if (!partySize || Number.isNaN(partySize) || partySize < MIN_CUSTOM_PARTY_SIZE) {
+      setValue("partySize", MIN_CUSTOM_PARTY_SIZE, { shouldValidate: true });
     }
   };
 

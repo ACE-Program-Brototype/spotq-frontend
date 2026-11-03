@@ -1,6 +1,10 @@
 import { Minus, Plus, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { PARTY_SIZE_PRESETS } from "../constants/queue.constants";
+import {
+  MAX_PARTY_SIZE,
+  MIN_CUSTOM_PARTY_SIZE,
+  PARTY_SIZE_PRESETS,
+} from "../constants/queue.constants";
 
 interface PartySizeSelectorProps {
   partySize: number;
@@ -73,7 +77,7 @@ export function PartySizeSelector({
             <button
               type="button"
               onClick={onDecrement}
-              disabled={isSubmitting || partySize <= 6}
+              disabled={isSubmitting || partySize <= MIN_CUSTOM_PARTY_SIZE}
               className="size-8 rounded-lg border border-[#eddcd4] bg-white flex items-center justify-center text-neutral-700 hover:bg-[#faf7f5] disabled:opacity-40"
               aria-label="Decrease party size"
             >
@@ -82,8 +86,8 @@ export function PartySizeSelector({
 
             <Input
               type="number"
-              min={6}
-              max={20}
+              min={MIN_CUSTOM_PARTY_SIZE}
+              max={MAX_PARTY_SIZE}
               value={partySize && !Number.isNaN(partySize) ? partySize : ""}
               onChange={(e) => onDirectChange(e.target.value)}
               onBlur={onBlur}
@@ -94,7 +98,7 @@ export function PartySizeSelector({
             <button
               type="button"
               onClick={onIncrement}
-              disabled={isSubmitting || partySize >= 20}
+              disabled={isSubmitting || partySize >= MAX_PARTY_SIZE}
               className="size-8 rounded-lg border border-[#eddcd4] bg-white flex items-center justify-center text-neutral-700 hover:bg-[#faf7f5] disabled:opacity-40"
               aria-label="Increase party size"
             >
