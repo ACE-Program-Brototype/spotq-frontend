@@ -92,6 +92,11 @@ describe("restaurantRoutes structure and protection", () => {
       "categories",
       "modifiers",
     ]);
+
+    const ordersGroup = adminLayout?.children?.find((c) => c.path === "orders");
+    expect(ordersGroup).toBeDefined();
+    expect(ordersGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(ordersGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([":orderId"]);
   });
 
   it("redirects unauthenticated user accessing protected restaurant subscription route", () => {
