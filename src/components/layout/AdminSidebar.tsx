@@ -8,6 +8,7 @@ import {
   ChevronDown,
   CreditCard,
   Grid,
+  Landmark,
   LogOut,
   Megaphone,
   Store,
@@ -52,6 +53,11 @@ const adminNavItems: NavItem[] = [
     title: "Subscription",
     href: ADMIN_ROUTES.SUBSCRIPTION,
     icon: CreditCard,
+  },
+  {
+    title: "Finance Overview",
+    href: ADMIN_ROUTES.FINANCE,
+    icon: Landmark,
   },
   {
     title: "Payments",

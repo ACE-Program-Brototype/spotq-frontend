@@ -7,6 +7,7 @@ import AdminVerifyOtpPage from "@/features/auth/pages/admin/AdminVerifyOtpPage";
 import AdminCustomerDetailsPage from "@/features/customers/pages/AdminCustomerDetailsPage";
 import AdminCustomersPage from "@/features/customers/pages/AdminCustomersPage";
 import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
+import PlatformFinancePage from "@/features/finance/pages/PlatformFinancePage";
 import AdminRestaurantApplicationReviewPage from "@/features/restaurants/pages/AdminRestaurantApplicationReviewPage";
 import AdminRestaurantApplicationsPage from "@/features/restaurants/pages/AdminRestaurantApplicationsPage";
 import AdminRestaurantDetailsPage from "@/features/restaurants/pages/AdminRestaurantDetailsPage";
@@ -81,6 +82,7 @@ export const adminRoutes: RouteObject[] = [
             path: ADMIN_ROUTE_PATHS.CUSTOMER_DETAIL,
             Component: AdminCustomerDetailsPage,
           },
+          { path: ADMIN_ROUTE_PATHS.FINANCE, Component: PlatformFinancePage },
         ],
       },
     ],

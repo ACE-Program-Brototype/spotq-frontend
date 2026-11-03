@@ -201,13 +201,16 @@ export function DataTable<T>({
   return (
     <div
       className={cn(
-        "w-full rounded-2xl border border-border/80 bg-card overflow-hidden shadow-2xs",
+        "w-full min-w-0 max-w-full rounded-2xl border border-border/80 bg-card overflow-hidden shadow-2xs",
         className,
       )}
       data-testid={testId}
     >
       <Table
-        containerClassName={containerClassName}
+        containerClassName={cn(
+          "w-full min-w-0 max-w-full overscroll-x-contain",
+          containerClassName,
+        )}
         className={tableClassName}
         aria-label={ariaLabel}
         aria-busy={isLoading}

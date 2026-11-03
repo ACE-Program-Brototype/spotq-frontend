@@ -15,6 +15,7 @@ describe("adminRoutes", () => {
     expect(protectedSection.children).toBeDefined();
     const layoutWrapper = protectedSection.children?.[0];
     expect(layoutWrapper?.children).toBeDefined();
+    expect(layoutWrapper?.children?.some((route) => route.path === "finance")).toBe(true);
 
     const protectedPaths = layoutWrapper?.children?.map((r) => r.path);
     expect(protectedPaths).toContain("dashboard");

@@ -12,6 +12,7 @@ export const ADMIN_ROUTE_PATHS = {
     FORGOT_PASSWORD_RESET: "forgot-password/reset-password",
   },
   DASHBOARD: "dashboard",
+  FINANCE: "finance",
   RESTAURANTS: "restaurants",
   RESTAURANTS_MANAGEMENT: "restaurants/management",
   RESTAURANTS_ONBOARDING: "restaurants/onboarding",
@@ -37,6 +38,7 @@ export const ADMIN_ROUTES = {
   FORGOT_PASSWORD_RESET: "/admin/forgot-password/reset-password",
 
   DASHBOARD: "/admin/dashboard",
+  FINANCE: "/admin/finance",
   RESTAURANTS: "/admin/restaurants",
   RESTAURANTS_MANAGEMENT: "/admin/restaurants/management",
   RESTAURANTS_ONBOARDING: "/admin/restaurants/onboarding",
