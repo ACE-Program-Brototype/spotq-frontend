@@ -13,9 +13,9 @@ import {
 import type { GetTransactionsParams, TransactionFiltersState } from "../types/transaction.types";
 
 function formatIsoDateOnly(date: Date): string {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
+  const yyyy = date.getUTCFullYear();
+  const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(date.getUTCDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 }
 
@@ -32,19 +32,19 @@ export function getDateRangeFromPreset(preset: string): {
 
     case DATE_PRESET_OPTIONS.YESTERDAY: {
       const yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
       const yesterdayStr = formatIsoDateOnly(yesterday);
       return { startDate: yesterdayStr, endDate: yesterdayStr };
     }
 
     case DATE_PRESET_OPTIONS.LAST_7_DAYS: {
       const past7 = new Date(now);
-      past7.setDate(past7.getDate() - 7);
+      past7.setUTCDate(past7.getUTCDate() - 7);
       return { startDate: formatIsoDateOnly(past7), endDate: todayStr };
     }
 
     case DATE_PRESET_OPTIONS.THIS_MONTH: {
-      const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const firstOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
       return { startDate: formatIsoDateOnly(firstOfMonth), endDate: todayStr };
     }
 
@@ -139,6 +139,13 @@ export function useTransactionFilters() {
     );
   }, [searchInput, status, method, datePreset, customStartDate, customEndDate]);
 
+  // Client-side date range validation
+  const isDateRangeInvalid = useMemo(() => {
+    return Boolean(
+      customStartDate && customEndDate && new Date(customStartDate) > new Date(customEndDate),
+    );
+  }, [customStartDate, customEndDate]);
+
   // Derived API query parameters
   const queryParams = useMemo<GetTransactionsParams>(() => {
     const params: GetTransactionsParams = {
@@ -160,12 +167,18 @@ export function useTransactionFilters() {
       params.method = method;
     }
 
-    if (customStartDate.length > 0) {
-      params.startDate = customStartDate;
-    }
+    // Only forward dates if valid (do not send inverted dates that trigger 400 Bad Request)
+    const hasValidDates =
+      !customStartDate || !customEndDate || new Date(customStartDate) <= new Date(customEndDate);
 
-    if (customEndDate.length > 0) {
-      params.endDate = customEndDate;
+    if (hasValidDates) {
+      if (customStartDate.length > 0) {
+        params.startDate = customStartDate;
+      }
+
+      if (customEndDate.length > 0) {
+        params.endDate = customEndDate;
+      }
     }
 
     return params;
@@ -218,5 +231,6 @@ export function useTransactionFilters() {
     handleSortChange,
     resetFilters,
     isFiltered,
+    isDateRangeInvalid,
   };
 }

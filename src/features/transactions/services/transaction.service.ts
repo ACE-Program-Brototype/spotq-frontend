@@ -14,6 +14,7 @@ import {
 import type {
   GetTransactionsParams,
   ListTransactionsData,
+  PaymentTransactionItem,
   TransactionDetail,
 } from "../types/transaction.types";
 import {
@@ -21,6 +22,19 @@ import {
   type ApiTransactionDetailResponse,
   mapApiTransactionDetailToDetail,
 } from "../utils/transaction.mapper";
+
+interface RawBackendListResponse {
+  transactions: PaymentTransactionItem[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalRecords?: number;
+    totalItems?: number;
+    limit: number;
+    hasNextPage?: boolean;
+    hasPrevPage?: boolean;
+  };
+}
 
 export const transactionService = {
   /**
@@ -55,14 +69,6 @@ export const transactionService = {
       searchParams.endDate = params.endDate.trim();
     }
 
-    if (typeof params?.minAmount === "number" && !Number.isNaN(params.minAmount)) {
-      searchParams.minAmount = params.minAmount;
-    }
-
-    if (typeof params?.maxAmount === "number" && !Number.isNaN(params.maxAmount)) {
-      searchParams.maxAmount = params.maxAmount;
-    }
-
     if (params?.sortBy) {
       searchParams.sortBy = params.sortBy;
     }
@@ -75,13 +81,28 @@ export const transactionService = {
       .get(TRANSACTION_ENDPOINTS.BASE, {
         searchParams,
       })
-      .json<ApiResponse<ListTransactionsData>>();
+      .json<ApiResponse<RawBackendListResponse>>();
 
     if (!response.data) {
       throw new Error(response.message || "Failed to load transactions");
     }
 
-    return response.data;
+    const rawData = response.data;
+    const totalItems = rawData.pagination?.totalItems ?? rawData.pagination?.totalRecords ?? 0;
+    const currentPage = rawData.pagination?.currentPage || 1;
+    const totalPages = rawData.pagination?.totalPages || 1;
+
+    return {
+      transactions: rawData.transactions || [],
+      pagination: {
+        currentPage,
+        totalPages,
+        totalItems,
+        limit: rawData.pagination?.limit || limit,
+        hasNextPage: rawData.pagination?.hasNextPage ?? currentPage < totalPages,
+        hasPrevPage: rawData.pagination?.hasPrevPage ?? currentPage > 1,
+      },
+    };
   },
 
   /**

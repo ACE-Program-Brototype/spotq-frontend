@@ -31,6 +31,22 @@ interface TransactionDetailDrawerProps {
   onClose: () => void;
 }
 
+function formatDiningContext(tableNumber?: string | null, tokenNumber?: string | null): string {
+  const hasTable = Boolean(tableNumber && tableNumber !== "N/A" && tableNumber.trim() !== "");
+  const hasToken = Boolean(tokenNumber && tokenNumber !== "N/A" && tokenNumber.trim() !== "");
+
+  if (hasTable && hasToken) {
+    return `Table ${tableNumber} (Token ${tokenNumber})`;
+  }
+  if (hasTable) {
+    return `Table ${tableNumber}`;
+  }
+  if (hasToken) {
+    return `Token ${tokenNumber}`;
+  }
+  return "N/A";
+}
+
 export function TransactionDetailDrawer({ transactionId, onClose }: TransactionDetailDrawerProps) {
   const isOpen = Boolean(transactionId);
   const { data: detail, isLoading, isError, refetch } = useTransactionDetail(transactionId);
@@ -208,8 +224,10 @@ export function TransactionDetailDrawer({ transactionId, onClose }: TransactionD
                         {TRANSACTION_MESSAGES.LABEL_TABLE_TOKEN}
                       </span>
                       <span className="font-medium text-neutral-900 bg-neutral-100 px-2.5 py-0.5 rounded-full">
-                        Table {detail.customer?.tableNumber || "N/A"} (Token{" "}
-                        {detail.customer?.tokenNumber || "N/A"})
+                        {formatDiningContext(
+                          detail.customer?.tableNumber,
+                          detail.customer?.tokenNumber,
+                        )}
                       </span>
                     </div>
                   </div>

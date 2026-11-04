@@ -3,6 +3,7 @@
  * Maps raw backend API models to frontend domain models.
  */
 
+import { formatCurrency } from "@/lib/utils/currency";
 import type {
   PaymentMethod,
   SettlementStatus,
@@ -79,10 +80,7 @@ export interface ApiTransactionDetailResponse {
 
 export function formatPaiseToRupees(paise: number): string {
   const safePaise = typeof paise === "number" && !Number.isNaN(paise) ? paise : 0;
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-  }).format(safePaise / 100);
+  return formatCurrency(safePaise / 100);
 }
 
 export function mapApiTransactionDetailToDetail(

@@ -115,6 +115,7 @@ export const TRANSACTION_MESSAGES = {
   LABEL_REFUND_DATE: "Refund Date",
 
   // Empty & Error States
+  INVALID_DATE_RANGE: "Start date cannot be after end date",
   EMPTY_TITLE: "No transactions found",
   EMPTY_DESCRIPTION:
     "Try adjusting your search criteria, selecting a different date range, or clearing applied filters.",

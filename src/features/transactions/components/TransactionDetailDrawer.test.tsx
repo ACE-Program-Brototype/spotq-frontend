@@ -93,6 +93,59 @@ describe("TransactionDetailDrawer", () => {
     expect(screen.getByText("429182910291")).toBeInTheDocument();
   });
 
+  it("renders clean fallback 'N/A' when table and token numbers are not assigned", () => {
+    const mockDetailNoDiningContext = {
+      id: "tx-456",
+      status: "SUCCESS",
+      createdAt: "2026-10-27T14:15:00.000Z",
+      customer: {
+        id: "cust-2",
+        name: "Guest",
+        contact: null,
+        tableNumber: null,
+        tokenNumber: null,
+      },
+      order: {
+        id: "order-2",
+        orderNumber: "SQ-99999",
+        status: "COMPLETED",
+      },
+      financialBreakdown: {
+        subtotalPaise: 50000,
+        subtotalFormatted: "₹500.00",
+        gstPaise: 2500,
+        gstPercentage: 5,
+        gstFormatted: "₹25.00",
+        discountPaise: 0,
+        discountFormatted: "₹0.00",
+        totalPaise: 52500,
+        totalFormatted: "₹525.00",
+      },
+      gateway: {
+        name: "Razorpay",
+        paymentId: "pay_12345",
+        orderId: "order_12345",
+        method: "UPI",
+        vpaOrCard: "N/A",
+        bankRrn: "N/A",
+        settlementStatus: "PENDING_EOD",
+        expectedSettlementDate: "2026-10-28",
+      },
+      refund: null,
+    };
+
+    (useTransactionDetail as jest.Mock).mockReturnValue({
+      data: mockDetailNoDiningContext,
+      isLoading: false,
+      isError: false,
+    });
+
+    render(<TransactionDetailDrawer transactionId="tx-456" onClose={mockOnClose} />);
+
+    expect(screen.queryByText(/Table N\/A \(Token N\/A\)/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText("N/A").length).toBeGreaterThan(0);
+  });
+
   it("closes when close button is clicked", () => {
     (useTransactionDetail as jest.Mock).mockReturnValue({
       data: null,

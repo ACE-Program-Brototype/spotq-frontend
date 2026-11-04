@@ -102,8 +102,6 @@ export interface GetTransactionsParams {
   method?: string;
   startDate?: string;
   endDate?: string;
-  minAmount?: number;
-  maxAmount?: number;
   sortBy?: "createdAt" | "amountPaise" | string;
   sortOrder?: "asc" | "desc";
 }

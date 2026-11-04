@@ -14,6 +14,7 @@ import { TransactionsTable } from "../components/TransactionsTable";
 import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
 import { useTransactionFilters } from "../hooks/useTransactionFilters";
 import { useTransactions } from "../hooks/useTransactions";
+import { transactionService } from "../services/transaction.service";
 import { downloadTransactionsCsv } from "../utils/transaction-export.utils";
 
 export function RestaurantTransactionsPage() {
@@ -40,6 +41,7 @@ export function RestaurantTransactionsPage() {
     handleSortChange,
     resetFilters,
     isFiltered,
+    isDateRangeInvalid,
   } = useTransactionFilters();
 
   const { data, isLoading, isError, refetch } = useTransactions(queryParams);
@@ -47,15 +49,23 @@ export function RestaurantTransactionsPage() {
   const transactions = data?.transactions ?? [];
   const pagination = data?.pagination;
 
-  const handleExportCsv = () => {
-    if (!transactions || transactions.length === 0) {
-      toast.error(TRANSACTION_MESSAGES.EXPORT_EMPTY);
-      return;
-    }
-
+  const handleExportCsv = async () => {
     try {
       setIsExporting(true);
-      const success = downloadTransactionsCsv(transactions, "restaurant-transactions");
+      const exportData = await transactionService.getTransactions({
+        ...queryParams,
+        page: 1,
+        limit: 1000,
+      });
+
+      const recordsToExport = exportData.transactions;
+
+      if (!recordsToExport || recordsToExport.length === 0) {
+        toast.error(TRANSACTION_MESSAGES.EXPORT_EMPTY);
+        return;
+      }
+
+      const success = downloadTransactionsCsv(recordsToExport, "restaurant-transactions");
       if (success) {
         toast.success(TRANSACTION_MESSAGES.EXPORT_SUCCESS);
       } else {
@@ -97,6 +107,7 @@ export function RestaurantTransactionsPage() {
         customEndDate={customEndDate}
         onCustomEndDateChange={handleCustomEndDateChange}
         isFiltered={isFiltered}
+        isDateRangeInvalid={isDateRangeInvalid}
         onResetFilters={resetFilters}
       />
 

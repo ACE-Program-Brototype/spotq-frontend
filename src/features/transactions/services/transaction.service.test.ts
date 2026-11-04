@@ -14,7 +14,7 @@ describe("transactionService", () => {
   });
 
   describe("getTransactions", () => {
-    it("calls apiClient.get with default pagination params when no params provided", async () => {
+    it("calls apiClient.get with default pagination params and maps totalRecords to totalItems", async () => {
       const mockApiResponse = {
         success: true,
         message: "Transactions retrieved successfully",
@@ -37,10 +37,8 @@ describe("transactionService", () => {
           pagination: {
             currentPage: 1,
             totalPages: 1,
-            totalItems: 1,
+            totalRecords: 1,
             limit: 20,
-            hasNextPage: false,
-            hasPrevPage: false,
           },
         },
       };
@@ -57,7 +55,12 @@ describe("transactionService", () => {
           limit: TRANSACTION_DEFAULTS.LIMIT,
         },
       });
-      expect(result).toEqual(mockApiResponse.data);
+      expect(result.transactions).toEqual(mockApiResponse.data.transactions);
+      expect(result.pagination.totalItems).toBe(1);
+      expect(result.pagination.currentPage).toBe(1);
+      expect(result.pagination.totalPages).toBe(1);
+      expect(result.pagination.hasNextPage).toBe(false);
+      expect(result.pagination.hasPrevPage).toBe(false);
     });
 
     it("serializes search, filters, date range, and sort params correctly", async () => {
@@ -69,10 +72,8 @@ describe("transactionService", () => {
           pagination: {
             currentPage: 2,
             totalPages: 5,
-            totalItems: 50,
+            totalRecords: 50,
             limit: 10,
-            hasNextPage: true,
-            hasPrevPage: true,
           },
         },
       };
@@ -81,7 +82,7 @@ describe("transactionService", () => {
         json: jest.fn().mockResolvedValue(mockApiResponse),
       });
 
-      await transactionService.getTransactions({
+      const result = await transactionService.getTransactions({
         page: 2,
         limit: 10,
         search: "Rahul",
@@ -89,8 +90,6 @@ describe("transactionService", () => {
         method: "UPI",
         startDate: "2026-10-01",
         endDate: "2026-10-28",
-        minAmount: 50000,
-        maxAmount: 100000,
         sortBy: "amountPaise",
         sortOrder: "asc",
       });
@@ -104,12 +103,13 @@ describe("transactionService", () => {
           method: "UPI",
           startDate: "2026-10-01",
           endDate: "2026-10-28",
-          minAmount: 50000,
-          maxAmount: 100000,
           sortBy: "amountPaise",
           sortOrder: "asc",
         },
       });
+      expect(result.pagination.totalItems).toBe(50);
+      expect(result.pagination.hasNextPage).toBe(true);
+      expect(result.pagination.hasPrevPage).toBe(true);
     });
 
     it("throws error if response data is missing", async () => {

@@ -118,4 +118,17 @@ describe("useTransactionFilters", () => {
     expect(result.current.page).toBe(1);
     expect(result.current.isFiltered).toBe(false);
   });
+
+  it("identifies invalid date range when customStartDate is after customEndDate and prevents sending to queryParams", () => {
+    const { result } = renderHook(() => useTransactionFilters());
+
+    act(() => {
+      result.current.handleCustomStartDateChange("2026-11-05");
+      result.current.handleCustomEndDateChange("2026-11-01");
+    });
+
+    expect(result.current.isDateRangeInvalid).toBe(true);
+    expect(result.current.queryParams.startDate).toBeUndefined();
+    expect(result.current.queryParams.endDate).toBeUndefined();
+  });
 });

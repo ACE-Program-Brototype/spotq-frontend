@@ -1,9 +1,15 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { useTransactions } from "../hooks/useTransactions";
+import { transactionService } from "../services/transaction.service";
 import { downloadTransactionsCsv } from "../utils/transaction-export.utils";
 import { RestaurantTransactionsPage } from "./RestaurantTransactionsPage";
 
 jest.mock("../hooks/useTransactions");
+jest.mock("../services/transaction.service", () => ({
+  transactionService: {
+    getTransactions: jest.fn(),
+  },
+}));
 jest.mock("../utils/transaction-export.utils", () => ({
   downloadTransactionsCsv: jest.fn(() => true),
 }));
@@ -137,7 +143,12 @@ describe("RestaurantTransactionsPage", () => {
     expect(mockRefetch).toHaveBeenCalledTimes(1);
   });
 
-  it("calls downloadTransactionsCsv when Export CSV button is clicked", () => {
+  it("calls downloadTransactionsCsv when Export CSV button is clicked", async () => {
+    (transactionService.getTransactions as jest.Mock).mockResolvedValue({
+      transactions: mockTransactions,
+      pagination: mockPagination,
+    });
+
     (useTransactions as jest.Mock).mockReturnValue({
       data: {
         transactions: mockTransactions,
@@ -151,7 +162,9 @@ describe("RestaurantTransactionsPage", () => {
     render(<RestaurantTransactionsPage />);
 
     const exportButton = screen.getByTestId("export-csv-button");
-    fireEvent.click(exportButton);
+    await act(async () => {
+      fireEvent.click(exportButton);
+    });
 
     expect(downloadTransactionsCsv).toHaveBeenCalledWith(
       mockTransactions,

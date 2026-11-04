@@ -51,11 +51,14 @@ export function TransactionsTable({
       {
         key: "orderNumber",
         header: TRANSACTION_MESSAGES.TABLE_HEADERS.ORDER_NUMBER,
-        cell: ({ row }) => (
-          <span className="inline-flex items-center gap-1 font-mono text-xs font-bold text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded-lg border border-neutral-200/80">
-            #{row.orderNumber}
-          </span>
-        ),
+        cell: ({ row }) =>
+          row.orderNumber ? (
+            <span className="inline-flex items-center gap-1 font-mono text-xs font-bold text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded-lg border border-neutral-200/80">
+              #{row.orderNumber}
+            </span>
+          ) : (
+            <span className="text-neutral-400 font-mono text-xs">-</span>
+          ),
       },
       {
         key: "customerName",

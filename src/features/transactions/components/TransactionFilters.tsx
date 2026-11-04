@@ -28,6 +28,7 @@ interface TransactionFiltersProps {
   onCustomEndDateChange: (date: string) => void;
   isFiltered: boolean;
   onResetFilters: () => void;
+  isDateRangeInvalid?: boolean;
 }
 
 export function TransactionFilters({
@@ -45,6 +46,7 @@ export function TransactionFilters({
   onCustomEndDateChange,
   isFiltered,
   onResetFilters,
+  isDateRangeInvalid,
 }: TransactionFiltersProps) {
   const isCustomDate = datePreset === DATE_PRESET_OPTIONS.CUSTOM;
 
@@ -195,6 +197,11 @@ export function TransactionFilters({
               className="h-8 px-2.5 rounded-lg border border-neutral-200 bg-white text-neutral-800 focus:outline-hidden focus:ring-1 focus:ring-neutral-400"
             />
           </div>
+          {isDateRangeInvalid && (
+            <span className="text-red-500 font-medium text-xs">
+              {TRANSACTION_MESSAGES.INVALID_DATE_RANGE}
+            </span>
+          )}
         </div>
       )}
     </div>
