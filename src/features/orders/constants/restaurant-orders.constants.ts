@@ -30,6 +30,7 @@ export const RESTAURANT_ORDERS_DEFAULTS = {
   DEFAULT_CANCELLATION_RATE: "0% cancellation rate",
   DEFAULT_SORT_BY: "createdAt" as const,
   DEFAULT_SORT_ORDER: "desc" as const,
+  SEARCH_DEBOUNCE_MS: 400,
   INITIAL_METRICS: {
     totalOrders: 0,
     grossRevenue: 0,

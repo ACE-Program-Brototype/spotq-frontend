@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils/cn";
 import { OrdersFilters } from "../components/admin/order/OrdersFilters";
 import { OrdersOverview } from "../components/admin/order/OrdersOverview";
@@ -25,6 +26,10 @@ export default function RestaurantOrdersPage() {
 
   // Filter toolbar UI interaction state
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(
+    searchQuery,
+    RESTAURANT_ORDERS_DEFAULTS.SEARCH_DEBOUNCE_MS,
+  );
   const [statusFilter, setStatusFilter] = useState<RestaurantOrderFilterStatus>("ALL");
   const [dateRange, setDateRange] = useState<OrderDateRangeFilter>("TODAY");
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,7 +75,7 @@ export default function RestaurantOrdersPage() {
   } = useRestaurantOrders(restaurantId, {
     page: currentPage,
     limit: RESTAURANT_ORDERS_DEFAULTS.LIMIT,
-    search: searchQuery,
+    search: debouncedSearchQuery,
     status: statusFilter !== "ALL" ? statusFilter : undefined,
     from: dateParams.from,
     to: dateParams.to,

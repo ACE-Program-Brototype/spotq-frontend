@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import RestaurantOrdersPage from "./RestaurantOrdersPage";
 
@@ -65,6 +65,7 @@ jest.mock("../hooks/use-restaurant-orders", () => ({
 
 describe("RestaurantOrdersPage UI Presentation", () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
     mockUseRestaurantOrders.mockReturnValue({
       data: {
@@ -78,6 +79,10 @@ describe("RestaurantOrdersPage UI Presentation", () => {
       isFetching: false,
       refetch: jest.fn(),
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   const renderPage = () => {
@@ -201,6 +206,10 @@ describe("RestaurantOrdersPage UI Presentation", () => {
     // Simulate search change
     const searchInput = screen.getByPlaceholderText("Search by order number (e.g. ORD-9281)...");
     fireEvent.change(searchInput, { target: { value: "ORD-999" } });
+
+    act(() => {
+      jest.advanceTimersByTime(400);
+    });
 
     expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
       expect.any(String),
