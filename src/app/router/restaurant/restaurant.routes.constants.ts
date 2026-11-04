@@ -58,6 +58,13 @@ export const RESTAURANT_ROUTE_PATHS = {
     CREATE: "create",
     VIEW: ":tableId",
   },
+
+  FINANCE: {
+    ROOT: "finance",
+    TRANSACTIONS: "finance/transactions",
+  },
+  PAYMENTS_HISTORY: "payments/history",
+  TRANSACTIONS: "transactions",
 } as const;
 
 // Absolute paths and route builders for navigate() and <Link to="..." />
@@ -122,4 +129,11 @@ export const RESTAURANT_ROUTES = {
     CREATE: "/restaurant/tables/create",
     VIEW: (tableId: string) => `/restaurant/tables/${tableId}`,
   },
+
+  // Finance & Transactions
+  FINANCE: {
+    ROOT: "/restaurant/finance",
+    TRANSACTIONS: "/restaurant/finance/transactions",
+  },
+  TRANSACTIONS: "/restaurant/transactions",
 } as const;
