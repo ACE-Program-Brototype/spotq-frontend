@@ -17,7 +17,6 @@ import { OrderStatusBadge } from "./OrderStatusBadge";
 
 export interface OrdersTableProps {
   orders: RestaurantOrderListItem[];
-  onQuickView?: (order: RestaurantOrderListItem) => void;
   onOrderClick?: (order: RestaurantOrderListItem) => void;
   currentPage?: number;
   totalPages?: number;
@@ -32,7 +31,6 @@ export interface OrdersTableProps {
 
 export function OrdersTable({
   orders,
-  onQuickView,
   onOrderClick,
   currentPage = 1,
   totalPages = 1,
@@ -50,8 +48,6 @@ export function OrdersTable({
   const handleSelectOrder = (order: RestaurantOrderListItem) => {
     if (onOrderClick) {
       onOrderClick(order);
-    } else if (onQuickView) {
-      onQuickView(order);
     } else {
       navigate(RESTAURANT_ROUTES.ORDERS.DETAIL(order.orderId));
     }
