@@ -46,7 +46,7 @@ export function AdminLoginForm() {
             disabled={isPending}
             error={errors.email?.message}
             leadingIcon={<Mail className="size-4 text-muted-foreground" aria-hidden="true" />}
-            className="h-9 rounded-none border-0 bg-transparent pl-7 pr-0 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
+            className="h-9 ml-3 rounded-none border-0 bg-transparent pl-7 pr-0 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
             {...register("email")}
           />
         </div>
@@ -79,7 +79,7 @@ export function AdminLoginForm() {
             disabled={isPending}
             error={errors.password?.message}
             leadingIcon={<Lock className="size-4 text-muted-foreground" aria-hidden="true" />}
-            className="h-9 rounded-none border-0 bg-transparent pl-7 pr-8 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
+            className="h-9 ml-3 rounded-none border-0 bg-transparent pl-7 pr-8 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
             {...register("password")}
           />
         </div>
