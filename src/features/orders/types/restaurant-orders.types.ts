@@ -153,11 +153,16 @@ export interface RestaurantOrderDetailApiResponse {
   data: RestaurantOrderDetail;
 }
 
+export type RestaurantOrderSortBy = "createdAt" | "grandTotal";
+export type RestaurantOrderSortOrder = "asc" | "desc";
+
 export interface GetRestaurantOrdersParams {
   search?: string;
   status?: RestaurantOrderFilterStatus;
   from?: string;
   to?: string;
+  sortBy?: RestaurantOrderSortBy;
+  sortOrder?: RestaurantOrderSortOrder;
   page?: number;
   limit?: number;
 }

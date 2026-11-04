@@ -99,6 +99,14 @@ export const restaurantOrdersService = {
       searchParams.to = params.to;
     }
 
+    if (params?.sortBy) {
+      searchParams.sortBy = params.sortBy;
+    }
+
+    if (params?.sortOrder) {
+      searchParams.sortOrder = params.sortOrder;
+    }
+
     const response = await apiClient
       .get(RESTAURANT_ORDERS_ENDPOINTS.LIST(restaurantId), {
         searchParams,

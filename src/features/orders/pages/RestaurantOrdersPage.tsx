@@ -15,6 +15,8 @@ import type {
   OrderDateRangeFilter,
   RestaurantOrderFilterStatus,
   RestaurantOrderListItem,
+  RestaurantOrderSortBy,
+  RestaurantOrderSortOrder,
 } from "../types/restaurant-orders.types";
 
 export default function RestaurantOrdersPage() {
@@ -26,6 +28,12 @@ export default function RestaurantOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<RestaurantOrderFilterStatus>("ALL");
   const [dateRange, setDateRange] = useState<OrderDateRangeFilter>("TODAY");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState<RestaurantOrderSortBy>(
+    RESTAURANT_ORDERS_DEFAULTS.DEFAULT_SORT_BY,
+  );
+  const [sortOrder, setSortOrder] = useState<RestaurantOrderSortOrder>(
+    RESTAURANT_ORDERS_DEFAULTS.DEFAULT_SORT_ORDER,
+  );
 
   // Compute date range ISO strings for query
   const dateParams = useMemo(() => {
@@ -66,6 +74,8 @@ export default function RestaurantOrdersPage() {
     status: statusFilter !== "ALL" ? statusFilter : undefined,
     from: dateParams.from,
     to: dateParams.to,
+    sortBy,
+    sortOrder,
   });
 
   const handleRefresh = () => {
@@ -78,11 +88,38 @@ export default function RestaurantOrdersPage() {
     navigate(RESTAURANT_ROUTES.ORDERS.DETAIL(order.orderId));
   };
 
+  const handleSortChange = (field: RestaurantOrderSortBy) => {
+    if (sortBy === field) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(field);
+      setSortOrder("desc");
+    }
+    setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
+  };
+
+  const handleStatusChange = (status: RestaurantOrderFilterStatus) => {
+    setStatusFilter(status);
+    setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
+  };
+
+  const handleDateRangeChange = (range: OrderDateRangeFilter) => {
+    setDateRange(range);
+    setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
+  };
+
   const handleClearFilters = () => {
     setSearchQuery("");
     setStatusFilter("ALL");
     setDateRange("TODAY");
-    setCurrentPage(1);
+    setSortBy(RESTAURANT_ORDERS_DEFAULTS.DEFAULT_SORT_BY);
+    setSortOrder(RESTAURANT_ORDERS_DEFAULTS.DEFAULT_SORT_ORDER);
+    setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
   };
 
   const metrics = metricsData ?? RESTAURANT_ORDERS_DEFAULTS.INITIAL_METRICS;
@@ -134,11 +171,11 @@ export default function RestaurantOrdersPage() {
       {/* C. Filters and Search Section */}
       <OrdersFilters
         searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        onSearchChange={handleSearchChange}
         statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
+        onStatusChange={handleStatusChange}
         dateRange={dateRange}
-        onDateRangeChange={setDateRange}
+        onDateRangeChange={handleDateRangeChange}
         onClearFilters={handleClearFilters}
       />
 
@@ -152,6 +189,9 @@ export default function RestaurantOrdersPage() {
         totalOrders={ordersData?.totalOrders ?? 0}
         onPageChange={setCurrentPage}
         onResetFilters={handleClearFilters}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={handleSortChange}
       />
     </div>
   );

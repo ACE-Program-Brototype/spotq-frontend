@@ -131,6 +131,8 @@ describe("restaurantOrdersService", () => {
         limit: 20,
         search: "ORD-001",
         status: "PLACED",
+        sortBy: "grandTotal",
+        sortOrder: "asc",
       });
 
       expect(apiClient.get).toHaveBeenCalledWith(RESTAURANT_ORDERS_ENDPOINTS.LIST(restaurantId), {
@@ -139,6 +141,8 @@ describe("restaurantOrdersService", () => {
           limit: 20,
           search: "ORD-001",
           status: "PLACED",
+          sortBy: "grandTotal",
+          sortOrder: "asc",
         },
       });
       expect(result.orders).toHaveLength(1);

@@ -1,13 +1,18 @@
-import { Eye, ShoppingBag } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Eye, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { DataTablePagination } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate, formatTime } from "@/lib/utils/date";
 import { RESTAURANT_ORDERS_MESSAGES } from "../../../constants/restaurant-orders.constants";
-import type { RestaurantOrderListItem } from "../../../types/restaurant-orders.types";
+import type {
+  RestaurantOrderListItem,
+  RestaurantOrderSortBy,
+  RestaurantOrderSortOrder,
+} from "../../../types/restaurant-orders.types";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 
 export interface OrdersTableProps {
@@ -20,6 +25,9 @@ export interface OrdersTableProps {
   onPageChange?: (page: number) => void;
   onResetFilters?: () => void;
   isLoading?: boolean;
+  sortBy?: RestaurantOrderSortBy;
+  sortOrder?: RestaurantOrderSortOrder;
+  onSortChange?: (field: RestaurantOrderSortBy) => void;
 }
 
 export function OrdersTable({
@@ -32,6 +40,9 @@ export function OrdersTable({
   onPageChange,
   onResetFilters,
   isLoading = false,
+  sortBy,
+  sortOrder = "desc",
+  onSortChange,
 }: OrdersTableProps) {
   const navigate = useNavigate();
   const displayTotal = totalOrders ?? orders.length;
@@ -56,14 +67,52 @@ export function OrdersTable({
               <th scope="col" className="py-3.5 px-4 sm:px-6">
                 Order Number
               </th>
-              <th scope="col" className="py-3.5 px-4">
-                Date / Time
+              <th
+                scope="col"
+                className={cn(
+                  "py-3.5 px-4",
+                  onSortChange && "cursor-pointer hover:text-neutral-800 transition-colors select-none",
+                )}
+                onClick={() => onSortChange?.("createdAt")}
+                title={onSortChange ? "Sort by Date/Time" : undefined}
+              >
+                <div className="inline-flex items-center gap-1.5">
+                  <span>Date / Time</span>
+                  {sortBy === "createdAt" ? (
+                    sortOrder === "asc" ? (
+                      <ArrowUp className="size-3 text-[#e8631b]" />
+                    ) : (
+                      <ArrowDown className="size-3 text-[#e8631b]" />
+                    )
+                  ) : onSortChange ? (
+                    <ArrowUpDown className="size-3 text-neutral-400 opacity-60" />
+                  ) : null}
+                </div>
               </th>
               <th scope="col" className="py-3.5 px-4">
                 Items
               </th>
-              <th scope="col" className="py-3.5 px-4">
-                Total Amount
+              <th
+                scope="col"
+                className={cn(
+                  "py-3.5 px-4",
+                  onSortChange && "cursor-pointer hover:text-neutral-800 transition-colors select-none",
+                )}
+                onClick={() => onSortChange?.("grandTotal")}
+                title={onSortChange ? "Sort by Total Amount" : undefined}
+              >
+                <div className="inline-flex items-center gap-1.5">
+                  <span>Total Amount</span>
+                  {sortBy === "grandTotal" ? (
+                    sortOrder === "asc" ? (
+                      <ArrowUp className="size-3 text-[#e8631b]" />
+                    ) : (
+                      <ArrowDown className="size-3 text-[#e8631b]" />
+                    )
+                  ) : onSortChange ? (
+                    <ArrowUpDown className="size-3 text-neutral-400 opacity-60" />
+                  ) : null}
+                </div>
               </th>
               <th scope="col" className="py-3.5 px-4">
                 Status

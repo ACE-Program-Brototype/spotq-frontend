@@ -49,6 +49,8 @@ const mockOrders = [
   },
 ];
 
+const mockUseRestaurantOrders = jest.fn();
+
 jest.mock("../hooks/use-restaurant-orders-overview", () => ({
   useRestaurantOrdersOverview: () => ({
     data: mockMetrics,
@@ -58,23 +60,24 @@ jest.mock("../hooks/use-restaurant-orders-overview", () => ({
 }));
 
 jest.mock("../hooks/use-restaurant-orders", () => ({
-  useRestaurantOrders: () => ({
-    data: {
-      orders: mockOrders,
-      totalOrders: 1248,
-      totalPages: 3,
-      currentPage: 1,
-      hasNext: true,
-    },
-    isLoading: false,
-    isFetching: false,
-    refetch: jest.fn(),
-  }),
+  useRestaurantOrders: (...args: unknown[]) => mockUseRestaurantOrders(...args),
 }));
 
 describe("RestaurantOrdersPage UI Presentation", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseRestaurantOrders.mockReturnValue({
+      data: {
+        orders: mockOrders,
+        totalOrders: 1248,
+        totalPages: 3,
+        currentPage: 1,
+        hasNext: true,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: jest.fn(),
+    });
   });
 
   const renderPage = () => {
@@ -183,6 +186,43 @@ describe("RestaurantOrdersPage UI Presentation", () => {
 
     expect(mockedNavigate).toHaveBeenCalledWith(
       "/restaurant/orders/326a800d-494d-4e8c-a51d-23580c7ed725",
+    );
+  });
+
+  it("resets currentPage to 1 when changing search query, status, or date range", () => {
+    renderPage();
+
+    // Verify initial call has page 1
+    expect(mockUseRestaurantOrders).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ page: 1 }),
+    );
+
+    // Simulate search change
+    const searchInput = screen.getByPlaceholderText("Search by order number (e.g. ORD-9281)...");
+    fireEvent.change(searchInput, { target: { value: "ORD-999" } });
+
+    expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
+      expect.any(String),
+      expect.objectContaining({ page: 1, search: "ORD-999" }),
+    );
+
+    // Simulate status filter change
+    const statusSelect = screen.getByLabelText("Filter by order status");
+    fireEvent.change(statusSelect, { target: { value: "PLACED" } });
+
+    expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
+      expect.any(String),
+      expect.objectContaining({ page: 1, status: "PLACED" }),
+    );
+
+    // Simulate date range change
+    const dateSelect = screen.getByLabelText("Filter by date range");
+    fireEvent.change(dateSelect, { target: { value: "LAST_7_DAYS" } });
+
+    expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
+      expect.any(String),
+      expect.objectContaining({ page: 1 }),
     );
   });
 });
