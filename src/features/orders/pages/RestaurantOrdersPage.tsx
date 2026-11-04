@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils/cn";
 import { OrdersFilters } from "../components/admin/order/OrdersFilters";
 import { OrdersOverview } from "../components/admin/order/OrdersOverview";
 import { OrdersTable } from "../components/admin/order/OrdersTable";
+import { RESTAURANT_ORDERS_DEFAULTS } from "../constants/restaurant-orders.constants";
 import { useRestaurantOrders } from "../hooks/use-restaurant-orders";
 import { useRestaurantOrdersOverview } from "../hooks/use-restaurant-orders-overview";
 import type {
@@ -60,7 +61,7 @@ export default function RestaurantOrdersPage() {
     refetch: refetchOrders,
   } = useRestaurantOrders(restaurantId, {
     page: currentPage,
-    limit: 10,
+    limit: RESTAURANT_ORDERS_DEFAULTS.LIMIT,
     search: searchQuery,
     status: statusFilter !== "ALL" ? statusFilter : undefined,
     from: dateParams.from,
@@ -84,12 +85,7 @@ export default function RestaurantOrdersPage() {
     setCurrentPage(1);
   };
 
-  const metrics = metricsData ?? {
-    totalOrders: 0,
-    grossRevenue: 0,
-    completedOrders: 0,
-    cancelledOrders: 0,
-  };
+  const metrics = metricsData ?? RESTAURANT_ORDERS_DEFAULTS.INITIAL_METRICS;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-8">

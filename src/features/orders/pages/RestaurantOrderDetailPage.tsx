@@ -25,6 +25,7 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate, formatTime } from "@/lib/utils/date";
 import { OrderStatusBadge } from "../components/admin/order/OrderStatusBadge";
+import { RESTAURANT_ORDERS_MESSAGES } from "../constants/restaurant-orders.constants";
 import { useRestaurantOrderDetail } from "../hooks/use-restaurant-order-detail";
 import type { RestaurantOrderStatus } from "../types/restaurant-orders.types";
 
@@ -62,9 +63,11 @@ export default function RestaurantOrderDetailPage() {
         <div className="size-14 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#e8631b] mb-4 shadow-2xs">
           <Receipt className="size-7" />
         </div>
-        <h2 className="text-xl font-bold text-neutral-900">Order not found</h2>
+        <h2 className="text-xl font-bold text-neutral-900">
+          {RESTAURANT_ORDERS_MESSAGES.ORDER_NOT_FOUND_TITLE}
+        </h2>
         <p className="mt-1.5 text-xs text-neutral-500">
-          We couldn&apos;t retrieve the order details. The order may have been removed or does not exist.
+          {RESTAURANT_ORDERS_MESSAGES.ORDER_NOT_FOUND_DESC}
         </p>
         <div className="mt-5 flex items-center gap-3">
           <Button

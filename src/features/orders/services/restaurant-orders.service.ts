@@ -1,5 +1,9 @@
 import { apiClient } from "@/lib/api/client";
-import { RESTAURANT_ORDERS_ENDPOINTS } from "../constants/restaurant-orders.constants";
+import {
+  RESTAURANT_ORDERS_DEFAULTS,
+  RESTAURANT_ORDERS_ENDPOINTS,
+  RESTAURANT_ORDERS_SERVICE_ERRORS,
+} from "../constants/restaurant-orders.constants";
 import type {
   GetRestaurantOrdersOverviewApiResponse,
   GetRestaurantOrdersParams,
@@ -19,7 +23,7 @@ export const restaurantOrdersService = {
     filters?: { from?: string; to?: string },
   ): Promise<RestaurantOrderMetrics> {
     if (!restaurantId) {
-      throw new Error("Restaurant ID is required to fetch orders overview");
+      throw new Error(RESTAURANT_ORDERS_SERVICE_ERRORS.OVERVIEW_RESTAURANT_ID_REQUIRED);
     }
 
     const searchParams: Record<string, string> = {};
@@ -44,9 +48,13 @@ export const restaurantOrdersService = {
     const cancelled = summary.cancelled_orders || 0;
 
     const completedOrdersRate =
-      total > 0 ? `${Math.round((completed / total) * 100)}% completion rate` : "0% completion rate";
+      total > 0
+        ? `${Math.round((completed / total) * 100)}% completion rate`
+        : RESTAURANT_ORDERS_DEFAULTS.DEFAULT_COMPLETION_RATE;
     const cancelledOrdersRate =
-      total > 0 ? `${((cancelled / total) * 100).toFixed(1)}% cancellation rate` : "0% cancellation rate";
+      total > 0
+        ? `${((cancelled / total) * 100).toFixed(1)}% cancellation rate`
+        : RESTAURANT_ORDERS_DEFAULTS.DEFAULT_CANCELLATION_RATE;
 
     return {
       totalOrders: total,
@@ -67,12 +75,12 @@ export const restaurantOrdersService = {
     params?: GetRestaurantOrdersParams,
   ): Promise<RestaurantOrdersListApiResponse["data"]> {
     if (!restaurantId) {
-      throw new Error("Restaurant ID is required to fetch orders list");
+      throw new Error(RESTAURANT_ORDERS_SERVICE_ERRORS.LIST_RESTAURANT_ID_REQUIRED);
     }
 
     const searchParams: Record<string, string | number> = {
-      page: params?.page ?? 1,
-      limit: params?.limit ?? 10,
+      page: params?.page ?? RESTAURANT_ORDERS_DEFAULTS.PAGE,
+      limit: params?.limit ?? RESTAURANT_ORDERS_DEFAULTS.LIMIT,
     };
 
     if (params?.search && params.search.trim()) {
@@ -100,9 +108,9 @@ export const restaurantOrdersService = {
     return (
       response.data ?? {
         orders: [],
-        totalOrders: 0,
-        totalPages: 1,
-        currentPage: 1,
+        totalOrders: RESTAURANT_ORDERS_DEFAULTS.TOTAL_ORDERS,
+        totalPages: RESTAURANT_ORDERS_DEFAULTS.TOTAL_PAGES,
+        currentPage: RESTAURANT_ORDERS_DEFAULTS.PAGE,
         hasNext: false,
       }
     );
@@ -114,7 +122,7 @@ export const restaurantOrdersService = {
    */
   async getOrderDetail(restaurantId: string, orderId: string): Promise<RestaurantOrderDetail> {
     if (!restaurantId || !orderId) {
-      throw new Error("Restaurant ID and Order ID are required to fetch order details");
+      throw new Error(RESTAURANT_ORDERS_SERVICE_ERRORS.DETAIL_IDS_REQUIRED);
     }
 
     const response = await apiClient

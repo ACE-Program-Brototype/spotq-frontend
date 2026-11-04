@@ -6,6 +6,7 @@ import { DataTablePagination } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate, formatTime } from "@/lib/utils/date";
+import { RESTAURANT_ORDERS_MESSAGES } from "../../../constants/restaurant-orders.constants";
 import type { RestaurantOrderListItem } from "../../../types/restaurant-orders.types";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 
@@ -89,10 +90,11 @@ export function OrdersTable({
                     <div className="size-14 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#e8631b] mb-4 shadow-2xs">
                       <ShoppingBag className="size-7" />
                     </div>
-                    <h3 className="text-base font-bold text-neutral-900">No orders found</h3>
+                    <h3 className="text-base font-bold text-neutral-900">
+                      {RESTAURANT_ORDERS_MESSAGES.NO_ORDERS_FOUND_TITLE}
+                    </h3>
                     <p className="mt-1 text-xs text-neutral-500">
-                      There are currently no orders matching your selected filters. Try adjusting
-                      your date range, status, or search query.
+                      {RESTAURANT_ORDERS_MESSAGES.NO_ORDERS_FOUND_DESC}
                     </p>
                     {onResetFilters && (
                       <Button
