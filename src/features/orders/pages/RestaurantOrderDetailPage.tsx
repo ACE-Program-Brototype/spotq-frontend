@@ -2,8 +2,6 @@ import {
   AlertTriangle,
   ArrowLeft,
   Calendar,
-  CheckCircle2,
-  ChefHat,
   Clock,
   CreditCard,
   FileText,
@@ -14,9 +12,7 @@ import {
   Receipt,
   User,
   UtensilsCrossed,
-  XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Spinner } from "@/components/common/LoadingIndicator";
@@ -27,7 +23,6 @@ import { formatDate, formatTime } from "@/lib/utils/date";
 import { OrderStatusBadge } from "../components/admin/order/OrderStatusBadge";
 import { RESTAURANT_ORDERS_MESSAGES } from "../constants/restaurant-orders.constants";
 import { useRestaurantOrderDetail } from "../hooks/use-restaurant-order-detail";
-import type { RestaurantOrderStatus } from "../types/restaurant-orders.types";
 
 export default function RestaurantOrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -39,14 +34,6 @@ export default function RestaurantOrderDetailPage() {
     isError,
     refetch,
   } = useRestaurantOrderDetail(restaurantId, orderId || "");
-
-  const [currentStatus, setCurrentStatus] = useState<RestaurantOrderStatus | null>(null);
-
-  useEffect(() => {
-    if (order?.orderStatus) {
-      setCurrentStatus(order.orderStatus);
-    }
-  }, [order?.orderStatus]);
 
   if (isLoading) {
     return (
@@ -88,8 +75,6 @@ export default function RestaurantOrderDetailPage() {
     );
   }
 
-  const activeStatus = currentStatus ?? order.orderStatus;
-
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       {/* 1. Back Navigation & Page Header */}
@@ -114,7 +99,7 @@ export default function RestaurantOrderDetailPage() {
                 <h1 className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-neutral-900">
                   #{order.orderNumber}
                 </h1>
-                <OrderStatusBadge status={activeStatus} size="md" />
+                <OrderStatusBadge status={order.orderStatus} size="md" />
                 <span
                   className={`inline-flex items-center rounded-lg px-2 py-0.5 text-xs font-bold ${order.orderType === "DINE_IN"
                       ? "bg-amber-50 text-amber-800 border border-amber-200"
@@ -137,115 +122,8 @@ export default function RestaurantOrderDetailPage() {
             </div>
           </div>
 
-          {/* Contextual Status Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {activeStatus === "PLACED" && (
-              <>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setCurrentStatus("PREPARING")}
-                  className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold"
-                >
-                  <ChefHat className="size-4" />
-                  <span>Accept &amp; Prepare</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentStatus("CANCELLED")}
-                  className="rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50 gap-1.5"
-                >
-                  <XCircle className="size-4" />
-                  <span>Cancel Order</span>
-                </Button>
-              </>
-            )}
-
-            {activeStatus === "CONFIRMED" && (
-              <>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setCurrentStatus("PREPARING")}
-                  className="rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold"
-                >
-                  <ChefHat className="size-4" />
-                  <span>Start Preparing</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentStatus("CANCELLED")}
-                  className="rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50 gap-1.5"
-                >
-                  <XCircle className="size-4" />
-                  <span>Cancel Order</span>
-                </Button>
-              </>
-            )}
-
-            {activeStatus === "PREPARING" && (
-              <>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setCurrentStatus("READY")}
-                  className="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs gap-1.5 font-semibold"
-                >
-                  <CheckCircle2 className="size-4" />
-                  <span>Mark as Ready</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentStatus("CANCELLED")}
-                  className="rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50 gap-1.5"
-                >
-                  <XCircle className="size-4" />
-                  <span>Cancel</span>
-                </Button>
-              </>
-            )}
-
-            {activeStatus === "READY" && (
-              <>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setCurrentStatus("SERVED")}
-                  className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-xs gap-1.5 font-semibold"
-                >
-                  <CheckCircle2 className="size-4" />
-                  <span>Mark as Served</span>
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setCurrentStatus("COMPLETED")}
-                  className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs gap-1.5 font-semibold"
-                >
-                  <CheckCircle2 className="size-4" />
-                  <span>Complete Order</span>
-                </Button>
-              </>
-            )}
-
-            {activeStatus === "SERVED" && (
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => setCurrentStatus("COMPLETED")}
-                className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs gap-1.5 font-semibold"
-              >
-                <CheckCircle2 className="size-4" />
-                <span>Complete Order</span>
-              </Button>
-            )}
-
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2.5">
             <Button
               type="button"
               variant="outline"
@@ -261,7 +139,7 @@ export default function RestaurantOrderDetailPage() {
       </div>
 
       {/* Cancellation Notice if Cancelled */}
-      {activeStatus === "CANCELLED" && (
+      {order.orderStatus === "CANCELLED" && (
         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-900 shadow-2xs">
           <div className="flex items-center gap-2 font-bold text-rose-800 text-sm">
             <AlertTriangle className="size-4 text-rose-600 shrink-0" />

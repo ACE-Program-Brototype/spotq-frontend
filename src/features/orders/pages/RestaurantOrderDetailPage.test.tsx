@@ -128,17 +128,17 @@ describe("RestaurantOrderDetailPage UI Presentation", () => {
     expect(screen.getByText("Grand Total")).toBeInTheDocument();
   });
 
-  it("renders contextual action buttons and updates status visually on click", () => {
+  it("renders print receipt action button and triggers print on click", () => {
+    const printSpy = jest.spyOn(window, "print").mockImplementation(() => {});
     renderDetailPage();
 
-    // Placed order has "Accept & Prepare" and "Cancel Order" buttons
-    const acceptBtn = screen.getByRole("button", { name: /Accept & Prepare/i });
-    expect(acceptBtn).toBeInTheDocument();
+    const printBtn = screen.getByRole("button", { name: /Print/i });
+    expect(printBtn).toBeInTheDocument();
 
-    // Clicking "Accept & Prepare" transitions UI status to Preparing
-    fireEvent.click(acceptBtn);
-    expect(screen.getByText("Preparing")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Mark as Ready/i })).toBeInTheDocument();
+    fireEvent.click(printBtn);
+    expect(printSpy).toHaveBeenCalledTimes(1);
+
+    printSpy.mockRestore();
   });
 
   it("renders status history timeline", () => {
