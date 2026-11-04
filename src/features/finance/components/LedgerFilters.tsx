@@ -1,7 +1,9 @@
 import { CalendarDays, Search } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
+import { FINANCE_MESSAGES } from "../constants/finance.constants";
 import type { DatePreset } from "../types/finance.types";
+import { getTodayDateString } from "../utils/finance.utils";
 
 export interface LedgerFilterState {
   search: string;
@@ -29,6 +31,19 @@ export function LedgerFilters({
   customEnd,
   setFilters,
 }: LedgerFiltersProps) {
+  const today = getTodayDateString();
+  const startError =
+    customStart && customStart > today
+      ? FINANCE_MESSAGES.LEDGER_START_DATE_FUTURE
+      : customStart && customEnd && customStart > customEnd
+        ? FINANCE_MESSAGES.LEDGER_START_DATE_AFTER_END
+        : "";
+  const endError =
+    customEnd && customEnd > today
+      ? FINANCE_MESSAGES.LEDGER_END_DATE_FUTURE
+      : customStart && customEnd && customEnd < customStart
+        ? FINANCE_MESSAGES.LEDGER_END_DATE_BEFORE_START
+        : "";
   return (
     <div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
       <div className="relative min-w-0 sm:col-span-2 lg:col-span-3 2xl:col-span-1">
@@ -79,24 +94,45 @@ export function LedgerFilters({
       </label>
       {datePreset === "CUSTOM" && (
         <div className="col-span-1 flex min-w-0 flex-wrap gap-2 sm:col-span-2 lg:col-span-3 2xl:col-span-2">
-          <Input
-            aria-label="Start date"
-            type="date"
-            value={customStart}
-            onChange={(event) =>
-              setFilters((state) => ({ ...state, customStart: event.target.value, page: 1 }))
-            }
-            className="w-max"
-          />
-          <Input
-            aria-label="End date"
-            type="date"
-            value={customEnd}
-            onChange={(event) =>
-              setFilters((state) => ({ ...state, customEnd: event.target.value, page: 1 }))
-            }
-            className="w-max"
-          />
+          <div className="flex flex-col gap-1">
+            <Input
+              aria-label="Start date"
+              aria-invalid={Boolean(startError)}
+              aria-describedby={startError ? "ledger-start-date-error" : undefined}
+              type="date"
+              value={customStart}
+              max={customEnd || today}
+              onChange={(event) =>
+                setFilters((state) => ({ ...state, customStart: event.target.value, page: 1 }))
+              }
+              className="w-max"
+            />
+            {startError && (
+              <p id="ledger-start-date-error" role="alert" className="text-xs text-red-600">
+                {startError}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <Input
+              aria-label="End date"
+              aria-invalid={Boolean(endError)}
+              aria-describedby={endError ? "ledger-end-date-error" : undefined}
+              type="date"
+              value={customEnd}
+              min={customStart || undefined}
+              max={today}
+              onChange={(event) =>
+                setFilters((state) => ({ ...state, customEnd: event.target.value, page: 1 }))
+              }
+              className="w-max"
+            />
+            {endError && (
+              <p id="ledger-end-date-error" role="alert" className="text-xs text-red-600">
+                {endError}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>

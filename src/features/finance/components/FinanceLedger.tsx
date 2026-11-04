@@ -49,7 +49,7 @@ export function FinanceLedger({
         columns={columns}
         isLoading={loading}
         loadingRowCount={6}
-        error={error || null}
+        error={null}
         emptyTitle="No ledger entries found"
         emptyDescription="Try adjusting your search or date range to find matching transactions."
         emptyAction={

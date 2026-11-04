@@ -1,10 +1,17 @@
 import { Dialog } from "@base-ui/react/dialog";
 import { Check, Copy, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
+import { LEDGER_ENTRY_TYPE } from "@/features/finance/constants/finance.constants";
+import type { MasterLedgerEntry } from "@/features/finance/types/finance.types";
+import {
+  formatDate,
+  formatPaise,
+  typeLabels,
+  typeStyles,
+} from "@/features/finance/utils/finance-display.utils";
 import { cn } from "@/lib/utils/cn";
-import { LEDGER_ENTRY_TYPE } from "../constants/finance.constants";
-import type { MasterLedgerEntry } from "../types/finance.types";
-import { formatDate, formatPaise, typeLabels, typeStyles } from "../utils/finance-display.utils";
 
 export function FinanceDetailDrawer({
   entry,
@@ -90,12 +97,12 @@ export function FinanceDetailDrawer({
               {copied ? "Copied" : "Copy transaction ID"}
             </Button>
             {entry.restaurantId && (
-              <a
-                href={`/admin/restaurants/${entry.restaurantId}`}
+              <Link
+                to={ADMIN_ROUTES.RESTAURANT_DETAIL(entry.restaurantId)}
                 className="inline-flex h-9 flex-1 items-center justify-center rounded-lg bg-indigo-600 px-3 text-sm font-medium text-white hover:bg-indigo-700"
               >
                 View restaurant
-              </a>
+              </Link>
             )}
           </div>
         </Dialog.Popup>

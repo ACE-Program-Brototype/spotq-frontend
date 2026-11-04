@@ -39,6 +39,7 @@ export const financeService = {
 
   async downloadFinanceCsv(query: Omit<LedgerQuery, "page" | "limit">): Promise<void> {
     const response = await apiClient.get(FINANCE_ENDPOINTS.EXPORT_CSV, {
+      headers: { Accept: "text/csv" },
       searchParams: {
         search: query.search,
         type: query.type,
@@ -56,6 +57,6 @@ export const financeService = {
     anchor.click();
     anchor.remove();
 
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
   },
 };

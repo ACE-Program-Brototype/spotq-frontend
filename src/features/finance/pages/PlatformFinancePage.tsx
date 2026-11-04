@@ -8,7 +8,11 @@ import { FinanceLedger } from "../components/FinanceLedger";
 import { FinancePageHeader } from "../components/FinancePageHeader";
 import { FinanceSummary as FinanceSummaryCards } from "../components/FinanceSummary";
 import type { LedgerFilterState } from "../components/LedgerFilters";
-import { DEFAULT_FINANCE_DATE_PRESET, FINANCE_PAGE_SIZE } from "../constants/finance.constants";
+import {
+  DEFAULT_FINANCE_DATE_PRESET,
+  FINANCE_MESSAGES,
+  FINANCE_PAGE_SIZE,
+} from "../constants/finance.constants";
 import { useFinanceLedger } from "../hooks/useFinanceLedger";
 import { useFinanceSummary } from "../hooks/useFinanceSummary";
 import { financeService } from "../services/finance.service";
@@ -18,10 +22,10 @@ import { formatDate, formatPaise, typeLabels, typeStyles } from "../utils/financ
 
 export type { DatePreset } from "../types/finance.types";
 
-const FINANCE_ERROR_MESSAGE = "Unable to load finance data. Please try again.";
-
-function getErrorMessage(error: unknown): string {
-  return error ? FINANCE_ERROR_MESSAGE : "";
+function getErrorMessage(error: unknown, fallback = FINANCE_MESSAGES.ERROR): string {
+  if (!error) return "";
+  if (error instanceof Error && error.message) return error.message;
+  return fallback;
 }
 
 export default function PlatformFinancePage() {

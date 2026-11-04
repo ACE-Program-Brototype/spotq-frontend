@@ -1,5 +1,11 @@
 import type { DatePreset } from "../types/finance.types";
 
+export function getTodayDateString() {
+  const date = new Date();
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date.toISOString().slice(0, 10);
+}
+
 export function getDateRange(preset: DatePreset, customStart: string, customEnd: string) {
   if (preset === "CUSTOM") {
     return {
