@@ -1,39 +1,72 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { MOCK_CART_DATA } from "../constants/checkout.constants";
 import { checkoutService } from "../services/checkout.service";
+import type { CheckoutDetailsData } from "../types/checkout.types";
 import { CheckoutPage } from "./CheckoutPage";
 
 jest.mock("../services/checkout.service", () => ({
   checkoutService: {
-    getCart: jest.fn(),
+    getCheckoutDetails: jest.fn(),
     placeOrder: jest.fn(),
+    verifyOrderPayment: jest.fn(),
   },
 }));
 
 describe("CheckoutPage", () => {
+  const mockCheckoutData: CheckoutDetailsData = {
+    cartId: "test-cart-id",
+    restaurantId: "test-rest-id",
+    restaurantName: "Spice Garden Cafe",
+    payment: {
+      mode: "ONLINE",
+      paymentRequired: true,
+    },
+    itemCount: 2,
+    subtotal: 400,
+    taxPercent: 5,
+    taxAmount: 20,
+    totalAmount: 420,
+    items: [
+      {
+        cartItemId: "item-1",
+        menuItemId: "menu-1",
+        name: "Wok-Tossed Hakka Noodles",
+        variantId: null,
+        variantName: null,
+        quantity: 2,
+        unitPrice: 200,
+        totalPrice: 400,
+        specialInstructions: null,
+        addons: [],
+      },
+    ],
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
-    (checkoutService.getCart as jest.Mock).mockResolvedValue(MOCK_CART_DATA);
+    (checkoutService.getCheckoutDetails as jest.Mock).mockResolvedValue(mockCheckoutData);
     (checkoutService.placeOrder as jest.Mock).mockResolvedValue({
       success: true,
       data: {
+        id: "ord-test-1",
         orderId: "ord-test-1",
         orderNumber: "ORD-9999",
-        restaurantId: MOCK_CART_DATA.restaurantId,
-        restaurantName: MOCK_CART_DATA.restaurantName,
-        totalAmount: 1911,
+        restaurantId: mockCheckoutData.restaurantId,
+        restaurantName: mockCheckoutData.restaurantName,
+        grandTotal: 420,
+        totalAmount: 420,
         paymentMode: "ONLINE",
-        orderType: "SELF_SERVICE_TABLE",
-        tableNumber: 4,
+        paymentStatus: "PENDING",
+        orderStatus: "PLACED",
+        orderingMode: "SELF_ORDER",
+        paymentDraft: null,
+        items: [],
         createdAt: new Date().toISOString(),
       },
     });
   });
 
-  const renderComponent = (
-    initialEntries = ["/checkout?cartId=48982fbb-d4fb-4275-81a2-bc404bb9c3a8"],
-  ) =>
+  const renderComponent = (initialEntries = ["/checkout"]) =>
     render(
       <MemoryRouter initialEntries={initialEntries}>
         <Routes>
@@ -50,7 +83,7 @@ describe("CheckoutPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Order Details")).toBeInTheDocument();
       expect(screen.getByText("Wok-Tossed Hakka Noodles")).toBeInTheDocument();
-      expect(screen.getByText(/Review your order from Spice Garden Cafe/i)).toBeInTheDocument();
+      expect(screen.getByText(/Ordering from Spice Garden Cafe/i)).toBeInTheDocument();
     });
 
     expect(screen.getByText("Customer Details")).toBeInTheDocument();
@@ -59,7 +92,7 @@ describe("CheckoutPage", () => {
   });
 
   it("submits order and renders in-memory success view on successful checkout", async () => {
-    renderComponent(["/checkout?cartId=48982fbb-d4fb-4275-81a2-bc404bb9c3a8"]);
+    renderComponent(["/checkout"]);
 
     await waitFor(() => {
       expect(screen.getByText("Order Details")).toBeInTheDocument();
@@ -97,11 +130,18 @@ describe("CheckoutPage", () => {
       new Error("Gateway connection timeout"),
     );
 
-    renderComponent(["/checkout?cartId=48982fbb-d4fb-4275-81a2-bc404bb9c3a8"]);
+    renderComponent(["/checkout"]);
 
     await waitFor(() => {
       expect(screen.getByText("Order Details")).toBeInTheDocument();
     });
+
+    // Enter valid name and phone to pass validation
+    const nameInput = screen.getByLabelText(/Customer Name/i);
+    fireEvent.change(nameInput, { target: { value: "Alex Tester" } });
+
+    const phoneInput = screen.getByLabelText(/Mobile Number/i);
+    fireEvent.change(phoneInput, { target: { value: "9876543210" } });
 
     const submitBtn = screen.getByRole("button", { name: /Pay Now/i });
     fireEvent.click(submitBtn);
@@ -121,11 +161,11 @@ describe("CheckoutPage", () => {
   });
 
   it("displays error banner when cart fails to load", async () => {
-    (checkoutService.getCart as jest.Mock).mockRejectedValueOnce(
+    (checkoutService.getCheckoutDetails as jest.Mock).mockRejectedValueOnce(
       new Error("Cart not found or expired"),
     );
 
-    renderComponent(["/checkout?cartId=expired-cart"]);
+    renderComponent(["/checkout"]);
 
     await waitFor(() => {
       expect(screen.getByText(/Failed to load cart/i)).toBeInTheDocument();

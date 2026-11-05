@@ -12,18 +12,16 @@ interface CheckoutFailurePageProps {
 
 export const CheckoutFailurePage: React.FC<CheckoutFailurePageProps> = ({
   errorMessage: propError,
-  cartId: propCartId,
   onRetry,
 }) => {
   const location = useLocation();
-  const state = (location.state as { errorMessage?: string; cartId?: string }) || {};
+  const state = (location.state as { errorMessage?: string }) || {};
   const errorMessage =
     propError ||
     state.errorMessage ||
     "The transaction could not be completed or the order request timed out.";
-  const cartId = propCartId || state.cartId;
 
-  const retryUrl = cartId ? `/checkout?cartId=${encodeURIComponent(cartId)}` : "/checkout";
+  const retryUrl = "/checkout";
 
   return (
     <div className="py-6 sm:py-12 flex items-center justify-center">

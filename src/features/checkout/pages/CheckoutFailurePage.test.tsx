@@ -24,6 +24,6 @@ describe("CheckoutFailurePage", () => {
     expect(screen.getByText(/Payment declined by bank/i)).toBeInTheDocument();
 
     const retryLink = screen.getByRole("link", { name: /Retry Checkout/i });
-    expect(retryLink).toHaveAttribute("href", "/checkout?cartId=test-cart-456");
+    expect(retryLink).toHaveAttribute("href", "/checkout");
   });
 });

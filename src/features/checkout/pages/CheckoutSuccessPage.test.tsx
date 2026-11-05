@@ -11,7 +11,7 @@ describe("CheckoutSuccessPage", () => {
       restaurantName: "Spice Garden Cafe",
       totalAmount: 1913,
       paymentMode: "ONLINE" as const,
-      orderType: "SELF_SERVICE_TABLE" as const,
+      orderingMode: "SELF_ORDER" as const,
       tableNumber: 4,
       createdAt: new Date().toISOString(),
     };
@@ -32,7 +32,7 @@ describe("CheckoutSuccessPage", () => {
     expect(screen.getByText(/Order #ORD-5678/i)).toBeInTheDocument();
     expect(screen.getByText("Spice Garden Cafe")).toBeInTheDocument();
     expect(screen.getByText(/Table 4/i)).toBeInTheDocument();
-    expect(screen.getByText(/Razorpay \(Online Prepay\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Razorpay \(Online Payment\)/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Track Live Orders/i })).toBeInTheDocument();
   });
 });

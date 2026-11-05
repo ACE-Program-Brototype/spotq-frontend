@@ -61,7 +61,6 @@ describe("OrderSummaryCard", () => {
       <OrderSummaryCard
         priceBreakdown={priceBreakdown}
         paymentMode="ONLINE"
-        flow="SELF_SERVICE_TABLE"
         isSubmitting={true}
         onCheckout={mockCheckout}
         itemCount={9}

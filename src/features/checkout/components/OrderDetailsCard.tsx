@@ -60,7 +60,7 @@ export const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({ cart, isLoad
                       item.imageUrl ||
                       "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&auto=format&fit=crop&q=80"
                     }
-                    alt={item.menuItemName}
+                    alt={item.name || item.menuItemName || "Dish"}
                     className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                     loading="lazy"
                   />
@@ -69,7 +69,7 @@ export const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({ cart, isLoad
                 <div className="space-y-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h4 className="font-semibold text-neutral-900 text-sm sm:text-base truncate">
-                      {item.menuItemName}
+                      {item.name || item.menuItemName}
                     </h4>
                   </div>
 
@@ -89,7 +89,7 @@ export const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({ cart, isLoad
                         key={addon.addonId}
                         className="inline-block rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800 border border-amber-200/60"
                       >
-                        + {addon.addonName} (₹{addon.price})
+                        + {addon.name || addon.addonName} (₹{addon.price})
                       </span>
                     ))}
 

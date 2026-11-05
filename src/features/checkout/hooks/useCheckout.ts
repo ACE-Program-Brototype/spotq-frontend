@@ -1,165 +1,190 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { CHECKOUT_DEFAULTS, CHECKOUT_PRICING } from "../constants/checkout.constants";
+import { CHECKOUT_PRICING } from "../constants/checkout.constants";
 import { checkoutService } from "../services/checkout.service";
 import type {
-  CartData,
-  DiningContext,
-  OrderFlowType,
-  OrderPlacementResponse,
+  CheckoutDetailsData,
   PaymentModeType,
+  PlacedOrderData,
   PlaceOrderPayload,
   PriceBreakdown,
 } from "../types/checkout.types";
+import { useOrderRazorpay } from "./useOrderRazorpay";
 
 export type CheckoutViewStatus = "CHECKOUT" | "SUCCESS" | "FAILURE";
 
 export function useCheckout() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const authUser = useAuthStore((state) => state.user);
 
-  // 1. Ensure cartId exists in query params; if missing, initialize it
-  const cartId = searchParams.get("cartId");
-  useEffect(() => {
-    if (!cartId) {
-      const targetCartId = localStorage.getItem("spotq_cart_id") || CHECKOUT_DEFAULTS.CART_ID;
-      const next = new URLSearchParams(searchParams);
-      next.set("cartId", targetCartId);
-      setSearchParams(next, { replace: true });
-    }
-  }, [cartId, searchParams, setSearchParams]);
-
-  // 2. Context parameters from query (without dummy fallbacks)
-  const rawFlow = searchParams.get("flow") || searchParams.get("orderType");
-  const flow: OrderFlowType | undefined = useMemo(() => {
-    if (rawFlow === "QUEUE_PRE_ORDER" || rawFlow === "queue") return "QUEUE_PRE_ORDER";
-    if (rawFlow === "RUNNING_ADDON" || rawFlow === "addon") return "RUNNING_ADDON";
-    if (rawFlow === "SELF_SERVICE_TABLE" || rawFlow === "table") return "SELF_SERVICE_TABLE";
-    return undefined;
-  }, [rawFlow]);
-
+  // 1. Table context from QR scan (e.g. ?table=4)
   const tableParam = searchParams.get("table");
   const tableNumber = tableParam ? Number(tableParam) || null : null;
-  const queueToken = searchParams.get("queueToken") || null;
-  const estimatedWaitMinutes = Number(searchParams.get("eta")) || undefined;
 
-  const setFlow = useCallback(
-    (newFlow: OrderFlowType) => {
-      const next = new URLSearchParams(searchParams);
-      next.set("flow", newFlow);
-      setSearchParams(next, { replace: true });
-    },
-    [searchParams, setSearchParams],
-  );
+  // 2. Checkout details state (GET /orders/checkout - decoded from customer JWT)
+  const [checkoutData, setCheckoutData] = useState<CheckoutDetailsData | null>(null);
+  const [isLoadingCheckout, setIsLoadingCheckout] = useState<boolean>(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
-  // 3. Cart data state loaded from API
-  const [cart, setCart] = useState<CartData | null>(null);
-  const [isLoadingCart, setIsLoadingCart] = useState<boolean>(false);
-  const [cartError, setCartError] = useState<string | null>(null);
-
-  const fetchCart = useCallback(async (id: string) => {
-    setIsLoadingCart(true);
-    setCartError(null);
+  const fetchCheckoutDetails = useCallback(async () => {
+    setIsLoadingCheckout(true);
+    setCheckoutError(null);
     try {
-      const data = await checkoutService.getCart(id);
-      setCart(data);
+      const data = await checkoutService.getCheckoutDetails();
+      setCheckoutData(data);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to load cart";
-      setCartError(msg);
-      setCart(null);
+      const msg = err instanceof Error ? err.message : "Failed to load checkout details";
+      setCheckoutError(msg);
+      setCheckoutData(null);
     } finally {
-      setIsLoadingCart(false);
+      setIsLoadingCheckout(false);
     }
   }, []);
 
   useEffect(() => {
-    if (cartId) {
-      fetchCart(cartId);
-    }
-  }, [cartId, fetchCart]);
+    fetchCheckoutDetails();
+  }, [fetchCheckoutDetails]);
 
-  // 4. Customer fields & Payment mode
-  const [userName, setUserName] = useState<string>(
-    authUser?.fullName || authUser?.name || "Alex Morgan",
-  );
-  const [userPhone, setUserPhone] = useState<string>(authUser?.phone || "9876543210");
+  // 3. Customer fields & Payment mode (from real logged-in auth user)
+  const [userName, setUserName] = useState<string>(authUser?.fullName || authUser?.name || "");
+  const [userPhone, setUserPhone] = useState<string>(authUser?.phone || "");
   const [specialInstructions, setSpecialInstructions] = useState<string>("");
   const [paymentMode, setPaymentMode] = useState<PaymentModeType>("ONLINE");
 
-  // 5. In-memory lifecycle status (no route paths needed)
+  // Keep customer name/phone in sync with auth store if initially empty
+  useEffect(() => {
+    if (authUser) {
+      setUserName((prev) => prev || authUser.fullName || authUser.name || "");
+      setUserPhone((prev) => prev || authUser.phone || "");
+    }
+  }, [authUser]);
+
+  // Keep payment mode in sync with backend contract if specified
+  useEffect(() => {
+    if (checkoutData?.payment?.mode) {
+      setPaymentMode(checkoutData.payment.mode);
+    }
+  }, [checkoutData?.payment?.mode]);
+
+  // 4. In-memory lifecycle status
   const [viewStatus, setViewStatus] = useState<CheckoutViewStatus>("CHECKOUT");
-  const [placedOrder, setPlacedOrder] = useState<OrderPlacementResponse["data"] | null>(null);
+  const [placedOrder, setPlacedOrder] = useState<PlacedOrderData | null>(null);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // 6. Price breakdown calculation
+  // 5. Razorpay integration hook
+  const { launchPayment, isProcessingPayment } = useOrderRazorpay({
+    onSuccess: (confirmedOrder) => {
+      setPlacedOrder(confirmedOrder);
+      setViewStatus("SUCCESS");
+      setIsSubmitting(false);
+    },
+    onFailure: (errorMessage) => {
+      setOrderError(errorMessage);
+      setViewStatus("FAILURE");
+      setIsSubmitting(false);
+    },
+    onDismiss: () => {
+      setIsSubmitting(false);
+    },
+  });
+
+  // 6. Authoritative price breakdown from backend checkout data
   const priceBreakdown: PriceBreakdown = useMemo(() => {
-    const itemsSubtotal = cart?.subtotal || 0;
-    const gstAmount = Math.round(itemsSubtotal * CHECKOUT_PRICING.GST_RATE * 100) / 100;
-    const platformFee = itemsSubtotal > 0 ? CHECKOUT_PRICING.PLATFORM_FEE : 0;
-    const grandTotal = itemsSubtotal + gstAmount + platformFee;
+    const itemsSubtotal = checkoutData?.subtotal || 0;
+    const gstAmount =
+      checkoutData?.taxAmount ?? Math.round(itemsSubtotal * CHECKOUT_PRICING.GST_RATE * 100) / 100;
+    const gstRate = checkoutData?.taxPercent
+      ? checkoutData.taxPercent / 100
+      : CHECKOUT_PRICING.GST_RATE;
+    const platformFee = 0;
+    const grandTotal = checkoutData?.totalAmount ?? itemsSubtotal + gstAmount + platformFee;
 
     return {
       itemsSubtotal,
       gstAmount,
-      gstRate: CHECKOUT_PRICING.GST_RATE,
+      gstRate,
       platformFee,
       grandTotal,
     };
-  }, [cart?.subtotal]);
+  }, [checkoutData]);
 
-  // 7. Order placement with proper payload & in-memory view transitions
+  // 7. Order placement with strict payload & payment launch
   const handleCheckout = useCallback(async () => {
-    if (isSubmitting || !cart) return;
+    if (isSubmitting || isProcessingPayment) return;
+
+    if (!checkoutData) {
+      toast.error("Checkout details are not loaded yet. Please ensure your cart has items.");
+      return;
+    }
 
     const newErrors: Record<string, string> = {};
-    if (!userName.trim()) newErrors.userName = "Customer name is required";
-    if (!userPhone.trim()) newErrors.userPhone = "Mobile number is required";
+    if (userPhone.trim() && !/^\+?[0-9\s-]{7,20}$/.test(userPhone.trim())) {
+      newErrors.userPhone = "Please enter a valid mobile number (7-20 digits)";
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error("Please enter a valid mobile number before placing order");
       return;
     }
 
     setIsSubmitting(true);
     setErrors({});
 
+    // Enforce strict payload matching backend placeOrderBodySchema
     const payload: PlaceOrderPayload = {
-      restaurantId: cart.restaurantId,
-      cartId: cart.cartId,
+      restaurantId: checkoutData.restaurantId,
+      cartId: checkoutData.cartId,
       paymentMode,
-      userName: userName.trim(),
-      userPhone: userPhone.trim(),
+      userName: userName.trim() || null,
+      userPhone: userPhone.trim() || null,
       specialInstructions: specialInstructions.trim() || null,
-      order_type: flow,
-      orderType: flow,
-      tableNumber,
-      queueToken,
     };
+
+    console.info("[SpotQ Checkout] Placing order with payload:", payload);
 
     try {
       const res = await checkoutService.placeOrder(payload);
-      setPlacedOrder(res.data);
-      setViewStatus("SUCCESS");
+      const createdOrder = res.data;
+
+      console.info("[SpotQ Checkout] Order placed successfully:", createdOrder);
+
+      // Launch Razorpay checkout modal with paymentDraft
+      if (createdOrder.paymentDraft) {
+        await launchPayment(createdOrder, createdOrder.paymentDraft, {
+          name: userName.trim(),
+          phone: userPhone.trim(),
+          email: authUser?.email || undefined,
+        });
+      } else {
+        // Fallback for orders verified/completed directly
+        setPlacedOrder(createdOrder);
+        setViewStatus("SUCCESS");
+        setIsSubmitting(false);
+      }
     } catch (err: unknown) {
+      console.error("[SpotQ Checkout] Order placement failed:", err);
       const errorMsg =
         err instanceof Error ? err.message : "Unable to place order. Please try again.";
       setOrderError(errorMsg);
+      toast.error(errorMsg);
       setViewStatus("FAILURE");
-    } finally {
       setIsSubmitting(false);
     }
   }, [
     isSubmitting,
-    cart,
+    isProcessingPayment,
+    checkoutData,
     userName,
     userPhone,
-    specialInstructions,
-    flow,
-    tableNumber,
-    queueToken,
     paymentMode,
+    specialInstructions,
+    launchPayment,
+    authUser?.email,
   ]);
 
   const resetToCheckout = useCallback(() => {
@@ -167,30 +192,13 @@ export function useCheckout() {
     setOrderError(null);
   }, []);
 
-  const diningContext: DiningContext = useMemo(
-    () => ({
-      flow: flow || "SELF_SERVICE_TABLE",
-      tableNumber: tableNumber ? String(tableNumber) : "",
-      restaurantName: cart?.restaurantName || "",
-      restaurantId: cart?.restaurantId || "",
-      queueToken: queueToken || undefined,
-      estimatedWaitMinutes,
-    }),
-    [flow, tableNumber, cart?.restaurantName, cart?.restaurantId, queueToken, estimatedWaitMinutes],
-  );
-
   return {
-    cartId,
-    flow,
-    setFlow,
+    cartId: checkoutData?.cartId,
     tableNumber,
-    queueToken,
-    estimatedWaitMinutes,
-    diningContext,
-    cart,
-    isLoadingCart,
-    cartError,
-    refetchCart: () => (cartId ? fetchCart(cartId) : undefined),
+    cart: checkoutData,
+    isLoadingCart: isLoadingCheckout,
+    cartError: checkoutError,
+    refetchCart: fetchCheckoutDetails,
     priceBreakdown,
     userName,
     setUserName,
@@ -200,7 +208,7 @@ export function useCheckout() {
     setSpecialInstructions,
     paymentMode,
     setPaymentMode,
-    isSubmitting,
+    isSubmitting: isSubmitting || isProcessingPayment,
     handleCheckout,
     errors,
     viewStatus,

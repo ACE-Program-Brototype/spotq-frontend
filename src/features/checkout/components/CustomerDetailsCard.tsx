@@ -44,7 +44,7 @@ export const CustomerDetailsCard: React.FC<CustomerDetailsCardProps> = ({
           {/* userName field */}
           <div className="space-y-1.5">
             <Label htmlFor="checkout-user-name" className="text-xs font-semibold text-neutral-700">
-              Customer Name <span className="text-rose-500">*</span>
+              Customer Name <span className="text-neutral-400 font-normal">(Optional)</span>
             </Label>
             <div className="relative">
               <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
@@ -70,7 +70,7 @@ export const CustomerDetailsCard: React.FC<CustomerDetailsCardProps> = ({
           {/* userPhone field */}
           <div className="space-y-1.5">
             <Label htmlFor="checkout-user-phone" className="text-xs font-semibold text-neutral-700">
-              Mobile Number <span className="text-rose-500">*</span>
+              Mobile Number <span className="text-neutral-400 font-normal">(Optional)</span>
             </Label>
             <div className="relative flex rounded-xl border border-neutral-200 focus-within:ring-2 focus-within:ring-orange-200 focus-within:border-[#ff6b00] overflow-hidden bg-white">
               <span className="flex items-center px-3 bg-neutral-50 text-neutral-500 text-xs font-semibold border-r border-neutral-200">

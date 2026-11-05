@@ -60,15 +60,16 @@ export const CheckoutSuccessPage: React.FC<CheckoutSuccessPageProps> = ({
 
               <div className="flex items-center justify-between border-b border-neutral-200/60 pb-2.5">
                 <span className="font-medium text-neutral-500">Payment Method</span>
-                <span className="font-bold text-neutral-900">
-                  {order.paymentMode === "ONLINE" ? "Razorpay (Online Prepay)" : "Pay at Counter"}
-                </span>
+                <span className="font-bold text-neutral-900">Razorpay (Online Payment)</span>
               </div>
 
               <div className="flex items-center justify-between pt-1">
                 <span className="font-bold text-neutral-900">Total Paid</span>
                 <span className="text-base font-extrabold text-[#ff6b00]">
-                  ₹{order.totalAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                  ₹
+                  {(order.grandTotal ?? order.totalAmount ?? 0).toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                  })}
                 </span>
               </div>
             </div>

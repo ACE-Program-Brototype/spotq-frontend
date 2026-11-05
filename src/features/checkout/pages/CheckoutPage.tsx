@@ -10,6 +10,7 @@ import {
 import type React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ContextBanner } from "../components/ContextBanner";
 import { CustomerDetailsCard } from "../components/CustomerDetailsCard";
 import { OrderDetailsCard } from "../components/OrderDetailsCard";
 import { OrderSummaryCard } from "../components/OrderSummaryCard";
@@ -21,6 +22,7 @@ import { CheckoutSuccessPage } from "./CheckoutSuccessPage";
 export const CheckoutPage: React.FC = () => {
   const {
     cartId,
+    tableNumber,
     cart,
     isLoadingCart,
     cartError,
@@ -115,6 +117,11 @@ export const CheckoutPage: React.FC = () => {
           </div>
         )}
 
+        {/* Restaurant Dining Context Banner */}
+        {cart?.restaurantName && (
+          <ContextBanner restaurantName={cart.restaurantName} tableNumber={tableNumber} />
+        )}
+
         {/* Main 2-Column Checkout Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: Order Items, Customer Info, Payment Method */}
@@ -134,7 +141,7 @@ export const CheckoutPage: React.FC = () => {
               isSubmitting={isSubmitting}
             />
 
-            {/* 3. Payment Method Card (ONLINE & PAY_AT_COUNTER) */}
+            {/* 3. Payment Method Card (Razorpay Online) */}
             <PaymentMethodCard
               paymentMode={paymentMode}
               setPaymentMode={setPaymentMode}

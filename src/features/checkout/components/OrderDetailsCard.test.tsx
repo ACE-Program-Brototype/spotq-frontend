@@ -1,10 +1,45 @@
 import { render, screen } from "@testing-library/react";
-import { MOCK_CART_DATA } from "../constants/checkout.constants";
+import type { CheckoutDetailsData } from "../types/checkout.types";
 import { OrderDetailsCard } from "./OrderDetailsCard";
 
 describe("OrderDetailsCard", () => {
+  const mockCart: CheckoutDetailsData = {
+    cartId: "test-cart-1",
+    restaurantId: "test-rest-1",
+    restaurantName: "Spice Garden Cafe",
+    payment: {
+      mode: "ONLINE",
+      paymentRequired: true,
+    },
+    itemCount: 7,
+    subtotal: 1410,
+    taxPercent: 5,
+    taxAmount: 70.5,
+    totalAmount: 1480.5,
+    items: [
+      {
+        cartItemId: "item-1",
+        menuItemId: "menu-1",
+        name: "Wok-Tossed Hakka Noodles",
+        variantId: null,
+        variantName: "Regular Bowl",
+        quantity: 7,
+        unitPrice: 200,
+        totalPrice: 1400,
+        specialInstructions: null,
+        addons: [
+          {
+            addonId: "addon-1",
+            name: "MAYONISE",
+            price: 10,
+          },
+        ],
+      },
+    ],
+  };
+
   it("renders cart item names, prices, quantities, and addons", () => {
-    render(<OrderDetailsCard cart={MOCK_CART_DATA} />);
+    render(<OrderDetailsCard cart={mockCart} />);
 
     expect(screen.getByText("Order Details")).toBeInTheDocument();
     expect(screen.getByText("Wok-Tossed Hakka Noodles")).toBeInTheDocument();
@@ -14,7 +49,7 @@ describe("OrderDetailsCard", () => {
   });
 
   it("renders empty message when no items in cart", () => {
-    render(<OrderDetailsCard cart={{ ...MOCK_CART_DATA, items: [], itemCount: 0 }} />);
+    render(<OrderDetailsCard cart={{ ...mockCart, items: [], itemCount: 0 }} />);
 
     expect(screen.getByText(/Your order list is empty/i)).toBeInTheDocument();
   });

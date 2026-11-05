@@ -7,8 +7,7 @@ import type { PaymentModeType, PriceBreakdown } from "../types/checkout.types";
 
 interface OrderSummaryCardProps {
   priceBreakdown: PriceBreakdown;
-  paymentMode: PaymentModeType;
-  flow?: string;
+  paymentMode?: PaymentModeType;
   isSubmitting: boolean;
   onCheckout: () => void;
   itemCount: number;
@@ -16,16 +15,13 @@ interface OrderSummaryCardProps {
 
 export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
   priceBreakdown,
-  paymentMode,
   isSubmitting,
   onCheckout,
   itemCount,
 }) => {
   const { itemsSubtotal, gstAmount, platformFee, grandTotal } = priceBreakdown;
 
-  const isOnline = paymentMode === "ONLINE";
-
-  // Dynamic button label according to payment mode
+  // Button label with formatted amount
   const getButtonLabel = () => {
     if (isSubmitting) {
       return "Processing Order...";
@@ -35,7 +31,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
       minimumFractionDigits: 2,
     });
 
-    return isOnline ? `Pay Now ₹${formattedTotal}` : `Confirm Order ₹${formattedTotal}`;
+    return `Pay Now ₹${formattedTotal}`;
   };
 
   return (

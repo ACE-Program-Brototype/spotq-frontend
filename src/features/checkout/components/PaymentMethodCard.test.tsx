@@ -1,37 +1,22 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { PaymentMethodCard } from "./PaymentMethodCard";
 
 describe("PaymentMethodCard", () => {
-  const mockSetPaymentMode = jest.fn();
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("renders payment options with Razorpay and FASTEST badge", () => {
-    render(<PaymentMethodCard paymentMode="ONLINE" setPaymentMode={mockSetPaymentMode} />);
+  it("renders payment method with Razorpay and FASTEST badge", () => {
+    render(<PaymentMethodCard paymentMode="ONLINE" />);
 
     expect(screen.getByText("Payment Method")).toBeInTheDocument();
     expect(screen.getByText("Razorpay")).toBeInTheDocument();
     expect(screen.getByText("FASTEST")).toBeInTheDocument();
-    expect(screen.getByText("Pay at Counter")).toBeInTheDocument();
+    expect(
+      screen.getByText("Supports Google Pay, PhonePe, Paytm, All Major Cards & Netbanking"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Pay at Counter")).not.toBeInTheDocument();
   });
 
-  it("calls setPaymentMode when Pay at Counter is selected", () => {
-    render(<PaymentMethodCard paymentMode="ONLINE" setPaymentMode={mockSetPaymentMode} />);
+  it("renders 100% secure payment note", () => {
+    render(<PaymentMethodCard paymentMode="ONLINE" />);
 
-    const counterButton = screen.getByText("Pay at Counter").closest("button");
-    expect(counterButton).toBeInTheDocument();
-    if (counterButton) {
-      fireEvent.click(counterButton);
-    }
-
-    expect(mockSetPaymentMode).toHaveBeenCalledWith("PAY_AT_COUNTER");
-  });
-
-  it("renders express checkout informational note", () => {
-    render(<PaymentMethodCard paymentMode="ONLINE" setPaymentMode={mockSetPaymentMode} />);
-
-    expect(screen.getByText(/Other payment methods are currently disabled/i)).toBeInTheDocument();
+    expect(screen.getByText(/100% secure with 256-bit encryption/i)).toBeInTheDocument();
   });
 });
