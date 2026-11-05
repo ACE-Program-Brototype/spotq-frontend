@@ -21,6 +21,7 @@ export const getRoleHome = (
     case "ADMIN":
       return ADMIN_ROUTES.DASHBOARD;
     case "RESTAURANT_ADMIN":
+    case "RESTAURANT_OWNER":
       if (status === "ACTIVE" || status === "APPROVED" || status === "VERIFIED") {
         return RESTAURANT_ROUTES.DASHBOARD;
       }

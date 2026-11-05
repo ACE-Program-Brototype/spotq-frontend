@@ -34,7 +34,9 @@ export const TABLE_SHAPE = {
 export const TABLE_QUERY_KEYS = {
   ALL: ["tables"] as const,
   LIST: (restaurantId: string) => ["tables", restaurantId] as const,
-  SECTIONS: (restuaurantId: string) => ["tables", restuaurantId, "sections"] as const,
+  SECTIONS: (restaurantId: string) => ["tables", restaurantId, "sections"] as const,
+  SECTIONS_PAGINATED: (restaurantId: string, page: number, limit: number) =>
+    ["tables", restaurantId, "sections", "paginated", { page, limit }] as const,
   DETAILS: (restaurantId: string, tableId: string) => ["tables", restaurantId, tableId] as const,
 } as const;
 
@@ -64,6 +66,16 @@ export const TABLE_ENDPOINTS = {
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}/status`,
   TABLE_SECTION: (restaurantId: string) => `restaurants/${restaurantId}/table-sections`,
+  TABLE_SECTION_DELETE: (restaurantId: string, sectionId: string) =>
+    `restaurants/${restaurantId}/table-sections/${sectionId}`,
+} as const;
+
+export const TABLE_SECTION_MESSAGES = {
+  CREATE_SUCCESS: "Table section created successfully",
+  CREATE_FAILED: "Unable to create table section",
+  DELETE_SUCCESS: "Table section unlisted successfully",
+  DELETE_FAILED: "Unable to unlist table section",
+  FETCH_FAILED: "Unable to load table sections. Please try again.",
 } as const;
 
 export interface StatusVisualConfig {
