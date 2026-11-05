@@ -116,10 +116,12 @@ export const restaurantOrdersService = {
     return (
       response.data ?? {
         orders: [],
-        totalOrders: RESTAURANT_ORDERS_DEFAULTS.TOTAL_ORDERS,
-        totalPages: RESTAURANT_ORDERS_DEFAULTS.TOTAL_PAGES,
-        currentPage: RESTAURANT_ORDERS_DEFAULTS.PAGE,
-        hasNext: false,
+        pagination: {
+          totalOrders: RESTAURANT_ORDERS_DEFAULTS.TOTAL_ORDERS,
+          totalPages: RESTAURANT_ORDERS_DEFAULTS.TOTAL_PAGES,
+          currentPage: RESTAURANT_ORDERS_DEFAULTS.PAGE,
+          hasNext: false,
+        },
       }
     );
   },
@@ -140,4 +142,3 @@ export const restaurantOrdersService = {
     return response.data;
   },
 };
-

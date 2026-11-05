@@ -115,10 +115,12 @@ describe("restaurantOrdersService", () => {
               createdAt: "2026-11-04T10:00:00.000Z",
             },
           ],
-          totalOrders: 1,
-          totalPages: 1,
-          currentPage: 1,
-          hasNext: false,
+          pagination: {
+            totalOrders: 1,
+            totalPages: 1,
+            currentPage: 1,
+            hasNext: false,
+          },
         },
       };
 
@@ -146,7 +148,7 @@ describe("restaurantOrdersService", () => {
         },
       });
       expect(result.orders).toHaveLength(1);
-      expect(result.totalOrders).toBe(1);
+      expect(result.pagination.totalOrders).toBe(1);
     });
   });
 
@@ -181,4 +183,3 @@ describe("restaurantOrdersService", () => {
     });
   });
 });
-

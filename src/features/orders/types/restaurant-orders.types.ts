@@ -135,15 +135,19 @@ export interface GetRestaurantOrdersOverviewApiResponse {
   };
 }
 
+export interface RestaurantOrdersPagination {
+  totalOrders: number;
+  totalPages: number;
+  currentPage: number;
+  hasNext: boolean;
+}
+
 export interface RestaurantOrdersListApiResponse {
   success: boolean;
   message?: string;
   data: {
     orders: RestaurantOrderListItem[];
-    totalOrders: number;
-    totalPages: number;
-    currentPage: number;
-    hasNext: boolean;
+    pagination: RestaurantOrdersPagination;
   };
 }
 

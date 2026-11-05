@@ -190,8 +190,8 @@ export default function RestaurantOrdersPage() {
         isLoading={isOrdersLoading}
         onOrderClick={handleOpenOrderDetails}
         currentPage={currentPage}
-        totalPages={ordersData?.totalPages ?? 1}
-        totalOrders={ordersData?.totalOrders ?? 0}
+        totalPages={ordersData?.pagination?.totalPages ?? 1}
+        totalOrders={ordersData?.pagination?.totalOrders ?? 0}
         onPageChange={setCurrentPage}
         onResetFilters={handleClearFilters}
         sortBy={sortBy}
