@@ -50,8 +50,8 @@ const adminNavItems: NavItem[] = [
     icon: Users,
   },
   {
-    title: "Subscription",
-    href: ADMIN_ROUTES.SUBSCRIPTION,
+    title: "Subscribers",
+    href: ADMIN_ROUTES.SUBSCRIBERS,
     icon: CreditCard,
   },
   {
