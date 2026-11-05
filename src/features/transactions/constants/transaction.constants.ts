@@ -45,6 +45,8 @@ export const DATE_PRESET_OPTIONS = {
   CUSTOM: "CUSTOM",
 } as const;
 
+export const CSV_FORMULA_INJECTION_PREFIXES = ["=", "+", "-", "@", "\t", "\r"] as const;
+
 export const TRANSACTIONS_QUERY_KEYS = {
   all: ["transactions"] as const,
   lists: () => [...TRANSACTIONS_QUERY_KEYS.all, "list"] as const,

@@ -4,13 +4,20 @@
  */
 
 import { formatDate } from "@/lib/utils/date";
+import { CSV_FORMULA_INJECTION_PREFIXES } from "../constants/transaction.constants";
 import type { PaymentTransactionItem } from "../types/transaction.types";
 
 export function escapeCsvField(field: unknown): string {
   if (field === null || field === undefined) {
     return "";
   }
-  const str = String(field);
+  let str = String(field);
+
+  // Prevent CSV Formula Injection (CWE-1236)
+  if (CSV_FORMULA_INJECTION_PREFIXES.some((prefix) => str.startsWith(prefix))) {
+    str = `'${str}`;
+  }
+
   if (str.includes(",") || str.includes('"') || str.includes("\n") || str.includes("\r")) {
     return `"${str.replace(/"/g, '""')}"`;
   }
