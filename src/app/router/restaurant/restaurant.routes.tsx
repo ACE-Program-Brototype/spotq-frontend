@@ -26,6 +26,7 @@ import SubscriptionSuccessPage from "@/features/subscription/pages/SubscriptionS
 import CreateTablePage from "@/features/tables/pages/CreateTablePage";
 import RestaurantTableDetailPage from "@/features/tables/pages/RestaurantTableDetailPage";
 import RestaurantTablePage from "@/features/tables/pages/RestaurantTablePage";
+import { RestaurantTransactionsPage } from "@/features/transactions";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -195,6 +196,18 @@ export const restaurantRoutes: RouteObject[] = [
               { path: RESTAURANT_ROUTE_PATHS.TABLE.CREATE, Component: CreateTablePage },
               { path: RESTAURANT_ROUTE_PATHS.TABLE.VIEW, Component: RestaurantTableDetailPage },
             ],
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.FINANCE.TRANSACTIONS,
+            Component: RestaurantTransactionsPage,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.PAYMENTS_HISTORY,
+            element: <Navigate to={RESTAURANT_ROUTES.FINANCE.TRANSACTIONS} replace />,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.TRANSACTIONS,
+            element: <Navigate to={RESTAURANT_ROUTES.FINANCE.TRANSACTIONS} replace />,
           },
         ],
       },
