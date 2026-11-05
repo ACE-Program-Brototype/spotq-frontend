@@ -21,6 +21,15 @@ describe("transaction-export.utils", () => {
       expect(escapeCsvField("Sharma, Rahul")).toBe('"Sharma, Rahul"');
       expect(escapeCsvField('Quotes "Inside"')).toBe('"Quotes ""Inside"""');
     });
+
+    it("sanitizes potential formula injection characters (=, +, -, @, \\t, \\r)", () => {
+      expect(escapeCsvField("=SUM(A1:A10)")).toBe("'=SUM(A1:A10)");
+      expect(escapeCsvField("+12345")).toBe("'+12345");
+      expect(escapeCsvField("-500")).toBe("'-500");
+      expect(escapeCsvField("@admin")).toBe("'@admin");
+      expect(escapeCsvField("\tTabbed")).toBe("'\tTabbed");
+      expect(escapeCsvField('=cmd|"calc"')).toBe('"\'=cmd|""calc"""');
+    });
   });
 
   describe("generateTransactionsCsvString", () => {
