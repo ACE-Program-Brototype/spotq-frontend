@@ -39,6 +39,7 @@ const mockDetailData = {
   status: "ACTIVE",
   currentPeriodStart: "2026-11-01T00:00:00.000Z",
   currentPeriodEnd: "2027-11-01T00:00:00.000Z",
+  cancelledAt: null,
   canceledAt: null,
   createdAt: "2026-11-01T00:00:00.000Z",
   updatedAt: "2026-11-01T00:00:00.000Z",

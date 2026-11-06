@@ -65,8 +65,8 @@ export interface SubscriberDetail {
   status: SubscriberStatus;
   currentPeriodStart: string;
   currentPeriodEnd: string;
-  canceledAt: string | null;
-  cancelledAt?: string | null;
+  cancelledAt: string | null;
+  canceledAt?: string | null;
   createdAt: string;
   updatedAt: string;
   plan: SubscriberPlan | null;

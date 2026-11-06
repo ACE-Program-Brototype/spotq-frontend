@@ -76,16 +76,13 @@ export function SubscriberPlanSection({ subscriber }: SubscriberPlanSectionProps
             </span>
           </div>
 
-          {(subscriber.cancelledAt ?? subscriber.canceledAt) && (
+          {subscriber.cancelledAt && (
             <div>
               <span className="text-xs font-semibold text-rose-500 block">
                 {SUBSCRIBER_MESSAGES.LABEL_CANCELLED_AT}
               </span>
               <span className="mt-1 text-sm text-rose-700 block">
-                {formatDate(
-                  subscriber.cancelledAt ?? subscriber.canceledAt,
-                  DATE_ONLY_FORMAT_OPTIONS,
-                )}
+                {formatDate(subscriber.cancelledAt, DATE_ONLY_FORMAT_OPTIONS)}
               </span>
             </div>
           )}
