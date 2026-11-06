@@ -22,7 +22,7 @@ export interface UseSubscribersOptions {
 
 export function useSubscribers(options?: UseSubscribersOptions) {
   const [page, setPage] = useState<number>(options?.initialPage ?? SUBSCRIBER_DEFAULTS.PAGE);
-  const [limit, setLimit] = useState<number>(options?.initialLimit ?? SUBSCRIBER_DEFAULTS.LIMIT);
+  const limit = options?.initialLimit ?? SUBSCRIBER_DEFAULTS.LIMIT;
   const [status, setStatus] = useState<SubscriberFilterStatus>(
     options?.initialStatus ?? SUBSCRIBER_DEFAULTS.FILTER_STATUS,
   );
@@ -83,11 +83,6 @@ export function useSubscribers(options?: UseSubscribersOptions) {
     setPage(1);
   };
 
-  const handleLimitChange = (newLimit: number) => {
-    setLimit(newLimit);
-    setPage(1);
-  };
-
   const handleResetFilters = () => {
     setSearch("");
     setStatus(SUBSCRIBER_FILTER_STATUS.ALL);
@@ -112,7 +107,6 @@ export function useSubscribers(options?: UseSubscribersOptions) {
     page,
     setPage,
     limit,
-    setLimit: handleLimitChange,
     status,
     setStatus: handleStatusChange,
     search,
