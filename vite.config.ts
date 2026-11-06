@@ -144,7 +144,6 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss(), firebaseServiceWorkerPlugin(env)],
     resolve: {
       alias: {
-        "@features": path.resolve(__dirname, "src/features"),
         "@": path.resolve(__dirname, "src"),
       },
     },

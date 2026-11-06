@@ -1,25 +1,27 @@
-import { RenewalModal } from "@features/subscription/components/RenewalModal";
-import { SubscriptionExpiryBanner } from "@features/subscription/components/SubscriptionExpiryBanner";
-import { SubscriptionOverviewCard } from "@features/subscription/components/SubscriptionOverviewCard";
-import { SUBSCRIPTION_QUERY_KEYS } from "@features/subscription/constants/subscription.constants";
-import { subscriptionService } from "@features/subscription/services/subscription.service";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
-import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { User } from "@/features/auth/types/auth.types";
+import { RenewalModal } from "@/features/subscription/components/RenewalModal";
+import { SubscriptionExpiryBanner } from "@/features/subscription/components/SubscriptionExpiryBanner";
+import { SubscriptionOverviewCard } from "@/features/subscription/components/SubscriptionOverviewCard";
+import {
+  RESTAURANT_DASHBOARD_TEXTS,
+  SUBSCRIPTION_QUERY_KEYS,
+} from "@/features/subscription/constants/subscription.constants";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, clearAuth } = useAuthStore();
+  const { user, clearAuth, setUser } = useAuthStore();
   const [isRenewalModalOpen, setIsRenewalModalOpen] = useState(false);
 
   const restaurantUser = user as { email?: string; status?: string } | null;
-  const restaurantEmail = restaurantUser?.email || user?.email || "restaurant";
+  const restaurantEmail =
+    restaurantUser?.email || user?.email || RESTAURANT_DASHBOARD_TEXTS.DEFAULT_RESTAURANT_NAME;
 
   const {
     data: statusData,
@@ -55,27 +57,26 @@ export default function RestaurantDashboardPage() {
   const needsSubscription = isApprovedOrActive && !isSubscriptionActive && !isStatusError;
 
   useEffect(() => {
-    if (statusData?.verificationStatus) {
-      const currentUser = useAuthStore.getState().user;
-      if (
-        currentUser &&
-        statusData.verificationStatus &&
-        currentUser.status !== statusData.verificationStatus
-      ) {
-        useAuthStore.getState().setUser({
-          ...currentUser,
+    if (statusData?.verificationStatus && user) {
+      if (user.status !== statusData.verificationStatus) {
+        setUser({
+          ...user,
           status: statusData.verificationStatus as User["status"],
           onboardingStatus: "COMPLETED",
         });
       }
     }
-  }, [statusData]);
+  }, [statusData, user, setUser]);
 
   useEffect(() => {
     if (!isLoadingStatus && needsSubscription) {
       navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
     }
   }, [isLoadingStatus, needsSubscription, navigate]);
+
+  if (!isLoadingStatus && needsSubscription) {
+    return null;
+  }
 
   const handleLogout = () => {
     clearAuth();
@@ -89,10 +90,10 @@ export default function RestaurantDashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#9a3412]">
-              Restaurant dashboard
+              {RESTAURANT_DASHBOARD_TEXTS.BADGE}
             </p>
             <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-neutral-900">
-              Welcome, {statusData?.restaurantName || restaurantEmail}
+              {`${RESTAURANT_DASHBOARD_TEXTS.WELCOME_PREFIX}${statusData?.restaurantName || restaurantEmail}`}
             </h1>
           </div>
           <button
@@ -100,7 +101,7 @@ export default function RestaurantDashboardPage() {
             onClick={handleLogout}
             className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
           >
-            Logout
+            {RESTAURANT_DASHBOARD_TEXTS.LOGOUT_BUTTON}
           </button>
         </div>
 
@@ -111,38 +112,15 @@ export default function RestaurantDashboardPage() {
           onRenewClick={() => setIsRenewalModalOpen(true)}
         />
 
-        {needsSubscription && !isLoadingStatus && (
-          <div className="mt-8 overflow-hidden rounded-2xl border border-orange-300 bg-gradient-to-r from-orange-50 to-amber-50 p-6 shadow-sm">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-orange-100 p-2 text-orange-600">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-orange-950">Subscription Required</h3>
-                  <p className="mt-0.5 text-sm text-orange-800">
-                    Your restaurant is verified! Select a subscription plan to start taking customer
-                    orders.
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
-                className="gap-2 bg-orange-600 text-white hover:bg-orange-700 shrink-0"
-              >
-                Choose Plan
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        )}
-
         <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
           <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
-            <p className="text-xs font-medium text-neutral-500">Account status</p>
+            <p className="text-xs font-medium text-neutral-500">
+              {RESTAURANT_DASHBOARD_TEXTS.ACCOUNT_STATUS_LABEL}
+            </p>
             <p className="mt-2 text-xl font-bold text-neutral-900">
-              {restaurantUser?.status ?? statusData?.verificationStatus ?? "Active"}
+              {restaurantUser?.status ??
+                statusData?.verificationStatus ??
+                RESTAURANT_DASHBOARD_TEXTS.DEFAULT_ACTIVE_STATUS}
             </p>
           </div>
 

@@ -1,19 +1,21 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { isHTTPError } from "ky";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   SUBSCRIPTION_MESSAGES,
   SUBSCRIPTION_QUERY_KEYS,
   SUBSCRIPTION_RENEWAL_TEXTS,
-} from "@features/subscription/constants/subscription.constants";
-import { loadRazorpayScript } from "@features/subscription/hooks/useRazorpayCheckout";
-import { subscriptionService } from "@features/subscription/services/subscription.service";
+} from "@/features/subscription/constants/subscription.constants";
+import { loadRazorpayScript } from "@/features/subscription/hooks/useRazorpayCheckout";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import type {
   RazorpayInstance,
   RazorpayOptions,
   RazorpayPaymentSuccessResponse,
   UseSubscriptionRenewalOptions,
-} from "@features/subscription/types/subscription.types";
-import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+} from "@/features/subscription/types/subscription.types";
+import type { NormalizedApiErrorData } from "@/lib/api/hooks/beforeError";
 
 function generateIdempotencyKey(): string {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -23,16 +25,16 @@ function generateIdempotencyKey(): string {
 }
 
 async function resolveErrorMessage(err: unknown, fallback: string): Promise<string> {
-  if (err && typeof err === "object" && "response" in err) {
-    try {
-      const response = (err as { response: Response }).response;
-      const body = (await response.clone().json()) as { message?: string };
-      if (body?.message) {
-        return body.message;
+  if (isHTTPError<NormalizedApiErrorData>(err)) {
+    if (err.data && typeof err.data === "object") {
+      if (err.data.message) {
+        return err.data.message;
       }
-    } catch {
-      if (err instanceof Error && err.message) {
-        return err.message;
+      if (typeof err.data.error === "string") {
+        return err.data.error;
+      }
+      if (typeof err.data.error === "object" && err.data.error?.message) {
+        return err.data.error.message;
       }
     }
   }

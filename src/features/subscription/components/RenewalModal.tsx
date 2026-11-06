@@ -1,23 +1,23 @@
 import { Dialog } from "@base-ui/react/dialog";
+import { AlertCircle, Calendar, CheckCircle2, Loader2, RefreshCw, X } from "lucide-react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   SUBSCRIPTION_BILLING_CYCLE_LABELS,
   SUBSCRIPTION_BILLING_CYCLE_OPTIONS,
   SUBSCRIPTION_RENEWAL_TEXTS,
-} from "@features/subscription/constants/subscription.constants";
-import { useSubscriptionRenewal } from "@features/subscription/hooks/useSubscriptionRenewal";
+} from "@/features/subscription/constants/subscription.constants";
+import { useSubscriptionRenewal } from "@/features/subscription/hooks/useSubscriptionRenewal";
 import type {
   BillingCycle,
   RenewalModalProps,
-} from "@features/subscription/types/subscription.types";
+} from "@/features/subscription/types/subscription.types";
 import {
   calculateProposedRenewalTerm,
   formatPlanDisplayName,
   formatSubscriptionCalendarDate,
   resolveRenewalPlansByCycle,
-} from "@features/subscription/utils/subscription-renewal.utils";
-import { AlertCircle, Calendar, CheckCircle2, Loader2, RefreshCw, X } from "lucide-react";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+} from "@/features/subscription/utils/subscription-renewal.utils";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
 

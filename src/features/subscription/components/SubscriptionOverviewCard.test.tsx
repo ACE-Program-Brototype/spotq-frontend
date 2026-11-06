@@ -1,10 +1,10 @@
-import { SUBSCRIPTION_RENEWAL_TEXTS } from "@features/subscription/constants/subscription.constants";
+import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { SUBSCRIPTION_RENEWAL_TEXTS } from "@/features/subscription/constants/subscription.constants";
 import type {
   RestaurantStatusData,
   SubscriptionPlan,
-} from "@features/subscription/types/subscription.types";
-import { fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+} from "@/features/subscription/types/subscription.types";
 import { SubscriptionOverviewCard } from "./SubscriptionOverviewCard";
 
 const FIXED_NOW = new Date("2026-11-01T10:00:00.000Z");

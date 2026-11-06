@@ -1,8 +1,10 @@
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import {
   SUBSCRIPTION_ENDPOINTS,
   SUBSCRIPTION_HEADERS,
   SUBSCRIPTION_RENEWAL_TEXTS,
-} from "@features/subscription/constants/subscription.constants";
+} from "@/features/subscription/constants/subscription.constants";
 import type {
   ApiResponse,
   CreateSubscriptionOrderResponse,
@@ -11,9 +13,7 @@ import type {
   SubscriptionPlan,
   VerifyPaymentRequest,
   VerifyPaymentResponse,
-} from "@features/subscription/types/subscription.types";
-import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
-import { useAuthStore } from "@/features/auth/store/auth.store";
+} from "@/features/subscription/types/subscription.types";
 import { apiClient } from "@/lib/api/client";
 
 export const subscriptionService = {
@@ -24,7 +24,15 @@ export const subscriptionService = {
     return response.data;
   },
 
-  async createOrder(planId: string): Promise<CreateSubscriptionOrderResponse> {
+  async createOrder(
+    planId: string,
+    restaurantContext?: {
+      restaurantId?: string;
+      restaurantName?: string;
+      restaurantEmail?: string;
+      restaurantPhone?: string;
+    },
+  ): Promise<CreateSubscriptionOrderResponse> {
     const user = useAuthStore.getState().user as {
       id?: string;
       restaurantId?: string;
@@ -34,7 +42,7 @@ export const subscriptionService = {
       phone?: string;
     } | null;
 
-    const restaurantId = user?.restaurantId || user?.id;
+    const restaurantId = restaurantContext?.restaurantId || user?.restaurantId || user?.id;
     if (!restaurantId) {
       throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_ID_ORDER_ERROR);
     }
@@ -44,9 +52,9 @@ export const subscriptionService = {
         json: {
           planId,
           restaurantId,
-          restaurantName: user?.fullName || user?.name,
-          restaurantEmail: user?.email,
-          restaurantPhone: user?.phone,
+          restaurantName: restaurantContext?.restaurantName || user?.fullName || user?.name,
+          restaurantEmail: restaurantContext?.restaurantEmail || user?.email,
+          restaurantPhone: restaurantContext?.restaurantPhone || user?.phone,
         },
       })
       .json<ApiResponse<CreateSubscriptionOrderResponse>>();

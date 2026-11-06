@@ -1,8 +1,8 @@
-import { SUBSCRIPTION_RENEWAL_TEXTS } from "@features/subscription/constants/subscription.constants";
+import { SUBSCRIPTION_RENEWAL_TEXTS } from "@/features/subscription/constants/subscription.constants";
 import type {
   RestaurantStatusData,
   SubscriptionPlan,
-} from "@features/subscription/types/subscription.types";
+} from "@/features/subscription/types/subscription.types";
 import {
   calculateProposedRenewalTerm,
   calculateRemainingDays,
@@ -224,6 +224,34 @@ describe("subscription-renewal.utils", () => {
       );
       expect(expiredPreview?.isExpired).toBe(true);
       expect(expiredPreview?.previewText).toBe("Renews from Oct 25, 2026 to Nov 25, 2026");
+    });
+
+    it("clamps end-of-month dates properly when adding one month", () => {
+      // Jan 31, 2026 -> Feb 28, 2026
+      const jan31Preview = calculateProposedRenewalTerm(
+        "2026-01-31T12:00:00.000Z",
+        "MONTHLY",
+        new Date("2026-01-15T12:00:00.000Z"),
+      );
+      expect(jan31Preview?.previewText).toBe("Renews from Jan 31, 2026 to Feb 28, 2026");
+
+      // March 31, 2026 -> April 30, 2026
+      const mar31Preview = calculateProposedRenewalTerm(
+        "2026-03-31T12:00:00.000Z",
+        "MONTHLY",
+        new Date("2026-03-15T12:00:00.000Z"),
+      );
+      expect(mar31Preview?.previewText).toBe("Renews from Mar 31, 2026 to Apr 30, 2026");
+    });
+
+    it("clamps leap day properly when adding one year", () => {
+      // Feb 29, 2024 (leap year) -> Feb 28, 2025 (non-leap year)
+      const leapPreview = calculateProposedRenewalTerm(
+        "2024-02-29T12:00:00.000Z",
+        "YEARLY",
+        new Date("2024-02-01T12:00:00.000Z"),
+      );
+      expect(leapPreview?.previewText).toBe("Renews from Feb 29, 2024 to Feb 28, 2025");
     });
   });
 });

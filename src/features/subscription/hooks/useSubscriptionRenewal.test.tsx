@@ -1,9 +1,9 @@
-import { SUBSCRIPTION_QUERY_KEYS } from "@features/subscription/constants/subscription.constants";
-import { subscriptionService } from "@features/subscription/services/subscription.service";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { toast } from "sonner";
+import { SUBSCRIPTION_QUERY_KEYS } from "@/features/subscription/constants/subscription.constants";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import { useSubscriptionRenewal } from "./useSubscriptionRenewal";
 
 jest.mock("sonner", () => ({
@@ -14,7 +14,7 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("@features/subscription/services/subscription.service", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionService: {
     renewSubscription: jest.fn(),
     verifyPayment: jest.fn(),

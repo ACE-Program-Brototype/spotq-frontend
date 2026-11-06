@@ -139,6 +139,19 @@ export const SUBSCRIPTION_SUCCESS_TEXTS = {
   FEATURE_SUPPORT: "24/7 priority onboarding and technical support",
 } as const;
 
+export const RESTAURANT_DASHBOARD_TEXTS = {
+  BADGE: "Restaurant dashboard",
+  WELCOME_PREFIX: "Welcome, ",
+  DEFAULT_RESTAURANT_NAME: "restaurant",
+  LOGOUT_BUTTON: "Logout",
+  SUBSCRIPTION_REQUIRED_TITLE: "Subscription Required",
+  SUBSCRIPTION_REQUIRED_DESC:
+    "Your restaurant is verified! Select a subscription plan to start taking customer orders.",
+  CHOOSE_PLAN_BUTTON: "Choose Plan",
+  ACCOUNT_STATUS_LABEL: "Account status",
+  DEFAULT_ACTIVE_STATUS: "Active",
+} as const;
+
 export const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";
 
 export const SUBSCRIPTION_FAILURE_TEXTS = {

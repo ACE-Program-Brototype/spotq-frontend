@@ -3,7 +3,7 @@ import {
   SUBSCRIPTION_RENEWAL_TEXTS,
   SUBSCRIPTION_STATUSES,
   SUBSCRIPTION_THRESHOLDS,
-} from "@features/subscription/constants/subscription.constants";
+} from "@/features/subscription/constants/subscription.constants";
 import type {
   BillingCycle,
   RenewalEligibilityResult,
@@ -11,7 +11,7 @@ import type {
   RenewalTermPreview,
   RestaurantStatusData,
   SubscriptionPlan,
-} from "@features/subscription/types/subscription.types";
+} from "@/features/subscription/types/subscription.types";
 
 const CYCLE_SUFFIX_PATTERN = /(?:[_-\s]+)(?:monthly|yearly|annual)$/i;
 
@@ -279,9 +279,21 @@ export function calculateProposedRenewalTerm(
   const proposedEnd = new Date(termStart.getTime());
 
   if (billingCycle === SUBSCRIPTION_BILLING_CYCLES.YEARLY) {
-    proposedEnd.setFullYear(proposedEnd.getFullYear() + 1);
+    const targetYear = termStart.getFullYear() + 1;
+    const targetMonth = termStart.getMonth();
+    const targetDay = termStart.getDate();
+    proposedEnd.setFullYear(targetYear, targetMonth, targetDay);
+    if (proposedEnd.getMonth() !== targetMonth) {
+      proposedEnd.setDate(0);
+    }
   } else {
-    proposedEnd.setMonth(proposedEnd.getMonth() + 1);
+    const originalDay = termStart.getDate();
+    const targetYear =
+      termStart.getMonth() === 11 ? termStart.getFullYear() + 1 : termStart.getFullYear();
+    const targetMonth = (termStart.getMonth() + 1) % 12;
+    const daysInTargetMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+    const clampedDay = Math.min(originalDay, daysInTargetMonth);
+    proposedEnd.setFullYear(targetYear, targetMonth, clampedDay);
   }
 
   const termStartIso = termStart.toISOString();

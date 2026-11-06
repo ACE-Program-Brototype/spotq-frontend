@@ -1,8 +1,8 @@
-import { subscriptionService } from "@features/subscription/services/subscription.service";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import RestaurantDashboardPage from "./RestaurantDashboardPage";
 
 const mockNavigate = jest.fn();
@@ -19,7 +19,7 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("@features/subscription/services/subscription.service", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionService: {
     fetchRestaurantStatus: jest.fn(),
     fetchPlans: jest.fn(),

@@ -1,13 +1,13 @@
-import { SUBSCRIPTION_RENEWAL_TEXTS } from "@features/subscription/constants/subscription.constants";
-import type { SubscriptionExpiryBannerProps } from "@features/subscription/types/subscription.types";
+import { AlertTriangle, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SUBSCRIPTION_RENEWAL_TEXTS } from "@/features/subscription/constants/subscription.constants";
+import type { SubscriptionExpiryBannerProps } from "@/features/subscription/types/subscription.types";
 import {
   evaluateRenewalEligibility,
   formatExpiryBannerMessage,
   formatPlanDisplayName,
   formatRemainingDaysBadge,
-} from "@features/subscription/utils/subscription-renewal.utils";
-import { AlertTriangle, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+} from "@/features/subscription/utils/subscription-renewal.utils";
 
 export function SubscriptionExpiryBanner({
   statusData,

@@ -1,11 +1,11 @@
-import { subscriptionService } from "@features/subscription/services/subscription.service";
-import type {
-  RestaurantStatusData,
-  SubscriptionPlan,
-} from "@features/subscription/types/subscription.types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
+import type {
+  RestaurantStatusData,
+  SubscriptionPlan,
+} from "@/features/subscription/types/subscription.types";
 import { RenewalModal } from "./RenewalModal";
 
 jest.mock("sonner", () => ({
@@ -16,7 +16,7 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("@features/subscription/services/subscription.service", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionService: {
     renewSubscription: jest.fn(),
     verifyPayment: jest.fn(),

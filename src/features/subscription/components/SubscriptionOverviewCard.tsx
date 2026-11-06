@@ -1,18 +1,18 @@
+import { CheckCircle2, CreditCard, Info, RefreshCw } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   SUBSCRIPTION_BILLING_CYCLE_LABELS,
   SUBSCRIPTION_RENEWAL_TEXTS,
-} from "@features/subscription/constants/subscription.constants";
-import type { SubscriptionOverviewCardProps } from "@features/subscription/types/subscription.types";
+} from "@/features/subscription/constants/subscription.constants";
+import type { SubscriptionOverviewCardProps } from "@/features/subscription/types/subscription.types";
 import {
   evaluateRenewalEligibility,
   formatPlanDisplayName,
   formatSubscriptionCalendarDate,
   resolveRenewalPlansByCycle,
-} from "@features/subscription/utils/subscription-renewal.utils";
-import { CheckCircle2, CreditCard, Info, RefreshCw } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/features/subscription/utils/subscription-renewal.utils";
 
 export function SubscriptionOverviewCard({
   statusData,

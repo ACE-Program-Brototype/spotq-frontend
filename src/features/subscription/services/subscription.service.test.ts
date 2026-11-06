@@ -1,5 +1,5 @@
-import { SUBSCRIPTION_ENDPOINTS } from "@features/subscription/constants/subscription.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { SUBSCRIPTION_ENDPOINTS } from "@/features/subscription/constants/subscription.constants";
 import { apiClient } from "@/lib/api/client";
 import { subscriptionService } from "./subscription.service";
 
@@ -77,6 +77,39 @@ describe("subscriptionService", () => {
           restaurantName: "The Great Grill",
           restaurantEmail: "owner@restaurant.com",
           restaurantPhone: undefined,
+        },
+      });
+      expect(result).toEqual(mockOrderResponse);
+    });
+
+    it("should accept explicit restaurantContext without relying on auth store", async () => {
+      const mockOrderResponse = {
+        orderId: "order_explicit_123",
+        amount: 199900,
+        currency: "INR",
+        keyId: "rzp_test_key",
+        plan: { id: "plan-2", name: "Queue Elite", code: "QUEUE_ELITE" },
+        restaurant: { id: "rest-999", name: "Explicit Bistro", email: "explicit@bistro.com" },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: mockOrderResponse }),
+      });
+
+      const result = await subscriptionService.createOrder("plan-2", {
+        restaurantId: "rest-999",
+        restaurantName: "Explicit Bistro",
+        restaurantEmail: "explicit@bistro.com",
+        restaurantPhone: "9876543210",
+      });
+
+      expect(apiClient.post).toHaveBeenCalledWith(SUBSCRIPTION_ENDPOINTS.CREATE_ORDER, {
+        json: {
+          planId: "plan-2",
+          restaurantId: "rest-999",
+          restaurantName: "Explicit Bistro",
+          restaurantEmail: "explicit@bistro.com",
+          restaurantPhone: "9876543210",
         },
       });
       expect(result).toEqual(mockOrderResponse);

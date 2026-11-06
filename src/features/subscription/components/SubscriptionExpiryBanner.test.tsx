@@ -1,6 +1,6 @@
-import type { RestaurantStatusData } from "@features/subscription/types/subscription.types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { RestaurantStatusData } from "@/features/subscription/types/subscription.types";
 import { SubscriptionExpiryBanner } from "./SubscriptionExpiryBanner";
 
 const FIXED_NOW = new Date("2026-11-01T10:00:00.000Z");
