@@ -5,7 +5,10 @@
  */
 
 import { cn } from "@/lib/utils/cn";
-import { PAYMENT_FILTER_STATUS } from "../constants/customer-payment.constants";
+import {
+  CUSTOMER_PAYMENT_FILTER_OPTIONS,
+  PAYMENT_FILTER_STATUS,
+} from "../constants/customer-payment.constants";
 import type { PaymentFilterStatus } from "../types/customer-payment.types";
 
 interface PaymentFilterTabsProps {
@@ -14,13 +17,6 @@ interface PaymentFilterTabsProps {
   disabled?: boolean;
   className?: string;
 }
-
-const FILTER_OPTIONS: { id: PaymentFilterStatus; label: string }[] = [
-  { id: PAYMENT_FILTER_STATUS.ALL, label: "All" },
-  { id: PAYMENT_FILTER_STATUS.SUCCESS, label: "Success" },
-  { id: PAYMENT_FILTER_STATUS.FAILED, label: "Failed" },
-  { id: PAYMENT_FILTER_STATUS.REFUNDED, label: "Refunded" },
-];
 
 export function PaymentFilterTabs({
   selectedStatus,
@@ -38,7 +34,7 @@ export function PaymentFilterTabs({
         className,
       )}
     >
-      {FILTER_OPTIONS.map((tab) => {
+      {CUSTOMER_PAYMENT_FILTER_OPTIONS.map((tab) => {
         const isActive =
           selectedStatus === tab.id ||
           (tab.id === PAYMENT_FILTER_STATUS.CAPTURED && selectedStatus === "SUCCESS");

@@ -6,6 +6,7 @@
 
 import { ArrowRight, Download, Loader2, RotateCw } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -63,7 +64,7 @@ export function CustomerPaymentHistoryMobileCards({
             {/* Top Row: Order ID Link + Status Badge */}
             <div className="flex items-center justify-between gap-2 border-b border-neutral-100 pb-2.5">
               <Link
-                to={`/orders/${tx.orderId}`}
+                to={CUSTOMER_ROUTES.ORDER_DETAILS(tx.orderId)}
                 data-testid={`mobile-order-link-${tx.orderId}`}
                 className="text-sm font-black text-neutral-900 hover:text-[#ff6b00] underline-offset-4 hover:underline transition-colors"
               >
@@ -75,13 +76,17 @@ export function CustomerPaymentHistoryMobileCards({
             {/* Middle Row: Date + Amount */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex flex-col">
-                <span className="text-[11px] font-medium text-neutral-400">Date</span>
+                <span className="text-[11px] font-medium text-neutral-400">
+                  {CUSTOMER_PAYMENT_MESSAGES.TABLE_HEADER_DATE}
+                </span>
                 <span className="text-xs font-semibold text-neutral-600">
                   {formatDate(tx.createdAt)}
                 </span>
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-[11px] font-medium text-neutral-400">Amount</span>
+                <span className="text-[11px] font-medium text-neutral-400">
+                  {CUSTOMER_PAYMENT_MESSAGES.TABLE_HEADER_AMOUNT}
+                </span>
                 <span className="text-base font-extrabold text-neutral-900">
                   {formatCurrency(tx.amountInRupees)}
                 </span>
@@ -147,7 +152,7 @@ export function CustomerPaymentHistoryMobileCards({
 
                 {normalizedStatus === "REFUNDED" && (
                   <Link
-                    to={`/orders/${tx.orderId}`}
+                    to={CUSTOMER_ROUTES.ORDER_DETAILS(tx.orderId)}
                     data-testid={`mobile-refund-details-${tx.transactionId}`}
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-xs font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100/70 border border-purple-200/60 py-2 px-4 rounded-xl transition-colors"
                   >

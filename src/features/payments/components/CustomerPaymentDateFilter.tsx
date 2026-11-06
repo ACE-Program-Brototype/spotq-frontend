@@ -5,6 +5,7 @@
 
 import { Calendar, X } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { CUSTOMER_PAYMENT_MESSAGES } from "../constants/customer-payment.constants";
 
 interface CustomerPaymentDateFilterProps {
   startDate: string;
@@ -45,7 +46,7 @@ export function CustomerPaymentDateFilter({
           htmlFor="customer-payment-start-date"
           className="text-xs font-semibold text-neutral-500 shrink-0 select-none cursor-pointer"
         >
-          From:
+          {CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_FROM}
         </label>
         <input
           id="customer-payment-start-date"
@@ -54,7 +55,7 @@ export function CustomerPaymentDateFilter({
           max={endDate || undefined}
           disabled={disabled}
           onChange={(e) => onStartDateChange(e.target.value)}
-          aria-label="Filter from date"
+          aria-label={CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_START_LABEL}
           data-testid="payment-start-date-input"
           className="bg-transparent text-xs font-semibold text-neutral-800 focus:outline-hidden cursor-pointer"
         />
@@ -72,7 +73,7 @@ export function CustomerPaymentDateFilter({
           htmlFor="customer-payment-end-date"
           className="text-xs font-semibold text-neutral-500 shrink-0 select-none cursor-pointer"
         >
-          To:
+          {CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_TO}
         </label>
         <input
           id="customer-payment-end-date"
@@ -81,7 +82,7 @@ export function CustomerPaymentDateFilter({
           min={startDate || undefined}
           disabled={disabled}
           onChange={(e) => onEndDateChange(e.target.value)}
-          aria-label="Filter to date"
+          aria-label={CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_END_LABEL}
           data-testid="payment-end-date-input"
           className="bg-transparent text-xs font-semibold text-neutral-800 focus:outline-hidden cursor-pointer"
         />
@@ -95,10 +96,10 @@ export function CustomerPaymentDateFilter({
           disabled={disabled}
           data-testid="clear-date-filter-button"
           className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 rounded-xl transition-colors cursor-pointer select-none border border-neutral-200/60"
-          title="Clear date filter"
+          title={CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_CLEAR_TITLE}
         >
           <X className="size-3" />
-          <span>Clear</span>
+          <span>{CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_CLEAR}</span>
         </button>
       )}
     </div>

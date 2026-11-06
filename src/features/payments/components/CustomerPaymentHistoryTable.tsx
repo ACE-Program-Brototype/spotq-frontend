@@ -15,6 +15,7 @@ import {
   RotateCw,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -163,7 +164,7 @@ export function CustomerPaymentHistoryTable({
                 {/* 2. Order ID Link */}
                 <TableCell className="py-3.5 px-3 sm:px-3 lg:px-4 whitespace-nowrap">
                   <Link
-                    to={`/orders/${tx.orderId}`}
+                    to={CUSTOMER_ROUTES.ORDER_DETAILS(tx.orderId)}
                     data-testid={`order-link-${tx.orderId}`}
                     className="inline-flex items-center text-xs lg:text-sm font-bold text-neutral-900 hover:text-[#ff6b00] underline-offset-4 hover:underline transition-colors"
                   >
@@ -240,7 +241,7 @@ export function CustomerPaymentHistoryTable({
 
                   {normalizedStatus === "REFUNDED" && (
                     <Link
-                      to={`/orders/${tx.orderId}`}
+                      to={CUSTOMER_ROUTES.ORDER_DETAILS(tx.orderId)}
                       data-testid={`refund-details-button-${tx.transactionId}`}
                       className="inline-flex items-center gap-1 text-xs font-bold text-purple-700 hover:text-purple-900 transition-colors py-1 px-2 rounded-lg hover:bg-purple-50"
                     >

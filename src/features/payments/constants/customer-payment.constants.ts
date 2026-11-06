@@ -63,6 +63,13 @@ export const PAYMENT_FILTER_STATUS = {
   REFUNDED: "REFUNDED",
 } as const;
 
+export const CUSTOMER_PAYMENT_FILTER_OPTIONS = [
+  { id: PAYMENT_FILTER_STATUS.ALL, label: "All" },
+  { id: PAYMENT_FILTER_STATUS.SUCCESS, label: "Success" },
+  { id: PAYMENT_FILTER_STATUS.FAILED, label: "Failed" },
+  { id: PAYMENT_FILTER_STATUS.REFUNDED, label: "Refunded" },
+] as const;
+
 export const CUSTOMER_PAYMENT_QUERY_KEYS = {
   ALL: ["customer-payments"] as const,
   HISTORY: (params?: {
@@ -97,6 +104,13 @@ export const CUSTOMER_PAYMENT_MESSAGES = {
   ACTION_RETRYING: "Retrying...",
   ACTION_EXPIRED: "Expired",
   ACTION_REFUND_DETAILS: "Refund Details",
+
+  DATE_FILTER_FROM: "From:",
+  DATE_FILTER_TO: "To:",
+  DATE_FILTER_CLEAR: "Clear",
+  DATE_FILTER_START_LABEL: "Filter from date",
+  DATE_FILTER_END_LABEL: "Filter to date",
+  DATE_FILTER_CLEAR_TITLE: "Clear date filter",
 
   EMPTY_TITLE: "No payment transactions yet",
   EMPTY_DESCRIPTION:
