@@ -32,6 +32,7 @@ export interface SubscriberSummary {
   currentPeriodEnd: string;
   createdAt: string;
   canceledAt?: string | null;
+  cancelledAt?: string | null;
   plan?: SubscriberPlan | null;
 }
 
@@ -65,6 +66,7 @@ export interface SubscriberDetail {
   currentPeriodStart: string;
   currentPeriodEnd: string;
   canceledAt: string | null;
+  cancelledAt?: string | null;
   createdAt: string;
   updatedAt: string;
   plan: SubscriberPlan | null;

@@ -52,6 +52,7 @@ interface RawSubscriberPayload {
   currentPeriodStart?: string;
   currentPeriodEnd?: string;
   canceledAt?: string | null;
+  cancelledAt?: string | null;
   createdAt: string;
   updatedAt?: string;
   plan?: RawPlanPayload | null;
@@ -162,7 +163,8 @@ function normalizeSubscriberSummary(raw: RawSubscriberPayload): SubscriberSummar
     currentPeriodStart: raw.currentPeriodStart || raw.createdAt,
     currentPeriodEnd: raw.currentPeriodEnd || raw.createdAt,
     createdAt: raw.createdAt,
-    canceledAt: raw.canceledAt || null,
+    canceledAt: raw.cancelledAt ?? raw.canceledAt ?? null,
+    cancelledAt: raw.cancelledAt ?? raw.canceledAt ?? null,
     plan,
   };
 }
@@ -253,7 +255,8 @@ export const subscriberService = {
       status: raw.status,
       currentPeriodStart: raw.currentPeriodStart || raw.createdAt,
       currentPeriodEnd: raw.currentPeriodEnd || raw.createdAt,
-      canceledAt: raw.canceledAt || null,
+      canceledAt: raw.cancelledAt ?? raw.canceledAt ?? null,
+      cancelledAt: raw.cancelledAt ?? raw.canceledAt ?? null,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt || raw.createdAt,
       plan,
