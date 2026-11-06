@@ -123,7 +123,7 @@ export function useStaffMenuColumns({
         header: "Live Status",
         sortable: Boolean(onSort),
         cell: ({ row: item }) => {
-          const isPending = pendingItemIds?.has(item.id) || togglingItemId === item.id;
+          const isPending = pendingItemIds?.has(item.id);
 
           return (
             <div className="flex flex-col gap-1 items-start">
