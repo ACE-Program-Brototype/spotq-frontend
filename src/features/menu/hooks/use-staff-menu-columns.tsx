@@ -20,7 +20,6 @@ export function useStaffMenuColumns({
   onToggleAvailability,
   onViewDetails,
   pendingItemIds,
-  togglingItemId,
 }: UseStaffMenuColumnsOptions = {}): Column<StaffMenuItem>[] {
   return useMemo<Column<StaffMenuItem>[]>(
     () => [
@@ -165,7 +164,7 @@ export function useStaffMenuColumns({
         header: "Quick Actions",
         className: "text-right",
         cell: ({ row: item }) => {
-          const isPending = pendingItemIds?.has(item.id) || togglingItemId === item.id;
+          const isPending = pendingItemIds?.has(item.id);
 
           return (
             <div className="flex items-center justify-end gap-2">
@@ -213,6 +212,6 @@ export function useStaffMenuColumns({
         },
       },
     ],
-    [onSort, onToggleAvailability, onViewDetails, pendingItemIds, togglingItemId],
+    [onSort, onToggleAvailability, onViewDetails, pendingItemIds],
   );
 }
