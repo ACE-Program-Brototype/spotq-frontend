@@ -22,7 +22,6 @@ export const ADMIN_ROUTE_PATHS = {
   CUSTOMER_DETAIL: "customers/:id",
   SUBSCRIBERS: "subscribers",
   SUBSCRIBER_DETAIL: "subscribers/:id",
-  SUBSCRIPTION: "subscription",
   PAYMENTS: {
     ORDERS: "payments/orders",
     SUBSCRIPTIONS: "payments/subscriptions",
@@ -54,7 +53,6 @@ export const ADMIN_ROUTES = {
   SUBSCRIBERS: "/admin/subscribers",
   SUBSCRIBER_DETAIL_PATTERN: "/admin/subscribers/:id",
   SUBSCRIBER_DETAIL: (id: string) => `/admin/subscribers/${id}`,
-  SUBSCRIPTION: "/admin/subscribers",
   PAYMENTS: {
     ORDERS: "/admin/payments/orders",
     SUBSCRIPTIONS: "/admin/payments/subscriptions",

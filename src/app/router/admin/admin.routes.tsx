@@ -92,10 +92,6 @@ export const adminRoutes: RouteObject[] = [
             path: ADMIN_ROUTE_PATHS.SUBSCRIBER_DETAIL,
             Component: AdminSubscriberDetailsPage,
           },
-          {
-            path: ADMIN_ROUTE_PATHS.SUBSCRIPTION,
-            Component: AdminSubscribersPage,
-          },
           { path: ADMIN_ROUTE_PATHS.FINANCE, Component: PlatformFinancePage },
         ],
       },
