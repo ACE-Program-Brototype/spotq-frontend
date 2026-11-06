@@ -63,4 +63,17 @@ describe("CustomerSidebar Component", () => {
     const ordersLink = screen.getByRole("link", { name: /orders/i });
     expect(ordersLink.className).not.toContain("bg-[#ff6b00]");
   });
+
+  it("marks payments as active when on /profile/payments", () => {
+    render(
+      <MemoryRouter initialEntries={["/profile/payments"]}>
+        <CustomerSidebar />
+      </MemoryRouter>,
+    );
+
+    const paymentsLink = screen.getByRole("link", { name: /payments/i });
+    expect(paymentsLink.className).toContain("bg-[#ff6b00]");
+    const profileLink = screen.getByRole("link", { name: /profile/i });
+    expect(profileLink.className).not.toContain("bg-[#ff6b00]");
+  });
 });

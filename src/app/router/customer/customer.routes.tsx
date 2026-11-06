@@ -12,6 +12,7 @@ import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
 import OrderHistoryPage from "@/features/orders/pages/OrderHistoryPage";
 import OrderReceiptPage from "@/features/orders/pages/OrderReceiptPage";
+import CustomerPaymentHistoryPage from "@/features/payments/pages/CustomerPaymentHistoryPage";
 import EditProfilePage from "@/features/profile/pages/EditProfilePage";
 import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
 import CustomerRestaurantDetailsPage from "@/features/restaurants/pages/CustomerRestaurantDetailsPage";
@@ -56,6 +57,10 @@ export const customerRoutes: RouteObject[] = [
           {
             path: CUSTOMER_ROUTE_PATHS.PROFILE.EDIT,
             Component: EditProfilePage,
+          },
+          {
+            path: CUSTOMER_ROUTE_PATHS.PROFILE.PAYMENTS,
+            Component: CustomerPaymentHistoryPage,
           },
         ],
       },

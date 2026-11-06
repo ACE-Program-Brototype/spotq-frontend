@@ -48,4 +48,3 @@ export const RESTAURANT_ORDERS_MESSAGES = {
   NO_ORDERS_FOUND_DESC:
     "There are currently no orders matching your selected filters. Try adjusting your date range, status, or search query.",
 } as const;
-
