@@ -130,4 +130,44 @@ describe("useSubscribers hook", () => {
     expect(result.current.page).toBe(1);
     expect(result.current.isFiltered).toBe(false);
   });
+
+  it("should retain previous subscribers data while fetching next page", async () => {
+    const { result } = renderHook(() => useSubscribers(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.subscribers).toHaveLength(1);
+
+    let resolveNextPage: ((value: unknown) => void) | undefined;
+    (subscriberService.getSubscribers as jest.Mock).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveNextPage = resolve;
+        }),
+    );
+
+    act(() => {
+      result.current.setPage(2);
+    });
+
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.subscribers).toHaveLength(1);
+
+    await act(async () => {
+      resolveNextPage?.({
+        subscribers: [],
+        pagination: {
+          currentPage: 2,
+          pageSize: 10,
+          totalItems: 1,
+          totalPages: 2,
+          hasNextPage: false,
+          hasPreviousPage: true,
+        },
+      });
+    });
+
+    await waitFor(() => expect(result.current.subscribers).toHaveLength(0));
+  });
 });

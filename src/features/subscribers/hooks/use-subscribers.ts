@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
@@ -64,6 +64,7 @@ export function useSubscribers(options?: UseSubscribersOptions) {
         sortBy,
         sortOrder,
       }),
+    placeholderData: keepPreviousData,
   });
 
   const handleSearchChange = (newSearch: string) => {
