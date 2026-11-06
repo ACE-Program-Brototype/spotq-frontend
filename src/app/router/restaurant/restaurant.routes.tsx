@@ -40,7 +40,7 @@ import { RESTAURANT_ROUTE_PATHS, RESTAURANT_ROUTES } from "./restaurant.routes.c
 const RestaurantAuthGuard = () => <AuthLayout redirectTo={RESTAURANT_ROUTES.DASHBOARD} />;
 const RestaurantProtectedLayout = () => (
   <ProtectedLayout
-    allowedRoles={["RESTAURANT_OWNER"]}
+    allowedRoles={["RESTAURANT_ADMIN", "RESTAURANT_OWNER"]}
     redirectTo={RESTAURANT_ROUTES.LOGIN}
   />
 );
