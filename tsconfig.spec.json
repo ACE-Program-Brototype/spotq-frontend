@@ -6,7 +6,8 @@
     "module": "esnext",
     "types": ["node", "jest", "@testing-library/jest-dom", "vite/client"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@features/*": ["./src/features/*"]
     },
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,

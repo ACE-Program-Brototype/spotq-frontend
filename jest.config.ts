@@ -9,6 +9,7 @@ const config: Config = {
     "^ky$": "<rootDir>/__mocks__/ky.ts",
     "\\.(css|less|scss|sass)$": "<rootDir>/__mocks__/styleMock.js",
     "\\.(gif|ttf|eot|svg|png|jpg|jpeg|avif|webp)$": "<rootDir>/__mocks__/fileMock.js",
+    "^@features/(.*)$": "<rootDir>/src/features/$1",
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   transform: {
