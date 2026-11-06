@@ -161,6 +161,39 @@ describe("subscriberService", () => {
         }),
       );
     });
+
+    it("should map backend page, limit, and hasPrevPage fields into SubscriberPagination", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Subscribers retrieved successfully",
+        data: {
+          subscribers: [],
+          pagination: {
+            page: 2,
+            limit: 15,
+            totalItems: 32,
+            totalPages: 3,
+            hasNextPage: true,
+            hasPrevPage: true,
+          },
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await subscriberService.getSubscribers({ page: 2, limit: 15 });
+
+      expect(result.pagination).toEqual({
+        currentPage: 2,
+        pageSize: 15,
+        totalItems: 32,
+        totalPages: 3,
+        hasNextPage: true,
+        hasPreviousPage: true,
+      });
+    });
   });
 
   describe("getSubscriberDetails", () => {

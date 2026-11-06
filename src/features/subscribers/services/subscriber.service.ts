@@ -10,6 +10,7 @@ import type {
   SubscriberDetail,
   SubscriberDetailsApiResponse,
   SubscriberInvoice,
+  SubscriberPagination,
   SubscriberPlan,
   SubscriberSummary,
   SubscribersApiResponse,
@@ -81,6 +82,33 @@ interface RawInvoicePayload {
 interface RawSubscriberDetailPayload extends RawSubscriberPayload {
   transactions?: RawTransactionPayload[];
   invoices?: RawInvoicePayload[];
+}
+
+interface RawPaginationPayload {
+  page?: number;
+  currentPage?: number;
+  limit?: number;
+  pageSize?: number;
+  totalItems?: number;
+  totalPages?: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+  hasPreviousPage?: boolean;
+}
+
+function normalizePagination(
+  raw: RawPaginationPayload | undefined,
+  fallbackPage: number,
+  fallbackLimit: number,
+): SubscriberPagination {
+  return {
+    currentPage: raw?.currentPage ?? raw?.page ?? fallbackPage,
+    pageSize: raw?.pageSize ?? raw?.limit ?? fallbackLimit,
+    totalItems: raw?.totalItems ?? 0,
+    totalPages: raw?.totalPages ?? 0,
+    hasNextPage: Boolean(raw?.hasNextPage),
+    hasPreviousPage: Boolean(raw?.hasPreviousPage ?? raw?.hasPrevPage),
+  };
 }
 
 function normalizeBillingCycle(cycle?: string | null): SubscriberBillingCycle {
@@ -165,17 +193,15 @@ export const subscriberService = {
       .json<SubscribersApiResponse>();
 
     const rawSubscribers = (response?.data?.subscribers || []) as unknown as RawSubscriberPayload[];
+    const rawPagination = response?.data?.pagination as unknown as RawPaginationPayload | undefined;
 
     return {
       subscribers: rawSubscribers.map((raw) => normalizeSubscriberSummary(raw)),
-      pagination: response?.data?.pagination || {
-        currentPage: Number(searchParams.page),
-        pageSize: Number(searchParams.limit),
-        totalItems: 0,
-        totalPages: 0,
-        hasNextPage: false,
-        hasPreviousPage: false,
-      },
+      pagination: normalizePagination(
+        rawPagination,
+        Number(searchParams.page),
+        Number(searchParams.limit),
+      ),
     };
   },
 
