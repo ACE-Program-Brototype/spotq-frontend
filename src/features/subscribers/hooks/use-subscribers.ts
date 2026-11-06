@@ -83,6 +83,17 @@ export function useSubscribers(options?: UseSubscribersOptions) {
     setPage(1);
   };
 
+  const handleSort = (field: string, direction?: "asc" | "desc") => {
+    const nextOrder =
+      direction ??
+      (sortBy === field && sortOrder === SUBSCRIBER_SORT_ORDER.ASC
+        ? SUBSCRIBER_SORT_ORDER.DESC
+        : SUBSCRIBER_SORT_ORDER.ASC);
+    setSortBy(field);
+    setSortOrder(nextOrder);
+    setPage(1);
+  };
+
   const handleResetFilters = () => {
     setSearch("");
     setStatus(SUBSCRIBER_FILTER_STATUS.ALL);
@@ -94,6 +105,7 @@ export function useSubscribers(options?: UseSubscribersOptions) {
   const isFiltered =
     Boolean(search.trim()) ||
     status !== SUBSCRIBER_FILTER_STATUS.ALL ||
+    sortBy !== SUBSCRIBER_DEFAULTS.SORT_BY ||
     sortOrder !== SUBSCRIBER_DEFAULTS.SORT_ORDER;
 
   return {
@@ -114,6 +126,7 @@ export function useSubscribers(options?: UseSubscribersOptions) {
     sortBy,
     setSortBy,
     sortOrder,
+    onSort: handleSort,
     toggleSortOrder: handleSortToggle,
     resetFilters: handleResetFilters,
     isFiltered,

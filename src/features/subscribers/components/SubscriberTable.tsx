@@ -3,7 +3,11 @@ import { useMemo } from "react";
 import { type Column, DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils/date";
-import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import {
+  DATE_ONLY_FORMAT_OPTIONS,
+  SUBSCRIBER_MESSAGES,
+  SUBSCRIBER_SORT_BY,
+} from "../constants/subscriber.constants";
 import type { SubscriberSummary } from "../types/subscriber.types";
 import { formatBillingCycle, formatPrice } from "../utils/subscriber.utils";
 import { SubscriberEmptyState } from "./SubscriberEmptyState";
@@ -18,7 +22,7 @@ export interface SubscriberTableProps {
   loadingRowCount?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
-  onSort?: (field: string) => void;
+  onSort?: (field: string, direction?: "asc" | "desc") => void;
 }
 
 export function SubscriberTable({
@@ -98,6 +102,8 @@ export function SubscriberTable({
       {
         key: "status",
         header: SUBSCRIBER_MESSAGES.TABLE_HEADER_STATUS,
+        sortable: true,
+        sortKey: SUBSCRIBER_SORT_BY.STATUS,
         width: "110px",
         headerClassName: "font-semibold text-slate-700 min-w-[100px]",
         cell: ({ row }) => <SubscriberStatusBadge status={row.status} />,
@@ -105,6 +111,8 @@ export function SubscriberTable({
       {
         key: "startDate",
         header: SUBSCRIBER_MESSAGES.TABLE_HEADER_START_DATE,
+        sortable: true,
+        sortKey: SUBSCRIBER_SORT_BY.CURRENT_PERIOD_START,
         width: "120px",
         headerClassName: "font-semibold text-slate-700 min-w-[105px]",
         cell: ({ row }) => (
@@ -116,6 +124,8 @@ export function SubscriberTable({
       {
         key: "renewal",
         header: SUBSCRIBER_MESSAGES.TABLE_HEADER_RENEWAL,
+        sortable: true,
+        sortKey: SUBSCRIBER_SORT_BY.CURRENT_PERIOD_END,
         width: "120px",
         headerClassName: "font-semibold text-slate-700 min-w-[105px]",
         cell: ({ row }) => (
@@ -159,7 +169,7 @@ export function SubscriberTable({
       loadingRowCount={loadingRowCount}
       sortBy={sortBy}
       sortOrder={sortOrder}
-      onSort={onSort ? (key) => onSort(key) : undefined}
+      onSort={onSort ? (key, direction) => onSort(key, direction) : undefined}
       emptyState={<SubscriberEmptyState isFiltered={isFiltered} onResetFilters={onResetFilters} />}
       testId="subscriber-table"
       theme="admin"

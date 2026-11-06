@@ -67,4 +67,14 @@ describe("SubscriberTable", () => {
     fireEvent.click(resetBtn);
     expect(defaultProps.onResetFilters).toHaveBeenCalledTimes(1);
   });
+
+  it("should invoke onSort with backend sortKey when clicking sortable column headers", () => {
+    const onSort = jest.fn();
+    render(
+      <SubscriberTable {...defaultProps} sortBy="createdAt" sortOrder="desc" onSort={onSort} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort by Renewal / Expiry" }));
+    expect(onSort).toHaveBeenCalledWith("currentPeriodEnd", "asc");
+  });
 });

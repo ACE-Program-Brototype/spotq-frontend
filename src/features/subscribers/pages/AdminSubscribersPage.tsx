@@ -24,7 +24,9 @@ export function AdminSubscribersPage() {
     setStatus,
     search,
     setSearch,
+    sortBy,
     sortOrder,
+    onSort,
     toggleSortOrder,
     resetFilters,
     isFiltered,
@@ -96,6 +98,9 @@ export function AdminSubscribersPage() {
               onResetFilters={resetFilters}
               isLoading={isLoading}
               loadingRowCount={limit}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={onSort}
             />
           )}
 
