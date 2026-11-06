@@ -212,7 +212,7 @@ export const restaurantRoutes: RouteObject[] = [
             path: RESTAURANT_ROUTE_PATHS.TABLE.ROOT,
             children: [
               { index: true, Component: RestaurantTablePage },
-              { path: "sections", Component: RestaurantTableSectionsPage },
+              { path: RESTAURANT_ROUTE_PATHS.TABLE.SECTIONS, Component: RestaurantTableSectionsPage },
               { path: RESTAURANT_ROUTE_PATHS.TABLE.CREATE, Component: CreateTablePage },
               { path: RESTAURANT_ROUTE_PATHS.TABLE.VIEW, Component: RestaurantTableDetailPage },
             ],

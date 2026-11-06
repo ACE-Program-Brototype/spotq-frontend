@@ -55,7 +55,7 @@ export const RESTAURANT_ROUTE_PATHS = {
 
   TABLE: {
     ROOT: "tables",
-    SECTIONS: "tables/sections",
+    SECTIONS: "sections",
     CREATE: "create",
     VIEW: ":tableId",
   },
