@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { CREATE_SECTION_MODAL_STRINGS } from "../constants/table.constants";
 
 const createSectionSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, "Section name must be at least 2 characters")
-    .max(100, "Section name cannot exceed 100 characters"),
+    .min(2, CREATE_SECTION_MODAL_STRINGS.VALIDATION_MIN)
+    .max(100, CREATE_SECTION_MODAL_STRINGS.VALIDATION_MAX),
 });
 
 type CreateSectionFormData = z.infer<typeof createSectionSchema>;
@@ -96,10 +97,10 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
                 id="create-section-title"
                 className="text-lg font-bold tracking-tight text-[#252a26]"
               >
-                Create Table Section
+                {CREATE_SECTION_MODAL_STRINGS.TITLE}
               </h2>
               <p className="text-xs text-[#7c837d]">
-                Define a new dining zone on your restaurant floor.
+                {CREATE_SECTION_MODAL_STRINGS.DESCRIPTION}
               </p>
             </div>
           </div>
@@ -108,7 +109,7 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
             type="button"
             disabled={isSubmitting}
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label={CREATE_SECTION_MODAL_STRINGS.CLOSE_LABEL}
             className="rounded-lg p-1 text-neutral-400 hover:bg-[#f4eee9] hover:text-neutral-700 disabled:opacity-50"
           >
             <X className="size-5" />
@@ -119,7 +120,7 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="section-name" className="text-sm font-semibold text-[#353b36]">
-                Section Name <span className="text-[#9a3412]">*</span>
+                {CREATE_SECTION_MODAL_STRINGS.FIELD_LABEL} <span className="text-[#9a3412]">*</span>
               </label>
               <span className="text-[11px] text-[#8c948e]">{sectionName.length}/100</span>
             </div>
@@ -127,7 +128,7 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
             <input
               id="section-name"
               type="text"
-              placeholder="e.g. Patio, Rooftop, Main Dining"
+              placeholder={CREATE_SECTION_MODAL_STRINGS.PLACEHOLDER}
               maxLength={100}
               disabled={isSubmitting}
               className="mt-1.5 h-11 w-full rounded-xl border border-[#e8e2dd] bg-white px-3.5 text-sm text-[#282d29] outline-none transition-all placeholder:text-neutral-400 focus:border-[#b4532a] focus:ring-2 focus:ring-orange-100 disabled:bg-neutral-50"
@@ -146,7 +147,7 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
               onClick={onClose}
               className="h-10 rounded-xl border-[#e2d8d0] text-xs font-semibold text-[#51483f] hover:bg-[#faf4f0]"
             >
-              Cancel
+              {CREATE_SECTION_MODAL_STRINGS.CANCEL_BUTTON}
             </Button>
 
             <Button
@@ -157,10 +158,10 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  Creating…
+                  {CREATE_SECTION_MODAL_STRINGS.SUBMITTING_BUTTON}
                 </>
               ) : (
-                "Create Section"
+                CREATE_SECTION_MODAL_STRINGS.SUBMIT_BUTTON
               )}
             </Button>
           </div>

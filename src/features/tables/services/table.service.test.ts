@@ -51,6 +51,33 @@ describe("tableService", () => {
       expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.LIST(restaurantId));
       expect(result).toEqual(mockResponse.data.sections);
     });
+
+    it("throws error if restaurantId is missing", async () => {
+      await expect(tableService.getTablesBySection("")).rejects.toThrow(
+        "Restaurant ID is required to fetch tables",
+      );
+    });
+  });
+
+  describe("createTable", () => {
+    it("posts a trimmed table payload", async () => {
+      const response = { success: true, data: { id: "table-1" } };
+      const json = jest.fn().mockResolvedValue(response);
+      (apiClient.post as jest.Mock).mockReturnValue({ json });
+
+      await expect(
+        tableService.createTable(restaurantId, {
+          tableCode: " T1 ",
+          sectionId: " section-1 ",
+          capacity: 4,
+          tableShape: "CIRCLE",
+        }),
+      ).resolves.toEqual(response.data);
+
+      expect(apiClient.post).toHaveBeenCalledWith(TABLE_ENDPOINTS.CREATE(restaurantId), {
+        json: { tableCode: "T1", sectionId: "section-1", capacity: 4, tableType: "CIRCLE" },
+      });
+    });
   });
 
   describe("getTableSections", () => {

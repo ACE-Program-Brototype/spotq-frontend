@@ -78,6 +78,19 @@ export const TABLE_SECTION_MESSAGES = {
   FETCH_FAILED: "Unable to load table sections. Please try again.",
 } as const;
 
+export const CREATE_SECTION_MODAL_STRINGS = {
+  TITLE: "Create Table Section",
+  DESCRIPTION: "Define a new dining zone on your restaurant floor.",
+  FIELD_LABEL: "Section Name",
+  PLACEHOLDER: "e.g. Patio, Rooftop, Main Dining",
+  CLOSE_LABEL: "Close modal",
+  CANCEL_BUTTON: "Cancel",
+  SUBMIT_BUTTON: "Create Section",
+  SUBMITTING_BUTTON: "Creating...",
+  VALIDATION_MIN: "Section name must be at least 2 characters",
+  VALIDATION_MAX: "Section name cannot exceed 100 characters",
+} as const;
+
 export interface StatusVisualConfig {
   label: string;
   shortLabel?: string;
