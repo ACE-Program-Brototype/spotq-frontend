@@ -29,6 +29,10 @@ export const RESTAURANT_ROUTE_PATHS = {
   },
 
   DASHBOARD: "dashboard",
+  ORDERS: {
+    ROOT: "orders",
+    DETAIL: ":orderId",
+  },
   PROFILE: "profile",
   SETTINGS_ACCOUNT: "settings/account",
 
@@ -91,6 +95,11 @@ export const RESTAURANT_ROUTES = {
 
   // Admin Dashboard & Settings
   DASHBOARD: "/restaurant/dashboard",
+  ORDERS: {
+    ROOT: "/restaurant/orders",
+    DETAIL_PATTERN: "/restaurant/orders/:orderId",
+    DETAIL: (orderId: string) => `/restaurant/orders/${orderId}`,
+  },
   PROFILE: "/restaurant/profile",
   SETTINGS_ACCOUNT: "/restaurant/settings/account",
 

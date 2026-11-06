@@ -6,6 +6,7 @@ import {
   Megaphone,
   Receipt,
   Settings,
+  ShoppingBag,
   Store,
   Users,
   Utensils,
@@ -28,6 +29,12 @@ export function getAdminNavItems(basePath: string): NavItem[] {
         { title: "QR Management", href: `${basePath}/qr-management` },
         { title: "Tables", href: `${basePath}/tables` },
       ],
+    },
+    {
+      title: "Orders",
+      href: `${basePath}/orders`,
+      icon: ShoppingBag,
+      children: [{ title: "Overview", href: `${basePath}/orders` }],
     },
     {
       title: "Menu",

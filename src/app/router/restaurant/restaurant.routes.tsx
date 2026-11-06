@@ -16,6 +16,8 @@ import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
 import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
+import RestaurantOrderDetailPage from "@/features/orders/pages/RestaurantOrderDetailPage";
+import RestaurantOrdersPage from "@/features/orders/pages/RestaurantOrdersPage";
 import RestaurantProfilePage from "@/features/profile/pages/RestaurantProfilePage";
 import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
@@ -126,6 +128,19 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: RESTAURANT_ROUTE_PATHS.DASHBOARD,
             Component: RestaurantDashboardPage,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.ORDERS.ROOT,
+            children: [
+              {
+                index: true,
+                Component: RestaurantOrdersPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.ORDERS.DETAIL,
+                Component: RestaurantOrderDetailPage,
+              },
+            ],
           },
           {
             path: RESTAURANT_ROUTE_PATHS.PROFILE,
