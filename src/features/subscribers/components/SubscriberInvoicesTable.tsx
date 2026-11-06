@@ -1,12 +1,5 @@
+import { type Column, DataTable } from "@/components/common/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { formatDate } from "@/lib/utils/date";
 import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
 import type { SubscriberInvoice } from "../types/subscriber.types";
@@ -16,6 +9,51 @@ export interface SubscriberInvoicesTableProps {
   invoices: SubscriberInvoice[];
 }
 
+const invoiceColumns: Column<SubscriberInvoice>[] = [
+  {
+    key: "invoiceNumber",
+    header: SUBSCRIBER_MESSAGES.INV_HEADER_NUMBER,
+    headerClassName: "font-semibold text-slate-700 min-w-[140px]",
+    className: "font-medium text-slate-900",
+    cell: ({ row }) => row.invoiceNumber,
+  },
+  {
+    key: "amount",
+    header: SUBSCRIBER_MESSAGES.INV_HEADER_AMOUNT,
+    headerClassName: "font-semibold text-slate-700 min-w-[100px]",
+    className: "font-semibold text-slate-900",
+    cell: ({ row }) => formatPrice(row.amount, row.currency),
+  },
+  {
+    key: "status",
+    header: SUBSCRIBER_MESSAGES.INV_HEADER_STATUS,
+    headerClassName: "font-semibold text-slate-700 min-w-[100px]",
+    cell: ({ row }) => (
+      <span
+        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border ${getPaymentStatusBadgeClass(
+          row.status,
+        )}`}
+      >
+        {row.status}
+      </span>
+    ),
+  },
+  {
+    key: "paidAt",
+    header: SUBSCRIBER_MESSAGES.INV_HEADER_PAID_AT,
+    headerClassName: "font-semibold text-slate-700 min-w-[120px]",
+    className: "text-xs text-slate-600",
+    cell: ({ row }) => formatDate(row.paidAt, DATE_ONLY_FORMAT_OPTIONS),
+  },
+  {
+    key: "createdAt",
+    header: SUBSCRIBER_MESSAGES.INV_HEADER_DATE,
+    headerClassName: "font-semibold text-slate-700 min-w-[120px]",
+    className: "text-xs text-slate-600",
+    cell: ({ row }) => formatDate(row.createdAt, DATE_ONLY_FORMAT_OPTIONS),
+  },
+];
+
 export function SubscriberInvoicesTable({ invoices }: SubscriberInvoicesTableProps) {
   return (
     <Card className="border-slate-200 shadow-xs" data-testid="subscriber-invoices-table">
@@ -24,67 +62,21 @@ export function SubscriberInvoicesTable({ invoices }: SubscriberInvoicesTablePro
           {SUBSCRIBER_MESSAGES.DETAILS_SECTION_INVOICES}
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-4 p-0">
-        {invoices.length === 0 ? (
-          <div className="p-8 text-center text-sm text-slate-500">
-            {SUBSCRIBER_MESSAGES.DETAILS_NO_INVOICES}
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-slate-50/80 hover:bg-slate-50/80">
-                  <TableHead className="font-semibold text-slate-700 min-w-[140px]">
-                    {SUBSCRIBER_MESSAGES.INV_HEADER_NUMBER}
-                  </TableHead>
-                  <TableHead className="font-semibold text-slate-700 min-w-[100px]">
-                    {SUBSCRIBER_MESSAGES.INV_HEADER_AMOUNT}
-                  </TableHead>
-                  <TableHead className="font-semibold text-slate-700 min-w-[100px]">
-                    {SUBSCRIBER_MESSAGES.INV_HEADER_STATUS}
-                  </TableHead>
-                  <TableHead className="font-semibold text-slate-700 min-w-[120px]">
-                    {SUBSCRIBER_MESSAGES.INV_HEADER_PAID_AT}
-                  </TableHead>
-                  <TableHead className="font-semibold text-slate-700 min-w-[120px]">
-                    {SUBSCRIBER_MESSAGES.INV_HEADER_DATE}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {invoices.map((inv) => (
-                  <TableRow
-                    key={inv.id}
-                    className="hover:bg-slate-50/60 transition-colors"
-                    data-testid={`subscriber-inv-row-${inv.id}`}
-                  >
-                    <TableCell className="font-medium text-slate-900">
-                      {inv.invoiceNumber}
-                    </TableCell>
-                    <TableCell className="font-semibold text-slate-900">
-                      {formatPrice(inv.amount, inv.currency)}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border ${getPaymentStatusBadgeClass(
-                          inv.status,
-                        )}`}
-                      >
-                        {inv.status}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-xs text-slate-600">
-                      {formatDate(inv.paidAt, DATE_ONLY_FORMAT_OPTIONS)}
-                    </TableCell>
-                    <TableCell className="text-xs text-slate-600">
-                      {formatDate(inv.createdAt, DATE_ONLY_FORMAT_OPTIONS)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+      <CardContent className="p-0">
+        <DataTable<SubscriberInvoice>
+          data={invoices}
+          columns={invoiceColumns}
+          getRowId={(row) => row.id}
+          getRowTestId={(row) => `subscriber-inv-row-${row.id}`}
+          emptyState={
+            <div className="p-4 text-center text-sm text-slate-500">
+              {SUBSCRIBER_MESSAGES.DETAILS_NO_INVOICES}
+            </div>
+          }
+          className="rounded-none border-0 shadow-none"
+          theme="admin"
+          aria-label={SUBSCRIBER_MESSAGES.DETAILS_SECTION_INVOICES}
+        />
       </CardContent>
     </Card>
   );
