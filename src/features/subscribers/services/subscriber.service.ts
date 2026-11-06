@@ -6,6 +6,7 @@ import {
 } from "../constants/subscriber.constants";
 import type {
   GetSubscribersParams,
+  SubscriberBillingCycle,
   SubscriberDetail,
   SubscriberDetailsApiResponse,
   SubscriberInvoice,
@@ -82,13 +83,17 @@ interface RawSubscriberDetailPayload extends RawSubscriberPayload {
   invoices?: RawInvoicePayload[];
 }
 
+function normalizeBillingCycle(cycle?: string | null): SubscriberBillingCycle {
+  return cycle?.toUpperCase() === "YEARLY" ? "YEARLY" : "MONTHLY";
+}
+
 function normalizePlan(rawPlan?: RawPlanPayload | null): SubscriberPlan | null {
   if (!rawPlan) return null;
   return {
     id: rawPlan.id || "",
     name: rawPlan.name || rawPlan.code || "-",
     code: rawPlan.code || "-",
-    billingCycle: rawPlan.billingCycle || "MONTHLY",
+    billingCycle: normalizeBillingCycle(rawPlan.billingCycle),
     price: rawPlan.pricePaise ?? rawPlan.price ?? 0,
     currency: rawPlan.currency || "INR",
     description: rawPlan.description || null,
@@ -100,7 +105,7 @@ function normalizeSubscriberSummary(raw: RawSubscriberPayload): SubscriberSummar
   const plan = normalizePlan(raw.plan);
   const planName = raw.planName || plan?.name || raw.planCode || plan?.code || "-";
   const planCode = raw.planCode || plan?.code || "-";
-  const billingCycle = raw.billingCycle || plan?.billingCycle || "MONTHLY";
+  const billingCycle = normalizeBillingCycle(raw.billingCycle || plan?.billingCycle);
   const price = raw.pricePaise ?? raw.price ?? plan?.price ?? 0;
   const currency = raw.currency || plan?.currency || "INR";
 

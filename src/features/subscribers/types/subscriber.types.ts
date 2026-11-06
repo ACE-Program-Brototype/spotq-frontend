@@ -8,7 +8,7 @@ export interface SubscriberPlan {
   id: string;
   name: string;
   code: string;
-  billingCycle: string;
+  billingCycle: SubscriberBillingCycle;
   price: number;
   currency: string;
   description: string | null;
@@ -24,7 +24,7 @@ export interface SubscriberSummary {
   planId?: string;
   planName: string;
   planCode: string;
-  billingCycle: string;
+  billingCycle: SubscriberBillingCycle;
   price: number;
   currency: string;
   status: SubscriberStatus;
