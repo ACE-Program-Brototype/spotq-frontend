@@ -32,17 +32,15 @@ export function AdminSubscriberDetailsPage() {
     ((error as { response?: { status?: number } })?.response?.status === 404 ||
       (error as { status?: number })?.status === 404);
 
-  if (isNotFound || (!isLoading && !subscriber && !isError) || isError) {
+  if (isError || !subscriber) {
     return (
       <SubscriberDetailsErrorState
-        isNotFound={Boolean(isNotFound || (!isLoading && !subscriber && !isError))}
+        isNotFound={Boolean(isNotFound || !isError)}
         onBack={handleBack}
         onRetry={() => refetch()}
       />
     );
   }
-
-  if (!subscriber) return null;
 
   return (
     <div className="space-y-6" data-testid="admin-subscriber-details-page">
