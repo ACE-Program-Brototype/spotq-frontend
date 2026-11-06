@@ -190,6 +190,9 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
 
             const isActive =
               location.pathname === item.href ||
+              (Boolean(item.href) &&
+                item.href !== ADMIN_ROUTES.ROOT &&
+                location.pathname.startsWith(`${item.href}/`)) ||
               (item.href === ADMIN_ROUTES.DASHBOARD && location.pathname === ADMIN_ROUTES.ROOT);
 
             return (
