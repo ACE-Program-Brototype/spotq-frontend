@@ -1,62 +1,29 @@
+import { formatCurrency } from "@/lib/utils/currency";
 import { SUBSCRIBER_MESSAGES, SUBSCRIBER_STATUS } from "../constants/subscriber.constants";
 
 /**
  * Format price in paise to currency string (default INR)
  */
 export function formatPrice(amountInPaise: number, currency = "INR"): string {
-  if (typeof amountInPaise !== "number" || Number.isNaN(amountInPaise)) {
+  if (typeof amountInPaise !== "number" || !Number.isFinite(amountInPaise)) {
     return SUBSCRIBER_MESSAGES.NOT_APPLICABLE;
   }
 
   const amountInUnits = amountInPaise / 100;
+  if (currency.toUpperCase() === "INR") {
+    return formatCurrency(amountInUnits);
+  }
 
   try {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: currency.toUpperCase(),
+      minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amountInUnits);
   } catch {
     return `${currency.toUpperCase()} ${amountInUnits.toFixed(2)}`;
   }
-}
-
-/**
- * Format an ISO date string into a user-friendly date
- */
-export function formatDate(dateStr?: string | null): string {
-  if (!dateStr) return SUBSCRIBER_MESSAGES.NOT_APPLICABLE;
-
-  const date = new Date(dateStr);
-  if (Number.isNaN(date.getTime())) {
-    return SUBSCRIBER_MESSAGES.NOT_APPLICABLE;
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-}
-
-/**
- * Format an ISO date string into a user-friendly date and time
- */
-export function formatDateTime(dateStr?: string | null): string {
-  if (!dateStr) return SUBSCRIBER_MESSAGES.NOT_APPLICABLE;
-
-  const date = new Date(dateStr);
-  if (Number.isNaN(date.getTime())) {
-    return SUBSCRIBER_MESSAGES.NOT_APPLICABLE;
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
 }
 
 /**

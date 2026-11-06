@@ -41,6 +41,11 @@ export const SUBSCRIBER_DEFAULTS = {
   SEARCH_DEBOUNCE_MS: 350,
 } as const;
 
+export const DATE_ONLY_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
+  hour: undefined,
+  minute: undefined,
+};
+
 export const SUBSCRIBER_QUERY_KEYS = {
   ALL: ["subscribers"] as const,
   LIST: (params: Record<string, unknown>) => ["subscribers", "list", params] as const,

@@ -1,7 +1,5 @@
 import {
   formatBillingCycle,
-  formatDate,
-  formatDateTime,
   formatPrice,
   getPaymentStatusBadgeClass,
   getSubscriberStatusStyles,
@@ -9,37 +7,12 @@ import {
 
 describe("subscriber.utils", () => {
   describe("formatPrice", () => {
-    it("should format paise to INR currency string", () => {
-      const formatted = formatPrice(499900, "INR");
-      expect(formatted).toContain("4,999");
+    it("should format paise to INR currency string with two decimal places", () => {
+      expect(formatPrice(499900, "INR")).toBe("₹4,999.00");
     });
 
     it("should return not applicable for invalid amount", () => {
       expect(formatPrice(NaN as unknown as number)).toBe("-");
-    });
-  });
-
-  describe("formatDate", () => {
-    it("should format ISO date string", () => {
-      const formatted = formatDate("2026-11-01T00:00:00.000Z");
-      expect(formatted).toBe("Nov 1, 2026");
-    });
-
-    it("should return dash for null or undefined", () => {
-      expect(formatDate(null)).toBe("-");
-      expect(formatDate(undefined)).toBe("-");
-      expect(formatDate("invalid")).toBe("-");
-    });
-  });
-
-  describe("formatDateTime", () => {
-    it("should format ISO datetime string", () => {
-      const formatted = formatDateTime("2026-11-01T10:30:00.000Z");
-      expect(formatted).toContain("Nov 1, 2026");
-    });
-
-    it("should return dash for invalid datetime", () => {
-      expect(formatDateTime(null)).toBe("-");
     });
   });
 

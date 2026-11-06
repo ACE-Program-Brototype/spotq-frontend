@@ -2,9 +2,10 @@ import { Eye } from "lucide-react";
 import { useMemo } from "react";
 import { type Column, DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import { formatDate } from "@/lib/utils/date";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
 import type { SubscriberSummary } from "../types/subscriber.types";
-import { formatBillingCycle, formatDate, formatPrice } from "../utils/subscriber.utils";
+import { formatBillingCycle, formatPrice } from "../utils/subscriber.utils";
 import { SubscriberEmptyState } from "./SubscriberEmptyState";
 import { SubscriberStatusBadge } from "./SubscriberStatusBadge";
 
@@ -106,7 +107,7 @@ export function SubscriberTable({
         headerClassName: "font-semibold text-slate-700 min-w-[105px]",
         cell: ({ row }) => (
           <span className="text-sm text-slate-600">
-            {formatDate(row.currentPeriodStart || row.createdAt)}
+            {formatDate(row.currentPeriodStart || row.createdAt, DATE_ONLY_FORMAT_OPTIONS)}
           </span>
         ),
       },
@@ -116,7 +117,9 @@ export function SubscriberTable({
         width: "120px",
         headerClassName: "font-semibold text-slate-700 min-w-[105px]",
         cell: ({ row }) => (
-          <span className="text-sm text-slate-600">{formatDate(row.currentPeriodEnd)}</span>
+          <span className="text-sm text-slate-600">
+            {formatDate(row.currentPeriodEnd, DATE_ONLY_FORMAT_OPTIONS)}
+          </span>
         ),
       },
       {

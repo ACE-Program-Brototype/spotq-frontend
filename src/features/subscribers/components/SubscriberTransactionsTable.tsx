@@ -7,9 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import { formatDate } from "@/lib/utils/date";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
 import type { SubscriberTransaction } from "../types/subscriber.types";
-import { formatDate, formatPrice, getPaymentStatusBadgeClass } from "../utils/subscriber.utils";
+import { formatPrice, getPaymentStatusBadgeClass } from "../utils/subscriber.utils";
 
 export interface SubscriberTransactionsTableProps {
   transactions: SubscriberTransaction[];
@@ -80,7 +81,7 @@ export function SubscriberTransactionsTable({ transactions }: SubscriberTransact
                       {txn.razorpayPaymentId || SUBSCRIBER_MESSAGES.NOT_APPLICABLE}
                     </TableCell>
                     <TableCell className="text-xs text-slate-600">
-                      {formatDate(txn.createdAt)}
+                      {formatDate(txn.createdAt, DATE_ONLY_FORMAT_OPTIONS)}
                     </TableCell>
                   </TableRow>
                 ))}

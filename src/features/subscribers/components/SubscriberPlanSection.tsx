@@ -1,8 +1,9 @@
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import { formatDate } from "@/lib/utils/date";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
 import type { SubscriberDetail } from "../types/subscriber.types";
-import { formatBillingCycle, formatDate, formatPrice } from "../utils/subscriber.utils";
+import { formatBillingCycle, formatPrice } from "../utils/subscriber.utils";
 
 export interface SubscriberPlanSectionProps {
   subscriber: SubscriberDetail;
@@ -59,7 +60,7 @@ export function SubscriberPlanSection({ subscriber }: SubscriberPlanSectionProps
               {SUBSCRIBER_MESSAGES.LABEL_PERIOD_END}
             </span>
             <span className="mt-1 text-sm font-medium text-slate-800 block">
-              {formatDate(subscriber.currentPeriodEnd)}
+              {formatDate(subscriber.currentPeriodEnd, DATE_ONLY_FORMAT_OPTIONS)}
             </span>
           </div>
         </div>
@@ -71,7 +72,7 @@ export function SubscriberPlanSection({ subscriber }: SubscriberPlanSectionProps
               {SUBSCRIBER_MESSAGES.LABEL_PERIOD_START}
             </span>
             <span className="mt-1 text-sm text-slate-700 block">
-              {formatDate(subscriber.currentPeriodStart)}
+              {formatDate(subscriber.currentPeriodStart, DATE_ONLY_FORMAT_OPTIONS)}
             </span>
           </div>
 
@@ -81,7 +82,7 @@ export function SubscriberPlanSection({ subscriber }: SubscriberPlanSectionProps
                 {SUBSCRIBER_MESSAGES.LABEL_CANCELED_AT}
               </span>
               <span className="mt-1 text-sm text-rose-700 block">
-                {formatDate(subscriber.canceledAt)}
+                {formatDate(subscriber.canceledAt, DATE_ONLY_FORMAT_OPTIONS)}
               </span>
             </div>
           )}

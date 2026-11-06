@@ -7,9 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import { formatDate } from "@/lib/utils/date";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
 import type { SubscriberInvoice } from "../types/subscriber.types";
-import { formatDate, formatPrice, getPaymentStatusBadgeClass } from "../utils/subscriber.utils";
+import { formatPrice, getPaymentStatusBadgeClass } from "../utils/subscriber.utils";
 
 export interface SubscriberInvoicesTableProps {
   invoices: SubscriberInvoice[];
@@ -73,10 +74,10 @@ export function SubscriberInvoicesTable({ invoices }: SubscriberInvoicesTablePro
                       </span>
                     </TableCell>
                     <TableCell className="text-xs text-slate-600">
-                      {formatDate(inv.paidAt)}
+                      {formatDate(inv.paidAt, DATE_ONLY_FORMAT_OPTIONS)}
                     </TableCell>
                     <TableCell className="text-xs text-slate-600">
-                      {formatDate(inv.createdAt)}
+                      {formatDate(inv.createdAt, DATE_ONLY_FORMAT_OPTIONS)}
                     </TableCell>
                   </TableRow>
                 ))}

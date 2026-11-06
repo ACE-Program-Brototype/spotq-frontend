@@ -3,15 +3,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDate } from "@/lib/utils/date";
 import { SubscriberDetailsErrorState } from "../components/SubscriberDetailsErrorState";
 import { SubscriberDetailsSkeleton } from "../components/SubscriberDetailsSkeleton";
 import { SubscriberInvoicesTable } from "../components/SubscriberInvoicesTable";
 import { SubscriberPlanSection } from "../components/SubscriberPlanSection";
 import { SubscriberStatusBadge } from "../components/SubscriberStatusBadge";
 import { SubscriberTransactionsTable } from "../components/SubscriberTransactionsTable";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
 import { useSubscriberDetails } from "../hooks/use-subscriber-details";
-import { formatDate } from "../utils/subscriber.utils";
 
 export function AdminSubscriberDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -123,7 +123,9 @@ export function AdminSubscriberDetailsPage() {
               </span>
               <div className="mt-1 flex items-center gap-1.5">
                 <Calendar className="size-3.5 text-slate-400" />
-                <span className="text-sm text-slate-700">{formatDate(subscriber.createdAt)}</span>
+                <span className="text-sm text-slate-700">
+                  {formatDate(subscriber.createdAt, DATE_ONLY_FORMAT_OPTIONS)}
+                </span>
               </div>
             </div>
           </div>
