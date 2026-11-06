@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TABLE_SECTION_MESSAGES } from "../constants/table.constants";
+import { TABLE_QUERY_KEYS, TABLE_SECTION_MESSAGES } from "../constants/table.constants";
 import { tableService } from "../services/table.service";
 
 export function useDeleteTableSection(restaurantId: string) {
@@ -9,13 +9,11 @@ export function useDeleteTableSection(restaurantId: string) {
 
   return useMutation({
     mutationFn: (sectionId: string) =>
-      tableService.deleteTableSection(normalizedRestaurantId, sectionId),
+      tableService.unlistTableSection(normalizedRestaurantId, sectionId),
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: ["tables", normalizedRestaurantId, "sections"],
-        }),
-      ]);
+      await queryClient.invalidateQueries({
+        queryKey: TABLE_QUERY_KEYS.SECTIONS(normalizedRestaurantId),
+      });
       toast.success(TABLE_SECTION_MESSAGES.DELETE_SUCCESS);
     },
     onError: (error) => {
@@ -27,3 +25,5 @@ export function useDeleteTableSection(restaurantId: string) {
     },
   });
 }
+
+export const useUnlistTableSection = useDeleteTableSection;

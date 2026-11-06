@@ -46,6 +46,8 @@ export const TABLE_SERVICE_ERRORS = {
   DETAILS_IDS_REQUIRED: "Restaurant ID and table ID are required to fetch table details",
   LIST_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to fetch tables",
   SECTIONS_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to fetch table sections",
+  DELETE_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
+  UNLIST_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
   UPDATE_IDS_REQUIRED: "Restaurant ID and Table ID are required to update status",
 } as const;
 

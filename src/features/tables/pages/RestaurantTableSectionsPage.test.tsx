@@ -3,13 +3,13 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useCreateTableSection } from "../hooks/useCreateTableSection";
-import { useDeleteTableSection } from "../hooks/useDeleteTableSection";
+import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
 import { useTableSectionsPaginated } from "../hooks/useTableSectionsPaginated";
 import RestaurantTableSectionsPage from "./RestaurantTableSectionsPage";
 
 jest.mock("../hooks/useTableSectionsPaginated");
 jest.mock("../hooks/useCreateTableSection");
-jest.mock("../hooks/useDeleteTableSection");
+jest.mock("../hooks/useUnlistTableSection");
 jest.mock("sonner", () => ({
   toast: {
     success: jest.fn(),
@@ -21,7 +21,7 @@ jest.mock("sonner", () => ({
 describe("RestaurantTableSectionsPage", () => {
   const mockRefetch = jest.fn();
   const mockCreateMutate = jest.fn();
-  const mockDeleteMutate = jest.fn();
+  const mockUnlistMutate = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -58,8 +58,8 @@ describe("RestaurantTableSectionsPage", () => {
       isPending: false,
     });
 
-    (useDeleteTableSection as jest.Mock).mockReturnValue({
-      mutateAsync: mockDeleteMutate,
+    (useUnlistTableSection as jest.Mock).mockReturnValue({
+      mutateAsync: mockUnlistMutate,
       isPending: false,
     });
   });

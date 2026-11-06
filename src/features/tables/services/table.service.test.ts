@@ -140,7 +140,7 @@ describe("tableService", () => {
     });
   });
 
-  describe("deleteTableSection", () => {
+  describe("unlistTableSection", () => {
     it("deletes table section by id", async () => {
       const sectionId = "s2";
       const response = {
@@ -151,7 +151,7 @@ describe("tableService", () => {
         json: jest.fn().mockResolvedValue(response),
       });
 
-      const result = await tableService.deleteTableSection(restaurantId, sectionId);
+      const result = await tableService.unlistTableSection(restaurantId, sectionId);
 
       expect(apiClient.delete).toHaveBeenCalledWith(
         TABLE_ENDPOINTS.TABLE_SECTION_DELETE(restaurantId, sectionId),

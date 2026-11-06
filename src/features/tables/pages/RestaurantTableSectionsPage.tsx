@@ -10,7 +10,7 @@ import { TableSectionCard } from "../components/TableSectionCard";
 import { TableSkeletonGrid } from "../components/TableSkeletonGrid";
 import { UnlistSectionDialog } from "../components/UnlistSectionDialog";
 import { useCreateTableSection } from "../hooks/useCreateTableSection";
-import { useDeleteTableSection } from "../hooks/useDeleteTableSection";
+import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
 import { useTableSectionsPaginated } from "../hooks/useTableSectionsPaginated";
 import type { TableSectionAll } from "../types/table.types";
 
@@ -27,7 +27,7 @@ export default function RestaurantTableSectionsPage() {
   );
 
   const createMutation = useCreateTableSection(restaurantId);
-  const deleteMutation = useDeleteTableSection(restaurantId);
+  const unlistMutation = useUnlistTableSection(restaurantId);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [sectionToUnlist, setSectionToUnlist] = useState<TableSectionAll | null>(null);
@@ -47,10 +47,10 @@ export default function RestaurantTableSectionsPage() {
 
   const handleUnlistConfirm = async (sectionId: string) => {
     try {
-      await deleteMutation.mutateAsync(sectionId);
+      await unlistMutation.mutateAsync(sectionId);
       setSectionToUnlist(null);
     } catch {
-      // Error toast is handled by useDeleteTableSection
+      // Error toast is handled by useUnlistTableSection
     }
   };
 
@@ -140,7 +140,7 @@ export default function RestaurantTableSectionsPage() {
       {/* Main Content Area */}
       {isLoading ? (
         <div className="py-8">
-          <TableSkeletonGrid />
+          <TableSkeletonGrid count={PAGE_SIZE} />
         </div>
       ) : isError ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50/50 py-12 px-4 text-center">
@@ -215,7 +215,7 @@ export default function RestaurantTableSectionsPage() {
         isOpen={Boolean(sectionToUnlist)}
         onClose={() => setSectionToUnlist(null)}
         onConfirm={handleUnlistConfirm}
-        isLoading={deleteMutation.isPending}
+        isLoading={unlistMutation.isPending}
       />
     </main>
   );

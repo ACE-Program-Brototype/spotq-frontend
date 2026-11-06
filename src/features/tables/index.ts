@@ -14,7 +14,7 @@ export * from "./constants/table.constants";
 
 export * from "./hooks/useCreateTable";
 export * from "./hooks/useCreateTableSection";
-export * from "./hooks/useDeleteTableSection";
+export * from "./hooks/useUnlistTableSection";
 export * from "./hooks/useRestaurantAdminTables";
 export * from "./hooks/useRestaurantTableDetails";
 export * from "./hooks/useTableSections";

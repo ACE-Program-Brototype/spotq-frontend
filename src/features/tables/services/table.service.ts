@@ -75,7 +75,7 @@ export const tableService = {
    */
   async getTablesBySection(restaurantId: string): Promise<TablesGroupedBySection> {
     if (!restaurantId) {
-      throw new Error("Restaurant ID is required to fetch tables");
+      throw new Error(TABLE_SERVICE_ERRORS.LIST_RESTAURANT_ID_REQUIRED);
     }
 
     const response = await apiClient
@@ -131,12 +131,12 @@ export const tableService = {
     return response.data;
   },
 
-  async deleteTableSection(
+  async unlistTableSection(
     restaurantId: string,
     sectionId: string,
   ): Promise<DeleteTableSectionResponse> {
     if (!restaurantId || !sectionId) {
-      throw new Error("Restaurant ID and Section ID are required to delete a section");
+      throw new Error(TABLE_SERVICE_ERRORS.DELETE_SECTION_IDS_REQUIRED);
     }
 
     const response = await apiClient

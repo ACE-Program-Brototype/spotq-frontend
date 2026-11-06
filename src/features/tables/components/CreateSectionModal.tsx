@@ -152,7 +152,7 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
 
             <Button
               type="submit"
-              disabled={isSubmitting || sectionName.trim().length < 2}
+              disabled={isSubmitting}
               className="h-10 gap-2 rounded-xl bg-[#b4532a] px-5 text-xs font-semibold text-white shadow-xs hover:bg-[#963f1d] disabled:opacity-50"
             >
               {isSubmitting ? (
