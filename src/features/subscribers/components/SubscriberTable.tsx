@@ -15,6 +15,7 @@ export interface SubscriberTableProps {
   isFiltered?: boolean;
   onResetFilters?: () => void;
   isLoading?: boolean;
+  loadingRowCount?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   onSort?: (field: string) => void;
@@ -26,6 +27,7 @@ export function SubscriberTable({
   isFiltered = false,
   onResetFilters,
   isLoading = false,
+  loadingRowCount,
   sortBy,
   sortOrder,
   onSort,
@@ -154,6 +156,7 @@ export function SubscriberTable({
       getRowId={(row) => row.id}
       getRowTestId={(row) => `subscriber-row-${row.id}`}
       isLoading={isLoading}
+      loadingRowCount={loadingRowCount}
       sortBy={sortBy}
       sortOrder={sortOrder}
       onSort={onSort ? (key) => onSort(key) : undefined}

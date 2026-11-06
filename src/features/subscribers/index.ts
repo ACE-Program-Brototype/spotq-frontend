@@ -6,7 +6,6 @@ export * from "./components/SubscriberInvoicesTable";
 export * from "./components/SubscriberPlanSection";
 export * from "./components/SubscriberStatusBadge";
 export * from "./components/SubscriberTable";
-export * from "./components/SubscriberTableSkeleton";
 export * from "./components/SubscriberTransactionsTable";
 export * from "./constants/subscriber.constants";
 export * from "./hooks/use-subscriber-details";

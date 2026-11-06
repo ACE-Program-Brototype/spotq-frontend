@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SubscriberFilters } from "../components/SubscriberFilters";
 import { SubscriberTable } from "../components/SubscriberTable";
-import { SubscriberTableSkeleton } from "../components/SubscriberTableSkeleton";
 import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
 import { useSubscribers } from "../hooks/use-subscribers";
 import type { SubscriberSummary } from "../types/subscriber.types";
@@ -63,9 +62,7 @@ export function AdminSubscribersPage() {
       {/* Main Content Area */}
       <Card className="border-slate-200">
         <CardContent className="p-0">
-          {isLoading ? (
-            <SubscriberTableSkeleton rowCount={limit} />
-          ) : isError ? (
+          {isError ? (
             <div
               className="flex flex-col items-center justify-center p-12 text-center"
               data-testid="subscriber-error-state"
@@ -97,6 +94,8 @@ export function AdminSubscribersPage() {
               onViewDetails={handleViewDetails}
               isFiltered={isFiltered}
               onResetFilters={resetFilters}
+              isLoading={isLoading}
+              loadingRowCount={limit}
             />
           )}
 
