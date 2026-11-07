@@ -63,12 +63,16 @@ export const SUBSCRIPTION_MESSAGES = {
 export const SUBSCRIPTION_RENEWAL_TEXTS = {
   BANNER_REGION_LABEL: "Subscription expiry alert",
   BANNER_TITLE: "Subscription Expiring Soon",
+  BANNER_TITLE_EXPIRED: "Subscription Expired",
+  BANNER_EXPIRED: (planName: string) =>
+    `Your ${planName} subscription has expired. Renew now to restore uninterrupted service.`,
   BANNER_EXPIRES_TODAY: (planName: string) =>
     `Your ${planName} subscription expires today. Renew now to avoid service interruption.`,
   BANNER_EXPIRES_IN_ONE_DAY: (planName: string) =>
     `Your ${planName} subscription expires in 1 day. Renew now to avoid service interruption.`,
   BANNER_EXPIRES_IN_DAYS: (planName: string, days: number) =>
     `Your ${planName} subscription expires in ${days} days. Renew now to avoid service interruption.`,
+  REMAINING_DAYS_BADGE_EXPIRED: "Expired",
   REMAINING_DAYS_BADGE_TODAY: "Expires today",
   REMAINING_DAYS_BADGE_ONE: "1 day remaining",
   REMAINING_DAYS_BADGE_MANY: (days: number) => `${days} days remaining`,

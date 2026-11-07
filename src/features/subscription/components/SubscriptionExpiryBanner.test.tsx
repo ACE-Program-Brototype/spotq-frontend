@@ -28,6 +28,27 @@ function createStatus(endIso: string | null, active = true): RestaurantStatusDat
 }
 
 describe("SubscriptionExpiryBanner", () => {
+  it("renders expired banner and badge when subscription is expired", async () => {
+    const user = userEvent.setup();
+    const onRenewClick = jest.fn();
+
+    render(
+      <SubscriptionExpiryBanner
+        statusData={createStatus("2026-10-25T10:00:00.000Z", false)}
+        onRenewClick={onRenewClick}
+        now={FIXED_NOW}
+      />,
+    );
+
+    expect(screen.getByTestId("subscription-expiry-banner")).toBeInTheDocument();
+    expect(screen.getByText("Subscription Expired")).toBeInTheDocument();
+    expect(screen.getByText("Expired")).toBeInTheDocument();
+    expect(screen.getByText(/Your Queue Pro subscription has expired/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Renew Now" }));
+    expect(onRenewClick).toHaveBeenCalledTimes(1);
+  });
+
   it("renders remaining days and calls onRenewClick when 7 or fewer days remain", async () => {
     const user = userEvent.setup();
     const onRenewClick = jest.fn();

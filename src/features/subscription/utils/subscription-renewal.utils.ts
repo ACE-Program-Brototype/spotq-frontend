@@ -76,7 +76,11 @@ export function calculateRemainingDays(
 }
 
 export function formatExpiryBannerMessage(planDisplayName: string, daysRemaining: number): string {
-  if (daysRemaining <= 0) {
+  if (daysRemaining < 0) {
+    return SUBSCRIPTION_RENEWAL_TEXTS.BANNER_EXPIRED(planDisplayName);
+  }
+
+  if (daysRemaining === 0) {
     return SUBSCRIPTION_RENEWAL_TEXTS.BANNER_EXPIRES_TODAY(planDisplayName);
   }
 
@@ -88,7 +92,11 @@ export function formatExpiryBannerMessage(planDisplayName: string, daysRemaining
 }
 
 export function formatRemainingDaysBadge(daysRemaining: number): string {
-  if (daysRemaining <= 0) {
+  if (daysRemaining < 0) {
+    return SUBSCRIPTION_RENEWAL_TEXTS.REMAINING_DAYS_BADGE_EXPIRED;
+  }
+
+  if (daysRemaining === 0) {
     return SUBSCRIPTION_RENEWAL_TEXTS.REMAINING_DAYS_BADGE_TODAY;
   }
 
@@ -176,10 +184,11 @@ export function evaluateRenewalEligibility(
   const isEligible = Boolean(statusData.isSubscriptionActive || isExpiredStatus);
   const showExpiryBanner =
     isEligible &&
-    Boolean(statusData.isSubscriptionActive) &&
-    daysRemaining !== null &&
-    daysRemaining >= 0 &&
-    daysRemaining <= SUBSCRIPTION_THRESHOLDS.EXPIRY_BANNER_WARNING_DAYS;
+    (isExpiredStatus ||
+      (Boolean(statusData.isSubscriptionActive) &&
+        daysRemaining !== null &&
+        daysRemaining >= 0 &&
+        daysRemaining <= SUBSCRIPTION_THRESHOLDS.EXPIRY_BANNER_WARNING_DAYS));
 
   return {
     isEligible,

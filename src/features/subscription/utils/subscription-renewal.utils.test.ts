@@ -83,6 +83,25 @@ describe("subscription-renewal.utils", () => {
   });
 
   describe("evaluateRenewalEligibility", () => {
+    it("marks expired or past due subscription as eligible and shows expiry banner", () => {
+      const expiredStatus = buildStatus({
+        isSubscriptionActive: false,
+        subscriptionEndsAt: "2026-10-20T12:00:00.000Z",
+        subscription: {
+          id: "sub-123",
+          status: "EXPIRED",
+          planCode: "QUEUE_PRO",
+          planName: "Queue Pro",
+          currentPeriodStart: "2026-09-20T12:00:00.000Z",
+          currentPeriodEnd: "2026-10-20T12:00:00.000Z",
+        },
+      });
+      const result = evaluateRenewalEligibility(expiredStatus, FIXED_NOW);
+      expect(result.isEligible).toBe(true);
+      expect(result.showExpiryBanner).toBe(true);
+      expect(result.daysRemaining).toBe(-5);
+    });
+
     it("marks subscription with <= 7 days remaining as eligible and shows expiry banner", () => {
       const result = evaluateRenewalEligibility(buildStatus(), FIXED_NOW);
       expect(result.isEligible).toBe(true);

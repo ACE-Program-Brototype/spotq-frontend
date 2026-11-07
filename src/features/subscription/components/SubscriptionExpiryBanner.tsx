@@ -30,6 +30,8 @@ export function SubscriptionExpiryBanner({
     statusData.subscription?.planCode ?? statusData.subscriptionPlanCode,
   );
 
+  const isExpired = eligibility.daysRemaining !== null && eligibility.daysRemaining < 0;
+
   return (
     <section
       aria-label={SUBSCRIPTION_RENEWAL_TEXTS.BANNER_REGION_LABEL}
@@ -44,7 +46,9 @@ export function SubscriptionExpiryBanner({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-base font-bold text-amber-950">
-                {SUBSCRIPTION_RENEWAL_TEXTS.BANNER_TITLE}
+                {isExpired
+                  ? SUBSCRIPTION_RENEWAL_TEXTS.BANNER_TITLE_EXPIRED
+                  : SUBSCRIPTION_RENEWAL_TEXTS.BANNER_TITLE}
               </h3>
               <span
                 data-testid="subscription-expiry-days-badge"
