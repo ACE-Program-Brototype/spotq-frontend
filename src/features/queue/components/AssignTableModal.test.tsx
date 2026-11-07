@@ -310,4 +310,24 @@ describe("AssignTableModal", () => {
     expect(screen.getByText("Table VIP-1")).toBeInTheDocument();
     expect(screen.queryByText("Table T1")).not.toBeInTheDocument();
   });
+
+  it("closes the modal when table assignment fails on error (e.g. table is occupied)", async () => {
+    const user = userEvent.setup();
+    const onClose = jest.fn();
+
+    (queueService.assignTables as jest.Mock).mockRejectedValue(new Error("Table Not Available"));
+
+    renderModal({ onClose });
+
+    // Select Table T1
+    await user.click(screen.getByText("Table T1"));
+
+    const confirmBtn = screen.getByRole("button", { name: /confirm & seat party/i });
+    await user.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(queueService.assignTables).toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
+    });
+  });
 });

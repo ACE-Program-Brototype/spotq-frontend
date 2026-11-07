@@ -188,7 +188,9 @@ export function AssignTableModal({
       onSuccess?.(updatedEntry, response.data.tableIds);
       onClose();
     } catch {
-      // Error handling and toast are handled by useAssignTables
+      // If table assignment fails (e.g. table is already occupied by another staff member),
+      // toast is triggered by useAssignTables and we close the modal to dismiss stale state
+      onClose();
     }
   };
 
