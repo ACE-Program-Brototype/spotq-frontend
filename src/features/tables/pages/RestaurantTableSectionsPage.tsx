@@ -10,8 +10,8 @@ import { TableSectionCard } from "../components/TableSectionCard";
 import { TableSkeletonGrid } from "../components/TableSkeletonGrid";
 import { UnlistSectionDialog } from "../components/UnlistSectionDialog";
 import { useCreateTableSection } from "../hooks/useCreateTableSection";
-import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
 import { useTableSectionsPaginated } from "../hooks/useTableSectionsPaginated";
+import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
 import type { TableSectionAll } from "../types/table.types";
 
 const PAGE_SIZE = 8;

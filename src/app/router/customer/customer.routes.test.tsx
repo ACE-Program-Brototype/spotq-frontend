@@ -11,10 +11,11 @@ describe("customerRoutes structure", () => {
     expect(profileGroup?.path).toBe("/profile");
     expect(profileGroup?.children?.[0].index).toBe(true);
     expect(profileGroup?.children?.[1].path).toBe("edit");
-    const ordersGroup = layoutGroup.children?.[5];
+    expect(layoutGroup.children?.[5].path).toBe("/checkout");
+    const ordersGroup = layoutGroup.children?.[6];
     expect(ordersGroup?.path).toBe("/orders");
     expect(ordersGroup?.children?.[0].index).toBe(true);
-    expect(layoutGroup.children?.[6].path).toBe("/orders/:orderId/receipt");
+    expect(layoutGroup.children?.[7].path).toBe("/orders/:orderId/receipt");
 
     const authGroup = customerRoutes[1];
     expect(authGroup.children?.map((child) => child.path)).toEqual([

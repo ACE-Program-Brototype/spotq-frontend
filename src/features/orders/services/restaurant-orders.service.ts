@@ -83,7 +83,7 @@ export const restaurantOrdersService = {
       limit: params?.limit ?? RESTAURANT_ORDERS_DEFAULTS.LIMIT,
     };
 
-    if (params?.search && params.search.trim()) {
+    if (params?.search?.trim()) {
       searchParams.search = params.search.trim();
     }
 

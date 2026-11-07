@@ -15,4 +15,3 @@ export function useRestaurantOrdersOverview(
     staleTime: 30_000,
   });
 }
-
