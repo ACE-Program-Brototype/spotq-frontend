@@ -1,7 +1,8 @@
 import { CheckCircle2, CreditCard, Info, RefreshCw } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   SUBSCRIPTION_BILLING_CYCLE_LABELS,
   SUBSCRIPTION_RENEWAL_TEXTS,
@@ -24,39 +25,6 @@ export function SubscriptionOverviewCard({
   now,
 }: SubscriptionOverviewCardProps) {
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [pinnedByTap, setPinnedByTap] = useState(false);
-  const triggerContainerRef = useRef<HTMLDivElement>(null);
-  const tooltipId = useId();
-
-  useEffect(() => {
-    if (!tooltipOpen) {
-      return;
-    }
-
-    const handlePointerDownOutside = (event: PointerEvent) => {
-      if (
-        triggerContainerRef.current &&
-        !triggerContainerRef.current.contains(event.target as Node)
-      ) {
-        setPinnedByTap(false);
-        setTooltipOpen(false);
-      }
-    };
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setPinnedByTap(false);
-        setTooltipOpen(false);
-      }
-    };
-
-    document.addEventListener("pointerdown", handlePointerDownOutside);
-    document.addEventListener("keydown", handleEscape);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDownOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [tooltipOpen]);
 
   if (isLoading) {
     return (
@@ -132,50 +100,31 @@ export function SubscriptionOverviewCard({
         </div>
 
         {isSubscriptionActive ? (
-          <div ref={triggerContainerRef} className="relative shrink-0">
+          <div className="relative shrink-0">
             {isDisabledWithTooltip ? (
-              <>
-                <button
-                  type="button"
-                  aria-disabled="true"
-                  aria-describedby={tooltipOpen ? tooltipId : undefined}
-                  data-testid="overview-renew-button"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setPinnedByTap((prev) => {
-                      const next = !prev;
-                      setTooltipOpen(next);
-                      return next;
-                    });
-                  }}
-                  onFocus={() => setTooltipOpen(true)}
-                  onBlur={() => {
-                    setPinnedByTap(false);
-                    setTooltipOpen(false);
-                  }}
-                  onMouseEnter={() => setTooltipOpen(true)}
-                  onMouseLeave={() => {
-                    if (!pinnedByTap) {
-                      setTooltipOpen(false);
-                    }
-                  }}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-400 cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-                >
-                  <RefreshCw className="size-3.5" aria-hidden="true" />
-                  {SUBSCRIPTION_RENEWAL_TEXTS.RENEW_NOW_BUTTON}
-                  <Info className="size-3.5 text-neutral-400" aria-hidden="true" />
-                </button>
-                {tooltipOpen && (
-                  <div
-                    id={tooltipId}
-                    role="tooltip"
-                    data-testid="renewal-eligibility-tooltip"
-                    className="absolute right-0 bottom-full mb-2 z-50 w-max max-w-[240px] rounded-lg bg-neutral-900 px-3 py-2 text-xs font-medium text-white shadow-lg"
-                  >
-                    {eligibility.tooltipMessage}
-                  </div>
-                )}
-              </>
+              <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+                <TooltipTrigger
+                  render={
+                    <button
+                      type="button"
+                      aria-disabled="true"
+                      data-testid="overview-renew-button"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setTooltipOpen((prev) => !prev);
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-400 cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+                    >
+                      <RefreshCw className="size-3.5" aria-hidden="true" />
+                      {SUBSCRIPTION_RENEWAL_TEXTS.RENEW_NOW_BUTTON}
+                      <Info className="size-3.5 text-neutral-400" aria-hidden="true" />
+                    </button>
+                  }
+                />
+                <TooltipContent data-testid="renewal-eligibility-tooltip" className="max-w-[240px]">
+                  {eligibility.tooltipMessage}
+                </TooltipContent>
+              </Tooltip>
             ) : (
               <Button
                 type="button"
