@@ -17,7 +17,13 @@ export function useTables(restaurantId: string) {
   const tablesBySection = query.data || {};
   const sections = useMemo(() => Object.keys(tablesBySection), [tablesBySection]);
 
-  const allTables = useMemo(() => Object.values(tablesBySection).flat(), [tablesBySection]);
+  const allTables = useMemo(
+    () =>
+      Object.entries(tablesBySection).flatMap(([sectionName, tables]) =>
+        tables.map((t) => (t.sectionName ? t : { ...t, sectionName })),
+      ),
+    [tablesBySection],
+  );
 
   const stats = useMemo(() => {
     let available = 0;

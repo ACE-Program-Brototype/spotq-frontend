@@ -2,6 +2,8 @@ import { apiClient } from "@/lib/api/client";
 import { QUEUE_ENDPOINTS } from "../constants/queue.constants";
 import { normalizePhone } from "../schemas/walk-in.schema";
 import type {
+  AssignTablesInput,
+  AssignTablesResponse,
   JoinQueueInput,
   JoinQueueResponse,
   QueueEtaResponse,
@@ -59,5 +61,19 @@ export const queueService = {
         json: payload,
       })
       .json<JoinQueueResponse>();
+  },
+
+  /**
+   * Assigns physical dining tables and seats a waiting queue party.
+   */
+  async assignTables(
+    queueEntryId: string,
+    input: AssignTablesInput,
+  ): Promise<AssignTablesResponse> {
+    return apiClient
+      .patch(QUEUE_ENDPOINTS.ASSIGN_TABLE(queueEntryId), {
+        json: input,
+      })
+      .json<AssignTablesResponse>();
   },
 };

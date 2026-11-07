@@ -69,3 +69,26 @@ export interface JoinQueueResponse {
   message: string;
   data: QueueEntry;
 }
+
+export interface AssignTableItem {
+  tableId: string;
+  count: number;
+}
+
+export interface AssignTablesInput {
+  tables: AssignTableItem[];
+}
+
+export interface AssignTablesData {
+  queueEntryId: string;
+  restaurantId: string;
+  tableIds: string[];
+  status: QueueStatus;
+  seatedAt: string;
+}
+
+export interface AssignTablesResponse {
+  success: boolean;
+  message: string;
+  data: AssignTablesData;
+}
