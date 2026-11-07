@@ -57,19 +57,17 @@ export function RenewalModal({
   });
 
   useEffect(() => {
-    if (open && !wasOpenRef.current) {
-      hasUserSelectedCycleRef.current = false;
-      setSelectedCycle(plansByCycle.initialCycle);
-      clearError();
+    if (open) {
+      if (!wasOpenRef.current) {
+        hasUserSelectedCycleRef.current = false;
+        setSelectedCycle(plansByCycle.initialCycle);
+        clearError();
+      } else if (!hasUserSelectedCycleRef.current) {
+        setSelectedCycle(plansByCycle.initialCycle);
+      }
     }
     wasOpenRef.current = open;
   }, [open, plansByCycle.initialCycle, clearError]);
-
-  useEffect(() => {
-    if (open && !hasUserSelectedCycleRef.current) {
-      setSelectedCycle(plansByCycle.initialCycle);
-    }
-  }, [open, plansByCycle.initialCycle]);
 
   const selectedPlan = plansByCycle[selectedCycle];
   const hasValidPlanAndPrice =
