@@ -16,4 +16,3 @@ export function useRestaurantOrders(restaurantId: string, params?: GetRestaurant
     staleTime: 15_000,
   });
 }
-

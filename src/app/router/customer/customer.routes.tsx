@@ -6,6 +6,7 @@ import RegisterPage from "@/features/auth/pages/customer/RegisterPage";
 import ResetPasswordPage from "@/features/auth/pages/customer/ResetPasswordPage";
 import VerifyOtpPage from "@/features/auth/pages/customer/VerifyOtpPage";
 import CartPage from "@/features/cart/pages/CartPage";
+import CheckoutPage from "@/features/checkout/pages/CheckoutPage";
 import AboutPage from "@/features/demo/pages/AboutPage";
 import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
 import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
@@ -58,6 +59,10 @@ export const customerRoutes: RouteObject[] = [
             Component: EditProfilePage,
           },
         ],
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.CHECKOUT,
+        Component: CheckoutPage,
       },
       {
         path: CUSTOMER_ROUTE_PATHS.ORDERS,

@@ -14,12 +14,12 @@ export * from "./constants/table.constants";
 
 export * from "./hooks/useCreateTable";
 export * from "./hooks/useCreateTableSection";
-export * from "./hooks/useUnlistTableSection";
 export * from "./hooks/useRestaurantAdminTables";
 export * from "./hooks/useRestaurantTableDetails";
 export * from "./hooks/useTableSections";
 export * from "./hooks/useTableSectionsPaginated";
 export * from "./hooks/useTables";
+export * from "./hooks/useUnlistTableSection";
 export * from "./hooks/useUpdateTableStatus";
 
 export { default as CreateTablePage } from "./pages/CreateTablePage";

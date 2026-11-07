@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useCreateTableSection } from "../hooks/useCreateTableSection";
-import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
 import { useTableSectionsPaginated } from "../hooks/useTableSectionsPaginated";
+import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
 import RestaurantTableSectionsPage from "./RestaurantTableSectionsPage";
 
 jest.mock("../hooks/useTableSectionsPaginated");

@@ -1,5 +1,9 @@
 export const CART_STORAGE_KEY = "spotq-cart-storage";
 
+export const CART_ENDPOINTS = {
+  BATCH_ITEMS: "carts/items/batch",
+} as const;
+
 export const CART_MESSAGES = {
   RESTAURANT_MISMATCH_CONFIRMATION:
     "You already have items from another restaurant in your cart. Would you like to clear your current cart and add items from this restaurant?",
@@ -33,6 +37,8 @@ export const CART_MESSAGES = {
   DECREASE_QUANTITY: "Decrease quantity",
   ITEM_COUNT_SINGULAR: "item",
   ITEM_COUNT_PLURAL: "items",
+  LOGIN_REQUIRED_CHECKOUT: "Please log in to proceed to checkout.",
+  SYNC_CART_FAILED: "Failed to proceed to checkout. Please try again.",
 } as const;
 
 export const RESTAURANT_TYPES = {
