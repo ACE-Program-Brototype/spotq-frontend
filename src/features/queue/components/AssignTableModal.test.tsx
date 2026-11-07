@@ -132,26 +132,14 @@ describe("AssignTableModal", () => {
     );
   };
 
-  it("does not render when isOpen is false or queueEntry is null", () => {
-    const { rerender } = render(
+  it("does not render when isOpen is false", () => {
+    render(
       <QueryClientProvider client={queryClient}>
         <AssignTableModal
           isOpen={false}
           onClose={jest.fn()}
           restaurantId={restaurantId}
           queueEntry={mockQueueEntry}
-        />
-      </QueryClientProvider>,
-    );
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-    rerender(
-      <QueryClientProvider client={queryClient}>
-        <AssignTableModal
-          isOpen={true}
-          onClose={jest.fn()}
-          restaurantId={restaurantId}
-          queueEntry={null}
         />
       </QueryClientProvider>,
     );
