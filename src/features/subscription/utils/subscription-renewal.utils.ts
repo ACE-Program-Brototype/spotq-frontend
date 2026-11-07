@@ -214,7 +214,7 @@ function normalizePlanTierKey(value?: string | null): string {
 export function resolveRenewalPlansByCycle(
   plans: SubscriptionPlan[],
   currentPlanCode?: string | null,
-  currentPlanName?: string | null,
+  _currentPlanName?: string | null,
 ): RenewalPlansByCycle {
   if (!plans.length) {
     return {
@@ -223,31 +223,16 @@ export function resolveRenewalPlansByCycle(
   }
 
   const normalizedCurrentCode = currentPlanCode?.trim().toUpperCase() ?? "";
-  const normalizedCurrentName = currentPlanName?.trim().toUpperCase() ?? "";
 
-  const exactPlan = plans.find(
-    (plan) =>
-      (normalizedCurrentCode && plan.code.trim().toUpperCase() === normalizedCurrentCode) ||
-      (normalizedCurrentName && plan.name.trim().toUpperCase() === normalizedCurrentName),
-  );
+  const exactPlan = normalizedCurrentCode
+    ? plans.find((plan) => plan.code.trim().toUpperCase() === normalizedCurrentCode)
+    : undefined;
 
   const targetCodeFamily = normalizePlanTierKey(exactPlan?.code ?? currentPlanCode);
-  const targetNameFamily = normalizePlanTierKey(exactPlan?.name ?? currentPlanName);
 
-  const familyPlans = plans.filter((plan) => {
-    const planCodeFamily = normalizePlanTierKey(plan.code);
-    const planNameFamily = normalizePlanTierKey(plan.name);
-
-    if (targetCodeFamily && planCodeFamily === targetCodeFamily) {
-      return true;
-    }
-
-    if (targetNameFamily && planNameFamily === targetNameFamily) {
-      return true;
-    }
-
-    return false;
-  });
+  const familyPlans = targetCodeFamily
+    ? plans.filter((plan) => normalizePlanTierKey(plan.code) === targetCodeFamily)
+    : [];
 
   const candidatePlans = familyPlans.length > 0 ? familyPlans : exactPlan ? [exactPlan] : [];
 

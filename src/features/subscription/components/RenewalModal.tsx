@@ -43,8 +43,8 @@ export function RenewalModal({
   const subscriptionId = statusData?.subscription?.id ?? "";
 
   const plansByCycle = useMemo(
-    () => resolveRenewalPlansByCycle(plans, planCode, planName),
-    [plans, planCode, planName],
+    () => resolveRenewalPlansByCycle(plans, planCode),
+    [plans, planCode],
   );
 
   const [selectedCycle, setSelectedCycle] = useState<BillingCycle>(plansByCycle.initialCycle);

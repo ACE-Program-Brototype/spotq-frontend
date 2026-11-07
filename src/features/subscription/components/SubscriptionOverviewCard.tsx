@@ -50,7 +50,7 @@ export function SubscriptionOverviewCard({
   const planName = statusData?.subscription?.planName ?? null;
   const planDisplayName = formatPlanDisplayName(planName, planCode);
   const eligibility = evaluateRenewalEligibility(statusData, now);
-  const plansByCycle = resolveRenewalPlansByCycle(plans, planCode, planName);
+  const plansByCycle = resolveRenewalPlansByCycle(plans, planCode);
   const hasResolvedPlan = Boolean(plansByCycle.MONTHLY || plansByCycle.YEARLY);
   const cycleLabel = hasResolvedPlan
     ? SUBSCRIPTION_BILLING_CYCLE_LABELS[plansByCycle.initialCycle]
