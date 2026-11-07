@@ -1,9 +1,14 @@
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { SUBSCRIPTION_ENDPOINTS } from "@/features/subscription/constants/subscription.constants";
+import {
+  SUBSCRIPTION_ENDPOINTS,
+  SUBSCRIPTION_HEADERS,
+  SUBSCRIPTION_RENEWAL_TEXTS,
+} from "@/features/subscription/constants/subscription.constants";
 import type {
   ApiResponse,
   CreateSubscriptionOrderResponse,
+  RenewSubscriptionOrderResponse,
   RestaurantStatusData,
   SubscriptionPlan,
   VerifyPaymentRequest,
@@ -19,7 +24,15 @@ export const subscriptionService = {
     return response.data;
   },
 
-  async createOrder(planId: string): Promise<CreateSubscriptionOrderResponse> {
+  async createOrder(
+    planId: string,
+    restaurantContext?: {
+      restaurantId?: string;
+      restaurantName?: string;
+      restaurantEmail?: string;
+      restaurantPhone?: string;
+    },
+  ): Promise<CreateSubscriptionOrderResponse> {
     const user = useAuthStore.getState().user as {
       id?: string;
       restaurantId?: string;
@@ -29,9 +42,9 @@ export const subscriptionService = {
       phone?: string;
     } | null;
 
-    const restaurantId = user?.restaurantId || user?.id;
+    const restaurantId = restaurantContext?.restaurantId || user?.restaurantId || user?.id;
     if (!restaurantId) {
-      throw new Error("Restaurant identification is required to create a subscription order.");
+      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_ID_ORDER_ERROR);
     }
 
     const response = await apiClient
@@ -39,12 +52,41 @@ export const subscriptionService = {
         json: {
           planId,
           restaurantId,
-          restaurantName: user?.fullName || user?.name,
-          restaurantEmail: user?.email,
-          restaurantPhone: user?.phone,
+          restaurantName: restaurantContext?.restaurantName || user?.fullName || user?.name,
+          restaurantEmail: restaurantContext?.restaurantEmail || user?.email,
+          restaurantPhone: restaurantContext?.restaurantPhone || user?.phone,
         },
       })
       .json<ApiResponse<CreateSubscriptionOrderResponse>>();
+    return response.data;
+  },
+
+  async renewSubscription(
+    subscriptionId: string,
+    planId?: string,
+    idempotencyKey?: string,
+  ): Promise<RenewSubscriptionOrderResponse> {
+    const trimmedSubscriptionId = subscriptionId?.trim();
+    if (!trimmedSubscriptionId) {
+      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_SUBSCRIPTION_ID_ERROR);
+    }
+
+    const resolvedKey =
+      idempotencyKey?.trim() ||
+      (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `renew-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`);
+
+    const payload = planId ? { planId } : {};
+    const response = await apiClient
+      .post(SUBSCRIPTION_ENDPOINTS.RENEW(trimmedSubscriptionId), {
+        headers: {
+          [SUBSCRIPTION_HEADERS.IDEMPOTENCY_KEY]: resolvedKey,
+        },
+        json: payload,
+      })
+      .json<ApiResponse<RenewSubscriptionOrderResponse>>();
+
     return response.data;
   },
 
@@ -53,7 +95,7 @@ export const subscriptionService = {
     const restaurantId = data.restaurantId || user?.restaurantId || user?.id;
 
     if (!restaurantId) {
-      throw new Error("Restaurant identification is required to verify payment.");
+      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_ID_VERIFY_ERROR);
     }
 
     const response = await apiClient
@@ -76,7 +118,7 @@ export const subscriptionService = {
     const restaurantId = restaurantIdOverride || user?.restaurantId || user?.id;
 
     if (!restaurantId) {
-      throw new Error("No authenticated restaurant found.");
+      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_AUTH_ERROR);
     }
 
     const response = await apiClient.get(`${SUBSCRIPTION_ENDPOINTS.STATUS}/${restaurantId}`).json<{
@@ -86,10 +128,12 @@ export const subscriptionService = {
         subscription?: {
           id: string;
           status: string;
-          planCode: string;
-          planName: string;
-          currentPeriodStart: string;
-          currentPeriodEnd: string;
+          planCode?: string;
+          planName?: string;
+          currentPeriodStart?: string;
+          currentPeriodEnd?: string;
+          renewalWindowDays?: number;
+          isEligibleForRenewal?: boolean;
         } | null;
       };
     }>();
@@ -105,6 +149,18 @@ export const subscriptionService = {
       subscriptionPlanCode: sub?.planCode || null,
       subscriptionEndsAt: sub?.currentPeriodEnd || null,
       navigationTarget: isSubActive ? RESTAURANT_ROUTES.DASHBOARD : RESTAURANT_ROUTES.SUBSCRIPTION,
+      subscription: sub
+        ? {
+            id: sub.id,
+            status: sub.status,
+            planCode: sub.planCode ?? null,
+            planName: sub.planName ?? null,
+            currentPeriodStart: sub.currentPeriodStart ?? null,
+            currentPeriodEnd: sub.currentPeriodEnd ?? null,
+            renewalWindowDays: sub.renewalWindowDays,
+            isEligibleForRenewal: sub.isEligibleForRenewal,
+          }
+        : null,
     };
   },
 };
