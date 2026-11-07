@@ -10,6 +10,8 @@ export const QUEUE_ENDPOINTS = {
   GET_ETA: (restaurantId: string) => `queues/customer/${encodeURIComponent(restaurantId)}/eta`,
   JOIN_QUEUE: (restaurantId: string) =>
     `queues/customer/restaurants/${encodeURIComponent(restaurantId)}/queue/join`,
+  ASSIGN_TABLE: (queueEntryId: string) =>
+    `queues/staff/queue/${encodeURIComponent(queueEntryId)}/assign-tables`,
 } as const;
 
 export const QUEUE_MESSAGES = {
@@ -21,6 +23,11 @@ export const QUEUE_MESSAGES = {
   JOIN_FAILED: "Failed to join the queue. Please try again.",
   ETA_CALCULATING: "Calculating estimated wait time...",
   ETA_UNAVAILABLE: "Live wait time currently unavailable. You can still join the line.",
+  ASSIGN_TABLE_SUCCESS: "Tables assigned and party seated successfully",
+  ASSIGN_TABLE_FAILED: "Failed to assign tables. Please try again.",
+  INSUFFICIENT_CAPACITY: (partySize: number, selectedSeats: number) =>
+    `Selected table capacity (${selectedSeats}) is less than party size (${partySize}).`,
+  SELECT_TABLE_REQUIRED: "Please select at least one table to assign.",
 } as const;
 
 export const PARTY_SIZE_PRESETS = [1, 2, 3, 4, 5, "6+"] as const;
