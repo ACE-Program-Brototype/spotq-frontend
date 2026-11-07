@@ -59,74 +59,142 @@ describe("tableService", () => {
     });
   });
 
-  describe("createTable", () => {
-    it("posts a trimmed table payload", async () => {
-      const response = { success: true, data: { id: "table-1" } };
-      const json = jest.fn().mockResolvedValue(response);
-      (apiClient.post as jest.Mock).mockReturnValue({ json });
+  describe("updateTable", () => {
+    it("sends PATCH request with update payload", async () => {
+      const tableId = "table-123";
+      const payload = {
+        tableCode: "T-05",
+        capacity: 4,
+        sectionId: "section-uuid",
+        type: "CIRCLE" as const,
+      };
+      const mockResponse = {
+        success: true,
+        message: "Table updated successfully",
+        data: {
+          id: tableId,
+          tableCode: "T-05",
+          capacity: 4,
+          sectionId: "section-uuid",
+          tableShape: "CIRCLE",
+          status: "AVAILABLE",
+          currentOccupancy: 0,
+          isActive: true,
+        },
+      };
+
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await tableService.updateTable(restaurantId, tableId, payload);
+
+      expect(apiClient.patch).toHaveBeenCalledWith(TABLE_ENDPOINTS.UPDATE(restaurantId, tableId), {
+        json: {
+          tableCode: "T-05",
+          capacity: 4,
+          sectionId: "section-uuid",
+          type: "CIRCLE",
+        },
+      });
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it("throws error if restaurantId or tableId is missing", async () => {
+      await expect(tableService.updateTable("", "table-123", {})).rejects.toThrow(
+        "Restaurant ID and table ID are required to fetch table details",
+      );
+    });
+
+    it("throws error when API returns success: false", async () => {
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: false, message: "Duplicate table code" }),
+      });
 
       await expect(
-        tableService.createTable(restaurantId, {
-          tableCode: " T1 ",
-          sectionId: " section-1 ",
-          capacity: 4,
-          tableShape: "CIRCLE",
-        }),
-      ).resolves.toEqual(response.data);
+        tableService.updateTable(restaurantId, "table-123", { tableCode: "T-dup" }),
+      ).rejects.toThrow("Duplicate table code");
+    });
+  });
 
-      expect(apiClient.post).toHaveBeenCalledWith(TABLE_ENDPOINTS.CREATE(restaurantId), {
-        json: { tableCode: "T1", sectionId: "section-1", capacity: 4, tableType: "CIRCLE" },
+  describe("deleteTable", () => {
+    it("sends DELETE request for soft delete", async () => {
+      const tableId = "table-123";
+      const mockResponse = {
+        success: true,
+        message: "Table deleted successfully",
+      };
+
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
       });
+
+      const result = await tableService.deleteTable(restaurantId, tableId);
+
+      expect(apiClient.delete).toHaveBeenCalledWith(TABLE_ENDPOINTS.DELETE(restaurantId, tableId));
+      expect(result).toEqual({ success: true, message: "Table deleted successfully" });
+    });
+
+    it("throws error if restaurantId or tableId is missing", async () => {
+      await expect(tableService.deleteTable("", "table-123")).rejects.toThrow(
+        "Restaurant ID and table ID are required to fetch table details",
+      );
+    });
+
+    it("throws error when API returns success: false", async () => {
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+          message: "Cannot delete table while it is occupied",
+        }),
+      });
+
+      await expect(tableService.deleteTable(restaurantId, "table-123")).rejects.toThrow(
+        "Cannot delete table while it is occupied",
+      );
     });
   });
 
   describe("getTableSections", () => {
-    it("returns the restaurant sections", async () => {
-      const response = { success: true, data: { sections: [{ id: "s1", name: "Main" }] } };
-      (apiClient.get as jest.Mock).mockReturnValue({
-        json: jest.fn().mockResolvedValue(response),
-      });
-
-      await expect(tableService.getTableSections(restaurantId)).resolves.toEqual(
-        response.data.sections,
-      );
-      expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId));
-    });
-  });
-
-  describe("getPaginatedTableSections", () => {
-    it("fetches paginated table sections", async () => {
-      const response = {
+    it("fetches table sections successfully", async () => {
+      const mockResponse = {
         success: true,
+        message: "Table Section fetched successfully",
+        statusCode: 200,
         data: {
-          mode: "PAGINATED",
-          sections: [{ id: "s1", name: "Main" }],
-          total: 1,
+          mode: "ALL",
+          sections: [
+            { id: "sec-1", name: "Patio" },
+            { id: "sec-2", name: "Rooftop" },
+          ],
         },
       };
+
       (apiClient.get as jest.Mock).mockReturnValue({
-        json: jest.fn().mockResolvedValue(response),
+        json: jest.fn().mockResolvedValue(mockResponse),
       });
 
-      const result = await tableService.getPaginatedTableSections(restaurantId, {
-        page: 1,
-        limit: 8,
-      });
+      const result = await tableService.getTableSections(restaurantId);
 
-      expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
-        searchParams: { mode: "PAGINATED", page: 1, limit: 8 },
-      });
-      expect(result).toEqual(response.data);
+      expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId));
+      expect(result).toEqual(mockResponse.data.sections);
+    });
+
+    it("throws error if restaurantId is missing", async () => {
+      await expect(tableService.getTableSections("")).rejects.toThrow(
+        "Restaurant ID is required to fetch table sections",
+      );
     });
   });
 
   describe("createTableSection", () => {
-    it("posts new table section", async () => {
-      const payload = { name: "Outdoor Patio" };
+    it("sends POST request to create a section", async () => {
+      const payload = { name: "Rooftop" };
       const response = {
         success: true,
-        data: { id: "s2", name: "Outdoor Patio" },
+        data: { id: "sec-1", name: "Rooftop" },
       };
+
       (apiClient.post as jest.Mock).mockReturnValue({
         json: jest.fn().mockResolvedValue(response),
       });
@@ -134,19 +202,20 @@ describe("tableService", () => {
       const result = await tableService.createTableSection(restaurantId, payload);
 
       expect(apiClient.post).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
-        json: { name: "Outdoor Patio" },
+        json: { name: "Rooftop" },
       });
       expect(result).toEqual(response.data);
     });
   });
 
   describe("unlistTableSection", () => {
-    it("deletes table section by id", async () => {
-      const sectionId = "s2";
+    it("sends DELETE request to unlist section", async () => {
+      const sectionId = "sec-1";
       const response = {
         success: true,
-        data: { tableSectionId: "s2", name: "Outdoor Patio" },
+        data: { tableSectionId: sectionId, name: "Rooftop" },
       };
+
       (apiClient.delete as jest.Mock).mockReturnValue({
         json: jest.fn().mockResolvedValue(response),
       });

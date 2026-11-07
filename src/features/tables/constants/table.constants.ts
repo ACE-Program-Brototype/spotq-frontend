@@ -49,9 +49,20 @@ export const TABLE_SERVICE_ERRORS = {
   DELETE_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
   UNLIST_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
   UPDATE_IDS_REQUIRED: "Restaurant ID and Table ID are required to update status",
+  UPDATE_FAILED: "Unable to update table details",
+  DELETE_FAILED: "Unable to delete table",
 } as const;
 
 export const CREATE_TABLE_VALIDATION_MESSAGES = {
+  TABLE_CODE_REQUIRED: "Table name or code is required",
+  SECTION_REQUIRED: "Select a dining section",
+  CAPACITY_NUMBER: "Seating capacity must be a number",
+  CAPACITY_INTEGER: "Seating capacity must be a whole number",
+  CAPACITY_MIN: "Seating capacity must be at least 1",
+  CAPACITY_MAX: "Seating capacity cannot exceed 100",
+} as const;
+
+export const UPDATE_TABLE_VALIDATION_MESSAGES = {
   TABLE_CODE_REQUIRED: "Table name or code is required",
   SECTION_REQUIRED: "Select a dining section",
   CAPACITY_NUMBER: "Seating capacity must be a number",
@@ -65,6 +76,8 @@ export const TABLE_ENDPOINTS = {
   CREATE: (restaurantId: string) => `restaurants/${restaurantId}/table`,
   DETAILS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}`,
+  UPDATE: (restaurantId: string, tableId: string) => `restaurants/${restaurantId}/table/${tableId}`,
+  DELETE: (restaurantId: string, tableId: string) => `restaurants/${restaurantId}/table/${tableId}`,
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}/status`,
   TABLE_SECTION: (restaurantId: string) => `restaurants/${restaurantId}/table-sections`,
@@ -188,6 +201,17 @@ export function getStaffStatusTransition(currentStatus: TableStatus): TableStatu
 export const TABLE_MESSAGES = {
   CREATE_SUCCESS: "Table created successfully.",
   CREATE_FAILED: "Unable to create table.",
+  UPDATE_SUCCESS: "Table updated successfully.",
+  UPDATE_FAILED: "Failed to update table details. Please try again.",
+  DELETE_SUCCESS: "Table deleted successfully.",
+  DELETE_FAILED: "Failed to delete table. Please try again.",
+  DELETE_CONFIRM_TITLE: "Delete Table",
+  DELETE_CONFIRM_DESCRIPTION:
+    "Are you sure you want to delete this table? This will soft-delete the table and remove it from your active floor layout. Historical orders and revenue records remain intact.",
+  CANNOT_DELETE_OCCUPIED:
+    "This table is currently occupied by guests. Please reassign or conclude active dining sessions before deleting.",
+  OCCUPIED_EDIT_WARNING:
+    "Notice: This table is currently occupied by guests. Modifying its capacity or section will update the active floor monitoring.",
   TITLE: "Table Management",
   SUBTITLE: "Manage layout, status, and active orders.",
   STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>

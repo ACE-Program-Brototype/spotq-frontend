@@ -1,6 +1,8 @@
 export * from "./components/AdminTableCard";
 export * from "./components/AdminTablesList";
 export * from "./components/CreateSectionModal";
+export * from "./components/DeleteTableDialog";
+export * from "./components/EditTableModal";
 export * from "./components/TableCard";
 export * from "./components/TableSectionCard";
 export * from "./components/TableSectionTabs";
@@ -14,12 +16,14 @@ export * from "./constants/table.constants";
 
 export * from "./hooks/useCreateTable";
 export * from "./hooks/useCreateTableSection";
-export * from "./hooks/useUnlistTableSection";
+export * from "./hooks/useDeleteTable";
 export * from "./hooks/useRestaurantAdminTables";
 export * from "./hooks/useRestaurantTableDetails";
 export * from "./hooks/useTableSections";
 export * from "./hooks/useTableSectionsPaginated";
 export * from "./hooks/useTables";
+export * from "./hooks/useUnlistTableSection";
+export * from "./hooks/useUpdateTable";
 export * from "./hooks/useUpdateTableStatus";
 
 export { default as CreateTablePage } from "./pages/CreateTablePage";
@@ -29,5 +33,6 @@ export { default as RestaurantTableSectionsPage } from "./pages/RestaurantTableS
 export { default as StaffTablePage } from "./pages/StaffTablePage";
 
 export * from "./schemas/create-table.schema";
+export * from "./schemas/update-table.schema";
 export * from "./services/table.service";
 export * from "./types/table.types";
