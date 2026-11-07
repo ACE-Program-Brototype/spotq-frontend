@@ -84,7 +84,6 @@ export const SUBSCRIPTION_RENEWAL_TEXTS = {
   CLOSE_MODAL_ARIA_LABEL: "Close renewal modal",
   ELIGIBILITY_TOOLTIP: "Renewal opens 30 days prior to expiration",
   OVERVIEW_CARD_TITLE: "Subscription",
-  OVERVIEW_STATUS_ACTIVE: "Active",
   OVERVIEW_STATUS_INACTIVE: "Inactive",
   OVERVIEW_EXPIRES_ON_PREFIX: "Expires",
   OVERVIEW_LOADING_TEXT: "Loading subscription details...",
