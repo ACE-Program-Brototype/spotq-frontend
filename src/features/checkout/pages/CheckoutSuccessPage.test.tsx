@@ -9,7 +9,7 @@ describe("CheckoutSuccessPage", () => {
       orderNumber: "ORD-5678",
       restaurantId: "rest-1",
       restaurantName: "Spice Garden Cafe",
-      totalAmount: 1913,
+      grandTotal: 1913,
       paymentMode: "ONLINE" as const,
       orderingMode: "SELF_ORDER" as const,
       tableNumber: 4,

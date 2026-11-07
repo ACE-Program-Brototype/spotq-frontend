@@ -1,7 +1,9 @@
 import { ArrowRight, CheckCircle2, Home, Store, Utensils } from "lucide-react";
 import type React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/utils";
 import type { OrderPlacementResponse } from "../types/checkout.types";
 
 interface CheckoutSuccessPageProps {
@@ -66,10 +68,7 @@ export const CheckoutSuccessPage: React.FC<CheckoutSuccessPageProps> = ({
               <div className="flex items-center justify-between pt-1">
                 <span className="font-bold text-neutral-900">Total Paid</span>
                 <span className="text-base font-extrabold text-[#ff6b00]">
-                  ₹
-                  {(order.grandTotal ?? order.totalAmount ?? 0).toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
+                  {formatCurrency(order.grandTotal)}
                 </span>
               </div>
             </div>
@@ -78,7 +77,7 @@ export const CheckoutSuccessPage: React.FC<CheckoutSuccessPageProps> = ({
           {/* Action Buttons */}
           <div className="mt-7 flex flex-col sm:flex-row gap-3">
             <Link
-              to="/orders"
+              to={CUSTOMER_ROUTES.ORDERS}
               className="w-full sm:flex-1 h-11 rounded-xl bg-[#ff6b00] hover:bg-[#e65a00] text-white font-bold text-sm shadow-md shadow-orange-500/20 inline-flex items-center justify-center transition-colors"
             >
               <Utensils className="h-4 w-4 mr-2" />
@@ -87,7 +86,7 @@ export const CheckoutSuccessPage: React.FC<CheckoutSuccessPageProps> = ({
             </Link>
 
             <Link
-              to="/"
+              to={CUSTOMER_ROUTES.HOME}
               onClick={onReset}
               className="w-full sm:flex-1 h-11 rounded-xl border border-neutral-300 text-neutral-700 font-semibold text-xs hover:bg-neutral-50 inline-flex items-center justify-center transition-colors"
             >

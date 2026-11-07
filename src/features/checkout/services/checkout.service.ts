@@ -38,9 +38,14 @@ export const checkoutService = {
    * POST /api/v1/orders
    */
   async placeOrder(payload: PlaceOrderPayload): Promise<OrderPlacementResponse> {
+    const idempotencyKey = crypto.randomUUID();
+
     return apiClient
       .post(CHECKOUT_ENDPOINTS.PLACE_ORDER, {
         json: payload,
+        headers: {
+          "x-idempotency-key": idempotencyKey,
+        },
       })
       .json<OrderPlacementResponse>();
   },

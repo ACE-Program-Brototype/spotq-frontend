@@ -1,27 +1,19 @@
 import { MessageSquareText, Phone, User as UserIcon } from "lucide-react";
 import type React from "react";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { CheckoutFormValues } from "../schemas/checkout-form.schema";
 
 interface CustomerDetailsCardProps {
-  userName: string;
-  setUserName: (val: string) => void;
-  userPhone: string;
-  setUserPhone: (val: string) => void;
-  specialInstructions: string;
-  setSpecialInstructions: (val: string) => void;
-  errors: Record<string, string>;
+  register: UseFormRegister<CheckoutFormValues>;
+  errors: FieldErrors<CheckoutFormValues>;
   isSubmitting?: boolean;
 }
 
 export const CustomerDetailsCard: React.FC<CustomerDetailsCardProps> = ({
-  userName,
-  setUserName,
-  userPhone,
-  setUserPhone,
-  specialInstructions,
-  setSpecialInstructions,
+  register,
   errors,
   isSubmitting = false,
 }) => {
@@ -51,8 +43,7 @@ export const CustomerDetailsCard: React.FC<CustomerDetailsCardProps> = ({
               <Input
                 id="checkout-user-name"
                 type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
+                {...register("userName")}
                 disabled={isSubmitting}
                 placeholder="e.g. Alex Morgan"
                 className={`pl-9.5 h-10.5 rounded-xl text-sm ${
@@ -62,8 +53,8 @@ export const CustomerDetailsCard: React.FC<CustomerDetailsCardProps> = ({
                 }`}
               />
             </div>
-            {errors.userName && (
-              <p className="text-[11px] font-medium text-rose-600">{errors.userName}</p>
+            {errors.userName?.message && (
+              <p className="text-[11px] font-medium text-rose-600">{errors.userName.message}</p>
             )}
           </div>
 
@@ -80,16 +71,15 @@ export const CustomerDetailsCard: React.FC<CustomerDetailsCardProps> = ({
                 id="checkout-user-phone"
                 type="tel"
                 maxLength={10}
-                value={userPhone}
-                onChange={(e) => setUserPhone(e.target.value.replace(/\D/g, ""))}
+                {...register("userPhone")}
                 disabled={isSubmitting}
                 placeholder="98765 43210"
                 className="border-0 shadow-none focus-visible:ring-0 h-10.5 text-sm rounded-none"
               />
               <Phone className="mr-3 self-center h-4 w-4 text-neutral-400 pointer-events-none" />
             </div>
-            {errors.userPhone && (
-              <p className="text-[11px] font-medium text-rose-600">{errors.userPhone}</p>
+            {errors.userPhone?.message && (
+              <p className="text-[11px] font-medium text-rose-600">{errors.userPhone.message}</p>
             )}
           </div>
         </div>
@@ -106,8 +96,7 @@ export const CustomerDetailsCard: React.FC<CustomerDetailsCardProps> = ({
           <Input
             id="checkout-instructions"
             type="text"
-            value={specialInstructions}
-            onChange={(e) => setSpecialInstructions(e.target.value)}
+            {...register("specialInstructions")}
             disabled={isSubmitting}
             placeholder="e.g. Less spicy, keep sauce on the side, allergies..."
             className="h-10 rounded-xl text-sm border-neutral-200 focus-visible:ring-orange-200"

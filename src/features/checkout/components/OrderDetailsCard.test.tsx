@@ -13,9 +13,8 @@ describe("OrderDetailsCard", () => {
     },
     itemCount: 7,
     subtotal: 1410,
-    taxPercent: 5,
     taxAmount: 70.5,
-    totalAmount: 1480.5,
+    grandTotal: 1480.5,
     items: [
       {
         cartItemId: "item-1",
@@ -52,5 +51,11 @@ describe("OrderDetailsCard", () => {
     render(<OrderDetailsCard cart={{ ...mockCart, items: [], itemCount: 0 }} />);
 
     expect(screen.getByText(/Your order list is empty/i)).toBeInTheDocument();
+  });
+
+  it("renders loading skeleton when isLoading is true", () => {
+    render(<OrderDetailsCard cart={null} isLoading={true} />);
+
+    expect(screen.getByTestId("order-details-skeleton")).toBeInTheDocument();
   });
 });

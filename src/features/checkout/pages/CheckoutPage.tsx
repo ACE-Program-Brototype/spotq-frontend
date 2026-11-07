@@ -9,12 +9,14 @@ import {
 } from "lucide-react";
 import type React from "react";
 import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { ContextBanner } from "../components/ContextBanner";
 import { CustomerDetailsCard } from "../components/CustomerDetailsCard";
 import { OrderDetailsCard } from "../components/OrderDetailsCard";
 import { OrderSummaryCard } from "../components/OrderSummaryCard";
 import { PaymentMethodCard } from "../components/PaymentMethodCard";
+import { CHECKOUT_VIEW_STATUS } from "../constants/checkout.constants";
 import { useCheckout } from "../hooks/useCheckout";
 import { CheckoutFailurePage } from "./CheckoutFailurePage";
 import { CheckoutSuccessPage } from "./CheckoutSuccessPage";
@@ -22,23 +24,14 @@ import { CheckoutSuccessPage } from "./CheckoutSuccessPage";
 export const CheckoutPage: React.FC = () => {
   const {
     cartId,
-    tableNumber,
     cart,
     isLoadingCart,
     cartError,
     refetchCart,
     priceBreakdown,
-    userName,
-    setUserName,
-    userPhone,
-    setUserPhone,
-    specialInstructions,
-    setSpecialInstructions,
-    paymentMode,
-    setPaymentMode,
+    form,
     isSubmitting,
     handleCheckout,
-    errors,
     viewStatus,
     placedOrder,
     orderError,
@@ -46,12 +39,12 @@ export const CheckoutPage: React.FC = () => {
   } = useCheckout();
 
   // 1. In-memory Success View (Driven by API response, no URL route path needed)
-  if (viewStatus === "SUCCESS" && placedOrder) {
+  if (viewStatus === CHECKOUT_VIEW_STATUS.SUCCESS && placedOrder) {
     return <CheckoutSuccessPage order={placedOrder} onReset={resetToCheckout} />;
   }
 
   // 2. In-memory Failure View (Driven by API response, no URL route path needed)
-  if (viewStatus === "FAILURE") {
+  if (viewStatus === CHECKOUT_VIEW_STATUS.FAILURE) {
     return (
       <CheckoutFailurePage
         errorMessage={orderError || undefined}
@@ -68,7 +61,7 @@ export const CheckoutPage: React.FC = () => {
         {/* Navigation & Breadcrumb */}
         <div className="mb-4 flex items-center justify-between">
           <Link
-            to="/"
+            to={CUSTOMER_ROUTES.HOME}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-neutral-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -108,7 +101,7 @@ export const CheckoutPage: React.FC = () => {
               type="button"
               variant="outline"
               size="sm"
-              onClick={refetchCart}
+              onClick={() => refetchCart()}
               className="rounded-xl border-rose-300 bg-white text-rose-800 hover:bg-rose-50 text-xs font-semibold shrink-0"
             >
               <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
@@ -118,9 +111,7 @@ export const CheckoutPage: React.FC = () => {
         )}
 
         {/* Restaurant Dining Context Banner */}
-        {cart?.restaurantName && (
-          <ContextBanner restaurantName={cart.restaurantName} tableNumber={tableNumber} />
-        )}
+        {cart?.restaurantName && <ContextBanner restaurantName={cart.restaurantName} />}
 
         {/* Main 2-Column Checkout Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -129,31 +120,22 @@ export const CheckoutPage: React.FC = () => {
             {/* 1. Order Details Card */}
             <OrderDetailsCard cart={cart} isLoading={isLoadingCart} />
 
-            {/* 2. Customer Information (userName & userPhone) */}
+            {/* 2. Customer Information (userName & userPhone via React Hook Form) */}
             <CustomerDetailsCard
-              userName={userName}
-              setUserName={setUserName}
-              userPhone={userPhone}
-              setUserPhone={setUserPhone}
-              specialInstructions={specialInstructions}
-              setSpecialInstructions={setSpecialInstructions}
-              errors={errors}
+              register={form.register}
+              errors={form.formState.errors}
               isSubmitting={isSubmitting}
             />
 
             {/* 3. Payment Method Card (Razorpay Online) */}
-            <PaymentMethodCard
-              paymentMode={paymentMode}
-              setPaymentMode={setPaymentMode}
-              isSubmitting={isSubmitting}
-            />
+            <PaymentMethodCard isSubmitting={isSubmitting} />
           </div>
 
           {/* Right Column: Order Summary (Sticky on Desktop) */}
           <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
             <OrderSummaryCard
               priceBreakdown={priceBreakdown}
-              paymentMode={paymentMode}
+              paymentMode="ONLINE"
               isSubmitting={isSubmitting}
               onCheckout={handleCheckout}
               itemCount={cart?.itemCount || 0}

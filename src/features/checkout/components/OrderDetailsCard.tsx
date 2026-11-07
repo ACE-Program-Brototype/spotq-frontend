@@ -1,10 +1,12 @@
 import { UtensilsCrossed } from "lucide-react";
 import type React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils";
 import type { CartData } from "../types/checkout.types";
+import { OrderDetailsSkeleton } from "./OrderDetailsSkeleton";
 
 interface OrderDetailsCardProps {
-  cart: CartData | null;
+  cart?: CartData | null;
   isLoading?: boolean;
 }
 
@@ -29,18 +31,7 @@ export const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({ cart, isLoad
 
       <CardContent className="divide-y divide-neutral-100 p-5 sm:p-6">
         {isLoading ? (
-          <div className="space-y-4 py-2">
-            {[1, 2].map((k) => (
-              <div key={k} className="flex animate-pulse items-center gap-4">
-                <div className="h-16 w-16 rounded-xl bg-neutral-200" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 w-3/4 rounded bg-neutral-200" />
-                  <div className="h-3 w-1/2 rounded bg-neutral-100" />
-                </div>
-                <div className="h-6 w-16 rounded bg-neutral-200" />
-              </div>
-            ))}
-          </div>
+          <OrderDetailsSkeleton />
         ) : items.length === 0 ? (
           <div className="py-8 text-center text-neutral-500">
             <p className="text-sm font-medium">Your order list is empty.</p>
@@ -105,7 +96,7 @@ export const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({ cart, isLoad
               {/* Price & Quantity Review Tag matching Figma reference */}
               <div className="text-right shrink-0">
                 <span className="text-sm sm:text-base font-bold text-neutral-900 block">
-                  ₹{item.totalPrice.toLocaleString("en-IN")}
+                  {formatCurrency(item.totalPrice)}
                 </span>
                 <span className="text-xs text-neutral-500 font-medium">Qty: {item.quantity}</span>
               </div>

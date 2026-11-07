@@ -49,12 +49,18 @@ export function useOrderRazorpay({ onSuccess, onFailure, onDismiss }: UseOrderRa
         },
         handler: async (response: RazorpayPaymentSuccessResponse) => {
           try {
-            await checkoutService.verifyOrderPayment({
+            const verifyResponse = await checkoutService.verifyOrderPayment({
               orderId: draft.orderId,
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
             });
+
+            if (verifyResponse.data?.status !== "CAPTURED") {
+              throw new Error(
+                verifyResponse.message || "Payment capture failed or was declined by the bank.",
+              );
+            }
 
             toast.success("Payment verified! Order confirmed.");
             onSuccess({

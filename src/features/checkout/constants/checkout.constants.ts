@@ -4,7 +4,10 @@ export const CHECKOUT_ENDPOINTS = {
   VERIFY_PAYMENT: "payments/orders/verify",
 } as const;
 
-export const CHECKOUT_PRICING = {
-  PLATFORM_FEE: 0, // ₹0 Platform Fee
-  GST_RATE: 0.05, // 5% GST
+export const CHECKOUT_VIEW_STATUS = {
+  CHECKOUT: "CHECKOUT",
+  SUCCESS: "SUCCESS",
+  FAILURE: "FAILURE",
 } as const;
+
+export type CheckoutViewStatus = (typeof CHECKOUT_VIEW_STATUS)[keyof typeof CHECKOUT_VIEW_STATUS];

@@ -1,6 +1,7 @@
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import type React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -21,7 +22,7 @@ export const CheckoutFailurePage: React.FC<CheckoutFailurePageProps> = ({
     state.errorMessage ||
     "The transaction could not be completed or the order request timed out.";
 
-  const retryUrl = "/checkout";
+  const retryUrl = CUSTOMER_ROUTES.CHECKOUT;
 
   return (
     <div className="py-6 sm:py-12 flex items-center justify-center">
@@ -41,7 +42,8 @@ export const CheckoutFailurePage: React.FC<CheckoutFailurePageProps> = ({
           </h1>
 
           <p className="mt-2 text-xs sm:text-sm text-neutral-600 max-w-sm mx-auto">
-            We were unable to process your order. No charges have been deducted from your account.
+            We were unable to complete your order. If any amount was deducted from your account, it
+            will be automatically refunded within 7–14 business days.
           </p>
 
           {/* Error Details Box */}
@@ -81,7 +83,7 @@ export const CheckoutFailurePage: React.FC<CheckoutFailurePageProps> = ({
             )}
 
             <Link
-              to="/"
+              to={CUSTOMER_ROUTES.HOME}
               className="w-full sm:flex-1 h-11 rounded-xl border border-neutral-300 text-neutral-700 font-semibold text-xs hover:bg-neutral-50 inline-flex items-center justify-center transition-colors"
             >
               <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />

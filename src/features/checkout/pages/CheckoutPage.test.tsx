@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { checkoutService } from "../services/checkout.service";
@@ -23,9 +24,8 @@ describe("CheckoutPage", () => {
     },
     itemCount: 2,
     subtotal: 400,
-    taxPercent: 5,
     taxAmount: 20,
-    totalAmount: 420,
+    grandTotal: 420,
     items: [
       {
         cartItemId: "item-1",
@@ -54,7 +54,6 @@ describe("CheckoutPage", () => {
         restaurantId: mockCheckoutData.restaurantId,
         restaurantName: mockCheckoutData.restaurantName,
         grandTotal: 420,
-        totalAmount: 420,
         paymentMode: "ONLINE",
         paymentStatus: "PENDING",
         orderStatus: "PLACED",
@@ -66,14 +65,26 @@ describe("CheckoutPage", () => {
     });
   });
 
-  const renderComponent = (initialEntries = ["/checkout"]) =>
-    render(
-      <MemoryRouter initialEntries={initialEntries}>
-        <Routes>
-          <Route path="/checkout" element={<CheckoutPage />} />
-        </Routes>
-      </MemoryRouter>,
+  const createTestQueryClient = () =>
+    new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+
+  const renderComponent = (initialEntries = ["/checkout"]) => {
+    const queryClient = createTestQueryClient();
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={initialEntries}>
+          <Routes>
+            <Route path="/checkout" element={<CheckoutPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
+  };
 
   it("renders page header, order details, customer details, and payment options", async () => {
     renderComponent();
@@ -95,7 +106,8 @@ describe("CheckoutPage", () => {
     renderComponent(["/checkout"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Order Details")).toBeInTheDocument();
+      expect(screen.getByText("Wok-Tossed Hakka Noodles")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Pay Now/i })).toBeEnabled();
     });
 
     // Enter valid name and phone
@@ -133,7 +145,8 @@ describe("CheckoutPage", () => {
     renderComponent(["/checkout"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Order Details")).toBeInTheDocument();
+      expect(screen.getByText("Wok-Tossed Hakka Noodles")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Pay Now/i })).toBeEnabled();
     });
 
     // Enter valid name and phone to pass validation

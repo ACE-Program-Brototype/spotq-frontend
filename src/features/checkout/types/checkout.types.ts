@@ -48,9 +48,9 @@ export interface CheckoutDetailsData {
   payment: CheckoutPaymentContract;
   itemCount: number;
   subtotal: number;
-  taxPercent: number;
   taxAmount: number;
-  totalAmount: number;
+  platformFee?: number;
+  grandTotal: number;
   items: CheckoutItem[];
 }
 
@@ -133,7 +133,6 @@ export interface PlacedOrderData {
   platformFee: number;
   discountAmount: number;
   grandTotal: number;
-  totalAmount?: number;
   estimatedReadyAt: string | null;
   estimatedPrepTimeMinutes?: number;
   specialInstructions: string | null;

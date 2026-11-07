@@ -3,6 +3,7 @@ import type React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { formatCurrency } from "@/lib/utils";
 import type { PaymentModeType, PriceBreakdown } from "../types/checkout.types";
 
 interface OrderSummaryCardProps {
@@ -19,7 +20,8 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
   onCheckout,
   itemCount,
 }) => {
-  const { itemsSubtotal, gstAmount, platformFee, grandTotal } = priceBreakdown;
+  const { itemsSubtotal, gstAmount, gstRate, platformFee, grandTotal } = priceBreakdown;
+  const gstPercentage = Math.round((gstRate ?? 0.05) * 100);
 
   // Button label with formatted amount
   const getButtonLabel = () => {
@@ -27,11 +29,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
       return "Processing Order...";
     }
 
-    const formattedTotal = grandTotal.toLocaleString("en-IN", {
-      minimumFractionDigits: 2,
-    });
-
-    return `Pay Now ₹${formattedTotal}`;
+    return `Pay Now ${formatCurrency(grandTotal)}`;
   };
 
   return (
@@ -50,18 +48,14 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
         <div className="space-y-3 text-sm">
           <div className="flex items-center justify-between text-neutral-600">
             <span>Item Total</span>
-            <span className="font-semibold text-neutral-900">
-              ₹{itemsSubtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </span>
+            <span className="font-semibold text-neutral-900">{formatCurrency(itemsSubtotal)}</span>
           </div>
 
           <div className="flex items-center justify-between text-neutral-600">
             <span className="flex items-center gap-1.5">
-              <span>Taxes & GST (5%)</span>
+              <span>Taxes & GST ({gstPercentage}%)</span>
             </span>
-            <span className="font-semibold text-neutral-900">
-              ₹{gstAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </span>
+            <span className="font-semibold text-neutral-900">{formatCurrency(gstAmount)}</span>
           </div>
 
           <div className="flex items-center justify-between text-neutral-600">
@@ -77,9 +71,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
                 {platformFee === 0 ? "FREE" : "FIXED"}
               </span>
             </span>
-            <span className="font-semibold text-neutral-900">
-              ₹{platformFee.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </span>
+            <span className="font-semibold text-neutral-900">{formatCurrency(platformFee)}</span>
           </div>
         </div>
 
@@ -93,7 +85,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
           </div>
           <div className="text-right">
             <span className="text-2xl sm:text-3xl font-extrabold text-[#ff6b00] tracking-tight">
-              ₹{grandTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+              {formatCurrency(grandTotal)}
             </span>
           </div>
         </div>

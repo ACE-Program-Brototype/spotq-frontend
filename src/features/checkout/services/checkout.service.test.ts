@@ -23,9 +23,8 @@ describe("checkoutService", () => {
         payment: { mode: "ONLINE" as const, paymentRequired: true },
         itemCount: 1,
         subtotal: 200,
-        taxPercent: 5,
         taxAmount: 10,
-        totalAmount: 210,
+        grandTotal: 210,
         items: [],
       };
 
@@ -54,9 +53,8 @@ describe("checkoutService", () => {
         payment: { mode: "ONLINE" as const, paymentRequired: true },
         itemCount: 1,
         subtotal: 200,
-        taxPercent: 5,
         taxAmount: 10,
-        totalAmount: 210,
+        grandTotal: 210,
         items: [],
       };
 
@@ -136,7 +134,12 @@ describe("checkoutService", () => {
 
       const result = await checkoutService.placeOrder(payload);
 
-      expect(apiClient.post).toHaveBeenCalledWith("orders", { json: payload });
+      expect(apiClient.post).toHaveBeenCalledWith("orders", {
+        json: payload,
+        headers: {
+          "x-idempotency-key": expect.any(String),
+        },
+      });
       expect(result.success).toBe(true);
       expect(result.data.orderNumber).toBe("#ORD-9999");
       expect(result.data.paymentDraft?.razorpayOrderId).toBe("order_rzp_999");
