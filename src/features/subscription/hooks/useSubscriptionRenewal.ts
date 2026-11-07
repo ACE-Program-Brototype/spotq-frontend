@@ -59,7 +59,6 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
-      inFlightRef.current = false;
       razorpayInstanceRef.current = null;
       attemptKeyRef.current = null;
     };
