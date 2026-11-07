@@ -1,17 +1,21 @@
 import type { RouteObject } from "react-router-dom";
-import ForgotPasswordPage from "@/features/auth/pages/ForgotPasswordPage";
-import LoginPage from "@/features/auth/pages/LoginPage";
-import OtpVerificationPage from "@/features/auth/pages/OtpVerificationPage";
-import RegisterPage from "@/features/auth/pages/RegisterPage";
-import ResetPasswordPage from "@/features/auth/pages/ResetPasswordPage";
-import VerifyOtpPage from "@/features/auth/pages/VerifyOtpPage";
+import ForgotPasswordPage from "@/features/auth/pages/customer/ForgotPasswordPage";
+import LoginPage from "@/features/auth/pages/customer/LoginPage";
+import OtpVerificationPage from "@/features/auth/pages/customer/OtpVerificationPage";
+import RegisterPage from "@/features/auth/pages/customer/RegisterPage";
+import ResetPasswordPage from "@/features/auth/pages/customer/ResetPasswordPage";
+import VerifyOtpPage from "@/features/auth/pages/customer/VerifyOtpPage";
+import CartPage from "@/features/cart/pages/CartPage";
 import CheckoutPage from "@/features/checkout/pages/CheckoutPage";
 import AboutPage from "@/features/demo/pages/AboutPage";
 import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
 import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
+import OrderHistoryPage from "@/features/orders/pages/OrderHistoryPage";
+import OrderReceiptPage from "@/features/orders/pages/OrderReceiptPage";
 import EditProfilePage from "@/features/profile/pages/EditProfilePage";
 import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
+import CustomerRestaurantDetailsPage from "@/features/restaurants/pages/CustomerRestaurantDetailsPage";
 import HomePage from "@/features/restaurants/pages/HomePage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CustomerLayout from "@/layouts/CustomerLayout";
@@ -31,8 +35,16 @@ export const customerRoutes: RouteObject[] = [
         Component: HomePage,
       },
       {
+        path: CUSTOMER_ROUTE_PATHS.RESTAURANT_DETAIL,
+        Component: CustomerRestaurantDetailsPage,
+      },
+      {
         path: CUSTOMER_ROUTE_PATHS.ABOUT,
         Component: AboutPage,
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.CART,
+        Component: CartPage,
       },
       {
         path: CUSTOMER_ROUTE_PATHS.PROFILE.ROOT,
@@ -51,6 +63,20 @@ export const customerRoutes: RouteObject[] = [
       {
         path: CUSTOMER_ROUTE_PATHS.CHECKOUT,
         Component: CheckoutPage,
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.ORDERS,
+        Component: CustomerProtectedLayout,
+        children: [
+          {
+            index: true,
+            Component: OrderHistoryPage,
+          },
+        ],
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.ORDER_RECEIPT,
+        Component: OrderReceiptPage,
       },
     ],
   },

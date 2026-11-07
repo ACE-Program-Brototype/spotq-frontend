@@ -1,8 +1,8 @@
 import type { RouteObject } from "react-router-dom";
-import StaffForgotPasswordPage from "@/features/auth/pages/StaffForgotPasswordPage";
-import StaffLoginPage from "@/features/auth/pages/StaffLoginPage";
-import StaffResetPasswordPage from "@/features/auth/pages/StaffResetPasswordPage";
-import StaffVerifyOtpPage from "@/features/auth/pages/StaffVerifyOtpPage";
+import StaffForgotPasswordPage from "@/features/auth/pages/staff/StaffForgotPasswordPage";
+import StaffLoginPage from "@/features/auth/pages/staff/StaffLoginPage";
+import StaffResetPasswordPage from "@/features/auth/pages/staff/StaffResetPasswordPage";
+import StaffVerifyOtpPage from "@/features/auth/pages/staff/StaffVerifyOtpPage";
 import StaffDashboardPage from "@/features/dashboard/pages/StaffDashboardPage";
 import StaffMenuAddonsPage from "@/features/menu/pages/StaffMenuAddonsPage";
 import StaffMenuItemsPage from "@/features/menu/pages/StaffMenuItemsPage";

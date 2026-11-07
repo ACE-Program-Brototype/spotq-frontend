@@ -1,7 +1,16 @@
-/**
- * Table Feature Constants
- * Centralized API endpoints, query keys, visual tokens, and business rule configurations.
- */
+export const statusStyles: Record<TableStatus, string> = {
+  AVAILABLE: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  OCCUPIED: "bg-sky-50 text-sky-700 ring-sky-200",
+  PARTIAL_OCCUPIED: "bg-amber-50 text-amber-700 ring-amber-200",
+  MAINTENANCE: "bg-slate-100 text-slate-600 ring-slate-200",
+};
+
+export const statusLabels: Record<TableStatus, string> = {
+  AVAILABLE: "Available",
+  OCCUPIED: "Occupied",
+  PARTIAL_OCCUPIED: "Partially occupied",
+  MAINTENANCE: "Maintenance",
+};
 
 import type {
   StaffUpdatableStatus,
@@ -10,21 +19,78 @@ import type {
 } from "../types/table.types";
 
 export const TABLE_STATUS = {
+  ALL: "ALL",
   AVAILABLE: "AVAILABLE",
   OCCUPIED: "OCCUPIED",
   PARTIAL_OCCUPIED: "PARTIAL_OCCUPIED",
   MAINTENANCE: "MAINTENANCE",
 } as const;
 
+export const TABLE_SHAPE = {
+  CIRCLE: "CIRCLE",
+  SQUARE: "SQUARE",
+} as const;
+
 export const TABLE_QUERY_KEYS = {
   ALL: ["tables"] as const,
   LIST: (restaurantId: string) => ["tables", restaurantId] as const,
+  SECTIONS: (restaurantId: string) => ["tables", restaurantId, "sections"] as const,
+  SECTIONS_PAGINATED: (restaurantId: string, page: number, limit: number) =>
+    ["tables", restaurantId, "sections", "paginated", { page, limit }] as const,
+  DETAILS: (restaurantId: string, tableId: string) => ["tables", restaurantId, tableId] as const,
+} as const;
+
+export const TABLE_SERVICE_ERRORS = {
+  CREATE_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to create a table",
+  CREATE_FAILED: "Unable to create table",
+  DETAILS_IDS_REQUIRED: "Restaurant ID and table ID are required to fetch table details",
+  LIST_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to fetch tables",
+  SECTIONS_RESTAURANT_ID_REQUIRED: "Restaurant ID is required to fetch table sections",
+  DELETE_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
+  UNLIST_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
+  UPDATE_IDS_REQUIRED: "Restaurant ID and Table ID are required to update status",
+} as const;
+
+export const CREATE_TABLE_VALIDATION_MESSAGES = {
+  TABLE_CODE_REQUIRED: "Table name or code is required",
+  SECTION_REQUIRED: "Select a dining section",
+  CAPACITY_NUMBER: "Seating capacity must be a number",
+  CAPACITY_INTEGER: "Seating capacity must be a whole number",
+  CAPACITY_MIN: "Seating capacity must be at least 1",
+  CAPACITY_MAX: "Seating capacity cannot exceed 100",
 } as const;
 
 export const TABLE_ENDPOINTS = {
   LIST: (restaurantId: string) => `restaurants/${restaurantId}/table`,
+  CREATE: (restaurantId: string) => `restaurants/${restaurantId}/table`,
+  DETAILS: (restaurantId: string, tableId: string) =>
+    `restaurants/${restaurantId}/table/${tableId}`,
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}/status`,
+  TABLE_SECTION: (restaurantId: string) => `restaurants/${restaurantId}/table-sections`,
+  TABLE_SECTION_DELETE: (restaurantId: string, sectionId: string) =>
+    `restaurants/${restaurantId}/table-sections/${sectionId}`,
+} as const;
+
+export const TABLE_SECTION_MESSAGES = {
+  CREATE_SUCCESS: "Table section created successfully",
+  CREATE_FAILED: "Unable to create table section",
+  DELETE_SUCCESS: "Table section unlisted successfully",
+  DELETE_FAILED: "Unable to unlist table section",
+  FETCH_FAILED: "Unable to load table sections. Please try again.",
+} as const;
+
+export const CREATE_SECTION_MODAL_STRINGS = {
+  TITLE: "Create Table Section",
+  DESCRIPTION: "Define a new dining zone on your restaurant floor.",
+  FIELD_LABEL: "Section Name",
+  PLACEHOLDER: "e.g. Patio, Rooftop, Main Dining",
+  CLOSE_LABEL: "Close modal",
+  CANCEL_BUTTON: "Cancel",
+  SUBMIT_BUTTON: "Create Section",
+  SUBMITTING_BUTTON: "Creating...",
+  VALIDATION_MIN: "Section name must be at least 2 characters",
+  VALIDATION_MAX: "Section name cannot exceed 100 characters",
 } as const;
 
 export interface StatusVisualConfig {
@@ -120,6 +186,8 @@ export function getStaffStatusTransition(currentStatus: TableStatus): TableStatu
 }
 
 export const TABLE_MESSAGES = {
+  CREATE_SUCCESS: "Table created successfully.",
+  CREATE_FAILED: "Unable to create table.",
   TITLE: "Table Management",
   SUBTITLE: "Manage layout, status, and active orders.",
   STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>
@@ -134,3 +202,5 @@ export const TABLE_MESSAGES = {
   NO_TABLES_IN_SECTION_DESC:
     "There are currently no active dining tables assigned to this section.",
 } as const;
+
+export const ADMIN_TABLE_LIMIT = 9;

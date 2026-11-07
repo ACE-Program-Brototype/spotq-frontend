@@ -8,6 +8,7 @@ import {
   ChevronDown,
   CreditCard,
   Grid,
+  Landmark,
   LogOut,
   Megaphone,
   Store,
@@ -49,9 +50,14 @@ const adminNavItems: NavItem[] = [
     icon: Users,
   },
   {
-    title: "Subscription",
-    href: ADMIN_ROUTES.SUBSCRIPTION,
+    title: "Subscribers",
+    href: ADMIN_ROUTES.SUBSCRIBERS,
     icon: CreditCard,
+  },
+  {
+    title: "Finance Overview",
+    href: ADMIN_ROUTES.FINANCE,
+    icon: Landmark,
   },
   {
     title: "Payments",
@@ -184,6 +190,9 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
 
             const isActive =
               location.pathname === item.href ||
+              (Boolean(item.href) &&
+                item.href !== ADMIN_ROUTES.ROOT &&
+                location.pathname.startsWith(`${item.href}/`)) ||
               (item.href === ADMIN_ROUTES.DASHBOARD && location.pathname === ADMIN_ROUTES.ROOT);
 
             return (

@@ -29,6 +29,10 @@ export const RESTAURANT_ROUTE_PATHS = {
   },
 
   DASHBOARD: "dashboard",
+  ORDERS: {
+    ROOT: "orders",
+    DETAIL: ":orderId",
+  },
   PROFILE: "profile",
   SETTINGS_ACCOUNT: "settings/account",
 
@@ -48,6 +52,20 @@ export const RESTAURANT_ROUTE_PATHS = {
     DETAIL: "items/:itemId",
     EDIT: "items/:itemId/edit",
   },
+
+  TABLE: {
+    ROOT: "tables",
+    SECTIONS: "sections",
+    CREATE: "create",
+    VIEW: ":tableId",
+  },
+
+  FINANCE: {
+    ROOT: "finance",
+    TRANSACTIONS: "finance/transactions",
+  },
+  PAYMENTS_HISTORY: "payments/history",
+  TRANSACTIONS: "transactions",
 } as const;
 
 // Absolute paths and route builders for navigate() and <Link to="..." />
@@ -78,6 +96,11 @@ export const RESTAURANT_ROUTES = {
 
   // Admin Dashboard & Settings
   DASHBOARD: "/restaurant/dashboard",
+  ORDERS: {
+    ROOT: "/restaurant/orders",
+    DETAIL_PATTERN: "/restaurant/orders/:orderId",
+    DETAIL: (orderId: string) => `/restaurant/orders/${orderId}`,
+  },
   PROFILE: "/restaurant/profile",
   SETTINGS_ACCOUNT: "/restaurant/settings/account",
 
@@ -101,4 +124,18 @@ export const RESTAURANT_ROUTES = {
     DETAIL: (itemId: string) => `/restaurant/menu/items/${itemId}`,
     EDIT: (itemId: string) => `/restaurant/menu/items/${itemId}/edit`,
   },
+
+  TABLE: {
+    ROOT: "/restaurant/tables",
+    SECTIONS: "/restaurant/tables/sections",
+    CREATE: "/restaurant/tables/create",
+    VIEW: (tableId: string) => `/restaurant/tables/${tableId}`,
+  },
+
+  // Finance & Transactions
+  FINANCE: {
+    ROOT: "/restaurant/finance",
+    TRANSACTIONS: "/restaurant/finance/transactions",
+  },
+  TRANSACTIONS: "/restaurant/transactions",
 } as const;

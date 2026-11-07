@@ -5,7 +5,9 @@ import { tableService } from "./table.service";
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
+    post: jest.fn(),
     patch: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -17,14 +19,14 @@ describe("tableService", () => {
   });
 
   describe("getTablesBySection", () => {
-    it("fetches tables and returns sections record", async () => {
+    it("fetches tables grouped by section", async () => {
       const mockResponse = {
         success: true,
         message: "Table Fetched Successfully",
         statusCode: 200,
         data: {
           sections: {
-            Ta: [
+            Dining: [
               {
                 id: "6eefd8a8-fa42-4564-b993-a7d3914ef1d1",
                 tableCode: "T1",
@@ -54,6 +56,107 @@ describe("tableService", () => {
       await expect(tableService.getTablesBySection("")).rejects.toThrow(
         "Restaurant ID is required to fetch tables",
       );
+    });
+  });
+
+  describe("createTable", () => {
+    it("posts a trimmed table payload", async () => {
+      const response = { success: true, data: { id: "table-1" } };
+      const json = jest.fn().mockResolvedValue(response);
+      (apiClient.post as jest.Mock).mockReturnValue({ json });
+
+      await expect(
+        tableService.createTable(restaurantId, {
+          tableCode: " T1 ",
+          sectionId: " section-1 ",
+          capacity: 4,
+          tableShape: "CIRCLE",
+        }),
+      ).resolves.toEqual(response.data);
+
+      expect(apiClient.post).toHaveBeenCalledWith(TABLE_ENDPOINTS.CREATE(restaurantId), {
+        json: { tableCode: "T1", sectionId: "section-1", capacity: 4, tableType: "CIRCLE" },
+      });
+    });
+  });
+
+  describe("getTableSections", () => {
+    it("returns the restaurant sections", async () => {
+      const response = { success: true, data: { sections: [{ id: "s1", name: "Main" }] } };
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(response),
+      });
+
+      await expect(tableService.getTableSections(restaurantId)).resolves.toEqual(
+        response.data.sections,
+      );
+      expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId));
+    });
+  });
+
+  describe("getPaginatedTableSections", () => {
+    it("fetches paginated table sections", async () => {
+      const response = {
+        success: true,
+        data: {
+          mode: "PAGINATED",
+          sections: [{ id: "s1", name: "Main" }],
+          total: 1,
+        },
+      };
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(response),
+      });
+
+      const result = await tableService.getPaginatedTableSections(restaurantId, {
+        page: 1,
+        limit: 8,
+      });
+
+      expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
+        searchParams: { mode: "PAGINATED", page: 1, limit: 8 },
+      });
+      expect(result).toEqual(response.data);
+    });
+  });
+
+  describe("createTableSection", () => {
+    it("posts new table section", async () => {
+      const payload = { name: "Outdoor Patio" };
+      const response = {
+        success: true,
+        data: { id: "s2", name: "Outdoor Patio" },
+      };
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(response),
+      });
+
+      const result = await tableService.createTableSection(restaurantId, payload);
+
+      expect(apiClient.post).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
+        json: { name: "Outdoor Patio" },
+      });
+      expect(result).toEqual(response.data);
+    });
+  });
+
+  describe("unlistTableSection", () => {
+    it("deletes table section by id", async () => {
+      const sectionId = "s2";
+      const response = {
+        success: true,
+        data: { tableSectionId: "s2", name: "Outdoor Patio" },
+      };
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(response),
+      });
+
+      const result = await tableService.unlistTableSection(restaurantId, sectionId);
+
+      expect(apiClient.delete).toHaveBeenCalledWith(
+        TABLE_ENDPOINTS.TABLE_SECTION_DELETE(restaurantId, sectionId),
+      );
+      expect(result).toEqual(response.data);
     });
   });
 

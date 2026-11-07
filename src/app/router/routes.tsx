@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import StaffAcceptInvitationPage from "@/features/auth/pages/StaffAcceptInvitationPage";
+import StaffAcceptInvitationPage from "@/features/auth/pages/staff/StaffAcceptInvitationPage";
 import RootLayout from "@/layouts/RootLayout";
 import NotFoundPage from "../pages/NotFoundPage";
 import { adminRoutes } from "./admin/admin.routes";

@@ -9,7 +9,7 @@ describe("TableCard", () => {
     capacity: 4,
     status: "AVAILABLE",
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    tableShape: "CIRCLE",
     currentOccupancy: 0,
     isActive: true,
   };
@@ -20,7 +20,7 @@ describe("TableCard", () => {
     capacity: 4,
     status: "OCCUPIED",
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    tableShape: "CIRCLE",
     currentOccupancy: 2,
     isActive: true,
   };
@@ -31,7 +31,7 @@ describe("TableCard", () => {
     capacity: 6,
     status: "MAINTENANCE",
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    tableShape: "CIRCLE",
     currentOccupancy: 0,
     isActive: false,
   };

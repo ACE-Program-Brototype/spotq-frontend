@@ -15,14 +15,14 @@ export function ProfileSkeleton() {
       className="flex flex-col gap-6 w-full animate-pulse"
       aria-label={PROFILE_MESSAGES.LOADING_PROFILE}
     >
-      <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 rounded-3xl bg-white p-6 sm:p-8 border border-neutral-200/80 shadow-xs">
-        <Skeleton className="size-28 sm:size-32 rounded-full bg-neutral-200 shrink-0" />
+      <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 rounded-3xl bg-card p-6 sm:p-8 border border-border/60 shadow-xs">
+        <Skeleton className="size-28 sm:size-32 rounded-full bg-muted/70 shrink-0" />
         <div className="flex flex-col items-center sm:items-start gap-3 w-full max-w-sm">
-          <Skeleton className="h-8 w-48 rounded-lg bg-neutral-200" />
-          <Skeleton className="h-4 w-32 rounded-md bg-neutral-200" />
+          <Skeleton className="h-8 w-48 rounded-lg bg-muted/80" />
+          <Skeleton className="h-4 w-32 rounded-md bg-muted/60" />
           <div className="flex gap-2 pt-1">
-            <Skeleton className="h-6 w-24 rounded-full bg-neutral-200" />
-            <Skeleton className="h-6 w-28 rounded-full bg-neutral-200" />
+            <Skeleton className="h-6 w-24 rounded-full bg-muted/60" />
+            <Skeleton className="h-6 w-28 rounded-full bg-muted/60" />
           </div>
         </div>
       </div>
@@ -31,12 +31,12 @@ export function ProfileSkeleton() {
         {skeletonCardKeys.map((key) => (
           <div
             key={key}
-            className="flex items-center gap-4 rounded-2xl bg-white p-4 sm:p-5 border border-neutral-200/80 shadow-xs"
+            className="flex items-center gap-4 rounded-2xl bg-card p-4 sm:p-5 border border-border/60 shadow-xs"
           >
-            <Skeleton className="size-11 rounded-xl bg-neutral-200 shrink-0" />
+            <Skeleton className="size-11 rounded-xl bg-muted/70 shrink-0" />
             <div className="flex flex-col gap-1.5 w-full">
-              <Skeleton className="h-3 w-16 rounded-xs bg-neutral-200" />
-              <Skeleton className="h-4 w-28 rounded-sm bg-neutral-200" />
+              <Skeleton className="h-3 w-16 rounded-xs bg-muted/50" />
+              <Skeleton className="h-4 w-28 rounded-sm bg-muted/70" />
             </div>
           </div>
         ))}

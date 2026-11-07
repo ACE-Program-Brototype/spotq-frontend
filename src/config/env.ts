@@ -1,5 +1,6 @@
 const env = {
   apiUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:10000/api/v1",
+  wsUrl: import.meta.env.VITE_WS_URL || "http://localhost:10000",
   locationIqToken: import.meta.env.VITE_LOCATIONIQ_ACCESS_TOKEN || "",
   cdnBaseUrl:
     import.meta.env.VITE_CDN_BASE_URL ||
@@ -8,6 +9,7 @@ const env = {
   staffInvitationStaleTimeMs:
     Number(import.meta.env.VITE_STAFF_INVITATION_STALE_TIME_MS) || 300_000,
   googleMapsBaseUrl: import.meta.env.VITE_GOOGLE_MAPS_BASE_URL || "https://www.google.com/maps",
+  isDev: Boolean(import.meta.env.DEV),
   firebase: {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "",

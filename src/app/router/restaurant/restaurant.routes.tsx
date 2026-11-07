@@ -1,7 +1,7 @@
 import { Navigate, type RouteObject, useParams } from "react-router-dom";
 
-import RestaurantEmailVerificationPage from "@/features/auth/pages/RestaurantEmailVerification";
-import OtpVerificationPage from "@/features/auth/pages/ResturantOtpVerification";
+import RestaurantEmailVerificationPage from "@/features/auth/pages/restaurant/RestaurantEmailVerification";
+import OtpVerificationPage from "@/features/auth/pages/restaurant/ResturantOtpVerification";
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
 import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
 import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
@@ -16,6 +16,8 @@ import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
 import LocationPage from "@/features/onboard/pages/LocationPage";
 import ReviewPage from "@/features/onboard/pages/ReviewPage";
 import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
+import RestaurantOrderDetailPage from "@/features/orders/pages/RestaurantOrderDetailPage";
+import RestaurantOrdersPage from "@/features/orders/pages/RestaurantOrdersPage";
 import RestaurantProfilePage from "@/features/profile/pages/RestaurantProfilePage";
 import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
@@ -23,17 +25,24 @@ import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
 import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
 import SubscriptionFailurePage from "@/features/subscription/pages/SubscriptionFailurePage";
 import SubscriptionSuccessPage from "@/features/subscription/pages/SubscriptionSuccessPage";
+import CreateTablePage from "@/features/tables/pages/CreateTablePage";
+import RestaurantTableDetailPage from "@/features/tables/pages/RestaurantTableDetailPage";
+import RestaurantTablePage from "@/features/tables/pages/RestaurantTablePage";
+import RestaurantTableSectionsPage from "@/features/tables/pages/RestaurantTableSectionsPage";
+import { RestaurantTransactionsPage } from "@/features/transactions";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import RestaurantAdminLayout from "@/layouts/RestaurantAdminLayout";
 import VerificationStatusLayout from "@/layouts/VerificationStatusLayout";
-
 import { RESTAURANT_ROUTE_PATHS, RESTAURANT_ROUTES } from "./restaurant.routes.constants";
 
 const RestaurantAuthGuard = () => <AuthLayout redirectTo={RESTAURANT_ROUTES.DASHBOARD} />;
 const RestaurantProtectedLayout = () => (
-  <ProtectedLayout allowedRoles={["RESTAURANT_ADMIN"]} redirectTo={RESTAURANT_ROUTES.LOGIN} />
+  <ProtectedLayout
+    allowedRoles={["RESTAURANT_ADMIN", "RESTAURANT_OWNER"]}
+    redirectTo={RESTAURANT_ROUTES.LOGIN}
+  />
 );
 
 const StaffEditRedirect = () => {
@@ -125,6 +134,19 @@ export const restaurantRoutes: RouteObject[] = [
             Component: RestaurantDashboardPage,
           },
           {
+            path: RESTAURANT_ROUTE_PATHS.ORDERS.ROOT,
+            children: [
+              {
+                index: true,
+                Component: RestaurantOrdersPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.ORDERS.DETAIL,
+                Component: RestaurantOrderDetailPage,
+              },
+            ],
+          },
+          {
             path: RESTAURANT_ROUTE_PATHS.PROFILE,
             Component: RestaurantProfilePage,
           },
@@ -185,6 +207,30 @@ export const restaurantRoutes: RouteObject[] = [
                 Component: RestaurantMenuAddonsPage,
               },
             ],
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.TABLE.ROOT,
+            children: [
+              { index: true, Component: RestaurantTablePage },
+              {
+                path: RESTAURANT_ROUTE_PATHS.TABLE.SECTIONS,
+                Component: RestaurantTableSectionsPage,
+              },
+              { path: RESTAURANT_ROUTE_PATHS.TABLE.CREATE, Component: CreateTablePage },
+              { path: RESTAURANT_ROUTE_PATHS.TABLE.VIEW, Component: RestaurantTableDetailPage },
+            ],
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.FINANCE.TRANSACTIONS,
+            Component: RestaurantTransactionsPage,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.PAYMENTS_HISTORY,
+            element: <Navigate to={RESTAURANT_ROUTES.FINANCE.TRANSACTIONS} replace />,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.TRANSACTIONS,
+            element: <Navigate to={RESTAURANT_ROUTES.FINANCE.TRANSACTIONS} replace />,
           },
         ],
       },

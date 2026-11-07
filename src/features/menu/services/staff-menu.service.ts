@@ -108,10 +108,10 @@ export const staffMenuService = {
       .patch(MENU_ENDPOINTS.VARIANT_STATUS(restaurantId, menuItemId, variantId))
       .json<{ success: boolean; message?: string; data?: { isAvailable: boolean } }>();
 
-    if (!response.success) {
+    if (!response.success || !response.data || typeof response.data.isAvailable !== "boolean") {
       throw new Error(response.message || "Failed to update variant availability status");
     }
 
-    return response.data ?? { isAvailable: true };
+    return response.data;
   },
 };

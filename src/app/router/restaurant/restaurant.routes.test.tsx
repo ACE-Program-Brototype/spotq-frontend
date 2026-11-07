@@ -92,6 +92,11 @@ describe("restaurantRoutes structure and protection", () => {
       "categories",
       "modifiers",
     ]);
+
+    const ordersGroup = adminLayout?.children?.find((c) => c.path === "orders");
+    expect(ordersGroup).toBeDefined();
+    expect(ordersGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(ordersGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([":orderId"]);
   });
 
   it("redirects unauthenticated user accessing protected restaurant subscription route", () => {
@@ -216,6 +221,72 @@ describe("restaurantRoutes structure and protection", () => {
       name: "Owner",
       email: "owner@restaurant.com",
       role: "RESTAURANT_ADMIN",
+      created_at: "2026-08-30T10:00:00.000Z",
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route, i) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey = route.path ?? `group-${i}`;
+
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
+                return Layout ? (
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child, j) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      const childKey = child.path ?? `child-${j}`;
+                      if (child.children) {
+                        return (
+                          <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
+                            {child.children.map((nested) => {
+                              const NestedComp = nested.Component as ComponentType | undefined;
+                              return (
+                                <Route
+                                  key={nested.path}
+                                  path={nested.path}
+                                  element={NestedComp ? <NestedComp /> : null}
+                                />
+                              );
+                            })}
+                          </Route>
+                        );
+                      }
+                      return (
+                        <Route
+                          key={childKey}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
+                ) : null;
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Welcome/i)).toBeInTheDocument();
+  });
+
+  it("allows authenticated RESTAURANT_OWNER user to access /restaurant/dashboard", async () => {
+    useAuthStore.getState().setUser({
+      _id: "res-2",
+      name: "Owner User",
+      email: "owner-user@restaurant.com",
+      role: "RESTAURANT_OWNER",
       created_at: "2026-08-30T10:00:00.000Z",
     });
 

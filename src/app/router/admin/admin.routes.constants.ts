@@ -12,6 +12,7 @@ export const ADMIN_ROUTE_PATHS = {
     FORGOT_PASSWORD_RESET: "forgot-password/reset-password",
   },
   DASHBOARD: "dashboard",
+  FINANCE: "finance",
   RESTAURANTS: "restaurants",
   RESTAURANTS_MANAGEMENT: "restaurants/management",
   RESTAURANTS_ONBOARDING: "restaurants/onboarding",
@@ -19,7 +20,8 @@ export const ADMIN_ROUTE_PATHS = {
   RESTAURANT_DETAIL: "restaurants/:id",
   CUSTOMERS: "customers",
   CUSTOMER_DETAIL: "customers/:id",
-  SUBSCRIPTION: "subscription",
+  SUBSCRIBERS: "subscribers",
+  SUBSCRIBER_DETAIL: "subscribers/:id",
   PAYMENTS: {
     ORDERS: "payments/orders",
     SUBSCRIPTIONS: "payments/subscriptions",
@@ -37,6 +39,7 @@ export const ADMIN_ROUTES = {
   FORGOT_PASSWORD_RESET: "/admin/forgot-password/reset-password",
 
   DASHBOARD: "/admin/dashboard",
+  FINANCE: "/admin/finance",
   RESTAURANTS: "/admin/restaurants",
   RESTAURANTS_MANAGEMENT: "/admin/restaurants/management",
   RESTAURANTS_ONBOARDING: "/admin/restaurants/onboarding",
@@ -47,7 +50,9 @@ export const ADMIN_ROUTES = {
   CUSTOMERS: "/admin/customers",
   CUSTOMER_DETAIL_PATTERN: "/admin/customers/:id",
   CUSTOMER_DETAIL: (id: string) => `/admin/customers/${id}`,
-  SUBSCRIPTION: "/admin/subscription",
+  SUBSCRIBERS: "/admin/subscribers",
+  SUBSCRIBER_DETAIL_PATTERN: "/admin/subscribers/:id",
+  SUBSCRIBER_DETAIL: (id: string) => `/admin/subscribers/${id}`,
   PAYMENTS: {
     ORDERS: "/admin/payments/orders",
     SUBSCRIPTIONS: "/admin/payments/subscriptions",

@@ -1,6 +1,9 @@
-import { Clock, IndianRupee, MapPin, Store } from "lucide-react";
+import { Clock, MapPin, Store } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/lib/utils";
 import { usePresignedUrl } from "../../hooks/usePresignedUrl";
 import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
 
@@ -13,13 +16,12 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
   const { data: imageUrl, isLoading } = usePresignedUrl(restaurant.coverImage);
   const locationLabel = `${restaurant.city || ""}${restaurant.city && restaurant.state ? ", " : ""}${restaurant.state || ""}`;
-
-  const isOpen = restaurant.isOpen ?? restaurant.isOpened ?? null;
-
+  const isOpen = restaurant.isOpened ?? null;
   return (
-    <div
+    <Link
+      to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurant.id)}
       data-testid={`restaurant-card-${restaurant.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00] focus-visible:ring-offset-2"
     >
       {/* Cover Image Container */}
       <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
@@ -69,8 +71,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-500">
             {restaurant.averageCost ? (
               <span className="inline-flex items-center gap-0.5 font-semibold text-neutral-700">
-                <IndianRupee className="size-3 text-neutral-500" />
-                <span>{restaurant.averageCost} for two</span>
+                <span>{formatCurrency(restaurant.averageCost)} average</span>
               </span>
             ) : (
               <span className="text-neutral-400 italic">Casual Dining</span>
@@ -95,6 +96,6 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

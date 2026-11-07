@@ -1,8 +1,5 @@
-import { Building2, Camera, Check, Edit3, Loader2, Phone, Upload, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { PROFILE_MESSAGES } from "../constants/profile.constants";
@@ -14,6 +11,11 @@ import type {
   UpdateRestaurantProfilePayload,
 } from "../types/restaurant-profile.types";
 import { resolveMediaUrl } from "../utils/profile.utils";
+import { RestaurantOverviewActionButtons } from "./RestaurantOverviewActionButtons";
+import { RestaurantOverviewCoverBanner } from "./RestaurantOverviewCoverBanner";
+import { RestaurantOverviewDetailsView } from "./RestaurantOverviewDetailsView";
+import { RestaurantOverviewEditFields } from "./RestaurantOverviewEditFields";
+import { RestaurantOverviewLogoAvatar } from "./RestaurantOverviewLogoAvatar";
 
 interface RestaurantOverviewCardProps {
   restaurant: RestaurantOverviewDetails;
@@ -55,7 +57,6 @@ export function RestaurantOverviewCard({
   const [coverSrc, setCoverSrc] = useState<string>(initialCover || FALLBACK_COVER);
   const [logoSrc, setLogoSrc] = useState<string>(initialLogo || FALLBACK_LOGO);
 
-  // Sync details & image sources when props change (and not actively editing)
   useEffect(() => {
     if (!isEditing) {
       setName(restaurant.name || "");
@@ -84,7 +85,6 @@ export function RestaurantOverviewCard({
       return;
     }
 
-    // Immediately show local object URL preview for responsive user feedback
     const previewUrl = URL.createObjectURL(file);
     setLogoSrc(previewUrl);
 
@@ -116,7 +116,6 @@ export function RestaurantOverviewCard({
       return;
     }
 
-    // Immediately show local object URL preview for responsive user feedback
     const previewUrl = URL.createObjectURL(file);
     setCoverSrc(previewUrl);
 
@@ -231,119 +230,35 @@ export function RestaurantOverviewCard({
 
   return (
     <div className="overflow-hidden rounded-3xl border border-[#eddcd4] bg-white shadow-2xs">
-      {/* Cover Image Banner */}
-      <div className="relative h-44 sm:h-56 w-full bg-neutral-900 overflow-hidden">
-        <img
-          src={coverSrc}
-          alt={`${name} Cover`}
-          onError={() => setCoverSrc(FALLBACK_COVER)}
-          className="h-full w-full object-cover transition-opacity duration-300"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+      <RestaurantOverviewCoverBanner
+        coverSrc={coverSrc}
+        name={name}
+        isEditing={isEditing}
+        isSaving={isSaving}
+        isUploading={isUploading}
+        onCoverChange={handleCoverChange}
+        onCoverError={() => setCoverSrc(FALLBACK_COVER)}
+      />
 
-        {isEditing && (
-          <label className="absolute top-4 right-4 cursor-pointer inline-flex items-center gap-2 bg-black/70 hover:bg-black/80 text-white text-xs font-semibold px-3 py-2 rounded-xl backdrop-blur-xs transition-all shadow-md">
-            {isUploading ? (
-              <Loader2 className="size-3.5 animate-spin text-white" />
-            ) : (
-              <Upload className="size-3.5" />
-            )}
-            <span>{isUploading ? "Uploading..." : "Change Cover"}</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleCoverChange}
-              disabled={isSaving}
-              className="hidden"
-            />
-          </label>
-        )}
-      </div>
-
-      {/* Main Details Section */}
       <div className="relative px-6 pb-6 pt-0 sm:px-8 sm:pb-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14 sm:-mt-16 mb-6">
-          {/* Logo Avatar */}
-          <div className="relative size-24 sm:size-28 rounded-2xl border-4 border-white bg-white shadow-md overflow-hidden shrink-0 group">
-            <img
-              src={logoSrc}
-              alt={`${name} Logo`}
-              onError={() => setLogoSrc(FALLBACK_LOGO)}
-              className="h-full w-full object-cover"
-            />
+          <RestaurantOverviewLogoAvatar
+            logoSrc={logoSrc}
+            name={name}
+            isEditing={isEditing}
+            isSaving={isSaving}
+            isUploading={isUploading}
+            onLogoChange={handleLogoChange}
+            onLogoError={() => setLogoSrc(FALLBACK_LOGO)}
+          />
 
-            {isEditing && (
-              <label className="absolute inset-0 bg-black/50 hover:bg-black/60 flex flex-col items-center justify-center text-white cursor-pointer transition-all">
-                {isUploading ? (
-                  <>
-                    <Loader2 className="size-6 mb-1 animate-spin" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">
-                      Uploading
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Camera className="size-6 mb-1" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">
-                      Change Logo
-                    </span>
-                  </>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                  disabled={isSaving}
-                  className="hidden"
-                />
-              </label>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          {!isEditing ? (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleStartEdit}
-              className="rounded-xl border-[#eddcd4] bg-[#faf7f5] text-neutral-800 hover:bg-[#f3e6de] font-semibold text-xs h-9 px-4 self-start sm:self-auto cursor-pointer"
-            >
-              <Edit3 className="size-3.5 mr-1.5 text-[#e8631b]" />
-              <span>Edit Overview</span>
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2 self-start sm:self-auto">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancel}
-                disabled={isSaving}
-                className="rounded-xl border-neutral-200 text-neutral-700 hover:bg-neutral-100 font-semibold text-xs h-9 px-3.5"
-              >
-                <X className="size-3.5 mr-1" />
-                <span>Cancel</span>
-              </Button>
-
-              <Button
-                type="button"
-                onClick={handleSave}
-                disabled={isSaving}
-                className="rounded-xl bg-[#e8631b] hover:bg-[#d55513] text-white font-semibold text-xs h-9 px-4"
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 className="size-3.5 mr-1.5 animate-spin" />
-                    <span>Saving...</span>
-                  </>
-                ) : (
-                  <>
-                    <Check className="size-3.5 mr-1.5" />
-                    <span>Save Overview</span>
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
+          <RestaurantOverviewActionButtons
+            isEditing={isEditing}
+            isSaving={isSaving}
+            onStartEdit={handleStartEdit}
+            onCancel={handleCancel}
+            onSave={handleSave}
+          />
         </div>
 
         {validationError && (
@@ -352,103 +267,18 @@ export function RestaurantOverviewCard({
           </div>
         )}
 
-        {/* Info Section */}
         {!isEditing ? (
-          <div className="space-y-4">
-            <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fef3ec] px-2.5 py-0.5 text-xs font-bold text-[#9a3412] border border-[#fae2d3]">
-                <Building2 className="size-3" />
-                Verified Restaurant
-              </span>
-              <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-neutral-900 leading-tight">
-                {name}
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              <div className="flex items-center gap-3 rounded-2xl border border-[#f3e6de] bg-[#fffcf9] p-3.5">
-                <div className="flex size-9 items-center justify-center rounded-xl bg-[#fef3ec] text-[#e8631b]">
-                  <Phone className="size-4" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
-                    Contact Phone
-                  </p>
-                  <p className="text-sm font-bold text-neutral-900 truncate">{phone}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-2xl border border-[#f3e6de] bg-[#fffcf9] p-3.5">
-                <div className="flex size-9 items-center justify-center rounded-xl bg-[#fef3ec] text-[#e8631b]">
-                  <User className="size-4" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
-                    Owner Name
-                  </p>
-                  <p className="text-sm font-bold text-neutral-900 truncate">{ownerName}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <RestaurantOverviewDetailsView name={name} phone={phone} ownerName={ownerName} />
         ) : (
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="restaurant-name-input"
-                className="block text-xs font-bold text-neutral-700 mb-1"
-              >
-                Restaurant Name
-              </label>
-              <Input
-                id="restaurant-name-input"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter restaurant name"
-                disabled={isSaving}
-                className="rounded-xl border-[#eddcd4] focus-visible:ring-[#e8631b]"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="contact-phone-input"
-                  className="block text-xs font-bold text-neutral-700 mb-1"
-                >
-                  Contact Phone
-                </label>
-                <Input
-                  id="contact-phone-input"
-                  type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Enter contact phone"
-                  disabled={isSaving}
-                  className="rounded-xl border-[#eddcd4] focus-visible:ring-[#e8631b]"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="owner-name-input"
-                  className="block text-xs font-bold text-neutral-700 mb-1"
-                >
-                  Owner Name
-                </label>
-                <Input
-                  id="owner-name-input"
-                  type="text"
-                  value={ownerName}
-                  onChange={(e) => setOwnerName(e.target.value)}
-                  placeholder="Enter owner name"
-                  disabled={isSaving}
-                  className="rounded-xl border-[#eddcd4] focus-visible:ring-[#e8631b]"
-                />
-              </div>
-            </div>
-          </div>
+          <RestaurantOverviewEditFields
+            name={name}
+            phone={phone}
+            ownerName={ownerName}
+            isSaving={isSaving}
+            onNameChange={setName}
+            onPhoneChange={setPhone}
+            onOwnerNameChange={setOwnerName}
+          />
         )}
       </div>
     </div>

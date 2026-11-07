@@ -40,6 +40,9 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
           state: "Kerala",
           cuisineType: "South Indian, Biryani",
           averageCost: 450,
+          isOpened: true,
+          isPreorder: false,
+          acceptsQueue: true,
           createdAt: "2026-10-10T12:00:00.000Z",
         },
       ],
@@ -58,7 +61,8 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
     });
 
     expect(screen.getByText(/Kozhikode/)).toBeInTheDocument();
-    expect(screen.getByText(/450 for two/)).toBeInTheDocument();
+    expect(screen.getByText(/₹450\.00 average/)).toBeInTheDocument();
+    expect(screen.getByText("Open Now")).toBeInTheDocument();
     expect(screen.getAllByText("South Indian").length).toBeGreaterThan(0);
   });
 
@@ -129,6 +133,9 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
           state: "Kerala",
           cuisineType: "South Indian",
           averageCost: 450,
+          isOpened: true,
+          isPreorder: false,
+          acceptsQueue: true,
           createdAt: "2026-10-10T12:00:00.000Z",
         },
       ],

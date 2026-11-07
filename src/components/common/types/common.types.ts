@@ -42,3 +42,10 @@ export interface ConfirmDialogProps {
   onConfirm: () => void;
   onCancel?: () => void;
 }
+
+export interface SuccessResponse<T> {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: T;
+}

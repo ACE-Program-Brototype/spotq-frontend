@@ -1,16 +1,19 @@
 import type { RouteObject } from "react-router-dom";
 
-import AdminForgotPasswordPage from "@/features/auth/pages/AdminForgotPasswordPage";
-import AdminLoginPage from "@/features/auth/pages/AdminLoginPage";
-import AdminResetPasswordPage from "@/features/auth/pages/AdminResetPasswordPage";
-import AdminVerifyOtpPage from "@/features/auth/pages/AdminVerifyOtpPage";
+import AdminForgotPasswordPage from "@/features/auth/pages/admin/AdminForgotPasswordPage";
+import AdminLoginPage from "@/features/auth/pages/admin/AdminLoginPage";
+import AdminResetPasswordPage from "@/features/auth/pages/admin/AdminResetPasswordPage";
+import AdminVerifyOtpPage from "@/features/auth/pages/admin/AdminVerifyOtpPage";
 import AdminCustomerDetailsPage from "@/features/customers/pages/AdminCustomerDetailsPage";
 import AdminCustomersPage from "@/features/customers/pages/AdminCustomersPage";
 import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
+import PlatformFinancePage from "@/features/finance/pages/PlatformFinancePage";
 import AdminRestaurantApplicationReviewPage from "@/features/restaurants/pages/AdminRestaurantApplicationReviewPage";
 import AdminRestaurantApplicationsPage from "@/features/restaurants/pages/AdminRestaurantApplicationsPage";
 import AdminRestaurantDetailsPage from "@/features/restaurants/pages/AdminRestaurantDetailsPage";
 import AdminRestaurantsPage from "@/features/restaurants/pages/AdminRestaurantsPage";
+import AdminSubscriberDetailsPage from "@/features/subscribers/pages/AdminSubscriberDetailsPage";
+import AdminSubscribersPage from "@/features/subscribers/pages/AdminSubscribersPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -81,6 +84,15 @@ export const adminRoutes: RouteObject[] = [
             path: ADMIN_ROUTE_PATHS.CUSTOMER_DETAIL,
             Component: AdminCustomerDetailsPage,
           },
+          {
+            path: ADMIN_ROUTE_PATHS.SUBSCRIBERS,
+            Component: AdminSubscribersPage,
+          },
+          {
+            path: ADMIN_ROUTE_PATHS.SUBSCRIBER_DETAIL,
+            Component: AdminSubscriberDetailsPage,
+          },
+          { path: ADMIN_ROUTE_PATHS.FINANCE, Component: PlatformFinancePage },
         ],
       },
     ],

@@ -15,11 +15,14 @@ describe("adminRoutes", () => {
     expect(protectedSection.children).toBeDefined();
     const layoutWrapper = protectedSection.children?.[0];
     expect(layoutWrapper?.children).toBeDefined();
+    expect(layoutWrapper?.children?.some((route) => route.path === "finance")).toBe(true);
 
     const protectedPaths = layoutWrapper?.children?.map((r) => r.path);
     expect(protectedPaths).toContain("dashboard");
     expect(protectedPaths).toContain("restaurants/management");
     expect(protectedPaths).toContain("customers");
     expect(protectedPaths).toContain("customers/:id");
+    expect(protectedPaths).toContain("subscribers");
+    expect(protectedPaths).toContain("subscribers/:id");
   });
 });

@@ -7,6 +7,7 @@
 export const CUSTOMER_ROUTE_PATHS = {
   HOME: "/",
   ABOUT: "/about",
+  RESTAURANT_DETAIL: "/restaurants/:id",
 
   PROFILE: {
     ROOT: "/profile",
@@ -26,6 +27,7 @@ export const CUSTOMER_ROUTE_PATHS = {
   CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
+  ORDER_RECEIPT: "/orders/:orderId/receipt",
   QUEUES: "/queues",
   LOYALTIES: "/loyalties",
   PAYMENTS: "/payments",
@@ -53,6 +55,7 @@ export const CUSTOMER_ROUTES = {
   CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
+  ORDER_RECEIPT: (id: string | number) => `/orders/${id}/receipt`,
   QUEUES: "/queues",
   LOYALTIES: "/loyalties",
   PAYMENTS: "/payments",

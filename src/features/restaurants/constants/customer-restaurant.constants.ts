@@ -2,11 +2,13 @@ import type { CustomerSortConfig } from "../types/customer-restaurant.types";
 
 export const CUSTOMER_RESTAURANT_ENDPOINTS = {
   LIST: "restaurants/customers",
+  DETAILS: (id: string) => `restaurants/customers/${encodeURIComponent(id)}`,
 } as const;
 
 export const CUSTOMER_RESTAURANT_QUERY_KEYS = {
   ALL: ["customer", "restaurants"] as const,
   LIST: (params: unknown) => ["customer", "restaurants", params] as const,
+  DETAILS: (id: string) => ["customer", "restaurant", id] as const,
 } as const;
 
 export const CUSTOMER_RESTAURANT_DEFAULTS = {
@@ -48,3 +50,17 @@ export const CUSTOMER_SORT_OPTIONS: CustomerSortConfig[] = [
   { value: "price_asc", label: "Cost: Low to High", sortBy: "price", sortOrder: "asc" },
   { value: "price_desc", label: "Cost: High to Low", sortBy: "price", sortOrder: "desc" },
 ];
+
+export const RESTAURANT_PLAN_TYPES = {
+  QUEUE_PRO: "QUEUE_PRO",
+  SELF_PRO: "SELF_PRO",
+  QUEUE_PRO_DISPLAY: "Queue Pro",
+  SELF_PRO_DISPLAY: "Self Pro",
+} as const;
+
+export const CUSTOMER_QUEUE_BUTTON_LABELS = {
+  JOIN_QUEUE: "Join Queue",
+  JOINED_THIS_QUEUE: "Joined this queue",
+  CANT_JOIN_QUEUE: "Can't join queue",
+  RESTAURANT_CLOSED: "Restaurant Closed",
+} as const;

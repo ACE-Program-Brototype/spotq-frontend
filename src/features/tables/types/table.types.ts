@@ -1,12 +1,23 @@
-/**
- * Table Feature Domain & API Types
- */
-
 export type TableStatus = "AVAILABLE" | "OCCUPIED" | "PARTIAL_OCCUPIED" | "MAINTENANCE";
+
+export type TableStatusIncludingAll = TableStatus | "ALL";
 
 export type StaffUpdatableStatus = "AVAILABLE" | "MAINTENANCE";
 
-export type TableShape = "SQUARE" | "CIRCLE" | "RECTANGLE";
+export type TableShape = "CIRCLE" | "SQUARE";
+
+export interface RestaurantTableDetails {
+  tableId: string;
+  restaurantId: string;
+  sectionId: string;
+  sectionName: string;
+  tableCode: string;
+  capacity: number;
+  shape: TableShape;
+  currentOccupancy: number;
+  status: TableStatus;
+  createdAt: string;
+}
 
 export interface TableItem {
   id: string;
@@ -20,15 +31,47 @@ export interface TableItem {
   sectionName?: string;
 }
 
+export type AdminTables = {
+  tables: TableItem[];
+  stats: {
+    totalTables: number;
+    occupied: number;
+    available: number;
+    maintenance: number;
+  };
+  total: number;
+};
+
 export type TablesGroupedBySection = Record<string, TableItem[]>;
 
+export type TableSectionAll = {
+  id: string;
+  name: string;
+};
+
 export interface GetTablesResponse {
-  success: boolean;
-  message: string;
-  statusCode: number;
-  data: {
-    sections: TablesGroupedBySection;
-  };
+  mode: string;
+  sections: TablesGroupedBySection;
+}
+
+export interface GetTableSectionResponse {
+  mode: string;
+  sections: Array<TableSectionAll>;
+}
+
+export interface PaginatedTableSectionsData {
+  mode: "PAGINATED";
+  sections: TableSectionAll[];
+  total: number;
+}
+
+export interface CreateTableSectionPayload {
+  name: string;
+}
+
+export interface DeleteTableSectionResponse {
+  tableSectionId: string;
+  name: string;
 }
 
 export interface UpdateTableStatusInput {
@@ -45,6 +88,13 @@ export interface UpdateTableStatusResponse {
   message: string;
   statusCode: number;
   data?: TableItem;
+}
+
+export interface CreateTablePayload {
+  tableCode: string;
+  capacity: number;
+  sectionId: string;
+  tableShape: TableShape;
 }
 
 export interface TableStatusTransitionRule {

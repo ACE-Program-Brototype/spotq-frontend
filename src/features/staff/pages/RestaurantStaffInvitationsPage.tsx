@@ -1,27 +1,16 @@
-import {
-  ArrowLeft,
-  CheckCircle2,
-  ChevronDown,
-  Clock,
-  Eye,
-  Mail,
-  RotateCw,
-  Search,
-  Send,
-  ShieldAlert,
-  Trash2,
-  UserPlus,
-} from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { ArrowLeft, ChevronDown, Mail, RotateCw, Search, UserPlus } from "lucide-react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Spinner } from "@/components/common/LoadingIndicator";
-import { type Column, DataTable } from "@/components/common/table";
+import { DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InvitationDetailsModal } from "@/features/staff/components/InvitationDetailsModal";
 import { InviteStaffModal } from "@/features/staff/components/InviteStaffModal";
+import { StaffInvitationsStatsCards } from "@/features/staff/components/StaffInvitationsStatsCards";
+import { useStaffInvitationColumns } from "@/features/staff/hooks/use-staff-invitation-columns";
 import { useStaffInvitations } from "@/features/staff/hooks/use-staff-invitations";
 import type {
   StaffInvitation,
@@ -58,152 +47,22 @@ export default function RestaurantStaffInvitationsPage() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [revokeTarget, setRevokeTarget] = useState<StaffInvitation | null>(null);
 
-  const getStatusBadge = useCallback((invitation: StaffInvitation) => {
-    const isExpired =
-      invitation.status === "EXPIRED" ||
-      (invitation.status === "PENDING" && new Date(invitation.expiresAt) < new Date());
-
-    if (invitation.status === "ACCEPTED") {
-      return (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-          <CheckCircle2 className="size-3.5" />
-          Accepted
-        </span>
-      );
-    }
-    if (invitation.status === "REVOKED") {
-      return (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
-          <ShieldAlert className="size-3.5" />
-          Revoked
-        </span>
-      );
-    }
-    if (isExpired) {
-      return (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-neutral-600 border border-neutral-200">
-          <Clock className="size-3.5" />
-          Expired
-        </span>
-      );
-    }
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fef3ec] px-2.5 py-1 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
-        <span className="size-1.5 rounded-full bg-[#e8631b] animate-pulse" />
-        Pending
-      </span>
-    );
-  }, []);
-
   const handleOpenDetails = useCallback((invitation: StaffInvitation) => {
     setSelectedInvitation(invitation);
     setIsDetailsModalOpen(true);
   }, []);
 
-  const columns = useMemo<Column<StaffInvitation>[]>(
-    () => [
-      {
-        key: "email",
-        header: "Invited Email",
-        sortable: true,
-        cell: ({ row: invitation }) => (
-          <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-xl bg-[#faf7f5] border border-[#eddcd4] flex items-center justify-center text-neutral-600 shrink-0">
-              <Mail className="size-4 text-[#e8631b]" />
-            </div>
-            <div>
-              <p className="font-semibold text-neutral-900 break-all">{invitation.email}</p>
-              <p className="text-[10px] text-neutral-400 font-mono">
-                ID: {invitation.id.slice(0, 8)}...
-              </p>
-            </div>
-          </div>
-        ),
-      },
-      {
-        key: "status",
-        header: "Status",
-        cell: ({ row: invitation }) => getStatusBadge(invitation),
-      },
-      {
-        key: "createdAt",
-        header: "Date Sent",
-        sortable: true,
-        cell: ({ row: invitation }) => (
-          <span className="text-neutral-500 font-medium whitespace-nowrap">
-            {new Date(invitation.createdAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </span>
-        ),
-      },
-      {
-        key: "expiresAt",
-        header: "Expires",
-        sortable: true,
-        cell: ({ row: invitation }) => (
-          <span className="text-neutral-500 font-medium whitespace-nowrap">
-            {new Date(invitation.expiresAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </span>
-        ),
-      },
-      {
-        key: "actions",
-        header: "Actions",
-        align: "right",
-        cell: ({ row: invitation }) => (
-          <div className="flex items-center justify-end gap-1.5">
-            <button
-              type="button"
-              onClick={() => handleOpenDetails(invitation)}
-              className="rounded-lg p-2 text-neutral-500 hover:text-[#9a3412] hover:bg-[#fef3ec] transition-colors"
-              title="View Details"
-              aria-label="View Details"
-            >
-              <Eye className="size-4" />
-            </button>
+  const handleRevokeTarget = useCallback((invitation: StaffInvitation) => {
+    setRevokeTarget(invitation);
+  }, []);
 
-            {invitation.status !== "ACCEPTED" && (
-              <button
-                type="button"
-                onClick={() => resendInvitation(invitation.email)}
-                disabled={isResending === invitation.email}
-                className="rounded-lg p-2 text-neutral-500 hover:text-[#9a3412] hover:bg-[#fef3ec] transition-colors disabled:opacity-50"
-                title="Resend Invitation Link"
-                aria-label="Resend Invitation Link"
-              >
-                {isResending === invitation.email ? (
-                  <Spinner size="sm" theme="brand" />
-                ) : (
-                  <Send className="size-4" />
-                )}
-              </button>
-            )}
-
-            {invitation.status === "PENDING" && (
-              <button
-                type="button"
-                onClick={() => setRevokeTarget(invitation)}
-                disabled={isRevoking === invitation.id}
-                className="rounded-lg p-2 text-neutral-500 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50"
-                title="Revoke Invitation"
-                aria-label="Revoke Invitation"
-              >
-                <Trash2 className="size-4" />
-              </button>
-            )}
-          </div>
-        ),
-      },
-    ],
-    [isResending, isRevoking, resendInvitation, getStatusBadge, handleOpenDetails],
-  );
+  const columns = useStaffInvitationColumns({
+    isResending,
+    isRevoking,
+    onOpenDetails: handleOpenDetails,
+    onResend: resendInvitation,
+    onRevokeTarget: handleRevokeTarget,
+  });
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -257,53 +116,7 @@ export default function RestaurantStaffInvitationsPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-neutral-500">Total Sent</p>
-            <div className="size-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600">
-              <Mail className="size-4" />
-            </div>
-          </div>
-          <p className="mt-3 text-2xl font-bold text-neutral-900">{stats.total}</p>
-          <p className="mt-1 text-xs text-neutral-400">All dispatched invites</p>
-        </div>
-
-        <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-neutral-500">Pending</p>
-            <div className="size-8 rounded-xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#e8631b]">
-              <Clock className="size-4" />
-            </div>
-          </div>
-          <p className="mt-3 text-2xl font-bold text-[#e8631b]">{stats.pending}</p>
-          <p className="mt-1 text-xs text-neutral-400">Awaiting registration</p>
-        </div>
-
-        <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-neutral-500">Accepted</p>
-            <div className="size-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
-              <CheckCircle2 className="size-4" />
-            </div>
-          </div>
-          <p className="mt-3 text-2xl font-bold text-emerald-600">{stats.accepted}</p>
-          <p className="mt-1 text-xs text-neutral-400">Successfully joined</p>
-        </div>
-
-        <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-neutral-500">Expired / Revoked</p>
-            <div className="size-8 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
-              <ShieldAlert className="size-4" />
-            </div>
-          </div>
-          <p className="mt-3 text-2xl font-bold text-rose-600">
-            {stats.expired + (stats.revoked || 0)}
-          </p>
-          <p className="mt-1 text-xs text-neutral-400">Invalidated links</p>
-        </div>
-      </div>
+      <StaffInvitationsStatsCards stats={stats} />
 
       {/* Main Table Card */}
       <div className="rounded-2xl border border-[#eddcd4] bg-white shadow-2xs overflow-hidden">
@@ -321,7 +134,6 @@ export default function RestaurantStaffInvitationsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Status dropdown */}
             <div className="relative">
               <select
                 value={statusFilter}
