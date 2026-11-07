@@ -64,32 +64,4 @@ describe("cartService", () => {
       ).rejects.toThrow("Network Error");
     });
   });
-
-  describe("addBatchItems alias", () => {
-    it("delegates to batchAddToCart", async () => {
-      const mockPayload = {
-        restaurantId: "rest-uuid-123",
-        items: [],
-      };
-
-      const mockResponse = {
-        success: true,
-        message: "Success",
-        data: {
-          cartId: "cart-1",
-          restaurantId: "rest-1",
-          items: [],
-          itemCount: 0,
-          subtotal: 0,
-        },
-      };
-
-      (apiClient.post as jest.Mock).mockReturnValue({
-        json: jest.fn().mockResolvedValue(mockResponse),
-      });
-
-      const result = await cartService.addBatchItems(mockPayload);
-      expect(result).toEqual(mockResponse);
-    });
-  });
 });

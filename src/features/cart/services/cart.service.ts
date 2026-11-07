@@ -14,11 +14,4 @@ export const cartService = {
       })
       .json<AddBatchCartItemsResponse>();
   },
-
-  /**
-   * Alias for batchAddToCart
-   */
-  async addBatchItems(payload: AddBatchCartItemsPayload): Promise<AddBatchCartItemsResponse> {
-    return this.batchAddToCart(payload);
-  },
 };

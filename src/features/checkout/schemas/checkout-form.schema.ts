@@ -1,14 +1,12 @@
 import { z } from "zod";
+import { CHECKOUT_MESSAGES, PHONE_REGEX } from "../constants/checkout.constants";
 
 export const checkoutFormSchema = z.object({
   userName: z.string().trim().optional(),
   userPhone: z
     .string()
     .trim()
-    .refine(
-      (val) => !val || /^\+?[0-9\s-]{7,20}$/.test(val),
-      "Please enter a valid mobile number (7-20 digits)",
-    )
+    .refine((val) => !val || PHONE_REGEX.test(val), CHECKOUT_MESSAGES.PHONE_INVALID)
     .optional(),
   specialInstructions: z.string().trim().optional(),
 });
