@@ -43,10 +43,7 @@ export default function RestaurantDashboardPage() {
   } = useQuery({
     queryKey: SUBSCRIPTION_QUERY_KEYS.PLANS,
     queryFn: () => subscriptionService.fetchPlans(),
-    enabled: Boolean(
-      (isSubscriptionActive || isRenewalModalOpen) &&
-        typeof subscriptionService.fetchPlans === "function",
-    ),
+    enabled: isRenewalModalOpen,
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });
