@@ -7,6 +7,7 @@ jest.mock("@/lib/api/client", () => ({
     get: jest.fn(),
     post: jest.fn(),
     patch: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -90,6 +91,72 @@ describe("tableService", () => {
         response.data.sections,
       );
       expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId));
+    });
+  });
+
+  describe("getPaginatedTableSections", () => {
+    it("fetches paginated table sections", async () => {
+      const response = {
+        success: true,
+        data: {
+          mode: "PAGINATED",
+          sections: [{ id: "s1", name: "Main" }],
+          total: 1,
+        },
+      };
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(response),
+      });
+
+      const result = await tableService.getPaginatedTableSections(restaurantId, {
+        page: 1,
+        limit: 8,
+      });
+
+      expect(apiClient.get).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
+        searchParams: { mode: "PAGINATED", page: 1, limit: 8 },
+      });
+      expect(result).toEqual(response.data);
+    });
+  });
+
+  describe("createTableSection", () => {
+    it("posts new table section", async () => {
+      const payload = { name: "Outdoor Patio" };
+      const response = {
+        success: true,
+        data: { id: "s2", name: "Outdoor Patio" },
+      };
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(response),
+      });
+
+      const result = await tableService.createTableSection(restaurantId, payload);
+
+      expect(apiClient.post).toHaveBeenCalledWith(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
+        json: { name: "Outdoor Patio" },
+      });
+      expect(result).toEqual(response.data);
+    });
+  });
+
+  describe("unlistTableSection", () => {
+    it("deletes table section by id", async () => {
+      const sectionId = "s2";
+      const response = {
+        success: true,
+        data: { tableSectionId: "s2", name: "Outdoor Patio" },
+      };
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(response),
+      });
+
+      const result = await tableService.unlistTableSection(restaurantId, sectionId);
+
+      expect(apiClient.delete).toHaveBeenCalledWith(
+        TABLE_ENDPOINTS.TABLE_SECTION_DELETE(restaurantId, sectionId),
+      );
+      expect(result).toEqual(response.data);
     });
   });
 

@@ -59,6 +59,21 @@ export interface GetTableSectionResponse {
   sections: Array<TableSectionAll>;
 }
 
+export interface PaginatedTableSectionsData {
+  mode: "PAGINATED";
+  sections: TableSectionAll[];
+  total: number;
+}
+
+export interface CreateTableSectionPayload {
+  name: string;
+}
+
+export interface DeleteTableSectionResponse {
+  tableSectionId: string;
+  name: string;
+}
+
 export interface UpdateTableStatusInput {
   tableId: string;
   status: StaffUpdatableStatus;

@@ -4,8 +4,11 @@ import { TABLE_ENDPOINTS, TABLE_SERVICE_ERRORS } from "../constants/table.consta
 import type {
   AdminTables,
   CreateTablePayload,
+  CreateTableSectionPayload,
+  DeleteTableSectionResponse,
   GetTableSectionResponse,
   GetTablesResponse,
+  PaginatedTableSectionsData,
   RestaurantTableDetails,
   StaffUpdatableStatus,
   TableItem,
@@ -72,7 +75,7 @@ export const tableService = {
    */
   async getTablesBySection(restaurantId: string): Promise<TablesGroupedBySection> {
     if (!restaurantId) {
-      throw new Error("Restaurant ID is required to fetch tables");
+      throw new Error(TABLE_SERVICE_ERRORS.LIST_RESTAURANT_ID_REQUIRED);
     }
 
     const response = await apiClient
@@ -92,6 +95,55 @@ export const tableService = {
       .json<SuccessResponse<GetTableSectionResponse>>();
 
     return response.data.sections || [];
+  },
+
+  async getPaginatedTableSections(
+    restaurantId: string,
+    params: { page: number; limit: number },
+  ): Promise<PaginatedTableSectionsData> {
+    if (!restaurantId) {
+      throw new Error(TABLE_SERVICE_ERRORS.SECTIONS_RESTAURANT_ID_REQUIRED);
+    }
+
+    const response = await apiClient
+      .get(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
+        searchParams: { mode: "PAGINATED", page: params.page, limit: params.limit },
+      })
+      .json<SuccessResponse<PaginatedTableSectionsData>>();
+
+    return response.data;
+  },
+
+  async createTableSection(
+    restaurantId: string,
+    payload: CreateTableSectionPayload,
+  ): Promise<TableSectionAll> {
+    if (!restaurantId) {
+      throw new Error(TABLE_SERVICE_ERRORS.SECTIONS_RESTAURANT_ID_REQUIRED);
+    }
+
+    const response = await apiClient
+      .post(TABLE_ENDPOINTS.TABLE_SECTION(restaurantId), {
+        json: { name: payload.name.trim() },
+      })
+      .json<SuccessResponse<TableSectionAll>>();
+
+    return response.data;
+  },
+
+  async unlistTableSection(
+    restaurantId: string,
+    sectionId: string,
+  ): Promise<DeleteTableSectionResponse> {
+    if (!restaurantId || !sectionId) {
+      throw new Error(TABLE_SERVICE_ERRORS.DELETE_SECTION_IDS_REQUIRED);
+    }
+
+    const response = await apiClient
+      .delete(TABLE_ENDPOINTS.TABLE_SECTION_DELETE(restaurantId, sectionId))
+      .json<SuccessResponse<DeleteTableSectionResponse>>();
+
+    return response.data;
   },
 
   /**
