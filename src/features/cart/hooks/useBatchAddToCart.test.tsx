@@ -3,6 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { toast } from "sonner";
 import { cartService } from "../services/cart.service";
+import { useCartStore } from "../store/cart.store";
 import type { AddBatchCartItemsPayload } from "../types/cart.types";
 import { useBatchAddToCart } from "./useBatchAddToCart";
 
@@ -60,9 +61,10 @@ describe("useBatchAddToCart", () => {
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 
-  it("calls cartService.batchAddToCart, invalidates checkout cache, and invokes onSuccess callback", async () => {
+  it("calls cartService.batchAddToCart, clears local cart storage, invalidates checkout cache, and invokes onSuccess callback", async () => {
     (cartService.batchAddToCart as jest.Mock).mockResolvedValueOnce(mockResponse);
     const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
+    const clearCartSpy = jest.spyOn(useCartStore.getState(), "clearCart");
     const onSuccess = jest.fn();
 
     const { result } = renderHook(() => useBatchAddToCart({ onSuccess }), { wrapper });
@@ -72,6 +74,7 @@ describe("useBatchAddToCart", () => {
     });
 
     expect(cartService.batchAddToCart).toHaveBeenCalledWith(mockPayload);
+    expect(clearCartSpy).toHaveBeenCalled();
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ["checkout", "details"] });
     expect(onSuccess).toHaveBeenCalledWith(mockResponse);
   });

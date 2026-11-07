@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import { CartPage } from "./CartPage";
 
 const mockBatchAddToCart = jest.fn();
 const mockNavigate = jest.fn();
+let capturedBatchOnSuccess: (() => void) | undefined;
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -17,10 +18,13 @@ jest.mock("react-router-dom", () => ({
 }));
 
 jest.mock("@/features/cart/hooks/useBatchAddToCart", () => ({
-  useBatchAddToCart: () => ({
-    batchAddToCart: mockBatchAddToCart,
-    isPending: false,
-  }),
+  useBatchAddToCart: (options?: { onSuccess?: () => void }) => {
+    capturedBatchOnSuccess = options?.onSuccess;
+    return {
+      batchAddToCart: mockBatchAddToCart,
+      isPending: false,
+    };
+  },
 }));
 
 jest.mock("sonner", () => ({
@@ -239,5 +243,40 @@ describe("CartPage", () => {
     expect(toast.error).toHaveBeenCalledWith(CART_MESSAGES.LOGIN_REQUIRED_CHECKOUT);
     expect(mockNavigate).toHaveBeenCalledWith(CUSTOMER_ROUTES.AUTH.LOGIN);
     expect(mockBatchAddToCart).not.toHaveBeenCalled();
+  });
+
+  it("clears local cart and navigates to checkout on batchAddToCart success", async () => {
+    const user = userEvent.setup();
+
+    useCartStore.getState().addItem({
+      restaurantId: "rest-101",
+      restaurantName: "Biryani House",
+      menuItemId: "menu-1",
+      name: "Chicken Biryani",
+      basePrice: 200,
+      isVegetarian: false,
+      selectedVariant: null,
+      selectedAddons: [],
+      quantity: 1,
+    });
+
+    render(
+      <MemoryRouter>
+        <CartPage />
+      </MemoryRouter>,
+    );
+
+    const proceedBtn = screen.getByRole("button", {
+      name: new RegExp(CART_MESSAGES.PROCEED_TO_CHECKOUT, "i"),
+    });
+    await user.click(proceedBtn);
+
+    expect(capturedBatchOnSuccess).toBeDefined();
+    act(() => {
+      capturedBatchOnSuccess?.();
+    });
+
+    expect(useCartStore.getState().items).toHaveLength(0);
+    expect(mockNavigate).toHaveBeenCalledWith(CUSTOMER_ROUTES.CHECKOUT);
   });
 });

@@ -27,6 +27,7 @@ export function CartPage() {
 
   const { batchAddToCart, isPending: isSyncingCart } = useBatchAddToCart({
     onSuccess: () => {
+      clearCart();
       navigate(CUSTOMER_ROUTES.CHECKOUT);
     },
   });
