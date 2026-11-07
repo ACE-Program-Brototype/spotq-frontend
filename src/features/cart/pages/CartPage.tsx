@@ -1,14 +1,19 @@
 import { ArrowLeft, Store } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { CartEmptyState } from "@/features/cart/components/CartEmptyState";
 import { CartItemCard } from "@/features/cart/components/CartItemCard";
 import { CartSummary } from "@/features/cart/components/CartSummary";
 import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
+import { useBatchAddToCart } from "@/features/cart/hooks/useBatchAddToCart";
 import { useCartStore } from "@/features/cart/store/cart.store";
 
 export function CartPage() {
+  const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   const {
     items,
     restaurantId,
@@ -19,6 +24,34 @@ export function CartPage() {
     removeItem,
     clearCart,
   } = useCartStore();
+
+  const { batchAddToCart, isPending: isSyncingCart } = useBatchAddToCart({
+    onSuccess: () => {
+      navigate(CUSTOMER_ROUTES.CHECKOUT);
+    },
+  });
+
+  const handleProceedToCheckout = () => {
+    if (!isAuthenticated) {
+      toast.error(CART_MESSAGES.LOGIN_REQUIRED_CHECKOUT);
+      navigate(CUSTOMER_ROUTES.AUTH.LOGIN);
+      return;
+    }
+
+    if (!restaurantId || items.length === 0) {
+      return;
+    }
+
+    batchAddToCart({
+      restaurantId,
+      items: items.map((item) => ({
+        menuItemId: item.menuItemId,
+        quantity: item.quantity,
+        variantId: item.selectedVariant?.id ?? null,
+        addonIds: item.selectedAddons.map((addon) => addon.id),
+      })),
+    });
+  };
 
   const handleClearCart = () => {
     clearCart();
@@ -87,6 +120,8 @@ export function CartPage() {
             totalCount={totalCount}
             totalAmount={totalAmount}
             onClearCart={handleClearCart}
+            onProceedToCheckout={handleProceedToCheckout}
+            isProceeding={isSyncingCart}
           />
         </div>
       </div>

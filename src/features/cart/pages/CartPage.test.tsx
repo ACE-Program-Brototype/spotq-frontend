@@ -1,14 +1,41 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
 import { useCartStore } from "@/features/cart/store/cart.store";
 import { CartPage } from "./CartPage";
 
+const mockBatchAddToCart = jest.fn();
+const mockNavigate = jest.fn();
+
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock("@/features/cart/hooks/useBatchAddToCart", () => ({
+  useBatchAddToCart: () => ({
+    batchAddToCart: mockBatchAddToCart,
+    isPending: false,
+  }),
+}));
+
+jest.mock("sonner", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
 describe("CartPage", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     localStorage.clear();
     useCartStore.getState().clearCart();
+    useAuthStore.setState({ isAuthenticated: true });
   });
 
   it("renders empty state when cart is empty", () => {
@@ -141,5 +168,76 @@ describe("CartPage", () => {
     await user.click(clearBtn);
 
     expect(screen.getByTestId("cart-empty-state")).toBeInTheDocument();
+  });
+
+  it("calls batchAddToCart when Proceed to Checkout button is clicked while authenticated", async () => {
+    const user = userEvent.setup();
+
+    useCartStore.getState().addItem({
+      restaurantId: "rest-101",
+      restaurantName: "Biryani House",
+      menuItemId: "menu-1",
+      name: "Chicken Biryani",
+      basePrice: 200,
+      isVegetarian: false,
+      selectedVariant: null,
+      selectedAddons: [],
+      quantity: 1,
+    });
+
+    render(
+      <MemoryRouter>
+        <CartPage />
+      </MemoryRouter>,
+    );
+
+    const proceedBtn = screen.getByRole("button", {
+      name: new RegExp(CART_MESSAGES.PROCEED_TO_CHECKOUT, "i"),
+    });
+    await user.click(proceedBtn);
+
+    expect(mockBatchAddToCart).toHaveBeenCalledWith({
+      restaurantId: "rest-101",
+      items: [
+        {
+          menuItemId: "menu-1",
+          quantity: 1,
+          variantId: null,
+          addonIds: [],
+        },
+      ],
+    });
+  });
+
+  it("prompts to login and redirects when unauthenticated user clicks Proceed to Checkout", async () => {
+    const user = userEvent.setup();
+    useAuthStore.setState({ isAuthenticated: false });
+
+    useCartStore.getState().addItem({
+      restaurantId: "rest-101",
+      restaurantName: "Biryani House",
+      menuItemId: "menu-1",
+      name: "Chicken Biryani",
+      basePrice: 200,
+      isVegetarian: false,
+      selectedVariant: null,
+      selectedAddons: [],
+      quantity: 1,
+    });
+
+    render(
+      <MemoryRouter>
+        <CartPage />
+      </MemoryRouter>,
+    );
+
+    const proceedBtn = screen.getByRole("button", {
+      name: new RegExp(CART_MESSAGES.PROCEED_TO_CHECKOUT, "i"),
+    });
+    await user.click(proceedBtn);
+
+    expect(toast.error).toHaveBeenCalledWith(CART_MESSAGES.LOGIN_REQUIRED_CHECKOUT);
+    expect(mockNavigate).toHaveBeenCalledWith(CUSTOMER_ROUTES.AUTH.LOGIN);
+    expect(mockBatchAddToCart).not.toHaveBeenCalled();
   });
 });
