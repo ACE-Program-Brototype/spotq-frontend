@@ -65,10 +65,13 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
   }, []);
 
   const clearError = useCallback(() => {
-    attemptKeyRef.current = null;
     if (isMountedRef.current) {
       setErrorMessage(null);
     }
+  }, []);
+
+  const resetAttemptKey = useCallback(() => {
+    attemptKeyRef.current = null;
   }, []);
 
   const releaseLock = useCallback(() => {
@@ -205,5 +208,6 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
     isSubmitting,
     errorMessage,
     clearError,
+    resetAttemptKey,
   };
 }

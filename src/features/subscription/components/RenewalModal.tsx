@@ -49,12 +49,13 @@ export function RenewalModal({
 
   const [selectedCycle, setSelectedCycle] = useState<BillingCycle>(plansByCycle.initialCycle);
 
-  const { initiateRenewal, isSubmitting, errorMessage, clearError } = useSubscriptionRenewal({
-    onSuccess: () => {
-      hasUserSelectedCycleRef.current = false;
-      onOpenChange(false);
-    },
-  });
+  const { initiateRenewal, isSubmitting, errorMessage, clearError, resetAttemptKey } =
+    useSubscriptionRenewal({
+      onSuccess: () => {
+        hasUserSelectedCycleRef.current = false;
+        onOpenChange(false);
+      },
+    });
 
   useEffect(() => {
     if (open) {
@@ -62,12 +63,13 @@ export function RenewalModal({
         hasUserSelectedCycleRef.current = false;
         setSelectedCycle(plansByCycle.initialCycle);
         clearError();
+        resetAttemptKey();
       } else if (!hasUserSelectedCycleRef.current) {
         setSelectedCycle(plansByCycle.initialCycle);
       }
     }
     wasOpenRef.current = open;
-  }, [open, plansByCycle.initialCycle, clearError]);
+  }, [open, plansByCycle.initialCycle, clearError, resetAttemptKey]);
 
   const selectedPlan = plansByCycle[selectedCycle];
   const hasValidPlanAndPrice =
@@ -94,6 +96,7 @@ export function RenewalModal({
     }
     if (!nextOpen) {
       clearError();
+      resetAttemptKey();
     }
     onOpenChange(nextOpen);
   };
