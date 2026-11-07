@@ -12,6 +12,8 @@ import AdminRestaurantApplicationReviewPage from "@/features/restaurants/pages/A
 import AdminRestaurantApplicationsPage from "@/features/restaurants/pages/AdminRestaurantApplicationsPage";
 import AdminRestaurantDetailsPage from "@/features/restaurants/pages/AdminRestaurantDetailsPage";
 import AdminRestaurantsPage from "@/features/restaurants/pages/AdminRestaurantsPage";
+import AdminSubscriberDetailsPage from "@/features/subscribers/pages/AdminSubscriberDetailsPage";
+import AdminSubscribersPage from "@/features/subscribers/pages/AdminSubscribersPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -81,6 +83,14 @@ export const adminRoutes: RouteObject[] = [
           {
             path: ADMIN_ROUTE_PATHS.CUSTOMER_DETAIL,
             Component: AdminCustomerDetailsPage,
+          },
+          {
+            path: ADMIN_ROUTE_PATHS.SUBSCRIBERS,
+            Component: AdminSubscribersPage,
+          },
+          {
+            path: ADMIN_ROUTE_PATHS.SUBSCRIBER_DETAIL,
+            Component: AdminSubscriberDetailsPage,
           },
           { path: ADMIN_ROUTE_PATHS.FINANCE, Component: PlatformFinancePage },
         ],

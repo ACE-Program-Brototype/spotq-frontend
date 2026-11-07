@@ -33,6 +33,7 @@ describe("AdminLayout Shell", () => {
         <Routes>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<div>Admin Child Content</div>} />
+            <Route path="subscribers/:id" element={<div>Subscriber Detail Content</div>} />
           </Route>
         </Routes>
       </MemoryRouter>,
@@ -65,5 +66,12 @@ describe("AdminLayout Shell", () => {
     fireEvent.click(confirmBtn);
 
     expect(mockLogout).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps Subscribers nav item active when viewing nested subscriber detail route", () => {
+    renderWithRouter("/admin/subscribers/sub-101");
+
+    const subscribersLink = screen.getByRole("link", { name: "Subscribers" });
+    expect(subscribersLink).toHaveClass("bg-[#1e3a5f]");
   });
 });

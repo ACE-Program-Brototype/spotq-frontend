@@ -56,6 +56,11 @@ export default defineConfig(({ mode }) => {
       target: env.VITE_PAYMENT_SERVICE_URL || env.PAYMENT_SERVICE_URL || "http://localhost:3003",
     },
     {
+      module: "subscribers",
+      target: env.VITE_PAYMENT_SERVICE_URL || env.PAYMENT_SERVICE_URL || "http://localhost:3003",
+      preservePrefix: true,
+    },
+    {
       module: "restaurants",
       target:
         env.VITE_RESTAURANT_SERVICE_URL || env.RESTAURANT_SERVICE_URL || "http://localhost:3001",
