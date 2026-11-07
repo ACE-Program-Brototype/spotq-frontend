@@ -6,6 +6,7 @@ jest.mock("@/lib/api/client", () => ({
   apiClient: {
     post: jest.fn(),
     get: jest.fn(),
+    patch: jest.fn(),
   },
 }));
 
@@ -164,6 +165,41 @@ describe("queueService", () => {
 
     it("verifies GET_ETA resolves to queue service customer route", async () => {
       expect(QUEUE_ENDPOINTS.GET_ETA("rest-123")).toBe("queues/customer/rest-123/eta");
+    });
+  });
+
+  describe("assignTables", () => {
+    it("submits assignTables request to the staff queue endpoint with table assignments", async () => {
+      const queueEntryId = "entry-uuid-123";
+      const payload = {
+        tables: [
+          { tableId: "table-1", count: 2 },
+          { tableId: "table-2", count: 2 },
+        ],
+      };
+
+      const mockResponse = {
+        success: true,
+        message: "Tables assigned successfully",
+        data: {
+          queueEntryId,
+          restaurantId: "rest-123",
+          tableIds: ["table-1", "table-2"],
+          status: "SEATED",
+          seatedAt: "2026-11-07T12:00:00.000Z",
+        },
+      };
+
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.assignTables(queueEntryId, payload);
+
+      expect(apiClient.patch).toHaveBeenCalledWith(QUEUE_ENDPOINTS.ASSIGN_TABLE(queueEntryId), {
+        json: payload,
+      });
+      expect(result).toEqual(mockResponse);
     });
   });
 });
