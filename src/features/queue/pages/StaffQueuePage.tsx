@@ -1,9 +1,10 @@
-import { Clock, MessageSquare, Sparkles, UserPlus, Users } from "lucide-react";
+import { Clock, MessageSquare, Sparkles, UserPlus, Users, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { formatTime } from "@/lib/utils";
+import { AssignTableModal } from "../components/AssignTableModal";
 import { WalkInRegistrationModal } from "../components/WalkInRegistrationModal";
 import type { QueueEntry } from "../types/queue.types";
 
@@ -12,6 +13,7 @@ export default function StaffQueuePage() {
   const restaurantId = user?.restaurantId || "";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEntryForAssign, setSelectedEntryForAssign] = useState<QueueEntry | null>(null);
   const [queueEntries, setQueueEntries] = useState<QueueEntry[]>([]);
 
   const handleRegistrationSuccess = (newEntry: QueueEntry) => {
@@ -20,6 +22,14 @@ export default function StaffQueuePage() {
       ...prev.filter((e) => e.queueEntryId !== newEntry.queueEntryId),
     ]);
   };
+
+  const handleAssignSuccess = (updatedEntry: QueueEntry) => {
+    setQueueEntries((prev) =>
+      prev.map((e) => (e.queueEntryId === updatedEntry.queueEntryId ? updatedEntry : e)),
+    );
+  };
+
+  const waitingEntriesCount = queueEntries.filter((e) => e.status === "WAITING").length;
 
   return (
     <div className="space-y-6 max-w-full">
@@ -58,8 +68,8 @@ export default function StaffQueuePage() {
           <p className="text-xs font-bold text-[#756c66] uppercase tracking-wider">
             Waiting in Queue
           </p>
-          <p className="mt-2 text-2xl font-black text-[#9a3412]">{queueEntries.length}</p>
-          <p className="mt-1 text-xs text-[#756c66]">Parties registered</p>
+          <p className="mt-2 text-2xl font-black text-[#9a3412]">{waitingEntriesCount}</p>
+          <p className="mt-1 text-xs text-[#756c66]">Parties waiting</p>
         </div>
 
         <div className="rounded-2xl border border-[#eadfd8] bg-white p-5 shadow-2xs">
@@ -67,7 +77,7 @@ export default function StaffQueuePage() {
             Avg Estimated Wait
           </p>
           <p className="mt-2 text-2xl font-black text-neutral-900">
-            {queueEntries.length > 0 ? "10 mins" : "0 mins"}
+            {waitingEntriesCount > 0 ? "10 mins" : "0 mins"}
           </p>
           <p className="mt-1 text-xs text-[#756c66]">Based on party volume</p>
         </div>
@@ -133,6 +143,9 @@ export default function StaffQueuePage() {
                     <th scope="col" className="px-4 py-3">
                       Joined At
                     </th>
+                    <th scope="col" className="px-4 py-3 text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f3e6de]">
@@ -142,9 +155,15 @@ export default function StaffQueuePage() {
                       className="hover:bg-[#faf7f5]/80 transition-colors"
                     >
                       <td className="px-4 py-3 font-bold text-neutral-900">
-                        <span className="inline-flex size-6 items-center justify-center rounded-md bg-[#faf7f5] text-xs font-black text-[#9a3412] border border-[#eddcd4]">
-                          #{entry.position}
-                        </span>
+                        {entry.status === "SEATED" ? (
+                          <span className="inline-flex size-6 items-center justify-center rounded-md bg-emerald-50 text-xs font-black text-emerald-700 border border-emerald-200">
+                            ✓
+                          </span>
+                        ) : (
+                          <span className="inline-flex size-6 items-center justify-center rounded-md bg-[#faf7f5] text-xs font-black text-[#9a3412] border border-[#eddcd4]">
+                            #{entry.position}
+                          </span>
+                        )}
                       </td>
                       <td className="px-4 py-3">
                         <div className="font-bold text-neutral-900">{entry.guestName}</div>
@@ -168,7 +187,15 @@ export default function StaffQueuePage() {
                         )}
                       </td>
                       <td className="px-4 py-3">
-                        <Badge className="bg-blue-50 text-blue-700 border-blue-200 font-bold text-[10px]">
+                        <Badge
+                          className={`text-[10px] font-bold ${
+                            entry.status === "SEATED"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : entry.status === "CALLED"
+                                ? "bg-amber-50 text-amber-700 border-amber-200"
+                                : "bg-blue-50 text-blue-700 border-blue-200"
+                          }`}
+                        >
                           {entry.status}
                         </Badge>
                       </td>
@@ -177,6 +204,27 @@ export default function StaffQueuePage() {
                           <Clock className="size-3 text-neutral-400" />
                           {formatTime(entry.joinedAt)}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        {entry.status === "WAITING" ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => setSelectedEntryForAssign(entry)}
+                            className="h-8 px-3 rounded-xl bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold text-xs flex items-center gap-1.5 ml-auto shadow-2xs transition-all"
+                          >
+                            <UtensilsCrossed className="size-3.5" />
+                            <span>Assign Table</span>
+                          </Button>
+                        ) : entry.status === "SEATED" ? (
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                            Seated
+                          </span>
+                        ) : (
+                          <span className="text-xs font-semibold text-neutral-400 italic">
+                            {entry.status}
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -193,6 +241,15 @@ export default function StaffQueuePage() {
         onClose={() => setIsModalOpen(false)}
         restaurantId={restaurantId}
         onSuccess={handleRegistrationSuccess}
+      />
+
+      {/* Assign Table Modal */}
+      <AssignTableModal
+        isOpen={Boolean(selectedEntryForAssign)}
+        onClose={() => setSelectedEntryForAssign(null)}
+        restaurantId={restaurantId}
+        queueEntry={selectedEntryForAssign}
+        onSuccess={handleAssignSuccess}
       />
     </div>
   );

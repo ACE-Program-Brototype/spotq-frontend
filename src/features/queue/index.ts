@@ -1,3 +1,4 @@
+export { AssignTableModal } from "./components/AssignTableModal";
 export { CustomerRingAlertContainer } from "./components/CustomerRingAlertContainer";
 export { CustomerRingAlertModal } from "./components/CustomerRingAlertModal";
 export { JoinQueueGuestFields } from "./components/JoinQueueGuestFields";
@@ -7,6 +8,7 @@ export { WalkInRegistrationModal } from "./components/WalkInRegistrationModal";
 export * from "./constants/queue.constants";
 export * from "./constants/ring-alert.constants";
 export * from "./constants/websocket.constants";
+export { useAssignTables } from "./hooks/use-assign-tables";
 export { useCustomerQueueSocket } from "./hooks/use-customer-queue-socket";
 export { useJoinQueue } from "./hooks/use-join-queue";
 export { useQueueEta } from "./hooks/use-queue-eta";
