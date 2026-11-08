@@ -175,4 +175,99 @@ describe("subscriptionService", () => {
       );
     });
   });
+
+  describe("getSubscriptionHistory", () => {
+    it("should throw error if restaurantId is missing", async () => {
+      await expect(subscriptionService.getSubscriptionHistory("")).rejects.toThrow(
+        "Restaurant identification is required to retrieve billing history.",
+      );
+    });
+
+    it("should fetch subscription billing history with pagination and status filters", async () => {
+      const mockHistoryData = {
+        transactions: [
+          {
+            id: "tx-1",
+            planCode: "QUEUE_PRO",
+            planName: "Queue Pro",
+            billingCycle: "MONTHLY" as const,
+            amountPaise: 199900,
+            amountRupees: 1999,
+            currency: "INR",
+            status: "SUCCESS" as const,
+            razorpayPaymentId: "pay_123",
+            invoiceNumber: "INV-2026-0001",
+            invoiceUrl: "https://s3.amazonaws.com/test-invoice.pdf",
+            createdAt: "2026-11-08T10:00:00Z",
+          },
+        ],
+        pagination: {
+          currentPage: 2,
+          pageSize: 10,
+          totalRecords: 15,
+          totalPages: 2,
+          hasNextPage: false,
+          hasPrevPage: true,
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: mockHistoryData,
+        }),
+      });
+
+      const result = await subscriptionService.getSubscriptionHistory("rest-123", {
+        page: 2,
+        limit: 10,
+        status: "SUCCESS",
+      });
+
+      expect(apiClient.get).toHaveBeenCalledWith(
+        SUBSCRIPTION_ENDPOINTS.HISTORY("rest-123"),
+        expect.objectContaining({
+          searchParams: expect.any(URLSearchParams),
+        }),
+      );
+
+      const calledSearchParams = (apiClient.get as jest.Mock).mock.calls[0][1]
+        .searchParams as URLSearchParams;
+      expect(calledSearchParams.get("page")).toBe("2");
+      expect(calledSearchParams.get("limit")).toBe("10");
+      expect(calledSearchParams.get("status")).toBe("SUCCESS");
+      expect(result).toEqual(mockHistoryData);
+    });
+
+    it("should omit status query param when status is ALL", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: {
+            transactions: [],
+            pagination: {
+              currentPage: 1,
+              pageSize: 10,
+              totalRecords: 0,
+              totalPages: 0,
+              hasNextPage: false,
+              hasPrevPage: false,
+            },
+          },
+        }),
+      });
+
+      await subscriptionService.getSubscriptionHistory("rest-123", {
+        page: 1,
+        limit: 10,
+        status: "ALL",
+      });
+
+      const calledSearchParams = (apiClient.get as jest.Mock).mock.calls[0][1]
+        .searchParams as URLSearchParams;
+      expect(calledSearchParams.get("page")).toBe("1");
+      expect(calledSearchParams.get("limit")).toBe("10");
+      expect(calledSearchParams.has("status")).toBe(false);
+    });
+  });
 });

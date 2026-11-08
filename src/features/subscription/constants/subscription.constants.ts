@@ -4,6 +4,7 @@ export const SUBSCRIPTION_ENDPOINTS = {
   VERIFY_PAYMENT: "payments/subscriptions/verify",
   STATUS: "payments/subscriptions/status",
   RESTAURANT_STATUS: "restaurants/me/status",
+  HISTORY: (restaurantId: string) => `payments/subscriptions/restaurants/${restaurantId}/history`,
 } as const;
 
 export const SUBSCRIPTION_MESSAGES = {
