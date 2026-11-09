@@ -1,3 +1,4 @@
+import { isHTTPError } from "ky";
 import {
   SUBSCRIPTION_BILLING_CYCLES,
   SUBSCRIPTION_RENEWAL_TEXTS,
@@ -12,6 +13,36 @@ import type {
   RestaurantStatusData,
   SubscriptionPlan,
 } from "@/features/subscription/types/subscription.types";
+import type { NormalizedApiErrorData } from "@/lib/api/hooks/beforeError";
+
+export function generateIdempotencyKey(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `renew-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+export async function resolveErrorMessage(err: unknown, fallback: string): Promise<string> {
+  if (isHTTPError<NormalizedApiErrorData>(err)) {
+    if (err.data && typeof err.data === "object") {
+      if (err.data.message) {
+        return err.data.message;
+      }
+      if (typeof err.data.error === "string") {
+        return err.data.error;
+      }
+      if (typeof err.data.error === "object" && err.data.error?.message) {
+        return err.data.error.message;
+      }
+    }
+  }
+
+  if (err instanceof Error && err.message) {
+    return err.message;
+  }
+
+  return fallback;
+}
 
 const CYCLE_SUFFIX_PATTERN = /(?:[_-\s]+)(?:monthly|yearly|annual)$/i;
 

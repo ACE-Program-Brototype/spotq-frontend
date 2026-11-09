@@ -1,5 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { isHTTPError } from "ky";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -15,41 +14,15 @@ import type {
   RazorpayPaymentSuccessResponse,
   UseSubscriptionRenewalOptions,
 } from "@/features/subscription/types/subscription.types";
-import type { NormalizedApiErrorData } from "@/lib/api/hooks/beforeError";
-
-function generateIdempotencyKey(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  return `renew-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-async function resolveErrorMessage(err: unknown, fallback: string): Promise<string> {
-  if (isHTTPError<NormalizedApiErrorData>(err)) {
-    if (err.data && typeof err.data === "object") {
-      if (err.data.message) {
-        return err.data.message;
-      }
-      if (typeof err.data.error === "string") {
-        return err.data.error;
-      }
-      if (typeof err.data.error === "object" && err.data.error?.message) {
-        return err.data.error.message;
-      }
-    }
-  }
-
-  if (err instanceof Error && err.message) {
-    return err.message;
-  }
-
-  return fallback;
-}
+import {
+  generateIdempotencyKey,
+  resolveErrorMessage,
+} from "@/features/subscription/utils/subscription-renewal.utils";
 
 export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRenewalOptions = {}) {
   const queryClient = useQueryClient();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [customErrorMessage, setCustomErrorMessage] = useState<string | null>(null);
   const inFlightRef = useRef(false);
   const isMountedRef = useRef(true);
   const razorpayInstanceRef = useRef<RazorpayInstance | null>(null);
@@ -64,21 +37,8 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
     };
   }, []);
 
-  const clearError = useCallback(() => {
-    if (isMountedRef.current) {
-      setErrorMessage(null);
-    }
-  }, []);
-
   const resetAttemptKey = useCallback(() => {
     attemptKeyRef.current = null;
-  }, []);
-
-  const releaseLock = useCallback(() => {
-    inFlightRef.current = false;
-    if (isMountedRef.current) {
-      setIsSubmitting(false);
-    }
   }, []);
 
   const resolveAttemptIdempotencyKey = useCallback((subscriptionId: string, planId: string) => {
@@ -92,31 +52,58 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
     return freshKey;
   }, []);
 
+  const renewalMutation = useMutation({
+    mutationFn: async ({
+      subscriptionId,
+      planId,
+      idempotencyKey,
+    }: {
+      subscriptionId: string;
+      planId: string;
+      idempotencyKey: string;
+    }) => {
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded || !window.Razorpay) {
+        throw new Error(SUBSCRIPTION_MESSAGES.SCRIPT_LOAD_ERROR);
+      }
+
+      return subscriptionService.renewSubscription(subscriptionId, planId, idempotencyKey);
+    },
+  });
+
+  const clearError = useCallback(() => {
+    renewalMutation.reset();
+    if (isMountedRef.current) {
+      setCustomErrorMessage(null);
+    }
+  }, [renewalMutation]);
+
+  const releaseLock = useCallback(() => {
+    inFlightRef.current = false;
+    if (isMountedRef.current) {
+      setIsVerifying(false);
+    }
+  }, []);
+
   const initiateRenewal = useCallback(
     async (subscriptionId: string, planId: string) => {
-      if (inFlightRef.current) {
+      if (inFlightRef.current || renewalMutation.isPending) {
         return;
       }
 
       inFlightRef.current = true;
       if (isMountedRef.current) {
-        setIsSubmitting(true);
-        setErrorMessage(null);
+        setCustomErrorMessage(null);
       }
 
       const idempotencyKey = resolveAttemptIdempotencyKey(subscriptionId, planId);
 
       try {
-        const isLoaded = await loadRazorpayScript();
-        if (!isLoaded || !window.Razorpay) {
-          throw new Error(SUBSCRIPTION_MESSAGES.SCRIPT_LOAD_ERROR);
-        }
-
-        const renewalOrder = await subscriptionService.renewSubscription(
+        const renewalOrder = await renewalMutation.mutateAsync({
           subscriptionId,
           planId,
           idempotencyKey,
-        );
+        });
         attemptKeyRef.current = null;
 
         const options: RazorpayOptions = {
@@ -135,6 +122,9 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
             color: SUBSCRIPTION_RENEWAL_TEXTS.CHECKOUT_THEME_COLOR,
           },
           handler: async (paymentResponse: RazorpayPaymentSuccessResponse) => {
+            if (isMountedRef.current) {
+              setIsVerifying(true);
+            }
             try {
               const verified = await subscriptionService.verifyPayment({
                 razorpayOrderId: paymentResponse.razorpay_order_id,
@@ -154,7 +144,7 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
                 SUBSCRIPTION_MESSAGES.PAYMENT_VERIFY_FAILED,
               );
               if (isMountedRef.current) {
-                setErrorMessage(message);
+                setCustomErrorMessage(message);
               }
               toast.error(message);
               onError?.(verifyErr instanceof Error ? verifyErr : new Error(message));
@@ -180,7 +170,7 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
             response?.error?.reason ||
             SUBSCRIPTION_MESSAGES.PAYMENT_VERIFY_FAILED;
           if (isMountedRef.current) {
-            setErrorMessage(failureMessage);
+            setCustomErrorMessage(failureMessage);
           }
           toast.error(failureMessage);
           onError?.(new Error(failureMessage));
@@ -194,14 +184,17 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
           SUBSCRIPTION_RENEWAL_TEXTS.RENEWAL_INITIATION_FAILED,
         );
         if (isMountedRef.current) {
-          setErrorMessage(message);
+          setCustomErrorMessage(message);
         }
         toast.error(message);
         onError?.(err instanceof Error ? err : new Error(message));
       }
     },
-    [onError, onSuccess, queryClient, releaseLock, resolveAttemptIdempotencyKey],
+    [onError, onSuccess, queryClient, releaseLock, renewalMutation, resolveAttemptIdempotencyKey],
   );
+
+  const isSubmitting = renewalMutation.isPending || isVerifying || inFlightRef.current;
+  const errorMessage = customErrorMessage;
 
   return {
     initiateRenewal,
