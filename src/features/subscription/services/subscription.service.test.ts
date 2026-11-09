@@ -74,9 +74,7 @@ describe("subscriptionService", () => {
         json: {
           planId: "plan-1",
           restaurantId: "rest-123",
-          restaurantName: "The Great Grill",
           restaurantEmail: "owner@restaurant.com",
-          restaurantPhone: undefined,
         },
       });
       expect(result).toEqual(mockOrderResponse);

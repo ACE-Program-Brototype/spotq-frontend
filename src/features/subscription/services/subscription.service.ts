@@ -34,27 +34,29 @@ export const subscriptionService = {
     },
   ): Promise<CreateSubscriptionOrderResponse> {
     const user = useAuthStore.getState().user as {
-      id?: string;
       restaurantId?: string;
-      fullName?: string;
-      name?: string;
       email?: string;
-      phone?: string;
     } | null;
 
-    const restaurantId = restaurantContext?.restaurantId || user?.restaurantId || user?.id;
+    const restaurantId = restaurantContext?.restaurantId || user?.restaurantId;
     if (!restaurantId) {
       throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_ID_ORDER_ERROR);
     }
+
+    const email = restaurantContext?.restaurantEmail || user?.email;
 
     const response = await apiClient
       .post(SUBSCRIPTION_ENDPOINTS.CREATE_ORDER, {
         json: {
           planId,
           restaurantId,
-          restaurantName: restaurantContext?.restaurantName || user?.fullName || user?.name,
-          restaurantEmail: restaurantContext?.restaurantEmail || user?.email,
-          restaurantPhone: restaurantContext?.restaurantPhone || user?.phone,
+          ...(restaurantContext?.restaurantName
+            ? { restaurantName: restaurantContext.restaurantName }
+            : {}),
+          ...(email ? { restaurantEmail: email } : {}),
+          ...(restaurantContext?.restaurantPhone
+            ? { restaurantPhone: restaurantContext.restaurantPhone }
+            : {}),
         },
       })
       .json<ApiResponse<CreateSubscriptionOrderResponse>>();
