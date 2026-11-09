@@ -118,7 +118,7 @@ export function WithdrawFundsDialog({
         <div className="flex items-center justify-between border-t border-[#f0e3d6] pt-3 text-sm">
           <span className="text-neutral-600">You will receive</span>
           <span className="font-bold tabular-nums text-neutral-900">
-            {formatCurrency(Number.isFinite(amountPaise) ? amountPaise : 0)}
+            {formatCurrency(Number.isFinite(amountPaise) ? amountPaise / 100 : 0)}
           </span>
         </div>
         <div className="flex flex-col-reverse gap-2 border-t border-[#f0e3d6] pt-4 sm:flex-row sm:justify-end">
