@@ -6,15 +6,15 @@ import { StaffMobileNav, StaffSidebar } from "@/components/layout/StaffSidebar";
 
 export function StaffLayout() {
   return (
-    <div className="min-h-svh w-full max-w-full overflow-x-hidden bg-[#fdfcfb] text-neutral-900 pb-20 lg:pb-0 lg:flex">
-      <aside className="hidden lg:block lg:w-64 lg:shrink-0 sticky top-0 h-svh">
+    <div className="flex h-screen h-svh w-full max-w-full overflow-hidden bg-[#fdfcfb] text-neutral-900 pb-16 lg:pb-0">
+      <div className="hidden lg:block lg:w-64 lg:shrink-0 h-full">
         <StaffSidebar basePath={STAFF_ROUTES.ROOT} />
-      </aside>
+      </div>
 
-      <div className="flex-1 flex flex-col min-w-0 w-full max-w-full overflow-x-hidden">
+      <div className="flex flex-1 flex-col min-w-0 w-full h-full max-w-full overflow-hidden">
         <StaffNavbar />
 
-        <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 box-border">
+        <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 box-border overflow-y-auto">
           <Outlet />
         </main>
       </div>

@@ -202,4 +202,133 @@ describe("queueService", () => {
       expect(result).toEqual(mockResponse);
     });
   });
+
+  describe("getStaffLiveQueue", () => {
+    it("fetches staff live queue with optional search params", async () => {
+      const restaurantId = "rest-test-456";
+      const mockResponse = {
+        success: true,
+        message: "Queue retrieved",
+        data: {
+          restaurantId,
+          totalWaiting: 1,
+          entries: [],
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.getStaffLiveQueue(restaurantId, {
+        status: "WAITING",
+        partySizeBucket: "SMALL",
+      });
+
+      expect(apiClient.get).toHaveBeenCalledWith(QUEUE_ENDPOINTS.STAFF_LIVE_QUEUE(restaurantId), {
+        searchParams: {
+          status: "WAITING",
+          partySizeBucket: "SMALL",
+        },
+      });
+      expect(result).toEqual(mockResponse);
+    });
+  });
+
+  describe("ringCustomer", () => {
+    it("calls ring customer endpoint", async () => {
+      const queueEntryId = "entry-789";
+      const mockResponse = {
+        success: true,
+        message: "Customer notified",
+        data: {
+          queueEntryId,
+          status: "WAITING",
+          ringCount: 1,
+          lastRingAt: "2026-11-09T18:00:00.000Z",
+          responseDeadline: "2026-11-09T18:03:00.000Z",
+        },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.ringCustomer(queueEntryId);
+
+      expect(apiClient.post).toHaveBeenCalledWith(QUEUE_ENDPOINTS.RING_CUSTOMER(queueEntryId));
+      expect(result).toEqual(mockResponse);
+    });
+  });
+
+  describe("skipParty", () => {
+    it("calls skip party endpoint with reason and skipPositions", async () => {
+      const restaurantId = "rest-test-456";
+      const queueEntryId = "entry-789";
+      const mockResponse = {
+        success: true,
+        message: "Queue entry skipped",
+        data: {
+          queueEntryId,
+          status: "SKIPPED",
+          newPosition: 4,
+        },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.skipParty(restaurantId, queueEntryId, {
+        reason: "Party not ready",
+        skipPositions: 2,
+      });
+
+      expect(apiClient.post).toHaveBeenCalledWith(
+        QUEUE_ENDPOINTS.SKIP_PARTY(restaurantId, queueEntryId),
+        {
+          json: {
+            reason: "Party not ready",
+            skipPositions: 2,
+          },
+        },
+      );
+      expect(result).toEqual(mockResponse);
+    });
+  });
+
+  describe("cancelQueueEntry", () => {
+    it("calls cancel queue entry endpoint with reason and notes", async () => {
+      const restaurantId = "rest-test-456";
+      const queueEntryId = "entry-789";
+      const mockResponse = {
+        success: true,
+        message: "Queue entry cancelled",
+        data: {
+          queueEntryId,
+          status: "NO_SHOW",
+        },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.cancelQueueEntry(restaurantId, queueEntryId, {
+        reason: "NO_SHOW",
+        notes: "Did not respond after 3 rings",
+      });
+
+      expect(apiClient.post).toHaveBeenCalledWith(
+        QUEUE_ENDPOINTS.CANCEL_QUEUE_ENTRY(restaurantId, queueEntryId),
+        {
+          json: {
+            reason: "NO_SHOW",
+            notes: "Did not respond after 3 rings",
+          },
+        },
+      );
+      expect(result).toEqual(mockResponse);
+    });
+  });
 });
