@@ -53,7 +53,7 @@ function SummaryCard({
         <div>
           <p className="text-sm font-semibold text-neutral-600">{title}</p>
           <p className="mt-3 text-2xl font-bold tabular-nums text-neutral-900">
-            {formatCurrency(amount)}
+            {formatCurrency(amount / 100)}
           </p>
           <p className="mt-1 text-xs text-neutral-500">{note}</p>
         </div>
