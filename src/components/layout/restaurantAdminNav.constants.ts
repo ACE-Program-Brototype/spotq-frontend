@@ -80,6 +80,11 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       ],
     },
     {
+      title: "Wallet",
+      href: `${basePath}/wallet`,
+      icon: DollarSign,
+    },
+    {
       title: "Finance",
       href: `${basePath}/finance`,
       icon: DollarSign,
