@@ -21,6 +21,7 @@ import {
 
 export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRenewalOptions = {}) {
   const queryClient = useQueryClient();
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [customErrorMessage, setCustomErrorMessage] = useState<string | null>(null);
   const inFlightRef = useRef(false);
@@ -81,6 +82,7 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
   const releaseLock = useCallback(() => {
     inFlightRef.current = false;
     if (isMountedRef.current) {
+      setIsCheckoutOpen(false);
       setIsVerifying(false);
     }
   }, []);
@@ -105,6 +107,9 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
           idempotencyKey,
         });
         attemptKeyRef.current = null;
+        if (isMountedRef.current) {
+          setIsCheckoutOpen(true);
+        }
 
         const options: RazorpayOptions = {
           key: renewalOrder.keyId,
@@ -193,7 +198,7 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
     [onError, onSuccess, queryClient, releaseLock, renewalMutation, resolveAttemptIdempotencyKey],
   );
 
-  const isSubmitting = renewalMutation.isPending || isVerifying || inFlightRef.current;
+  const isSubmitting = renewalMutation.isPending || isVerifying || isCheckoutOpen;
   const errorMessage = customErrorMessage;
 
   return {
