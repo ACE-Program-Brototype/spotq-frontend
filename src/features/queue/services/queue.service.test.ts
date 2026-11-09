@@ -202,4 +202,71 @@ describe("queueService", () => {
       expect(result).toEqual(mockResponse);
     });
   });
+
+  describe("getCustomerQueueStatus", () => {
+    it("submits getCustomerQueueStatus request with restaurantId and queueEntryId", async () => {
+      const restaurantId = "rest-test-123";
+      const queueEntryId = "entry-test-456";
+      const mockResponse = {
+        success: true,
+        message: "Customer queue status fetched successfully",
+        data: {
+          queueEntryId,
+          restaurantId,
+          restaurantName: "The Grand Bistro",
+          queueNumber: "Q-001",
+          partySize: 2,
+          status: "WAITING",
+          position: 3,
+          peopleAhead: 2,
+          estimatedWaitMinutes: 15,
+          estimatedWaitMinutesAtJoin: 20,
+          joinedAt: "2026-11-09T10:00:00.000Z",
+          assignedTableNumber: null,
+          responseDeadline: null,
+          canCancel: true,
+          serverTime: "2026-11-09T10:05:00.000Z",
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.getCustomerQueueStatus(restaurantId, queueEntryId);
+
+      expect(apiClient.get).toHaveBeenCalledWith(
+        QUEUE_ENDPOINTS.CUSTOMER_STATUS(restaurantId, queueEntryId),
+      );
+      expect(result).toEqual(mockResponse);
+    });
+  });
+
+  describe("leaveQueue", () => {
+    it("submits leave queue request with restaurantId and queueEntryId", async () => {
+      const restaurantId = "rest-test-123";
+      const queueEntryId = "entry-test-456";
+      const mockResponse = {
+        success: true,
+        message: "Left restaurant queue successfully",
+        data: {
+          queueEntryId,
+          restaurantId,
+          status: "CANCELLED",
+          cancelledAt: "2026-11-09T10:15:00.000Z",
+        },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.leaveQueue(restaurantId, queueEntryId);
+
+      expect(apiClient.post).toHaveBeenCalledWith(QUEUE_ENDPOINTS.LEAVE_QUEUE(restaurantId), {
+        json: { queueEntryId },
+      });
+      expect(result).toEqual(mockResponse);
+    });
+  });
 });

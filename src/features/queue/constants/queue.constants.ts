@@ -2,6 +2,8 @@ export const QUEUE_QUERY_KEYS = {
   QUEUE: "staff-queue",
   CUSTOMER_ETA: (restaurantId: string, partySize: number) =>
     ["queue", "eta", restaurantId, partySize] as const,
+  CUSTOMER_STATUS: (restaurantId: string, queueEntryId: string) =>
+    ["queue", "status", restaurantId, queueEntryId] as const,
 } as const;
 
 export const QUEUE_ENDPOINTS = {
@@ -12,6 +14,10 @@ export const QUEUE_ENDPOINTS = {
     `queues/customer/restaurants/${encodeURIComponent(restaurantId)}/queue/join`,
   ASSIGN_TABLE: (queueEntryId: string) =>
     `queues/staff/queue/${encodeURIComponent(queueEntryId)}/assign-tables`,
+  CUSTOMER_STATUS: (restaurantId: string, queueEntryId: string) =>
+    `queues/customer/restaurants/${encodeURIComponent(restaurantId)}/queue/status?queueEntryId=${encodeURIComponent(queueEntryId)}`,
+  LEAVE_QUEUE: (restaurantId: string) =>
+    `queues/customer/restaurants/${encodeURIComponent(restaurantId)}/queue/leave`,
 } as const;
 
 export const QUEUE_MESSAGES = {
@@ -28,6 +34,8 @@ export const QUEUE_MESSAGES = {
   INSUFFICIENT_CAPACITY: (partySize: number, selectedSeats: number) =>
     `Selected table capacity (${selectedSeats}) is less than party size (${partySize}).`,
   SELECT_TABLE_REQUIRED: "Please select at least one table to assign.",
+  LEAVE_SUCCESS: "You have left the queue successfully.",
+  LEAVE_FAILED: "Failed to leave the queue. Please try again.",
 } as const;
 
 export const PARTY_SIZE_PRESETS = [1, 2, 3, 4, 5, "6+"] as const;

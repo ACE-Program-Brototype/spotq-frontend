@@ -4,8 +4,10 @@ import { normalizePhone } from "../schemas/walk-in.schema";
 import type {
   AssignTablesInput,
   AssignTablesResponse,
+  CustomerQueueStatusResponse,
   JoinQueueInput,
   JoinQueueResponse,
+  LeaveQueueResponse,
   QueueEtaResponse,
   RegisterWalkInInput,
   RegisterWalkInResponse,
@@ -75,5 +77,25 @@ export const queueService = {
         json: input,
       })
       .json<AssignTablesResponse>();
+  },
+
+  /**
+   * Fetches authoritative customer queue status and position snapshot.
+   */
+  async getCustomerQueueStatus(
+    restaurantId: string,
+    queueEntryId: string,
+  ): Promise<CustomerQueueStatusResponse> {
+    return apiClient
+      .get(QUEUE_ENDPOINTS.CUSTOMER_STATUS(restaurantId, queueEntryId))
+      .json<CustomerQueueStatusResponse>();
+  },
+
+  async leaveQueue(restaurantId: string, queueEntryId: string): Promise<LeaveQueueResponse> {
+    return apiClient
+      .post(QUEUE_ENDPOINTS.LEAVE_QUEUE(restaurantId), {
+        json: { queueEntryId },
+      })
+      .json<LeaveQueueResponse>();
   },
 };
