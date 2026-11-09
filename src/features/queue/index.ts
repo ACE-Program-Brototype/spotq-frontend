@@ -1,3 +1,4 @@
+export { ActiveQueueFloatingPill } from "./components/ActiveQueueFloatingPill";
 export { AssignTableCapacityBanner } from "./components/AssignTableCapacityBanner";
 export { AssignTableCard } from "./components/AssignTableCard";
 export { AssignTableGuestSummary } from "./components/AssignTableGuestSummary";
@@ -14,7 +15,9 @@ export * from "./constants/ring-alert.constants";
 export * from "./constants/websocket.constants";
 export { useAssignTables } from "./hooks/use-assign-tables";
 export { useCustomerQueueSocket } from "./hooks/use-customer-queue-socket";
+export { useCustomerQueueStatus } from "./hooks/use-customer-queue-status";
 export { useJoinQueue } from "./hooks/use-join-queue";
+export { useLeaveQueue } from "./hooks/use-leave-queue";
 export { useQueueEta } from "./hooks/use-queue-eta";
 export { useRegisterWalkIn } from "./hooks/use-register-walk-in";
 export { default as StaffQueuePage } from "./pages/StaffQueuePage";

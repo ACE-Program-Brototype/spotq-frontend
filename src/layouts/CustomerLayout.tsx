@@ -7,7 +7,7 @@ import { usePushNotification } from "@/features/auth/context/push-notification.c
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { CustomerRingAlertContainer } from "@/features/queue";
+import { ActiveQueueFloatingPill, CustomerRingAlertContainer } from "@/features/queue";
 
 export function CustomerLayout() {
   const { isAuthenticated, user } = useAuthStore();
@@ -24,6 +24,7 @@ export function CustomerLayout() {
 
       <NotificationBanner {...pushNotification} />
       <CustomerRingAlertContainer />
+      <ActiveQueueFloatingPill />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 box-border">
         <Outlet />
