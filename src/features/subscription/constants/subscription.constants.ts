@@ -45,6 +45,15 @@ export const SUBSCRIPTION_STATUSES = {
   PENDING: "PENDING",
 } as const;
 
+export const RESTAURANT_VERIFICATION_STATUSES = {
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  VERIFIED: "VERIFIED",
+} as const;
+
 export const SUBSCRIPTION_MESSAGES = {
   FETCH_PLANS_ERROR: "Failed to load subscription plans. Please refresh.",
   ORDER_CREATION_FAILED: "Failed to initiate subscription order. Please try again.",

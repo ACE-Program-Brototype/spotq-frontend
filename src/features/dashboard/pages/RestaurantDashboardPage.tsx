@@ -9,6 +9,7 @@ import { SubscriptionExpiryBanner } from "@/features/subscription/components/Sub
 import { SubscriptionOverviewCard } from "@/features/subscription/components/SubscriptionOverviewCard";
 import {
   RESTAURANT_DASHBOARD_TEXTS,
+  RESTAURANT_VERIFICATION_STATUSES,
   SUBSCRIPTION_QUERY_KEYS,
 } from "@/features/subscription/constants/subscription.constants";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
@@ -48,7 +49,9 @@ export default function RestaurantDashboardPage() {
 
   const userStatus = user?.status ?? statusData?.verificationStatus;
   const isApprovedOrActive =
-    userStatus === "APPROVED" || userStatus === "ACTIVE" || userStatus === "VERIFIED";
+    userStatus === RESTAURANT_VERIFICATION_STATUSES.APPROVED ||
+    userStatus === RESTAURANT_VERIFICATION_STATUSES.ACTIVE ||
+    userStatus === RESTAURANT_VERIFICATION_STATUSES.VERIFIED;
   const needsSubscription = isApprovedOrActive && !isSubscriptionActive && !isStatusError;
 
   useEffect(() => {
