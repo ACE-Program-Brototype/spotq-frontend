@@ -15,10 +15,7 @@ import type {
 import type { NormalizedApiErrorData } from "@/lib/api/hooks/beforeError";
 
 export function generateIdempotencyKey(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  return `renew-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  return crypto.randomUUID();
 }
 
 export async function resolveErrorMessage(err: unknown, fallback: string): Promise<string> {

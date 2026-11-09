@@ -6,6 +6,7 @@ import {
   calculateProposedRenewalTerm,
   calculateRemainingDays,
   evaluateRenewalEligibility,
+  generateIdempotencyKey,
   resolveRenewalPlansByCycle,
 } from "./subscription-renewal.utils";
 
@@ -270,6 +271,16 @@ describe("subscription-renewal.utils", () => {
         new Date("2024-02-01T12:00:00.000Z"),
       );
       expect(leapPreview?.previewText).toBe("Renews from Feb 29, 2024 to Feb 28, 2025");
+    });
+  });
+
+  describe("generateIdempotencyKey", () => {
+    it("generates a valid UUID string matching backend idempotency expectations", () => {
+      const key = generateIdempotencyKey();
+      expect(typeof key).toBe("string");
+      expect(key).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      );
     });
   });
 });
