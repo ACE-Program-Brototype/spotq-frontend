@@ -19,9 +19,7 @@ export default function RestaurantDashboardPage() {
   const { user, clearAuth, setUser } = useAuthStore();
   const [isRenewalModalOpen, setIsRenewalModalOpen] = useState(false);
 
-  const restaurantUser = user as { email?: string; status?: string } | null;
-  const restaurantEmail =
-    restaurantUser?.email || user?.email || RESTAURANT_DASHBOARD_TEXTS.DEFAULT_RESTAURANT_NAME;
+  const restaurantEmail = user?.email || RESTAURANT_DASHBOARD_TEXTS.DEFAULT_RESTAURANT_NAME;
 
   const {
     data: statusData,
@@ -48,7 +46,7 @@ export default function RestaurantDashboardPage() {
     retry: 1,
   });
 
-  const userStatus = restaurantUser?.status ?? statusData?.verificationStatus;
+  const userStatus = user?.status ?? statusData?.verificationStatus;
   const isApprovedOrActive =
     userStatus === "APPROVED" || userStatus === "ACTIVE" || userStatus === "VERIFIED";
   const needsSubscription = isApprovedOrActive && !isSubscriptionActive && !isStatusError;
@@ -115,7 +113,7 @@ export default function RestaurantDashboardPage() {
               {RESTAURANT_DASHBOARD_TEXTS.ACCOUNT_STATUS_LABEL}
             </p>
             <p className="mt-2 text-xl font-bold text-neutral-900">
-              {restaurantUser?.status ??
+              {user?.status ??
                 statusData?.verificationStatus ??
                 RESTAURANT_DASHBOARD_TEXTS.DEFAULT_ACTIVE_STATUS}
             </p>
