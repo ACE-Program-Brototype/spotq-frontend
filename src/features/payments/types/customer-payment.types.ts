@@ -4,7 +4,7 @@
  * retry flows, and filtering.
  */
 
-export type CustomerPaymentStatus = "SUCCESS" | "CAPTURED" | "FAILED" | "REFUNDED";
+export type CustomerPaymentStatus = "SUCCESS" | "CAPTURED" | "FAILED" | "REFUNDED" | "PENDING";
 
 export type PaymentFilterStatus = "ALL" | "SUCCESS" | "CAPTURED" | "FAILED" | "REFUNDED";
 

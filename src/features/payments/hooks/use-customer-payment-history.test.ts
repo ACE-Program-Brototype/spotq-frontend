@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
-import { customerPaymentService } from "../services/customer-payment.service";
+import { customerPaymentService } from "@/features/payments/services/customer-payment.service";
 import { useCustomerPaymentHistory } from "./use-customer-payment-history";
 
-jest.mock("../services/customer-payment.service", () => ({
+jest.mock("@/features/payments/services/customer-payment.service", () => ({
   customerPaymentService: {
     getPaymentHistory: jest.fn(),
   },

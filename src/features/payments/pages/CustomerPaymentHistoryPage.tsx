@@ -8,23 +8,23 @@
 import { AlertCircle, CreditCard, RefreshCw } from "lucide-react";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
-import { CustomerSidebar } from "@/features/profile/components/CustomerSidebar";
-import { useCustomerProfile } from "@/features/profile/hooks/use-customer-profile";
-import { CustomerPaymentDateFilter } from "../components/CustomerPaymentDateFilter";
-import { CustomerPaymentHistoryEmptyState } from "../components/CustomerPaymentHistoryEmptyState";
-import { CustomerPaymentHistoryMobileCards } from "../components/CustomerPaymentHistoryMobileCards";
-import { CustomerPaymentHistorySkeleton } from "../components/CustomerPaymentHistorySkeleton";
-import { CustomerPaymentHistoryTable } from "../components/CustomerPaymentHistoryTable";
-import { CustomerPaymentSortSelect } from "../components/CustomerPaymentSortSelect";
-import { PaymentFilterTabs } from "../components/PaymentFilterTabs";
+import { CustomerPaymentDateFilter } from "@/features/payments/components/CustomerPaymentDateFilter";
+import { CustomerPaymentHistoryEmptyState } from "@/features/payments/components/CustomerPaymentHistoryEmptyState";
+import { CustomerPaymentHistoryMobileCards } from "@/features/payments/components/CustomerPaymentHistoryMobileCards";
+import { CustomerPaymentHistorySkeleton } from "@/features/payments/components/CustomerPaymentHistorySkeleton";
+import { CustomerPaymentHistoryTable } from "@/features/payments/components/CustomerPaymentHistoryTable";
+import { CustomerPaymentSortSelect } from "@/features/payments/components/CustomerPaymentSortSelect";
+import { PaymentFilterTabs } from "@/features/payments/components/PaymentFilterTabs";
 import {
   CUSTOMER_PAYMENT_MESSAGES,
   PAYMENT_FILTER_STATUS,
-} from "../constants/customer-payment.constants";
-import { useCustomerPaymentHistory } from "../hooks/use-customer-payment-history";
-import { useRetryPayment } from "../hooks/use-retry-payment";
+} from "@/features/payments/constants/customer-payment.constants";
+import { useCustomerPaymentHistory } from "@/features/payments/hooks/use-customer-payment-history";
+import { useRetryPayment } from "@/features/payments/hooks/use-retry-payment";
+import { CustomerSidebar } from "@/features/profile/components/CustomerSidebar";
+import { useCustomerProfile } from "@/features/profile/hooks/use-customer-profile";
 
-export function CustomerPaymentHistoryPage() {
+export default function CustomerPaymentHistoryPage() {
   const { data: profile } = useCustomerProfile();
 
   const {
@@ -199,5 +199,3 @@ export function CustomerPaymentHistoryPage() {
     </div>
   );
 }
-
-export default CustomerPaymentHistoryPage;

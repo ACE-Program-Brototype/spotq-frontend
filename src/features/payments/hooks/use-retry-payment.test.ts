@@ -2,9 +2,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import React from "react";
 import { toast } from "sonner";
+import { customerPaymentService } from "@/features/payments/services/customer-payment.service";
+import type { CustomerPaymentTransaction } from "@/features/payments/types/customer-payment.types";
 import { loadRazorpayScript } from "@/lib/utils/razorpay";
-import { customerPaymentService } from "../services/customer-payment.service";
-import type { CustomerPaymentTransaction } from "../types/customer-payment.types";
 import { useRetryPayment } from "./use-retry-payment";
 
 jest.mock("sonner", () => ({

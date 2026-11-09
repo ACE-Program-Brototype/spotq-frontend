@@ -9,15 +9,15 @@ import { useState } from "react";
 import {
   CUSTOMER_PAYMENT_DEFAULTS,
   CUSTOMER_PAYMENT_QUERY_KEYS,
-} from "../constants/customer-payment.constants";
-import { customerPaymentService } from "../services/customer-payment.service";
+} from "@/features/payments/constants/customer-payment.constants";
+import { customerPaymentService } from "@/features/payments/services/customer-payment.service";
 import type {
   CustomerPaymentPagination,
   CustomerPaymentSortBy,
   CustomerPaymentSortOrder,
   CustomerPaymentTransaction,
   PaymentFilterStatus,
-} from "../types/customer-payment.types";
+} from "@/features/payments/types/customer-payment.types";
 
 interface UseCustomerPaymentHistoryOptions {
   initialPage?: number;

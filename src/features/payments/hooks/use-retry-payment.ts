@@ -7,22 +7,22 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { loadRazorpayScript } from "@/lib/utils/razorpay";
 import {
   CUSTOMER_INVOICE_CONFIG,
   CUSTOMER_PAYMENT_MESSAGES,
   CUSTOMER_PAYMENT_QUERY_KEYS,
   CUSTOMER_PAYMENT_STATUS,
   RAZORPAY_CHECKOUT_CONFIG,
-} from "../constants/customer-payment.constants";
-import { customerPaymentService } from "../services/customer-payment.service";
+} from "@/features/payments/constants/customer-payment.constants";
+import { customerPaymentService } from "@/features/payments/services/customer-payment.service";
 import type {
   CustomerPaymentTransaction,
   GetCustomerPaymentHistoryResponse,
   RazorpayStandardInstance,
   RazorpayStandardOptions,
-} from "../types/customer-payment.types";
-import { parseApiError } from "../utils/customer-payment.utils";
+} from "@/features/payments/types/customer-payment.types";
+import { parseApiError } from "@/features/payments/utils/customer-payment.utils";
+import { loadRazorpayScript } from "@/lib/utils/razorpay";
 
 export function useRetryPayment() {
   const queryClient = useQueryClient();

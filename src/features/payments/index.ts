@@ -15,7 +15,7 @@ export * from "./components/PaymentFilterTabs";
 export * from "./constants/customer-payment.constants";
 export * from "./hooks/use-customer-payment-history";
 export * from "./hooks/use-retry-payment";
-export { CustomerPaymentHistoryPage } from "./pages/CustomerPaymentHistoryPage";
+export { default as CustomerPaymentHistoryPage } from "./pages/CustomerPaymentHistoryPage";
 export * from "./services/customer-payment.service";
 export * from "./types/customer-payment.types";
 export * from "./utils/customer-payment.utils";

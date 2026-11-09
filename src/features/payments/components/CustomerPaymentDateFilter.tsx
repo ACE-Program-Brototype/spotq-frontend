@@ -4,8 +4,8 @@
  */
 
 import { Calendar, X } from "lucide-react";
+import { CUSTOMER_PAYMENT_MESSAGES } from "@/features/payments/constants/customer-payment.constants";
 import { cn } from "@/lib/utils/cn";
-import { CUSTOMER_PAYMENT_MESSAGES } from "../constants/customer-payment.constants";
 
 interface CustomerPaymentDateFilterProps {
   startDate: string;

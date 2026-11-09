@@ -4,12 +4,12 @@
  * [All], [Success], [Failed], [Refunded].
  */
 
-import { cn } from "@/lib/utils/cn";
 import {
   CUSTOMER_PAYMENT_FILTER_OPTIONS,
   PAYMENT_FILTER_STATUS,
-} from "../constants/customer-payment.constants";
-import type { PaymentFilterStatus } from "../types/customer-payment.types";
+} from "@/features/payments/constants/customer-payment.constants";
+import type { PaymentFilterStatus } from "@/features/payments/types/customer-payment.types";
+import { cn } from "@/lib/utils/cn";
 
 interface PaymentFilterTabsProps {
   selectedStatus: PaymentFilterStatus;

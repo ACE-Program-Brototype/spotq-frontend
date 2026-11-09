@@ -9,12 +9,12 @@
 
 import { ArrowUpDown, ChevronDown } from "lucide-react";
 import type * as React from "react";
-import { cn } from "@/lib/utils/cn";
-import { CUSTOMER_PAYMENT_SORT_OPTIONS } from "../constants/customer-payment.constants";
+import { CUSTOMER_PAYMENT_SORT_OPTIONS } from "@/features/payments/constants/customer-payment.constants";
 import type {
   CustomerPaymentSortBy,
   CustomerPaymentSortOrder,
-} from "../types/customer-payment.types";
+} from "@/features/payments/types/customer-payment.types";
+import { cn } from "@/lib/utils/cn";
 
 interface CustomerPaymentSortSelectProps {
   sortBy: CustomerPaymentSortBy;

@@ -25,20 +25,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils/cn";
-import { formatCurrency } from "@/lib/utils/currency";
-import { formatDate } from "@/lib/utils/date";
-import { CUSTOMER_PAYMENT_MESSAGES } from "../constants/customer-payment.constants";
+import { CUSTOMER_PAYMENT_MESSAGES } from "@/features/payments/constants/customer-payment.constants";
 import type {
   CustomerPaymentSortBy,
   CustomerPaymentSortOrder,
   CustomerPaymentTransaction,
-} from "../types/customer-payment.types";
+} from "@/features/payments/types/customer-payment.types";
 import {
   formatOrderDisplayId,
   isPaymentRetryExpired,
   normalizePaymentStatus,
-} from "../utils/customer-payment.utils";
+} from "@/features/payments/utils/customer-payment.utils";
+import { cn } from "@/lib/utils/cn";
+import { formatCurrency } from "@/lib/utils/currency";
+import { formatDate } from "@/lib/utils/date";
 import { CustomerPaymentMethodTag } from "./CustomerPaymentMethodTag";
 import { CustomerPaymentStatusBadge } from "./CustomerPaymentStatusBadge";
 

@@ -4,7 +4,7 @@
  * status badges, and API error parsing.
  */
 
-import type { CustomerPaymentStatus } from "../types/customer-payment.types";
+import type { CustomerPaymentStatus } from "@/features/payments/types/customer-payment.types";
 
 /**
  * Determines whether a transaction's retry window has expired.
@@ -35,7 +35,7 @@ export function normalizePaymentStatus(status?: string | null): CustomerPaymentS
   if (upper === "CAPTURED" || upper === "SUCCESS") return "SUCCESS";
   if (upper === "FAILED") return "FAILED";
   if (upper === "REFUNDED") return "REFUNDED";
-  return "SUCCESS";
+  return "PENDING";
 }
 
 /**

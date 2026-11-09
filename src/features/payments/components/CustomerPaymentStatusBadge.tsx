@@ -5,10 +5,10 @@
  */
 
 import { AlertCircle, CheckCircle2, RotateCcw } from "lucide-react";
+import { CUSTOMER_PAYMENT_MESSAGES } from "@/features/payments/constants/customer-payment.constants";
+import type { CustomerPaymentStatus } from "@/features/payments/types/customer-payment.types";
+import { normalizePaymentStatus } from "@/features/payments/utils/customer-payment.utils";
 import { cn } from "@/lib/utils/cn";
-import { CUSTOMER_PAYMENT_MESSAGES } from "../constants/customer-payment.constants";
-import type { CustomerPaymentStatus } from "../types/customer-payment.types";
-import { normalizePaymentStatus } from "../utils/customer-payment.utils";
 
 interface CustomerPaymentStatusBadgeProps {
   status: CustomerPaymentStatus | string;

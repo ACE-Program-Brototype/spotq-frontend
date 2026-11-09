@@ -4,13 +4,12 @@
  * verifying checkout signatures, and downloading invoices.
  */
 
-import { apiClient } from "@/lib/api/client";
 import {
   CUSTOMER_PAYMENT_DEFAULTS,
   CUSTOMER_PAYMENT_ENDPOINTS,
   CUSTOMER_PAYMENT_MESSAGES,
   CUSTOMER_PAYMENT_STATUS,
-} from "../constants/customer-payment.constants";
+} from "@/features/payments/constants/customer-payment.constants";
 import type {
   CustomerPaymentTransaction,
   GetCustomerPaymentHistoryParams,
@@ -20,7 +19,8 @@ import type {
   RetryPaymentResponseData,
   VerifyPaymentPayload,
   VerifyPaymentResponse,
-} from "../types/customer-payment.types";
+} from "@/features/payments/types/customer-payment.types";
+import { apiClient } from "@/lib/api/client";
 
 interface RawPaymentPagination {
   total?: number;
@@ -66,7 +66,7 @@ export const customerPaymentService = {
       limit,
     };
 
-    if (apiStatus) {
+    if (apiStatus && apiStatus !== "ALL") {
       searchParams.status = apiStatus;
     }
 

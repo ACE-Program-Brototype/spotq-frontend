@@ -43,8 +43,11 @@ describe("customer-payment.utils", () => {
       expect(normalizePaymentStatus("refunded")).toBe("REFUNDED");
     });
 
-    it("defaults unknown to SUCCESS", () => {
-      expect(normalizePaymentStatus("UNKNOWN")).toBe("SUCCESS");
+    it("defaults unknown or pending statuses to PENDING", () => {
+      expect(normalizePaymentStatus("UNKNOWN")).toBe("PENDING");
+      expect(normalizePaymentStatus("PENDING")).toBe("PENDING");
+      expect(normalizePaymentStatus("INITIATED")).toBe("PENDING");
+      expect(normalizePaymentStatus(null)).toBe("PENDING");
     });
   });
 

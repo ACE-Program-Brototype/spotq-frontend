@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import type { CustomerPaymentTransaction } from "../types/customer-payment.types";
+import type { CustomerPaymentTransaction } from "@/features/payments/types/customer-payment.types";
 import { CustomerPaymentHistoryMobileCards } from "./CustomerPaymentHistoryMobileCards";
 
 const mockTransactions: CustomerPaymentTransaction[] = [

@@ -52,7 +52,7 @@ describe("customerPaymentService", () => {
       const result = await customerPaymentService.getPaymentHistory();
 
       expect(apiClient.get).toHaveBeenCalledWith("payments/history", {
-        searchParams: { page: 1, limit: 10, status: "ALL" },
+        searchParams: { page: 1, limit: 10 },
       });
       expect(result.transactions).toHaveLength(1);
       expect(result.pagination.totalItems).toBe(1);
@@ -106,7 +106,6 @@ describe("customerPaymentService", () => {
         searchParams: {
           page: 1,
           limit: 10,
-          status: "ALL",
           sortBy: "amountPaise",
           sortOrder: "desc",
         },

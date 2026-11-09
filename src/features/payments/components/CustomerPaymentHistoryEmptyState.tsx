@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import {
   CUSTOMER_PAYMENT_MESSAGES,
   PAYMENT_FILTER_STATUS,
-} from "../constants/customer-payment.constants";
-import type { PaymentFilterStatus } from "../types/customer-payment.types";
+} from "@/features/payments/constants/customer-payment.constants";
+import type { PaymentFilterStatus } from "@/features/payments/types/customer-payment.types";
 
 interface CustomerPaymentHistoryEmptyStateProps {
   statusFilter: PaymentFilterStatus;

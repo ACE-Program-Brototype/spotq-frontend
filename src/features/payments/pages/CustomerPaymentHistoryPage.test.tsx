@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { useCustomerPaymentHistory } from "../hooks/use-customer-payment-history";
-import { useRetryPayment } from "../hooks/use-retry-payment";
-import { CustomerPaymentHistoryPage } from "./CustomerPaymentHistoryPage";
+import { useCustomerPaymentHistory } from "@/features/payments/hooks/use-customer-payment-history";
+import { useRetryPayment } from "@/features/payments/hooks/use-retry-payment";
+import CustomerPaymentHistoryPage from "./CustomerPaymentHistoryPage";
 
 jest.mock("@/features/profile/hooks/use-customer-profile", () => ({
   useCustomerProfile: () => ({
