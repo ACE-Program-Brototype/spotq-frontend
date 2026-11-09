@@ -1,16 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import env from "@/config/env";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getOrRefreshAccessToken } from "@/lib/api/auth-refresh";
 import { QUEUE_WS_CONFIG, QUEUE_WS_EVENTS } from "../constants/websocket.constants";
+import type {
+  QueueEntryCancelledPayload,
+  QueueEntrySeatedPayload,
+  QueueEntrySkippedPayload,
+  QueuePositionUpdatedPayload,
+} from "../types/queue.types";
 import type { CustomerRingPayload } from "../types/ring-alert.types";
 import { ringMedia } from "../utils/ring-sound.utils";
 
+export type SocketConnectionStatus = "connecting" | "connected" | "reconnecting" | "disconnected";
+
 export interface UseCustomerQueueSocketOptions {
   onRing?: (payload: CustomerRingPayload) => void;
-  onSeated?: (payload: unknown) => void;
-  onCancelled?: (payload: unknown) => void;
+  onPositionUpdated?: (payload: QueuePositionUpdatedPayload) => void;
+  onSkipped?: (payload: QueueEntrySkippedPayload) => void;
+  onSeated?: (payload: QueueEntrySeatedPayload) => void;
+  onCancelled?: (payload: QueueEntryCancelledPayload) => void;
+  onConnectionChange?: (status: SocketConnectionStatus) => void;
 }
 
 export function useCustomerQueueSocket(
@@ -24,12 +35,19 @@ export function useCustomerQueueSocket(
     accessToken || authStoreToken || null,
   );
   const [isConnected, setIsConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<SocketConnectionStatus>("disconnected");
   const [lastRingData, setLastRingData] = useState<CustomerRingPayload | null>(null);
   const socketRef = useRef<Socket | null>(null);
   const lastProcessedRingKeyRef = useRef<string | null>(null);
 
   const optionsRef = useRef(options);
   optionsRef.current = options;
+
+  const updateStatus = useCallback((status: SocketConnectionStatus) => {
+    setConnectionStatus(status);
+    setIsConnected(status === "connected");
+    optionsRef.current?.onConnectionChange?.(status);
+  }, []);
 
   useEffect(() => {
     let isCancelled = false;
@@ -61,9 +79,10 @@ export function useCustomerQueueSocket(
   useEffect(() => {
     if (!queueEntryId) {
       if (socketRef.current) {
+        socketRef.current.emit(QUEUE_WS_EVENTS.LEAVE_TICKET, { ticketId: queueEntryId });
         socketRef.current.disconnect();
         socketRef.current = null;
-        setIsConnected(false);
+        updateStatus("disconnected");
       }
       return;
     }
@@ -71,6 +90,8 @@ export function useCustomerQueueSocket(
     if (!resolvedToken) {
       return;
     }
+
+    updateStatus("connecting");
 
     const queryParams: Record<string, string> = {
       ticketId: queueEntryId,
@@ -85,7 +106,7 @@ export function useCustomerQueueSocket(
       auth: { token: resolvedToken },
       extraHeaders: { Authorization: `Bearer ${resolvedToken}` },
       reconnection: true,
-      reconnectionAttempts: Infinity,
+      reconnectionAttempts: 10,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
     });
@@ -96,13 +117,16 @@ export function useCustomerQueueSocket(
       if (env.isDev) {
         console.warn(`[Socket] Connection error: ${error.message}`);
       }
+      updateStatus("reconnecting");
     });
 
-    // 1. Connection & Reconnection Handler
-    socket.on("connect", () => {
-      setIsConnected(true);
+    socket.io?.on("reconnect_attempt", () => {
+      updateStatus("reconnecting");
+    });
 
-      // Immediately join the customer's private ticket room
+    socket.on("connect", () => {
+      updateStatus("connected");
+
       socket.emit(
         QUEUE_WS_EVENTS.JOIN_TICKET,
         { ticketId: queueEntryId },
@@ -123,57 +147,82 @@ export function useCustomerQueueSocket(
     });
 
     socket.on("disconnect", (reason) => {
-      setIsConnected(false);
+      updateStatus("disconnected");
       if (env.isDev) {
         console.log(`[Socket] Disconnected: ${reason}`);
       }
     });
 
-    // 2. Ring Alert Event Handler (Listens for ticket:called)
     const handleRingTriggered = (data: CustomerRingPayload) => {
       if (!data || data.queueEntryId !== queueEntryId) return;
 
-      // Prevent duplicate chime triggers for redundant socket frames
       const ringKey = `${data.queueEntryId}_${data.ringCount || 1}_${data.lastRingedAt || ""}`;
       if (lastProcessedRingKeyRef.current === ringKey) return;
       lastProcessedRingKeyRef.current = ringKey;
 
       setLastRingData(data);
-
-      // Play audio chime and trigger mobile vibration
       ringMedia.playChime();
       ringMedia.triggerVibration([250, 100, 250, 100, 400]);
 
       optionsRef.current?.onRing?.(data);
     };
 
-    socket.on(QUEUE_WS_EVENTS.TICKET_CALLED, handleRingTriggered);
+    const handlePositionUpdated = (payload: QueuePositionUpdatedPayload) => {
+      if (!payload || (payload.queueEntryId && payload.queueEntryId !== queueEntryId)) return;
+      optionsRef.current?.onPositionUpdated?.(payload);
+    };
 
-    // 3. Seated and Cancelled Event Handlers
-    socket.on(QUEUE_WS_EVENTS.TICKET_SEATED, (payload) => {
+    const handleSkipped = (payload: QueueEntrySkippedPayload) => {
+      if (!payload || (payload.queueEntryId && payload.queueEntryId !== queueEntryId)) return;
+      optionsRef.current?.onSkipped?.(payload);
+    };
+
+    const handleSeated = (payload: QueueEntrySeatedPayload) => {
       ringMedia.stopAll();
       optionsRef.current?.onSeated?.(payload);
-    });
+    };
 
-    socket.on(QUEUE_WS_EVENTS.TICKET_CANCELLED, (payload) => {
+    const handleCancelled = (payload: QueueEntryCancelledPayload) => {
       ringMedia.stopAll();
       optionsRef.current?.onCancelled?.(payload);
-    });
+    };
+
+    socket.on(QUEUE_WS_EVENTS.TICKET_CALLED, handleRingTriggered);
+    socket.on(QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED, handleRingTriggered);
+
+    socket.on(QUEUE_WS_EVENTS.QUEUE_POSITION_UPDATED, handlePositionUpdated);
+    socket.on(QUEUE_WS_EVENTS.QUEUE_POSITION_UPDATED_ALT, handlePositionUpdated);
+
+    socket.on(QUEUE_WS_EVENTS.QUEUE_ENTRY_SKIPPED, handleSkipped);
+
+    socket.on(QUEUE_WS_EVENTS.TICKET_SEATED, handleSeated);
+    socket.on(QUEUE_WS_EVENTS.QUEUE_ENTRY_SEATED, handleSeated);
+
+    socket.on(QUEUE_WS_EVENTS.TICKET_CANCELLED, handleCancelled);
+    socket.on(QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED, handleCancelled);
 
     return () => {
+      socket.emit(QUEUE_WS_EVENTS.LEAVE_TICKET, { ticketId: queueEntryId });
       socket.off(QUEUE_WS_EVENTS.TICKET_CALLED, handleRingTriggered);
-      socket.off(QUEUE_WS_EVENTS.TICKET_SEATED);
-      socket.off(QUEUE_WS_EVENTS.TICKET_CANCELLED);
+      socket.off(QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED, handleRingTriggered);
+      socket.off(QUEUE_WS_EVENTS.QUEUE_POSITION_UPDATED, handlePositionUpdated);
+      socket.off(QUEUE_WS_EVENTS.QUEUE_POSITION_UPDATED_ALT, handlePositionUpdated);
+      socket.off(QUEUE_WS_EVENTS.QUEUE_ENTRY_SKIPPED, handleSkipped);
+      socket.off(QUEUE_WS_EVENTS.TICKET_SEATED, handleSeated);
+      socket.off(QUEUE_WS_EVENTS.QUEUE_ENTRY_SEATED, handleSeated);
+      socket.off(QUEUE_WS_EVENTS.TICKET_CANCELLED, handleCancelled);
+      socket.off(QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED, handleCancelled);
       socket.disconnect();
       socketRef.current = null;
       ringMedia.stopAll();
-      setIsConnected(false);
+      updateStatus("disconnected");
     };
-  }, [queueEntryId, resolvedToken]);
+  }, [queueEntryId, resolvedToken, updateStatus]);
 
   return {
     socket: socketRef.current,
     isConnected,
+    connectionStatus,
     lastRingData,
   };
 }

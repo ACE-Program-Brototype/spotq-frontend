@@ -189,5 +189,79 @@ describe("useCustomerQueueSocket", () => {
     );
     expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
     expect(ringMedia.stopAll).toHaveBeenCalledTimes(1);
+    expect(mockSocket.emit).toHaveBeenCalledWith(QUEUE_WS_EVENTS.LEAVE_TICKET, {
+      ticketId: "entry-123",
+    });
+  });
+
+  it("triggers onPositionUpdated when queue:position-updated event arrives", () => {
+    const onPositionUpdated = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onPositionUpdated,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_POSITION_UPDATED]({
+        queueEntryId: "entry-123",
+        position: 2,
+        estimatedWaitMinutes: 10,
+      });
+    });
+
+    expect(onPositionUpdated).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      position: 2,
+      estimatedWaitMinutes: 10,
+    });
+  });
+
+  it("triggers onSkipped when QUEUE_ENTRY_SKIPPED event arrives", () => {
+    const onSkipped = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onSkipped,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_SKIPPED]({
+        queueEntryId: "entry-123",
+        reason: "Party temporarily absent",
+        position: 4,
+      });
+    });
+
+    expect(onSkipped).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      reason: "Party temporarily absent",
+      position: 4,
+    });
+  });
+
+  it("triggers onCancelled when QUEUE_ENTRY_CANCELLED event arrives", () => {
+    const onCancelled = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onCancelled,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED]({
+        queueEntryId: "entry-123",
+        reason: "Customer cancelled",
+      });
+    });
+
+    expect(ringMedia.stopAll).toHaveBeenCalled();
+    expect(onCancelled).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      reason: "Customer cancelled",
+    });
   });
 });

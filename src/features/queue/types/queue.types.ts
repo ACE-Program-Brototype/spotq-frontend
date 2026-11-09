@@ -92,3 +92,81 @@ export interface AssignTablesResponse {
   message: string;
   data: AssignTablesData;
 }
+
+export interface CustomerQueueStatusSnapshot {
+  queueEntryId: string;
+  restaurantId: string;
+  restaurantName?: string;
+  queueNumber: string;
+  partySize: number;
+  status: QueueStatus;
+  position: number;
+  peopleAhead: number;
+  estimatedWaitMinutes: number | null;
+  estimatedWaitMinutesAtJoin: number | null;
+  joinedAt: string;
+  assignedTableNumber: string | null;
+  responseDeadline: string | null;
+  canCancel: boolean;
+  serverTime: string;
+}
+
+export interface CustomerQueueStatusResponse {
+  success: boolean;
+  message: string;
+  data: CustomerQueueStatusSnapshot;
+}
+
+export interface QueuePositionUpdatedPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  position: number;
+  estimatedWaitMinutes: number | null;
+}
+
+export interface QueueEntrySkippedPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  status?: QueueStatus;
+  reason?: string;
+  position?: number;
+}
+
+export interface QueueEntrySeatedPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  tableId?: string;
+  tableIds?: string[];
+  tableNumber?: string;
+  seatedAt?: string;
+}
+
+export interface QueueEntryCancelledPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  status?: QueueStatus;
+  reason?: string;
+  cancelledAt?: string;
+}
+
+export interface LeaveQueueRequest {
+  restaurantId: string;
+  queueEntryId: string;
+}
+
+export interface LeaveQueueData {
+  queueEntryId: string;
+  restaurantId: string;
+  status: QueueStatus;
+  cancelledAt: string;
+}
+
+export interface LeaveQueueResponse {
+  success: boolean;
+  message: string;
+  data: LeaveQueueData;
+}
