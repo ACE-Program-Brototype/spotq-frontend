@@ -29,6 +29,7 @@ export const CUSTOMER_ROUTE_PATHS = {
   ORDERS: "/orders",
   ORDER_RECEIPT: "/orders/:orderId/receipt",
   QUEUES: "/queues",
+  QUEUE_STATUS: "/restaurants/:restaurantId/queue/status",
   LOYALTIES: "/loyalties",
   PAYMENTS: "/payments",
 
@@ -57,6 +58,10 @@ export const CUSTOMER_ROUTES = {
   ORDERS: "/orders",
   ORDER_RECEIPT: (id: string | number) => `/orders/${id}/receipt`,
   QUEUES: "/queues",
+  QUEUE_STATUS: (restaurantId: string, queueEntryId?: string) =>
+    queueEntryId
+      ? `/restaurants/${restaurantId}/queue/status?queueEntryId=${encodeURIComponent(queueEntryId)}`
+      : `/restaurants/${restaurantId}/queue/status`,
   LOYALTIES: "/loyalties",
   PAYMENTS: "/payments",
 
