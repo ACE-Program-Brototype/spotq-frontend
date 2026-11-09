@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   SUBSCRIPTION_BILLING_CYCLE_LABELS,
   SUBSCRIPTION_BILLING_CYCLE_OPTIONS,
-  SUBSCRIPTION_RENEWAL_TEXTS,
 } from "@/features/subscription/constants/subscription.constants";
 import { useSubscriptionRenewal } from "@/features/subscription/hooks/useSubscriptionRenewal";
 import type {
@@ -147,13 +146,14 @@ export function RenewalModal({
                 id={titleId}
                 className="text-lg sm:text-xl font-bold tracking-tight text-neutral-900"
               >
-                {SUBSCRIPTION_RENEWAL_TEXTS.MODAL_TITLE}
+                Renew Subscription
               </Dialog.Title>
               <Dialog.Description
                 id={descriptionId}
                 className="text-xs sm:text-sm text-neutral-500 leading-relaxed"
               >
-                {SUBSCRIPTION_RENEWAL_TEXTS.MODAL_DESCRIPTION}
+                Review your current subscription details and choose a billing cycle to extend
+                uninterrupted SpotQ service.
               </Dialog.Description>
             </div>
 
@@ -161,7 +161,7 @@ export function RenewalModal({
               type="button"
               onClick={() => handleDialogOpenChange(false)}
               disabled={isSubmitting}
-              aria-label={SUBSCRIPTION_RENEWAL_TEXTS.CLOSE_MODAL_ARIA_LABEL}
+              aria-label="Close renewal modal"
               data-testid="renewal-modal-close-button"
               className="flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 disabled:opacity-40"
             >
@@ -170,56 +170,46 @@ export function RenewalModal({
           </div>
 
           <section
-            aria-label={SUBSCRIPTION_RENEWAL_TEXTS.SUMMARY_SECTION_TITLE}
+            aria-label="Current Subscription"
             className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 space-y-3"
           >
             <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-              {SUBSCRIPTION_RENEWAL_TEXTS.SUMMARY_SECTION_TITLE}
+              Current Subscription
             </h4>
             <dl className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 text-sm">
               <div>
-                <dt className="text-xs text-neutral-500">
-                  {SUBSCRIPTION_RENEWAL_TEXTS.CURRENT_PLAN_LABEL}
-                </dt>
+                <dt className="text-xs text-neutral-500">Current Plan</dt>
                 <dd data-testid="modal-current-plan" className="font-semibold text-neutral-900">
                   {currentPlanDisplayName}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-neutral-500">
-                  {SUBSCRIPTION_RENEWAL_TEXTS.CURRENT_CYCLE_LABEL}
-                </dt>
+                <dt className="text-xs text-neutral-500">Current Billing Cycle</dt>
                 <dd data-testid="modal-current-cycle" className="font-semibold text-neutral-900">
                   {currentCycleLabel}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-neutral-500">
-                  {SUBSCRIPTION_RENEWAL_TEXTS.CURRENT_EXPIRY_LABEL}
-                </dt>
+                <dt className="text-xs text-neutral-500">Current Expiry Date</dt>
                 <dd data-testid="modal-current-expiry" className="font-semibold text-neutral-900">
                   {formatSubscriptionCalendarDate(endsAtIso)}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-neutral-500">
-                  {SUBSCRIPTION_RENEWAL_TEXTS.SELECTED_CYCLE_LABEL}
-                </dt>
+                <dt className="text-xs text-neutral-500">Selected Renewal Cycle</dt>
                 <dd data-testid="modal-selected-cycle" className="font-semibold text-neutral-900">
                   {selectedCycleLabel}
                 </dd>
               </div>
               <div className="sm:col-span-2 pt-2 border-t border-neutral-200 flex items-center justify-between">
-                <dt className="text-xs font-medium text-neutral-600">
-                  {SUBSCRIPTION_RENEWAL_TEXTS.RENEWAL_PRICE_LABEL}
-                </dt>
+                <dt className="text-xs font-medium text-neutral-600">Renewal Price</dt>
                 <dd
                   data-testid="modal-renewal-price"
                   className="text-base font-bold text-orange-700"
                 >
                   {hasValidPlanAndPrice && selectedPlan
                     ? `${formatCurrency(selectedPlan.priceInRupees)} (${selectedPlan.currency})`
-                    : SUBSCRIPTION_RENEWAL_TEXTS.NOT_AVAILABLE_FALLBACK}
+                    : "N/A"}
                 </dd>
               </div>
             </dl>
@@ -227,7 +217,7 @@ export function RenewalModal({
 
           <section className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-              {SUBSCRIPTION_RENEWAL_TEXTS.BILLING_CYCLE_SECTION_TITLE}
+              Select Billing Cycle
             </h4>
 
             {isLoadingPlans ? (
@@ -236,7 +226,7 @@ export function RenewalModal({
                 className="flex items-center gap-2 rounded-xl border border-neutral-200 p-4 text-sm text-neutral-600"
               >
                 <Loader2 className="size-4 animate-spin text-orange-600" aria-hidden="true" />
-                <span>{SUBSCRIPTION_RENEWAL_TEXTS.PLANS_LOADING_TEXT}</span>
+                <span>Loading available billing cycles...</span>
               </div>
             ) : isPlansError ? (
               <div
@@ -244,7 +234,7 @@ export function RenewalModal({
                 data-testid="modal-plans-error"
                 className="flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm text-red-800"
               >
-                <span>{SUBSCRIPTION_RENEWAL_TEXTS.PLANS_LOAD_ERROR_TEXT}</span>
+                <span>Unable to load renewal pricing right now. Please retry.</span>
                 {onRetryPlans && (
                   <Button
                     type="button"
@@ -254,15 +244,13 @@ export function RenewalModal({
                     className="gap-1.5 border-red-200 bg-white text-red-800 hover:bg-red-100 shrink-0"
                   >
                     <RefreshCw className="size-3.5" aria-hidden="true" />
-                    {SUBSCRIPTION_RENEWAL_TEXTS.RETRY_PLANS_BUTTON}
+                    Retry
                   </Button>
                 )}
               </div>
             ) : (
               <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2 border-0 p-0 m-0">
-                <legend className="sr-only">
-                  {SUBSCRIPTION_RENEWAL_TEXTS.BILLING_CYCLE_SECTION_TITLE}
-                </legend>
+                <legend className="sr-only">Select Billing Cycle</legend>
                 {SUBSCRIPTION_BILLING_CYCLE_OPTIONS.map((cycle) => {
                   const planOption = plansByCycle[cycle];
                   const isSupported = Boolean(planOption);
@@ -299,7 +287,7 @@ export function RenewalModal({
                       <span className="mt-1 text-xs font-semibold text-neutral-700">
                         {planOption
                           ? `${formatCurrency(planOption.priceInRupees)} / ${SUBSCRIPTION_BILLING_CYCLE_LABELS[cycle].toLowerCase()}`
-                          : SUBSCRIPTION_RENEWAL_TEXTS.CYCLE_UNAVAILABLE_LABEL}
+                          : "Not available for this plan"}
                       </span>
                     </button>
                   );
@@ -309,22 +297,20 @@ export function RenewalModal({
 
             {!isLoadingPlans && !isPlansError && !hasValidPlanAndPrice && (
               <p role="alert" className="text-xs font-medium text-amber-800">
-                {SUBSCRIPTION_RENEWAL_TEXTS.NO_VALID_PRICE_TEXT}
+                No valid renewal pricing is available for the selected billing cycle.
               </p>
             )}
           </section>
 
           {termPreview && (
             <section
-              aria-label={SUBSCRIPTION_RENEWAL_TEXTS.TERM_PREVIEW_SECTION_TITLE}
+              aria-label="Renewal Term Preview"
               data-testid="renewal-term-preview"
               className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 space-y-2"
             >
               <div className="flex items-center gap-2 text-amber-950">
                 <Calendar className="size-4 text-amber-700 shrink-0" aria-hidden="true" />
-                <h4 className="text-xs font-bold uppercase tracking-wider">
-                  {SUBSCRIPTION_RENEWAL_TEXTS.TERM_PREVIEW_SECTION_TITLE}
-                </h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider">Renewal Term Preview</h4>
               </div>
               <p
                 data-testid="renewal-term-preview-text"
@@ -334,17 +320,13 @@ export function RenewalModal({
               </p>
               <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
                 <div>
-                  <span className="text-neutral-500 block">
-                    {SUBSCRIPTION_RENEWAL_TEXTS.CURRENT_EXPIRY_LABEL}
-                  </span>
+                  <span className="text-neutral-500 block">Current Expiry Date</span>
                   <span className="font-semibold text-neutral-800">
                     {termPreview.formattedCurrentExpiry}
                   </span>
                 </div>
                 <div>
-                  <span className="text-neutral-500 block">
-                    {SUBSCRIPTION_RENEWAL_TEXTS.PROPOSED_EXPIRY_LABEL}
-                  </span>
+                  <span className="text-neutral-500 block">Proposed Expiry Date</span>
                   <span
                     data-testid="modal-proposed-expiry"
                     className="font-semibold text-emerald-700"
@@ -355,8 +337,8 @@ export function RenewalModal({
               </div>
               <p className="text-xs text-amber-900/80">
                 {termPreview.isExpired
-                  ? SUBSCRIPTION_RENEWAL_TEXTS.EXPIRED_SUBSCRIPTION_NOTE
-                  : SUBSCRIPTION_RENEWAL_TEXTS.ACTIVE_EXTENSION_NOTE}
+                  ? "Your subscription has expired. The new billing period starts upon payment confirmation."
+                  : "Extends directly from your current expiry date with no lost remaining days."}
               </p>
             </section>
           )}
@@ -380,7 +362,7 @@ export function RenewalModal({
               onClick={() => handleDialogOpenChange(false)}
               data-testid="renewal-modal-cancel-button"
             >
-              {SUBSCRIPTION_RENEWAL_TEXTS.CANCEL_BUTTON}
+              Cancel
             </Button>
             <Button
               type="button"
@@ -392,10 +374,10 @@ export function RenewalModal({
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                  {SUBSCRIPTION_RENEWAL_TEXTS.PROCESSING_RENEWAL_BUTTON}
+                  Processing...
                 </>
               ) : (
-                SUBSCRIPTION_RENEWAL_TEXTS.CONTINUE_TO_PAYMENT_BUTTON
+                "Continue to Payment"
               )}
             </Button>
           </div>

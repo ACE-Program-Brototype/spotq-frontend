@@ -8,7 +8,6 @@ import { RenewalModal } from "@/features/subscription/components/RenewalModal";
 import { SubscriptionExpiryBanner } from "@/features/subscription/components/SubscriptionExpiryBanner";
 import { SubscriptionOverviewCard } from "@/features/subscription/components/SubscriptionOverviewCard";
 import {
-  RESTAURANT_DASHBOARD_TEXTS,
   RESTAURANT_VERIFICATION_STATUSES,
   SUBSCRIPTION_QUERY_KEYS,
 } from "@/features/subscription/constants/subscription.constants";
@@ -20,7 +19,7 @@ export default function RestaurantDashboardPage() {
   const { user, clearAuth, setUser } = useAuthStore();
   const [isRenewalModalOpen, setIsRenewalModalOpen] = useState(false);
 
-  const restaurantEmail = user?.email || RESTAURANT_DASHBOARD_TEXTS.DEFAULT_RESTAURANT_NAME;
+  const restaurantEmail = user?.email || "restaurant";
 
   const {
     data: statusData,
@@ -88,10 +87,10 @@ export default function RestaurantDashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#9a3412]">
-              {RESTAURANT_DASHBOARD_TEXTS.BADGE}
+              Restaurant dashboard
             </p>
             <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-neutral-900">
-              {`${RESTAURANT_DASHBOARD_TEXTS.WELCOME_PREFIX}${statusData?.restaurantName || restaurantEmail}`}
+              {`Welcome, ${statusData?.restaurantName || restaurantEmail}`}
             </h1>
           </div>
           <button
@@ -112,13 +111,9 @@ export default function RestaurantDashboardPage() {
 
         <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
           <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
-            <p className="text-xs font-medium text-neutral-500">
-              {RESTAURANT_DASHBOARD_TEXTS.ACCOUNT_STATUS_LABEL}
-            </p>
+            <p className="text-xs font-medium text-neutral-500">Account status</p>
             <p className="mt-2 text-xl font-bold text-neutral-900">
-              {user?.status ??
-                statusData?.verificationStatus ??
-                RESTAURANT_DASHBOARD_TEXTS.DEFAULT_ACTIVE_STATUS}
+              {user?.status ?? statusData?.verificationStatus ?? "Active"}
             </p>
           </div>
 

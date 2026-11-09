@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SUBSCRIPTION_RENEWAL_TEXTS } from "@/features/subscription/constants/subscription.constants";
 import type {
   RestaurantStatusData,
   SubscriptionPlan,
@@ -99,7 +98,7 @@ describe("SubscriptionOverviewCard", () => {
 
     fireEvent.focus(renewBtn);
     expect(await screen.findByRole("tooltip")).toHaveTextContent(
-      SUBSCRIPTION_RENEWAL_TEXTS.ELIGIBILITY_TOOLTIP,
+      "Renewal opens 30 days prior to expiration",
     );
 
     fireEvent.blur(renewBtn);
@@ -107,7 +106,7 @@ describe("SubscriptionOverviewCard", () => {
     await user.click(renewBtn);
     expect(onRenewClick).not.toHaveBeenCalled();
     expect(await screen.findByRole("tooltip")).toHaveTextContent(
-      SUBSCRIPTION_RENEWAL_TEXTS.ELIGIBILITY_TOOLTIP,
+      "Renewal opens 30 days prior to expiration",
     );
   });
 });

@@ -1,7 +1,6 @@
 import { isHTTPError } from "ky";
 import {
   SUBSCRIPTION_BILLING_CYCLES,
-  SUBSCRIPTION_RENEWAL_TEXTS,
   SUBSCRIPTION_STATUSES,
   SUBSCRIPTION_THRESHOLDS,
 } from "@/features/subscription/constants/subscription.constants";
@@ -62,7 +61,7 @@ export function parseValidDate(isoString?: string | null): Date | null {
 export function formatSubscriptionCalendarDate(isoString?: string | null): string {
   const parsed = parseValidDate(isoString);
   if (!parsed) {
-    return SUBSCRIPTION_RENEWAL_TEXTS.NOT_AVAILABLE_FALLBACK;
+    return "N/A";
   }
 
   return new Intl.DateTimeFormat("en-US", {
@@ -81,7 +80,7 @@ export function formatPlanDisplayName(planName?: string | null, planCode?: strin
     return planCode.trim().replace(/_/g, " ");
   }
 
-  return SUBSCRIPTION_RENEWAL_TEXTS.DEFAULT_CURRENT_PLAN_NAME;
+  return "Current Plan";
 }
 
 export function calculateRemainingDays(
@@ -108,34 +107,34 @@ export function calculateRemainingDays(
 
 export function formatExpiryBannerMessage(planDisplayName: string, daysRemaining: number): string {
   if (daysRemaining < 0) {
-    return SUBSCRIPTION_RENEWAL_TEXTS.BANNER_EXPIRED(planDisplayName);
+    return `Your ${planDisplayName} subscription has expired. Renew now to restore uninterrupted service.`;
   }
 
   if (daysRemaining === 0) {
-    return SUBSCRIPTION_RENEWAL_TEXTS.BANNER_EXPIRES_TODAY(planDisplayName);
+    return `Your ${planDisplayName} subscription expires today. Renew now to avoid service interruption.`;
   }
 
   if (daysRemaining === 1) {
-    return SUBSCRIPTION_RENEWAL_TEXTS.BANNER_EXPIRES_IN_ONE_DAY(planDisplayName);
+    return `Your ${planDisplayName} subscription expires in 1 day. Renew now to avoid service interruption.`;
   }
 
-  return SUBSCRIPTION_RENEWAL_TEXTS.BANNER_EXPIRES_IN_DAYS(planDisplayName, daysRemaining);
+  return `Your ${planDisplayName} subscription expires in ${daysRemaining} days. Renew now to avoid service interruption.`;
 }
 
 export function formatRemainingDaysBadge(daysRemaining: number): string {
   if (daysRemaining < 0) {
-    return SUBSCRIPTION_RENEWAL_TEXTS.REMAINING_DAYS_BADGE_EXPIRED;
+    return "Expired";
   }
 
   if (daysRemaining === 0) {
-    return SUBSCRIPTION_RENEWAL_TEXTS.REMAINING_DAYS_BADGE_TODAY;
+    return "Expires today";
   }
 
   if (daysRemaining === 1) {
-    return SUBSCRIPTION_RENEWAL_TEXTS.REMAINING_DAYS_BADGE_ONE;
+    return "1 day remaining";
   }
 
-  return SUBSCRIPTION_RENEWAL_TEXTS.REMAINING_DAYS_BADGE_MANY(daysRemaining);
+  return `${daysRemaining} days remaining`;
 }
 
 export function evaluateRenewalEligibility(
@@ -203,7 +202,7 @@ export function evaluateRenewalEligibility(
       showExpiryBanner: false,
       daysRemaining,
       tooltipMessage:
-        timeRemainingMs > windowMs ? SUBSCRIPTION_RENEWAL_TEXTS.ELIGIBILITY_TOOLTIP : null,
+        timeRemainingMs > windowMs ? "Renewal opens 30 days prior to expiration" : null,
     };
   }
 
@@ -333,10 +332,7 @@ export function calculateProposedRenewalTerm(
     formattedCurrentExpiry,
     formattedTermStart,
     formattedProposedExpiry,
-    previewText: SUBSCRIPTION_RENEWAL_TEXTS.TERM_PREVIEW_TEXT(
-      formattedTermStart,
-      formattedProposedExpiry,
-    ),
+    previewText: `Renews from ${formattedTermStart} to ${formattedProposedExpiry}`,
     isExpired,
   };
 }

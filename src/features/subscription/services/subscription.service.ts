@@ -3,7 +3,6 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import {
   SUBSCRIPTION_ENDPOINTS,
   SUBSCRIPTION_HEADERS,
-  SUBSCRIPTION_RENEWAL_TEXTS,
 } from "@/features/subscription/constants/subscription.constants";
 import type {
   ApiResponse,
@@ -40,7 +39,7 @@ export const subscriptionService = {
 
     const restaurantId = restaurantContext?.restaurantId || user?.restaurantId;
     if (!restaurantId) {
-      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_ID_ORDER_ERROR);
+      throw new Error("Restaurant identification is required to create a subscription order.");
     }
 
     const email = restaurantContext?.restaurantEmail || user?.email;
@@ -70,7 +69,7 @@ export const subscriptionService = {
   ): Promise<RenewSubscriptionOrderResponse> {
     const trimmedSubscriptionId = subscriptionId?.trim();
     if (!trimmedSubscriptionId) {
-      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_SUBSCRIPTION_ID_ERROR);
+      throw new Error("Subscription identifier is required to initiate renewal.");
     }
 
     const resolvedKey =
@@ -97,7 +96,7 @@ export const subscriptionService = {
     const restaurantId = data.restaurantId || user?.restaurantId || user?.id;
 
     if (!restaurantId) {
-      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_ID_VERIFY_ERROR);
+      throw new Error("Restaurant identification is required to verify payment.");
     }
 
     const response = await apiClient
@@ -120,7 +119,7 @@ export const subscriptionService = {
     const restaurantId = restaurantIdOverride || user?.restaurantId || user?.id;
 
     if (!restaurantId) {
-      throw new Error(SUBSCRIPTION_RENEWAL_TEXTS.MISSING_RESTAURANT_AUTH_ERROR);
+      throw new Error("No authenticated restaurant found.");
     }
 
     const response = await apiClient.get(`${SUBSCRIPTION_ENDPOINTS.STATUS}/${restaurantId}`).json<{

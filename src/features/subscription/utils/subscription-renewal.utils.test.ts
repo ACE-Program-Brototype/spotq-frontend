@@ -1,4 +1,3 @@
-import { SUBSCRIPTION_RENEWAL_TEXTS } from "@/features/subscription/constants/subscription.constants";
 import type {
   RestaurantStatusData,
   SubscriptionPlan,
@@ -145,7 +144,7 @@ describe("subscription-renewal.utils", () => {
       expect(result.isEligible).toBe(false);
       expect(result.isOutsideWindow).toBe(true);
       expect(result.showExpiryBanner).toBe(false);
-      expect(result.tooltipMessage).toBe(SUBSCRIPTION_RENEWAL_TEXTS.ELIGIBILITY_TOOLTIP);
+      expect(result.tooltipMessage).toBe("Renewal opens 30 days prior to expiration");
     });
 
     it("rejects cancelled and pending subscriptions", () => {

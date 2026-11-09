@@ -1,6 +1,5 @@
 import { AlertTriangle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SUBSCRIPTION_RENEWAL_TEXTS } from "@/features/subscription/constants/subscription.constants";
 import type { SubscriptionExpiryBannerProps } from "@/features/subscription/types/subscription.types";
 import {
   evaluateRenewalEligibility,
@@ -34,7 +33,7 @@ export function SubscriptionExpiryBanner({
 
   return (
     <section
-      aria-label={SUBSCRIPTION_RENEWAL_TEXTS.BANNER_REGION_LABEL}
+      aria-label="Subscription expiry alert"
       data-testid="subscription-expiry-banner"
       className="mt-6 overflow-hidden rounded-2xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50/80 to-orange-50 p-5 sm:p-6 shadow-xs"
     >
@@ -46,9 +45,7 @@ export function SubscriptionExpiryBanner({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-base font-bold text-amber-950">
-                {isExpired
-                  ? SUBSCRIPTION_RENEWAL_TEXTS.BANNER_TITLE_EXPIRED
-                  : SUBSCRIPTION_RENEWAL_TEXTS.BANNER_TITLE}
+                {isExpired ? "Subscription Expired" : "Subscription Expiring Soon"}
               </h3>
               <span
                 data-testid="subscription-expiry-days-badge"
@@ -69,7 +66,7 @@ export function SubscriptionExpiryBanner({
           data-testid="banner-renew-now-button"
           className="gap-2 bg-amber-600 text-white hover:bg-amber-700 focus-visible:ring-amber-500 shrink-0 self-start sm:self-center"
         >
-          {SUBSCRIPTION_RENEWAL_TEXTS.RENEW_NOW_BUTTON}
+          Renew Now
           <ArrowRight className="size-4" aria-hidden="true" />
         </Button>
       </div>

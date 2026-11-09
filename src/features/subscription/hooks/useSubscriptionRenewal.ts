@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import {
   SUBSCRIPTION_MESSAGES,
   SUBSCRIPTION_QUERY_KEYS,
-  SUBSCRIPTION_RENEWAL_TEXTS,
 } from "@/features/subscription/constants/subscription.constants";
 import { loadRazorpayScript } from "@/features/subscription/hooks/useRazorpayCheckout";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
@@ -115,8 +114,8 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
           key: renewalOrder.keyId,
           amount: renewalOrder.amount,
           currency: renewalOrder.currency,
-          name: SUBSCRIPTION_RENEWAL_TEXTS.CHECKOUT_BRAND_NAME,
-          description: SUBSCRIPTION_RENEWAL_TEXTS.CHECKOUT_DESCRIPTION(renewalOrder.plan.name),
+          name: "SpotQ",
+          description: `${renewalOrder.plan.name} Subscription Renewal`,
           order_id: renewalOrder.orderId,
           prefill: {
             name: renewalOrder.restaurant.name || "",
@@ -124,7 +123,7 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
             contact: renewalOrder.restaurant.phone || "",
           },
           theme: {
-            color: SUBSCRIPTION_RENEWAL_TEXTS.CHECKOUT_THEME_COLOR,
+            color: "#ea580c",
           },
           handler: async (paymentResponse: RazorpayPaymentSuccessResponse) => {
             if (isMountedRef.current) {
@@ -141,7 +140,9 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
                 queryKey: SUBSCRIPTION_QUERY_KEYS.RESTAURANT_STATUS,
               });
 
-              toast.success(SUBSCRIPTION_RENEWAL_TEXTS.RENEWAL_VERIFIED_SUCCESS);
+              toast.success(
+                "Subscription renewed successfully! Your updated validity dates are now active.",
+              );
               onSuccess?.(verified);
             } catch (verifyErr) {
               const message = await resolveErrorMessage(
@@ -186,7 +187,7 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
         releaseLock();
         const message = await resolveErrorMessage(
           err,
-          SUBSCRIPTION_RENEWAL_TEXTS.RENEWAL_INITIATION_FAILED,
+          "Failed to initiate subscription renewal. Please try again.",
         );
         if (isMountedRef.current) {
           setCustomErrorMessage(message);

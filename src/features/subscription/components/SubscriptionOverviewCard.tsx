@@ -3,10 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  SUBSCRIPTION_BILLING_CYCLE_LABELS,
-  SUBSCRIPTION_RENEWAL_TEXTS,
-} from "@/features/subscription/constants/subscription.constants";
+import { SUBSCRIPTION_BILLING_CYCLE_LABELS } from "@/features/subscription/constants/subscription.constants";
 import type { SubscriptionOverviewCardProps } from "@/features/subscription/types/subscription.types";
 import {
   evaluateRenewalEligibility,
@@ -31,12 +28,10 @@ export function SubscriptionOverviewCard({
       <section
         aria-busy="true"
         data-testid="subscription-overview-card-loading"
-        aria-label={SUBSCRIPTION_RENEWAL_TEXTS.OVERVIEW_LOADING_TEXT}
+        aria-label="Loading subscription details..."
         className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5"
       >
-        <p className="text-xs font-medium text-neutral-500">
-          {SUBSCRIPTION_RENEWAL_TEXTS.OVERVIEW_CARD_TITLE}
-        </p>
+        <p className="text-xs font-medium text-neutral-500">Subscription</p>
         <Skeleton className="mt-2 h-7 w-40 rounded-md" />
         <Skeleton className="mt-2 h-4 w-32 rounded-md" />
       </section>
@@ -66,9 +61,7 @@ export function SubscriptionOverviewCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-medium text-neutral-500">
-            {SUBSCRIPTION_RENEWAL_TEXTS.OVERVIEW_CARD_TITLE}
-          </p>
+          <p className="text-xs font-medium text-neutral-500">Subscription</p>
 
           {isSubscriptionActive ? (
             <div className="mt-2 space-y-1">
@@ -86,15 +79,13 @@ export function SubscriptionOverviewCard({
                   data-testid="subscription-overview-expiry"
                   className="text-xs font-medium text-neutral-600"
                 >
-                  {`${SUBSCRIPTION_RENEWAL_TEXTS.OVERVIEW_EXPIRES_ON_PREFIX} ${formatSubscriptionCalendarDate(endsAtIso)}`}
+                  {`Expires ${formatSubscriptionCalendarDate(endsAtIso)}`}
                 </p>
               )}
             </div>
           ) : (
             <div className="mt-2">
-              <span className="text-lg font-medium text-amber-700">
-                {SUBSCRIPTION_RENEWAL_TEXTS.OVERVIEW_STATUS_INACTIVE}
-              </span>
+              <span className="text-lg font-medium text-amber-700">Inactive</span>
             </div>
           )}
         </div>
@@ -116,7 +107,7 @@ export function SubscriptionOverviewCard({
                       className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-400 cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
                     >
                       <RefreshCw className="size-3.5" aria-hidden="true" />
-                      {SUBSCRIPTION_RENEWAL_TEXTS.RENEW_NOW_BUTTON}
+                      Renew Now
                       <Info className="size-3.5 text-neutral-400" aria-hidden="true" />
                     </button>
                   }
@@ -136,7 +127,7 @@ export function SubscriptionOverviewCard({
                 className="gap-1.5 border-orange-200 bg-white text-orange-700 hover:bg-orange-50 hover:text-orange-800"
               >
                 <RefreshCw className="size-3.5" aria-hidden="true" />
-                {SUBSCRIPTION_RENEWAL_TEXTS.RENEW_NOW_BUTTON}
+                Renew Now
               </Button>
             )}
           </div>
@@ -148,7 +139,7 @@ export function SubscriptionOverviewCard({
             className="flex items-center gap-1 text-sm font-semibold text-orange-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-md px-1"
           >
             <CreditCard className="size-4" aria-hidden="true" />
-            {SUBSCRIPTION_RENEWAL_TEXTS.SUBSCRIBE_BUTTON}
+            Subscribe
           </button>
         )}
       </div>
