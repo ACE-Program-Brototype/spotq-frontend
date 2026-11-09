@@ -36,10 +36,8 @@ export function RenewalModal({
   const hasUserSelectedCycleRef = useRef(false);
   const wasOpenRef = useRef(false);
 
-  const planCode = statusData?.subscription?.planCode ?? statusData?.subscriptionPlanCode ?? null;
-  const planName = statusData?.subscription?.planName ?? null;
-  const endsAtIso =
-    statusData?.subscription?.currentPeriodEnd ?? statusData?.subscriptionEndsAt ?? null;
+  const planCode = statusData?.subscriptionPlanCode ?? null;
+  const endsAtIso = statusData?.subscriptionEndsAt ?? null;
   const subscriptionId = statusData?.subscription?.id ?? "";
 
   const plansByCycle = useMemo(
@@ -84,7 +82,7 @@ export function RenewalModal({
   );
 
   const currentPlanDisplayName = formatPlanDisplayName(
-    selectedPlan?.name ?? planName,
+    selectedPlan?.name,
     selectedPlan?.code ?? planCode,
   );
   const currentCycleLabel = SUBSCRIPTION_BILLING_CYCLE_LABELS[plansByCycle.initialCycle];
