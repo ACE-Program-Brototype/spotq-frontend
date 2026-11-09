@@ -158,7 +158,6 @@ export const RESTAURANT_DASHBOARD_TEXTS = {
   SUBSCRIPTION_REQUIRED_TITLE: "Subscription Required",
   SUBSCRIPTION_REQUIRED_DESC:
     "Your restaurant is verified! Select a subscription plan to start taking customer orders.",
-  CHOOSE_PLAN_BUTTON: "Choose Plan",
   ACCOUNT_STATUS_LABEL: "Account status",
   DEFAULT_ACTIVE_STATUS: "Active",
 } as const;
