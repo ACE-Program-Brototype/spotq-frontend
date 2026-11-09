@@ -155,7 +155,6 @@ export const RESTAURANT_DASHBOARD_TEXTS = {
   BADGE: "Restaurant dashboard",
   WELCOME_PREFIX: "Welcome, ",
   DEFAULT_RESTAURANT_NAME: "restaurant",
-  LOGOUT_BUTTON: "Logout",
   SUBSCRIPTION_REQUIRED_TITLE: "Subscription Required",
   SUBSCRIPTION_REQUIRED_DESC:
     "Your restaurant is verified! Select a subscription plan to start taking customer orders.",

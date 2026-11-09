@@ -99,7 +99,7 @@ export default function RestaurantDashboardPage() {
             onClick={handleLogout}
             className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
           >
-            {RESTAURANT_DASHBOARD_TEXTS.LOGOUT_BUTTON}
+            Logout
           </button>
         </div>
 
