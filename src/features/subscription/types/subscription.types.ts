@@ -5,6 +5,8 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export type BillingCycle = "MONTHLY" | "YEARLY";
+
 export interface SubscriptionPlan {
   id: string;
   code: string;
@@ -13,7 +15,7 @@ export interface SubscriptionPlan {
   pricePaise: number;
   priceInRupees: number;
   currency: string;
-  billingCycle: "MONTHLY" | "YEARLY";
+  billingCycle: BillingCycle;
   features: string[];
   isPopular?: boolean;
 }
@@ -35,6 +37,22 @@ export interface CreateSubscriptionOrderResponse {
   };
 }
 
+export interface RenewSubscriptionRequest {
+  planId?: string;
+}
+
+export interface RenewSubscriptionOrderDetails {
+  id: string;
+  currentStatus: string;
+  currentPeriodEnd: string;
+  renewalWindowDays: number;
+  isRenewal: boolean;
+}
+
+export interface RenewSubscriptionOrderResponse extends CreateSubscriptionOrderResponse {
+  subscription: RenewSubscriptionOrderDetails;
+}
+
 export interface VerifyPaymentRequest {
   razorpayOrderId: string;
   razorpayPaymentId: string;
@@ -51,6 +69,17 @@ export interface VerifyPaymentResponse {
   currentPeriodEnd: string;
 }
 
+export interface ActiveSubscriptionSummary {
+  id: string;
+  status: string;
+  planCode: string | null;
+  planName: string | null;
+  currentPeriodStart: string | null;
+  currentPeriodEnd: string | null;
+  renewalWindowDays?: number;
+  isEligibleForRenewal?: boolean;
+}
+
 export interface RestaurantStatusData {
   restaurantId: string;
   restaurantName: string;
@@ -59,6 +88,60 @@ export interface RestaurantStatusData {
   subscriptionPlanCode: string | null;
   subscriptionEndsAt: string | null;
   navigationTarget: string;
+  subscription?: ActiveSubscriptionSummary | null;
+}
+
+export interface RenewalEligibilityResult {
+  isEligible: boolean;
+  isOutsideWindow: boolean;
+  showExpiryBanner: boolean;
+  daysRemaining: number | null;
+  tooltipMessage: string | null;
+}
+
+export interface RenewalPlansByCycle {
+  MONTHLY?: SubscriptionPlan;
+  YEARLY?: SubscriptionPlan;
+  initialCycle: BillingCycle;
+}
+
+export interface RenewalTermPreview {
+  termStartIso: string;
+  proposedEndIso: string;
+  formattedCurrentExpiry: string;
+  formattedTermStart: string;
+  formattedProposedExpiry: string;
+  previewText: string;
+  isExpired: boolean;
+}
+
+export interface SubscriptionExpiryBannerProps {
+  statusData?: RestaurantStatusData | null;
+  isLoading?: boolean;
+  isError?: boolean;
+  onRenewClick: () => void;
+  now?: Date;
+}
+
+export interface SubscriptionOverviewCardProps {
+  statusData?: RestaurantStatusData | null;
+  plans?: SubscriptionPlan[];
+  isLoading?: boolean;
+  isError?: boolean;
+  onRenewClick: () => void;
+  onSubscribeClick: () => void;
+  now?: Date;
+}
+
+export interface RenewalModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  statusData?: RestaurantStatusData | null;
+  plans?: SubscriptionPlan[];
+  isLoadingPlans?: boolean;
+  isPlansError?: boolean;
+  onRetryPlans?: () => void;
+  now?: Date;
 }
 
 export interface PlanCardProps {
@@ -122,4 +205,9 @@ export interface UseRazorpayCheckoutOptions {
   onSuccess?: (result: VerifyPaymentResponse) => void;
   onError?: (error: Error) => void;
   onAlreadyActive?: () => void;
+}
+
+export interface UseSubscriptionRenewalOptions {
+  onSuccess?: (result: VerifyPaymentResponse) => void;
+  onError?: (error: Error) => void;
 }
