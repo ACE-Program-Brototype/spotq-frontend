@@ -41,56 +41,125 @@ export function StaffOrderStatusActionBar({ order, restaurantId }: StaffOrderSta
     }
   };
 
-  if (!actionConfig) {
-    return (
-      <div className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5 text-center shadow-xs">
-        <div className="inline-flex size-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 mb-2">
-          <CheckCircle2 className="size-5 text-neutral-600" />
-        </div>
-        <h4 className="text-sm font-bold text-neutral-800">Order Completed</h4>
-        <p className="text-xs text-neutral-500 mt-0.5">
-          All kitchen and service actions for this order have been completed.
-        </p>
-      </div>
-    );
-  }
+  // 3 Key Kitchen Statuses: Preparing -> Ready -> Completed
+  const isReady = order.status === "READY";
+  const isCompleted = order.status === "COMPLETED";
+
+  const isPastPreparing = isReady || isCompleted;
+  const isPastReady = isCompleted;
 
   return (
-    <div className="rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-xs space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-          Kitchen Workflow Action
+    <div className="rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-xs space-y-4">
+      {/* Card Header */}
+      <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-800">
+          Order Status Actions
         </h3>
-        <span className="text-[11px] text-neutral-400 font-medium">Step Next</span>
+        <span className="text-[11px] text-neutral-400 font-medium">3-Step Preparation</span>
       </div>
 
-      <Button
-        type="button"
-        size="lg"
-        disabled={isPending}
-        onClick={handleActionClick}
-        className={cn(
-          "w-full rounded-xl font-bold text-sm tracking-wide gap-2 h-12 transition-all shadow-sm active:scale-[0.99]",
-          actionConfig.buttonClass,
-        )}
-      >
-        {isPending ? (
-          <>
-            <Spinner size="sm" theme="white" />
-            <span>Updating Status...</span>
-          </>
-        ) : (
-          <>
-            {getActionIcon()}
-            <span>{actionConfig.label}</span>
-          </>
-        )}
-      </Button>
+      {/* 3 Status Pipeline: Preparing -> Ready -> Completed */}
+      <div className="grid grid-cols-3 gap-1.5">
+        {/* 1. Preparing */}
+        <div
+          className={cn(
+            "rounded-xl p-2 text-center border transition-all text-xs",
+            order.status === "PREPARING"
+              ? "bg-amber-50 border-amber-300 text-amber-900 font-bold shadow-2xs"
+              : isPastPreparing
+                ? "bg-neutral-50 border-neutral-200 text-neutral-500 font-medium"
+                : "bg-neutral-50/50 border-neutral-100 text-neutral-400 font-medium",
+          )}
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px]">
+            {isPastPreparing ? (
+              <CheckCircle2 className="size-3 text-emerald-600 shrink-0" />
+            ) : order.status === "PREPARING" ? (
+              <span className="size-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+            ) : null}
+            <span>Preparing</span>
+          </div>
+        </div>
 
-      <p className="text-[11px] text-center text-neutral-400">
-        Advancing order from <span className="font-semibold">{order.status}</span> to{" "}
-        <span className="font-semibold">{actionConfig.nextStatus}</span>
-      </p>
+        {/* 2. Ready */}
+        <div
+          className={cn(
+            "rounded-xl p-2 text-center border transition-all text-xs",
+            isReady
+              ? "bg-emerald-50 border-emerald-300 text-emerald-900 font-bold shadow-2xs"
+              : isPastReady
+                ? "bg-neutral-50 border-neutral-200 text-neutral-500 font-medium"
+                : "bg-neutral-50/50 border-neutral-100 text-neutral-400 font-medium",
+          )}
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px]">
+            {isPastReady ? (
+              <CheckCircle2 className="size-3 text-emerald-600 shrink-0" />
+            ) : isReady ? (
+              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            ) : null}
+            <span>Ready</span>
+          </div>
+        </div>
+
+        {/* 3. Completed */}
+        <div
+          className={cn(
+            "rounded-xl p-2 text-center border transition-all text-xs",
+            isCompleted
+              ? "bg-neutral-100 border-neutral-300 text-neutral-900 font-bold shadow-2xs"
+              : "bg-neutral-50/50 border-neutral-100 text-neutral-400 font-medium",
+          )}
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px]">
+            {isCompleted ? <CheckCircle2 className="size-3 text-neutral-700 shrink-0" /> : null}
+            <span>Completed</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Button or Completed Banner */}
+      {!actionConfig ? (
+        <div className="rounded-xl border border-neutral-200 bg-neutral-50/80 p-3.5 text-center">
+          <div className="inline-flex size-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 mb-1">
+            <CheckCircle2 className="size-4 text-neutral-700" />
+          </div>
+          <h4 className="text-xs font-bold text-neutral-800">Order Completed</h4>
+          <p className="text-[11px] text-neutral-500 mt-0.5">
+            All preparation steps have been finished.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <Button
+            type="button"
+            size="lg"
+            disabled={isPending}
+            onClick={handleActionClick}
+            className={cn(
+              "w-full rounded-xl font-bold text-sm tracking-wide gap-2 h-11 transition-all shadow-xs active:scale-[0.99]",
+              actionConfig.buttonClass,
+            )}
+          >
+            {isPending ? (
+              <>
+                <Spinner size="sm" theme="white" />
+                <span>Updating Status...</span>
+              </>
+            ) : (
+              <>
+                {getActionIcon()}
+                <span>{actionConfig.label}</span>
+              </>
+            )}
+          </Button>
+
+          <p className="text-[11px] text-center text-neutral-400">
+            Next status:{" "}
+            <span className="font-semibold text-neutral-700">{actionConfig.nextStatus}</span>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

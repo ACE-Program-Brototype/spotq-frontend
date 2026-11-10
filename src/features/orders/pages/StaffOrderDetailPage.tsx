@@ -62,13 +62,13 @@ export default function StaffOrderDetailPage() {
     );
   }
 
-  // Loading State
-  if (isLoading) {
+  // Loading State (keep skeleton active during initial load or while retrying without data)
+  if (isLoading || (isFetching && !order)) {
     return <StaffOrderDetailSkeleton />;
   }
 
-  // Error or Not Found State
-  if (isError || !order) {
+  // Error or Not Found State (only after all retries are exhausted)
+  if ((isError || !order) && !isFetching) {
     return (
       <div className="max-w-md mx-auto py-20 px-4 text-center">
         <div className="size-14 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#e8631b] mx-auto mb-4 shadow-2xs">

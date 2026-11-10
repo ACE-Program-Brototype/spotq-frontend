@@ -27,6 +27,8 @@ export function useStaffOrderDetail(
       staffOrdersService.getStaffOrderDetail(normalizedRestaurantId, normalizedOrderId),
     enabled: Boolean(normalizedRestaurantId && normalizedOrderId),
     staleTime: 5_000,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000),
     refetchInterval: (query) => {
       if (options?.refetchInterval !== undefined) {
         return options.refetchInterval;
