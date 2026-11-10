@@ -50,7 +50,7 @@ export function DeleteTableDialog({
         aria-modal="true"
         aria-labelledby="occupied-table-title"
       >
-        <div className="w-full max-w-md rounded-2xl border border-amber-200 bg-white p-6 shadow-xl">
+        <div className="w-full max-w-md overflow-hidden rounded-2xl border border-amber-200 bg-white p-6 shadow-xl">
           {/* Header with warning icon and title */}
           <div className="flex items-start gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
@@ -59,12 +59,12 @@ export function DeleteTableDialog({
             <div className="min-w-0 flex-1">
               <h2
                 id="occupied-table-title"
-                className="truncate text-lg font-bold text-[#202522]"
+                className="break-all text-lg font-bold text-[#202522]"
                 title={`Cannot Delete Table ${table.tableCode}`}
               >
                 Cannot Delete Table {table.tableCode}
               </h2>
-              <p className="mt-1 text-sm text-[#5d655f] break-words">
+              <p className="mt-1 break-words text-sm text-[#5d655f]">
                 This table is currently marked as{" "}
                 <span className="font-semibold text-amber-700">
                   {table.status === TABLE_STATUS.OCCUPIED ? "Occupied" : "Partially Occupied"}
