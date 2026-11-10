@@ -1,10 +1,27 @@
 import { render, screen } from "@testing-library/react";
-import { MOCK_ORDER_RECEIPT } from "../mocks/order-receipt.mock";
+import type { ReceiptItem } from "../types/order-receipt.types";
 import { ReceiptItemList } from "./ReceiptItemList";
+
+const mockReceiptItems: ReceiptItem[] = [
+  {
+    menu_item_id: "item_pizza_01",
+    name: "Margherita Pizza",
+    variant_id: "var_large_12",
+    variant_name: "Large (12 inch)",
+    addons: [
+      { addon_id: "add_extra_cheese", name: "Extra Cheese", price: 40.0 },
+      { addon_id: "add_jalapenos", name: "Jalapenos", price: 20.0 },
+    ],
+    quantity: 2,
+    unit_price: 350.0,
+    line_total: 820.0,
+    special_instructions: "Less spicy please",
+  },
+];
 
 describe("ReceiptItemList", () => {
   it("renders all items with customization variants and addons", () => {
-    render(<ReceiptItemList items={MOCK_ORDER_RECEIPT.items} />);
+    render(<ReceiptItemList items={mockReceiptItems} />);
 
     expect(screen.getByText("Margherita Pizza")).toBeInTheDocument();
     expect(screen.getByText("2x")).toBeInTheDocument();

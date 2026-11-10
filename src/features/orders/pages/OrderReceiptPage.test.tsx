@@ -2,8 +2,36 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { useOrderReceipt } from "../hooks/use-order-receipt";
-import { MOCK_ORDER_RECEIPT } from "../mocks/order-receipt.mock";
+import type { OrderReceipt } from "../types/order-receipt.types";
 import OrderReceiptPage from "./OrderReceiptPage";
+
+const mockReceipt: OrderReceipt = {
+  order_id: "ord_992817203",
+  order_number: "SQ-101",
+  restaurant: {
+    restaurant_id: "rest_65f2a1b9e12345",
+    name: "Spice Garden Cafe",
+  },
+  status: "COMPLETED",
+  items: [
+    {
+      menu_item_id: "item_pizza_01",
+      name: "Margherita Pizza",
+      variant_id: "var_large_12",
+      variant_name: "Large (12 inch)",
+      addons: [],
+      quantity: 2,
+      unit_price: 350.0,
+      line_total: 820.0,
+      special_instructions: null,
+    },
+  ],
+  sub_total: 820.0,
+  tax_amount: 41.0,
+  platform_fee: 2.0,
+  total_amount: 863.0,
+  created_at: "2026-10-06T13:50:00.000Z",
+};
 
 jest.mock("../hooks/use-order-receipt", () => ({
   useOrderReceipt: jest.fn(),
@@ -67,7 +95,7 @@ describe("OrderReceiptPage", () => {
 
   it("renders complete receipt card on successful fetch", () => {
     (useOrderReceipt as jest.Mock).mockReturnValue({
-      data: MOCK_ORDER_RECEIPT,
+      data: mockReceipt,
       isLoading: false,
       isError: false,
     });
@@ -81,7 +109,7 @@ describe("OrderReceiptPage", () => {
 
   it("navigates back when back button is clicked", () => {
     (useOrderReceipt as jest.Mock).mockReturnValue({
-      data: MOCK_ORDER_RECEIPT,
+      data: mockReceipt,
       isLoading: false,
       isError: false,
     });

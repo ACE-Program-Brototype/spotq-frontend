@@ -1,9 +1,37 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
-import { MOCK_ORDER_RECEIPT } from "../mocks/order-receipt.mock";
 import { orderService } from "../services/order.service";
+import type { OrderReceipt } from "../types/order-receipt.types";
 import { useOrderReceipt } from "./use-order-receipt";
+
+const mockReceipt: OrderReceipt = {
+  order_id: "ord_992817203",
+  order_number: "SQ-101",
+  restaurant: {
+    restaurant_id: "rest_65f2a1b9e12345",
+    name: "Spice Garden Cafe",
+  },
+  status: "COMPLETED",
+  items: [
+    {
+      menu_item_id: "item_pizza_01",
+      name: "Margherita Pizza",
+      variant_id: "var_large_12",
+      variant_name: "Large (12 inch)",
+      addons: [],
+      quantity: 2,
+      unit_price: 350.0,
+      line_total: 820.0,
+      special_instructions: null,
+    },
+  ],
+  sub_total: 820.0,
+  tax_amount: 41.0,
+  platform_fee: 2.0,
+  total_amount: 863.0,
+  created_at: "2026-10-06T13:50:00.000Z",
+};
 
 jest.mock("../services/order.service", () => ({
   orderService: {
@@ -32,7 +60,7 @@ describe("useOrderReceipt hook", () => {
   });
 
   it("fetches receipt data successfully for a given orderId", async () => {
-    (orderService.getOrderReceipt as jest.Mock).mockResolvedValue(MOCK_ORDER_RECEIPT);
+    (orderService.getOrderReceipt as jest.Mock).mockResolvedValue(mockReceipt);
 
     const { result } = renderHook(() => useOrderReceipt("ord_992817203"), {
       wrapper: createWrapper(),
