@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { InvoiceStatusBadge } from "./InvoiceStatusBadge";
+import { InvoiceStatusBadge } from "@/features/subscription/components/InvoiceStatusBadge";
 
 describe("InvoiceStatusBadge", () => {
   it("renders success badge with correct text and testid", () => {

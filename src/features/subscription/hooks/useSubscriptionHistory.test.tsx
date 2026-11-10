@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
-import { subscriptionService } from "../services/subscription.service";
-import { useSubscriptionHistory } from "./useSubscriptionHistory";
+import { useSubscriptionHistory } from "@/features/subscription/hooks/useSubscriptionHistory";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
-jest.mock("../services/subscription.service", () => ({
+jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionService: {
     getSubscriptionHistory: jest.fn(),
   },

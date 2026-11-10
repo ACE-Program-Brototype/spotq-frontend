@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { SUBSCRIPTION_ENDPOINTS } from "@/features/subscription/constants/subscription.constants";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import { apiClient } from "@/lib/api/client";
-import { subscriptionService } from "./subscription.service";
 
 jest.mock("@/lib/api/client", () => ({
   apiClient: {

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { DownloadInvoiceButton } from "./DownloadInvoiceButton";
+import { DownloadInvoiceButton } from "@/features/subscription/components/DownloadInvoiceButton";
 
 describe("DownloadInvoiceButton", () => {
   const originalOpen = window.open;

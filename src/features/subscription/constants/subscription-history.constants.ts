@@ -1,4 +1,4 @@
-import type { SubscriptionBillingFilterStatus } from "../types/subscription-history.types";
+import type { SubscriptionBillingFilterStatus } from "@/features/subscription/types/subscription-history.types";
 
 export interface StatusFilterOption {
   label: string;

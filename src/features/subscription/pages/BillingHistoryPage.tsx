@@ -4,15 +4,15 @@ import { Link } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { BillingPagination } from "../components/BillingPagination";
-import { InvoiceTable } from "../components/InvoiceTable";
+import { BillingPagination } from "@/features/subscription/components/BillingPagination";
+import { InvoiceTable } from "@/features/subscription/components/InvoiceTable";
 import {
   SUBSCRIPTION_HISTORY_CONFIG,
   SUBSCRIPTION_HISTORY_MESSAGES,
   SUBSCRIPTION_HISTORY_STATUS_OPTIONS,
-} from "../constants/subscription-history.constants";
-import { useSubscriptionHistory } from "../hooks/useSubscriptionHistory";
-import type { SubscriptionBillingFilterStatus } from "../types/subscription-history.types";
+} from "@/features/subscription/constants/subscription-history.constants";
+import { useSubscriptionHistory } from "@/features/subscription/hooks/useSubscriptionHistory";
+import type { SubscriptionBillingFilterStatus } from "@/features/subscription/types/subscription-history.types";
 
 export default function BillingHistoryPage() {
   const user = useAuthStore((state) => state.user);

@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { SUBSCRIPTION_HISTORY_CONFIG } from "../constants/subscription-history.constants";
-import { subscriptionService } from "../services/subscription.service";
-import type { GetSubscriptionHistoryParams } from "../types/subscription-history.types";
+import { SUBSCRIPTION_HISTORY_CONFIG } from "@/features/subscription/constants/subscription-history.constants";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
+import type { GetSubscriptionHistoryParams } from "@/features/subscription/types/subscription-history.types";
 
 export function useSubscriptionHistory(
   restaurantId: string | undefined,

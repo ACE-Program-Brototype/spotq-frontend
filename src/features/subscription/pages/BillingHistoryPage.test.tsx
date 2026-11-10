@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import BillingHistoryPage from "@/features/subscription/pages/BillingHistoryPage";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
-import BillingHistoryPage from "./BillingHistoryPage";
 
 jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionService: {

@@ -1,12 +1,12 @@
 import { FileX2, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DownloadInvoiceButton } from "@/features/subscription/components/DownloadInvoiceButton";
+import { InvoiceStatusBadge } from "@/features/subscription/components/InvoiceStatusBadge";
+import { SUBSCRIPTION_HISTORY_MESSAGES } from "@/features/subscription/constants/subscription-history.constants";
+import type { SubscriptionBillingTransactionItem } from "@/features/subscription/types/subscription-history.types";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate, formatTime } from "@/lib/utils/date";
-import { SUBSCRIPTION_HISTORY_MESSAGES } from "../constants/subscription-history.constants";
-import type { SubscriptionBillingTransactionItem } from "../types/subscription-history.types";
-import { DownloadInvoiceButton } from "./DownloadInvoiceButton";
-import { InvoiceStatusBadge } from "./InvoiceStatusBadge";
 
 export interface InvoiceTableProps {
   transactions: SubscriptionBillingTransactionItem[];

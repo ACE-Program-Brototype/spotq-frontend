@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { SubscriptionBillingTransactionItem } from "../types/subscription-history.types";
-import { InvoiceTable } from "./InvoiceTable";
+import { InvoiceTable } from "@/features/subscription/components/InvoiceTable";
+import type { SubscriptionBillingTransactionItem } from "@/features/subscription/types/subscription-history.types";
 
 const mockTransactions: SubscriptionBillingTransactionItem[] = [
   {

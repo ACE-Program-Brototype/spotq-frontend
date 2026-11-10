@@ -1,7 +1,7 @@
 import { Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SUBSCRIPTION_HISTORY_MESSAGES } from "@/features/subscription/constants/subscription-history.constants";
 import { cn } from "@/lib/utils/cn";
-import { SUBSCRIPTION_HISTORY_MESSAGES } from "../constants/subscription-history.constants";
 
 export interface DownloadInvoiceButtonProps {
   invoiceUrl: string | null;

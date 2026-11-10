@@ -1,7 +1,7 @@
 import { AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { SUBSCRIPTION_HISTORY_MESSAGES } from "@/features/subscription/constants/subscription-history.constants";
+import type { SubscriptionBillingStatus } from "@/features/subscription/types/subscription-history.types";
 import { cn } from "@/lib/utils/cn";
-import { SUBSCRIPTION_HISTORY_MESSAGES } from "../constants/subscription-history.constants";
-import type { SubscriptionBillingStatus } from "../types/subscription-history.types";
 
 export interface InvoiceStatusBadgeProps {
   status: SubscriptionBillingStatus | string;
