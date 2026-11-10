@@ -109,8 +109,8 @@ export const PARTY_SIZE_BUCKET = {
 
 export const PARTY_SIZE_BUCKET_LABELS = {
   [PARTY_SIZE_BUCKET.ALL]: "All Sizes",
-  [PARTY_SIZE_BUCKET.SMALL]: "Small (1–2)",
-  [PARTY_SIZE_BUCKET.MEDIUM]: "Medium (3–4)",
+  [PARTY_SIZE_BUCKET.SMALL]: "Small (1-2)",
+  [PARTY_SIZE_BUCKET.MEDIUM]: "Medium (3-4)",
   [PARTY_SIZE_BUCKET.LARGE]: "Large (5+)",
 } as const;
 

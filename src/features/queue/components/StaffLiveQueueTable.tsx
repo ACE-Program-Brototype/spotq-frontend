@@ -263,6 +263,7 @@ export function StaffLiveQueueTable({
                           data-testid={`action-skip-${entry.queueEntryId}`}
                           className="size-8 rounded-xl border border-[#eadfd8] bg-white hover:bg-[#faf7f5] text-[#756c66] hover:text-[#9a3412] flex items-center justify-center transition-colors"
                           title="Skip party positions"
+                          aria-label="Skip party positions"
                         >
                           <FastForward className="size-3.5" />
                         </button>
@@ -274,6 +275,7 @@ export function StaffLiveQueueTable({
                           data-testid={`action-cancel-${entry.queueEntryId}`}
                           className="size-8 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-600 flex items-center justify-center transition-colors"
                           title="Mark no-show or cancel entry"
+                          aria-label="Cancel queue entry or mark no-show"
                         >
                           <UserX className="size-3.5" />
                         </button>
@@ -285,6 +287,7 @@ export function StaffLiveQueueTable({
                           data-testid={`action-details-${entry.queueEntryId}`}
                           className="size-8 rounded-xl border border-[#eadfd8] bg-white hover:bg-[#faf7f5] text-[#756c66] hover:text-neutral-900 flex items-center justify-center transition-colors"
                           title="View complete details"
+                          aria-label="View complete details"
                         >
                           <Eye className="size-3.5" />
                         </button>
@@ -299,6 +302,7 @@ export function StaffLiveQueueTable({
                           onClick={() => onSelectEntry(entry)}
                           className="size-8 rounded-xl border border-[#eadfd8] bg-white hover:bg-[#faf7f5] text-[#756c66] hover:text-neutral-900 flex items-center justify-center transition-colors"
                           title="View details"
+                          aria-label="View complete details"
                         >
                           <Eye className="size-3.5" />
                         </button>

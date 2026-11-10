@@ -2,7 +2,7 @@ import type {
   QUEUE_CANCEL_REASON,
   QUEUE_STATUS,
   REGISTRATION_TYPE,
-} from "../constants/queue.constants";
+} from "@/features/queue/constants/queue.constants";
 
 export type RegistrationType = (typeof REGISTRATION_TYPE)[keyof typeof REGISTRATION_TYPE];
 export type RegistrationTypeFilter = "ALL" | "ONLINE" | "WALK_IN";

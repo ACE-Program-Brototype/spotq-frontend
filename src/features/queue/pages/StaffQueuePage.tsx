@@ -215,17 +215,19 @@ export default function StaffQueuePage() {
       )}
 
       {/* Live Queue Table */}
-      <StaffLiveQueueTable
-        entries={filteredEntries}
-        isLoading={isLoading}
-        activeRingingId={activeRingingId}
-        onSelectEntry={(entry) => setSelectedEntryForDetail(entry)}
-        onRingCustomer={handleRingClick}
-        onAssignTable={handleAssignClick}
-        onSkipParty={(entry) => setSelectedEntryForSkip(entry)}
-        onCancelEntry={(entry) => setSelectedEntryForCancel(entry)}
-        onAddWalkInClick={() => setIsWalkInModalOpen(true)}
-      />
+      {!isError && (
+        <StaffLiveQueueTable
+          entries={filteredEntries}
+          isLoading={isLoading}
+          activeRingingId={activeRingingId}
+          onSelectEntry={(entry) => setSelectedEntryForDetail(entry)}
+          onRingCustomer={handleRingClick}
+          onAssignTable={handleAssignClick}
+          onSkipParty={(entry) => setSelectedEntryForSkip(entry)}
+          onCancelEntry={(entry) => setSelectedEntryForCancel(entry)}
+          onAddWalkInClick={() => setIsWalkInModalOpen(true)}
+        />
+      )}
 
       {/* Queue Entry Detail Drawer */}
       <QueueEntryDetailDrawer

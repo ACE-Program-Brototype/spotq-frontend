@@ -6,10 +6,10 @@ import { StaffMobileNav, StaffSidebar } from "@/components/layout/StaffSidebar";
 
 export function StaffLayout() {
   return (
-    <div className="flex h-screen h-svh w-full max-w-full overflow-hidden bg-[#fdfcfb] text-neutral-900 pb-16 lg:pb-0">
-      <div className="hidden lg:block lg:w-64 lg:shrink-0 h-full">
+    <div className="flex h-svh w-full max-w-full overflow-hidden bg-[#fdfcfb] text-neutral-900 pb-16 lg:pb-0">
+      <aside aria-label="Staff Navigation" className="hidden lg:block lg:w-64 lg:shrink-0 h-full">
         <StaffSidebar basePath={STAFF_ROUTES.ROOT} />
-      </div>
+      </aside>
 
       <div className="flex flex-1 flex-col min-w-0 w-full h-full max-w-full overflow-hidden">
         <StaffNavbar />

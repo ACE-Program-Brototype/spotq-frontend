@@ -21,7 +21,6 @@ import {
   REGISTRATION_TYPE,
 } from "@/features/queue/constants/queue.constants";
 import type { StaffLiveQueueEntry } from "@/features/queue/types/queue.types";
-import { formatTime } from "@/lib/utils";
 import { formatDate } from "@/lib/utils/date";
 
 interface QueueEntryDetailDrawerProps {
@@ -108,9 +107,7 @@ export function QueueEntryDetailDrawer({
                     {entry.status}
                   </Badge>
                 </div>
-                <p className="text-xs text-[#756c66] mt-0.5">
-                  Joined {formatDate(entry.joinedAt)} ({formatTime(entry.joinedAt)})
-                </p>
+                <p className="text-xs text-[#756c66] mt-0.5">Joined {formatDate(entry.joinedAt)}</p>
               </div>
             </div>
 
@@ -216,7 +213,7 @@ export function QueueEntryDetailDrawer({
                   <div className="col-span-2">
                     <p className="text-[#756c66]">Last Notified At</p>
                     <p className="font-medium text-neutral-800 mt-0.5">
-                      {formatDate(entry.lastRingAt)} at {formatTime(entry.lastRingAt)}
+                      {formatDate(entry.lastRingAt)}
                     </p>
                   </div>
                 )}

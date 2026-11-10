@@ -94,11 +94,8 @@ export function useStaffQueueSocket(
       });
     });
 
-    socket.on("connect_error", (error) => {
+    socket.on("connect_error", () => {
       setIsConnected(false);
-      if (env.isDev) {
-        console.warn(`[StaffSocket] Connection error: ${error.message}`);
-      }
     });
 
     socket.on("disconnect", () => {

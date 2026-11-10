@@ -1,5 +1,5 @@
 import { AlertCircle, ArrowDown, FastForward, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,21 +30,61 @@ export function SkipQueueEntryModal({
   const [skipPositions, setSkipPositions] = useState<number>(2);
   const [reason, setReason] = useState<string>("");
   const [validationError, setValidationError] = useState<string | null>(null);
+  const dialogCardRef = useRef<HTMLDivElement>(null);
+  const previousActiveElementRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setSkipPositions(2);
       setReason("");
       setValidationError(null);
+      previousActiveElementRef.current = document.activeElement as HTMLElement | null;
     }
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      if (previousActiveElementRef.current) {
+        previousActiveElementRef.current.focus?.();
+        previousActiveElementRef.current = null;
+      }
+      return;
+    }
+
+    const card = dialogCardRef.current;
+    if (card) {
+      const focusable = card.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length > 0) {
+        focusable[0]?.focus();
+      }
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !isSubmitting) {
         onClose();
+        return;
+      }
+
+      if (e.key === "Tab" && card) {
+        const focusableElements = Array.from(
+          card.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
       }
     };
 
@@ -93,7 +133,10 @@ export function SkipQueueEntryModal({
         className="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs cursor-default border-0 outline-none w-full h-full disabled:cursor-not-allowed"
       />
 
-      <div className="relative z-10 w-full max-w-md rounded-2xl bg-white border border-[#eddcd4] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col">
+      <div
+        ref={dialogCardRef}
+        className="relative z-10 w-full max-w-md rounded-2xl bg-white border border-[#eddcd4] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col"
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-[#eddcd4] bg-[#faf7f5] px-6 py-4">
           <div className="flex items-center gap-2.5">
