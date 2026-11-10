@@ -183,6 +183,8 @@ export function InvoiceTable({
                       month: "short",
                       day: "numeric",
                       year: "numeric",
+                      hour: undefined,
+                      minute: undefined,
                     })}
                   </div>
                   <div className="text-xs text-neutral-400">{formatTime(tx.createdAt)}</div>
