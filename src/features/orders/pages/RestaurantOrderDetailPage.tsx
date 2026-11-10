@@ -101,12 +101,13 @@ export default function RestaurantOrderDetailPage() {
                 </h1>
                 <OrderStatusBadge status={order.orderStatus} size="md" />
                 <span
-                  className={`inline-flex items-center rounded-lg px-2 py-0.5 text-xs font-bold ${order.orderType === "DINE_IN"
+                  className={`inline-flex items-center rounded-lg px-2 py-0.5 text-xs font-bold ${
+                    order.orderType === "DINE_IN"
                       ? "bg-amber-50 text-amber-800 border border-amber-200"
                       : order.orderType === "PRE_ORDER"
                         ? "bg-blue-50 text-blue-800 border border-blue-200"
                         : "bg-neutral-100 text-neutral-700 border border-neutral-200"
-                    }`}
+                  }`}
                 >
                   {order.orderType === "DINE_IN"
                     ? `Dine-In • Table ${order.tableNumber ?? "--"}`
@@ -420,9 +421,7 @@ export default function RestaurantOrderDetailPage() {
                   <span>
                     Discount {order.pricing?.couponCode ? `(${order.pricing.couponCode})` : ""}
                   </span>
-                  <span className="font-mono">
-                    -{formatCurrency(order.pricing.discountAmount)}
-                  </span>
+                  <span className="font-mono">-{formatCurrency(order.pricing.discountAmount)}</span>
                 </div>
               )}
 

@@ -8,8 +8,8 @@ export function useRestaurantOrderDetail(restaurantId: string, orderId: string) 
 
   return useQuery({
     queryKey: RESTAURANT_ORDERS_QUERY_KEYS.DETAIL(normalizedRestaurantId, normalizedOrderId),
-    queryFn: () => restaurantOrdersService.getOrderDetail(normalizedRestaurantId, normalizedOrderId),
+    queryFn: () =>
+      restaurantOrdersService.getOrderDetail(normalizedRestaurantId, normalizedOrderId),
     enabled: Boolean(normalizedRestaurantId && normalizedOrderId),
   });
 }
-

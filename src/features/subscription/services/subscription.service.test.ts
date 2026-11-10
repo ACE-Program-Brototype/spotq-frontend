@@ -23,8 +23,9 @@ describe("subscriptionService", () => {
           id: "plan-1",
           code: "QUEUE_PRO",
           name: "Queue Pro",
-          priceMonthly: 1999,
-          priceYearly: 19990,
+          pricePaise: 149900,
+          priceInRupees: 1499,
+          billingCycle: "MONTHLY",
           currency: "INR",
           features: ["Real-time queues"],
           isPopular: true,
@@ -73,9 +74,40 @@ describe("subscriptionService", () => {
         json: {
           planId: "plan-1",
           restaurantId: "rest-123",
-          restaurantName: "The Great Grill",
           restaurantEmail: "owner@restaurant.com",
-          restaurantPhone: undefined,
+        },
+      });
+      expect(result).toEqual(mockOrderResponse);
+    });
+
+    it("should accept explicit restaurantContext without relying on auth store", async () => {
+      const mockOrderResponse = {
+        orderId: "order_explicit_123",
+        amount: 199900,
+        currency: "INR",
+        keyId: "rzp_test_key",
+        plan: { id: "plan-2", name: "Queue Elite", code: "QUEUE_ELITE" },
+        restaurant: { id: "rest-999", name: "Explicit Bistro", email: "explicit@bistro.com" },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: mockOrderResponse }),
+      });
+
+      const result = await subscriptionService.createOrder("plan-2", {
+        restaurantId: "rest-999",
+        restaurantName: "Explicit Bistro",
+        restaurantEmail: "explicit@bistro.com",
+        restaurantPhone: "9876543210",
+      });
+
+      expect(apiClient.post).toHaveBeenCalledWith(SUBSCRIPTION_ENDPOINTS.CREATE_ORDER, {
+        json: {
+          planId: "plan-2",
+          restaurantId: "rest-999",
+          restaurantName: "Explicit Bistro",
+          restaurantEmail: "explicit@bistro.com",
+          restaurantPhone: "9876543210",
         },
       });
       expect(result).toEqual(mockOrderResponse);
@@ -84,6 +116,64 @@ describe("subscriptionService", () => {
     it("should throw an error if no authenticated restaurant exists", async () => {
       await expect(subscriptionService.createOrder("plan-1")).rejects.toThrow(
         "Restaurant identification is required to create a subscription order.",
+      );
+    });
+  });
+
+  describe("renewSubscription", () => {
+    it("should call POST payments/subscriptions/:subscriptionId/renew with selected planId and Idempotency-Key header", async () => {
+      const mockRenewResponse = {
+        orderId: "order_renew_1",
+        amount: 149900,
+        currency: "INR",
+        keyId: "rzp_test_key",
+        plan: { id: "plan-1", name: "Queue Pro", code: "QUEUE_PRO" },
+        subscription: {
+          id: "sub-123",
+          currentStatus: "ACTIVE",
+          currentPeriodEnd: "2026-11-10T00:00:00.000Z",
+          renewalWindowDays: 30,
+          isRenewal: true,
+        },
+        restaurant: { email: "owner@restaurant.com" },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: mockRenewResponse }),
+      });
+
+      const result = await subscriptionService.renewSubscription(
+        "sub-123",
+        "plan-1",
+        "idem-fixed-key-1234",
+      );
+
+      expect(apiClient.post).toHaveBeenCalledWith(SUBSCRIPTION_ENDPOINTS.RENEW("sub-123"), {
+        headers: {
+          "Idempotency-Key": "idem-fixed-key-1234",
+        },
+        json: { planId: "plan-1" },
+      });
+      expect(result).toEqual(mockRenewResponse);
+    });
+
+    it("should send empty strict body and auto-generated Idempotency-Key when omitted", async () => {
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({ success: true, data: { orderId: "order_1" } }),
+      });
+
+      await subscriptionService.renewSubscription("sub-123");
+      expect(apiClient.post).toHaveBeenCalledWith(SUBSCRIPTION_ENDPOINTS.RENEW("sub-123"), {
+        headers: {
+          "Idempotency-Key": expect.any(String),
+        },
+        json: {},
+      });
+    });
+
+    it("should throw error when subscriptionId is blank", async () => {
+      await expect(subscriptionService.renewSubscription("  ")).rejects.toThrow(
+        "Subscription identifier is required to initiate renewal.",
       );
     });
   });
@@ -107,7 +197,7 @@ describe("subscriptionService", () => {
         planCode: "QUEUE_PRO",
         status: "ACTIVE",
         currentPeriodStart: "2026-09-01T00:00:00Z",
-        currentPeriodEnd: "2026-10-01T00:00:00Z",
+        currentPeriodEnd: "2026-10-01T00:00Z",
       };
 
       (apiClient.post as jest.Mock).mockReturnValue({
@@ -133,7 +223,7 @@ describe("subscriptionService", () => {
   });
 
   describe("fetchRestaurantStatus", () => {
-    it("should fetch real-time restaurant status via centralized endpoint", async () => {
+    it("should fetch real-time restaurant status and preserve nested subscription details", async () => {
       useAuthStore.getState().setAuth(
         {
           id: "rest-123",
@@ -167,6 +257,16 @@ describe("subscriptionService", () => {
       expect(apiClient.get).toHaveBeenCalledWith(`${SUBSCRIPTION_ENDPOINTS.STATUS}/rest-123`);
       expect(status.isSubscriptionActive).toBe(true);
       expect(status.navigationTarget).toBe("/restaurant/dashboard");
+      expect(status.subscription).toEqual({
+        id: "sub-123",
+        status: "ACTIVE",
+        planCode: "QUEUE_PRO",
+        planName: "Queue Pro",
+        currentPeriodStart: "2026-09-01T00:00:00Z",
+        currentPeriodEnd: "2026-10-01T00:00:00Z",
+        renewalWindowDays: undefined,
+        isEligibleForRenewal: undefined,
+      });
     });
 
     it("should throw error when unauthenticated without falling back to dummy guest", async () => {

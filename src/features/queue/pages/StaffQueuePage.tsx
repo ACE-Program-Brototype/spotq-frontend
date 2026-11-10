@@ -244,13 +244,15 @@ export default function StaffQueuePage() {
       />
 
       {/* Assign Table Modal */}
-      <AssignTableModal
-        isOpen={Boolean(selectedEntryForAssign)}
-        onClose={() => setSelectedEntryForAssign(null)}
-        restaurantId={restaurantId}
-        queueEntry={selectedEntryForAssign}
-        onSuccess={handleAssignSuccess}
-      />
+      {selectedEntryForAssign && (
+        <AssignTableModal
+          isOpen={Boolean(selectedEntryForAssign)}
+          onClose={() => setSelectedEntryForAssign(null)}
+          restaurantId={restaurantId}
+          queueEntry={selectedEntryForAssign}
+          onSuccess={handleAssignSuccess}
+        />
+      )}
     </div>
   );
 }

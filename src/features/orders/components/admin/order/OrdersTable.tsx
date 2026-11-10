@@ -67,7 +67,8 @@ export function OrdersTable({
                 scope="col"
                 className={cn(
                   "py-3.5 px-4",
-                  onSortChange && "cursor-pointer hover:text-neutral-800 transition-colors select-none",
+                  onSortChange &&
+                    "cursor-pointer hover:text-neutral-800 transition-colors select-none",
                 )}
                 onClick={() => onSortChange?.("createdAt")}
                 title={onSortChange ? "Sort by Date/Time" : undefined}
@@ -92,7 +93,8 @@ export function OrdersTable({
                 scope="col"
                 className={cn(
                   "py-3.5 px-4",
-                  onSortChange && "cursor-pointer hover:text-neutral-800 transition-colors select-none",
+                  onSortChange &&
+                    "cursor-pointer hover:text-neutral-800 transition-colors select-none",
                 )}
                 onClick={() => onSortChange?.("grandTotal")}
                 title={onSortChange ? "Sort by Total Amount" : undefined}
