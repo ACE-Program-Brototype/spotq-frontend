@@ -116,7 +116,6 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       icon: Settings,
       children: [
         { title: "Account", href: `${basePath}/profile` },
-        { title: "Billing History", href: `${basePath}/settings/billing/history` },
         { title: "Security", href: `${basePath}/settings/security` },
       ],
     },
