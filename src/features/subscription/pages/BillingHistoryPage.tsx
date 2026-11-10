@@ -142,7 +142,7 @@ export default function BillingHistoryPage() {
           )}
         </div>
 
-        {pagination && (
+        {pagination && !isError && (
           <div className="text-xs text-neutral-500 font-medium" data-testid="total-records-count">
             {SUBSCRIPTION_HISTORY_MESSAGES.TOTAL_COUNT_LABEL}: {pagination.totalRecords}
           </div>
@@ -184,15 +184,17 @@ export default function BillingHistoryPage() {
       )}
 
       {/* Invoices Table */}
-      <InvoiceTable
-        transactions={transactions}
-        isLoading={isLoading}
-        isFiltered={isFiltered}
-        onResetFilter={handleResetFilters}
-      />
+      {!isError && (
+        <InvoiceTable
+          transactions={transactions}
+          isLoading={isLoading}
+          isFiltered={isFiltered}
+          onResetFilter={handleResetFilters}
+        />
+      )}
 
       {/* Pagination */}
-      {pagination && (
+      {pagination && !isError && (
         <BillingPagination
           currentPage={page}
           totalPages={pagination.totalPages}

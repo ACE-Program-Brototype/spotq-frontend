@@ -142,6 +142,8 @@ describe("BillingHistoryPage", () => {
     });
 
     expect(screen.getByText("Failed to connect to billing server")).toBeInTheDocument();
+    expect(screen.queryByTestId("invoice-table-empty")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("invoice-table")).not.toBeInTheDocument();
 
     const retryBtn = screen.getByTestId("error-retry-button");
     (subscriptionService.getSubscriptionHistory as jest.Mock).mockResolvedValue({
