@@ -6,30 +6,31 @@ interface ResponseCountdownBadgeProps {
   className?: string;
 }
 
+function getSecondsRemaining(deadline: string | null): number | null {
+  if (!deadline) return null;
+  const targetTime = new Date(deadline).getTime();
+  if (Number.isNaN(targetTime)) return null;
+  const diff = Math.floor((targetTime - Date.now()) / 1000);
+  return diff > 0 ? diff : 0;
+}
+
 export function ResponseCountdownBadge({ deadline, className = "" }: ResponseCountdownBadgeProps) {
-  const [secondsRemaining, setSecondsRemaining] = useState<number | null>(() => {
-    if (!deadline) return null;
-    const diff = Math.floor((new Date(deadline).getTime() - Date.now()) / 1000);
-    return diff > 0 ? diff : 0;
-  });
+  const [secondsRemaining, setSecondsRemaining] = useState<number | null>(() =>
+    getSecondsRemaining(deadline),
+  );
 
   useEffect(() => {
-    if (!deadline) {
-      setSecondsRemaining(null);
+    const initial = getSecondsRemaining(deadline);
+    setSecondsRemaining(initial);
+
+    if (initial === null || initial <= 0) {
       return;
     }
 
-    const calculateRemaining = () => {
-      const diff = Math.floor((new Date(deadline).getTime() - Date.now()) / 1000);
-      return diff > 0 ? diff : 0;
-    };
-
-    setSecondsRemaining(calculateRemaining());
-
     const interval = setInterval(() => {
-      const remaining = calculateRemaining();
+      const remaining = getSecondsRemaining(deadline);
       setSecondsRemaining(remaining);
-      if (remaining <= 0) {
+      if (remaining === null || remaining <= 0) {
         clearInterval(interval);
       }
     }, 1000);

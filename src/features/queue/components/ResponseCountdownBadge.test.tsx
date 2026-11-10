@@ -36,4 +36,9 @@ describe("ResponseCountdownBadge", () => {
     expect(screen.getByTestId("countdown-expired")).toBeInTheDocument();
     expect(screen.getByText("Expired")).toBeInTheDocument();
   });
+
+  it("renders nothing when deadline is an invalid date string", () => {
+    const { container } = render(<ResponseCountdownBadge deadline="not-a-valid-date" />);
+    expect(container.firstChild).toBeNull();
+  });
 });
