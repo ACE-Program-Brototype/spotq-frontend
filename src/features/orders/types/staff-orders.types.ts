@@ -24,6 +24,7 @@ export interface StaffOrderItemVariant {
 }
 
 export interface StaffOrderItem {
+  id?: string;
   menuItemId: string;
   name: string;
   quantity: number;

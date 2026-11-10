@@ -41,6 +41,7 @@ const mockOrders = [
 
 const mockRefetch = jest.fn();
 const mockUseStaffOrders = jest.fn();
+const mockUseAuthStore = jest.fn();
 
 jest.mock("../hooks/use-staff-orders", () => ({
   useStaffOrders: (restaurantId: string, params: unknown) =>
@@ -48,17 +49,20 @@ jest.mock("../hooks/use-staff-orders", () => ({
 }));
 
 jest.mock("@/features/auth/store/auth.store", () => ({
-  useAuthStore: (selector: (state: { user: { restaurantId: string } }) => unknown) =>
-    selector({
-      user: {
-        restaurantId: "rest-uuid-1234",
-      },
-    }),
+  useAuthStore: (selector: (state: { user: { restaurantId?: string } | null }) => unknown) =>
+    mockUseAuthStore(selector),
 }));
 
 describe("StaffOrdersPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseAuthStore.mockImplementation((selector) =>
+      selector({
+        user: {
+          restaurantId: "rest-uuid-1234",
+        },
+      }),
+    );
     mockUseStaffOrders.mockReturnValue({
       data: {
         orders: mockOrders,
@@ -71,6 +75,8 @@ describe("StaffOrdersPage", () => {
       },
       isLoading: false,
       isFetching: false,
+      isError: false,
+      error: null,
       refetch: mockRefetch,
     });
   });
@@ -159,5 +165,45 @@ describe("StaffOrdersPage", () => {
         status: "PREPARING",
       }),
     );
+  });
+
+  it("renders missing restaurant warning when staff has no restaurantId", () => {
+    mockUseAuthStore.mockImplementation((selector) =>
+      selector({
+        user: {
+          restaurantId: "",
+        },
+      }),
+    );
+
+    renderPage();
+
+    expect(screen.getByText("No restaurant assigned")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Your staff account is not associated with an active restaurant/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/search by order number/i)).not.toBeInTheDocument();
+  });
+
+  it("renders error state with retry button when orders query fails", () => {
+    mockUseStaffOrders.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: true,
+      error: new Error("Network timeout"),
+      refetch: mockRefetch,
+    });
+
+    renderPage();
+
+    expect(screen.getByText("Failed to load orders")).toBeInTheDocument();
+    expect(screen.getByText("Network timeout")).toBeInTheDocument();
+
+    const retryButton = screen.getByRole("button", { name: /try again/i });
+    expect(retryButton).toBeInTheDocument();
+
+    fireEvent.click(retryButton);
+    expect(mockRefetch).toHaveBeenCalledTimes(1);
   });
 });

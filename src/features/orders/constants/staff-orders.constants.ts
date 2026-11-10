@@ -21,6 +21,15 @@ export const STAFF_ORDERS_DEFAULTS = {
   SEARCH_DEBOUNCE_MS: 350,
 } as const;
 
+export const STAFF_ORDER_FILTER_STATUS = {
+  ALL: "ALL",
+  PLACED: "PLACED",
+  CONFIRMED: "CONFIRMED",
+  PREPARING: "PREPARING",
+  READY: "READY",
+  COMPLETED: "COMPLETED",
+} as const;
+
 export const STAFF_ORDER_STATUS_CONFIG: Record<
   StaffOrderStatus,
   { label: string; badgeClass: string; dotClass: string }
@@ -69,8 +78,12 @@ export const STAFF_ORDER_TYPE_CONFIG: Record<
 export const STAFF_ORDERS_MESSAGES = {
   RESTAURANT_ID_REQUIRED: "Restaurant ID is required to fetch staff orders",
   FETCH_FAILED: "Unable to load restaurant orders. Please check your connection and retry.",
+  FETCH_ERROR_TITLE: "Failed to load orders",
   EMPTY_ORDERS_TITLE: "No orders found",
   EMPTY_ORDERS_DESC:
     "There are currently no orders matching your selected filters. Try adjusting your status or search query.",
   EMPTY_NO_ORDERS_YET: "No orders have been received yet for this restaurant shift.",
+  NO_RESTAURANT_TITLE: "No restaurant assigned",
+  NO_RESTAURANT_DESC:
+    "Your staff account is not associated with an active restaurant. Please sign in again or contact your administrator.",
 } as const;

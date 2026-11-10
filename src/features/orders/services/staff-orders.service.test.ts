@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/api/client";
 import {
+  STAFF_ORDER_FILTER_STATUS,
   STAFF_ORDERS_DEFAULTS,
   STAFF_ORDERS_ENDPOINTS,
   STAFF_ORDERS_MESSAGES,
@@ -116,7 +117,7 @@ describe("staffOrdersService", () => {
       });
 
       await staffOrdersService.getStaffOrdersList(restaurantId, {
-        status: "ALL",
+        status: STAFF_ORDER_FILTER_STATUS.ALL,
       });
 
       expect(apiClient.get).toHaveBeenCalledWith(STAFF_ORDERS_ENDPOINTS.LIST(restaurantId), {

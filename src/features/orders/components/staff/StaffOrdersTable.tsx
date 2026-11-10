@@ -108,9 +108,9 @@ export function StaffOrdersTable({
                   {/* Items Summary Pills */}
                   <div className="flex flex-wrap items-center gap-1.5">
                     <Utensils className="size-3.5 text-neutral-400 shrink-0" />
-                    {order.items.map((item) => (
+                    {order.items.map((item, itemIdx) => (
                       <span
-                        key={item.menuItemId}
+                        key={item.id ?? `${order.id}-item-${item.menuItemId}-${itemIdx}`}
                         className="inline-flex items-center gap-1 rounded-lg bg-neutral-100/80 px-2 py-0.5 text-xs text-neutral-700 font-medium border border-neutral-200/50"
                       >
                         <span className="font-bold text-neutral-900">{item.quantity}x</span>

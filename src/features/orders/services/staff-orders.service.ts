@@ -5,6 +5,7 @@
 
 import { apiClient } from "@/lib/api/client";
 import {
+  STAFF_ORDER_FILTER_STATUS,
   STAFF_ORDERS_DEFAULTS,
   STAFF_ORDERS_ENDPOINTS,
   STAFF_ORDERS_MESSAGES,
@@ -34,7 +35,7 @@ export const staffOrdersService = {
       searchParams.search = params.search.trim();
     }
 
-    if (params?.status && params.status !== "ALL") {
+    if (params?.status && params.status !== STAFF_ORDER_FILTER_STATUS.ALL) {
       searchParams.status = params.status;
     }
 

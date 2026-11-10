@@ -2,7 +2,10 @@ import { ArrowDownUp, RotateCcw, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils/cn";
-import { STAFF_ORDER_STATUS_CONFIG } from "../../constants/staff-orders.constants";
+import {
+  STAFF_ORDER_FILTER_STATUS,
+  STAFF_ORDER_STATUS_CONFIG,
+} from "../../constants/staff-orders.constants";
 import type {
   StaffOrderFilterStatus,
   StaffOrderSortOrder,
@@ -21,12 +24,12 @@ interface StaffOrdersFiltersProps {
 }
 
 const STATUS_OPTIONS: Array<{ value: StaffOrderFilterStatus; label: string }> = [
-  { value: "ALL", label: "All Orders" },
-  { value: "PLACED", label: STAFF_ORDER_STATUS_CONFIG.PLACED.label },
-  { value: "CONFIRMED", label: STAFF_ORDER_STATUS_CONFIG.CONFIRMED.label },
-  { value: "PREPARING", label: STAFF_ORDER_STATUS_CONFIG.PREPARING.label },
-  { value: "READY", label: STAFF_ORDER_STATUS_CONFIG.READY.label },
-  { value: "COMPLETED", label: STAFF_ORDER_STATUS_CONFIG.COMPLETED.label },
+  { value: STAFF_ORDER_FILTER_STATUS.ALL, label: "All Orders" },
+  { value: STAFF_ORDER_FILTER_STATUS.PLACED, label: STAFF_ORDER_STATUS_CONFIG.PLACED.label },
+  { value: STAFF_ORDER_FILTER_STATUS.CONFIRMED, label: STAFF_ORDER_STATUS_CONFIG.CONFIRMED.label },
+  { value: STAFF_ORDER_FILTER_STATUS.PREPARING, label: STAFF_ORDER_STATUS_CONFIG.PREPARING.label },
+  { value: STAFF_ORDER_FILTER_STATUS.READY, label: STAFF_ORDER_STATUS_CONFIG.READY.label },
+  { value: STAFF_ORDER_FILTER_STATUS.COMPLETED, label: STAFF_ORDER_STATUS_CONFIG.COMPLETED.label },
 ];
 
 export function StaffOrdersFilters({
@@ -103,7 +106,9 @@ export function StaffOrdersFilters({
         {STATUS_OPTIONS.map((opt) => {
           const isSelected = statusFilter === opt.value;
           const statusConfig =
-            opt.value !== "ALL" ? STAFF_ORDER_STATUS_CONFIG[opt.value as StaffOrderStatus] : null;
+            opt.value !== STAFF_ORDER_FILTER_STATUS.ALL
+              ? STAFF_ORDER_STATUS_CONFIG[opt.value as StaffOrderStatus]
+              : null;
 
           return (
             <button
