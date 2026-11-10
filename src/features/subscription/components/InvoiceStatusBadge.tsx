@@ -80,20 +80,14 @@ export function InvoiceStatusBadge({
     default:
       return (
         <span
-          data-testid="invoice-status-badge-created"
+          data-testid="invoice-status-badge-default"
           className={cn(
             "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium",
-            "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800",
+            "bg-neutral-100 text-neutral-600 border border-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:border-neutral-700",
             className,
           )}
         >
-          {showIcon && (
-            <Clock
-              className="size-3.5 shrink-0 text-amber-600 dark:text-amber-400"
-              aria-hidden="true"
-            />
-          )}
-          <span>{SUBSCRIPTION_HISTORY_MESSAGES.STATUS_CREATED_LABEL}</span>
+          <span>{normalizedStatus || "UNKNOWN"}</span>
         </span>
       );
   }

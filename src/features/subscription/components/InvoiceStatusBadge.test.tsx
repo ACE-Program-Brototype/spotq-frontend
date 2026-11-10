@@ -23,11 +23,18 @@ describe("InvoiceStatusBadge", () => {
     expect(badge).toHaveTextContent("Incomplete");
   });
 
-  it("falls back to created/incomplete for unexpected status", () => {
+  it("renders neutral fallback badge for unhandled or unknown status", () => {
     render(<InvoiceStatusBadge status="UNKNOWN_STATUS" />);
-    const badge = screen.getByTestId("invoice-status-badge-created");
+    const badge = screen.getByTestId("invoice-status-badge-default");
     expect(badge).toBeInTheDocument();
-    expect(badge).toHaveTextContent("Incomplete");
+    expect(badge).toHaveTextContent("UNKNOWN_STATUS");
+  });
+
+  it("renders UNKNOWN fallback text when status is empty", () => {
+    render(<InvoiceStatusBadge status="" />);
+    const badge = screen.getByTestId("invoice-status-badge-default");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveTextContent("UNKNOWN");
   });
 
   it("renders without icon when showIcon is false", () => {
