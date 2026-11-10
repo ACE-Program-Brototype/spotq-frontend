@@ -1,4 +1,6 @@
-import { Clock, Ticket, Utensils } from "lucide-react";
+import { ChevronRight, Clock, Ticket, Utensils } from "lucide-react";
+import { Link } from "react-router-dom";
+import { STAFF_ROUTES } from "@/app/router/staff/staff.routes.constants";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
@@ -57,15 +59,16 @@ export function StaffOrdersTable({
             const totalItemCount = order.items.reduce((acc, item) => acc + item.quantity, 0);
 
             return (
-              <div
+              <Link
                 key={order.id}
-                className="p-4 sm:p-5 transition-colors duration-150 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                to={STAFF_ROUTES.ORDER_DETAILS(order.id)}
+                className="p-4 sm:p-5 transition-colors duration-150 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-neutral-50/80 group cursor-pointer block"
               >
                 {/* Left Column: Order Number, Type, Queue, Status, Time */}
                 <div className="space-y-2.5 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     {/* Order Number */}
-                    <span className="text-sm sm:text-base font-black tracking-tight text-neutral-900">
+                    <span className="text-sm sm:text-base font-black tracking-tight text-neutral-900 group-hover:text-[#e8631b] transition-colors">
                       {order.orderNumber}
                     </span>
 
@@ -130,17 +133,20 @@ export function StaffOrdersTable({
                   </div>
                 </div>
 
-                {/* Right Column: Order Time & Item Count */}
-                <div className="flex items-center md:flex-col md:items-end justify-between md:justify-center gap-1 text-xs text-neutral-400 shrink-0 border-t border-neutral-100 pt-2 md:border-t-0 md:pt-0">
-                  <span className="flex items-center gap-1 text-neutral-500 font-medium">
-                    <Clock className="size-3 text-neutral-400" />
-                    {formatDate(order.createdAt)}
-                  </span>
-                  <span className="text-[11px] font-semibold text-neutral-500">
-                    {totalItemCount} {totalItemCount === 1 ? "item" : "items"}
-                  </span>
+                {/* Right Column: Order Time, Item Count & Navigate Chevron */}
+                <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 border-t border-neutral-100 pt-2 md:border-t-0 md:pt-0">
+                  <div className="flex items-center md:flex-col md:items-end justify-between md:justify-center gap-1 text-xs text-neutral-400 shrink-0">
+                    <span className="flex items-center gap-1 text-neutral-500 font-medium">
+                      <Clock className="size-3 text-neutral-400" />
+                      {formatDate(order.createdAt)}
+                    </span>
+                    <span className="text-[11px] font-semibold text-neutral-500">
+                      {totalItemCount} {totalItemCount === 1 ? "item" : "items"}
+                    </span>
+                  </div>
+                  <ChevronRight className="size-5 text-neutral-300 group-hover:text-[#e8631b] group-hover:translate-x-0.5 transition-all hidden sm:block" />
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

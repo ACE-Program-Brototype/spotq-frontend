@@ -10,11 +10,13 @@ import { staffOrdersService } from "./staff-orders.service";
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     get: jest.fn(),
+    patch: jest.fn(),
   },
 }));
 
 describe("staffOrdersService", () => {
   const restaurantId = "rest-uuid-1234";
+  const orderId = "ord-uuid-5678";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -127,6 +129,149 @@ describe("staffOrdersService", () => {
           sortOrder: STAFF_ORDERS_DEFAULTS.SORT_ORDER,
         },
       });
+    });
+  });
+
+  describe("getStaffOrderDetail", () => {
+    it("throws error when restaurantId is missing", async () => {
+      await expect(staffOrdersService.getStaffOrderDetail("", orderId)).rejects.toThrow(
+        STAFF_ORDERS_MESSAGES.RESTAURANT_ID_REQUIRED,
+      );
+    });
+
+    it("throws error when orderId is missing", async () => {
+      await expect(staffOrdersService.getStaffOrderDetail(restaurantId, "")).rejects.toThrow(
+        STAFF_ORDERS_MESSAGES.ORDER_ID_REQUIRED,
+      );
+    });
+
+    it("fetches and normalizes snake_case order details response", async () => {
+      const mockApiResponse = {
+        success: true,
+        message: "Order details fetched",
+        data: {
+          order_id: "ord-uuid-5678",
+          order_number: "ORD-8899",
+          status: "CONFIRMED" as const,
+          customer_notes: "Please pack sauce separately",
+          created_at: "2026-11-08T12:00:00.000Z",
+          items: [
+            {
+              menu_item_id: "m-1",
+              name: "Chicken Supreme Pizza",
+              variant_id: "v-1",
+              variant_name: "Medium 10 inch",
+              quantity: 2,
+              special_instructions: "Crispy crust please",
+              addons: [
+                {
+                  addon_id: "add-1",
+                  name: "Extra Cheese",
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockApiResponse),
+      });
+
+      const result = await staffOrdersService.getStaffOrderDetail(restaurantId, orderId);
+
+      expect(apiClient.get).toHaveBeenCalledWith(
+        STAFF_ORDERS_ENDPOINTS.DETAILS(restaurantId, orderId),
+      );
+      expect(result.id).toBe("ord-uuid-5678");
+      expect(result.orderNumber).toBe("ORD-8899");
+      expect(result.status).toBe("CONFIRMED");
+      expect(result.customerNotes).toBe("Please pack sauce separately");
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0].name).toBe("Chicken Supreme Pizza");
+      expect(result.items[0].variant?.name).toBe("Medium 10 inch");
+      expect(result.items[0].addons[0].name).toBe("Extra Cheese");
+      expect(result.items[0].specialInstructions).toBe("Crispy crust please");
+      expect(result.totalQuantity).toBe(2);
+    });
+
+    it("fetches and normalizes camelCase order details response", async () => {
+      const mockApiResponse = {
+        success: true,
+        message: "Order details fetched",
+        data: {
+          orderId: "ord-uuid-5678",
+          orderNumber: "ORD-1234",
+          status: "PREPARING" as const,
+          orderType: "SELF_PRO" as const,
+          customerNotes: null,
+          tableNumber: 5,
+          createdAt: "2026-11-08T12:30:00.000Z",
+          items: [
+            {
+              menuItemId: "m-2",
+              name: "Avocado Toast",
+              quantity: 1,
+              variant: null,
+              addons: [],
+              specialInstructions: null,
+            },
+          ],
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockApiResponse),
+      });
+
+      const result = await staffOrdersService.getStaffOrderDetail(restaurantId, orderId);
+
+      expect(result.orderNumber).toBe("ORD-1234");
+      expect(result.status).toBe("PREPARING");
+      expect(result.tableNumber).toBe(5);
+      expect(result.orderType).toBe("SELF_PRO");
+      expect(result.totalQuantity).toBe(1);
+    });
+  });
+
+  describe("updateStaffOrderStatus", () => {
+    it("throws error when orderId is missing", async () => {
+      await expect(
+        staffOrdersService.updateStaffOrderStatus({
+          orderId: "",
+          status: "PREPARING",
+        }),
+      ).rejects.toThrow(STAFF_ORDERS_MESSAGES.ORDER_ID_REQUIRED);
+    });
+
+    it("sends PATCH request to update order status", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Status updated",
+        data: {
+          orderId,
+          previousStatus: "CONFIRMED" as const,
+          status: "PREPARING" as const,
+        },
+      };
+
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await staffOrdersService.updateStaffOrderStatus({
+        orderId,
+        status: "PREPARING",
+        notes: "Started food prep",
+      });
+
+      expect(apiClient.patch).toHaveBeenCalledWith(STAFF_ORDERS_ENDPOINTS.UPDATE_STATUS(orderId), {
+        json: {
+          status: "PREPARING",
+          notes: "Started food prep",
+        },
+      });
+      expect(result.status).toBe("PREPARING");
     });
   });
 });
