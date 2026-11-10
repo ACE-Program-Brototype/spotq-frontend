@@ -1,28 +1,33 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { TableItem } from "../types/table.types";
+import { TABLE_SHAPE, TABLE_STATUS } from "../constants/table.constants";
+import type { RestaurantTableDetails } from "../types/table.types";
 import { DeleteTableDialog } from "./DeleteTableDialog";
 
 describe("DeleteTableDialog", () => {
-  const mockTableAvailable: TableItem = {
-    id: "table-1",
+  const mockTableAvailable: RestaurantTableDetails = {
+    tableId: "table-1",
+    restaurantId: "rest-1",
     tableCode: "T-01",
     capacity: 4,
-    status: "AVAILABLE",
+    status: TABLE_STATUS.AVAILABLE,
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    sectionName: "Main",
+    shape: TABLE_SHAPE.SQUARE,
     currentOccupancy: 0,
-    isActive: true,
+    createdAt: new Date().toISOString(),
   };
 
-  const mockTableOccupied: TableItem = {
-    id: "table-2",
+  const mockTableOccupied: RestaurantTableDetails = {
+    tableId: "table-2",
+    restaurantId: "rest-1",
     tableCode: "T-02",
     capacity: 6,
-    status: "OCCUPIED",
+    status: TABLE_STATUS.OCCUPIED,
     sectionId: "sec-1",
-    tableShape: "CIRCLE",
+    sectionName: "Main",
+    shape: TABLE_SHAPE.CIRCLE,
     currentOccupancy: 4,
-    isActive: true,
+    createdAt: new Date().toISOString(),
   };
 
   it("renders confirmation dialog when table is available", () => {
@@ -40,7 +45,7 @@ describe("DeleteTableDialog", () => {
 
     expect(screen.getByText('Delete Table "T-01"?')).toBeInTheDocument();
     expect(
-      screen.getByText(/Historical orders, receipts, and revenue reports remain intact/i),
+      screen.getByText(/This will remove it from your active floor layout/i),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Delete Table" })).toBeInTheDocument();
   });

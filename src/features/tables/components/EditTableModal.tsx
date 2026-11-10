@@ -3,14 +3,14 @@ import { AlertCircle, Armchair, Circle, Loader2, Square, X } from "lucide-react"
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { TABLE_MESSAGES } from "../constants/table.constants";
+import { TABLE_MESSAGES, TABLE_SHAPE, TABLE_STATUS } from "../constants/table.constants";
 import { useTableSections } from "../hooks/useTableSections";
 import { type UpdateTableFormData, updateTableSchema } from "../schemas/update-table.schema";
-import type { RestaurantTableDetails, TableItem } from "../types/table.types";
+import type { RestaurantTableDetails } from "../types/table.types";
 
 interface EditTableModalProps {
   /** Target table to edit */
-  table: TableItem | RestaurantTableDetails | null;
+  table: RestaurantTableDetails | null;
   /** Whether the modal is open */
   isOpen: boolean;
   /** Callback invoked when the modal is closed */
@@ -52,25 +52,17 @@ export function EditTableModal({
       tableCode: "",
       sectionId: "",
       capacity: 2,
-      tableShape: "CIRCLE",
+      tableShape: TABLE_SHAPE.CIRCLE,
     },
   });
 
   useEffect(() => {
     if (table && isOpen) {
-      const initialShape =
-        "shape" in table && (table.shape === "CIRCLE" || table.shape === "SQUARE")
-          ? table.shape
-          : "tableShape" in table &&
-              (table.tableShape === "CIRCLE" || table.tableShape === "SQUARE")
-            ? table.tableShape
-            : "CIRCLE";
-
       reset({
         tableCode: table.tableCode,
         sectionId: table.sectionId,
         capacity: table.capacity,
-        tableShape: initialShape,
+        tableShape: table.shape || TABLE_SHAPE.CIRCLE,
       });
     }
   }, [table, isOpen, reset]);
@@ -89,8 +81,9 @@ export function EditTableModal({
 
   if (!isOpen || !table) return null;
 
-  const tableId = "tableId" in table ? table.tableId : table.id;
-  const isOccupied = table.status === "OCCUPIED" || table.status === "PARTIAL_OCCUPIED";
+  const tableId = table.tableId;
+  const isOccupied =
+    table.status === TABLE_STATUS.OCCUPIED || table.status === TABLE_STATUS.PARTIAL_OCCUPIED;
   const currentShape = watch("tableShape");
 
   const handleFormSubmit = async (data: UpdateTableFormData) => {
@@ -115,12 +108,16 @@ export function EditTableModal({
       <div className="relative w-full max-w-lg rounded-2xl border border-[#ede4de] bg-white p-6 shadow-2xl sm:p-7">
         {/* Modal header */}
         <header className="flex items-start justify-between gap-4 border-b border-[#f1ebe6] pb-4">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#f4eee9] text-[#9a3412]">
               <Armchair className="size-5" aria-hidden="true" />
             </div>
-            <div>
-              <h2 id="edit-table-title" className="text-xl font-bold tracking-tight text-[#202522]">
+            <div className="min-w-0">
+              <h2
+                id="edit-table-title"
+                className="truncate text-xl font-bold tracking-tight text-[#202522]"
+                title={`Edit Table ${table.tableCode}`}
+              >
                 Edit Table {table.tableCode}
               </h2>
               <p className="mt-0.5 text-xs text-[#778078]">
@@ -134,7 +131,7 @@ export function EditTableModal({
             onClick={onClose}
             disabled={isLoading}
             aria-label="Close edit table modal"
-            className="rounded-lg p-1.5 text-[#888e88] transition-colors hover:bg-[#f4eee9] hover:text-[#202522] disabled:opacity-50"
+            className="shrink-0 rounded-lg p-1.5 text-[#888e88] transition-colors hover:bg-[#f4eee9] hover:text-[#202522] disabled:opacity-50"
           >
             <X className="size-5" />
           </button>
@@ -221,7 +218,7 @@ export function EditTableModal({
             <div className="mt-2 grid grid-cols-2 gap-3">
               <label
                 className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border p-3 text-sm font-medium transition-all ${
-                  currentShape === "CIRCLE"
+                  currentShape === TABLE_SHAPE.CIRCLE
                     ? "border-[#b4532a] bg-orange-50 text-[#8b3b1d] ring-1 ring-[#b4532a]"
                     : "border-[#e8e2dd] bg-white text-[#505750] hover:border-[#d0c6bf]"
                 }`}
@@ -229,11 +226,14 @@ export function EditTableModal({
                 <input
                   type="radio"
                   name="tableShape"
-                  value="CIRCLE"
+                  value={TABLE_SHAPE.CIRCLE}
                   className="sr-only"
-                  checked={currentShape === "CIRCLE"}
+                  checked={currentShape === TABLE_SHAPE.CIRCLE}
                   onChange={() =>
-                    setValue("tableShape", "CIRCLE", { shouldValidate: true, shouldDirty: true })
+                    setValue("tableShape", TABLE_SHAPE.CIRCLE, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
                   }
                 />
                 <Circle className="size-4 shrink-0" aria-hidden="true" />
@@ -242,7 +242,7 @@ export function EditTableModal({
 
               <label
                 className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border p-3 text-sm font-medium transition-all ${
-                  currentShape === "SQUARE"
+                  currentShape === TABLE_SHAPE.SQUARE
                     ? "border-[#b4532a] bg-orange-50 text-[#8b3b1d] ring-1 ring-[#b4532a]"
                     : "border-[#e8e2dd] bg-white text-[#505750] hover:border-[#d0c6bf]"
                 }`}
@@ -250,11 +250,14 @@ export function EditTableModal({
                 <input
                   type="radio"
                   name="tableShape"
-                  value="SQUARE"
+                  value={TABLE_SHAPE.SQUARE}
                   className="sr-only"
-                  checked={currentShape === "SQUARE"}
+                  checked={currentShape === TABLE_SHAPE.SQUARE}
                   onChange={() =>
-                    setValue("tableShape", "SQUARE", { shouldValidate: true, shouldDirty: true })
+                    setValue("tableShape", TABLE_SHAPE.SQUARE, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
                   }
                 />
                 <Square className="size-4 shrink-0" aria-hidden="true" />

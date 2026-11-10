@@ -207,7 +207,7 @@ export const TABLE_MESSAGES = {
   DELETE_FAILED: "Failed to delete table. Please try again.",
   DELETE_CONFIRM_TITLE: "Delete Table",
   DELETE_CONFIRM_DESCRIPTION:
-    "Are you sure you want to delete this table? This will soft-delete the table and remove it from your active floor layout. Historical orders and revenue records remain intact.",
+    "Are you sure you want to delete this table? This will remove it from your active floor layout.",
   CANNOT_DELETE_OCCUPIED:
     "This table is currently occupied by guests. Please reassign or conclude active dining sessions before deleting.",
   OCCUPIED_EDIT_WARNING:

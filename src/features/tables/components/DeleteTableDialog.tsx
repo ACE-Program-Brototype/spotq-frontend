@@ -1,11 +1,12 @@
 import { AlertTriangle } from "lucide-react";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Button } from "@/components/ui/button";
-import type { RestaurantTableDetails, TableItem } from "../types/table.types";
+import { TABLE_STATUS } from "../constants/table.constants";
+import type { RestaurantTableDetails } from "../types/table.types";
 
 interface DeleteTableDialogProps {
-  /** Target table to delete (either TableItem from listing or RestaurantTableDetails from details page) */
-  table: TableItem | RestaurantTableDetails | null;
+  /** Target table to delete */
+  table: RestaurantTableDetails | null;
   /** Whether the dialog is open */
   isOpen: boolean;
   /** Callback invoked when the dialog is closed or cancelled */
@@ -24,8 +25,7 @@ interface DeleteTableDialogProps {
  * Safety Guards:
  * - If the table is OCCUPIED or PARTIAL_OCCUPIED, deletion is strictly blocked.
  *   An informative alert explains that active guest sessions must be concluded first.
- * - If the table is AVAILABLE or MAINTENANCE, a destructive confirmation dialog is shown.
- * - Explicitly informs the user that deletion is a soft delete (preserves historical orders).
+ * - If the table is AVAILABLE or MAINTENANCE, a confirmation dialog is shown.
  */
 export function DeleteTableDialog({
   table,
@@ -36,8 +36,9 @@ export function DeleteTableDialog({
 }: DeleteTableDialogProps) {
   if (!table || !isOpen) return null;
 
-  const tableId = "tableId" in table ? table.tableId : table.id;
-  const isOccupied = table.status === "OCCUPIED" || table.status === "PARTIAL_OCCUPIED";
+  const tableId = table.tableId;
+  const isOccupied =
+    table.status === TABLE_STATUS.OCCUPIED || table.status === TABLE_STATUS.PARTIAL_OCCUPIED;
 
   // GUARD 1: Active Occupancy Block
   // When a table is actively occupied by guests, deleting it would orphan active guest sessions.
@@ -55,14 +56,18 @@ export function DeleteTableDialog({
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
               <AlertTriangle className="size-5" aria-hidden="true" />
             </div>
-            <div>
-              <h2 id="occupied-table-title" className="text-lg font-bold text-[#202522]">
+            <div className="min-w-0 flex-1">
+              <h2
+                id="occupied-table-title"
+                className="truncate text-lg font-bold text-[#202522]"
+                title={`Cannot Delete Table ${table.tableCode}`}
+              >
                 Cannot Delete Table {table.tableCode}
               </h2>
-              <p className="mt-1 text-sm text-[#5d655f]">
+              <p className="mt-1 text-sm text-[#5d655f] break-words">
                 This table is currently marked as{" "}
                 <span className="font-semibold text-amber-700">
-                  {table.status === "OCCUPIED" ? "Occupied" : "Partially Occupied"}
+                  {table.status === TABLE_STATUS.OCCUPIED ? "Occupied" : "Partially Occupied"}
                 </span>
                 {table.currentOccupancy > 0
                   ? ` with ${table.currentOccupancy} guest(s) seated.`
@@ -93,8 +98,8 @@ export function DeleteTableDialog({
     );
   }
 
-  // GUARD 2: Normal Soft Deletion Confirmation
-  // Table is either AVAILABLE or in MAINTENANCE. Soft delete is safe to perform.
+  // GUARD 2: Normal Deletion Confirmation
+  // Table is either AVAILABLE or in MAINTENANCE. Safe to perform deletion.
   return (
     <ConfirmDialog
       open={isOpen}
@@ -102,7 +107,7 @@ export function DeleteTableDialog({
         if (!open && !isLoading) onClose();
       }}
       title={`Delete Table "${table.tableCode}"?`}
-      description={`Are you sure you want to delete Table ${table.tableCode}? This action soft-deletes the table, removing it from your active floor layout and waitlist. Historical orders, receipts, and revenue reports remain intact.`}
+      description={`Are you sure you want to delete Table ${table.tableCode}? This will remove it from your active floor layout.`}
       confirmText="Delete Table"
       cancelText="Cancel"
       confirmVariant="destructive"

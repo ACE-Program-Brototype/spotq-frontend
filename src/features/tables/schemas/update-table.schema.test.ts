@@ -1,4 +1,4 @@
-import { UPDATE_TABLE_VALIDATION_MESSAGES } from "../constants/table.constants";
+import { TABLE_SHAPE, UPDATE_TABLE_VALIDATION_MESSAGES } from "../constants/table.constants";
 import { updateTableSchema } from "./update-table.schema";
 
 describe("updateTableSchema", () => {
@@ -7,7 +7,7 @@ describe("updateTableSchema", () => {
       tableCode: "T-10",
       sectionId: "123e4567-e89b-12d3-a456-426614174000",
       capacity: 4,
-      tableShape: "SQUARE",
+      tableShape: TABLE_SHAPE.SQUARE,
     };
 
     const result = updateTableSchema.safeParse(validData);
@@ -23,7 +23,7 @@ describe("updateTableSchema", () => {
       tableCode: "   ",
       sectionId: "123e4567-e89b-12d3-a456-426614174000",
       capacity: 4,
-      tableShape: "CIRCLE",
+      tableShape: TABLE_SHAPE.CIRCLE,
     };
 
     const result = updateTableSchema.safeParse(invalidData);
@@ -40,7 +40,7 @@ describe("updateTableSchema", () => {
       tableCode: "T-01",
       sectionId: "123e4567-e89b-12d3-a456-426614174000",
       capacity: 0,
-      tableShape: "CIRCLE",
+      tableShape: TABLE_SHAPE.CIRCLE,
     };
 
     const result = updateTableSchema.safeParse(invalidData);
@@ -55,7 +55,7 @@ describe("updateTableSchema", () => {
       tableCode: "T-01",
       sectionId: "123e4567-e89b-12d3-a456-426614174000",
       capacity: 101,
-      tableShape: "CIRCLE",
+      tableShape: TABLE_SHAPE.CIRCLE,
     };
 
     const result = updateTableSchema.safeParse(invalidData);
@@ -70,7 +70,7 @@ describe("updateTableSchema", () => {
       tableCode: "T-01",
       sectionId: "",
       capacity: 4,
-      tableShape: "SQUARE",
+      tableShape: TABLE_SHAPE.SQUARE,
     };
 
     const result = updateTableSchema.safeParse(invalidData);

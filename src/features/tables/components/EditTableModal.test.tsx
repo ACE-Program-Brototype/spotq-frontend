@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import type { TableItem } from "../types/table.types";
+import { TABLE_SHAPE, TABLE_STATUS } from "../constants/table.constants";
+import type { RestaurantTableDetails } from "../types/table.types";
 import { EditTableModal } from "./EditTableModal";
 
 jest.mock("../hooks/useTableSections", () => ({
@@ -15,20 +16,22 @@ jest.mock("../hooks/useTableSections", () => ({
 
 describe("EditTableModal", () => {
   const restaurantId = "rest-123";
-  const mockTable: TableItem = {
-    id: "table-1",
+  const mockTable: RestaurantTableDetails = {
+    tableId: "table-1",
+    restaurantId: "rest-123",
     tableCode: "T-01",
     capacity: 4,
-    status: "AVAILABLE",
+    status: TABLE_STATUS.AVAILABLE,
     sectionId: "sec-1",
-    tableShape: "SQUARE",
+    sectionName: "Patio",
+    shape: TABLE_SHAPE.SQUARE,
     currentOccupancy: 0,
-    isActive: true,
+    createdAt: new Date().toISOString(),
   };
 
-  const mockOccupiedTable: TableItem = {
+  const mockOccupiedTable: RestaurantTableDetails = {
     ...mockTable,
-    status: "OCCUPIED",
+    status: TABLE_STATUS.OCCUPIED,
     currentOccupancy: 3,
   };
 
@@ -90,7 +93,7 @@ describe("EditTableModal", () => {
         tableCode: "T-01",
         sectionId: "sec-1",
         capacity: 8,
-        tableShape: "SQUARE",
+        tableShape: TABLE_SHAPE.SQUARE,
       });
       expect(onClose).toHaveBeenCalled();
     });

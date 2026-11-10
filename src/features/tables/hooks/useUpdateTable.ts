@@ -14,15 +14,12 @@ export function useUpdateTable(restaurantId: string) {
 
   return useMutation<TableItem, Error, UpdateTableMutationVariables>({
     mutationFn: ({ tableId, payload }) => tableService.updateTable(restaurantId, tableId, payload),
-    onSuccess: async (_, variables) => {
+    onSuccess: (_, variables) => {
       // Invalidate both paginated list and specific table detail queries
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.LIST(restaurantId) }),
-        queryClient.invalidateQueries({
-          queryKey: TABLE_QUERY_KEYS.DETAILS(restaurantId, variables.tableId),
-        }),
-        queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.ALL }),
-      ]);
+      queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.LIST(restaurantId) });
+      queryClient.invalidateQueries({
+        queryKey: TABLE_QUERY_KEYS.DETAILS(restaurantId, variables.tableId),
+      });
       toast.success(TABLE_MESSAGES.UPDATE_SUCCESS);
     },
     onError: (error) => {

@@ -9,12 +9,15 @@ export function useDeleteTable(restaurantId: string) {
 
   return useMutation<DeleteTableResponse, Error, string>({
     mutationFn: (tableId: string) => tableService.deleteTable(restaurantId, tableId),
-    onSuccess: async () => {
-      // Invalidate tables lists to immediately update the floor layout
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.LIST(restaurantId) }),
-        queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.ALL }),
-      ]);
+    onSuccess: (_, tableId) => {
+      // Remove deleted table details from cache so it never triggers a 404 refetch
+      queryClient.removeQueries({
+        queryKey: TABLE_QUERY_KEYS.DETAILS(restaurantId, tableId),
+      });
+      // Invalidate tables list without awaiting
+      queryClient.invalidateQueries({
+        queryKey: TABLE_QUERY_KEYS.LIST(restaurantId),
+      });
       toast.success(TABLE_MESSAGES.DELETE_SUCCESS);
     },
     onError: (error) => {

@@ -135,11 +135,14 @@ export default function RestaurantTableDetailPage() {
 
         {/* Header with Title, Status Badge, and Action Buttons */}
         <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-[#202522] sm:text-3xl">
+          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-3">
+            <h1
+              className="break-all text-2xl font-bold tracking-tight text-[#202522] sm:text-3xl"
+              title={`Table ${title}`}
+            >
               Table {title}
             </h1>
-            <Badge variant="outline" className="border-sky-200 bg-sky-50 text-sky-700">
+            <Badge variant="outline" className="shrink-0 border-sky-200 bg-sky-50 text-sky-700">
               {status}
             </Badge>
           </div>
@@ -193,7 +196,7 @@ export default function RestaurantTableDetailPage() {
       <Card className="border-[#ede4de] shadow-none">
         <CardHeader className="border-b border-[#f0e9e4]">
           <CardTitle className="text-base text-[#282d29]">Table details</CardTitle>
-          <CardDescription>Information for table {title}.</CardDescription>
+          <CardDescription className="break-all">Information for table {title}.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3">
           <div className="flex items-center gap-3">
@@ -239,7 +242,7 @@ function Detail({ label, value, mono = false }: { label: string; value: string; 
     <div>
       <p className="text-xs text-[#858b85]">{label}</p>
       <p
-        className={`mt-0.5 font-medium text-[#252a26] ${mono ? "break-all font-mono text-sm" : ""}`}
+        className={`mt-0.5 font-medium text-[#252a26] ${mono ? "break-all font-mono text-sm" : "break-words"}`}
       >
         {value}
       </p>
