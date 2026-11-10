@@ -1,7 +1,8 @@
-import { ChevronRight, Clock, Ticket, Utensils } from "lucide-react";
+import { ChevronRight, Clock, Eye, Ticket, Utensils } from "lucide-react";
 import { Link } from "react-router-dom";
 import { STAFF_ROUTES } from "@/app/router/staff/staff.routes.constants";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
 import {
@@ -133,7 +134,7 @@ export function StaffOrdersTable({
                   </div>
                 </div>
 
-                {/* Right Column: Order Time, Item Count & Navigate Chevron */}
+                {/* Right Column: Order Time, Item Count & View Details Button */}
                 <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 border-t border-neutral-100 pt-2 md:border-t-0 md:pt-0">
                   <div className="flex items-center md:flex-col md:items-end justify-between md:justify-center gap-1 text-xs text-neutral-400 shrink-0">
                     <span className="flex items-center gap-1 text-neutral-500 font-medium">
@@ -144,7 +145,17 @@ export function StaffOrdersTable({
                       {totalItemCount} {totalItemCount === 1 ? "item" : "items"}
                     </span>
                   </div>
-                  <ChevronRight className="size-5 text-neutral-300 group-hover:text-[#e8631b] group-hover:translate-x-0.5 transition-all hidden sm:block" />
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-neutral-200 text-xs font-semibold text-neutral-700 group-hover:border-[#e8631b] group-hover:text-[#e8631b] group-hover:bg-[#fef3ec] gap-1.5 shrink-0 h-8 px-3 transition-colors"
+                  >
+                    <Eye className="size-3.5 text-neutral-400 group-hover:text-[#e8631b]" />
+                    <span>View Details</span>
+                    <ChevronRight className="size-3.5 text-neutral-300 group-hover:text-[#e8631b] group-hover:translate-x-0.5 transition-transform" />
+                  </Button>
                 </div>
               </Link>
             );
