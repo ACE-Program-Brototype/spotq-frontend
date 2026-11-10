@@ -12,6 +12,7 @@ export const CUSTOMER_ROUTE_PATHS = {
   PROFILE: {
     ROOT: "/profile",
     EDIT: "edit",
+    PAYMENTS: "payments",
   },
 
   AUTH: {
@@ -27,10 +28,10 @@ export const CUSTOMER_ROUTE_PATHS = {
   CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
+  ORDER_DETAILS: "/orders/:orderId",
   ORDER_RECEIPT: "/orders/:orderId/receipt",
   QUEUES: "/queues",
   LOYALTIES: "/loyalties",
-  PAYMENTS: "/payments",
 
   LEGAL: {
     TERMS: "/terms",
@@ -49,16 +50,18 @@ export const CUSTOMER_ROUTES = {
   PROFILE: {
     ROOT: "/profile",
     EDIT: "/profile/edit",
+    PAYMENTS: "/profile/payments",
   },
 
   CART: "/cart",
   CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
+  ORDER_DETAILS: (id: string | number) => `/orders/${id}`,
   ORDER_RECEIPT: (id: string | number) => `/orders/${id}/receipt`,
   QUEUES: "/queues",
   LOYALTIES: "/loyalties",
-  PAYMENTS: "/payments",
+  PAYMENTS: "/profile/payments",
 
   AUTH: {
     LOGIN: "/login",

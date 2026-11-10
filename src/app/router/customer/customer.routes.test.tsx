@@ -11,6 +11,7 @@ describe("customerRoutes structure", () => {
     expect(profileGroup?.path).toBe("/profile");
     expect(profileGroup?.children?.[0].index).toBe(true);
     expect(profileGroup?.children?.[1].path).toBe("edit");
+    expect(profileGroup?.children?.[2].path).toBe("payments");
     expect(layoutGroup.children?.[5].path).toBe("/checkout");
     const ordersGroup = layoutGroup.children?.[6];
     expect(ordersGroup?.path).toBe("/orders");
