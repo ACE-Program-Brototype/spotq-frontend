@@ -27,6 +27,7 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       children: [
         { title: "Overview", href: `${basePath}/overview` },
         { title: "QR Management", href: `${basePath}/qr-management` },
+        { title: "Table Sections", href: `${basePath}/tables/sections` },
         { title: "Tables", href: `${basePath}/tables` },
       ],
     },

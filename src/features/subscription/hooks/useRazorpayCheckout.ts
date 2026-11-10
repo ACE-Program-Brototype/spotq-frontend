@@ -11,6 +11,8 @@ import type {
 } from "@/features/subscription/types/subscription.types";
 import { loadRazorpayScript } from "@/lib/utils/razorpay";
 
+export { loadRazorpayScript };
+
 declare global {
   interface Window {
     Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;

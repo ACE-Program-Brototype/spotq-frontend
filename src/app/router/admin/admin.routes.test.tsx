@@ -22,5 +22,7 @@ describe("adminRoutes", () => {
     expect(protectedPaths).toContain("restaurants/management");
     expect(protectedPaths).toContain("customers");
     expect(protectedPaths).toContain("customers/:id");
+    expect(protectedPaths).toContain("subscribers");
+    expect(protectedPaths).toContain("subscribers/:id");
   });
 });

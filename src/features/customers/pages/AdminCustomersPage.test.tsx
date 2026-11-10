@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { configure, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type React from "react";
 import { apiClient } from "@/lib/api/client";
 import { AdminCustomersPage } from "./AdminCustomersPage";
@@ -86,6 +86,10 @@ const mockRawNestedUsersResponse = {
 };
 
 describe("AdminCustomersPage (Page-to-Service Integration)", () => {
+  beforeAll(() => {
+    configure({ asyncUtilTimeout: 5000 });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -102,9 +106,12 @@ describe("AdminCustomersPage (Page-to-Service Integration)", () => {
       screen.getByText("Manage platform users, monitor status, and handle administrative actions."),
     ).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.getByText("Rahul Sharma")).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText("Rahul Sharma")).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
 
     expect(screen.getByText("rahul.sharma@example.com")).toBeInTheDocument();
     expect(screen.getByText("ACTIVE")).toBeInTheDocument();

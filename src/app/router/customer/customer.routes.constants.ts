@@ -25,6 +25,7 @@ export const CUSTOMER_ROUTE_PATHS = {
   },
 
   CART: "/cart",
+  CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
   ORDER_DETAILS: "/orders/:orderId",
@@ -53,6 +54,7 @@ export const CUSTOMER_ROUTES = {
   },
 
   CART: "/cart",
+  CHECKOUT: "/checkout",
   NOTIFICATIONS: "/notifications",
   ORDERS: "/orders",
   ORDER_DETAILS: (id: string | number) => `/orders/${id}`,

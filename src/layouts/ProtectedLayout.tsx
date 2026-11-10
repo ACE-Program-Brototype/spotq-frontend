@@ -54,7 +54,7 @@ export default function ProtectedLayout({
   const normalizedRole = user?.role?.toUpperCase();
   const roleHome = getRoleHome(normalizedRole, user?.status, user?.onboardingStatus);
 
-  if (normalizedRole === "RESTAURANT_ADMIN") {
+  if (normalizedRole === "RESTAURANT_ADMIN" || normalizedRole === "RESTAURANT_OWNER") {
     const isVerifiedOrActive =
       user?.status === "VERIFIED" || user?.status === "ACTIVE" || user?.status === "APPROVED";
 
