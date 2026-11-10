@@ -16,7 +16,7 @@ import type { SubscriptionBillingFilterStatus } from "@/features/subscription/ty
 
 export default function BillingHistoryPage() {
   const user = useAuthStore((state) => state.user);
-  const restaurantId = user?.restaurantId || user?.id;
+  const restaurantId = user?.restaurantId;
 
   const [page, setPage] = useState<number>(SUBSCRIPTION_HISTORY_CONFIG.DEFAULT_PAGE);
   const [status, setStatus] = useState<SubscriptionBillingFilterStatus>(
