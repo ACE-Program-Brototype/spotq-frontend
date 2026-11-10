@@ -160,14 +160,6 @@ export const restaurantRoutes: RouteObject[] = [
             Component: BillingHistoryPage,
           },
           {
-            path: "subscription/billing",
-            element: <Navigate to={RESTAURANT_ROUTES.SETTINGS_BILLING_HISTORY} replace />,
-          },
-          {
-            path: "subscription/invoices",
-            element: <Navigate to={RESTAURANT_ROUTES.SETTINGS_BILLING_HISTORY} replace />,
-          },
-          {
             path: RESTAURANT_ROUTE_PATHS.STAFF.ROOT,
             children: [
               {
