@@ -79,9 +79,10 @@ describe("useAssignTables", () => {
     expect(onSuccess).toHaveBeenCalledWith(mockResponse);
   });
 
-  it("handles assignment failure, displays error toast, and calls onError", async () => {
-    const error = new Error("Selected table capacity is insufficient for party size");
+  it("handles assignment failure, displays error toast, invalidates table cache, and calls onError", async () => {
+    const error = new Error("Table Not Available");
     (queueService.assignTables as jest.Mock).mockRejectedValue(error);
+    const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
     const onError = jest.fn();
 
     const { result } = renderHook(() => useAssignTables(restaurantId, { onError }), {
@@ -94,12 +95,13 @@ describe("useAssignTables", () => {
           queueEntryId,
           input: { tables: [{ tableId: "table-1", count: 1 }] },
         }),
-      ).rejects.toThrow("Selected table capacity is insufficient for party size");
+      ).rejects.toThrow("Table Not Available");
     });
 
-    expect(toast.error).toHaveBeenCalledWith(
-      "Selected table capacity is insufficient for party size",
-    );
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: TABLE_QUERY_KEYS.LIST(restaurantId),
+    });
+    expect(toast.error).toHaveBeenCalledWith("Table Not Available");
     expect(onError).toHaveBeenCalledWith(error);
   });
 });

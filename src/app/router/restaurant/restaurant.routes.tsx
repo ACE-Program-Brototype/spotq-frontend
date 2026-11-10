@@ -28,8 +28,8 @@ import SubscriptionSuccessPage from "@/features/subscription/pages/SubscriptionS
 import CreateTablePage from "@/features/tables/pages/CreateTablePage";
 import RestaurantTableDetailPage from "@/features/tables/pages/RestaurantTableDetailPage";
 import RestaurantTablePage from "@/features/tables/pages/RestaurantTablePage";
-import { RestaurantTransactionsPage } from "@/features/transactions";
 import RestaurantTableSectionsPage from "@/features/tables/pages/RestaurantTableSectionsPage";
+import { RestaurantTransactionsPage } from "@/features/transactions";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -212,7 +212,10 @@ export const restaurantRoutes: RouteObject[] = [
             path: RESTAURANT_ROUTE_PATHS.TABLE.ROOT,
             children: [
               { index: true, Component: RestaurantTablePage },
-              { path: RESTAURANT_ROUTE_PATHS.TABLE.SECTIONS, Component: RestaurantTableSectionsPage },
+              {
+                path: RESTAURANT_ROUTE_PATHS.TABLE.SECTIONS,
+                Component: RestaurantTableSectionsPage,
+              },
               { path: RESTAURANT_ROUTE_PATHS.TABLE.CREATE, Component: CreateTablePage },
               { path: RESTAURANT_ROUTE_PATHS.TABLE.VIEW, Component: RestaurantTableDetailPage },
             ],

@@ -6,12 +6,14 @@ import RegisterPage from "@/features/auth/pages/customer/RegisterPage";
 import ResetPasswordPage from "@/features/auth/pages/customer/ResetPasswordPage";
 import VerifyOtpPage from "@/features/auth/pages/customer/VerifyOtpPage";
 import CartPage from "@/features/cart/pages/CartPage";
+import CheckoutPage from "@/features/checkout/pages/CheckoutPage";
 import AboutPage from "@/features/demo/pages/AboutPage";
 import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
 import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
 import OrderHistoryPage from "@/features/orders/pages/OrderHistoryPage";
 import OrderReceiptPage from "@/features/orders/pages/OrderReceiptPage";
+import CustomerPaymentHistoryPage from "@/features/payments/pages/CustomerPaymentHistoryPage";
 import EditProfilePage from "@/features/profile/pages/EditProfilePage";
 import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
 import CustomerRestaurantDetailsPage from "@/features/restaurants/pages/CustomerRestaurantDetailsPage";
@@ -57,7 +59,15 @@ export const customerRoutes: RouteObject[] = [
             path: CUSTOMER_ROUTE_PATHS.PROFILE.EDIT,
             Component: EditProfilePage,
           },
+          {
+            path: CUSTOMER_ROUTE_PATHS.PROFILE.PAYMENTS,
+            Component: CustomerPaymentHistoryPage,
+          },
         ],
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.CHECKOUT,
+        Component: CheckoutPage,
       },
       {
         path: CUSTOMER_ROUTE_PATHS.ORDERS,

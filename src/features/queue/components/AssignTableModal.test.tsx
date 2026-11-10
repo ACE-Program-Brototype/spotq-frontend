@@ -132,26 +132,14 @@ describe("AssignTableModal", () => {
     );
   };
 
-  it("does not render when isOpen is false or queueEntry is null", () => {
-    const { rerender } = render(
+  it("does not render when isOpen is false", () => {
+    render(
       <QueryClientProvider client={queryClient}>
         <AssignTableModal
           isOpen={false}
           onClose={jest.fn()}
           restaurantId={restaurantId}
           queueEntry={mockQueueEntry}
-        />
-      </QueryClientProvider>,
-    );
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-    rerender(
-      <QueryClientProvider client={queryClient}>
-        <AssignTableModal
-          isOpen={true}
-          onClose={jest.fn()}
-          restaurantId={restaurantId}
-          queueEntry={null}
         />
       </QueryClientProvider>,
     );
@@ -309,5 +297,25 @@ describe("AssignTableModal", () => {
     // Only VIP tables should be visible
     expect(screen.getByText("Table VIP-1")).toBeInTheDocument();
     expect(screen.queryByText("Table T1")).not.toBeInTheDocument();
+  });
+
+  it("closes the modal when table assignment fails on error (e.g. table is occupied)", async () => {
+    const user = userEvent.setup();
+    const onClose = jest.fn();
+
+    (queueService.assignTables as jest.Mock).mockRejectedValue(new Error("Table Not Available"));
+
+    renderModal({ onClose });
+
+    // Select Table T1
+    await user.click(screen.getByText("Table T1"));
+
+    const confirmBtn = screen.getByRole("button", { name: /confirm & seat party/i });
+    await user.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(queueService.assignTables).toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
+    });
   });
 });

@@ -1,4 +1,8 @@
+export { AssignTableCapacityBanner } from "./components/AssignTableCapacityBanner";
+export { AssignTableCard } from "./components/AssignTableCard";
+export { AssignTableGuestSummary } from "./components/AssignTableGuestSummary";
 export { AssignTableModal } from "./components/AssignTableModal";
+export { AssignTableModalHeader } from "./components/AssignTableModalHeader";
 export { CustomerRingAlertContainer } from "./components/CustomerRingAlertContainer";
 export { CustomerRingAlertModal } from "./components/CustomerRingAlertModal";
 export { JoinQueueGuestFields } from "./components/JoinQueueGuestFields";

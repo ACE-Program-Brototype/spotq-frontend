@@ -58,3 +58,28 @@ export interface CartActions {
 }
 
 export type CartStore = CartState & CartActions;
+
+export interface BatchCartItemInput {
+  menuItemId: string;
+  quantity: number;
+  variantId?: string | null;
+  addonIds?: string[];
+  specialInstructions?: string | null;
+}
+
+export interface AddBatchCartItemsPayload {
+  restaurantId: string;
+  items: BatchCartItemInput[];
+}
+
+export interface AddBatchCartItemsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    cartId: string;
+    restaurantId: string;
+    items: unknown[];
+    itemCount: number;
+    subtotal: number;
+  };
+}

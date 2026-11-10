@@ -1,64 +1,79 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, ArrowRight, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
-import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { User } from "@/features/auth/types/auth.types";
+import { RenewalModal } from "@/features/subscription/components/RenewalModal";
+import { SubscriptionExpiryBanner } from "@/features/subscription/components/SubscriptionExpiryBanner";
+import { SubscriptionOverviewCard } from "@/features/subscription/components/SubscriptionOverviewCard";
+import {
+  RESTAURANT_VERIFICATION_STATUSES,
+  SUBSCRIPTION_QUERY_KEYS,
+} from "@/features/subscription/constants/subscription.constants";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export default function RestaurantDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, clearAuth } = useAuthStore();
-  const restaurantUser = user as { email?: string; status?: string } | null;
-  const restaurantEmail = restaurantUser?.email || user?.email || "restaurant";
+  const { user, clearAuth, setUser } = useAuthStore();
+  const [isRenewalModalOpen, setIsRenewalModalOpen] = useState(false);
 
-  const { data: statusData, isLoading: isLoadingStatus } = useQuery({
-    queryKey: ["restaurant-status"],
+  const restaurantEmail = user?.email || "restaurant";
+
+  const {
+    data: statusData,
+    isLoading: isLoadingStatus,
+    isError: isStatusError,
+  } = useQuery({
+    queryKey: SUBSCRIPTION_QUERY_KEYS.RESTAURANT_STATUS,
     queryFn: () => subscriptionService.fetchRestaurantStatus(),
     retry: 1,
   });
 
   const isSubscriptionActive = statusData?.isSubscriptionActive ?? false;
-  const userStatus = restaurantUser?.status ?? statusData?.verificationStatus;
-  const isApprovedOrActive =
-    userStatus === "APPROVED" || userStatus === "ACTIVE" || userStatus === "VERIFIED";
-  const needsSubscription = isApprovedOrActive && !isSubscriptionActive;
 
-  const subscriptionEndsAt = statusData?.subscriptionEndsAt
-    ? new Date(statusData.subscriptionEndsAt)
-    : null;
-  const now = new Date();
-  const daysRemaining = subscriptionEndsAt
-    ? Math.ceil((subscriptionEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-    : null;
-  const isExpiringSoon =
-    isSubscriptionActive && daysRemaining !== null && daysRemaining <= 7 && daysRemaining >= 0;
+  const {
+    data: plans = [],
+    isLoading: isLoadingPlans,
+    isError: isPlansError,
+    refetch: refetchPlans,
+  } = useQuery({
+    queryKey: SUBSCRIPTION_QUERY_KEYS.PLANS,
+    queryFn: () => subscriptionService.fetchPlans(),
+    enabled: isRenewalModalOpen,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+
+  const userStatus = user?.status ?? statusData?.verificationStatus;
+  const isApprovedOrActive =
+    userStatus === RESTAURANT_VERIFICATION_STATUSES.APPROVED ||
+    userStatus === RESTAURANT_VERIFICATION_STATUSES.ACTIVE ||
+    userStatus === RESTAURANT_VERIFICATION_STATUSES.VERIFIED;
+  const needsSubscription = isApprovedOrActive && !isSubscriptionActive && !isStatusError;
 
   useEffect(() => {
-    if (statusData?.verificationStatus) {
-      const currentUser = useAuthStore.getState().user;
-      if (
-        currentUser &&
-        statusData.verificationStatus &&
-        currentUser.status !== statusData.verificationStatus
-      ) {
-        useAuthStore.getState().setUser({
-          ...currentUser,
+    if (statusData?.verificationStatus && user) {
+      if (user.status !== statusData.verificationStatus) {
+        setUser({
+          ...user,
           status: statusData.verificationStatus as User["status"],
           onboardingStatus: "COMPLETED",
         });
       }
     }
-  }, [statusData]);
+  }, [statusData, user, setUser]);
 
   useEffect(() => {
     if (!isLoadingStatus && needsSubscription) {
       navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
     }
   }, [isLoadingStatus, needsSubscription, navigate]);
+
+  if (!isLoadingStatus && needsSubscription) {
+    return null;
+  }
 
   const handleLogout = () => {
     clearAuth();
@@ -75,7 +90,7 @@ export default function RestaurantDashboardPage() {
               Restaurant dashboard
             </p>
             <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-neutral-900">
-              Welcome, {statusData?.restaurantName || restaurantEmail}
+              {`Welcome, ${statusData?.restaurantName || restaurantEmail}`}
             </h1>
           </div>
           <button
@@ -87,98 +102,43 @@ export default function RestaurantDashboardPage() {
           </button>
         </div>
 
-        {/* Subscription Expiring Soon Warning Banner */}
-        {isExpiringSoon && (
-          <div className="mt-8 overflow-hidden rounded-2xl border border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 p-6 shadow-sm">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-amber-100 p-2 text-amber-700">
-                  <AlertCircle className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-amber-950">Subscription Expiring Soon</h3>
-                  <p className="mt-0.5 text-sm text-amber-800">
-                    Your {statusData?.subscriptionPlanCode?.replace("_", " ") || "current"} plan
-                    expires in{" "}
-                    {daysRemaining === 0
-                      ? "today"
-                      : `${daysRemaining} day${daysRemaining === 1 ? "" : "s"}`}
-                    . Renew now to avoid service interruption.
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
-                className="gap-2 bg-amber-600 text-white hover:bg-amber-700 shrink-0"
-              >
-                Renew Plan
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Subscription Alert for Verified Restaurant Admins */}
-        {needsSubscription && !isLoadingStatus && (
-          <div className="mt-8 overflow-hidden rounded-2xl border border-orange-300 bg-gradient-to-r from-orange-50 to-amber-50 p-6 shadow-sm">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-orange-100 p-2 text-orange-600">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-orange-950">Subscription Required</h3>
-                  <p className="mt-0.5 text-sm text-orange-800">
-                    Your restaurant is verified! Select a subscription plan to start taking customer
-                    orders.
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
-                className="gap-2 bg-orange-600 text-white hover:bg-orange-700 shrink-0"
-              >
-                Choose Plan
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        )}
+        <SubscriptionExpiryBanner
+          statusData={statusData}
+          isLoading={isLoadingStatus}
+          isError={isStatusError}
+          onRenewClick={() => setIsRenewalModalOpen(true)}
+        />
 
         <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
           <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
             <p className="text-xs font-medium text-neutral-500">Account status</p>
             <p className="mt-2 text-xl font-bold text-neutral-900">
-              {restaurantUser?.status ?? statusData?.verificationStatus ?? "Active"}
+              {user?.status ?? statusData?.verificationStatus ?? "Active"}
             </p>
           </div>
-          <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
-            <p className="text-xs font-medium text-neutral-500">Subscription</p>
-            {isSubscriptionActive ? (
-              <div className="mt-2 flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                <span className="text-xl font-bold text-neutral-900">
-                  {statusData?.subscriptionPlanCode?.replace("_", " ") || "Active"}
-                </span>
-              </div>
-            ) : (
-              <div className="mt-2 flex items-center justify-between">
-                <span className="text-lg font-medium text-amber-700">Inactive</span>
-                <button
-                  type="button"
-                  onClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
-                  className="flex items-center gap-1 text-sm font-semibold text-orange-600 hover:underline"
-                >
-                  <CreditCard className="h-4 w-4" />
-                  Subscribe
-                </button>
-              </div>
-            )}
-          </div>
+
+          <SubscriptionOverviewCard
+            statusData={statusData}
+            plans={plans}
+            isLoading={isLoadingStatus}
+            isError={isStatusError}
+            onRenewClick={() => setIsRenewalModalOpen(true)}
+            onSubscribeClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
+          />
         </div>
       </div>
+
+      <RenewalModal
+        open={isRenewalModalOpen}
+        onOpenChange={setIsRenewalModalOpen}
+        statusData={statusData}
+        plans={plans}
+        isLoadingPlans={isLoadingPlans}
+        isPlansError={isPlansError}
+        onRetryPlans={() => {
+          refetchPlans();
+        }}
+      />
     </div>
   );
 }

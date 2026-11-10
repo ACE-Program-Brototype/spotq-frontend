@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ interface CartSummaryProps {
   totalAmount: number;
   onClearCart: () => void;
   onContinueShopping?: () => void;
+  onProceedToCheckout?: () => void;
+  isProceeding?: boolean;
 }
 
 export function CartSummary({
@@ -19,6 +21,8 @@ export function CartSummary({
   totalAmount,
   onClearCart,
   onContinueShopping,
+  onProceedToCheckout,
+  isProceeding = false,
 }: CartSummaryProps) {
   const continueShoppingLink = restaurantId
     ? CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurantId)
@@ -60,10 +64,21 @@ export function CartSummary({
       <div className="space-y-3">
         <Button
           type="button"
-          className="w-full rounded-xl bg-[#ff6b00] py-3 text-sm font-bold text-white shadow-xs hover:bg-[#e05e00]"
+          disabled={isProceeding || totalCount === 0}
+          onClick={onProceedToCheckout}
+          className="w-full rounded-xl bg-[#ff6b00] py-3 text-sm font-bold text-white shadow-xs hover:bg-[#e05e00] disabled:opacity-50"
         >
-          <span>{CART_MESSAGES.PROCEED_TO_CHECKOUT}</span>
-          <ArrowRight className="ml-2 size-4" />
+          {isProceeding ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="size-4 animate-spin" />
+              <span>Processing...</span>
+            </span>
+          ) : (
+            <>
+              <span>{CART_MESSAGES.PROCEED_TO_CHECKOUT}</span>
+              <ArrowRight className="ml-2 size-4" />
+            </>
+          )}
         </Button>
 
         <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:justify-between">

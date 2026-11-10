@@ -99,9 +99,7 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
               >
                 {CREATE_SECTION_MODAL_STRINGS.TITLE}
               </h2>
-              <p className="text-xs text-[#7c837d]">
-                {CREATE_SECTION_MODAL_STRINGS.DESCRIPTION}
-              </p>
+              <p className="text-xs text-[#7c837d]">{CREATE_SECTION_MODAL_STRINGS.DESCRIPTION}</p>
             </div>
           </div>
 
@@ -152,7 +150,7 @@ export function CreateSectionModal({ isOpen, onClose, onSubmit }: CreateSectionM
 
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || sectionName.trim().length < 2}
               className="h-10 gap-2 rounded-xl bg-[#b4532a] px-5 text-xs font-semibold text-white shadow-xs hover:bg-[#963f1d] disabled:opacity-50"
             >
               {isSubmitting ? (

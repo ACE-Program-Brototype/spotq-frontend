@@ -32,6 +32,9 @@ export function useAssignTables(restaurantId: string, options?: UseAssignTablesO
       options?.onSuccess?.(response);
     },
     onError: (error: Error) => {
+      queryClient.invalidateQueries({
+        queryKey: TABLE_QUERY_KEYS.LIST(restaurantId),
+      });
       const message = error.message || QUEUE_MESSAGES.ASSIGN_TABLE_FAILED;
       toast.error(message);
       options?.onError?.(error);
