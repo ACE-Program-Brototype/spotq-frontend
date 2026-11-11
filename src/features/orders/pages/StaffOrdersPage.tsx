@@ -8,17 +8,20 @@ import { AlertCircle, RefreshCw } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { useDebounce } from "@/hooks/useDebounce";
-import { cn } from "@/lib/utils/cn";
-import { StaffOrdersFilters } from "../components/staff/StaffOrdersFilters";
-import { StaffOrdersTable } from "../components/staff/StaffOrdersTable";
+import { StaffOrdersFilters } from "@/features/orders/components/staff/StaffOrdersFilters";
+import { StaffOrdersTable } from "@/features/orders/components/staff/StaffOrdersTable";
 import {
   STAFF_ORDER_FILTER_STATUS,
   STAFF_ORDERS_DEFAULTS,
   STAFF_ORDERS_MESSAGES,
-} from "../constants/staff-orders.constants";
-import { useStaffOrders } from "../hooks/use-staff-orders";
-import type { StaffOrderFilterStatus, StaffOrderSortOrder } from "../types/staff-orders.types";
+} from "@/features/orders/constants/staff-orders.constants";
+import { useStaffOrders } from "@/features/orders/hooks/use-staff-orders";
+import type {
+  StaffOrderFilterStatus,
+  StaffOrderSortOrder,
+} from "@/features/orders/types/staff-orders.types";
+import { useDebounce } from "@/hooks/useDebounce";
+import { cn } from "@/lib/utils/cn";
 
 export default function StaffOrdersPage() {
   const user = useAuthStore((state) => state.user);

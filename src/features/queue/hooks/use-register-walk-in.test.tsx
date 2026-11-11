@@ -20,6 +20,7 @@ describe("useRegisterWalkIn", () => {
 
   const mockResponse: RegisterWalkInResponse = {
     success: true,
+    statusCode: 201,
     message: "Walk-in guest successfully registered to queue",
     data: {
       queueEntryId: "queue-entry-123",

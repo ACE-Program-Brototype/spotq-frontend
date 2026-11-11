@@ -1,3 +1,9 @@
+import type {
+  StaffUpdatableStatus,
+  TableStatus,
+  TableStatusTransitionRule,
+} from "../types/table.types";
+
 export const statusStyles: Record<TableStatus, string> = {
   AVAILABLE: "bg-emerald-50 text-emerald-700 ring-emerald-200",
   OCCUPIED: "bg-sky-50 text-sky-700 ring-sky-200",
@@ -11,12 +17,6 @@ export const statusLabels: Record<TableStatus, string> = {
   PARTIAL_OCCUPIED: "Partially occupied",
   MAINTENANCE: "Maintenance",
 };
-
-import type {
-  StaffUpdatableStatus,
-  TableStatus,
-  TableStatusTransitionRule,
-} from "../types/table.types";
 
 export const TABLE_STATUS = {
   ALL: "ALL",
@@ -51,6 +51,8 @@ export const TABLE_SERVICE_ERRORS = {
   UPDATE_IDS_REQUIRED: "Restaurant ID and Table ID are required to update status",
   UPDATE_FAILED: "Unable to update table details",
   DELETE_FAILED: "Unable to delete table",
+  RELEASE_IDS_REQUIRED: "Restaurant ID and at least one table entry are required to release tables",
+  RELEASE_FAILED: "Failed to release table occupancy. Please try again.",
 } as const;
 
 export const CREATE_TABLE_VALIDATION_MESSAGES = {
@@ -80,6 +82,7 @@ export const TABLE_ENDPOINTS = {
   DELETE: (restaurantId: string, tableId: string) => `restaurants/${restaurantId}/table/${tableId}`,
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}/status`,
+  RELEASE: (restaurantId: string) => `restaurants/${restaurantId}/tables/release`,
   TABLE_SECTION: (restaurantId: string) => `restaurants/${restaurantId}/table-sections`,
   TABLE_SECTION_DELETE: (restaurantId: string, sectionId: string) =>
     `restaurants/${restaurantId}/table-sections/${sectionId}`,
@@ -217,6 +220,9 @@ export const TABLE_MESSAGES = {
   STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>
     `Table ${code} status changed to ${TABLE_STATUS_CONFIG[newStatus].label}.`,
   STATUS_UPDATE_FAILED: "Failed to update table status. Please try again.",
+  RELEASE_SUCCESS: (code: string, releasedSeats: number) =>
+    `Released ${releasedSeats} ${releasedSeats === 1 ? "seat" : "seats"} from Table ${code}.`,
+  RELEASE_FAILED: "Failed to release table occupancy. Please try again.",
   FETCH_FAILED: "Unable to load restaurant tables. Please check your connection and retry.",
   NO_RESTAURANT: "No restaurant assigned",
   NO_RESTAURANT_DESC: "Your account is not associated with any restaurant.",
@@ -228,3 +234,13 @@ export const TABLE_MESSAGES = {
 } as const;
 
 export const ADMIN_TABLE_LIMIT = 9;
+
+export const KEYBOARD_KEYS = {
+  ESCAPE: "Escape",
+  TAB: "Tab",
+} as const;
+
+export const DOM_EVENTS = {
+  KEY_DOWN: "keydown",
+  MOUSE_DOWN: "mousedown",
+} as const;

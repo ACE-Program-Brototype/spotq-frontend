@@ -10,6 +10,8 @@ import type {
   GetTableSectionResponse,
   GetTablesResponse,
   PaginatedTableSectionsData,
+  ReleaseTablesPayload,
+  ReleaseTablesResponse,
   RestaurantTableDetails,
   StaffUpdatableStatus,
   TableItem,
@@ -218,5 +220,31 @@ export const tableService = {
         json: { status },
       })
       .json<UpdateTableStatusResponse>();
+  },
+
+  /**
+   * Releases partial or full occupancy from one or more tables.
+   * Endpoint: PATCH /api/v1/restaurants/{restaurantId}/tables/release
+   * Body: { tables: [{ tableId, occupancyToRelease }] }
+   */
+  async releaseTables(
+    restaurantId: string,
+    payload: ReleaseTablesPayload,
+  ): Promise<ReleaseTablesResponse> {
+    if (!restaurantId || !payload.tables?.length) {
+      throw new Error(TABLE_SERVICE_ERRORS.RELEASE_IDS_REQUIRED);
+    }
+
+    const response = await apiClient
+      .patch(TABLE_ENDPOINTS.RELEASE(restaurantId), {
+        json: payload,
+      })
+      .json<SuccessResponse<ReleaseTablesResponse>>();
+
+    if (!response.success) {
+      throw new Error(response.message || TABLE_SERVICE_ERRORS.RELEASE_FAILED);
+    }
+
+    return response.data;
   },
 };

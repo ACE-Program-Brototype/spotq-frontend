@@ -116,3 +116,24 @@ export interface TableStatusTransitionRule {
   targetStatus: StaffUpdatableStatus | null;
   reason?: string;
 }
+
+export interface ReleaseTableEntryInput {
+  tableId: string;
+  occupancyToRelease: number;
+}
+
+export interface ReleaseTablesPayload {
+  tables: ReleaseTableEntryInput[];
+}
+
+export interface ReleasedTableSummary {
+  tableId: string;
+  tableCode: string;
+  status: TableStatus;
+  currentOccupancy: number;
+  capacity: number;
+}
+
+export interface ReleaseTablesResponse {
+  releasedTables: ReleasedTableSummary[];
+}

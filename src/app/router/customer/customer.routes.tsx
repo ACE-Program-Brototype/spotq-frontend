@@ -11,11 +11,13 @@ import AboutPage from "@/features/demo/pages/AboutPage";
 import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
 import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
+import CustomerOrderDetailPage from "@/features/orders/pages/CustomerOrderDetailPage";
 import OrderHistoryPage from "@/features/orders/pages/OrderHistoryPage";
 import OrderReceiptPage from "@/features/orders/pages/OrderReceiptPage";
 import CustomerPaymentHistoryPage from "@/features/payments/pages/CustomerPaymentHistoryPage";
 import EditProfilePage from "@/features/profile/pages/EditProfilePage";
 import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
+import CustomerQueueTrackerPage from "@/features/queue/pages/CustomerQueueTrackerPage";
 import CustomerRestaurantDetailsPage from "@/features/restaurants/pages/CustomerRestaurantDetailsPage";
 import HomePage from "@/features/restaurants/pages/HomePage";
 import AuthLayout from "@/layouts/AuthLayout";
@@ -80,8 +82,22 @@ export const customerRoutes: RouteObject[] = [
         ],
       },
       {
+        path: CUSTOMER_ROUTE_PATHS.ORDER_DETAILS,
+        Component: CustomerProtectedLayout,
+        children: [
+          {
+            index: true,
+            Component: CustomerOrderDetailPage,
+          },
+        ],
+      },
+      {
         path: CUSTOMER_ROUTE_PATHS.ORDER_RECEIPT,
         Component: OrderReceiptPage,
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.QUEUE_STATUS,
+        Component: CustomerQueueTrackerPage,
       },
     ],
   },

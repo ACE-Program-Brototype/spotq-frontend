@@ -1,21 +1,91 @@
 /**
  * Staff Orders Service
- * Handles API requests for restaurant staff orders listing.
+ * Handles API requests for restaurant staff orders listing, details, and status updates.
  */
 
-import { apiClient } from "@/lib/api/client";
 import {
   STAFF_ORDER_FILTER_STATUS,
   STAFF_ORDERS_DEFAULTS,
   STAFF_ORDERS_ENDPOINTS,
   STAFF_ORDERS_MESSAGES,
-} from "../constants/staff-orders.constants";
-import type { GetStaffOrdersParams, StaffOrdersListApiResponse } from "../types/staff-orders.types";
+} from "@/features/orders/constants/staff-orders.constants";
+import type {
+  GetStaffOrdersParams,
+  RawStaffOrderDetailItem,
+  RawStaffOrderDetailResponse,
+  StaffOrderDetail,
+  StaffOrderDetailApiResponse,
+  StaffOrderDetailItem,
+  StaffOrdersListApiResponse,
+  UpdateStaffOrderStatusApiResponse,
+  UpdateStaffOrderStatusPayload,
+} from "@/features/orders/types/staff-orders.types";
+import { apiClient } from "@/lib/api/client";
+
+function normalizeStaffOrderVariant(
+  item: RawStaffOrderDetailItem,
+): StaffOrderDetailItem["variant"] {
+  if (!item.variant_id && !item.variant_name) {
+    return null;
+  }
+
+  return {
+    id: item.variant_id,
+    name: item.variant_name,
+  };
+}
+
+function normalizeStaffOrderItem(
+  item: RawStaffOrderDetailItem,
+  orderId: string,
+  index: number,
+): StaffOrderDetailItem {
+  return {
+    id: item.id ?? `${orderId}-item-${index}`,
+    menuItemId: item.menu_item_id,
+    name: item.name,
+    quantity: item.quantity,
+    variant: normalizeStaffOrderVariant(item),
+    addons: (item.addons ?? []).map((addon) => ({
+      id: addon.addon_id,
+      name: addon.name,
+      price: addon.price,
+    })),
+    specialInstructions: item.special_instructions ?? null,
+  };
+}
+
+/**
+ * Normalizes the snake_case backend detail DTO into the frontend domain model.
+ */
+function normalizeStaffOrderDetail(
+  raw: RawStaffOrderDetailResponse,
+  orderId: string,
+): StaffOrderDetail {
+  const id = raw.order_id ?? orderId;
+  const orderNumber = raw.order_number ?? `#${id.slice(0, STAFF_ORDERS_DEFAULTS.SHORT_ID_LENGTH)}`;
+  const items = (raw.items ?? []).map((item, index) => normalizeStaffOrderItem(item, id, index));
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  return {
+    id,
+    orderNumber,
+    orderType: raw.order_type ?? null,
+    status: raw.status,
+    createdAt: raw.created_at ?? "",
+    queueId: raw.queue_id ?? null,
+    tableNumber: raw.table_number ?? null,
+    customerNotes: raw.customer_notes ?? null,
+    priority: raw.priority ?? null,
+    items,
+    totalQuantity,
+  };
+}
 
 export const staffOrdersService = {
   /**
    * Fetches paginated staff orders list for the authorized restaurant.
-   * Endpoint: GET /api/v1/orders/staff/restaurants/:restaurantId/orders
+   * Endpoint: GET orders/staff/restaurants/:restaurantId/orders
    */
   async getStaffOrdersList(
     restaurantId: string,
@@ -60,5 +130,47 @@ export const staffOrdersService = {
         },
       }
     );
+  },
+
+  /**
+   * Fetches complete order details for staff inspection.
+   * Endpoint: GET orders/staff/restaurants/:restaurantId/orders/:orderId
+   */
+  async getStaffOrderDetail(restaurantId: string, orderId: string): Promise<StaffOrderDetail> {
+    if (!restaurantId?.trim()) {
+      throw new Error(STAFF_ORDERS_MESSAGES.RESTAURANT_ID_REQUIRED);
+    }
+    if (!orderId?.trim()) {
+      throw new Error(STAFF_ORDERS_MESSAGES.ORDER_ID_REQUIRED);
+    }
+
+    const response = await apiClient
+      .get(STAFF_ORDERS_ENDPOINTS.DETAILS(restaurantId.trim(), orderId.trim()))
+      .json<StaffOrderDetailApiResponse>();
+
+    return normalizeStaffOrderDetail(response.data, orderId);
+  },
+
+  /**
+   * Updates an order's status throughout food preparation.
+   * Endpoint: PATCH orders/staff/:orderId/status
+   */
+  async updateStaffOrderStatus(
+    payload: UpdateStaffOrderStatusPayload,
+  ): Promise<UpdateStaffOrderStatusApiResponse["data"]> {
+    if (!payload.orderId?.trim()) {
+      throw new Error(STAFF_ORDERS_MESSAGES.ORDER_ID_REQUIRED);
+    }
+
+    const response = await apiClient
+      .patch(STAFF_ORDERS_ENDPOINTS.UPDATE_STATUS(payload.orderId.trim()), {
+        json: {
+          status: payload.status,
+          notes: payload.notes,
+        },
+      })
+      .json<UpdateStaffOrderStatusApiResponse>();
+
+    return response.data;
   },
 };

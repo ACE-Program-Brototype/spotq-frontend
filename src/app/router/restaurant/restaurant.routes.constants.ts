@@ -35,6 +35,7 @@ export const RESTAURANT_ROUTE_PATHS = {
   },
   PROFILE: "profile",
   SETTINGS_ACCOUNT: "settings/account",
+  SETTINGS_BILLING_HISTORY: "settings/billing/history",
 
   STAFF: {
     ROOT: "staff",
@@ -103,6 +104,7 @@ export const RESTAURANT_ROUTES = {
   },
   PROFILE: "/restaurant/profile",
   SETTINGS_ACCOUNT: "/restaurant/settings/account",
+  SETTINGS_BILLING_HISTORY: "/restaurant/settings/billing/history",
 
   // Staff Management
   STAFF: {
