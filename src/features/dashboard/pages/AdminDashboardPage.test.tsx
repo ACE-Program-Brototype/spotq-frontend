@@ -1,10 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { usePlatformAdminDashboardAnalytics } from "../hooks/usePlatformAdminDashboardAnalytics";
 import type { PlatformDashboardAnalyticsResponse } from "../types/platform-analytics.types";
 import AdminDashboardPage from "./AdminDashboardPage";
 
 jest.mock("../hooks/usePlatformAdminDashboardAnalytics");
+
+const renderWithRouter = (ui: React.ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>);
 
 const mockAnalyticsData: PlatformDashboardAnalyticsResponse = {
   overview: {
@@ -79,7 +82,7 @@ describe("AdminDashboardPage", () => {
   });
 
   it("renders page header, filters, and all three analytics sections", () => {
-    render(<AdminDashboardPage />);
+    renderWithRouter(<AdminDashboardPage />);
 
     expect(
       screen.getByRole("heading", { name: /Platform Analytics & Executive Dashboard/i }),
@@ -95,13 +98,13 @@ describe("AdminDashboardPage", () => {
     ).toBeInTheDocument();
 
     // Prominent New Users Count in Customer Growth card
-    expect(screen.getByText("New Customer Registrations")).toBeInTheDocument();
+    expect(screen.getByText("Latest User Registrations")).toBeInTheDocument();
     expect(screen.getByText("New Users Registered")).toBeInTheDocument();
     expect(screen.getAllByText("48").length).toBeGreaterThan(0);
   });
 
   it("renders all 4 executive KPI cards with formatted values", () => {
-    render(<AdminDashboardPage />);
+    renderWithRouter(<AdminDashboardPage />);
 
     expect(screen.getByText("Total Restaurants")).toBeInTheDocument();
     expect(screen.getAllByText("142").length).toBeGreaterThan(0);
@@ -134,7 +137,7 @@ describe("AdminDashboardPage", () => {
       refetch: mockRefetch,
     });
 
-    render(<AdminDashboardPage />);
+    renderWithRouter(<AdminDashboardPage />);
 
     // Fallback banner rendered inside revenue section
     expect(screen.getByText("Subscription Revenue Metrics Unavailable")).toBeInTheDocument();
@@ -150,7 +153,7 @@ describe("AdminDashboardPage", () => {
   });
 
   it("opens and closes the export reports modal without leaving dashboard", () => {
-    render(<AdminDashboardPage />);
+    renderWithRouter(<AdminDashboardPage />);
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
@@ -177,7 +180,7 @@ describe("AdminDashboardPage", () => {
       refetch: mockRefetch,
     });
 
-    render(<AdminDashboardPage />);
+    renderWithRouter(<AdminDashboardPage />);
 
     expect(screen.getByText("Failed to load platform analytics")).toBeInTheDocument();
     expect(screen.getByText("Network connection lost")).toBeInTheDocument();
@@ -189,7 +192,7 @@ describe("AdminDashboardPage", () => {
   });
 
   it("updates timeline period filter when clicking filter pill", () => {
-    render(<AdminDashboardPage />);
+    renderWithRouter(<AdminDashboardPage />);
 
     const yearlyBtn = screen.getByRole("button", { name: "Yearly" });
     fireEvent.click(yearlyBtn);
