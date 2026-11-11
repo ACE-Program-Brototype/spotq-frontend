@@ -5,7 +5,7 @@
  */
 
 import { Check, Clock, Copy, CreditCard, Receipt, Store, User, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { AdminOrderListItem } from "@/features/orders/types/admin-orders.types";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -21,6 +21,80 @@ interface AdminOrderDetailModalProps {
 
 export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDetailModalProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  // Keyboard accessibility: Escape to close, focus trapping, and focus restoration
+  useEffect(() => {
+    if (!isOpen || !order) return;
+
+    // 1. Remember previously focused element
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+
+    // 2. Lock body scroll
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // 3. Focus first interactive element inside modal
+    const focusableSelector =
+      'button:not([disabled]):not([tabindex="-1"]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const focusTimer = setTimeout(() => {
+      if (!modalRef.current) return;
+      const focusables = modalRef.current.querySelectorAll<HTMLElement>(focusableSelector);
+      if (focusables.length > 0) {
+        focusables[0]?.focus();
+      } else {
+        modalRef.current.focus();
+      }
+    }, 30);
+
+    // 4. Handle Escape and Tab key trapping
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        if (!modalRef.current) return;
+        const focusables = Array.from(
+          modalRef.current.querySelectorAll<HTMLElement>(focusableSelector),
+        ).filter((el) => el.offsetParent !== null);
+
+        if (focusables.length === 0) {
+          event.preventDefault();
+          return;
+        }
+
+        const firstElement = focusables[0];
+        const lastElement = focusables[focusables.length - 1];
+
+        if (event.shiftKey) {
+          if (document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement?.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement?.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      clearTimeout(focusTimer);
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+      // 5. Restore focus to previously active element
+      previousFocusRef.current?.focus();
+    };
+  }, [isOpen, order, onClose]);
 
   if (!isOpen || !order) return null;
 
@@ -48,13 +122,19 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
       {/* Backdrop click to close */}
       <button
         type="button"
+        tabIndex={-1}
+        aria-hidden="true"
         aria-label="Close modal overlay"
         onClick={onClose}
         className="fixed inset-0 cursor-default"
       />
 
       {/* Modal Card */}
-      <div className="relative z-10 w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div
+        ref={modalRef}
+        tabIndex={-1}
+        className="relative z-10 w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] outline-hidden"
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70">
           <div className="flex items-center gap-3">

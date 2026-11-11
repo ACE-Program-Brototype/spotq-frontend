@@ -234,6 +234,19 @@ describe("AdminOrdersPage", () => {
     expect(screen.queryByText("Authoritative Financial Breakdown")).not.toBeInTheDocument();
   });
 
+  it("closes order detail modal when pressing Escape key", () => {
+    renderPage();
+
+    const orderRow = screen.getByTestId("admin-order-row-ord-uuid-1");
+    fireEvent.click(orderRow);
+
+    expect(screen.getByRole("heading", { name: /Order #SQ-20261111-001/i })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(screen.queryByText("Authoritative Financial Breakdown")).not.toBeInTheDocument();
+  });
+
   it("renders empty state when there are no orders", () => {
     mockUseAdminOrders.mockReturnValue({
       data: {
