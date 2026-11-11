@@ -90,7 +90,14 @@ describe("AdminDashboardPage", () => {
     // 3 section titles
     expect(screen.getByText("Executive Overview")).toBeInTheDocument();
     expect(screen.getByText("Subscription & Revenue Analytics")).toBeInTheDocument();
-    expect(screen.getByText("Restaurant Growth Analytics")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Restaurant Growth & Customer Acquisition/i }),
+    ).toBeInTheDocument();
+
+    // Prominent New Users Count in Customer Growth card
+    expect(screen.getByText("New Customer Registrations")).toBeInTheDocument();
+    expect(screen.getByText("New Users Registered")).toBeInTheDocument();
+    expect(screen.getAllByText("48").length).toBeGreaterThan(0);
   });
 
   it("renders all 4 executive KPI cards with formatted values and service badges", () => {
@@ -101,7 +108,7 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText("Subscribed Restaurants")).toBeInTheDocument();
     expect(screen.getAllByText("118").length).toBeGreaterThan(0);
     expect(screen.getByText("Registered Customers")).toBeInTheDocument();
-    expect(screen.getByText("12,500")).toBeInTheDocument();
+    expect(screen.getAllByText("12,500").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Current MRR").length).toBeGreaterThan(0);
 
     // Currency INR format check
@@ -144,7 +151,7 @@ describe("AdminDashboardPage", () => {
 
     // Other services (Total Restaurants, Customer Growth) remain fully available
     expect(screen.getAllByText("142").length).toBeGreaterThan(0);
-    expect(screen.getByText("12,500")).toBeInTheDocument();
+    expect(screen.getAllByText("12,500").length).toBeGreaterThan(0);
   });
 
   it("opens and closes the export reports modal without leaving dashboard", () => {

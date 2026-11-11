@@ -1,6 +1,7 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CustomerGrowthCard } from "../components/admin/CustomerGrowthCard";
 import { ExportReportsModal } from "../components/admin/ExportReportsModal";
 import { GeographicAdoptionTable } from "../components/admin/GeographicAdoptionTable";
 import { OnboardingFunnelSection } from "../components/admin/OnboardingFunnelSection";
@@ -29,6 +30,21 @@ export default function AdminDashboardPage() {
       ...updated,
     }));
   }, []);
+
+  const getPeriodLabel = () => {
+    switch (filters.period) {
+      case "DAY":
+        return "today";
+      case "WEEK":
+        return "this week";
+      case "MONTH":
+        return "this month";
+      case "YEAR":
+        return "this year";
+      default:
+        return "in selected period";
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-full pb-10">
@@ -106,11 +122,13 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Section 3: Restaurant Growth Analytics */}
-      <section aria-label="Restaurant Growth Analytics" className="space-y-2">
+      {/* Section 3: Restaurant Growth & Customer Acquisition */}
+      <section aria-label="Restaurant Growth Analytics" className="space-y-4">
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
-          Restaurant Growth Analytics
+          Restaurant Growth &amp; Customer Acquisition
         </h2>
+
+        {/* Row 3 (Wireframe Split: Onboarding Funnel & Customer Growth with Prominent New Users Count) */}
         <div className="grid gap-4 lg:grid-cols-2">
           <div>
             <OnboardingFunnelSection
@@ -119,12 +137,23 @@ export default function AdminDashboardPage() {
             />
           </div>
           <div>
-            <GeographicAdoptionTable
-              geographicBreakdown={data?.growth?.geographicBreakdown}
+            <CustomerGrowthCard
+              customerGrowth={data?.customerGrowth}
               totalRestaurants={data?.overview?.totalRestaurants}
+              periodLabel={getPeriodLabel()}
               isLoading={isLoading}
+              onRetry={() => void refetch()}
             />
           </div>
+        </div>
+
+        {/* Row 4: Geographic Adoption by City & State */}
+        <div>
+          <GeographicAdoptionTable
+            geographicBreakdown={data?.growth?.geographicBreakdown}
+            totalRestaurants={data?.overview?.totalRestaurants}
+            isLoading={isLoading}
+          />
         </div>
       </section>
 
