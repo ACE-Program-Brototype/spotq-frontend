@@ -56,6 +56,13 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   ];
 
   const isRouteActive = (href: string) => {
+    if (href === CUSTOMER_ROUTES.PROFILE.ROOT) {
+      return (
+        location.pathname === CUSTOMER_ROUTES.PROFILE.ROOT ||
+        location.pathname === CUSTOMER_ROUTES.PROFILE.EDIT ||
+        location.pathname === `${CUSTOMER_ROUTES.PROFILE.ROOT}/`
+      );
+    }
     return location.pathname === href || location.pathname.startsWith(`${href}/`);
   };
 

@@ -5,7 +5,6 @@ import {
   SUBSCRIPTION_MESSAGES,
   SUBSCRIPTION_QUERY_KEYS,
 } from "@/features/subscription/constants/subscription.constants";
-import { loadRazorpayScript } from "@/features/subscription/hooks/useRazorpayCheckout";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import type {
   RazorpayInstance,
@@ -17,6 +16,7 @@ import {
   generateIdempotencyKey,
   resolveErrorMessage,
 } from "@/features/subscription/utils/subscription-renewal.utils";
+import { loadRazorpayScript } from "@/lib/utils/razorpay";
 
 export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRenewalOptions = {}) {
   const queryClient = useQueryClient();
