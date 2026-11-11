@@ -166,6 +166,10 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
           },
         };
 
+        if (!window.Razorpay) {
+          throw new Error("Razorpay SDK not loaded");
+        }
+
         const instance = new window.Razorpay(options);
         razorpayInstanceRef.current = instance;
 
