@@ -7,12 +7,15 @@
 import {
   Calendar,
   CheckCircle2,
+  ChevronRight,
   Clock,
   Sparkles,
   Store,
   UtensilsCrossed,
   XCircle,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants";
 import { CancelOrderTriggerButton } from "@/features/orders/components/admin/order/cancel-order";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
@@ -186,7 +189,7 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
         </div>
       </div>
 
-      {/* Footer: Amount & Receipt Summary */}
+      {/* Footer: Amount & View Details */}
       <div className="mt-5 flex items-end justify-between pt-3.5 border-t border-neutral-100">
         <div className="flex flex-col">
           <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
@@ -197,9 +200,14 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
           </span>
         </div>
 
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100/90 text-neutral-500 text-xs font-semibold border border-neutral-200/50">
-          <span>Digital Record</span>
-        </div>
+        <Link
+          to={CUSTOMER_ROUTES.ORDER_DETAILS(order.order_id)}
+          data-testid="view-order-details-link"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+        >
+          <span>View Details</span>
+          <ChevronRight className="size-3.5 text-neutral-400" />
+        </Link>
       </div>
     </article>
   );

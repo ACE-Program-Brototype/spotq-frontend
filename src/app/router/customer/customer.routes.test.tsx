@@ -17,8 +17,11 @@ describe("customerRoutes structure", () => {
     const ordersGroup = layoutGroup.children?.[6];
     expect(ordersGroup?.path).toBe("/orders");
     expect(ordersGroup?.children?.[0].index).toBe(true);
-    expect(layoutGroup.children?.[7].path).toBe("/orders/:orderId/receipt");
-    expect(layoutGroup.children?.[8].path).toBe("/restaurants/:restaurantId/queue/status");
+    const orderDetailsGroup = layoutGroup.children?.[7];
+    expect(orderDetailsGroup?.path).toBe("/orders/:orderId");
+    expect(orderDetailsGroup?.children?.[0].index).toBe(true);
+    expect(layoutGroup.children?.[8].path).toBe("/orders/:orderId/receipt");
+    expect(layoutGroup.children?.[9].path).toBe("/restaurants/:restaurantId/queue/status");
 
     const authGroup = customerRoutes[1];
     expect(authGroup.children?.map((child) => child.path)).toEqual([

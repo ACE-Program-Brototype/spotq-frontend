@@ -166,7 +166,8 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
           },
         };
 
-        if (!window.Razorpay) {
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded || !window.Razorpay) {
           throw new Error(SUBSCRIPTION_MESSAGES.SCRIPT_LOAD_ERROR);
         }
 

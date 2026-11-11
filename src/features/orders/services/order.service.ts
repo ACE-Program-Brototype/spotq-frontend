@@ -1,27 +1,31 @@
 import { CANCEL_ORDER_ENDPOINTS } from "@/features/orders/constants/cancel-order.constants";
-import { ORDER_RECEIPT_ENDPOINTS } from "@/features/orders/constants/order-receipt.constants";
+import { ORDER_ENDPOINTS } from "@/features/orders/constants/orders.constants";
 import type {
   CancelOrderApiResponse,
   CancelOrderRequestDto,
   CancelOrderResponseData,
 } from "@/features/orders/types/cancel-order.types";
 import type {
-  OrderReceipt,
-  OrderReceiptApiResponse,
-} from "@/features/orders/types/order-receipt.types";
+  CustomerOrderDetails,
+  CustomerOrderDetailsApiResponse,
+} from "@/features/orders/types/customer-order-details.types";
 import { apiClient } from "@/lib/api/client";
 
 export const orderService = {
-  async getOrderReceipt(orderId: string): Promise<OrderReceipt> {
+  async getCustomerOrderDetails(orderId: string): Promise<CustomerOrderDetails> {
     const response = await apiClient
-      .get(ORDER_RECEIPT_ENDPOINTS.BY_ID(orderId))
-      .json<OrderReceiptApiResponse>();
+      .get(ORDER_ENDPOINTS.DETAIL(orderId))
+      .json<CustomerOrderDetailsApiResponse | { data: CustomerOrderDetails }>();
 
-    if (response?.data) {
-      return response.data;
+    if (response?.data && "order" in response.data) {
+      return response.data.order;
     }
 
-    throw new Error("Order receipt not found");
+    if (response?.data) {
+      return response.data as unknown as CustomerOrderDetails;
+    }
+
+    throw new Error("Order details not found");
   },
 
   async cancelOrder(
