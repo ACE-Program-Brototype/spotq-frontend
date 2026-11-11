@@ -5,7 +5,7 @@ import {
   ORDER_STATUS_FILTERS,
   type OrderStatusFilter,
   type RestaurantAnalyticsQueryParams,
-} from "../types/restaurant-analytics.types";
+} from "@/features/analytics/types/restaurant-analytics.types";
 
 export interface AnalyticsFilterState {
   interval: AnalyticsPeriod;

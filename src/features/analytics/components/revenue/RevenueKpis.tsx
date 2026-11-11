@@ -1,8 +1,8 @@
 import { IndianRupee, Percent, Receipt, TrendingUp } from "lucide-react";
+import { AnalyticsMetricCard } from "@/features/analytics/components/common/AnalyticsMetricCard";
+import { AnalyticsSectionUnavailable } from "@/features/analytics/components/common/AnalyticsSectionUnavailable";
+import type { RevenueSectionResultDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { formatCurrency } from "@/lib/utils/currency";
-import type { RevenueSectionResultDto } from "../../types/restaurant-analytics.types";
-import { AnalyticsMetricCard } from "../common/AnalyticsMetricCard";
-import { AnalyticsSectionUnavailable } from "../common/AnalyticsSectionUnavailable";
 
 export interface RevenueKpisProps {
   revenue: RevenueSectionResultDto;

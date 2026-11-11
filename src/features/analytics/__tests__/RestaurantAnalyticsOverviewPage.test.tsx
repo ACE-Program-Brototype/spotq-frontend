@@ -1,14 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { useRestaurantAnalyticsContext } from "../layouts/RestaurantAnalyticsLayout";
 import {
   mockAnalyticsDashboardData,
   mockDegradedAnalyticsData,
-} from "../mocks/restaurant-analytics.mock";
-import RestaurantAnalyticsOverviewPage from "../pages/RestaurantAnalyticsOverviewPage";
+} from "@/features/analytics/fixtures/restaurant-analytics.fixture";
+import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
+import RestaurantAnalyticsOverviewPage from "@/features/analytics/pages/RestaurantAnalyticsOverviewPage";
 
-jest.mock("../layouts/RestaurantAnalyticsLayout", () => ({
-  ...jest.requireActual("../layouts/RestaurantAnalyticsLayout"),
+jest.mock("@/features/analytics/layouts/RestaurantAnalyticsLayout", () => ({
+  ...jest.requireActual("@/features/analytics/layouts/RestaurantAnalyticsLayout"),
   useRestaurantAnalyticsContext: jest.fn(),
 }));
 

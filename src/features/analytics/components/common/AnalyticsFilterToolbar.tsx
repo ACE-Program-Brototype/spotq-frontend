@@ -1,16 +1,16 @@
 import { Calendar, Filter, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn";
 import {
   ORDER_STATUS_FILTER_LABELS,
   RESTAURANT_ANALYTICS_INTERVAL_LABELS,
-} from "../../constants/restaurant-analytics.constants";
+} from "@/features/analytics/constants/restaurant-analytics.constants";
 import {
   ANALYTICS_PERIODS,
   type AnalyticsPeriod,
   ORDER_STATUS_FILTERS,
   type OrderStatusFilter,
-} from "../../types/restaurant-analytics.types";
+} from "@/features/analytics/types/restaurant-analytics.types";
+import { cn } from "@/lib/utils/cn";
 
 export interface AnalyticsFilterToolbarProps {
   interval: AnalyticsPeriod;

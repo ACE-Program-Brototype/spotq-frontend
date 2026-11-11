@@ -1,6 +1,6 @@
+import { restaurantAnalyticsApi } from "@/features/analytics/api/restaurant-analytics.api";
+import { mockAnalyticsDashboardData } from "@/features/analytics/fixtures/restaurant-analytics.fixture";
 import { apiClient } from "@/lib/api/client";
-import { restaurantAnalyticsApi } from "../api/restaurant-analytics.api";
-import { mockAnalyticsDashboardData } from "../mocks/restaurant-analytics.mock";
 
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
@@ -33,10 +33,9 @@ describe("restaurantAnalyticsApi", () => {
 
     const result = await restaurantAnalyticsApi.getDashboard(restaurantId);
 
-    expect(apiClient.get).toHaveBeenCalledWith(
-      `restaurants/${restaurantId}/analytics/dashboard`,
-      { searchParams: {} },
-    );
+    expect(apiClient.get).toHaveBeenCalledWith(`restaurants/${restaurantId}/analytics/dashboard`, {
+      searchParams: {},
+    });
     expect(result).toEqual(mockAnalyticsDashboardData);
   });
 
@@ -57,20 +56,17 @@ describe("restaurantAnalyticsApi", () => {
       limit: 15,
     });
 
-    expect(apiClient.get).toHaveBeenCalledWith(
-      `restaurants/${restaurantId}/analytics/dashboard`,
-      {
-        searchParams: {
-          interval: "DAY",
-          day: 10,
-          month: 11,
-          year: 2026,
-          status: "COMPLETED",
-          page: 2,
-          limit: 15,
-        },
+    expect(apiClient.get).toHaveBeenCalledWith(`restaurants/${restaurantId}/analytics/dashboard`, {
+      searchParams: {
+        interval: "DAY",
+        day: 10,
+        month: 11,
+        year: 2026,
+        status: "COMPLETED",
+        page: 2,
+        limit: 15,
       },
-    );
+    });
   });
 
   it("omits status param when set to ALL", async () => {
@@ -85,13 +81,10 @@ describe("restaurantAnalyticsApi", () => {
       status: "ALL",
     });
 
-    expect(apiClient.get).toHaveBeenCalledWith(
-      `restaurants/${restaurantId}/analytics/dashboard`,
-      {
-        searchParams: {
-          interval: "MONTH",
-        },
+    expect(apiClient.get).toHaveBeenCalledWith(`restaurants/${restaurantId}/analytics/dashboard`, {
+      searchParams: {
+        interval: "MONTH",
       },
-    );
+    });
   });
 });

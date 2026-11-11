@@ -1,13 +1,13 @@
 import { CheckCircle2, Donut, PieChart as PieChartIcon, XCircle } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils/cn";
-import { formatCurrency } from "@/lib/utils/currency";
 import {
+  getOrderStatusDisplayInfo,
   ORDER_STATUS_CHART_CONFIG,
   ORDER_STATUS_CHART_STYLES,
-  getOrderStatusDisplayInfo,
-} from "../../constants/order-status-chart.constants";
-import type { OrderStatusBreakdownResultDto } from "../../types/restaurant-analytics.types";
+} from "@/features/analytics/constants/order-status-chart.constants";
+import type { OrderStatusBreakdownResultDto } from "@/features/analytics/types/restaurant-analytics.types";
+import { cn } from "@/lib/utils/cn";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export interface OrderStatusDistributionCardProps {
   breakdown: OrderStatusBreakdownResultDto;

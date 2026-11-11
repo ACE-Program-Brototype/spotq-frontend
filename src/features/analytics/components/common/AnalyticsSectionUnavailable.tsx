@@ -1,7 +1,7 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { SectionErrorDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { cn } from "@/lib/utils/cn";
-import type { SectionErrorDto } from "../../types/restaurant-analytics.types";
 
 export interface AnalyticsSectionUnavailableProps {
   title: string;

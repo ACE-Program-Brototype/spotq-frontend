@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { AnalyticsFilterToolbar } from "../components/common/AnalyticsFilterToolbar";
-import { ANALYTICS_PERIODS, ORDER_STATUS_FILTERS } from "../types/restaurant-analytics.types";
+import { AnalyticsFilterToolbar } from "@/features/analytics/components/common/AnalyticsFilterToolbar";
+import {
+  ANALYTICS_PERIODS,
+  ORDER_STATUS_FILTERS,
+} from "@/features/analytics/types/restaurant-analytics.types";
 
 describe("AnalyticsFilterToolbar", () => {
   const defaultProps = {

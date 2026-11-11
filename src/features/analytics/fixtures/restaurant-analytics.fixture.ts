@@ -1,4 +1,4 @@
-import type { RestaurantAnalyticsDashboardResponseDto } from "../types/restaurant-analytics.types";
+import type { RestaurantAnalyticsDashboardResponseDto } from "@/features/analytics/types/restaurant-analytics.types";
 
 export const mockAnalyticsDashboardData: RestaurantAnalyticsDashboardResponseDto = {
   restaurantId: "3dc35af0-3ff5-4ee9-a60a-fbb47124731b",

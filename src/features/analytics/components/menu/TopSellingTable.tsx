@@ -1,11 +1,11 @@
 import { ChevronLeft, ChevronRight, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn";
-import { formatCurrency } from "@/lib/utils/currency";
 import type {
   ProductItemDto,
   ProductRankingPaginationDto,
-} from "../../types/restaurant-analytics.types";
+} from "@/features/analytics/types/restaurant-analytics.types";
+import { cn } from "@/lib/utils/cn";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export interface TopSellingTableProps {
   items: ProductItemDto[];

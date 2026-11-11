@@ -3,7 +3,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { restaurantAnalyticsApi } from "@/features/analytics/api/restaurant-analytics.api";
-import { mockAnalyticsDashboardData } from "@/features/analytics/mocks/restaurant-analytics.mock";
+import { mockAnalyticsDashboardData } from "@/features/analytics/fixtures/restaurant-analytics.fixture";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import RestaurantDashboardPage from "./RestaurantDashboardPage";
 

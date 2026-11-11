@@ -1,7 +1,7 @@
-import { ChannelDistributionCard } from "../components/overview/ChannelDistributionCard";
-import { OrderStatusDistributionCard } from "../components/overview/OrderStatusDistributionCard";
-import { OverviewKpis } from "../components/overview/OverviewKpis";
-import { useRestaurantAnalyticsContext } from "../layouts/RestaurantAnalyticsLayout";
+import { ChannelDistributionCard } from "@/features/analytics/components/overview/ChannelDistributionCard";
+import { OrderStatusDistributionCard } from "@/features/analytics/components/overview/OrderStatusDistributionCard";
+import { OverviewKpis } from "@/features/analytics/components/overview/OverviewKpis";
+import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
 
 export default function RestaurantAnalyticsOverviewPage() {
   const { data, refetch } = useRestaurantAnalyticsContext();

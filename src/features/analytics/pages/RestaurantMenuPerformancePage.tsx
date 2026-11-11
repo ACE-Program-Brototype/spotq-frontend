@@ -1,9 +1,9 @@
 import { Utensils } from "lucide-react";
-import { AnalyticsSectionUnavailable } from "../components/common/AnalyticsSectionUnavailable";
-import { SlowMovingRuleBanner } from "../components/menu/SlowMovingRuleBanner";
-import { SlowMovingTable } from "../components/menu/SlowMovingTable";
-import { TopSellingTable } from "../components/menu/TopSellingTable";
-import { useRestaurantAnalyticsContext } from "../layouts/RestaurantAnalyticsLayout";
+import { AnalyticsSectionUnavailable } from "@/features/analytics/components/common/AnalyticsSectionUnavailable";
+import { SlowMovingRuleBanner } from "@/features/analytics/components/menu/SlowMovingRuleBanner";
+import { SlowMovingTable } from "@/features/analytics/components/menu/SlowMovingTable";
+import { TopSellingTable } from "@/features/analytics/components/menu/TopSellingTable";
+import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
 
 export default function RestaurantMenuPerformancePage() {
   const { data, refetch, filters } = useRestaurantAnalyticsContext();

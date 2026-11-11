@@ -1,4 +1,7 @@
-import { ANALYTICS_PERIODS, ORDER_STATUS_FILTERS } from "../types/restaurant-analytics.types";
+import {
+  ANALYTICS_PERIODS,
+  ORDER_STATUS_FILTERS,
+} from "@/features/analytics/types/restaurant-analytics.types";
 
 export * from "./order-status-chart.constants";
 

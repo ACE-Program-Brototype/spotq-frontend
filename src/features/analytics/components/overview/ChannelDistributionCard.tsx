@@ -1,6 +1,6 @@
 import { Bike, Utensils } from "lucide-react";
+import type { OrderSectionResultDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { cn } from "@/lib/utils/cn";
-import type { OrderSectionResultDto } from "../../types/restaurant-analytics.types";
 
 export interface ChannelDistributionCardProps {
   orders: OrderSectionResultDto;

@@ -1,12 +1,12 @@
 import { IndianRupee, ShoppingBag, TrendingUp, Users } from "lucide-react";
-import { formatCurrency } from "@/lib/utils/currency";
+import { AnalyticsMetricCard } from "@/features/analytics/components/common/AnalyticsMetricCard";
+import { AnalyticsSectionUnavailable } from "@/features/analytics/components/common/AnalyticsSectionUnavailable";
 import type {
   OperationSectionResultDto,
   OrderSectionResultDto,
   RevenueSectionResultDto,
-} from "../../types/restaurant-analytics.types";
-import { AnalyticsMetricCard } from "../common/AnalyticsMetricCard";
-import { AnalyticsSectionUnavailable } from "../common/AnalyticsSectionUnavailable";
+} from "@/features/analytics/types/restaurant-analytics.types";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export interface OverviewKpisProps {
   revenue: RevenueSectionResultDto;

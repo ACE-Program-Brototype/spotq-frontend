@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { restaurantAnalyticsApi } from "../api/restaurant-analytics.api";
+import { restaurantAnalyticsApi } from "@/features/analytics/api/restaurant-analytics.api";
 import {
   RESTAURANT_ANALYTICS_DEFAULTS,
   RESTAURANT_ANALYTICS_QUERY_KEYS,
-} from "../constants/restaurant-analytics.constants";
-import type { RestaurantAnalyticsQueryParams } from "../types/restaurant-analytics.types";
+} from "@/features/analytics/constants/restaurant-analytics.constants";
+import type { RestaurantAnalyticsQueryParams } from "@/features/analytics/types/restaurant-analytics.types";
 
 export function useRestaurantAnalytics(
   restaurantId: string,

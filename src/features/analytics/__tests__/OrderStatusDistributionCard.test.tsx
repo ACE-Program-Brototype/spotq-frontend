@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { OrderStatusDistributionCard } from "../components/overview/OrderStatusDistributionCard";
-import type { OrderStatusBreakdownResultDto } from "../types/restaurant-analytics.types";
+import { OrderStatusDistributionCard } from "@/features/analytics/components/overview/OrderStatusDistributionCard";
+import type { OrderStatusBreakdownResultDto } from "@/features/analytics/types/restaurant-analytics.types";
 
 describe("OrderStatusDistributionCard", () => {
   const mockBreakdown: OrderStatusBreakdownResultDto = {
@@ -101,10 +101,7 @@ describe("OrderStatusDistributionCard", () => {
       error: { code: "SERVICE_DOWN", message: "Down" },
     };
 
-    const { container } = render(
-      <OrderStatusDistributionCard breakdown={unavailableBreakdown} />,
-    );
+    const { container } = render(<OrderStatusDistributionCard breakdown={unavailableBreakdown} />);
     expect(container).toBeEmptyDOMElement();
   });
 });
-

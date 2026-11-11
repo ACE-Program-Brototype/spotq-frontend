@@ -1,6 +1,9 @@
 import { act, renderHook } from "@testing-library/react";
-import { useAnalyticsFilters } from "../hooks/use-analytics-filters";
-import { ANALYTICS_PERIODS, ORDER_STATUS_FILTERS } from "../types/restaurant-analytics.types";
+import { useAnalyticsFilters } from "@/features/analytics/hooks/use-analytics-filters";
+import {
+  ANALYTICS_PERIODS,
+  ORDER_STATUS_FILTERS,
+} from "@/features/analytics/types/restaurant-analytics.types";
 
 describe("useAnalyticsFilters", () => {
   it("initializes with default month interval and current calendar parts", () => {

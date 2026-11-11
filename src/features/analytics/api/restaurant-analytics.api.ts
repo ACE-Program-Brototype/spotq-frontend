@@ -1,10 +1,10 @@
 import type { SuccessResponse } from "@/components/common/types/common.types";
-import { apiClient } from "@/lib/api/client";
-import { RESTAURANT_ANALYTICS_ENDPOINTS } from "../constants/restaurant-analytics.constants";
+import { RESTAURANT_ANALYTICS_ENDPOINTS } from "@/features/analytics/constants/restaurant-analytics.constants";
 import type {
   RestaurantAnalyticsDashboardResponseDto,
   RestaurantAnalyticsQueryParams,
-} from "../types/restaurant-analytics.types";
+} from "@/features/analytics/types/restaurant-analytics.types";
+import { apiClient } from "@/lib/api/client";
 
 export const restaurantAnalyticsApi = {
   /**

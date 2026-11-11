@@ -1,13 +1,13 @@
 import { AlertCircle } from "lucide-react";
 import { Outlet, useOutletContext } from "react-router-dom";
+import { AnalyticsFilterToolbar } from "@/features/analytics/components/common/AnalyticsFilterToolbar";
+import { AnalyticsHeader } from "@/features/analytics/components/common/AnalyticsHeader";
+import { AnalyticsSkeleton } from "@/features/analytics/components/common/AnalyticsSkeleton";
+import { AnalyticsTabNav } from "@/features/analytics/components/common/AnalyticsTabNav";
+import { useAnalyticsFilters } from "@/features/analytics/hooks/use-analytics-filters";
+import { useRestaurantAnalytics } from "@/features/analytics/hooks/use-restaurant-analytics";
+import type { RestaurantAnalyticsDashboardResponseDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { AnalyticsFilterToolbar } from "../components/common/AnalyticsFilterToolbar";
-import { AnalyticsHeader } from "../components/common/AnalyticsHeader";
-import { AnalyticsSkeleton } from "../components/common/AnalyticsSkeleton";
-import { AnalyticsTabNav } from "../components/common/AnalyticsTabNav";
-import { useAnalyticsFilters } from "../hooks/use-analytics-filters";
-import { useRestaurantAnalytics } from "../hooks/use-restaurant-analytics";
-import type { RestaurantAnalyticsDashboardResponseDto } from "../types/restaurant-analytics.types";
 
 export interface RestaurantAnalyticsContextType {
   data: RestaurantAnalyticsDashboardResponseDto | undefined;

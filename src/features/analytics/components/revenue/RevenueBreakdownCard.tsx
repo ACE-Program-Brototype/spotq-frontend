@@ -1,7 +1,7 @@
 import { CheckCircle2, IndianRupee, Percent } from "lucide-react";
+import type { RevenueMetricDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
-import type { RevenueMetricDto } from "../../types/restaurant-analytics.types";
 
 export interface RevenueBreakdownCardProps {
   revenue: RevenueMetricDto;
