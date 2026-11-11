@@ -1,4 +1,4 @@
-import { Building2, CreditCard, DollarSign, Users } from "lucide-react";
+import { Building2, CreditCard, IndianRupee, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type {
@@ -85,7 +85,7 @@ export function PlatformKpisSection({
         isPaymentAvailable && revenue?.currentArrRupees
           ? `Annual Revenue: ${formatRupees(revenue.currentArrRupees, true)}`
           : "Revenue metrics unavailable",
-      icon: DollarSign,
+      icon: IndianRupee,
       iconColor: "text-emerald-600 bg-emerald-50 border-emerald-200/60",
     },
   ];
