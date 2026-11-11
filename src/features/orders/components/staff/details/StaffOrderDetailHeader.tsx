@@ -2,14 +2,18 @@ import { ArrowLeft, Calendar, Flame, Ticket, Timer, Utensils } from "lucide-reac
 import { Link } from "react-router-dom";
 import { STAFF_ROUTES } from "@/app/router/staff/staff.routes.constants";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils/cn";
-import { formatDate } from "@/lib/utils/date";
 import {
+  ELAPSED_URGENCY_STYLES,
+  STAFF_ORDER_DETAILS_MESSAGES,
+  STAFF_ORDER_PRIORITY,
   STAFF_ORDER_STATUS_CONFIG,
   STAFF_ORDER_TYPE_CONFIG,
-} from "../../../constants/staff-orders.constants";
-import { useElapsedTimer } from "../../../hooks/use-elapsed-timer";
-import type { StaffOrderDetail } from "../../../types/staff-orders.types";
+  STAFF_ORDERS_DEFAULTS,
+} from "@/features/orders/constants/staff-orders.constants";
+import { useElapsedTimer } from "@/features/orders/hooks/use-elapsed-timer";
+import type { StaffOrderDetail } from "@/features/orders/types/staff-orders.types";
+import { cn } from "@/lib/utils/cn";
+import { formatDate } from "@/lib/utils/date";
 
 interface StaffOrderDetailHeaderProps {
   order: StaffOrderDetail;
@@ -18,7 +22,8 @@ interface StaffOrderDetailHeaderProps {
 export function StaffOrderDetailHeader({ order }: StaffOrderDetailHeaderProps) {
   const { formattedElapsed, urgency } = useElapsedTimer(order.createdAt);
   const statusConfig = STAFF_ORDER_STATUS_CONFIG[order.status];
-  const typeConfig = STAFF_ORDER_TYPE_CONFIG[order.orderType];
+  const typeConfig = order.orderType ? STAFF_ORDER_TYPE_CONFIG[order.orderType] : null;
+  const urgencyStyles = ELAPSED_URGENCY_STYLES[urgency];
 
   return (
     <div className="space-y-4">
@@ -29,7 +34,7 @@ export function StaffOrderDetailHeader({ order }: StaffOrderDetailHeaderProps) {
           className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-neutral-600 hover:text-[#9a3412] transition-colors group"
         >
           <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
-          <span>Back to Orders</span>
+          <span>{STAFF_ORDER_DETAILS_MESSAGES.BACK_TO_ORDERS}</span>
         </Link>
       </div>
 
@@ -56,22 +61,28 @@ export function StaffOrderDetailHeader({ order }: StaffOrderDetailHeaderProps) {
                 {statusConfig?.label ?? order.status}
               </span>
 
-              {/* Order Type Badge */}
-              <Badge
-                variant="outline"
-                className={cn(
-                  "rounded-full px-2.5 py-0.5 text-xs font-bold border",
-                  typeConfig?.badgeClass ?? "bg-neutral-50 text-neutral-600",
-                )}
-              >
-                {typeConfig?.label ?? order.orderType}
-              </Badge>
+              {/* Order Type Badge (if present) */}
+              {order.orderType && (
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "rounded-full px-2.5 py-0.5 text-xs font-bold border",
+                    typeConfig?.badgeClass ?? "bg-neutral-50 text-neutral-600",
+                  )}
+                >
+                  {typeConfig?.label ?? order.orderType}
+                </Badge>
+              )}
 
               {/* Queue Badge (if present) */}
               {order.queueId && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-bold text-purple-700 border border-purple-200">
                   <Ticket className="size-3 text-purple-600" />
-                  <span>Queue #{order.queueId.slice(0, 8)}</span>
+                  <span>
+                    {STAFF_ORDER_DETAILS_MESSAGES.QUEUE_TAG(
+                      order.queueId.slice(0, STAFF_ORDERS_DEFAULTS.SHORT_ID_LENGTH),
+                    )}
+                  </span>
                 </span>
               )}
 
@@ -79,15 +90,17 @@ export function StaffOrderDetailHeader({ order }: StaffOrderDetailHeaderProps) {
               {order.tableNumber !== null && order.tableNumber !== undefined && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-800 border border-amber-200">
                   <Utensils className="size-3 text-amber-600" />
-                  <span>Table {order.tableNumber}</span>
+                  <span>{STAFF_ORDER_DETAILS_MESSAGES.TABLE_TAG(order.tableNumber)}</span>
                 </span>
               )}
 
               {/* Priority Badge (if High / VIP) */}
-              {order.priority && order.priority !== "NORMAL" && (
+              {order.priority && order.priority !== STAFF_ORDER_PRIORITY.NORMAL && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-bold text-rose-700 border border-rose-200">
                   <Flame className="size-3 text-rose-600" />
-                  <span>{order.priority} Priority</span>
+                  <span>
+                    {order.priority} {STAFF_ORDER_DETAILS_MESSAGES.PRIORITY_SUFFIX}
+                  </span>
                 </span>
               )}
             </div>
@@ -95,7 +108,9 @@ export function StaffOrderDetailHeader({ order }: StaffOrderDetailHeaderProps) {
             {/* Timestamps */}
             <p className="text-xs text-neutral-500 flex items-center gap-1.5">
               <Calendar className="size-3.5 text-neutral-400" />
-              <span>Placed on {formatDate(order.createdAt)}</span>
+              <span>
+                {STAFF_ORDER_DETAILS_MESSAGES.PLACED_ON_PREFIX} {formatDate(order.createdAt)}
+              </span>
             </p>
           </div>
 
@@ -104,22 +119,14 @@ export function StaffOrderDetailHeader({ order }: StaffOrderDetailHeaderProps) {
             <div
               className={cn(
                 "inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-bold border transition-colors",
-                urgency === "normal" && "bg-emerald-50/80 text-emerald-800 border-emerald-200",
-                urgency === "warning" && "bg-amber-50/90 text-amber-900 border-amber-300",
-                urgency === "critical" &&
-                  "bg-rose-50 text-rose-900 border-rose-300 shadow-xs animate-pulse",
+                urgencyStyles.containerClass,
               )}
             >
-              <Timer
-                className={cn(
-                  "size-4 shrink-0",
-                  urgency === "normal" && "text-emerald-600",
-                  urgency === "warning" && "text-amber-600",
-                  urgency === "critical" && "text-rose-600",
-                )}
-              />
+              <Timer className={cn("size-4 shrink-0", urgencyStyles.iconClass)} />
               <span className="font-mono tracking-tight">{formattedElapsed}</span>
-              <span className="text-[11px] font-medium opacity-80">elapsed</span>
+              <span className="text-[11px] font-medium opacity-80">
+                {STAFF_ORDER_DETAILS_MESSAGES.ELAPSED_LABEL}
+              </span>
             </div>
           </div>
         </div>

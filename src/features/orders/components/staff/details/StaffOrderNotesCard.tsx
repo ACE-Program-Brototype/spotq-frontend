@@ -1,5 +1,5 @@
 import { MessageSquare } from "lucide-react";
-import { STAFF_ORDER_DETAILS_MESSAGES } from "../../../constants/staff-orders.constants";
+import { STAFF_ORDER_DETAILS_MESSAGES } from "@/features/orders/constants/staff-orders.constants";
 
 interface StaffOrderNotesCardProps {
   customerNotes?: string | null;
@@ -23,7 +23,7 @@ export function StaffOrderNotesCard({ customerNotes }: StaffOrderNotesCardProps)
         </div>
         <div className="space-y-1 min-w-0">
           <h3 className="text-xs font-black uppercase tracking-wider text-amber-900">
-            Customer Dining Notes
+            {STAFF_ORDER_DETAILS_MESSAGES.CUSTOMER_DINING_NOTES_HEADING}
           </h3>
           <p className="text-xs sm:text-sm font-semibold leading-relaxed text-amber-950 break-words">
             {customerNotes}

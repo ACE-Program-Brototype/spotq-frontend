@@ -50,3 +50,4 @@ export * from "./types/order-receipt.types";
 export * from "./types/orders.types";
 export * from "./types/restaurant-orders.types";
 export * from "./types/staff-orders.types";
+export * from "./utils/elapsed-timer.utils";

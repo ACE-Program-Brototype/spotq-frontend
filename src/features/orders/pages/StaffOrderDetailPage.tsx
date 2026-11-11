@@ -9,18 +9,18 @@ import { Link, useParams } from "react-router-dom";
 import { STAFF_ROUTES } from "@/app/router/staff/staff.routes.constants";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { cn } from "@/lib/utils/cn";
-import { StaffOrderDetailHeader } from "../components/staff/details/StaffOrderDetailHeader";
-import { StaffOrderDetailSkeleton } from "../components/staff/details/StaffOrderDetailSkeleton";
-import { StaffOrderItemCard } from "../components/staff/details/StaffOrderItemCard";
-import { StaffOrderNotesCard } from "../components/staff/details/StaffOrderNotesCard";
-import { StaffOrderStatusActionBar } from "../components/staff/details/StaffOrderStatusActionBar";
-import { StaffOrderSummaryCard } from "../components/staff/details/StaffOrderSummaryCard";
+import { StaffOrderDetailHeader } from "@/features/orders/components/staff/details/StaffOrderDetailHeader";
+import { StaffOrderDetailSkeleton } from "@/features/orders/components/staff/details/StaffOrderDetailSkeleton";
+import { StaffOrderItemCard } from "@/features/orders/components/staff/details/StaffOrderItemCard";
+import { StaffOrderNotesCard } from "@/features/orders/components/staff/details/StaffOrderNotesCard";
+import { StaffOrderStatusActionBar } from "@/features/orders/components/staff/details/StaffOrderStatusActionBar";
+import { StaffOrderSummaryCard } from "@/features/orders/components/staff/details/StaffOrderSummaryCard";
 import {
   STAFF_ORDER_DETAILS_MESSAGES,
   STAFF_ORDERS_MESSAGES,
-} from "../constants/staff-orders.constants";
-import { useStaffOrderDetail } from "../hooks/use-staff-order-detail";
+} from "@/features/orders/constants/staff-orders.constants";
+import { useStaffOrderDetail } from "@/features/orders/hooks/use-staff-order-detail";
+import { cn } from "@/lib/utils/cn";
 
 export default function StaffOrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -53,7 +53,7 @@ export default function StaffOrderDetailPage() {
           <div className="mt-5">
             <Link to={STAFF_ROUTES.DASHBOARD}>
               <Button type="button" variant="outline" className="rounded-xl text-xs">
-                Back to Dashboard
+                {STAFF_ORDER_DETAILS_MESSAGES.BACK_TO_DASHBOARD}
               </Button>
             </Link>
           </div>
@@ -68,7 +68,7 @@ export default function StaffOrderDetailPage() {
   }
 
   // Error or Not Found State (only after all retries are exhausted)
-  if ((isError || !order) && !isFetching) {
+  if ((isError && !isFetching) || !order) {
     return (
       <div className="max-w-md mx-auto py-20 px-4 text-center">
         <div className="size-14 rounded-2xl bg-[#fef3ec] border border-[#fae2d3] flex items-center justify-center text-[#e8631b] mx-auto mb-4 shadow-2xs">
@@ -91,7 +91,7 @@ export default function StaffOrderDetailPage() {
             className="rounded-xl border-neutral-200 text-xs font-semibold gap-1.5"
           >
             <RefreshCw className={cn("size-3.5 text-[#e8631b]", isFetching && "animate-spin")} />
-            Try Again
+            {STAFF_ORDER_DETAILS_MESSAGES.TRY_AGAIN}
           </Button>
           <Link to={STAFF_ROUTES.ORDERS}>
             <Button
@@ -99,7 +99,7 @@ export default function StaffOrderDetailPage() {
               className="rounded-xl bg-[#e8631b] text-white hover:bg-[#d45614] text-xs font-semibold gap-1.5"
             >
               <ArrowLeft className="size-3.5" />
-              Back to Orders
+              {STAFF_ORDER_DETAILS_MESSAGES.BACK_TO_ORDERS}
             </Button>
           </Link>
         </div>
@@ -120,10 +120,10 @@ export default function StaffOrderDetailPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
               <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-600">
-                Order Items ({order.items.length})
+                {STAFF_ORDER_DETAILS_MESSAGES.ORDER_ITEMS_HEADING(order.items.length)}
               </h2>
               <span className="text-xs font-semibold text-neutral-400">
-                {order.totalQuantity} total items
+                {STAFF_ORDER_DETAILS_MESSAGES.TOTAL_ITEMS_COUNT(order.totalQuantity)}
               </span>
             </div>
 
@@ -142,7 +142,7 @@ export default function StaffOrderDetailPage() {
           {/* General Customer Notes */}
           <div className="space-y-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500 px-1">
-              General Instructions
+              {STAFF_ORDER_DETAILS_MESSAGES.GENERAL_INSTRUCTIONS_HEADING}
             </h3>
             <StaffOrderNotesCard customerNotes={order.customerNotes} />
           </div>

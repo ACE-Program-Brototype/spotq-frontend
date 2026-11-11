@@ -6,14 +6,36 @@
  * - PATCH orders/staff/:orderId/status
  */
 
-export type StaffOrderStatus = "PLACED" | "CONFIRMED" | "PREPARING" | "READY" | "COMPLETED";
+import type {
+  ELAPSED_URGENCY,
+  STAFF_ORDER_FILTER_STATUS,
+  STAFF_ORDER_PRIORITY,
+  STAFF_ORDER_SORT_ORDER,
+  STAFF_ORDER_STATUS,
+  STAFF_ORDER_TYPE,
+} from "@/features/orders/constants/staff-orders.constants";
 
-export type StaffOrderFilterStatus = "ALL" | StaffOrderStatus;
+export type StaffOrderStatus = (typeof STAFF_ORDER_STATUS)[keyof typeof STAFF_ORDER_STATUS];
 
-export type StaffOrderType = "QUEUE_PRO" | "SELF_PRO";
+export type StaffOrderFilterStatus =
+  (typeof STAFF_ORDER_FILTER_STATUS)[keyof typeof STAFF_ORDER_FILTER_STATUS];
+
+export type StaffOrderType = (typeof STAFF_ORDER_TYPE)[keyof typeof STAFF_ORDER_TYPE];
 export type StaffOrderTypeFilter = "ALL" | StaffOrderType;
 
-export type StaffOrderSortOrder = "asc" | "desc";
+export type StaffOrderPriority = (typeof STAFF_ORDER_PRIORITY)[keyof typeof STAFF_ORDER_PRIORITY];
+
+export type StaffOrderSortOrder =
+  (typeof STAFF_ORDER_SORT_ORDER)[keyof typeof STAFF_ORDER_SORT_ORDER];
+
+export type ElapsedUrgency = (typeof ELAPSED_URGENCY)[keyof typeof ELAPSED_URGENCY];
+
+export interface ElapsedTimerResult {
+  formattedElapsed: string;
+  totalMinutes: number;
+  totalSeconds: number;
+  urgency: ElapsedUrgency;
+}
 
 export interface StaffOrderItemAddon {
   id: string;
@@ -92,62 +114,45 @@ export interface StaffOrderDetailItem {
 export interface StaffOrderDetail {
   id: string;
   orderNumber: string;
-  orderType: StaffOrderType;
+  orderType: StaffOrderType | null;
   status: StaffOrderStatus;
   createdAt: string;
   queueId: string | null;
   tableNumber: number | null;
   customerNotes: string | null;
-  priority?: "NORMAL" | "HIGH" | "VIP";
+  priority?: StaffOrderPriority | null;
   items: StaffOrderDetailItem[];
   totalQuantity: number;
 }
 
 export interface RawStaffOrderDetailAddon {
-  addon_id?: string;
-  addonId?: string;
-  id?: string;
+  addon_id: string;
   name: string;
   price?: number;
 }
 
 export interface RawStaffOrderDetailItem {
   id?: string;
-  menu_item_id?: string;
-  menuItemId?: string;
+  menu_item_id: string;
   name: string;
-  variant_id?: string | null;
-  variantId?: string | null;
-  variant_name?: string | null;
-  variantName?: string | null;
-  variant?: StaffOrderItemVariant | null;
-  addons?: RawStaffOrderDetailAddon[];
+  variant_id: string | null;
+  variant_name: string | null;
+  addons: RawStaffOrderDetailAddon[];
   quantity: number;
-  special_instructions?: string | null;
-  specialInstructions?: string | null;
+  special_instructions: string | null;
 }
 
 export interface RawStaffOrderDetailResponse {
-  order_id?: string;
-  orderId?: string;
-  id?: string;
-  order_number?: string;
-  orderNumber?: string;
+  order_id: string;
+  order_number: string;
   status: StaffOrderStatus;
-  customer_notes?: string | null;
-  customerNotes?: string | null;
-  special_instructions?: string | null;
-  specialInstructions?: string | null;
-  order_type?: StaffOrderType;
-  orderType?: StaffOrderType;
-  queue_id?: string | null;
-  queueId?: string | null;
-  table_number?: number | null;
-  tableNumber?: number | null;
-  priority?: "NORMAL" | "HIGH" | "VIP";
+  customer_notes: string | null;
   items: RawStaffOrderDetailItem[];
-  created_at?: string;
-  createdAt?: string;
+  created_at: string;
+  order_type?: StaffOrderType | null;
+  queue_id?: string | null;
+  table_number?: number | null;
+  priority?: StaffOrderPriority | null;
 }
 
 export interface StaffOrderDetailApiResponse {

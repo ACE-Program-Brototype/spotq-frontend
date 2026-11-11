@@ -3,16 +3,18 @@ import { Link } from "react-router-dom";
 import { STAFF_ROUTES } from "@/app/router/staff/staff.routes.constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn";
-import { formatDate } from "@/lib/utils/date";
+import { StaffOrdersEmptyState } from "@/features/orders/components/staff/StaffOrdersEmptyState";
+import { StaffOrdersPagination } from "@/features/orders/components/staff/StaffOrdersPagination";
+import { StaffOrdersSkeleton } from "@/features/orders/components/staff/StaffOrdersSkeleton";
 import {
+  STAFF_ORDER_DETAILS_MESSAGES,
   STAFF_ORDER_STATUS_CONFIG,
   STAFF_ORDER_TYPE_CONFIG,
-} from "../../constants/staff-orders.constants";
-import type { StaffOrderListItem } from "../../types/staff-orders.types";
-import { StaffOrdersEmptyState } from "./StaffOrdersEmptyState";
-import { StaffOrdersPagination } from "./StaffOrdersPagination";
-import { StaffOrdersSkeleton } from "./StaffOrdersSkeleton";
+  STAFF_ORDERS_DEFAULTS,
+} from "@/features/orders/constants/staff-orders.constants";
+import type { StaffOrderListItem } from "@/features/orders/types/staff-orders.types";
+import { cn } from "@/lib/utils/cn";
+import { formatDate } from "@/lib/utils/date";
 
 interface StaffOrdersTableProps {
   orders: StaffOrderListItem[];
@@ -88,7 +90,11 @@ export function StaffOrdersTable({
                     {order.queueId && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-[10px] font-bold text-purple-700 border border-purple-200">
                         <Ticket className="size-3 text-purple-600" />
-                        <span>Queue #{order.queueId.slice(0, 8)}</span>
+                        <span>
+                          {STAFF_ORDER_DETAILS_MESSAGES.QUEUE_TAG(
+                            order.queueId.slice(0, STAFF_ORDERS_DEFAULTS.SHORT_ID_LENGTH),
+                          )}
+                        </span>
                       </span>
                     )}
 
@@ -142,7 +148,10 @@ export function StaffOrdersTable({
                       {formatDate(order.createdAt)}
                     </span>
                     <span className="text-[11px] font-semibold text-neutral-500">
-                      {totalItemCount} {totalItemCount === 1 ? "item" : "items"}
+                      {totalItemCount}{" "}
+                      {totalItemCount === 1
+                        ? STAFF_ORDER_DETAILS_MESSAGES.ITEM_SINGULAR
+                        : STAFF_ORDER_DETAILS_MESSAGES.ITEM_PLURAL}
                     </span>
                   </div>
 

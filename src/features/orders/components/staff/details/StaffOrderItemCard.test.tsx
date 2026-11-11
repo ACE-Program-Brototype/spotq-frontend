@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import type { StaffOrderDetailItem } from "../../../types/staff-orders.types";
-import { StaffOrderItemCard } from "./StaffOrderItemCard";
+import { StaffOrderItemCard } from "@/features/orders/components/staff/details/StaffOrderItemCard";
+import { STAFF_ORDER_DETAILS_MESSAGES } from "@/features/orders/constants/staff-orders.constants";
+import type { StaffOrderDetailItem } from "@/features/orders/types/staff-orders.types";
 
 describe("StaffOrderItemCard", () => {
   const mockItemWithAllProps: StaffOrderDetailItem = {
@@ -22,7 +23,9 @@ describe("StaffOrderItemCard", () => {
   it("renders quantity badge and item name clearly", () => {
     render(<StaffOrderItemCard item={mockItemWithAllProps} itemNumber={1} />);
 
-    expect(screen.getByText("3×")).toBeInTheDocument();
+    expect(
+      screen.getByText(`3${STAFF_ORDER_DETAILS_MESSAGES.QUANTITY_MULTIPLIER}`),
+    ).toBeInTheDocument();
     expect(screen.getByText("Classic Cheeseburger")).toBeInTheDocument();
   });
 
@@ -42,7 +45,9 @@ describe("StaffOrderItemCard", () => {
   it("prominently renders item-specific cooking instructions", () => {
     render(<StaffOrderItemCard item={mockItemWithAllProps} itemNumber={1} />);
 
-    expect(screen.getByText("Kitchen Special Request")).toBeInTheDocument();
+    expect(
+      screen.getByText(STAFF_ORDER_DETAILS_MESSAGES.KITCHEN_SPECIAL_REQUEST_LABEL),
+    ).toBeInTheDocument();
     expect(screen.getByText(/No onions and extra crispy buns please/)).toBeInTheDocument();
   });
 
@@ -56,7 +61,9 @@ describe("StaffOrderItemCard", () => {
 
     render(<StaffOrderItemCard item={itemWithoutInstructions} itemNumber={2} />);
 
-    expect(screen.queryByText("Kitchen Special Request")).not.toBeInTheDocument();
-    expect(screen.queryByText("Variant:")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(STAFF_ORDER_DETAILS_MESSAGES.KITCHEN_SPECIAL_REQUEST_LABEL),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(STAFF_ORDER_DETAILS_MESSAGES.VARIANT_LABEL)).not.toBeInTheDocument();
   });
 });

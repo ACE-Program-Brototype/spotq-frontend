@@ -1,17 +1,24 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import type { StaffOrderDetail } from "../types/staff-orders.types";
-import StaffOrderDetailPage from "./StaffOrderDetailPage";
+import {
+  STAFF_ORDER_DETAILS_MESSAGES,
+  STAFF_ORDER_PRIORITY,
+  STAFF_ORDER_STATUS,
+  STAFF_ORDER_TYPE,
+  STAFF_ORDERS_MESSAGES,
+} from "@/features/orders/constants/staff-orders.constants";
+import StaffOrderDetailPage from "@/features/orders/pages/StaffOrderDetailPage";
+import type { StaffOrderDetail } from "@/features/orders/types/staff-orders.types";
 
 const mockOrderDetail: StaffOrderDetail = {
   id: "ord-test-123",
   orderNumber: "ORD-5544",
-  orderType: "QUEUE_PRO",
-  status: "CONFIRMED",
+  orderType: STAFF_ORDER_TYPE.QUEUE_PRO,
+  status: STAFF_ORDER_STATUS.CONFIRMED,
   createdAt: "2026-11-08T10:30:00.000Z",
   queueId: "q-token-99",
   tableNumber: 3,
-  priority: "HIGH",
+  priority: STAFF_ORDER_PRIORITY.HIGH,
   customerNotes: "Please deliver cutlery with napkins",
   totalQuantity: 3,
   items: [
@@ -41,12 +48,12 @@ const mockUseStaffOrderDetail = jest.fn();
 const mockUseAuthStore = jest.fn();
 const mockMutate = jest.fn();
 
-jest.mock("../hooks/use-staff-order-detail", () => ({
+jest.mock("@/features/orders/hooks/use-staff-order-detail", () => ({
   useStaffOrderDetail: (restaurantId: string, orderId: string) =>
     mockUseStaffOrderDetail(restaurantId, orderId),
 }));
 
-jest.mock("../hooks/use-update-staff-order-status", () => ({
+jest.mock("@/features/orders/hooks/use-update-staff-order-status", () => ({
   useUpdateStaffOrderStatus: () => ({
     mutate: mockMutate,
     isPending: false,
@@ -97,7 +104,7 @@ describe("StaffOrderDetailPage", () => {
     expect(screen.getAllByText("Queue Pro").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Table 3").length).toBeGreaterThan(0);
     expect(screen.getByText("HIGH Priority")).toBeInTheDocument();
-    expect(screen.getByText("Back to Orders")).toBeInTheDocument();
+    expect(screen.getByText(STAFF_ORDER_DETAILS_MESSAGES.BACK_TO_ORDERS)).toBeInTheDocument();
 
     // Items section
     expect(screen.getByText("Truffle Mushroom Pasta")).toBeInTheDocument();
@@ -110,11 +117,38 @@ describe("StaffOrderDetailPage", () => {
     expect(screen.getByText("1×")).toBeInTheDocument();
 
     // General Customer Notes
-    expect(screen.getByText("Customer Dining Notes")).toBeInTheDocument();
+    expect(
+      screen.getByText(STAFF_ORDER_DETAILS_MESSAGES.CUSTOMER_DINING_NOTES_HEADING),
+    ).toBeInTheDocument();
     expect(screen.getByText("Please deliver cutlery with napkins")).toBeInTheDocument();
 
     // Status action button
     expect(screen.getByRole("button", { name: /start cooking/i })).toBeInTheDocument();
+  });
+
+  it("omits orderType, priority, queue, and table badges when backend omits optional metadata", () => {
+    mockUseStaffOrderDetail.mockReturnValue({
+      data: {
+        ...mockOrderDetail,
+        orderType: null,
+        priority: null,
+        queueId: null,
+        tableNumber: null,
+      },
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      error: null,
+      refetch: mockRefetch,
+    });
+
+    renderPage();
+
+    expect(screen.queryByText("Queue Pro")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Priority/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(STAFF_ORDER_DETAILS_MESSAGES.SERVICE_MODE_LABEL),
+    ).not.toBeInTheDocument();
   });
 
   it("renders loading skeleton while query is loading", () => {
@@ -143,7 +177,7 @@ describe("StaffOrderDetailPage", () => {
 
     renderPage();
 
-    expect(screen.getByText("No restaurant assigned")).toBeInTheDocument();
+    expect(screen.getByText(STAFF_ORDERS_MESSAGES.NO_RESTAURANT_TITLE)).toBeInTheDocument();
     expect(
       screen.getByText(/Your staff account is not associated with an active restaurant/i),
     ).toBeInTheDocument();
@@ -161,7 +195,9 @@ describe("StaffOrderDetailPage", () => {
 
     renderPage();
 
-    expect(screen.getByText("Order Not Found")).toBeInTheDocument();
+    expect(
+      screen.getByText(STAFF_ORDER_DETAILS_MESSAGES.ORDER_NOT_FOUND_TITLE),
+    ).toBeInTheDocument();
     expect(screen.getByText("Order does not exist")).toBeInTheDocument();
 
     const tryAgainButton = screen.getByRole("button", { name: /try again/i });
@@ -179,7 +215,7 @@ describe("StaffOrderDetailPage", () => {
 
     expect(mockMutate).toHaveBeenCalledWith({
       orderId: "ord-test-123",
-      status: "PREPARING",
+      status: STAFF_ORDER_STATUS.PREPARING,
     });
   });
 });

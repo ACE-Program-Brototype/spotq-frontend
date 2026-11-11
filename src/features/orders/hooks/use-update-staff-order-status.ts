@@ -7,10 +7,14 @@ import { toast } from "sonner";
 import {
   STAFF_ORDER_DETAILS_MESSAGES,
   STAFF_ORDER_STATUS_CONFIG,
+  STAFF_ORDERS_DEFAULTS,
   STAFF_ORDERS_QUERY_KEYS,
-} from "../constants/staff-orders.constants";
-import { staffOrdersService } from "../services/staff-orders.service";
-import type { StaffOrderStatus, UpdateStaffOrderStatusPayload } from "../types/staff-orders.types";
+} from "@/features/orders/constants/staff-orders.constants";
+import { staffOrdersService } from "@/features/orders/services/staff-orders.service";
+import type {
+  StaffOrderStatus,
+  UpdateStaffOrderStatusPayload,
+} from "@/features/orders/types/staff-orders.types";
 
 interface UseUpdateStaffOrderStatusParams {
   restaurantId: string;
@@ -41,7 +45,7 @@ export function useUpdateStaffOrderStatus({
       const statusLabel = STAFF_ORDER_STATUS_CONFIG[variables.status]?.label ?? variables.status;
       toast.success(
         STAFF_ORDER_DETAILS_MESSAGES.STATUS_UPDATE_SUCCESS(
-          orderNumber ?? variables.orderId.slice(0, 8),
+          orderNumber ?? variables.orderId.slice(0, STAFF_ORDERS_DEFAULTS.SHORT_ID_LENGTH),
           statusLabel,
         ),
       );
@@ -58,12 +62,12 @@ export function useUpdateStaffOrderStatus({
         queryKey: STAFF_ORDERS_QUERY_KEYS.ROOT,
       });
 
-      // Check if HTTP 409 Conflict
       const isConflict =
         error &&
         typeof error === "object" &&
         "response" in error &&
-        (error as { response?: { status?: number } }).response?.status === 409;
+        (error as { response?: { status?: number } }).response?.status ===
+          STAFF_ORDERS_DEFAULTS.CONFLICT_STATUS_CODE;
 
       if (isConflict) {
         toast.error(STAFF_ORDER_DETAILS_MESSAGES.CONCURRENT_UPDATE_ERROR);
