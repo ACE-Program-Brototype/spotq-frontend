@@ -23,6 +23,11 @@ export function GeographicAdoptionTable({
   const totalItems = geographicBreakdown.length;
   const totalPages = Math.max(Math.ceil(totalItems / pageSize), 1);
 
+  const totalVenuesInBreakdown = useMemo(
+    () => geographicBreakdown.reduce((sum, item) => sum + (item.restaurantCount || 0), 0),
+    [geographicBreakdown],
+  );
+
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
     return geographicBreakdown.slice(startIndex, startIndex + pageSize);
@@ -33,21 +38,27 @@ export function GeographicAdoptionTable({
       key: "city",
       header: "City",
       accessor: "city",
-      className: "font-semibold text-slate-900 text-xs",
+      align: "left",
+      className: "font-semibold text-slate-900 text-xs px-4 py-3",
+      headerClassName: "px-4 py-3 text-left font-semibold text-slate-600 text-xs",
     },
     {
       key: "state",
       header: "State",
       accessor: "state",
-      className: "text-slate-600 text-xs",
+      align: "left",
+      className: "text-slate-600 text-xs px-4 py-3",
+      headerClassName: "px-4 py-3 text-left font-semibold text-slate-600 text-xs",
     },
     {
       key: "restaurantCount",
       header: "Active Venues",
       accessor: "restaurantCount",
-      className: "font-bold text-slate-900 text-right text-xs",
+      align: "right",
+      className: "text-right font-bold text-slate-900 text-xs px-6 py-3",
+      headerClassName: "text-right px-6 py-3 font-semibold text-slate-600 text-xs",
       cell: ({ row }) => (
-        <span className="font-semibold text-slate-800">
+        <span className="font-semibold text-slate-900">
           {formatNumber(row.restaurantCount)}
         </span>
       ),
@@ -55,12 +66,13 @@ export function GeographicAdoptionTable({
     {
       key: "share",
       header: "Share",
-      className: "text-right text-xs",
+      align: "right",
+      className: "text-right text-xs px-6 py-3",
+      headerClassName: "text-right px-6 py-3 font-semibold text-slate-600 text-xs",
       cell: ({ row }) => {
-        const share =
-          totalRestaurants > 0
-            ? Math.round((row.restaurantCount / totalRestaurants) * 100)
-            : 0;
+        const denominator =
+          totalVenuesInBreakdown > 0 ? totalVenuesInBreakdown : totalRestaurants || 1;
+        const share = Math.round((row.restaurantCount / denominator) * 100);
         return (
           <span className="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
             {share}%
