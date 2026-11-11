@@ -52,7 +52,7 @@ export function RevenueTimelineChart({
               Revenue & Growth Timeline
             </CardTitle>
             <p className="text-xs text-slate-500">
-              Subscription revenue performance & monthly revenue run-rate
+              Subscription revenue performance & dynamic revenue run-rate
             </p>
           </div>
         </CardHeader>
@@ -88,7 +88,7 @@ export function RevenueTimelineChart({
             )}
           </div>
           <p className="text-xs text-slate-500">
-            Subscription revenue performance & monthly revenue run-rate
+            Subscription revenue performance & dynamic revenue run-rate
           </p>
         </div>
       </CardHeader>
