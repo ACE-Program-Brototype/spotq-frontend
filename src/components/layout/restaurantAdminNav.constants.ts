@@ -106,9 +106,8 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       href: `${basePath}/subscription`,
       icon: CreditCard,
       children: [
-        { title: "Overview", href: `${basePath}/subscription/overview` },
-        { title: "Billing", href: `${basePath}/subscription/billing` },
-        { title: "Invoices", href: `${basePath}/subscription/invoices` },
+        { title: "Overview", href: `${basePath}/subscription` },
+        { title: "Billing History", href: `${basePath}/settings/billing/history` },
       ],
     },
     {
