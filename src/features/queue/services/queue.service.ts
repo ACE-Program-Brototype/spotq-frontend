@@ -1,13 +1,16 @@
 import { QUEUE_ENDPOINTS } from "@/features/queue/constants/queue.constants";
 import { normalizePhone } from "@/features/queue/schemas/walk-in.schema";
 import type {
+  ActiveCustomerQueueResponse,
   AssignTablesInput,
   AssignTablesResponse,
   CancelQueueEntryInput,
   CancelQueueEntryResponse,
+  CustomerQueueStatusResponse,
   GetStaffQueueParams,
   JoinQueueInput,
   JoinQueueResponse,
+  LeaveQueueResponse,
   QueueEtaResponse,
   RegisterWalkInInput,
   RegisterWalkInResponse,
@@ -147,5 +150,32 @@ export const queueService = {
         json: input,
       })
       .json<AssignTablesResponse>();
+  },
+
+  /**
+   * Checks whether the authenticated customer currently has an active queue entry.
+   */
+  async getActiveCustomerQueue(): Promise<ActiveCustomerQueueResponse> {
+    return apiClient.get(QUEUE_ENDPOINTS.CUSTOMER_ACTIVE).json<ActiveCustomerQueueResponse>();
+  },
+
+  /**
+   * Fetches authoritative customer queue status and position snapshot.
+   */
+  async getCustomerQueueStatus(
+    restaurantId: string,
+    queueEntryId: string,
+  ): Promise<CustomerQueueStatusResponse> {
+    return apiClient
+      .get(QUEUE_ENDPOINTS.CUSTOMER_STATUS(restaurantId, queueEntryId))
+      .json<CustomerQueueStatusResponse>();
+  },
+
+  async leaveQueue(restaurantId: string, queueEntryId: string): Promise<LeaveQueueResponse> {
+    return apiClient
+      .post(QUEUE_ENDPOINTS.LEAVE_QUEUE(restaurantId), {
+        json: { queueEntryId },
+      })
+      .json<LeaveQueueResponse>();
   },
 };
