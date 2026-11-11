@@ -115,4 +115,38 @@ describe("EditTableModal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(onClose).toHaveBeenCalled();
   });
+
+  it("truncates table code after 10 letters and toggles more/less in modal header", () => {
+    const longTable: RestaurantTableDetails = {
+      ...mockTable,
+      tableCode: "T00000000000000000000",
+    };
+
+    render(
+      <EditTableModal
+        table={longTable}
+        isOpen={true}
+        onClose={jest.fn()}
+        restaurantId={restaurantId}
+        onSubmit={jest.fn()}
+      />,
+    );
+
+    // Initial collapsed state in header
+    expect(screen.getByText("T000000000...")).toBeInTheDocument();
+    const moreBtn = screen.getByRole("button", { name: "Show more table code" });
+    expect(moreBtn).toBeInTheDocument();
+    expect(moreBtn).toHaveTextContent("more");
+
+    // Click more -> expands
+    fireEvent.click(moreBtn);
+    expect(screen.getByText("T00000000000000000000")).toBeInTheDocument();
+    const lessBtn = screen.getByRole("button", { name: "Show less table code" });
+    expect(lessBtn).toBeInTheDocument();
+    expect(lessBtn).toHaveTextContent("less");
+
+    // Click less -> collapses
+    fireEvent.click(lessBtn);
+    expect(screen.getByText("T000000000...")).toBeInTheDocument();
+  });
 });

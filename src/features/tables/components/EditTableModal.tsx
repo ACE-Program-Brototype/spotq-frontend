@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Armchair, Circle, Loader2, Square, X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 import { TABLE_MESSAGES, TABLE_SHAPE, TABLE_STATUS } from "../constants/table.constants";
 import { useTableSections } from "../hooks/useTableSections";
 import { type UpdateTableFormData, updateTableSchema } from "../schemas/update-table.schema";
@@ -37,6 +38,14 @@ export function EditTableModal({
   onSubmit,
   isLoading = false,
 }: EditTableModalProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsExpanded(false);
+    }
+  }, [isOpen]);
+
   const { sections, isLoading: isSectionsLoading } = useTableSections(restaurantId);
 
   const {
@@ -85,6 +94,7 @@ export function EditTableModal({
   const isOccupied =
     table.status === TABLE_STATUS.OCCUPIED || table.status === TABLE_STATUS.PARTIAL_OCCUPIED;
   const currentShape = watch("tableShape");
+  const isLongCode = Boolean(table.tableCode && table.tableCode.length > 10);
 
   const handleFormSubmit = async (data: UpdateTableFormData) => {
     try {
@@ -105,7 +115,12 @@ export function EditTableModal({
       aria-modal="true"
       aria-labelledby="edit-table-title"
     >
-      <div className="relative w-full max-w-lg rounded-2xl border border-[#ede4de] bg-white p-6 shadow-2xl sm:p-7">
+      <div
+        className={cn(
+          "relative w-full rounded-2xl border border-[#ede4de] bg-white p-6 shadow-2xl transition-all duration-200 sm:p-7 max-w-[calc(100vw-2rem)]",
+          isExpanded ? "max-w-2xl" : "max-w-lg",
+        )}
+      >
         {/* Modal header */}
         <header className="flex items-start justify-between gap-4 border-b border-[#f1ebe6] pb-4">
           <div className="flex min-w-0 items-center gap-3">
@@ -115,10 +130,28 @@ export function EditTableModal({
             <div className="min-w-0">
               <h2
                 id="edit-table-title"
-                className="truncate text-xl font-bold tracking-tight text-[#202522]"
+                className="break-all text-xl font-bold tracking-tight text-[#202522]"
                 title={`Edit Table ${table.tableCode}`}
               >
-                Edit Table {table.tableCode}
+                Edit Table{" "}
+                {isLongCode ? (
+                  <>
+                    <span>
+                      {isExpanded ? table.tableCode : `${table.tableCode.slice(0, 10)}...`}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsExpanded((prev) => !prev)}
+                      aria-expanded={isExpanded}
+                      aria-label={isExpanded ? "Show less table code" : "Show more table code"}
+                      className="ml-1.5 inline-block text-xs font-semibold text-[#b4532a] underline hover:text-[#9a3412] cursor-pointer"
+                    >
+                      {isExpanded ? "less" : "more"}
+                    </button>
+                  </>
+                ) : (
+                  table.tableCode
+                )}
               </h2>
               <p className="mt-0.5 text-xs text-[#778078]">
                 Update seating capacity, dining section, and floor shape.

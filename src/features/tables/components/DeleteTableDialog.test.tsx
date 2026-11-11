@@ -92,4 +92,68 @@ describe("DeleteTableDialog", () => {
     expect(onClose).toHaveBeenCalled();
     expect(onConfirm).not.toHaveBeenCalled();
   });
+
+  it("truncates table code after 10 letters and toggles more/less when table is available", () => {
+    const longTable: RestaurantTableDetails = {
+      ...mockTableAvailable,
+      tableCode: "T00000000000000000000",
+    };
+
+    render(
+      <DeleteTableDialog
+        table={longTable}
+        isOpen={true}
+        onClose={jest.fn()}
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    // Initial collapsed state: shows 10 chars + ... and "more" button
+    expect(screen.getAllByText("T000000000...").length).toBe(2);
+    const moreBtn = screen.getByRole("button", { name: "Show more table code" });
+    expect(moreBtn).toBeInTheDocument();
+    expect(moreBtn).toHaveTextContent("more");
+
+    // Click more -> expands
+    fireEvent.click(moreBtn);
+    expect(screen.getAllByText("T00000000000000000000").length).toBe(2);
+    const lessBtn = screen.getByRole("button", { name: "Show less table code" });
+    expect(lessBtn).toBeInTheDocument();
+    expect(lessBtn).toHaveTextContent("less");
+
+    // Click less -> collapses
+    fireEvent.click(lessBtn);
+    expect(screen.getAllByText("T000000000...").length).toBe(2);
+  });
+
+  it("truncates table code after 10 letters and toggles more/less when table is occupied", () => {
+    const longOccupiedTable: RestaurantTableDetails = {
+      ...mockTableOccupied,
+      tableCode: "T00000000000000000000",
+    };
+
+    render(
+      <DeleteTableDialog
+        table={longOccupiedTable}
+        isOpen={true}
+        onClose={jest.fn()}
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    // Initial collapsed state
+    expect(screen.getByText("T000000000...")).toBeInTheDocument();
+    const moreBtn = screen.getByRole("button", { name: "Show more table code" });
+    expect(moreBtn).toBeInTheDocument();
+
+    // Click more -> expands
+    fireEvent.click(moreBtn);
+    expect(screen.getByText("T00000000000000000000")).toBeInTheDocument();
+    const lessBtn = screen.getByRole("button", { name: "Show less table code" });
+    expect(lessBtn).toBeInTheDocument();
+
+    // Click less -> collapses
+    fireEvent.click(lessBtn);
+    expect(screen.getByText("T000000000...")).toBeInTheDocument();
+  });
 });
