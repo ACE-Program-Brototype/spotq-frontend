@@ -9,6 +9,7 @@ import {
   Trash2,
   Users,
 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { LoadingIndicator } from "@/components/common/LoadingIndicator";
@@ -16,17 +17,32 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { DeleteTableDialog } from "../components/DeleteTableDialog";
+import { EditTableModal } from "../components/EditTableModal";
 import { TABLE_SHAPE } from "../constants/table.constants";
+import { useDeleteTable } from "../hooks/useDeleteTable";
 import { useRestaurantTableDetails } from "../hooks/useRestaurantTableDetails";
+import { useUpdateTable } from "../hooks/useUpdateTable";
+import type { UpdateTableFormData } from "../schemas/update-table.schema";
 
 export default function RestaurantTableDetailPage() {
   const { tableId = "" } = useParams();
   const navigate = useNavigate();
   const restaurantId = useAuthStore((state) => state.user?.restaurantId || "");
+
+  // Query table details
   const { table, isLoading, isError, error, refetch } = useRestaurantTableDetails(
     restaurantId,
     tableId,
   );
+
+  // Mutations for table update and soft deletion
+  const updateTableMutation = useUpdateTable(restaurantId);
+  const deleteTableMutation = useDeleteTable(restaurantId);
+
+  // Modal and dialog visibility state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   if (isLoading) {
     return <LoadingIndicator text="Loading table details..." />;
@@ -77,12 +93,33 @@ export default function RestaurantTableDetailPage() {
         ? RectangleHorizontal
         : Armchair;
 
+  // Handle table updates from the EditTableModal
+  const handleUpdateTable = async (id: string, formData: UpdateTableFormData) => {
+    await updateTableMutation.mutateAsync({
+      tableId: id,
+      payload: {
+        tableCode: formData.tableCode,
+        capacity: formData.capacity,
+        sectionId: formData.sectionId,
+        type: formData.tableShape,
+      },
+    });
+    await refetch();
+  };
+
+  // Handle table soft-deletion from DeleteTableDialog
+  const handleDeleteTable = async (id: string) => {
+    await deleteTableMutation.mutateAsync(id);
+    navigate(RESTAURANT_ROUTES.TABLE.ROOT);
+  };
+
   return (
     <main
       className="mx-auto max-w-7xl space-y-6 px-3 pb-8 sm:px-5 sm:pb-10"
       data-testid="restaurant-table-detail-page"
     >
       <div>
+        {/* Navigation Breadcrumb */}
         <Button
           type="button"
           variant="ghost"
@@ -95,27 +132,50 @@ export default function RestaurantTableDetailPage() {
         <p className="text-xs font-bold uppercase tracking-[.16em] text-[#b4532a]">
           Floor management
         </p>
+
+        {/* Header with Title, Status Badge, and Action Buttons */}
         <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-[#202522] sm:text-3xl">
+          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-3">
+            <h1
+              className="break-all text-2xl font-bold tracking-tight text-[#202522] sm:text-3xl"
+              title={`Table ${title}`}
+            >
               Table {title}
             </h1>
-            <Badge variant="outline" className="border-sky-200 bg-sky-50 text-sky-700">
+            <Badge variant="outline" className="shrink-0 border-sky-200 bg-sky-50 text-sky-700">
               {status}
             </Badge>
           </div>
+
+          {/* Action Buttons: Edit and Soft-Delete */}
           <div className="flex items-center gap-2">
-            <Button type="button" variant="outline" size="sm">
-              <Pencil /> Edit
+            {/* Edit Table Trigger Button */}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditModalOpen(true)}
+              className="gap-1.5 rounded-xl border-[#e2d8d0] hover:bg-[#fbf7f4] hover:text-[#9a3412]"
+            >
+              <Pencil className="size-3.5" /> Edit
             </Button>
-            <Button type="button" variant="destructive" size="sm">
-              <Trash2 /> Delete
+
+            {/* Soft Delete Table Trigger Button */}
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="gap-1.5 rounded-xl"
+            >
+              <Trash2 className="size-3.5" /> Delete
             </Button>
           </div>
         </div>
-        <p className="mt-1 text-sm text-[#778078]">Table overview and recent guest orders.</p>
+        <p className="mt-1 text-sm text-[#778078]">Table overview and floor properties.</p>
       </div>
 
+      {/* Summary Stat Cards */}
       <section className="grid gap-3 sm:grid-cols-3">
         {summaries.map(({ label, value, Icon }) => (
           <Card key={label} className="border-[#ede4de] shadow-none">
@@ -132,10 +192,11 @@ export default function RestaurantTableDetailPage() {
         ))}
       </section>
 
+      {/* Detailed Table Attributes Card */}
       <Card className="border-[#ede4de] shadow-none">
         <CardHeader className="border-b border-[#f0e9e4]">
           <CardTitle className="text-base text-[#282d29]">Table details</CardTitle>
-          <CardDescription>Information for table {title}.</CardDescription>
+          <CardDescription className="break-all">Information for table {title}.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3">
           <div className="flex items-center gap-3">
@@ -154,6 +215,24 @@ export default function RestaurantTableDetailPage() {
           <Detail label="Created at" value={new Date(table.createdAt).toLocaleString()} />
         </CardContent>
       </Card>
+
+      {/* Edit and soft-delete dialogs */}
+      <EditTableModal
+        table={table}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        restaurantId={restaurantId}
+        onSubmit={handleUpdateTable}
+        isLoading={updateTableMutation.isPending}
+      />
+
+      <DeleteTableDialog
+        table={table}
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDeleteTable}
+        isLoading={deleteTableMutation.isPending}
+      />
     </main>
   );
 }
@@ -163,7 +242,7 @@ function Detail({ label, value, mono = false }: { label: string; value: string; 
     <div>
       <p className="text-xs text-[#858b85]">{label}</p>
       <p
-        className={`mt-0.5 font-medium text-[#252a26] ${mono ? "break-all font-mono text-sm" : ""}`}
+        className={`mt-0.5 font-medium text-[#252a26] ${mono ? "break-all font-mono text-sm" : "break-words"}`}
       >
         {value}
       </p>

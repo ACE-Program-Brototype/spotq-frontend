@@ -33,6 +33,33 @@ export function getActiveCustomerTicket(): ActiveCustomerTicket | null {
 }
 
 /**
+ * Formats a queue number with a single leading '#' prefix when present.
+ */
+export function formatQueueNumber(rawQueueNumber?: string | null): string | null {
+  const trimmed = rawQueueNumber?.trim();
+  if (!trimmed || trimmed === "—") return null;
+  return trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
+}
+
+/**
+ * Resolves a human-readable table label from HTTP/WS payloads, omitting raw UUIDs.
+ */
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function resolveDisplayTableLabel(
+  tableNumber?: string | null,
+  tableIds?: string[] | null,
+): string | null {
+  if (tableNumber?.trim()) {
+    return tableNumber.trim();
+  }
+  const readableIds = (tableIds ?? [])
+    .map((id) => id.trim())
+    .filter((id) => Boolean(id) && !UUID_PATTERN.test(id));
+  return readableIds.length > 0 ? readableIds.join(", ") : null;
+}
+
+/**
  * Removes active customer queue ticket from local storage (e.g. upon being seated or leaving).
  */
 export function clearActiveCustomerTicket(): void {

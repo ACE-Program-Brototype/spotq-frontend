@@ -10,6 +10,9 @@ export interface CustomerRingPayload {
   lastRingedAt?: string;
   message?: string;
   deepLink?: string;
+  assignedTableNumber?: string | null;
+  assignedTableIds?: string[];
+  deadlineMinutes?: number;
 }
 
 export interface CustomerRingAlertState {
