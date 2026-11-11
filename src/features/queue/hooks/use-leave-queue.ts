@@ -29,6 +29,9 @@ export function useLeaveQueue(options?: UseLeaveQueueOptions) {
     onSuccess: (response, variables) => {
       clearActiveCustomerTicket();
       queryClient.invalidateQueries({
+        queryKey: QUEUE_QUERY_KEYS.CUSTOMER_ACTIVE(),
+      });
+      queryClient.invalidateQueries({
         queryKey: QUEUE_QUERY_KEYS.CUSTOMER_STATUS(variables.restaurantId, variables.queueEntryId),
       });
       queryClient.invalidateQueries({

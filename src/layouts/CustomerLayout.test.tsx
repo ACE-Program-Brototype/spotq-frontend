@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useActiveCustomerQueue } from "@/features/queue";
 import CustomerLayout from "./CustomerLayout";
 
 jest.mock("@/features/auth/context/push-notification.context", () => ({
@@ -24,6 +25,7 @@ jest.mock("@/features/cart/store/cart.store", () => ({
 jest.mock("@/features/queue", () => ({
   CustomerRingAlertContainer: () => <div data-testid="ring-alert-container">Ring Alert</div>,
   ActiveQueueFloatingPill: () => <div data-testid="floating-pill">Floating Pill</div>,
+  useActiveCustomerQueue: jest.fn(),
 }));
 
 jest.mock("@/components/layout/CustomerNavbar", () => ({
@@ -67,6 +69,7 @@ describe("CustomerLayout", () => {
     expect(screen.getByTestId("customer-footer")).toBeInTheDocument();
     expect(screen.getByText("Restaurant Detail Page")).toBeInTheDocument();
     expect(screen.getByTestId("ring-alert-container")).toBeInTheDocument();
+    expect(useActiveCustomerQueue).toHaveBeenCalled();
   });
 
   it("does not render ring alert container on queue status tracker page to prevent duplicate websocket connections", () => {

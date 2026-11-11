@@ -203,6 +203,47 @@ describe("queueService", () => {
     });
   });
 
+  describe("getActiveCustomerQueue", () => {
+    it("fetches active customer queue entry using the active queue endpoint", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Active queue check completed successfully",
+        data: {
+          restaurantId: "rest-test-123",
+          queueEntryId: "entry-test-456",
+          queueNumber: "Q-001",
+          status: "WAITING",
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.getActiveCustomerQueue();
+
+      expect(apiClient.get).toHaveBeenCalledWith(QUEUE_ENDPOINTS.CUSTOMER_ACTIVE);
+      expect(result).toEqual(mockResponse);
+    });
+
+    it("returns null data when the customer has no active queue entry", async () => {
+      const mockResponse = {
+        success: true,
+        message: "Active queue check completed successfully",
+        data: null,
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await queueService.getActiveCustomerQueue();
+
+      expect(apiClient.get).toHaveBeenCalledWith(QUEUE_ENDPOINTS.CUSTOMER_ACTIVE);
+      expect(result).toEqual(mockResponse);
+    });
+  });
+
   describe("getCustomerQueueStatus", () => {
     it("submits getCustomerQueueStatus request with restaurantId and queueEntryId", async () => {
       const restaurantId = "rest-test-123";

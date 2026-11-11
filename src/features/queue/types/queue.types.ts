@@ -159,3 +159,12 @@ export interface LeaveQueueData {
 }
 
 export type LeaveQueueResponse = SuccessResponse<LeaveQueueData>;
+
+export interface ActiveCustomerQueueData {
+  restaurantId: string;
+  queueEntryId: string;
+  queueNumber: string;
+  status: QueueStatus;
+}
+
+export type ActiveCustomerQueueResponse = SuccessResponse<ActiveCustomerQueueData | null>;

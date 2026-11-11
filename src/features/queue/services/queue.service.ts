@@ -2,6 +2,7 @@ import { apiClient } from "@/lib/api/client";
 import { QUEUE_ENDPOINTS } from "../constants/queue.constants";
 import { normalizePhone } from "../schemas/walk-in.schema";
 import type {
+  ActiveCustomerQueueResponse,
   AssignTablesInput,
   AssignTablesResponse,
   CustomerQueueStatusResponse,
@@ -77,6 +78,13 @@ export const queueService = {
         json: input,
       })
       .json<AssignTablesResponse>();
+  },
+
+  /**
+   * Checks whether the authenticated customer currently has an active queue entry.
+   */
+  async getActiveCustomerQueue(): Promise<ActiveCustomerQueueResponse> {
+    return apiClient.get(QUEUE_ENDPOINTS.CUSTOMER_ACTIVE).json<ActiveCustomerQueueResponse>();
   },
 
   /**

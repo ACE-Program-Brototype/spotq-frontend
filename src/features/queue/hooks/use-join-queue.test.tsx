@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { toast } from "sonner";
+import { QUEUE_QUERY_KEYS } from "../constants/queue.constants";
 import { queueService } from "../services/queue.service";
 import type { JoinQueueResponse } from "../types/queue.types";
 import { useJoinQueue } from "./use-join-queue";
@@ -56,6 +57,7 @@ describe("useJoinQueue", () => {
 
   it("submits joinQueue and triggers success callback and toast", async () => {
     (queueService.joinQueue as jest.Mock).mockResolvedValue(mockResponse);
+    const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
     const onSuccess = jest.fn();
 
     const { result } = renderHook(() => useJoinQueue(restaurantId, { onSuccess }), {
@@ -78,6 +80,9 @@ describe("useJoinQueue", () => {
       specialNotes: "Quiet table",
     });
 
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: QUEUE_QUERY_KEYS.CUSTOMER_ACTIVE(),
+    });
     expect(toast.success).toHaveBeenCalledWith(mockResponse.message);
     expect(onSuccess).toHaveBeenCalledWith(mockResponse.data);
   });

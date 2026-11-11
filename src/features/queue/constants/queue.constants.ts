@@ -13,6 +13,10 @@ export const QUEUE_QUERY_KEYS = {
     ["queue", "eta", restaurantId, partySize] as const,
   CUSTOMER_STATUS: (restaurantId: string, queueEntryId: string) =>
     ["queue", "status", restaurantId, queueEntryId] as const,
+  CUSTOMER_ACTIVE: (userId?: string | null) =>
+    userId
+      ? (["queue", "customer-active", userId] as const)
+      : (["queue", "customer-active"] as const),
 } as const;
 
 export const QUEUE_ENDPOINTS = {
@@ -23,6 +27,7 @@ export const QUEUE_ENDPOINTS = {
     `queues/customer/restaurants/${encodeURIComponent(restaurantId)}/queue/join`,
   ASSIGN_TABLE: (queueEntryId: string) =>
     `queues/staff/queue/${encodeURIComponent(queueEntryId)}/assign-tables`,
+  CUSTOMER_ACTIVE: "queues/customer/active",
   CUSTOMER_STATUS: (restaurantId: string, queueEntryId: string) =>
     `queues/customer/restaurants/${encodeURIComponent(restaurantId)}/queue/status?queueEntryId=${encodeURIComponent(queueEntryId)}`,
   LEAVE_QUEUE: (restaurantId: string) =>

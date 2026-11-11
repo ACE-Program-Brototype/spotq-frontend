@@ -7,10 +7,15 @@ import { usePushNotification } from "@/features/auth/context/push-notification.c
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { ActiveQueueFloatingPill, CustomerRingAlertContainer } from "@/features/queue";
+import {
+  ActiveQueueFloatingPill,
+  CustomerRingAlertContainer,
+  useActiveCustomerQueue,
+} from "@/features/queue";
 
 export function CustomerLayout() {
   const { isAuthenticated, user } = useAuthStore();
+  useActiveCustomerQueue();
   const pushNotification = usePushNotification();
   const cartItemCount = useCartStore((state) => state.totalCount);
   const location = useLocation();

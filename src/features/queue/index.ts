@@ -13,6 +13,7 @@ export { WalkInRegistrationModal } from "./components/WalkInRegistrationModal";
 export * from "./constants/queue.constants";
 export * from "./constants/ring-alert.constants";
 export * from "./constants/websocket.constants";
+export { useActiveCustomerQueue } from "./hooks/use-active-customer-queue";
 export { useAssignTables } from "./hooks/use-assign-tables";
 export { useCustomerQueueSocket } from "./hooks/use-customer-queue-socket";
 export { useCustomerQueueStatus } from "./hooks/use-customer-queue-status";
