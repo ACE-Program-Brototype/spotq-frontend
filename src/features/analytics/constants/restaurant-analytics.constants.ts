@@ -1,5 +1,7 @@
 import { ANALYTICS_PERIODS, ORDER_STATUS_FILTERS } from "../types/restaurant-analytics.types";
 
+export * from "./order-status-chart.constants";
+
 export const RESTAURANT_ANALYTICS_ENDPOINTS = {
   DASHBOARD: (restaurantId: string) => `restaurants/${restaurantId}/analytics/dashboard`,
 } as const;

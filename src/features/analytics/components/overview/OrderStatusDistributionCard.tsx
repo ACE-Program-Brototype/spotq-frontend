@@ -2,86 +2,16 @@ import { CheckCircle2, Donut, PieChart as PieChartIcon, XCircle } from "lucide-r
 import { useState } from "react";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
+import {
+  ORDER_STATUS_CHART_CONFIG,
+  ORDER_STATUS_CHART_STYLES,
+  getOrderStatusDisplayInfo,
+} from "../../constants/order-status-chart.constants";
 import type { OrderStatusBreakdownResultDto } from "../../types/restaurant-analytics.types";
 
 export interface OrderStatusDistributionCardProps {
   breakdown: OrderStatusBreakdownResultDto;
   className?: string;
-}
-
-const STATUS_CONFIG: Record<string, { label: string; color: string; border: string; bg: string }> =
-  {
-    COMPLETED: {
-      label: "Completed Orders",
-      color: "#10b981", // Emerald 500
-      border: "#059669",
-      bg: "#ecfdf5",
-    },
-    CONFIRMED: {
-      label: "Confirmed",
-      color: "#3b82f6", // Blue 500
-      border: "#2563eb",
-      bg: "#eff6ff",
-    },
-    PREPARING: {
-      label: "Preparing",
-      color: "#f59e0b", // Amber 500
-      border: "#d97706",
-      bg: "#fffbeb",
-    },
-    PLACED: {
-      label: "Placed",
-      color: "#8b5cf6", // Violet 500
-      border: "#7c3aed",
-      bg: "#f5f3ff",
-    },
-    SERVED: {
-      label: "Served",
-      color: "#14b8a6", // Teal 500
-      border: "#0d9488",
-      bg: "#f0fdfa",
-    },
-    READY: {
-      label: "Ready for Pickup",
-      color: "#06b6d4", // Cyan 500
-      border: "#0891b2",
-      bg: "#ecfeff",
-    },
-    CANCELLED: {
-      label: "Cancelled Orders",
-      color: "#f43f5e", // Rose 500
-      border: "#e11d48",
-      bg: "#fff1f2",
-    },
-  };
-
-const FALLBACK_PALETTE = [
-  "#e8631b", // SpotQ Terracotta
-  "#9a3412", // Dark Terracotta
-  "#6366f1", // Indigo
-  "#ec4899", // Pink
-  "#84cc16", // Lime
-  "#a855f7", // Violet
-  "#64748b", // Slate
-];
-
-function getStatusInfo(status: string, index: number) {
-  const normalized = status.toUpperCase().trim();
-  if (STATUS_CONFIG[normalized]) {
-    return STATUS_CONFIG[normalized];
-  }
-  const color = FALLBACK_PALETTE[index % FALLBACK_PALETTE.length];
-  const formatted = status
-    .toLowerCase()
-    .split("_")
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(" ");
-  return {
-    label: formatted,
-    color,
-    border: color,
-    bg: "#faf7f5",
-  };
 }
 
 export function OrderStatusDistributionCard({
@@ -102,12 +32,15 @@ export function OrderStatusDistributionCard({
       ? totalOrdersTracked
       : validItems.reduce((acc, item) => acc + item.count, 0);
 
-  // SVG Geometry
-  const size = 220;
+  // SVG Geometry from constants
+  const size = ORDER_STATUS_CHART_CONFIG.SIZE;
   const cx = size / 2;
   const cy = size / 2;
-  const outerRadius = 88;
-  const innerRadius = chartMode === "donut" ? 52 : 0;
+  const outerRadius = ORDER_STATUS_CHART_CONFIG.OUTER_RADIUS;
+  const innerRadius =
+    chartMode === "donut"
+      ? ORDER_STATUS_CHART_CONFIG.DONUT_INNER_RADIUS
+      : ORDER_STATUS_CHART_CONFIG.PIE_INNER_RADIUS;
 
   // Build slices data
   let currentAngle = -Math.PI / 2; // Start at 12 o'clock
@@ -119,7 +52,7 @@ export function OrderStatusDistributionCard({
     currentAngle = endAngle;
 
     const midAngle = (startAngle + endAngle) / 2;
-    const info = getStatusInfo(item.status, idx);
+    const info = getOrderStatusDisplayInfo(item.status, idx);
 
     return {
       item,
@@ -135,33 +68,28 @@ export function OrderStatusDistributionCard({
   const activeSlice = slices.find((s) => s.item.status === hoveredStatus);
 
   return (
-    <div
-      className={cn(
-        "rounded-2xl border border-[#eddcd4] bg-white p-5 sm:p-6 shadow-2xs flex flex-col justify-between",
-        className,
-      )}
-    >
+    <div className={cn(ORDER_STATUS_CHART_STYLES.CARD_CONTAINER, className)}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h3 className="text-base font-bold text-neutral-900">Order Fulfillment</h3>
-          <p className="text-xs text-neutral-500 mt-0.5">
+          <h3 className={ORDER_STATUS_CHART_STYLES.HEADER_TITLE}>Order Fulfillment</h3>
+          <p className={ORDER_STATUS_CHART_STYLES.HEADER_SUBTITLE}>
             Distribution by order status and financial value
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto">
           {/* Mode switch */}
-          <div className="flex items-center rounded-lg border border-[#eddcd4] bg-[#faf7f5] p-0.5 text-xs">
+          <div className={ORDER_STATUS_CHART_STYLES.TOGGLE_CONTAINER}>
             <button
               type="button"
               onClick={() => setChartMode("pie")}
               title="Pie Chart View"
               className={cn(
-                "flex items-center gap-1 rounded-md px-2 py-1 font-semibold transition-colors",
+                ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_BASE,
                 chartMode === "pie"
-                  ? "bg-white text-[#9a3412] shadow-2xs"
-                  : "text-neutral-500 hover:text-neutral-900",
+                  ? ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_ACTIVE
+                  : ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_INACTIVE,
               )}
             >
               <PieChartIcon className="size-3.5" />
@@ -172,10 +100,10 @@ export function OrderStatusDistributionCard({
               onClick={() => setChartMode("donut")}
               title="Donut Chart View"
               className={cn(
-                "flex items-center gap-1 rounded-md px-2 py-1 font-semibold transition-colors",
+                ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_BASE,
                 chartMode === "donut"
-                  ? "bg-white text-[#9a3412] shadow-2xs"
-                  : "text-neutral-500 hover:text-neutral-900",
+                  ? ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_ACTIVE
+                  : ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_INACTIVE,
               )}
             >
               <Donut className="size-3.5" />
@@ -183,7 +111,7 @@ export function OrderStatusDistributionCard({
             </button>
           </div>
 
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#faf7f5] border border-[#eddcd4] text-neutral-700 shrink-0">
+          <span className={ORDER_STATUS_CHART_STYLES.TRACKED_BADGE}>
             {totalOrdersTracked.toLocaleString()} tracked
           </span>
         </div>
@@ -195,7 +123,7 @@ export function OrderStatusDistributionCard({
         <div className="md:col-span-5 flex flex-col items-center justify-center">
           <div className="relative size-[220px]">
             {totalCount === 0 || validItems.length === 0 ? (
-              <div className="flex size-full flex-col items-center justify-center rounded-full border-2 border-dashed border-neutral-300 bg-[#faf7f5] p-4 text-center">
+              <div className={ORDER_STATUS_CHART_STYLES.EMPTY_CONTAINER}>
                 <PieChartIcon className="size-8 text-neutral-400" />
                 <p className="mt-1 text-xs font-semibold text-neutral-600">No Orders</p>
                 <p className="text-[10px] text-neutral-400">Zero orders in this period</p>
@@ -211,7 +139,7 @@ export function OrderStatusDistributionCard({
                 {slices.map((slice) => {
                   const { item, info, isSingle, startAngle, endAngle, midAngle } = slice;
                   const isHovered = hoveredStatus === item.status;
-                  const pullDistance = isHovered ? 6 : 0;
+                  const pullDistance = isHovered ? ORDER_STATUS_CHART_CONFIG.PULL_DISTANCE : 0;
                   const dx = Math.cos(midAngle) * pullDistance;
                   const dy = Math.sin(midAngle) * pullDistance;
 
@@ -275,8 +203,8 @@ export function OrderStatusDistributionCard({
                       <path
                         d={pathData}
                         fill={info.color}
-                        stroke="#ffffff"
-                        strokeWidth={2}
+                        stroke={ORDER_STATUS_CHART_CONFIG.STROKE_COLOR}
+                        strokeWidth={ORDER_STATUS_CHART_CONFIG.STROKE_WIDTH}
                         className={cn(
                           "transition-opacity duration-200",
                           hoveredStatus && !isHovered && "opacity-60",
@@ -332,9 +260,9 @@ export function OrderStatusDistributionCard({
         </div>
 
         {/* Right: Legend Breakdown List */}
-        <div className="md:col-span-7 flex flex-col gap-2 max-h-[290px] overflow-y-auto pr-1">
+        <div className={ORDER_STATUS_CHART_STYLES.LEGEND_CONTAINER}>
           {distribution.map((item, idx) => {
-            const info = getStatusInfo(item.status, idx);
+            const info = getOrderStatusDisplayInfo(item.status, idx);
             const isHovered = hoveredStatus === item.status;
             const isCompleted = item.status === "COMPLETED";
             const isCancelled = item.status === "CANCELLED";
@@ -345,10 +273,10 @@ export function OrderStatusDistributionCard({
                 onMouseEnter={() => setHoveredStatus(item.status)}
                 onMouseLeave={() => setHoveredStatus(null)}
                 className={cn(
-                  "flex items-center justify-between p-2.5 rounded-xl border transition-all duration-200 cursor-pointer",
+                  ORDER_STATUS_CHART_STYLES.LEGEND_ROW_BASE,
                   isHovered
-                    ? "border-[#9a3412] bg-[#fef3ec]/50 shadow-xs"
-                    : "border-[#eddcd4]/70 bg-[#faf7f5]/70 hover:bg-[#faf7f5]",
+                    ? ORDER_STATUS_CHART_STYLES.LEGEND_ROW_ACTIVE
+                    : ORDER_STATUS_CHART_STYLES.LEGEND_ROW_INACTIVE,
                 )}
               >
                 {/* Status Dot + Name */}
@@ -380,10 +308,11 @@ export function OrderStatusDistributionCard({
                   <div className="min-w-[75px] text-right">
                     <span
                       className={cn(
-                        "text-xs font-bold",
-                        isCompleted && "text-emerald-700",
-                        isCancelled && "text-rose-700",
-                        !isCompleted && !isCancelled && "text-neutral-700",
+                        isCompleted && ORDER_STATUS_CHART_STYLES.LEGEND_AMOUNT_COMPLETED,
+                        isCancelled && ORDER_STATUS_CHART_STYLES.LEGEND_AMOUNT_CANCELLED,
+                        !isCompleted &&
+                          !isCancelled &&
+                          ORDER_STATUS_CHART_STYLES.LEGEND_AMOUNT_NEUTRAL,
                       )}
                     >
                       {formatCurrency(item.amountRupees)}
