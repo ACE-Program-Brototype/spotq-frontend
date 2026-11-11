@@ -70,11 +70,11 @@ export function PlatformKpisSection({
       iconColor: "text-emerald-600 bg-emerald-50 border-emerald-200/60",
     },
     {
-      title: "Total Customers",
+      title: "Total Users",
       value: isUserAvailable ? formatNumber(customerGrowth?.totalRegisteredCustomers) : "—",
       subtitle: isUserAvailable
         ? `+${formatNumber(customerGrowth?.newCustomersInPeriod ?? 0)} new in period`
-        : "Customer metrics unavailable",
+        : "User metrics unavailable",
       icon: Users,
       iconColor: "text-purple-600 bg-purple-50 border-purple-200/60",
     },

@@ -107,7 +107,7 @@ describe("AdminDashboardPage", () => {
     expect(screen.getAllByText("142").length).toBeGreaterThan(0);
     expect(screen.getByText("Subscribed Restaurants")).toBeInTheDocument();
     expect(screen.getAllByText("118").length).toBeGreaterThan(0);
-    expect(screen.getByText("Total Customers")).toBeInTheDocument();
+    expect(screen.getByText("Total Users")).toBeInTheDocument();
     expect(screen.getAllByText("12,500").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Monthly Revenue").length).toBeGreaterThan(0);
 
