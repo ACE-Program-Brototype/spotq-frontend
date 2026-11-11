@@ -3,9 +3,12 @@
  */
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { STAFF_ORDERS_QUERY_KEYS } from "../constants/staff-orders.constants";
-import { staffOrdersService } from "../services/staff-orders.service";
-import type { GetStaffOrdersParams } from "../types/staff-orders.types";
+import {
+  STAFF_ORDERS_DEFAULTS,
+  STAFF_ORDERS_QUERY_KEYS,
+} from "@/features/orders/constants/staff-orders.constants";
+import { staffOrdersService } from "@/features/orders/services/staff-orders.service";
+import type { GetStaffOrdersParams } from "@/features/orders/types/staff-orders.types";
 
 export interface UseStaffOrdersOptions {
   refetchInterval?: number | false;
@@ -25,8 +28,8 @@ export function useStaffOrders(
     ),
     queryFn: () => staffOrdersService.getStaffOrdersList(normalizedId, params),
     enabled: Boolean(normalizedId),
-    staleTime: 10_000,
-    refetchInterval: options?.refetchInterval ?? 15_000,
+    staleTime: STAFF_ORDERS_DEFAULTS.LIST_STALE_TIME_MS,
+    refetchInterval: options?.refetchInterval ?? STAFF_ORDERS_DEFAULTS.POLL_INTERVAL_MS,
     placeholderData: keepPreviousData,
   });
 }
