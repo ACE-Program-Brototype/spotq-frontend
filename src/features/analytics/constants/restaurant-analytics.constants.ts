@@ -1,7 +1,7 @@
 import { ANALYTICS_PERIODS, ORDER_STATUS_FILTERS } from "../types/restaurant-analytics.types";
 
 export const RESTAURANT_ANALYTICS_ENDPOINTS = {
-  DASHBOARD: (restaurantId: string) => `api/v1/restaurants/${restaurantId}/analytics/dashboard`,
+  DASHBOARD: (restaurantId: string) => `restaurants/${restaurantId}/analytics/dashboard`,
 } as const;
 
 export const RESTAURANT_ANALYTICS_QUERY_KEYS = {

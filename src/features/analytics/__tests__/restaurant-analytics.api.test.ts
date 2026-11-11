@@ -34,7 +34,7 @@ describe("restaurantAnalyticsApi", () => {
     const result = await restaurantAnalyticsApi.getDashboard(restaurantId);
 
     expect(apiClient.get).toHaveBeenCalledWith(
-      `api/v1/restaurants/${restaurantId}/analytics/dashboard`,
+      `restaurants/${restaurantId}/analytics/dashboard`,
       { searchParams: {} },
     );
     expect(result).toEqual(mockAnalyticsDashboardData);
@@ -58,7 +58,7 @@ describe("restaurantAnalyticsApi", () => {
     });
 
     expect(apiClient.get).toHaveBeenCalledWith(
-      `api/v1/restaurants/${restaurantId}/analytics/dashboard`,
+      `restaurants/${restaurantId}/analytics/dashboard`,
       {
         searchParams: {
           interval: "DAY",
@@ -86,7 +86,7 @@ describe("restaurantAnalyticsApi", () => {
     });
 
     expect(apiClient.get).toHaveBeenCalledWith(
-      `api/v1/restaurants/${restaurantId}/analytics/dashboard`,
+      `restaurants/${restaurantId}/analytics/dashboard`,
       {
         searchParams: {
           interval: "MONTH",
