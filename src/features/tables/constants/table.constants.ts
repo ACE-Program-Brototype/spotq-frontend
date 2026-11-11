@@ -210,3 +210,13 @@ export const TABLE_MESSAGES = {
 } as const;
 
 export const ADMIN_TABLE_LIMIT = 9;
+
+export const KEYBOARD_KEYS = {
+  ESCAPE: "Escape",
+  TAB: "Tab",
+} as const;
+
+export const DOM_EVENTS = {
+  KEY_DOWN: "keydown",
+  MOUSE_DOWN: "mousedown",
+} as const;

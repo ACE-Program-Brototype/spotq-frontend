@@ -1,7 +1,7 @@
 import { LogOut, MoreVertical, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils/cn";
-import { TABLE_STATUS_CONFIG } from "../constants/table.constants";
+import { DOM_EVENTS, KEYBOARD_KEYS, TABLE_STATUS_CONFIG } from "../constants/table.constants";
 import type { TableItem } from "../types/table.types";
 import { TableStatusBadge } from "./TableStatusBadge";
 
@@ -35,17 +35,17 @@ export function TableCard({ table, onClick, onRelease, className }: TableCardPro
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === KEYBOARD_KEYS.ESCAPE) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener(DOM_EVENTS.MOUSE_DOWN, handleClickOutside);
+    document.addEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener(DOM_EVENTS.MOUSE_DOWN, handleClickOutside);
+      document.removeEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
     };
   }, [isMenuOpen]);
 

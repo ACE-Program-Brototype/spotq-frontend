@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DOM_EVENTS, KEYBOARD_KEYS } from "../constants/table.constants";
 import { useReleaseTable } from "../hooks/useReleaseTable";
 import type { TableItem } from "../types/table.types";
 import { TableStatusBadge } from "./TableStatusBadge";
@@ -61,12 +62,12 @@ export function ReleaseTableModal({
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !isPending) {
+      if (e.key === KEYBOARD_KEYS.ESCAPE && !isPending) {
         onClose();
         return;
       }
 
-      if (e.key === "Tab" && card) {
+      if (e.key === KEYBOARD_KEYS.TAB && card) {
         const focusables = Array.from(card.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
         if (focusables.length === 0) return;
 
@@ -83,8 +84,8 @@ export function ReleaseTableModal({
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
+    return () => window.removeEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
   }, [isOpen, isPending, onClose]);
 
   if (!isOpen || !table) return null;
