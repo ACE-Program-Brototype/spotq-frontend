@@ -1,11 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { customerPaymentService } from "@/features/payments/services/customer-payment.service";
 import { orderService } from "../services/order.service";
 import type { CustomerOrderDetails } from "../types/customer-order-details.types";
 import CustomerOrderDetailPage from "./CustomerOrderDetailPage";
 
 jest.mock("../services/order.service");
+jest.mock("@/features/payments/services/customer-payment.service", () => ({
+  customerPaymentService: {
+    getInvoiceDownloadUrl: jest.fn(),
+  },
+}));
 
 const mockOrderDetails: CustomerOrderDetails = {
   order_id: "220e777c-69b4-4c56-a0fe-b9e276678322",
@@ -161,19 +167,6 @@ describe("CustomerOrderDetailPage", () => {
     expect(screen.getByText("Payment captured via gateway")).toBeInTheDocument();
   });
 
-  it("handles print button click", async () => {
-    (orderService.getCustomerOrderDetails as jest.Mock).mockResolvedValue(mockOrderDetails);
-    const printSpy = jest.spyOn(window, "print").mockImplementation(() => {});
-
-    renderWithRouter();
-
-    const printBtn = await screen.findByTestId("print-receipt-btn");
-    fireEvent.click(printBtn);
-
-    expect(printSpy).toHaveBeenCalled();
-    printSpy.mockRestore();
-  });
-
   it("navigates back to orders list when back button is clicked", async () => {
     (orderService.getCustomerOrderDetails as jest.Mock).mockResolvedValue(mockOrderDetails);
 
@@ -185,14 +178,46 @@ describe("CustomerOrderDetailPage", () => {
     expect(screen.getByText("Orders List Page")).toBeInTheDocument();
   });
 
-  it("navigates to receipt page when view receipt button is clicked", async () => {
+  it("triggers invoice download and opens PDF in a new window", async () => {
     (orderService.getCustomerOrderDetails as jest.Mock).mockResolvedValue(mockOrderDetails);
+    (customerPaymentService.getInvoiceDownloadUrl as jest.Mock).mockResolvedValue(
+      "https://s3.amazonaws.com/test-invoice.pdf",
+    );
+    const openSpy = jest.spyOn(window, "open").mockImplementation(() => ({}) as Window);
 
     renderWithRouter();
 
-    const viewReceiptBtn = await screen.findByTestId("view-receipt-btn");
-    fireEvent.click(viewReceiptBtn);
+    const downloadInvoiceBtn = await screen.findByTestId("download-invoice-btn");
+    expect(downloadInvoiceBtn).toBeEnabled();
 
-    expect(screen.getByText("Order Receipt Page")).toBeInTheDocument();
+    fireEvent.click(downloadInvoiceBtn);
+
+    await waitFor(() => {
+      expect(customerPaymentService.getInvoiceDownloadUrl).toHaveBeenCalledWith("pay_982319238");
+      expect(openSpy).toHaveBeenCalledWith(
+        "https://s3.amazonaws.com/test-invoice.pdf",
+        "_blank",
+        "noopener,noreferrer",
+      );
+    });
+
+    openSpy.mockRestore();
+  });
+
+  it("disables download invoice button when order is unpaid or payment_id is missing", async () => {
+    (orderService.getCustomerOrderDetails as jest.Mock).mockResolvedValue({
+      ...mockOrderDetails,
+      payment: {
+        status: "PENDING",
+        method: "ONLINE",
+        payment_id: null,
+        amount_paid: 0,
+      },
+    });
+
+    renderWithRouter();
+
+    const downloadInvoiceBtn = await screen.findByTestId("download-invoice-btn");
+    expect(downloadInvoiceBtn).toBeDisabled();
   });
 });

@@ -1,4 +1,13 @@
-import { AlertCircle, ArrowLeft, Calendar, Printer, Receipt, RefreshCw, Store } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Calendar,
+  Download,
+  Loader2,
+  Receipt,
+  RefreshCw,
+  Store,
+} from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants";
 import { Button } from "@/components/ui/button";
@@ -11,8 +20,9 @@ import { OrderPaymentCard } from "../components/customer/OrderPaymentCard";
 import { OrderPricingCard } from "../components/customer/OrderPricingCard";
 import { OrderStatusHistoryTimeline } from "../components/customer/OrderStatusHistoryTimeline";
 import { OrderStatusTracker } from "../components/customer/OrderStatusTracker";
-import { ORDER_STATUS_VARIANTS } from "../constants/order-receipt.constants";
+import { ORDER_STATUS_VARIANTS } from "../constants/customer-order-details.constants";
 import { useCustomerOrderDetails } from "../hooks/use-customer-order-details";
+import { useDownloadInvoice } from "../hooks/use-download-invoice";
 
 export default function CustomerOrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -26,17 +36,14 @@ export default function CustomerOrderDetailPage() {
     refetch,
     isFetching,
   } = useCustomerOrderDetails(activeOrderId);
+  const { downloadInvoice, isDownloading: isDownloadingInvoice } = useDownloadInvoice();
 
   const handleBack = () => {
     navigate(CUSTOMER_ROUTES.ORDERS);
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleViewReceipt = () => {
-    navigate(CUSTOMER_ROUTES.ORDER_RECEIPT(order?.order_id ?? activeOrderId));
+  const handleDownloadInvoice = () => {
+    downloadInvoice(order?.payment?.payment_id, order?.order_number);
   };
 
   if (isLoading) {
@@ -86,6 +93,8 @@ export default function CustomerOrderDetailPage() {
     badgeClass: "bg-neutral-100 text-neutral-700 border-neutral-300",
     label: order.status,
   };
+  const isPaid = order.payment?.status?.toUpperCase() === "PAID";
+  const canDownloadInvoice = isPaid && Boolean(order.payment?.payment_id);
 
   return (
     <div
@@ -146,24 +155,22 @@ export default function CustomerOrderDetailPage() {
               type="button"
               variant="outline"
               size="sm"
-              onClick={handleViewReceipt}
-              data-testid="view-receipt-btn"
-              className="rounded-xl border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 shadow-2xs gap-1.5 text-xs font-semibold cursor-pointer"
+              onClick={handleDownloadInvoice}
+              disabled={!canDownloadInvoice || isDownloadingInvoice}
+              data-testid="download-invoice-btn"
+              title={
+                canDownloadInvoice
+                  ? "Download official GST tax invoice"
+                  : "Invoice is available once payment is completed"
+              }
+              className="rounded-xl border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 disabled:opacity-50 shadow-2xs gap-1.5 text-xs font-semibold cursor-pointer disabled:cursor-not-allowed"
             >
-              <Receipt className="size-3.5 text-neutral-500" />
-              <span>View Receipt</span>
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handlePrint}
-              data-testid="print-receipt-btn"
-              className="rounded-xl border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 shadow-2xs gap-1.5 text-xs font-semibold cursor-pointer"
-            >
-              <Printer className="size-3.5 text-neutral-500" />
-              <span>Print Receipt</span>
+              {isDownloadingInvoice ? (
+                <Loader2 className="size-3.5 animate-spin text-neutral-500" />
+              ) : (
+                <Download className="size-3.5 text-neutral-500" />
+              )}
+              <span>{isDownloadingInvoice ? "Downloading..." : "Download Invoice"}</span>
             </Button>
 
             <CancelOrderTriggerButton

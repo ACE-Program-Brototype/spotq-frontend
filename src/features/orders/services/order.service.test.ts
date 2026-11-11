@@ -1,5 +1,4 @@
 import type { CustomerOrderDetails } from "@/features/orders/types/customer-order-details.types";
-import type { OrderReceipt } from "@/features/orders/types/order-receipt.types";
 import { apiClient } from "@/lib/api/client";
 import { orderService } from "./order.service";
 
@@ -9,34 +8,6 @@ jest.mock("@/lib/api/client", () => ({
     post: jest.fn(),
   },
 }));
-
-const mockOrderReceipt: OrderReceipt = {
-  order_id: "ord_992817203",
-  order_number: "SQ-101",
-  restaurant: {
-    restaurant_id: "rest_65f2a1b9e12345",
-    name: "Spice Garden Cafe",
-  },
-  status: "COMPLETED",
-  items: [
-    {
-      menu_item_id: "item_pizza_01",
-      name: "Margherita Pizza",
-      variant_id: "var_large_12",
-      variant_name: "Large (12 inch)",
-      addons: [],
-      quantity: 2,
-      unit_price: 350.0,
-      line_total: 820.0,
-      special_instructions: null,
-    },
-  ],
-  sub_total: 820.0,
-  tax_amount: 41.0,
-  platform_fee: 2.0,
-  total_amount: 863.0,
-  created_at: "2026-10-06T13:50:00.000Z",
-};
 
 const mockCustomerOrder: CustomerOrderDetails = {
   order_id: "220e777c-69b4-4c56-a0fe-b9e276678322",
@@ -141,65 +112,6 @@ describe("orderService", () => {
 
       await expect(orderService.getCustomerOrderDetails("invalid-id")).rejects.toThrow(
         "404 Not Found",
-      );
-    });
-  });
-
-  describe("getOrderReceipt", () => {
-    it("returns adapted receipt when API returns nested customer order data", async () => {
-      const mockApiResponse = {
-        success: true,
-        data: {
-          order: mockCustomerOrder,
-        },
-      };
-
-      (apiClient.get as jest.Mock).mockReturnValue({
-        json: jest.fn().mockResolvedValue(mockApiResponse),
-      });
-
-      const result = await orderService.getOrderReceipt("220e777c-69b4-4c56-a0fe-b9e276678322");
-
-      expect(result.order_id).toBe("220e777c-69b4-4c56-a0fe-b9e276678322");
-      expect(result.restaurant.name).toBe("Al-Reem");
-      expect(result.total_amount).toBe(378);
-    });
-
-    it("returns live order receipt data when API succeeds with flat data", async () => {
-      const mockApiResponse = {
-        success: true,
-        data: {
-          ...mockOrderReceipt,
-          order_id: "ord_live_123",
-        },
-      };
-
-      (apiClient.get as jest.Mock).mockReturnValue({
-        json: jest.fn().mockResolvedValue(mockApiResponse),
-      });
-
-      const result = await orderService.getOrderReceipt("ord_live_123");
-
-      expect(apiClient.get).toHaveBeenCalledWith("orders/ord_live_123");
-      expect(result.order_id).toBe("ord_live_123");
-      expect(result.restaurant.name).toBe("Spice Garden Cafe");
-    });
-
-    it("throws error when API fails", async () => {
-      (apiClient.get as jest.Mock).mockReturnValue({
-        json: jest.fn().mockRejectedValue(new Error("404 Not Found")),
-      });
-
-      await expect(orderService.getOrderReceipt("ord_123")).rejects.toThrow("404 Not Found");
-    });
-
-    it("throws error when response data is missing", async () => {
-      (apiClient.get as jest.Mock).mockReturnValue({
-        json: jest.fn().mockResolvedValue({ success: false, data: null }),
-      });
-
-      await expect(orderService.getOrderReceipt("ord_123")).rejects.toThrow(
-        "Order receipt not found",
       );
     });
   });
