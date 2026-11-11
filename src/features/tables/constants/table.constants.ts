@@ -49,6 +49,8 @@ export const TABLE_SERVICE_ERRORS = {
   DELETE_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
   UNLIST_SECTION_IDS_REQUIRED: "Restaurant ID and Section ID are required to delete a section",
   UPDATE_IDS_REQUIRED: "Restaurant ID and Table ID are required to update status",
+  RELEASE_IDS_REQUIRED: "Restaurant ID and at least one table entry are required to release tables",
+  RELEASE_FAILED: "Failed to release table occupancy. Please try again.",
 } as const;
 
 export const CREATE_TABLE_VALIDATION_MESSAGES = {
@@ -67,6 +69,7 @@ export const TABLE_ENDPOINTS = {
     `restaurants/${restaurantId}/table/${tableId}`,
   UPDATE_STATUS: (restaurantId: string, tableId: string) =>
     `restaurants/${restaurantId}/table/${tableId}/status`,
+  RELEASE: (restaurantId: string) => `restaurants/${restaurantId}/tables/release`,
   TABLE_SECTION: (restaurantId: string) => `restaurants/${restaurantId}/table-sections`,
   TABLE_SECTION_DELETE: (restaurantId: string, sectionId: string) =>
     `restaurants/${restaurantId}/table-sections/${sectionId}`,
@@ -193,6 +196,9 @@ export const TABLE_MESSAGES = {
   STATUS_UPDATE_SUCCESS: (code: string, newStatus: StaffUpdatableStatus) =>
     `Table ${code} status changed to ${TABLE_STATUS_CONFIG[newStatus].label}.`,
   STATUS_UPDATE_FAILED: "Failed to update table status. Please try again.",
+  RELEASE_SUCCESS: (code: string, releasedSeats: number) =>
+    `Released ${releasedSeats} ${releasedSeats === 1 ? "seat" : "seats"} from Table ${code}.`,
+  RELEASE_FAILED: "Failed to release table occupancy. Please try again.",
   FETCH_FAILED: "Unable to load restaurant tables. Please check your connection and retry.",
   NO_RESTAURANT: "No restaurant assigned",
   NO_RESTAURANT_DESC: "Your account is not associated with any restaurant.",

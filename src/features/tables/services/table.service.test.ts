@@ -188,4 +188,69 @@ describe("tableService", () => {
       );
     });
   });
+
+  describe("releaseTables", () => {
+    it("sends PATCH request with tables release payload and returns data", async () => {
+      const payload = {
+        tables: [{ tableId: "table-123", occupancyToRelease: 2 }],
+      };
+      const releasedData = {
+        releasedTables: [
+          {
+            tableId: "table-123",
+            tableCode: "Table 1",
+            status: "PARTIAL_OCCUPIED",
+            currentOccupancy: 6,
+            capacity: 8,
+          },
+        ],
+      };
+
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          message: "Table Released Successfully",
+          data: releasedData,
+          statusCode: 200,
+        }),
+      });
+
+      const result = await tableService.releaseTables(restaurantId, payload);
+
+      expect(apiClient.patch).toHaveBeenCalledWith(TABLE_ENDPOINTS.RELEASE(restaurantId), {
+        json: payload,
+      });
+      expect(result).toEqual(releasedData);
+    });
+
+    it("throws error if restaurantId or tables payload is missing", async () => {
+      await expect(
+        tableService.releaseTables("", {
+          tables: [{ tableId: "table-123", occupancyToRelease: 2 }],
+        }),
+      ).rejects.toThrow(
+        "Restaurant ID and at least one table entry are required to release tables",
+      );
+
+      await expect(tableService.releaseTables(restaurantId, { tables: [] })).rejects.toThrow(
+        "Restaurant ID and at least one table entry are required to release tables",
+      );
+    });
+
+    it("throws error when API response indicates failure", async () => {
+      (apiClient.patch as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+          message: "Release failed on server",
+          statusCode: 400,
+        }),
+      });
+
+      await expect(
+        tableService.releaseTables(restaurantId, {
+          tables: [{ tableId: "table-123", occupancyToRelease: 2 }],
+        }),
+      ).rejects.toThrow("Release failed on server");
+    });
+  });
 });
