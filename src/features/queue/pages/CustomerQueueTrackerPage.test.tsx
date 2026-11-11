@@ -4,10 +4,21 @@ import { MemoryRouter } from "react-router-dom";
 import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
 import { useCustomerQueueSocket } from "../hooks/use-customer-queue-socket";
 import { useCustomerQueueStatus } from "../hooks/use-customer-queue-status";
+import { ringMedia } from "../utils/ring-sound.utils";
 import CustomerQueueTrackerPage from "./CustomerQueueTrackerPage";
 
 jest.mock("../hooks/use-customer-queue-status");
 jest.mock("../hooks/use-customer-queue-socket");
+jest.mock("../utils/ring-sound.utils", () => ({
+  ringMedia: {
+    playChime: jest.fn(),
+    playAlarmSound: jest.fn(),
+    triggerVibration: jest.fn(),
+    stopVibration: jest.fn(),
+    stopSound: jest.fn(),
+    stopAll: jest.fn(),
+  },
+}));
 
 const mockLeaveQueueMutate = jest.fn();
 jest.mock("../hooks/use-leave-queue", () => ({
@@ -40,10 +51,12 @@ describe("CustomerQueueTrackerPage", () => {
       assignedTableNumber?: string;
       lastRingedAt?: string;
       deadlineMinutes?: number;
+      message?: string;
+      ringCount?: number;
     }) => void;
-    onSkipped?: (payload: { reason?: string; position?: number }) => void;
-    onSeated?: (payload: { tableNumber?: string }) => void;
-    onCancelled?: (payload: { reason?: string }) => void;
+    onSkipped?: (payload: { status?: string; reason?: string; position?: number | null }) => void;
+    onSeated?: (payload: { tableNumber?: string; tableIds?: string[] }) => void;
+    onCancelled?: (payload: { status?: string; reason?: string }) => void;
   };
 
   const mockSnapshot = {
@@ -421,5 +434,152 @@ describe("CustomerQueueTrackerPage", () => {
     expect(useCustomerQueueStatus).toHaveBeenCalledWith("rest-123", "entry-456");
     expect(useCustomerQueueSocket).toHaveBeenCalledWith("entry-456", null, expect.any(Object));
     expect(screen.getByText("The Grand Bistro")).toBeInTheDocument();
+  });
+
+  it("derives parties ahead when backend snapshot omits peopleAhead", () => {
+    (useCustomerQueueStatus as jest.Mock).mockReturnValue({
+      data: {
+        success: true,
+        statusCode: 200,
+        message: "Fetched",
+        data: {
+          queueEntryId: "entry-456",
+          restaurantId: "rest-123",
+          restaurantName: "The Grand Bistro",
+          queueNumber: "Q-042",
+          guestName: "Alex",
+          partySize: 2,
+          status: "WAITING" as const,
+          position: 5,
+          totalWaitingParties: 8,
+          estimatedWaitMinutes: 25,
+          registrationType: "ONLINE" as const,
+          joinedAt: "2026-11-09T10:00:00.000Z",
+          updatedAt: "2026-11-09T10:05:00.000Z",
+          lastRingAt: null,
+          responseDeadline: null,
+          assignedTableId: null,
+        },
+      },
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+      isRefetching: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <CustomerQueueTrackerPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("5th")).toBeInTheDocument();
+    expect(screen.getByText("4")).toBeInTheDocument();
+    expect(screen.getByText(/parties ahead of you/i)).toBeInTheDocument();
+  });
+
+  it("displays called banner, alert modal, and silence button when onRing event is received", () => {
+    (useCustomerQueueStatus as jest.Mock).mockReturnValue({
+      data: mockSnapshot,
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+      isRefetching: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <CustomerQueueTrackerPage />
+      </MemoryRouter>,
+    );
+
+    act(() => {
+      capturedSocketOptions.onRing?.({
+        message: "Table for 2 is ready now!",
+        ringCount: 2,
+      });
+    });
+
+    expect(screen.getByText("Table Ready — Please Head to the Host Stand")).toBeInTheDocument();
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+    expect(screen.getByText("Your Table is Ready!")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /silence alert/i }));
+    expect(ringMedia.stopAll).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  });
+
+  it("hydrates table ready banner from lastRingAt on snapshot load and renders SkippedStatusCard when terminal skipped", () => {
+    (useCustomerQueueStatus as jest.Mock).mockReturnValue({
+      data: {
+        ...mockSnapshot,
+        data: {
+          ...mockSnapshot.data,
+          lastRingAt: "2026-11-09T10:10:00.000Z",
+        },
+      },
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+      isRefetching: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <CustomerQueueTrackerPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Table Ready — Please Head to the Host Stand")).toBeInTheDocument();
+
+    act(() => {
+      capturedSocketOptions.onSkipped?.({
+        status: "SKIPPED",
+        reason: "Guest did not show up at host desk",
+        position: null,
+      });
+    });
+
+    expect(screen.getByText("Turn Skipped")).toBeInTheDocument();
+    expect(screen.getByText("Guest did not show up at host desk")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /leave queue/i })).not.toBeInTheDocument();
+  });
+
+  it("re-displays skipped banner on consecutive skip events even if previously dismissed", () => {
+    (useCustomerQueueStatus as jest.Mock).mockReturnValue({
+      data: mockSnapshot,
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+      isRefetching: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <CustomerQueueTrackerPage />
+      </MemoryRouter>,
+    );
+
+    act(() => {
+      capturedSocketOptions.onSkipped?.({
+        reason: "First skip",
+        position: 4,
+      });
+    });
+
+    expect(screen.getByText("Party Skipped")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /dismiss banner/i }));
+    expect(screen.queryByText("Party Skipped")).not.toBeInTheDocument();
+
+    act(() => {
+      capturedSocketOptions.onSkipped?.({
+        reason: "Second skip",
+        position: 6,
+      });
+    });
+
+    expect(screen.getByText("Party Skipped")).toBeInTheDocument();
+    expect(screen.getByText(/Second skip/i)).toBeInTheDocument();
+    expect(screen.getByText("6th")).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
-import { ArrowLeft, LogOut, RefreshCw, Users, UtensilsCrossed } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowLeft, BellRing, LogOut, RefreshCw, Users, UtensilsCrossed } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
@@ -7,6 +7,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { CustomerRingAlertModal } from "@/features/queue/components/CustomerRingAlertModal";
 import { CancelledStatusCard } from "@/features/queue/components/tracker/CancelledStatusCard";
 import { CircularPositionBadge } from "@/features/queue/components/tracker/CircularPositionBadge";
 import { ConnectionStatusBadge } from "@/features/queue/components/tracker/ConnectionStatusBadge";
@@ -14,15 +15,20 @@ import { EstimatedWaitChip } from "@/features/queue/components/tracker/Estimated
 import { QueueProgressBar } from "@/features/queue/components/tracker/QueueProgressBar";
 import { SeatedStatusCard } from "@/features/queue/components/tracker/SeatedStatusCard";
 import { SkippedBanner } from "@/features/queue/components/tracker/SkippedBanner";
+import { SkippedStatusCard } from "@/features/queue/components/tracker/SkippedStatusCard";
 import { QUEUE_STATUS } from "@/features/queue/constants/queue.constants";
 import { useCustomerQueueSocket } from "@/features/queue/hooks/use-customer-queue-socket";
 import { useCustomerQueueStatus } from "@/features/queue/hooks/use-customer-queue-status";
 import { useLeaveQueue } from "@/features/queue/hooks/use-leave-queue";
 import type { QueueStatus } from "@/features/queue/types/queue.types";
+import type { CustomerRingPayload } from "@/features/queue/types/ring-alert.types";
 import {
   clearActiveCustomerTicket,
+  formatQueueNumber,
   getActiveCustomerTicket,
+  resolveDisplayTableLabel,
 } from "@/features/queue/utils/active-queue.utils";
+import { ringMedia } from "@/features/queue/utils/ring-sound.utils";
 
 export default function CustomerQueueTrackerPage() {
   const navigate = useNavigate();
@@ -72,26 +78,41 @@ export default function CustomerQueueTrackerPage() {
   const [assignedTableNumber, setAssignedTableNumber] = useState<string | null | undefined>(
     undefined,
   );
-  const [skippedNotice, setSkippedNotice] = useState<{ reason?: string; position?: number } | null>(
-    null,
-  );
+  const [skippedNotice, setSkippedNotice] = useState<{
+    eventId: number;
+    reason?: string;
+    position?: number;
+  } | null>(null);
+  const [skippedReason, setSkippedReason] = useState<string | undefined>(undefined);
   const [cancelledReason, setCancelledReason] = useState<string | undefined>(undefined);
+  const [liveRingData, setLiveRingData] = useState<CustomerRingPayload | null>(null);
+  const [isRingModalOpen, setIsRingModalOpen] = useState(false);
   const [initialJoinState, setInitialJoinState] = useState<{
     queueEntryId: string;
     position: number;
   } | null>(null);
+  const lastSyncedEntryIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (initialData) {
-      setLiveStatus(null);
-      setLivePosition(null);
-      setLivePeopleAhead(null);
-      setLiveWaitMinutes(undefined);
-      setAssignedTableNumber(undefined);
-      setInitialJoinState((prev) =>
-        prev?.queueEntryId === initialData.queueEntryId
-          ? prev
-          : { queueEntryId: initialData.queueEntryId, position: initialData.position },
+    if (!initialData) return;
+
+    setLiveStatus(null);
+    setLivePosition(null);
+    setLivePeopleAhead(null);
+    setLiveWaitMinutes(undefined);
+    setAssignedTableNumber(undefined);
+
+    if (lastSyncedEntryIdRef.current !== initialData.queueEntryId) {
+      lastSyncedEntryIdRef.current = initialData.queueEntryId;
+      setSkippedNotice(null);
+      setSkippedReason(undefined);
+      setCancelledReason(undefined);
+      setLiveRingData(null);
+      setIsRingModalOpen(false);
+      setInitialJoinState(
+        typeof initialData.position === "number" && initialData.position > 0
+          ? { queueEntryId: initialData.queueEntryId, position: initialData.position }
+          : null,
       );
     }
   }, [initialData]);
@@ -104,12 +125,31 @@ export default function CustomerQueueTrackerPage() {
     },
     onRing: (payload) => {
       setLiveStatus(QUEUE_STATUS.CALLED);
-      if (payload.assignedTableNumber) {
-        setAssignedTableNumber(payload.assignedTableNumber);
+      setLiveRingData(payload);
+      setIsRingModalOpen(true);
+      const tableLabel = resolveDisplayTableLabel(
+        payload.assignedTableNumber,
+        payload.assignedTableIds,
+      );
+      if (tableLabel) {
+        setAssignedTableNumber(tableLabel);
       }
     },
     onSkipped: (payload) => {
-      setSkippedNotice({ reason: payload.reason, position: payload.position });
+      if (payload.status === QUEUE_STATUS.SKIPPED && typeof payload.position !== "number") {
+        setLiveStatus(QUEUE_STATUS.SKIPPED);
+        setSkippedReason(payload.reason);
+        setSkippedNotice(null);
+        setIsRingModalOpen(false);
+        clearActiveCustomerTicket();
+        return;
+      }
+
+      setSkippedNotice((prev) => ({
+        eventId: (prev?.eventId ?? 0) + 1,
+        reason: payload.reason,
+        position: typeof payload.position === "number" ? payload.position : undefined,
+      }));
       if (typeof payload.position === "number") {
         setLivePosition(payload.position);
         setLivePeopleAhead(Math.max(0, payload.position - 1));
@@ -117,15 +157,23 @@ export default function CustomerQueueTrackerPage() {
     },
     onSeated: (payload) => {
       setLiveStatus(QUEUE_STATUS.SEATED);
-      if (payload?.tableNumber) {
-        setAssignedTableNumber(payload.tableNumber);
+      setIsRingModalOpen(false);
+      const tableLabel = resolveDisplayTableLabel(
+        payload?.tableNumber,
+        payload?.tableIds ?? (payload?.tableId ? [payload.tableId] : null),
+      );
+      if (tableLabel) {
+        setAssignedTableNumber(tableLabel);
       }
       clearActiveCustomerTicket();
     },
     onCancelled: (payload) => {
-      setLiveStatus(QUEUE_STATUS.CANCELLED);
+      setLiveStatus(
+        payload?.status === QUEUE_STATUS.NO_SHOW ? QUEUE_STATUS.NO_SHOW : QUEUE_STATUS.CANCELLED,
+      );
       setCancelledReason(payload?.reason);
       setSkippedNotice(null);
+      setIsRingModalOpen(false);
       clearActiveCustomerTicket();
     },
   });
@@ -137,12 +185,7 @@ export default function CustomerQueueTrackerPage() {
     initialData?.queueNumber ||
     (isMatchingStoredTicket ? matchingStoredTicket?.queueNumber : null) ||
     "—";
-  const queueNumber =
-    rawQueueNumber !== "—"
-      ? rawQueueNumber.startsWith("#")
-        ? rawQueueNumber
-        : `#${rawQueueNumber}`
-      : "—";
+  const queueNumber = formatQueueNumber(rawQueueNumber) ?? "—";
   const partySize = initialData?.partySize || 1;
 
   if (isLoading) {
@@ -193,18 +236,37 @@ export default function CustomerQueueTrackerPage() {
 
   const effectiveStatus = liveStatus ?? initialData.status ?? QUEUE_STATUS.WAITING;
   const isSeated = effectiveStatus === QUEUE_STATUS.SEATED;
+  const isSkipped = effectiveStatus === QUEUE_STATUS.SKIPPED;
   const isCancelledOrNoShow =
     effectiveStatus === QUEUE_STATUS.CANCELLED || effectiveStatus === QUEUE_STATUS.NO_SHOW;
-  const effectivePosition = livePosition ?? initialData.position;
-  const effectivePeopleAhead = livePeopleAhead ?? initialData.peopleAhead;
+  const isTerminal = isSeated || isCancelledOrNoShow || isSkipped;
+  const hasActiveRing =
+    !isTerminal &&
+    (effectiveStatus === QUEUE_STATUS.CALLED ||
+      (effectiveStatus === QUEUE_STATUS.WAITING && Boolean(initialData.lastRingAt)));
+
+  const effectivePosition = livePosition ?? initialData.position ?? null;
+  const effectivePeopleAhead =
+    livePeopleAhead ??
+    initialData.peopleAhead ??
+    (typeof effectivePosition === "number" && effectivePosition > 0
+      ? Math.max(0, effectivePosition - 1)
+      : null);
   const effectiveWaitMinutes =
     liveWaitMinutes !== undefined ? liveWaitMinutes : initialData.estimatedWaitMinutes;
   const effectiveAssignedTable =
-    assignedTableNumber !== undefined ? assignedTableNumber : initialData.assignedTableNumber;
+    assignedTableNumber !== undefined
+      ? assignedTableNumber
+      : resolveDisplayTableLabel(
+          initialData.assignedTableNumber,
+          initialData.assignedTableId ? [initialData.assignedTableId] : null,
+        );
   const effectiveInitialPosition =
     initialJoinState?.queueEntryId === activeQueueEntryId
       ? initialJoinState.position
-      : initialData.position;
+      : typeof initialData.position === "number" && initialData.position > 0
+        ? initialData.position
+        : null;
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6 sm:py-8 space-y-6 animate-in fade-in duration-200">
@@ -232,8 +294,46 @@ export default function CustomerQueueTrackerPage() {
         </div>
       </div>
 
-      {skippedNotice && effectiveStatus === QUEUE_STATUS.WAITING && (
-        <SkippedBanner reason={skippedNotice.reason} position={skippedNotice.position} />
+      {skippedNotice && !isTerminal && (
+        <SkippedBanner
+          key={skippedNotice.eventId}
+          reason={skippedNotice.reason}
+          position={skippedNotice.position}
+        />
+      )}
+
+      {hasActiveRing && (
+        <div
+          role="status"
+          className="rounded-2xl border border-emerald-300 bg-emerald-50/90 p-4 text-emerald-950 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+        >
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
+              <BellRing className="h-4 w-4" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-emerald-950">
+                Table Ready — Please Head to the Host Stand
+              </h4>
+              <p className="mt-0.5 text-xs text-emerald-800 leading-relaxed">
+                {liveRingData?.message ||
+                  "Staff has called your party. Please check in at the host stand now."}
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              ringMedia.stopAll();
+              setIsRingModalOpen(false);
+            }}
+            className="shrink-0 border-emerald-300 bg-white text-emerald-900 hover:bg-emerald-100 text-xs font-semibold h-8 rounded-xl"
+          >
+            Silence Alert
+          </Button>
+        </div>
       )}
 
       {isSeated && (
@@ -241,6 +341,14 @@ export default function CustomerQueueTrackerPage() {
           restaurantId={restaurantId || ""}
           restaurantName={restaurantName}
           tableNumber={effectiveAssignedTable}
+        />
+      )}
+
+      {isSkipped && (
+        <SkippedStatusCard
+          restaurantId={restaurantId || ""}
+          restaurantName={restaurantName}
+          reason={skippedReason}
         />
       )}
 
@@ -252,7 +360,7 @@ export default function CustomerQueueTrackerPage() {
         />
       )}
 
-      {!isSeated && !isCancelledOrNoShow && (
+      {!isTerminal && (
         <div className="space-y-5">
           <Card className="relative overflow-hidden rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-xl">
             <div className="flex items-center justify-between border-b border-stone-100 pb-5">
@@ -327,6 +435,15 @@ export default function CustomerQueueTrackerPage() {
         loadingText="Leaving Queue..."
         onConfirm={handleConfirmLeave}
         onCancel={() => setIsLeaveConfirmOpen(false)}
+      />
+
+      <CustomerRingAlertModal
+        isOpen={isRingModalOpen && !isTerminal}
+        onClose={() => setIsRingModalOpen(false)}
+        message={liveRingData?.message}
+        ringCount={liveRingData?.ringCount ?? 1}
+        assignedTableIds={liveRingData?.assignedTableIds}
+        queueNumber={queueNumber !== "—" ? queueNumber.replace(/^#/, "") : undefined}
       />
     </div>
   );

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import type { ActiveCustomerTicket } from "../types/ring-alert.types";
-import { getActiveCustomerTicket } from "../utils/active-queue.utils";
+import { formatQueueNumber, getActiveCustomerTicket } from "../utils/active-queue.utils";
 
 export function ActiveQueueFloatingPill() {
   const location = useLocation();
@@ -28,6 +28,8 @@ export function ActiveQueueFloatingPill() {
     return null;
   }
 
+  const formattedQueueNumber = formatQueueNumber(activeTicket.queueNumber);
+
   const handleClick = () => {
     navigate(CUSTOMER_ROUTES.QUEUE_STATUS(activeTicket.restaurantId, activeTicket.queueEntryId));
   };
@@ -47,7 +49,7 @@ export function ActiveQueueFloatingPill() {
 
         <div className="flex items-center gap-1.5 text-xs font-semibold">
           <UtensilsCrossed className="h-3.5 w-3.5 text-orange-400" />
-          <span>In Line{activeTicket.queueNumber ? ` • #${activeTicket.queueNumber}` : ""}</span>
+          <span>In Line{formattedQueueNumber ? ` • ${formattedQueueNumber}` : ""}</span>
         </div>
 
         <span className="text-[11px] font-bold text-orange-400 group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-0.5">

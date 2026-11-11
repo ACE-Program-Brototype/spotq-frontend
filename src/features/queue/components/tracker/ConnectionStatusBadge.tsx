@@ -32,6 +32,15 @@ export function ConnectionStatusBadge({ status }: ConnectionStatusBadgeProps) {
     );
   }
 
+  if (status === SOCKET_CONNECTION_STATUS.DISCONNECTED) {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 border border-rose-200/70">
+        <span className="h-2 w-2 rounded-full bg-rose-500" />
+        Disconnected
+      </span>
+    );
+  }
+
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-600 border border-stone-200">
       <span className="h-2 w-2 rounded-full bg-stone-400" />

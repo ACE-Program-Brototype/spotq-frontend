@@ -8,12 +8,19 @@ function getOrdinalSuffix(num: number): string {
 }
 
 export interface CircularPositionBadgeProps {
-  position: number;
-  peopleAhead: number;
+  position: number | null;
+  peopleAhead?: number | null;
 }
 
 export function CircularPositionBadge({ position, peopleAhead }: CircularPositionBadgeProps) {
-  const isNext = position === 1;
+  const validPosition = typeof position === "number" && position > 0 ? position : null;
+  const isNext = validPosition === 1;
+  const resolvedPeopleAhead =
+    typeof peopleAhead === "number" && peopleAhead >= 0
+      ? peopleAhead
+      : validPosition !== null
+        ? Math.max(0, validPosition - 1)
+        : null;
 
   return (
     <div className="flex flex-col items-center justify-center text-center">
@@ -31,7 +38,7 @@ export function CircularPositionBadge({ position, peopleAhead }: CircularPositio
                 isNext ? "text-emerald-700" : "text-stone-900"
               }`}
             >
-              {position > 0 ? getOrdinalSuffix(position) : "—"}
+              {validPosition !== null ? getOrdinalSuffix(validPosition) : "—"}
             </span>
             <span className="mt-0.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-stone-500">
               in line
@@ -51,11 +58,13 @@ export function CircularPositionBadge({ position, peopleAhead }: CircularPositio
           <p className="text-sm font-semibold text-emerald-700">
             Please be ready near the host stand
           </p>
-        ) : (
+        ) : resolvedPeopleAhead !== null ? (
           <p className="text-sm text-stone-600">
-            <span className="font-semibold text-stone-900">{peopleAhead}</span>{" "}
-            {peopleAhead === 1 ? "party" : "parties"} ahead of you
+            <span className="font-semibold text-stone-900">{resolvedPeopleAhead}</span>{" "}
+            {resolvedPeopleAhead === 1 ? "party" : "parties"} ahead of you
           </p>
+        ) : (
+          <p className="text-sm text-stone-500">Updating queue position...</p>
         )}
       </div>
     </div>

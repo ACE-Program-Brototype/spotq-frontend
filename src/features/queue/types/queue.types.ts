@@ -89,17 +89,23 @@ export interface CustomerQueueStatusSnapshot {
   restaurantId: string;
   restaurantName?: string;
   queueNumber: string;
+  guestName?: string;
   partySize: number;
   status: QueueStatus;
-  position: number;
-  peopleAhead: number;
+  position: number | null;
+  totalWaitingParties?: number;
+  peopleAhead?: number;
   estimatedWaitMinutes: number | null;
-  estimatedWaitMinutesAtJoin: number | null;
+  estimatedWaitMinutesAtJoin?: number | null;
+  registrationType?: RegistrationType;
   joinedAt: string;
-  assignedTableNumber: string | null;
+  updatedAt?: string;
+  lastRingAt?: string | null;
+  assignedTableId?: string | null;
+  assignedTableNumber?: string | null;
   responseDeadline: string | null;
-  canCancel: boolean;
-  serverTime: string;
+  canCancel?: boolean;
+  serverTime?: string;
 }
 
 export type CustomerQueueStatusResponse = SuccessResponse<CustomerQueueStatusSnapshot>;
@@ -118,7 +124,7 @@ export interface QueueEntrySkippedPayload {
   restaurantId?: string;
   status?: QueueStatus;
   reason?: string;
-  position?: number;
+  position?: number | null;
 }
 
 export interface QueueEntrySeatedPayload {

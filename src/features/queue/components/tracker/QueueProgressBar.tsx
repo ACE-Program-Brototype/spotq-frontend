@@ -1,14 +1,17 @@
 export interface QueueProgressBarProps {
-  currentPosition: number;
+  currentPosition: number | null;
   initialPosition?: number | null;
 }
 
 export function QueueProgressBar({ currentPosition, initialPosition }: QueueProgressBarProps) {
-  const maxPos = Math.max(initialPosition || currentPosition, currentPosition, 1);
-  const progressPercent =
-    currentPosition <= 1
-      ? 100
-      : Math.max(10, Math.min(95, Math.round(((maxPos - currentPosition + 1) / maxPos) * 100)));
+  let progressPercent = 0;
+  if (typeof currentPosition === "number" && currentPosition > 0) {
+    const maxPos = Math.max(initialPosition || currentPosition, currentPosition, 1);
+    progressPercent =
+      currentPosition <= 1
+        ? 100
+        : Math.max(10, Math.min(95, Math.round(((maxPos - currentPosition + 1) / maxPos) * 100)));
+  }
 
   return (
     <div className="w-full space-y-1.5">

@@ -2,6 +2,7 @@ export const QUEUE_STATUS = {
   WAITING: "WAITING",
   CALLED: "CALLED",
   SEATED: "SEATED",
+  SKIPPED: "SKIPPED",
   CANCELLED: "CANCELLED",
   NO_SHOW: "NO_SHOW",
 } as const;

@@ -182,8 +182,18 @@ describe("useCustomerQueueSocket", () => {
 
     unmount();
 
+    expect(mockSocket.off).toHaveBeenCalledWith(QUEUE_WS_EVENTS.CONNECT, expect.any(Function));
+    expect(mockSocket.off).toHaveBeenCalledWith(QUEUE_WS_EVENTS.DISCONNECT, expect.any(Function));
+    expect(mockSocket.off).toHaveBeenCalledWith(
+      QUEUE_WS_EVENTS.CONNECT_ERROR,
+      expect.any(Function),
+    );
     expect(mockSocket.off).toHaveBeenCalledWith(
       QUEUE_WS_EVENTS.TICKET_CALLED,
+      expect.any(Function),
+    );
+    expect(mockSocket.off).toHaveBeenCalledWith(
+      QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW,
       expect.any(Function),
     );
     expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
@@ -308,5 +318,66 @@ describe("useCustomerQueueSocket", () => {
     });
     expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.DISCONNECTED);
     expect(result.current.isConnected).toBe(false);
+  });
+
+  it("ignores seated and cancelled events for a different queueEntryId", () => {
+    const onSeated = jest.fn();
+    const onCancelled = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onSeated,
+        onCancelled,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.TICKET_SEATED]({ queueEntryId: "other-entry" });
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED]({ queueEntryId: "other-entry" });
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW]({ queueEntryId: "other-entry" });
+    });
+
+    expect(ringMedia.stopAll).not.toHaveBeenCalled();
+    expect(onSeated).not.toHaveBeenCalled();
+    expect(onCancelled).not.toHaveBeenCalled();
+  });
+
+  it("handles QUEUE_ENTRY_SEATED and QUEUE_ENTRY_NO_SHOW events for the active ticket", () => {
+    const onSeated = jest.fn();
+    const onCancelled = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onSeated,
+        onCancelled,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_SEATED]({
+        queueEntryId: "entry-123",
+        tableIds: ["table-1"],
+      });
+    });
+
+    expect(onSeated).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      tableIds: ["table-1"],
+    });
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW]({
+        queueEntryId: "entry-123",
+        status: "NO_SHOW",
+        reason: "Guest did not arrive",
+      });
+    });
+
+    expect(ringMedia.stopAll).toHaveBeenCalledTimes(2);
+    expect(onCancelled).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      status: "NO_SHOW",
+      reason: "Guest did not arrive",
+    });
   });
 });

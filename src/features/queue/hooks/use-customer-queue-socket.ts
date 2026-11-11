@@ -114,18 +114,18 @@ export function useCustomerQueueSocket(
 
     socketRef.current = socket;
 
-    socket.on(QUEUE_WS_EVENTS.CONNECT_ERROR, (error) => {
+    const handleConnectError = (error: Error) => {
       if (env.isDev) {
         console.warn(`[Socket] Connection error: ${error.message}`);
       }
       updateStatus(SOCKET_CONNECTION_STATUS.RECONNECTING);
-    });
+    };
 
-    socket.io?.on(QUEUE_WS_EVENTS.RECONNECT_ATTEMPT, () => {
+    const handleReconnectAttempt = () => {
       updateStatus(SOCKET_CONNECTION_STATUS.RECONNECTING);
-    });
+    };
 
-    socket.on(QUEUE_WS_EVENTS.CONNECT, () => {
+    const handleConnect = () => {
       updateStatus(SOCKET_CONNECTION_STATUS.CONNECTED);
 
       socket.emit(
@@ -145,14 +145,19 @@ export function useCustomerQueueSocket(
           }
         },
       );
-    });
+    };
 
-    socket.on(QUEUE_WS_EVENTS.DISCONNECT, (reason) => {
+    const handleDisconnect = (reason: string) => {
       updateStatus(SOCKET_CONNECTION_STATUS.DISCONNECTED);
       if (env.isDev) {
         console.log(`[Socket] Disconnected: ${reason}`);
       }
-    });
+    };
+
+    socket.on(QUEUE_WS_EVENTS.CONNECT_ERROR, handleConnectError);
+    socket.io?.on(QUEUE_WS_EVENTS.RECONNECT_ATTEMPT, handleReconnectAttempt);
+    socket.on(QUEUE_WS_EVENTS.CONNECT, handleConnect);
+    socket.on(QUEUE_WS_EVENTS.DISCONNECT, handleDisconnect);
 
     const handleRingTriggered = (data: CustomerRingPayload) => {
       if (!data || data.queueEntryId !== queueEntryId) return;
@@ -179,11 +184,13 @@ export function useCustomerQueueSocket(
     };
 
     const handleSeated = (payload: QueueEntrySeatedPayload) => {
+      if (payload?.queueEntryId && payload.queueEntryId !== queueEntryId) return;
       ringMedia.stopAll();
       optionsRef.current?.onSeated?.(payload);
     };
 
     const handleCancelled = (payload: QueueEntryCancelledPayload) => {
+      if (payload?.queueEntryId && payload.queueEntryId !== queueEntryId) return;
       ringMedia.stopAll();
       optionsRef.current?.onCancelled?.(payload);
     };
@@ -201,9 +208,14 @@ export function useCustomerQueueSocket(
 
     socket.on(QUEUE_WS_EVENTS.TICKET_CANCELLED, handleCancelled);
     socket.on(QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED, handleCancelled);
+    socket.on(QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW, handleCancelled);
 
     return () => {
       socket.emit(QUEUE_WS_EVENTS.LEAVE_TICKET, { ticketId: queueEntryId });
+      socket.off(QUEUE_WS_EVENTS.CONNECT, handleConnect);
+      socket.off(QUEUE_WS_EVENTS.DISCONNECT, handleDisconnect);
+      socket.off(QUEUE_WS_EVENTS.CONNECT_ERROR, handleConnectError);
+      socket.io?.off(QUEUE_WS_EVENTS.RECONNECT_ATTEMPT, handleReconnectAttempt);
       socket.off(QUEUE_WS_EVENTS.TICKET_CALLED, handleRingTriggered);
       socket.off(QUEUE_WS_EVENTS.CUSTOMER_RING_TRIGGERED, handleRingTriggered);
       socket.off(QUEUE_WS_EVENTS.QUEUE_POSITION_UPDATED, handlePositionUpdated);
@@ -213,6 +225,7 @@ export function useCustomerQueueSocket(
       socket.off(QUEUE_WS_EVENTS.QUEUE_ENTRY_SEATED, handleSeated);
       socket.off(QUEUE_WS_EVENTS.TICKET_CANCELLED, handleCancelled);
       socket.off(QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED, handleCancelled);
+      socket.off(QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW, handleCancelled);
       socket.disconnect();
       socketRef.current = null;
       ringMedia.stopAll();
