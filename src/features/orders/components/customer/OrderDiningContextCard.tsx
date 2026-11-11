@@ -100,7 +100,7 @@ export function OrderDiningContextCard({
             </span>
             <p className="mt-0.5 text-sm font-bold text-neutral-900 flex items-center gap-1.5">
               <Store className="size-3.5 text-[#e8631b]" />
-              <span>{restaurant.name ?? "Restaurant"}</span>
+              <span>{restaurant?.name ?? "Restaurant"}</span>
             </p>
           </div>
         </div>

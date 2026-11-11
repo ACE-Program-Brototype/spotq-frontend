@@ -75,10 +75,12 @@ export function OrderPaymentCard({ payment, className = "" }: OrderPaymentCardPr
           </div>
         )}
 
-        <div className="pt-2 flex items-center gap-1.5 text-[11px] text-neutral-400">
-          <ShieldCheck className="size-3.5 text-emerald-600" />
-          <span>Verified Secure Payment</span>
-        </div>
+        {isPaid && (
+          <div className="pt-2 flex items-center gap-1.5 text-[11px] text-neutral-400">
+            <ShieldCheck className="size-3.5 text-emerald-600" />
+            <span>Verified Secure Payment</span>
+          </div>
+        )}
       </div>
     </div>
   );

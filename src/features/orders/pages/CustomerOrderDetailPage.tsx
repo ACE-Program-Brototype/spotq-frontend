@@ -28,11 +28,7 @@ export default function CustomerOrderDetailPage() {
   } = useCustomerOrderDetails(activeOrderId);
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate(CUSTOMER_ROUTES.ORDERS);
-    }
+    navigate(CUSTOMER_ROUTES.ORDERS);
   };
 
   const handlePrint = () => {

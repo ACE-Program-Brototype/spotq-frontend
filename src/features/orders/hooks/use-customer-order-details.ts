@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { ORDER_QUERY_KEYS } from "../constants/orders.constants";
 import { orderService } from "../services/order.service";
 import type { CustomerOrderDetails } from "../types/customer-order-details.types";
 
 export function useCustomerOrderDetails(orderId?: string | null) {
   return useQuery<CustomerOrderDetails, Error>({
-    queryKey: ["customer-order-details", orderId],
+    queryKey: ORDER_QUERY_KEYS.DETAIL(orderId),
     queryFn: () => orderService.getCustomerOrderDetails(orderId as string),
     enabled: Boolean(orderId),
     staleTime: 15 * 1000,

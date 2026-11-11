@@ -7,7 +7,7 @@ export interface OrderCustomerItemListProps {
   className?: string;
 }
 
-export function OrderCustomerItemList({ items, className = "" }: OrderCustomerItemListProps) {
+export function OrderCustomerItemList({ items = [], className = "" }: OrderCustomerItemListProps) {
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -28,9 +28,10 @@ export function OrderCustomerItemList({ items, className = "" }: OrderCustomerIt
       </div>
 
       <div className="divide-y divide-neutral-100 p-4 sm:p-5">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <div
-            key={`${item.menu_item_id}-${item.variant?.variant_id ?? item.name}`}
+            // biome-ignore lint/suspicious/noArrayIndexKey: order item row list is static and requires index for duplicate line items
+            key={`${item.menu_item_id}-${item.variant?.variant_id ?? "default"}-${index}`}
             data-testid="order-item-row"
             className="py-3.5 first:pt-1 last:pb-1 flex items-start justify-between gap-4"
           >

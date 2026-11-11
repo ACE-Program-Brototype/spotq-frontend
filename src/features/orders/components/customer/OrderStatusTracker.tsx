@@ -1,4 +1,5 @@
 import { AlertTriangle, Check, Clock } from "lucide-react";
+import { formatTime } from "@/lib/utils/date";
 import { ORDER_TRACKER_STEPS } from "../../constants/customer-order-details.constants";
 import type { CustomerOrderStatusHistory } from "../../types/customer-order-details.types";
 import type { OrderStatus } from "../../types/orders.types";
@@ -44,9 +45,7 @@ export function OrderStatusTracker({
   // Find timestamps for steps from status history
   const getStepTimestamp = (stepKey: string): string | null => {
     const matched = statusHistory.find((h) => h.current_status?.toUpperCase() === stepKey);
-    return matched?.created_at
-      ? new Date(matched.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-      : null;
+    return matched?.created_at ? formatTime(matched.created_at) : null;
   };
 
   return (
@@ -78,15 +77,19 @@ export function OrderStatusTracker({
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 sm:gap-2 relative z-10">
+        <ol
+          aria-label="Order Status Progression"
+          className="grid grid-cols-1 sm:grid-cols-5 gap-4 sm:gap-2 relative z-10"
+        >
           {ORDER_TRACKER_STEPS.map((step, idx) => {
             const isCompleted = idx < currentStepIndex;
             const isCurrent = idx === currentStepIndex;
             const time = getStepTimestamp(step.key);
 
             return (
-              <div
+              <li
                 key={step.key}
+                aria-current={isCurrent ? "step" : undefined}
                 data-testid={`tracker-step-${step.key.toLowerCase()}`}
                 className="flex sm:flex-col items-center sm:text-center gap-3 sm:gap-2"
               >
@@ -124,13 +127,16 @@ export function OrderStatusTracker({
                     }`}
                   >
                     {step.label}
+                    <span className="sr-only">
+                      {isCompleted ? " (Completed)" : isCurrent ? " (Current step)" : " (Upcoming)"}
+                    </span>
                   </p>
                   {time && <p className="text-[10px] text-neutral-400 font-medium">{time}</p>}
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ol>
       </div>
     </div>
   );
