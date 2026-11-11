@@ -1,8 +1,13 @@
 import type { SuccessResponse } from "@/components/common";
-import type { QUEUE_STATUS } from "../constants/queue.constants";
+import type {
+  QUEUE_CANCEL_REASON,
+  QUEUE_STATUS,
+  REGISTRATION_TYPE,
+} from "@/features/queue/constants/queue.constants";
 
-export type RegistrationType = "WALK_IN" | "ONLINE";
-
+export type RegistrationType = (typeof REGISTRATION_TYPE)[keyof typeof REGISTRATION_TYPE];
+export type RegistrationTypeFilter = "ALL" | "ONLINE" | "WALK_IN";
+export type PartySizeBucket = "ALL" | "SMALL" | "MEDIUM" | "LARGE";
 export type QueueStatus = (typeof QUEUE_STATUS)[keyof typeof QUEUE_STATUS];
 
 export interface RegisterWalkInInput {
@@ -168,3 +173,94 @@ export interface ActiveCustomerQueueData {
 }
 
 export type ActiveCustomerQueueResponse = SuccessResponse<ActiveCustomerQueueData | null>;
+
+export interface StaffLiveQueueEntry {
+  queueEntryId: string;
+  queueNumber: string;
+  position: number | null;
+  guestName: string;
+  guestPhone: string | null;
+  partySize: number;
+  specialNotes?: string | null;
+  registrationType: RegistrationType;
+  status: QueueStatus;
+  assignedTableId?: string | null;
+  joinedAt: string;
+  ringCount: number;
+  lastRingAt: string | null;
+  responseDeadline: string | null;
+  waitDurationMinutes: number;
+}
+
+export interface GetStaffQueueParams {
+  status?: QueueStatus;
+  partySizeBucket?: "ALL" | "SMALL" | "MEDIUM" | "LARGE";
+}
+
+export interface StaffLiveQueueData {
+  restaurantId: string;
+  totalWaiting: number;
+  entries: StaffLiveQueueEntry[];
+}
+
+export interface StaffLiveQueueResponse {
+  success: boolean;
+  message: string;
+  data: StaffLiveQueueData;
+}
+
+export interface RingCustomerData {
+  queueEntryId: string;
+  status: QueueStatus;
+  ringCount: number;
+  lastRingAt: string;
+  responseDeadline: string;
+}
+
+export interface RingCustomerResponse {
+  success: boolean;
+  message: string;
+  data: RingCustomerData;
+}
+
+export interface SkipPartyInput {
+  reason: string;
+  skipPositions?: number;
+}
+
+export interface SkipPartyData {
+  queueEntryId: string;
+  status: QueueStatus;
+  newPosition?: number;
+}
+
+export interface SkipPartyResponse {
+  success: boolean;
+  message: string;
+  data: SkipPartyData;
+}
+
+export type QueueCancelReason = (typeof QUEUE_CANCEL_REASON)[keyof typeof QUEUE_CANCEL_REASON];
+
+export interface CancelQueueEntryInput {
+  reason: QueueCancelReason;
+  notes?: string;
+}
+
+export interface CancelQueueEntryData {
+  queueEntryId: string;
+  status: QueueStatus;
+}
+
+export interface CancelQueueEntryResponse {
+  success: boolean;
+  message: string;
+  data: CancelQueueEntryData;
+}
+
+export interface StaffQueueStatistics {
+  waitingParties: number;
+  waitingPeople: number;
+  ringingParties: number;
+  ringingPeople: number;
+}

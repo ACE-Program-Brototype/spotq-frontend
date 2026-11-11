@@ -11,8 +11,13 @@ export const QUEUE_WS_EVENTS = {
   // Client to Server
   JOIN_TICKET: "join:ticket",
   LEAVE_TICKET: "leave:ticket",
+  JOIN_RESTAURANT: "join:restaurant",
+  LEAVE_RESTAURANT: "leave:restaurant",
 
   // Server to Client
+  QUEUE_ENTRY_CREATED: "QUEUE_ENTRY_CREATED",
+  QUEUE_JOINED: "queue:joined",
+  QUEUE_UPDATED: "queue:updated",
   TICKET_CALLED: "ticket:called",
   TICKET_SEATED: "ticket:seated",
   TICKET_CANCELLED: "ticket:cancelled",

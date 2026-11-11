@@ -22,6 +22,7 @@ import RestaurantProfilePage from "@/features/profile/pages/RestaurantProfilePag
 import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
 import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
 import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
+import BillingHistoryPage from "@/features/subscription/pages/BillingHistoryPage";
 import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
 import SubscriptionFailurePage from "@/features/subscription/pages/SubscriptionFailurePage";
 import SubscriptionSuccessPage from "@/features/subscription/pages/SubscriptionSuccessPage";
@@ -153,6 +154,10 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: RESTAURANT_ROUTE_PATHS.SETTINGS_ACCOUNT,
             Component: RestaurantProfilePage,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.SETTINGS_BILLING_HISTORY,
+            Component: BillingHistoryPage,
           },
           {
             path: RESTAURANT_ROUTE_PATHS.STAFF.ROOT,

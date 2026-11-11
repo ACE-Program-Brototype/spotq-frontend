@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { SUBSCRIPTION_SUCCESS_TEXTS } from "@/features/subscription/constants/subscription.constants";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import SubscriptionSuccessPage from "./SubscriptionSuccessPage";
 
@@ -72,20 +71,20 @@ describe("SubscriptionSuccessPage", () => {
       periodEnd: "2027-10-01T00:00:00.000Z",
     });
 
-    expect(screen.getByText(SUBSCRIPTION_SUCCESS_TEXTS.TITLE)).toBeInTheDocument();
-    expect(screen.getByText(SUBSCRIPTION_SUCCESS_TEXTS.SUBTITLE)).toBeInTheDocument();
-    expect(screen.getByText("Self Pro")).toBeInTheDocument();
+    expect(screen.getByText("Subscription Activated!")).toBeInTheDocument();
     expect(
-      screen.getAllByText(SUBSCRIPTION_SUCCESS_TEXTS.ACTIVE_BADGE).length,
-    ).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(SUBSCRIPTION_SUCCESS_TEXTS.FEATURE_QUEUE)).toBeInTheDocument();
-    expect(screen.getByText(SUBSCRIPTION_SUCCESS_TEXTS.FEATURE_QR)).toBeInTheDocument();
+      screen.getByText("Your restaurant account is now fully active with SpotQ Pro features."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Self Pro")).toBeInTheDocument();
+    expect(screen.getAllByText("Active").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText("Real-time queue and table management")).toBeInTheDocument();
+    expect(screen.getByText("Contactless digital QR ordering and menus")).toBeInTheDocument();
   });
 
   it("falls back to status query when location state is not provided", async () => {
     renderComponentWithState(undefined);
 
-    expect(screen.getByText(SUBSCRIPTION_SUCCESS_TEXTS.TITLE)).toBeInTheDocument();
+    expect(screen.getByText("Subscription Activated!")).toBeInTheDocument();
     expect(await screen.findByText("Queue Pro")).toBeInTheDocument();
   });
 
@@ -95,7 +94,7 @@ describe("SubscriptionSuccessPage", () => {
     });
 
     const dashboardBtn = screen.getByRole("button", {
-      name: new RegExp(SUBSCRIPTION_SUCCESS_TEXTS.DASHBOARD_BUTTON, "i"),
+      name: /go to dashboard/i,
     });
     fireEvent.click(dashboardBtn);
 
@@ -108,7 +107,7 @@ describe("SubscriptionSuccessPage", () => {
     });
 
     const staffBtn = screen.getByRole("button", {
-      name: new RegExp(SUBSCRIPTION_SUCCESS_TEXTS.STAFF_BUTTON, "i"),
+      name: /manage staff/i,
     });
     fireEvent.click(staffBtn);
 

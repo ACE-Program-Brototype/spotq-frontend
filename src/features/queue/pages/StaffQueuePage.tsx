@@ -1,39 +1,132 @@
-import { Clock, MessageSquare, Sparkles, UserPlus, Users, UtensilsCrossed } from "lucide-react";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { AlertCircle, RefreshCw, UserPlus } from "lucide-react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { formatTime } from "@/lib/utils";
-import { AssignTableModal } from "../components/AssignTableModal";
-import { WalkInRegistrationModal } from "../components/WalkInRegistrationModal";
-import { QUEUE_STATUS } from "../constants/queue.constants";
-import type { QueueEntry } from "../types/queue.types";
+import { AssignTableModal } from "@/features/queue/components/AssignTableModal";
+import { CancelQueueEntryModal } from "@/features/queue/components/CancelQueueEntryModal";
+import { QueueEntryDetailDrawer } from "@/features/queue/components/QueueEntryDetailDrawer";
+import { QueueFilterBar } from "@/features/queue/components/QueueFilterBar";
+import { QueueStatisticsBar } from "@/features/queue/components/QueueStatisticsBar";
+import { SkipQueueEntryModal } from "@/features/queue/components/SkipQueueEntryModal";
+import { StaffLiveQueueTable } from "@/features/queue/components/StaffLiveQueueTable";
+import { WalkInRegistrationModal } from "@/features/queue/components/WalkInRegistrationModal";
+import { QUEUE_MESSAGES } from "@/features/queue/constants/queue.constants";
+import { useQueueActions } from "@/features/queue/hooks/use-queue-actions";
+import { useStaffLiveQueue } from "@/features/queue/hooks/use-staff-live-queue";
+import { useStaffQueueSocket } from "@/features/queue/hooks/use-staff-queue-socket";
+import type {
+  QueueCancelReason,
+  QueueEntry,
+  StaffLiveQueueEntry,
+} from "@/features/queue/types/queue.types";
 
 export default function StaffQueuePage() {
   const user = useAuthStore((state) => state.user);
   const restaurantId = user?.restaurantId || "";
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Modal and drawer state
+  const [isWalkInModalOpen, setIsWalkInModalOpen] = useState(false);
   const [selectedEntryForAssign, setSelectedEntryForAssign] = useState<QueueEntry | null>(null);
-  const [queueEntries, setQueueEntries] = useState<QueueEntry[]>([]);
+  const [selectedEntryForSkip, setSelectedEntryForSkip] = useState<StaffLiveQueueEntry | null>(
+    null,
+  );
+  const [selectedEntryForCancel, setSelectedEntryForCancel] = useState<StaffLiveQueueEntry | null>(
+    null,
+  );
+  const [selectedEntryForDetail, setSelectedEntryForDetail] = useState<StaffLiveQueueEntry | null>(
+    null,
+  );
 
-  const handleRegistrationSuccess = (newEntry: QueueEntry) => {
-    setQueueEntries((prev) => [
-      newEntry,
-      ...prev.filter((e) => e.queueEntryId !== newEntry.queueEntryId),
-    ]);
-  };
+  // Live Queue Query & Filtering
+  const {
+    filteredEntries,
+    statistics,
+    partySizeFilter,
+    setPartySizeFilter,
+    registrationTypeFilter,
+    setRegistrationTypeFilter,
+    searchQuery,
+    setSearchQuery,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useStaffLiveQueue({ restaurantId });
 
-  const handleAssignSuccess = (updatedEntry: QueueEntry) => {
-    setQueueEntries((prev) =>
-      prev.map((e) => (e.queueEntryId === updatedEntry.queueEntryId ? updatedEntry : e)),
-    );
-  };
+  // Real-time WebSocket connection to /ws/queues
+  const { isConnected } = useStaffQueueSocket(restaurantId);
 
-  const waitingEntriesCount = queueEntries.filter((e) => e.status === QUEUE_STATUS.WAITING).length;
+  // Queue actions (ring, skip, cancel mutations)
+  const { ringCustomer, activeRingingId, skipParty, isSkipping, cancelQueueEntry, isCancelling } =
+    useQueueActions(restaurantId);
+
+  // Convert StaffLiveQueueEntry to QueueEntry required by AssignTableModal
+  const handleAssignClick = useCallback(
+    (entry: StaffLiveQueueEntry) => {
+      setSelectedEntryForAssign({
+        queueEntryId: entry.queueEntryId,
+        restaurantId,
+        userId: null,
+        guestName: entry.guestName,
+        guestPhone: entry.guestPhone ?? null,
+        partySize: entry.partySize,
+        specialNotes: entry.specialNotes ?? null,
+        registrationType: entry.registrationType,
+        position: entry.position ?? 0,
+        estimatedWaitMinutes: null,
+        status: entry.status,
+        joinedAt: entry.joinedAt,
+        queueNumber: entry.queueNumber,
+      });
+    },
+    [restaurantId],
+  );
+
+  const handleRingClick = useCallback(
+    async (entry: StaffLiveQueueEntry) => {
+      try {
+        await ringCustomer(entry.queueEntryId);
+      } catch {
+        // Handled in mutation hook
+      }
+    },
+    [ringCustomer],
+  );
+
+  const handleConfirmSkip = useCallback(
+    async (skipPositions: number, reason: string) => {
+      if (!selectedEntryForSkip) return;
+      await skipParty({
+        queueEntryId: selectedEntryForSkip.queueEntryId,
+        input: { skipPositions, reason },
+      });
+      setSelectedEntryForSkip(null);
+      // Close detail drawer if currently open for this entry
+      if (selectedEntryForDetail?.queueEntryId === selectedEntryForSkip.queueEntryId) {
+        setSelectedEntryForDetail(null);
+      }
+    },
+    [selectedEntryForSkip, selectedEntryForDetail, skipParty],
+  );
+
+  const handleConfirmCancel = useCallback(
+    async (reason: QueueCancelReason, notes?: string) => {
+      if (!selectedEntryForCancel) return;
+      await cancelQueueEntry({
+        queueEntryId: selectedEntryForCancel.queueEntryId,
+        input: { reason, notes },
+      });
+      setSelectedEntryForCancel(null);
+      // Close detail drawer if currently open for this entry
+      if (selectedEntryForDetail?.queueEntryId === selectedEntryForCancel.queueEntryId) {
+        setSelectedEntryForDetail(null);
+      }
+    },
+    [selectedEntryForCancel, selectedEntryForDetail, cancelQueueEntry],
+  );
 
   return (
-    <div className="space-y-6 max-w-full">
+    <div className="space-y-6 max-w-full" data-testid="staff-queue-page">
       {/* Top Header Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-[#eadfd8] bg-white p-6 shadow-xs">
         <div>
@@ -41,207 +134,129 @@ export default function StaffQueuePage() {
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-[#1c1714]">
               Queue Management
             </h1>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200">
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Live Host Terminal
+            <span
+              data-testid="header-live-badge"
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold border transition-colors ${
+                isConnected
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : "bg-amber-50 text-amber-700 border-amber-200"
+              }`}
+            >
+              <span
+                className={`size-1.5 rounded-full ${
+                  isConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                }`}
+              />
+              <span>{isConnected ? "Live Host Terminal" : "Connecting..."}</span>
             </span>
           </div>
           <p className="mt-1 text-xs sm:text-sm text-[#756c66]">
-            Register walk-in guests and monitor live restaurant queue entries.
+            Real-time guest waitlist monitoring, response alerts, and seating management.
           </p>
         </div>
 
-        <div>
+        <div className="flex items-center gap-2">
           <Button
             type="button"
-            onClick={() => setIsModalOpen(true)}
+            variant="outline"
+            onClick={() => refetch()}
+            className="h-11 px-3.5 rounded-xl border-[#eadfd8] text-neutral-700 hover:bg-[#faf7f5]"
+            title="Refresh Queue"
+          >
+            <RefreshCw className="size-4" />
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => setIsWalkInModalOpen(true)}
+            data-testid="header-add-queue-button"
             className="h-11 px-5 rounded-xl bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold shadow-sm transition-all flex items-center gap-2"
           >
             <UserPlus className="size-4.5" />
-            <span>Add to Queue</span>
+            <span>Add Walk-In</span>
           </Button>
         </div>
       </div>
 
-      {/* Overview Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-[#eadfd8] bg-white p-5 shadow-2xs">
-          <p className="text-xs font-bold text-[#756c66] uppercase tracking-wider">
-            Waiting in Queue
-          </p>
-          <p className="mt-2 text-2xl font-black text-[#9a3412]">{waitingEntriesCount}</p>
-          <p className="mt-1 text-xs text-[#756c66]">Parties waiting</p>
-        </div>
+      {/* Overview Statistics Bar */}
+      <QueueStatisticsBar statistics={statistics} />
 
-        <div className="rounded-2xl border border-[#eadfd8] bg-white p-5 shadow-2xs">
-          <p className="text-xs font-bold text-[#756c66] uppercase tracking-wider">
-            Avg Estimated Wait
-          </p>
-          <p className="mt-2 text-2xl font-black text-neutral-900">
-            {waitingEntriesCount > 0 ? "10 mins" : "0 mins"}
-          </p>
-          <p className="mt-1 text-xs text-[#756c66]">Based on party volume</p>
-        </div>
+      {/* Filter & Search Bar */}
+      <QueueFilterBar
+        registrationTypeFilter={registrationTypeFilter}
+        onRegistrationTypeChange={setRegistrationTypeFilter}
+        partySizeFilter={partySizeFilter}
+        onPartySizeChange={setPartySizeFilter}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onAddWalkInClick={() => setIsWalkInModalOpen(true)}
+        isConnected={isConnected}
+      />
 
-        <div className="rounded-2xl border border-[#eadfd8] bg-white p-5 shadow-2xs">
-          <p className="text-xs font-bold text-[#756c66] uppercase tracking-wider">
-            Terminal Status
-          </p>
-          <p className="mt-2 text-2xl font-black text-emerald-700">Ready</p>
-          <p className="mt-1 text-xs text-[#756c66]">Connected to queue-service</p>
-        </div>
-      </div>
-
-      {/* Queue List Table / Empty State */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-            <Users className="size-4 text-[#9a3412]" />
-            Waitlist Entries ({queueEntries.length})
-          </h2>
-        </div>
-
-        {queueEntries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-[#eddcd4] bg-[#faf7f5]/60">
-            <div className="size-14 rounded-2xl bg-[#fed7aa]/40 flex items-center justify-center text-[#9a3412] mb-3 border border-[#fbd0a7]">
-              <Users className="size-7 text-[#9a3412]" />
-            </div>
-            <h3 className="text-base font-bold text-neutral-900">No Guests in Waitlist</h3>
-            <p className="text-xs text-[#756c66] mt-1 max-w-sm">
-              There are currently no walk-in guests waiting. Click the button below to register an
-              arriving party.
-            </p>
-            <Button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="mt-4 h-9 px-4 rounded-xl bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold text-xs flex items-center gap-2"
-            >
-              <Sparkles className="size-3.5" />
-              <span>Add to Queue</span>
-            </Button>
+      {/* Error Alert if query fails */}
+      {isError && (
+        <div
+          role="alert"
+          className="rounded-2xl border border-red-200 bg-red-50 p-4 flex items-center justify-between text-xs text-red-800"
+        >
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="size-4 text-red-600 shrink-0" />
+            <span>{error?.message || QUEUE_MESSAGES.FETCH_QUEUE_FAILED}</span>
           </div>
-        ) : (
-          <div className="overflow-hidden rounded-2xl border border-[#eddcd4] bg-white shadow-2xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-neutral-600">
-                <thead className="border-b border-[#eddcd4] bg-[#faf7f5] text-[11px] font-bold uppercase tracking-wider text-[#756c66]">
-                  <tr>
-                    <th scope="col" className="px-4 py-3">
-                      Pos
-                    </th>
-                    <th scope="col" className="px-4 py-3">
-                      Guest
-                    </th>
-                    <th scope="col" className="px-4 py-3">
-                      Party Size
-                    </th>
-                    <th scope="col" className="px-4 py-3">
-                      Special Notes
-                    </th>
-                    <th scope="col" className="px-4 py-3">
-                      Status
-                    </th>
-                    <th scope="col" className="px-4 py-3">
-                      Joined At
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-right">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#f3e6de]">
-                  {queueEntries.map((entry) => (
-                    <tr
-                      key={entry.queueEntryId}
-                      className="hover:bg-[#faf7f5]/80 transition-colors"
-                    >
-                      <td className="px-4 py-3 font-bold text-neutral-900">
-                        {entry.status === QUEUE_STATUS.SEATED ? (
-                          <span className="inline-flex size-6 items-center justify-center rounded-md bg-emerald-50 text-xs font-black text-emerald-700 border border-emerald-200">
-                            ✓
-                          </span>
-                        ) : (
-                          <span className="inline-flex size-6 items-center justify-center rounded-md bg-[#faf7f5] text-xs font-black text-[#9a3412] border border-[#eddcd4]">
-                            #{entry.position}
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="font-bold text-neutral-900">{entry.guestName}</div>
-                        {entry.guestPhone && (
-                          <div className="text-[11px] text-neutral-500 font-mono mt-0.5">
-                            {entry.guestPhone}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 font-semibold text-neutral-800">
-                        {entry.partySize} {entry.partySize === 1 ? "Guest" : "Guests"}
-                      </td>
-                      <td className="px-4 py-3 max-w-xs text-neutral-700">
-                        {entry.specialNotes ? (
-                          <div className="flex items-center gap-1.5">
-                            <MessageSquare className="size-3.5 text-neutral-400 shrink-0" />
-                            <span className="truncate">{entry.specialNotes}</span>
-                          </div>
-                        ) : (
-                          <span className="text-neutral-400 italic">None</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <Badge
-                          className={`text-[10px] font-bold ${
-                            entry.status === QUEUE_STATUS.SEATED
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : entry.status === QUEUE_STATUS.CALLED
-                                ? "bg-amber-50 text-amber-700 border-amber-200"
-                                : "bg-blue-50 text-blue-700 border-blue-200"
-                          }`}
-                        >
-                          {entry.status}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-3 text-neutral-500 text-xs">
-                        <span className="inline-flex items-center gap-1">
-                          <Clock className="size-3 text-neutral-400" />
-                          {formatTime(entry.joinedAt)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        {entry.status === QUEUE_STATUS.WAITING ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => setSelectedEntryForAssign(entry)}
-                            className="h-8 px-3 rounded-xl bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold text-xs flex items-center gap-1.5 ml-auto shadow-2xs transition-all"
-                          >
-                            <UtensilsCrossed className="size-3.5" />
-                            <span>Assign Table</span>
-                          </Button>
-                        ) : entry.status === QUEUE_STATUS.SEATED ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-                            Seated
-                          </span>
-                        ) : (
-                          <span className="text-xs font-semibold text-neutral-400 italic">
-                            {entry.status}
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-      </div>
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => refetch()}
+            className="h-7 px-3 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
+
+      {/* Live Queue Table */}
+      {!isError && (
+        <StaffLiveQueueTable
+          entries={filteredEntries}
+          isLoading={isLoading}
+          activeRingingId={activeRingingId}
+          onSelectEntry={(entry) => setSelectedEntryForDetail(entry)}
+          onRingCustomer={handleRingClick}
+          onAssignTable={handleAssignClick}
+          onSkipParty={(entry) => setSelectedEntryForSkip(entry)}
+          onCancelEntry={(entry) => setSelectedEntryForCancel(entry)}
+          onAddWalkInClick={() => setIsWalkInModalOpen(true)}
+        />
+      )}
+
+      {/* Queue Entry Detail Drawer */}
+      <QueueEntryDetailDrawer
+        entry={selectedEntryForDetail}
+        onClose={() => setSelectedEntryForDetail(null)}
+        onRingCustomer={handleRingClick}
+        onAssignTable={(entry) => {
+          setSelectedEntryForDetail(null);
+          handleAssignClick(entry);
+        }}
+        onSkipParty={(entry) => {
+          setSelectedEntryForDetail(null);
+          setSelectedEntryForSkip(entry);
+        }}
+        onCancelEntry={(entry) => {
+          setSelectedEntryForDetail(null);
+          setSelectedEntryForCancel(entry);
+        }}
+        isRinging={activeRingingId === selectedEntryForDetail?.queueEntryId}
+      />
 
       {/* Walk-In Registration Modal */}
       <WalkInRegistrationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isWalkInModalOpen}
+        onClose={() => setIsWalkInModalOpen(false)}
         restaurantId={restaurantId}
-        onSuccess={handleRegistrationSuccess}
+        onSuccess={() => {
+          refetch();
+        }}
       />
 
       {/* Assign Table Modal */}
@@ -251,9 +266,30 @@ export default function StaffQueuePage() {
           onClose={() => setSelectedEntryForAssign(null)}
           restaurantId={restaurantId}
           queueEntry={selectedEntryForAssign}
-          onSuccess={handleAssignSuccess}
+          onSuccess={() => {
+            setSelectedEntryForAssign(null);
+            refetch();
+          }}
         />
       )}
+
+      {/* Skip Party Modal */}
+      <SkipQueueEntryModal
+        isOpen={Boolean(selectedEntryForSkip)}
+        onClose={() => setSelectedEntryForSkip(null)}
+        queueEntry={selectedEntryForSkip}
+        onConfirm={handleConfirmSkip}
+        isSubmitting={isSkipping}
+      />
+
+      {/* Cancel / Mark No-Show Modal */}
+      <CancelQueueEntryModal
+        isOpen={Boolean(selectedEntryForCancel)}
+        onClose={() => setSelectedEntryForCancel(null)}
+        queueEntry={selectedEntryForCancel}
+        onConfirm={handleConfirmCancel}
+        isSubmitting={isCancelling}
+      />
     </div>
   );
 }

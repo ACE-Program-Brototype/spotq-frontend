@@ -26,6 +26,9 @@ export function useAssignTables(restaurantId: string, options?: UseAssignTablesO
         queryKey: [QUEUE_QUERY_KEYS.QUEUE, restaurantId],
       });
       queryClient.invalidateQueries({
+        queryKey: QUEUE_QUERY_KEYS.STAFF_LIVE_QUEUE(restaurantId),
+      });
+      queryClient.invalidateQueries({
         queryKey: TABLE_QUERY_KEYS.LIST(restaurantId),
       });
       toast.success(response.message || QUEUE_MESSAGES.ASSIGN_TABLE_SUCCESS);

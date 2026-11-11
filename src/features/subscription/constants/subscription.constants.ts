@@ -1,9 +1,58 @@
 export const SUBSCRIPTION_ENDPOINTS = {
   PLANS: "payments/plans",
   CREATE_ORDER: "payments/subscriptions/order",
+  RENEW: (subscriptionId: string) => `payments/subscriptions/${subscriptionId}/renew`,
   VERIFY_PAYMENT: "payments/subscriptions/verify",
   STATUS: "payments/subscriptions/status",
   RESTAURANT_STATUS: "restaurants/me/status",
+  HISTORY: (restaurantId: string) => `payments/subscriptions/restaurants/${restaurantId}/history`,
+} as const;
+
+export const SUBSCRIPTION_HEADERS = {
+  IDEMPOTENCY_KEY: "Idempotency-Key",
+} as const;
+
+export const SUBSCRIPTION_QUERY_KEYS = {
+  PLANS: ["subscription-plans"] as const,
+  RESTAURANT_STATUS: ["restaurant-status"] as const,
+} as const;
+
+export const SUBSCRIPTION_THRESHOLDS = {
+  EXPIRY_BANNER_WARNING_DAYS: 7,
+  RENEWAL_ELIGIBILITY_WINDOW_DAYS: 30,
+  MILLISECONDS_PER_DAY: 86_400_000,
+} as const;
+
+export const SUBSCRIPTION_BILLING_CYCLES = {
+  MONTHLY: "MONTHLY",
+  YEARLY: "YEARLY",
+} as const;
+
+export const SUBSCRIPTION_BILLING_CYCLE_OPTIONS = [
+  SUBSCRIPTION_BILLING_CYCLES.MONTHLY,
+  SUBSCRIPTION_BILLING_CYCLES.YEARLY,
+] as const;
+
+export const SUBSCRIPTION_BILLING_CYCLE_LABELS = {
+  MONTHLY: "Monthly",
+  YEARLY: "Yearly",
+} as const;
+
+export const SUBSCRIPTION_STATUSES = {
+  ACTIVE: "ACTIVE",
+  EXPIRED: "EXPIRED",
+  PAST_DUE: "PAST_DUE",
+  CANCELLED: "CANCELLED",
+  PENDING: "PENDING",
+} as const;
+
+export const RESTAURANT_VERIFICATION_STATUSES = {
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  VERIFIED: "VERIFIED",
 } as const;
 
 export const SUBSCRIPTION_MESSAGES = {
@@ -19,23 +68,6 @@ export const SUBSCRIPTION_MESSAGES = {
   PLANS_RETRY_BUTTON: "Retry Loading Plans",
   ACTIVE_STATUS: "ACTIVE",
   DEFAULT_PRO_PLAN_CODE: "QUEUE_PRO",
-} as const;
-
-export const SUBSCRIPTION_SUCCESS_TEXTS = {
-  TITLE: "Subscription Activated!",
-  SUBTITLE: "Your restaurant account is now fully active with SpotQ Pro features.",
-  PLAN_LABEL: "Current Plan",
-  STATUS_LABEL: "Status",
-  ACTIVE_BADGE: "Active",
-  VALID_UNTIL_LABEL: "Valid Until",
-  DASHBOARD_BUTTON: "Go to Dashboard",
-  STAFF_BUTTON: "Manage Staff",
-  FEATURES_TITLE: "Unlocked Features",
-  DEFAULT_PLAN_NAME: "SpotQ Pro Plan",
-  FEATURE_QUEUE: "Real-time queue and table management",
-  FEATURE_QR: "Contactless digital QR ordering and menus",
-  FEATURE_ANALYTICS: "Performance analytics and customer insights",
-  FEATURE_SUPPORT: "24/7 priority onboarding and technical support",
 } as const;
 
 export const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";

@@ -6,6 +6,8 @@ import StaffVerifyOtpPage from "@/features/auth/pages/staff/StaffVerifyOtpPage";
 import StaffDashboardPage from "@/features/dashboard/pages/StaffDashboardPage";
 import StaffMenuAddonsPage from "@/features/menu/pages/StaffMenuAddonsPage";
 import StaffMenuItemsPage from "@/features/menu/pages/StaffMenuItemsPage";
+import StaffOrderDetailPage from "@/features/orders/pages/StaffOrderDetailPage";
+import StaffOrdersPage from "@/features/orders/pages/StaffOrdersPage";
 import EditStaffProfilePage from "@/features/profile/pages/EditStaffProfilePage";
 import StaffProfilePage from "@/features/profile/pages/StaffProfilePage";
 import StaffQueuePage from "@/features/queue/pages/StaffQueuePage";
@@ -81,6 +83,14 @@ export const staffRoutes: RouteObject[] = [
           {
             path: STAFF_ROUTE_PATHS.TABLES,
             Component: StaffTablePage,
+          },
+          {
+            path: STAFF_ROUTE_PATHS.ORDERS,
+            Component: StaffOrdersPage,
+          },
+          {
+            path: STAFF_ROUTE_PATHS.ORDER_DETAILS,
+            Component: StaffOrderDetailPage,
           },
           {
             path: "menu/addons",

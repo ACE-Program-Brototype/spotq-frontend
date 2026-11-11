@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
-import {
-  RAZORPAY_SCRIPT_URL,
-  SUBSCRIPTION_MESSAGES,
-} from "@/features/subscription/constants/subscription.constants";
+import { SUBSCRIPTION_MESSAGES } from "@/features/subscription/constants/subscription.constants";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import type {
   RazorpayInstance,
@@ -12,57 +9,14 @@ import type {
   RazorpayPaymentSuccessResponse,
   UseRazorpayCheckoutOptions,
 } from "@/features/subscription/types/subscription.types";
+import { loadRazorpayScript } from "@/lib/utils/razorpay";
+
+export { loadRazorpayScript };
 
 declare global {
   interface Window {
     Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
   }
-}
-
-let razorpayScriptPromise: Promise<boolean> | null = null;
-
-export function loadRazorpayScript(src = RAZORPAY_SCRIPT_URL): Promise<boolean> {
-  if (typeof window === "undefined") return Promise.resolve(false);
-  if (window.Razorpay) return Promise.resolve(true);
-
-  if (razorpayScriptPromise) {
-    return razorpayScriptPromise;
-  }
-
-  const existingScript = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
-  if (existingScript?.dataset.loaded === "true" && window.Razorpay) {
-    return Promise.resolve(true);
-  }
-
-  razorpayScriptPromise = new Promise<boolean>((resolve) => {
-    const script = existingScript || document.createElement("script");
-    script.src = src;
-    script.async = true;
-
-    const cleanup = () => {
-      script.onload = null;
-      script.onerror = null;
-    };
-
-    script.onload = () => {
-      cleanup();
-      script.dataset.loaded = "true";
-      resolve(true);
-    };
-
-    script.onerror = () => {
-      cleanup();
-      script.remove();
-      razorpayScriptPromise = null;
-      resolve(false);
-    };
-
-    if (!existingScript) {
-      document.body.appendChild(script);
-    }
-  });
-
-  return razorpayScriptPromise;
 }
 
 export function useRazorpayCheckout({
