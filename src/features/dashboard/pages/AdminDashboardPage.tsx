@@ -1,288 +1,138 @@
-import { BarChart3, Package, Settings, ShieldCheck, TrendingUp, Users } from "lucide-react";
-import { useState } from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ExportReportsModal } from "../components/admin/ExportReportsModal";
+import { GeographicAdoptionTable } from "../components/admin/GeographicAdoptionTable";
+import { OnboardingFunnelSection } from "../components/admin/OnboardingFunnelSection";
+import { PlatformDashboardHeader } from "../components/admin/PlatformDashboardHeader";
+import { PlatformFilterBar } from "../components/admin/PlatformFilterBar";
+import { PlatformKpisSection } from "../components/admin/PlatformKpisSection";
+import { RevenueTimelineChart } from "../components/admin/RevenueTimelineChart";
+import { SubscriptionTierDonutChart } from "../components/admin/SubscriptionTierDonutChart";
+import {
+  PLATFORM_ANALYTICS_MESSAGES,
+  getDefaultFilters,
+} from "../constants/platform-analytics.constants";
+import { usePlatformAdminDashboardAnalytics } from "../hooks/usePlatformAdminDashboardAnalytics";
+import type { PlatformDashboardFilters } from "../types/platform-analytics.types";
 
-import { LoadingIndicator } from "@/components/common/LoadingIndicator";
-import { type Column, DataTable } from "@/components/common/table";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthStore } from "@/features/auth/store/auth.store";
+export default function AdminDashboardPage() {
+  const [filters, setFilters] = useState<PlatformDashboardFilters>(getDefaultFilters);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
-const statCards = [
-  {
-    label: "Total Users",
-    icon: Users,
-    description: "Registered platform users",
-  },
-  {
-    label: "Active Orders",
-    icon: Package,
-    description: "Orders in progress",
-  },
-  {
-    label: "Revenue",
-    icon: TrendingUp,
-    description: "Monthly earnings",
-  },
-  {
-    label: "System Health",
-    icon: ShieldCheck,
-    description: "All services operational",
-  },
-];
+  const { data, isLoading, isError, error, isFetching, refetch } =
+    usePlatformAdminDashboardAnalytics(filters);
 
-const mockRestaurants = [
-  {
-    id: "1",
-    name: "The Steakhouse Co.",
-    category: "Dine-in",
-    status: "Active",
-    tables: 24,
-    orders: 48,
-  },
-  { id: "2", name: "Pasta & Vino", category: "Italian", status: "Active", tables: 18, orders: 32 },
-  {
-    id: "3",
-    name: "Zen Sushi Hub",
-    category: "Japanese",
-    status: "Pending",
-    tables: 12,
-    orders: 15,
-  },
-  {
-    id: "4",
-    name: "Ocean Grill & Bar",
-    category: "Seafood",
-    status: "Active",
-    tables: 30,
-    orders: 60,
-  },
-  {
-    id: "5",
-    name: "Green Leaf Bistro",
-    category: "Organic",
-    status: "Active",
-    tables: 16,
-    orders: 28,
-  },
-];
-
-type MockRestaurant = (typeof mockRestaurants)[number];
-
-const restaurantColumns: Column<MockRestaurant>[] = [
-  {
-    key: "name",
-    header: "Restaurant Name",
-    accessor: "name",
-    className: "font-semibold text-slate-900",
-  },
-  {
-    key: "category",
-    header: "Category",
-    accessor: "category",
-  },
-  {
-    key: "status",
-    header: "Status",
-    cell: ({ row: r }) => (
-      <span
-        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-          r.status === "Active"
-            ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
-            : "bg-amber-50 text-amber-700 border border-amber-200/60"
-        }`}
-      >
-        {r.status}
-      </span>
-    ),
-  },
-  {
-    key: "tables",
-    header: "Tables",
-    cell: ({ row: r }) => `${r.tables} seats`,
-  },
-  {
-    key: "orders",
-    header: "Daily Orders",
-    accessor: "orders",
-    className: "font-medium",
-  },
-];
-
-function AdminDashboardPage() {
-  const user = useAuthStore((state) => state.user);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isDemoLoading, setIsDemoLoading] = useState(false);
-
-  const totalPages = 5;
-  const totalEntries = 25;
-
-  const handlePageChange = (page: number) => {
-    setIsDemoLoading(true);
-    setCurrentPage(page);
-    setTimeout(() => setIsDemoLoading(false), 400);
-  };
+  const handleFilterChange = useCallback((updated: Partial<PlatformDashboardFilters>) => {
+    setFilters((prev) => ({
+      ...prev,
+      ...updated,
+    }));
+  }, []);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <div className="flex items-center gap-2.5">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
-          <Badge variant="secondary" className="text-xs font-semibold">
-            Console
-          </Badge>
-        </div>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Welcome back, {user?.fullName || user?.name || "Admin"}. Your platform overview will
-          appear here.
-        </p>
-      </div>
+    <div className="space-y-6 max-w-full pb-10">
+      {/* 1. Header with Last Synced & Export Action */}
+      <PlatformDashboardHeader
+        generatedAt={data?.generatedAt}
+        isFetching={isFetching}
+        onRefresh={() => void refetch()}
+        onExportClick={() => setIsExportModalOpen(true)}
+      />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map(({ label, icon: Icon, description }) => (
-          <Card key={label} className="border-slate-200/80 shadow-xs">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
-              <Icon className="size-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="mb-2 h-7 w-20" />
-              <CardDescription className="text-xs">{description}</CardDescription>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* 2. Unified Timeline & Granularity Filter Bar */}
+      <PlatformFilterBar
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        isLoading={isFetching}
+      />
 
-      <Card className="border-slate-200/80 shadow-xs">
-        <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <div>
-            <CardTitle className="text-base font-bold text-slate-800">
-              Partner Restaurants
-            </CardTitle>
-            <CardDescription className="text-xs mt-0.5">
-              Live table and queue management across active restaurants
-            </CardDescription>
+      {/* Full Error State (Network or Gateway Down) */}
+      {isError && (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-rose-200 bg-rose-50/60 p-8 text-center shadow-xs">
+          <div className="flex size-12 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+            <AlertTriangle className="size-6" />
           </div>
-          <Badge variant="outline" className="text-xs font-medium text-slate-600">
-            Page {currentPage} of {totalPages}
-          </Badge>
-        </CardHeader>
-
-        <CardContent className="p-0">
-          <DataTable
-            data={mockRestaurants}
-            columns={restaurantColumns}
-            isLoading={isDemoLoading}
-            loadingRenderer={
-              <div className="p-6">
-                <LoadingIndicator variant="table-skeleton" />
-              </div>
-            }
-            pagination={{
-              currentPage,
-              totalPages,
-              totalItems: totalEntries,
-              pageSize: 5,
-              theme: "admin",
-              onPageChange: handlePageChange,
-            }}
-            theme="admin"
-            className="border-0 rounded-none shadow-none"
-            headerClassName="bg-slate-50/80 text-slate-500 border-y border-slate-200/80 font-semibold"
-          />
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2 border-slate-200/80 shadow-xs">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2 text-base font-bold text-slate-800">
-                  <BarChart3 className="size-4.5 text-[#1e3a5f]" />
-                  Analytics Overview
-                </CardTitle>
-                <CardDescription className="mt-1">Platform metrics and performance</CardDescription>
-              </div>
-              <Badge variant="outline" className="text-xs font-medium">
-                In Development
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-slate-100 text-[#1e3a5f]">
-                <BarChart3 className="size-7" />
-              </div>
-              <p className="text-sm font-semibold text-slate-800">Charts & analytics coming soon</p>
-              <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-                Real-time order tracking, revenue charts, and user growth metrics will be displayed
-                here.
-              </p>
-              <div className="mt-6 flex w-full max-w-sm items-end justify-center gap-2">
-                {[40, 65, 45, 80, 55, 70, 50].map((h, i) => (
-                  <Skeleton
-                    // biome-ignore lint/suspicious/noArrayIndexKey: static placeholder bars
-                    key={i}
-                    className="w-8 rounded-md bg-slate-200/80"
-                    style={{ height: `${h}px` }}
-                  />
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex flex-col gap-4">
-          <Card className="border-slate-200/80 shadow-xs">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm font-bold text-slate-800">
-                <Users className="size-4 text-slate-500" />
-                Recent Users
-              </CardTitle>
-              <CardDescription className="text-xs">Latest registrations</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton
-                <div key={i} className="flex items-center gap-3">
-                  <Skeleton className="size-8 rounded-full" />
-                  <div className="flex-1 space-y-1.5">
-                    <Skeleton className="h-3 w-24" />
-                    <Skeleton className="h-2.5 w-32" />
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="border-slate-200/80 shadow-xs">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm font-bold text-slate-800">
-                <Settings className="size-4 text-slate-500" />
-                Quick Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {["Manage Users", "View Orders", "System Settings", "Audit Logs"].map((action) => (
-                <button
-                  key={action}
-                  type="button"
-                  disabled
-                  className="flex w-full items-center justify-between rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground opacity-50 cursor-not-allowed"
-                >
-                  {action}
-                  <Badge variant="outline" className="text-[10px]">
-                    Soon
-                  </Badge>
-                </button>
-              ))}
-            </CardContent>
-          </Card>
+          <h2 className="mt-3 text-base font-bold text-slate-900">
+            {PLATFORM_ANALYTICS_MESSAGES.ERROR_TITLE}
+          </h2>
+          <p className="mt-1 max-w-md text-xs sm:text-sm text-slate-600">
+            {error instanceof Error ? error.message : PLATFORM_ANALYTICS_MESSAGES.ERROR_DESCRIPTION}
+          </p>
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => void refetch()}
+            className="mt-4 gap-1.5 bg-rose-600 text-white hover:bg-rose-700 text-xs font-semibold shadow-xs"
+          >
+            <RefreshCw className="size-3.5" />
+            {PLATFORM_ANALYTICS_MESSAGES.RETRY}
+          </Button>
         </div>
-      </div>
+      )}
+
+      {/* Section 1: Executive KPI Cards */}
+      <section aria-label="Executive Overview" className="space-y-2">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+          Executive Overview
+        </h2>
+        <PlatformKpisSection
+          overview={data?.overview}
+          customerGrowth={data?.customerGrowth}
+          revenue={data?.revenue}
+          isLoading={isLoading}
+        />
+      </section>
+
+      {/* Section 2: Subscription & Revenue Analytics */}
+      <section aria-label="Subscription & Revenue Analytics" className="space-y-2">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+          Subscription &amp; Revenue Analytics
+        </h2>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <RevenueTimelineChart
+              revenue={data?.revenue}
+              isLoading={isLoading}
+              onRetry={() => void refetch()}
+            />
+          </div>
+          <div>
+            <SubscriptionTierDonutChart
+              overview={data?.overview}
+              isLoading={isLoading}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3: Restaurant Growth Analytics */}
+      <section aria-label="Restaurant Growth Analytics" className="space-y-2">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+          Restaurant Growth Analytics
+        </h2>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div>
+            <OnboardingFunnelSection
+              funnel={data?.growth?.onboardingFunnel}
+              isLoading={isLoading}
+            />
+          </div>
+          <div>
+            <GeographicAdoptionTable
+              geographicBreakdown={data?.growth?.geographicBreakdown}
+              totalRestaurants={data?.overview?.totalRestaurants}
+              isLoading={isLoading}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Export Reports Modal (SCRUM-804 entry point) */}
+      <ExportReportsModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+      />
     </div>
   );
 }
-
-export default AdminDashboardPage;
