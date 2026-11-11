@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +13,7 @@ import { useCustomerRestaurantDetails } from "../hooks/useCustomerRestaurantDeta
 import type { CustomerRestaurantDetails } from "../types/customer-restaurant.types";
 
 function RestaurantDetailsContent({ restaurant }: { restaurant: CustomerRestaurantDetails }) {
+  const navigate = useNavigate();
   const categories = useMemo(
     () => [...(restaurant.menu ?? [])].sort((a, b) => a.displayOrder - b.displayOrder),
     [restaurant.menu],
@@ -42,6 +43,9 @@ function RestaurantDetailsContent({ restaurant }: { restaurant: CustomerRestaura
         onClose={() => setIsJoinQueueOpen(false)}
         restaurantId={restaurant.restaurantId}
         restaurantName={restaurant.restaurantName}
+        onSuccess={(entry) => {
+          navigate(CUSTOMER_ROUTES.QUEUE_STATUS(restaurant.restaurantId, entry.queueEntryId));
+        }}
       />
     </>
   );

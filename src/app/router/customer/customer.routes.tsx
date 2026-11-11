@@ -17,6 +17,7 @@ import OrderReceiptPage from "@/features/orders/pages/OrderReceiptPage";
 import CustomerPaymentHistoryPage from "@/features/payments/pages/CustomerPaymentHistoryPage";
 import EditProfilePage from "@/features/profile/pages/EditProfilePage";
 import ViewProfilePage from "@/features/profile/pages/ViewProfilePage";
+import CustomerQueueTrackerPage from "@/features/queue/pages/CustomerQueueTrackerPage";
 import CustomerRestaurantDetailsPage from "@/features/restaurants/pages/CustomerRestaurantDetailsPage";
 import HomePage from "@/features/restaurants/pages/HomePage";
 import AuthLayout from "@/layouts/AuthLayout";
@@ -93,6 +94,10 @@ export const customerRoutes: RouteObject[] = [
       {
         path: CUSTOMER_ROUTE_PATHS.ORDER_RECEIPT,
         Component: OrderReceiptPage,
+      },
+      {
+        path: CUSTOMER_ROUTE_PATHS.QUEUE_STATUS,
+        Component: CustomerQueueTrackerPage,
       },
     ],
   },

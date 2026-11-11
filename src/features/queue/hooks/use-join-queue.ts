@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CUSTOMER_RESTAURANT_QUERY_KEYS } from "@/features/restaurants/constants/customer-restaurant.constants";
-import { QUEUE_MESSAGES } from "../constants/queue.constants";
+import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
 import { queueService } from "../services/queue.service";
 import type { JoinQueueInput, JoinQueueResponse, QueueEntry } from "../types/queue.types";
 
@@ -29,6 +29,9 @@ export function useJoinQueue(restaurantId: string | undefined, options?: UseJoin
           queryKey: CUSTOMER_RESTAURANT_QUERY_KEYS.DETAILS(restaurantId),
         });
       }
+      queryClient.invalidateQueries({
+        queryKey: QUEUE_QUERY_KEYS.CUSTOMER_ACTIVE(),
+      });
       toast.success(response.message || QUEUE_MESSAGES.JOIN_SUCCESS);
       options?.onSuccess?.(response.data);
     },

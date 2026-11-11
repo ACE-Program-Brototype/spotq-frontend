@@ -1,3 +1,4 @@
+import type { SuccessResponse } from "@/components/common";
 import type {
   QUEUE_CANCEL_REASON,
   QUEUE_STATUS,
@@ -7,7 +8,6 @@ import type {
 export type RegistrationType = (typeof REGISTRATION_TYPE)[keyof typeof REGISTRATION_TYPE];
 export type RegistrationTypeFilter = "ALL" | "ONLINE" | "WALK_IN";
 export type PartySizeBucket = "ALL" | "SMALL" | "MEDIUM" | "LARGE";
-
 export type QueueStatus = (typeof QUEUE_STATUS)[keyof typeof QUEUE_STATUS];
 
 export interface RegisterWalkInInput {
@@ -42,11 +42,7 @@ export interface QueueEntry {
   websocket?: QueueWebsocketMetadata;
 }
 
-export interface RegisterWalkInResponse {
-  success: boolean;
-  message: string;
-  data: QueueEntry;
-}
+export type RegisterWalkInResponse = SuccessResponse<QueueEntry>;
 
 export interface QueueEtaData {
   restaurantId?: string;
@@ -72,11 +68,7 @@ export interface JoinQueueInput {
   fid?: string | null;
 }
 
-export interface JoinQueueResponse {
-  success: boolean;
-  message: string;
-  data: QueueEntry;
-}
+export type JoinQueueResponse = SuccessResponse<QueueEntry>;
 
 export interface AssignTableItem {
   tableId: string;
@@ -95,11 +87,92 @@ export interface AssignTablesData {
   seatedAt: string;
 }
 
-export interface AssignTablesResponse {
-  success: boolean;
-  message: string;
-  data: AssignTablesData;
+export type AssignTablesResponse = SuccessResponse<AssignTablesData>;
+
+export interface CustomerQueueStatusSnapshot {
+  queueEntryId: string;
+  restaurantId: string;
+  restaurantName?: string;
+  queueNumber: string;
+  guestName?: string;
+  partySize: number;
+  status: QueueStatus;
+  position: number | null;
+  totalWaitingParties?: number;
+  peopleAhead?: number;
+  estimatedWaitMinutes: number | null;
+  estimatedWaitMinutesAtJoin?: number | null;
+  registrationType?: RegistrationType;
+  joinedAt: string;
+  updatedAt?: string;
+  lastRingAt?: string | null;
+  assignedTableId?: string | null;
+  assignedTableNumber?: string | null;
+  responseDeadline: string | null;
+  canCancel?: boolean;
+  serverTime?: string;
 }
+
+export type CustomerQueueStatusResponse = SuccessResponse<CustomerQueueStatusSnapshot>;
+
+export interface QueuePositionUpdatedPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  position: number;
+  estimatedWaitMinutes: number | null;
+}
+
+export interface QueueEntrySkippedPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  status?: QueueStatus;
+  reason?: string;
+  position?: number | null;
+}
+
+export interface QueueEntrySeatedPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  tableId?: string;
+  tableIds?: string[];
+  tableNumber?: string;
+  seatedAt?: string;
+}
+
+export interface QueueEntryCancelledPayload {
+  event?: string;
+  queueEntryId: string;
+  restaurantId?: string;
+  status?: QueueStatus;
+  reason?: string;
+  cancelledAt?: string;
+}
+
+export interface LeaveQueueRequest {
+  restaurantId: string;
+  queueEntryId: string;
+}
+
+export interface LeaveQueueData {
+  queueEntryId: string;
+  restaurantId: string;
+  status: QueueStatus;
+  cancelledAt: string;
+}
+
+export type LeaveQueueResponse = SuccessResponse<LeaveQueueData>;
+
+export interface ActiveCustomerQueueData {
+  restaurantId: string;
+  queueEntryId: string;
+  queueNumber: string;
+  status: QueueStatus;
+}
+
+export type ActiveCustomerQueueResponse = SuccessResponse<ActiveCustomerQueueData | null>;
 
 export interface StaffLiveQueueEntry {
   queueEntryId: string;
