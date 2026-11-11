@@ -166,6 +166,10 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
           },
         };
 
+        if (!window.Razorpay) {
+          throw new Error(SUBSCRIPTION_MESSAGES.SCRIPT_LOAD_ERROR);
+        }
+
         const instance = new window.Razorpay(options);
         razorpayInstanceRef.current = instance;
 
