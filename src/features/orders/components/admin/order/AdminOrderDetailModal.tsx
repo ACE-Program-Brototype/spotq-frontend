@@ -24,10 +24,16 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
 
   if (!isOpen || !order) return null;
 
-  const handleCopy = (text: string, field: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
+  const handleCopy = async (text: string, field: string) => {
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        setCopiedField(field);
+        setTimeout(() => setCopiedField(null), 2000);
+      }
+    } catch (err) {
+      console.error("Failed to copy text to clipboard:", err);
+    }
   };
 
   const paymentRef = order.paymentReference;

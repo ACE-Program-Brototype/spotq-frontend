@@ -53,11 +53,17 @@ export function AdminOrdersTable({
 }: AdminOrdersTableProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleCopy = (e: React.MouseEvent, text: string, id: string) => {
+  const handleCopy = async (e: React.MouseEvent, text: string, id: string) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+      }
+    } catch (err) {
+      console.error("Failed to copy text to clipboard:", err);
+    }
   };
 
   const renderSortIcon = (field: AdminOrdersSortBy) => {
@@ -93,35 +99,65 @@ export function AdminOrdersTable({
                 <th className="py-3.5 px-4">Restaurant</th>
                 <th className="py-3.5 px-4">Customer</th>
                 <th
-                  className="py-3.5 px-4 cursor-pointer hover:bg-slate-100/70 transition-colors group"
-                  onClick={() => onSortChange("status")}
-                  title="Sort by Status"
+                  className="py-3.5 px-4"
+                  aria-sort={
+                    sortBy === "status"
+                      ? sortOrder === "asc"
+                        ? "ascending"
+                        : "descending"
+                      : "none"
+                  }
                 >
-                  <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => onSortChange("status")}
+                    className="flex items-center gap-1.5 uppercase tracking-wider font-semibold hover:text-slate-800 transition-colors cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0052cc] rounded-xs"
+                    title="Sort by Status"
+                  >
                     <span>Order Status</span>
                     {renderSortIcon("status")}
-                  </div>
+                  </button>
                 </th>
                 <th className="py-3.5 px-4">Payment</th>
                 <th
-                  className="py-3.5 px-4 cursor-pointer hover:bg-slate-100/70 transition-colors group"
-                  onClick={() => onSortChange("totalAmount")}
-                  title="Sort by Total Amount"
+                  className="py-3.5 px-4"
+                  aria-sort={
+                    sortBy === "totalAmount"
+                      ? sortOrder === "asc"
+                        ? "ascending"
+                        : "descending"
+                      : "none"
+                  }
                 >
-                  <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => onSortChange("totalAmount")}
+                    className="flex items-center gap-1.5 uppercase tracking-wider font-semibold hover:text-slate-800 transition-colors cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0052cc] rounded-xs"
+                    title="Sort by Total Amount"
+                  >
                     <span>Amount</span>
                     {renderSortIcon("totalAmount")}
-                  </div>
+                  </button>
                 </th>
                 <th
-                  className="py-3.5 px-4 cursor-pointer hover:bg-slate-100/70 transition-colors group"
-                  onClick={() => onSortChange("createdAt")}
-                  title="Sort by Date Created"
+                  className="py-3.5 px-4"
+                  aria-sort={
+                    sortBy === "createdAt"
+                      ? sortOrder === "asc"
+                        ? "ascending"
+                        : "descending"
+                      : "none"
+                  }
                 >
-                  <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => onSortChange("createdAt")}
+                    className="flex items-center gap-1.5 uppercase tracking-wider font-semibold hover:text-slate-800 transition-colors cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0052cc] rounded-xs"
+                    title="Sort by Date Created"
+                  >
                     <span>Date</span>
                     {renderSortIcon("createdAt")}
-                  </div>
+                  </button>
                 </th>
                 <th className="py-3.5 px-4 text-right">Action</th>
               </tr>

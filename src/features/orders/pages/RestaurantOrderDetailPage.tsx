@@ -394,7 +394,7 @@ export default function RestaurantOrderDetailPage() {
               </span>
               <span
                 className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                  order.paymentStatus === "PAID" || order.paymentStatus === "PAID_OFFLINE"
+                  order.paymentStatus === "PAID"
                     ? "bg-emerald-100 text-emerald-800"
                     : order.paymentStatus === "REFUNDED"
                       ? "bg-purple-100 text-purple-800"

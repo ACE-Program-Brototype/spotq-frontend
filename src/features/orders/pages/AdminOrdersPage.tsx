@@ -48,23 +48,25 @@ export default function AdminOrdersPage() {
   const dateParams = useMemo(() => {
     if (datePreset === "TODAY") {
       const start = new Date();
-      start.setUTCHours(0, 0, 0, 0);
+      start.setHours(0, 0, 0, 0);
       const end = new Date();
-      end.setUTCHours(23, 59, 59, 999);
+      end.setHours(23, 59, 59, 999);
       return { startDate: start.toISOString(), endDate: end.toISOString() };
     }
     if (datePreset === "LAST_7_DAYS") {
-      const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      start.setUTCHours(0, 0, 0, 0);
+      const start = new Date();
+      start.setDate(start.getDate() - 6);
+      start.setHours(0, 0, 0, 0);
       const end = new Date();
-      end.setUTCHours(23, 59, 59, 999);
+      end.setHours(23, 59, 59, 999);
       return { startDate: start.toISOString(), endDate: end.toISOString() };
     }
     if (datePreset === "LAST_30_DAYS") {
-      const start = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      start.setUTCHours(0, 0, 0, 0);
+      const start = new Date();
+      start.setDate(start.getDate() - 29);
+      start.setHours(0, 0, 0, 0);
       const end = new Date();
-      end.setUTCHours(23, 59, 59, 999);
+      end.setHours(23, 59, 59, 999);
       return { startDate: start.toISOString(), endDate: end.toISOString() };
     }
     return {};

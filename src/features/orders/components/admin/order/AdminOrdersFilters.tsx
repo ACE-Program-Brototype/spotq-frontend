@@ -72,8 +72,9 @@ export function AdminOrdersFilters({
           {searchQuery && (
             <button
               type="button"
+              disabled={disabled}
               onClick={() => onSearchChange("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-md"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 disabled:opacity-40 disabled:pointer-events-none p-0.5 rounded-md transition-colors"
               aria-label="Clear search"
             >
               <X className="size-3.5" />
