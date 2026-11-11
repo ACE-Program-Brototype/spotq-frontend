@@ -4,7 +4,10 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { type BankAccountFormValues, bankAccountSchema } from "../schemas/bank-account.schema";
+import {
+  type BankAccountFormValues,
+  bankAccountSchema,
+} from "@/features/wallet/schemas/bank-account.schema";
 import { WalletDialog } from "./WalletDialog";
 
 export function BankAccountDialog({

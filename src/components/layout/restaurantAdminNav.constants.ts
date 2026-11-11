@@ -10,6 +10,7 @@ import {
   Store,
   Users,
   Utensils,
+  Wallet,
 } from "lucide-react";
 import type { NavItem } from "./types";
 
@@ -82,7 +83,7 @@ export function getAdminNavItems(basePath: string): NavItem[] {
     {
       title: "Wallet",
       href: `${basePath}/wallet`,
-      icon: DollarSign,
+      icon: Wallet,
     },
     {
       title: "Finance",

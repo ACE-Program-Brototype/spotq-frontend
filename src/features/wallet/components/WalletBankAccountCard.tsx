@@ -1,6 +1,7 @@
 import { BadgeCheck, Building2, Landmark, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { WalletOverview } from "../types/wallet.types";
+import type { WalletOverview } from "@/features/wallet/types/wallet.types";
+import { maskAccountNumber } from "../utils/wallet.utils";
 
 export function WalletBankAccountCard({
   bankAccount,
@@ -32,7 +33,7 @@ export function WalletBankAccountCard({
                 {bankAccount.bankName ?? "Bank account"}
               </p>
               <p className="mt-0.5 text-sm text-neutral-500">
-                Account: {bankAccount.accountNumberMasked ?? "Unavailable"}
+                Account: {maskAccountNumber(bankAccount.accountNumberMasked)}
               </p>
             </div>
           </div>

@@ -1,6 +1,3 @@
-import { CalendarDays } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
 export function WalletPageHeader() {
   return (
     <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -13,14 +10,6 @@ export function WalletPageHeader() {
           Manage your available earnings and payout account.
         </p>
       </div>
-      <Button
-        type="button"
-        variant="outline"
-        disabled
-        className="mt-3 self-start gap-2 sm:mt-0 sm:self-auto"
-      >
-        <CalendarDays className="size-4" /> Today
-      </Button>
     </div>
   );
 }

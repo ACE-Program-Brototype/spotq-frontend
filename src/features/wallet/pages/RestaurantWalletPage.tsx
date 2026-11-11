@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { BankAccountDialog } from "../components/BankAccountDialog";
-import { WalletBalanceCard } from "../components/WalletBalanceCard";
-import { WalletBankAccountCard } from "../components/WalletBankAccountCard";
-import { WalletLoadingSkeleton } from "../components/WalletLoadingSkeleton";
-import { WalletPageHeader } from "../components/WalletPageHeader";
-import { WalletTodaySummary } from "../components/WalletTodaySummary";
-import { WithdrawFundsDialog } from "../components/WithdrawFundsDialog";
+import { BankAccountDialog } from "@/features/wallet/components/BankAccountDialog";
+import { WalletBalanceCard } from "@/features/wallet/components/WalletBalanceCard";
+import { WalletBankAccountCard } from "@/features/wallet/components/WalletBankAccountCard";
+import { WalletLoadingSkeleton } from "@/features/wallet/components/WalletLoadingSkeleton";
+import { WalletPageHeader } from "@/features/wallet/components/WalletPageHeader";
+import { WalletTodaySummary } from "@/features/wallet/components/WalletTodaySummary";
+import { WithdrawFundsDialog } from "@/features/wallet/components/WithdrawFundsDialog";
 import {
   useLinkWalletBankAccount,
   useWalletOverview,
   useWithdrawWalletFunds,
-} from "../hooks/useWallet";
+} from "@/features/wallet/hooks/useWallet";
+import { createIdempotencyKey } from "@/lib/api/idempotency";
 import type { BankAccountFormValues } from "../schemas/bank-account.schema";
 
 export default function RestaurantWalletPage() {
@@ -35,8 +36,12 @@ export default function RestaurantWalletPage() {
   };
 
   const withdrawFunds = async (amountPaise: number) => {
+    const idempotencyKey = createIdempotencyKey();
     try {
-      await withdraw.mutateAsync({ amountPaise, mode: "IMPS" });
+      await withdraw.mutateAsync({
+        input: { amountPaise, mode: "IMPS" },
+        idempotencyKey,
+      });
       toast.success("Withdrawal submitted successfully");
       setWithdrawDialogOpen(false);
     } catch (cause) {

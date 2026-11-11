@@ -1,16 +1,23 @@
 import { z } from "zod";
-import { ACCOUNT_NUMBER_REGEX, IFSC_REGEX } from "../constants/wallet.constants";
+import {
+  ACCOUNT_NUMBER_REGEX,
+  IFSC_REGEX,
+  WALLET_VALIDATION_MESSAGES,
+} from "../constants/wallet.constants";
 
 export const bankAccountSchema = z
   .object({
-    accountHolderName: z.string().trim().min(2, "Enter the account holder name"),
-    accountNumber: z.string().regex(ACCOUNT_NUMBER_REGEX, "Account number must be 9–18 digits"),
-    confirmAccountNumber: z.string(),
-    ifsc: z.string().trim().toUpperCase().regex(IFSC_REGEX, "Enter a valid IFSC code"),
+    accountHolderName: z.string().trim().min(2, WALLET_VALIDATION_MESSAGES.ACCOUNT_HOLDER_NAME),
+    accountNumber: z
+      .string()
+      .trim()
+      .regex(ACCOUNT_NUMBER_REGEX, WALLET_VALIDATION_MESSAGES.ACCOUNT_NUMBER),
+    confirmAccountNumber: z.string().trim(),
+    ifsc: z.string().trim().toUpperCase().regex(IFSC_REGEX, WALLET_VALIDATION_MESSAGES.IFSC),
   })
   .refine((values) => values.accountNumber === values.confirmAccountNumber, {
     path: ["confirmAccountNumber"],
-    message: "Account numbers do not match",
+    message: WALLET_VALIDATION_MESSAGES.ACCOUNT_NUMBER_MISMATCH,
   });
 
 export type BankAccountFormValues = z.infer<typeof bankAccountSchema>;

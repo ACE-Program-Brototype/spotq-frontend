@@ -1,8 +1,8 @@
 import { apiClient } from "@/lib/api/client";
-import { createIdempotencyKey, IDEMPOTENCY_KEY_HEADER } from "@/lib/api/idempotency";
+import { IDEMPOTENCY_KEY_HEADER } from "@/lib/api/idempotency";
 import type { ApiResponse } from "@/types/api.types";
 import { WALLET_ENDPOINTS } from "../constants/wallet.constants";
-import type { BankAccountInput, WalletOverview, WithdrawInput } from "../types/wallet.types";
+import type { BankAccountInput, WalletOverview, WithdrawRequest } from "../types/wallet.types";
 
 type WalletResponse<T> = ApiResponse<T>;
 
@@ -28,8 +28,7 @@ export const walletService = {
     getData(response, "Unable to link bank account");
   },
 
-  async withdraw(input: WithdrawInput): Promise<void> {
-    const idempotencyKey = createIdempotencyKey();
+  async withdraw({ input, idempotencyKey }: WithdrawRequest): Promise<void> {
     const response = await apiClient
       .post(WALLET_ENDPOINTS.WITHDRAW, {
         json: input,

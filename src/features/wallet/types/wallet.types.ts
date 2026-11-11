@@ -36,3 +36,8 @@ export interface WithdrawInput {
   amountPaise: number;
   mode: "IMPS";
 }
+
+export interface WithdrawRequest {
+  input: WithdrawInput;
+  idempotencyKey: string;
+}

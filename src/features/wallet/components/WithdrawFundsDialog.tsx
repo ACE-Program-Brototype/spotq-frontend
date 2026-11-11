@@ -4,9 +4,12 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { WalletDialog } from "@/features/wallet/components/WalletDialog";
+import {
+  type WithdrawalFormValues,
+  withdrawalSchema,
+} from "@/features/wallet/schemas/withdrawal.schema";
 import { formatCurrency } from "@/lib/utils";
-import { type WithdrawalFormValues, withdrawalSchema } from "../schemas/withdrawal.schema";
-import { WalletDialog } from "./WalletDialog";
 
 export function WithdrawFundsDialog({
   open,
@@ -43,8 +46,12 @@ export function WithdrawFundsDialog({
   }, [open, reset]);
 
   const selectPercentage = (percentage: number) => {
-    const paise = Math.floor((balancePaise * percentage) / 100 / 100) * 100;
-    setValue("amountRupees", String(paise / 100), { shouldValidate: true });
+    const amountRupees =
+      percentage === 100
+        ? (balancePaise / 100).toFixed(2)
+        : String(Math.floor((balancePaise * percentage) / 10000));
+
+    setValue("amountRupees", amountRupees, { shouldValidate: true });
   };
 
   return (
@@ -96,6 +103,7 @@ export function WithdrawFundsDialog({
               <button
                 key={percentage}
                 type="button"
+                aria-label={`Set withdrawal amount to ${percentage}% of balance`}
                 onClick={() => selectPercentage(percentage)}
                 className="rounded-full border border-[#eddcd4] px-3 py-1.5 text-xs font-semibold text-neutral-700 transition-colors hover:border-[#e85d04] hover:bg-orange-50 hover:text-[#c94e00]"
               >
@@ -132,7 +140,13 @@ export function WithdrawFundsDialog({
           </Button>
           <Button
             type="submit"
-            disabled={isSubmitting || exceedsBalance || balancePaise < 10_000}
+            disabled={
+              isSubmitting ||
+              !amountRupees ||
+              Number(amountRupees) < 100 ||
+              exceedsBalance ||
+              balancePaise < 10_000
+            }
             className="gap-2 bg-[#e85d04] text-white hover:bg-[#c94e00]"
           >
             {isSubmitting ? (

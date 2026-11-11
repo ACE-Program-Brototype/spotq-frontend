@@ -13,7 +13,10 @@ export function WalletTodaySummary({
   pendingPayoutsCount: number;
 }) {
   return (
-    <section aria-label="Today's wallet summary" className="grid gap-4 sm:grid-cols-2">
+    <section
+      aria-label="Today's wallet summary"
+      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+    >
       <SummaryCard
         title="Today's credits"
         amount={todayCreditsPaise}
