@@ -1,3 +1,11 @@
+export const QUEUE_STATUS = {
+  WAITING: "WAITING",
+  CALLED: "CALLED",
+  SEATED: "SEATED",
+  CANCELLED: "CANCELLED",
+  NO_SHOW: "NO_SHOW",
+} as const;
+
 export const QUEUE_QUERY_KEYS = {
   QUEUE: "staff-queue",
   CUSTOMER_ETA: (restaurantId: string, partySize: number) =>

@@ -20,6 +20,7 @@ describe("useJoinQueue", () => {
 
   const mockResponse: JoinQueueResponse = {
     success: true,
+    statusCode: 201,
     message: "Successfully joined the queue!",
     data: {
       queueEntryId: "entry-555",

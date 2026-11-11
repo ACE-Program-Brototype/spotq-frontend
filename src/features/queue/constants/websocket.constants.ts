@@ -2,6 +2,12 @@
  * WebSocket event and route constants for customer and queue sockets.
  */
 export const QUEUE_WS_EVENTS = {
+  // Socket Lifecycle
+  CONNECT: "connect",
+  DISCONNECT: "disconnect",
+  CONNECT_ERROR: "connect_error",
+  RECONNECT_ATTEMPT: "reconnect_attempt",
+
   // Client to Server
   JOIN_TICKET: "join:ticket",
   LEAVE_TICKET: "leave:ticket",
@@ -20,6 +26,16 @@ export const QUEUE_WS_EVENTS = {
   ROOM_LEFT: "room:left",
   ERROR: "error",
 } as const;
+
+export const SOCKET_CONNECTION_STATUS = {
+  CONNECTING: "connecting",
+  CONNECTED: "connected",
+  RECONNECTING: "reconnecting",
+  DISCONNECTED: "disconnected",
+} as const;
+
+export type SocketConnectionStatus =
+  (typeof SOCKET_CONNECTION_STATUS)[keyof typeof SOCKET_CONNECTION_STATUS];
 
 export const QUEUE_WS_CONFIG = {
   DEFAULT_PATH: "/ws/queues",

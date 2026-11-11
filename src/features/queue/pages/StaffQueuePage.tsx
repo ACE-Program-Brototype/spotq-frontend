@@ -6,6 +6,7 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { formatTime } from "@/lib/utils";
 import { AssignTableModal } from "../components/AssignTableModal";
 import { WalkInRegistrationModal } from "../components/WalkInRegistrationModal";
+import { QUEUE_STATUS } from "../constants/queue.constants";
 import type { QueueEntry } from "../types/queue.types";
 
 export default function StaffQueuePage() {
@@ -29,7 +30,7 @@ export default function StaffQueuePage() {
     );
   };
 
-  const waitingEntriesCount = queueEntries.filter((e) => e.status === "WAITING").length;
+  const waitingEntriesCount = queueEntries.filter((e) => e.status === QUEUE_STATUS.WAITING).length;
 
   return (
     <div className="space-y-6 max-w-full">
@@ -155,7 +156,7 @@ export default function StaffQueuePage() {
                       className="hover:bg-[#faf7f5]/80 transition-colors"
                     >
                       <td className="px-4 py-3 font-bold text-neutral-900">
-                        {entry.status === "SEATED" ? (
+                        {entry.status === QUEUE_STATUS.SEATED ? (
                           <span className="inline-flex size-6 items-center justify-center rounded-md bg-emerald-50 text-xs font-black text-emerald-700 border border-emerald-200">
                             ✓
                           </span>
@@ -189,9 +190,9 @@ export default function StaffQueuePage() {
                       <td className="px-4 py-3">
                         <Badge
                           className={`text-[10px] font-bold ${
-                            entry.status === "SEATED"
+                            entry.status === QUEUE_STATUS.SEATED
                               ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : entry.status === "CALLED"
+                              : entry.status === QUEUE_STATUS.CALLED
                                 ? "bg-amber-50 text-amber-700 border-amber-200"
                                 : "bg-blue-50 text-blue-700 border-blue-200"
                           }`}
@@ -206,7 +207,7 @@ export default function StaffQueuePage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        {entry.status === "WAITING" ? (
+                        {entry.status === QUEUE_STATUS.WAITING ? (
                           <Button
                             type="button"
                             size="sm"
@@ -216,7 +217,7 @@ export default function StaffQueuePage() {
                             <UtensilsCrossed className="size-3.5" />
                             <span>Assign Table</span>
                           </Button>
-                        ) : entry.status === "SEATED" ? (
+                        ) : entry.status === QUEUE_STATUS.SEATED ? (
                           <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
                             Seated
                           </span>

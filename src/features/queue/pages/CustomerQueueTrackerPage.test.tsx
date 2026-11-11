@@ -1,5 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
+import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
 import { useCustomerQueueSocket } from "../hooks/use-customer-queue-socket";
 import { useCustomerQueueStatus } from "../hooks/use-customer-queue-status";
 import CustomerQueueTrackerPage from "./CustomerQueueTrackerPage";
@@ -19,10 +21,12 @@ jest.mock("../hooks/use-leave-queue", () => ({
 }));
 
 const mockNavigate = jest.fn();
+let mockParams = { restaurantId: "rest-123" };
+let mockSearchParams = new URLSearchParams({ queueEntryId: "entry-456" });
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
-  useParams: () => ({ restaurantId: "rest-123" }),
-  useSearchParams: () => [new URLSearchParams({ queueEntryId: "entry-456" })],
+  useParams: () => mockParams,
+  useSearchParams: () => [mockSearchParams],
   useNavigate: () => mockNavigate,
 }));
 
@@ -66,6 +70,9 @@ describe("CustomerQueueTrackerPage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    localStorage.clear();
+    mockParams = { restaurantId: "rest-123" };
+    mockSearchParams = new URLSearchParams({ queueEntryId: "entry-456" });
     capturedSocketOptions = {};
 
     (useCustomerQueueSocket as jest.Mock).mockImplementation((_id, _token, options) => {
@@ -325,5 +332,94 @@ describe("CustomerQueueTrackerPage", () => {
     fireEvent.click(cancelButton);
 
     expect(mockLeaveQueueMutate).not.toHaveBeenCalled();
+  });
+
+  it("renders initial position directly on first render frame without flashing position 1", () => {
+    (useCustomerQueueStatus as jest.Mock).mockReturnValue({
+      data: {
+        ...mockSnapshot,
+        data: {
+          ...mockSnapshot.data,
+          position: 15,
+          peopleAhead: 14,
+        },
+      },
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+      isRefetching: false,
+    });
+
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        <CustomerQueueTrackerPage />
+      </MemoryRouter>,
+    );
+
+    expect(html).toContain("15th");
+    expect(html).not.toContain("You&#x27;re Next!");
+    expect(html).not.toContain(">1st<");
+  });
+
+  it("ignores stored localStorage ticket belonging to a different restaurant", () => {
+    mockParams = { restaurantId: "rest-b" };
+    mockSearchParams = new URLSearchParams();
+    localStorage.setItem(
+      ACTIVE_QUEUE_STORAGE_KEY,
+      JSON.stringify({
+        queueEntryId: "ticket-from-rest-a",
+        restaurantId: "rest-a",
+        queueNumber: "Q-001",
+      }),
+    );
+
+    (useCustomerQueueStatus as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+      isRefetching: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <CustomerQueueTrackerPage />
+      </MemoryRouter>,
+    );
+
+    expect(useCustomerQueueStatus).toHaveBeenCalledWith("rest-b", undefined);
+    expect(useCustomerQueueSocket).toHaveBeenCalledWith(null, null, expect.any(Object));
+    expect(screen.getByText(/Queue Entry Not Found/i)).toBeInTheDocument();
+  });
+
+  it("restores stored localStorage ticket when restaurantId matches and query param is omitted", () => {
+    mockParams = { restaurantId: "rest-123" };
+    mockSearchParams = new URLSearchParams();
+    localStorage.setItem(
+      ACTIVE_QUEUE_STORAGE_KEY,
+      JSON.stringify({
+        queueEntryId: "entry-456",
+        restaurantId: "rest-123",
+        queueNumber: "Q-042",
+      }),
+    );
+
+    (useCustomerQueueStatus as jest.Mock).mockReturnValue({
+      data: mockSnapshot,
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+      isRefetching: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <CustomerQueueTrackerPage />
+      </MemoryRouter>,
+    );
+
+    expect(useCustomerQueueStatus).toHaveBeenCalledWith("rest-123", "entry-456");
+    expect(useCustomerQueueSocket).toHaveBeenCalledWith("entry-456", null, expect.any(Object));
+    expect(screen.getByText("The Grand Bistro")).toBeInTheDocument();
   });
 });

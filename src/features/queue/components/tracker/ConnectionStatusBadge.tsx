@@ -1,11 +1,14 @@
-import type { SocketConnectionStatus } from "../../hooks/use-customer-queue-socket";
+import {
+  SOCKET_CONNECTION_STATUS,
+  type SocketConnectionStatus,
+} from "../../constants/websocket.constants";
 
 export interface ConnectionStatusBadgeProps {
   status: SocketConnectionStatus;
 }
 
 export function ConnectionStatusBadge({ status }: ConnectionStatusBadgeProps) {
-  if (status === "connected") {
+  if (status === SOCKET_CONNECTION_STATUS.CONNECTED) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 border border-emerald-200/60 shadow-xs">
         <span className="relative flex h-2 w-2">
@@ -17,7 +20,7 @@ export function ConnectionStatusBadge({ status }: ConnectionStatusBadgeProps) {
     );
   }
 
-  if (status === "reconnecting") {
+  if (status === SOCKET_CONNECTION_STATUS.RECONNECTING) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 border border-amber-200/60 shadow-xs">
         <span className="relative flex h-2 w-2">

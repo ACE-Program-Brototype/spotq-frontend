@@ -14,6 +14,7 @@ describe("useCustomerQueueStatus", () => {
 
   const mockResponse: CustomerQueueStatusResponse = {
     success: true,
+    statusCode: 200,
     message: "Success",
     data: {
       queueEntryId,

@@ -1,6 +1,9 @@
+import type { SuccessResponse } from "@/components/common";
+import type { QUEUE_STATUS } from "../constants/queue.constants";
+
 export type RegistrationType = "WALK_IN" | "ONLINE";
 
-export type QueueStatus = "WAITING" | "CALLED" | "SEATED" | "CANCELLED" | "NO_SHOW";
+export type QueueStatus = (typeof QUEUE_STATUS)[keyof typeof QUEUE_STATUS];
 
 export interface RegisterWalkInInput {
   guestName: string;
@@ -34,11 +37,7 @@ export interface QueueEntry {
   websocket?: QueueWebsocketMetadata;
 }
 
-export interface RegisterWalkInResponse {
-  success: boolean;
-  message: string;
-  data: QueueEntry;
-}
+export type RegisterWalkInResponse = SuccessResponse<QueueEntry>;
 
 export interface QueueEtaData {
   restaurantId?: string;
@@ -64,11 +63,7 @@ export interface JoinQueueInput {
   fid?: string | null;
 }
 
-export interface JoinQueueResponse {
-  success: boolean;
-  message: string;
-  data: QueueEntry;
-}
+export type JoinQueueResponse = SuccessResponse<QueueEntry>;
 
 export interface AssignTableItem {
   tableId: string;
@@ -87,11 +82,7 @@ export interface AssignTablesData {
   seatedAt: string;
 }
 
-export interface AssignTablesResponse {
-  success: boolean;
-  message: string;
-  data: AssignTablesData;
-}
+export type AssignTablesResponse = SuccessResponse<AssignTablesData>;
 
 export interface CustomerQueueStatusSnapshot {
   queueEntryId: string;
@@ -111,11 +102,7 @@ export interface CustomerQueueStatusSnapshot {
   serverTime: string;
 }
 
-export interface CustomerQueueStatusResponse {
-  success: boolean;
-  message: string;
-  data: CustomerQueueStatusSnapshot;
-}
+export type CustomerQueueStatusResponse = SuccessResponse<CustomerQueueStatusSnapshot>;
 
 export interface QueuePositionUpdatedPayload {
   event?: string;
@@ -165,8 +152,4 @@ export interface LeaveQueueData {
   cancelledAt: string;
 }
 
-export interface LeaveQueueResponse {
-  success: boolean;
-  message: string;
-  data: LeaveQueueData;
-}
+export type LeaveQueueResponse = SuccessResponse<LeaveQueueData>;

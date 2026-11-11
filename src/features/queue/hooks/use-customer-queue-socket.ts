@@ -3,7 +3,12 @@ import { io, type Socket } from "socket.io-client";
 import env from "@/config/env";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getOrRefreshAccessToken } from "@/lib/api/auth-refresh";
-import { QUEUE_WS_CONFIG, QUEUE_WS_EVENTS } from "../constants/websocket.constants";
+import {
+  QUEUE_WS_CONFIG,
+  QUEUE_WS_EVENTS,
+  SOCKET_CONNECTION_STATUS,
+  type SocketConnectionStatus,
+} from "../constants/websocket.constants";
 import type {
   QueueEntryCancelledPayload,
   QueueEntrySeatedPayload,
@@ -13,7 +18,7 @@ import type {
 import type { CustomerRingPayload } from "../types/ring-alert.types";
 import { ringMedia } from "../utils/ring-sound.utils";
 
-export type SocketConnectionStatus = "connecting" | "connected" | "reconnecting" | "disconnected";
+export type { SocketConnectionStatus };
 
 export interface UseCustomerQueueSocketOptions {
   onRing?: (payload: CustomerRingPayload) => void;
@@ -35,7 +40,9 @@ export function useCustomerQueueSocket(
     accessToken || authStoreToken || null,
   );
   const [isConnected, setIsConnected] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<SocketConnectionStatus>("disconnected");
+  const [connectionStatus, setConnectionStatus] = useState<SocketConnectionStatus>(
+    SOCKET_CONNECTION_STATUS.DISCONNECTED,
+  );
   const [lastRingData, setLastRingData] = useState<CustomerRingPayload | null>(null);
   const socketRef = useRef<Socket | null>(null);
   const lastProcessedRingKeyRef = useRef<string | null>(null);
@@ -45,7 +52,7 @@ export function useCustomerQueueSocket(
 
   const updateStatus = useCallback((status: SocketConnectionStatus) => {
     setConnectionStatus(status);
-    setIsConnected(status === "connected");
+    setIsConnected(status === SOCKET_CONNECTION_STATUS.CONNECTED);
     optionsRef.current?.onConnectionChange?.(status);
   }, []);
 
@@ -78,12 +85,6 @@ export function useCustomerQueueSocket(
 
   useEffect(() => {
     if (!queueEntryId) {
-      if (socketRef.current) {
-        socketRef.current.emit(QUEUE_WS_EVENTS.LEAVE_TICKET, { ticketId: queueEntryId });
-        socketRef.current.disconnect();
-        socketRef.current = null;
-        updateStatus("disconnected");
-      }
       return;
     }
 
@@ -91,7 +92,7 @@ export function useCustomerQueueSocket(
       return;
     }
 
-    updateStatus("connecting");
+    updateStatus(SOCKET_CONNECTION_STATUS.CONNECTING);
 
     const queryParams: Record<string, string> = {
       ticketId: queueEntryId,
@@ -113,19 +114,19 @@ export function useCustomerQueueSocket(
 
     socketRef.current = socket;
 
-    socket.on("connect_error", (error) => {
+    socket.on(QUEUE_WS_EVENTS.CONNECT_ERROR, (error) => {
       if (env.isDev) {
         console.warn(`[Socket] Connection error: ${error.message}`);
       }
-      updateStatus("reconnecting");
+      updateStatus(SOCKET_CONNECTION_STATUS.RECONNECTING);
     });
 
-    socket.io?.on("reconnect_attempt", () => {
-      updateStatus("reconnecting");
+    socket.io?.on(QUEUE_WS_EVENTS.RECONNECT_ATTEMPT, () => {
+      updateStatus(SOCKET_CONNECTION_STATUS.RECONNECTING);
     });
 
-    socket.on("connect", () => {
-      updateStatus("connected");
+    socket.on(QUEUE_WS_EVENTS.CONNECT, () => {
+      updateStatus(SOCKET_CONNECTION_STATUS.CONNECTED);
 
       socket.emit(
         QUEUE_WS_EVENTS.JOIN_TICKET,
@@ -146,8 +147,8 @@ export function useCustomerQueueSocket(
       );
     });
 
-    socket.on("disconnect", (reason) => {
-      updateStatus("disconnected");
+    socket.on(QUEUE_WS_EVENTS.DISCONNECT, (reason) => {
+      updateStatus(SOCKET_CONNECTION_STATUS.DISCONNECTED);
       if (env.isDev) {
         console.log(`[Socket] Disconnected: ${reason}`);
       }
@@ -215,7 +216,7 @@ export function useCustomerQueueSocket(
       socket.disconnect();
       socketRef.current = null;
       ringMedia.stopAll();
-      updateStatus("disconnected");
+      updateStatus(SOCKET_CONNECTION_STATUS.DISCONNECTED);
     };
   }, [queueEntryId, resolvedToken, updateStatus]);
 

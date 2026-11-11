@@ -1,4 +1,5 @@
 import { customerRoutes } from "./customer.routes";
+import { CUSTOMER_ROUTES } from "./customer.routes.constants";
 
 describe("customerRoutes structure", () => {
   it("defines customer layout routes, auth routes, and legal routes", () => {
@@ -30,5 +31,11 @@ describe("customerRoutes structure", () => {
 
     const standalonePaths = customerRoutes.slice(2).map((route) => route.path);
     expect(standalonePaths).toEqual(["/terms", "/privacy", "/cookies"]);
+  });
+
+  it("builds queue status route with required restaurantId and queueEntryId", () => {
+    expect(CUSTOMER_ROUTES.QUEUE_STATUS("rest-123", "entry 456")).toBe(
+      "/restaurants/rest-123/queue/status?queueEntryId=entry%20456",
+    );
   });
 });

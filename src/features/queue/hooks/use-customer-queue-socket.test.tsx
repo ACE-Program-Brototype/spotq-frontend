@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { io } from "socket.io-client";
-import { QUEUE_WS_EVENTS } from "../constants/websocket.constants";
+import { QUEUE_WS_EVENTS, SOCKET_CONNECTION_STATUS } from "../constants/websocket.constants";
 import { ringMedia } from "../utils/ring-sound.utils";
 import { useCustomerQueueSocket } from "./use-customer-queue-socket";
 
@@ -71,9 +71,8 @@ describe("useCustomerQueueSocket", () => {
       }),
     );
 
-    // Simulate connect inside act
     act(() => {
-      eventHandlers.connect();
+      eventHandlers[QUEUE_WS_EVENTS.CONNECT]();
     });
 
     expect(mockSocket.emit).toHaveBeenCalledWith(
@@ -263,5 +262,51 @@ describe("useCustomerQueueSocket", () => {
       queueEntryId: "entry-123",
       reason: "Customer cancelled",
     });
+  });
+
+  it("leaves only the previous ticket and disconnects when queueEntryId becomes null", () => {
+    const { rerender } = renderHook(
+      ({ ticketId }: { ticketId: string | null }) => useCustomerQueueSocket(ticketId, "mock-token"),
+      {
+        initialProps: { ticketId: "entry-123" as string | null },
+      },
+    );
+
+    mockSocket.emit.mockClear();
+
+    rerender({ ticketId: null });
+
+    expect(mockSocket.emit).toHaveBeenCalledTimes(1);
+    expect(mockSocket.emit).toHaveBeenCalledWith(QUEUE_WS_EVENTS.LEAVE_TICKET, {
+      ticketId: "entry-123",
+    });
+    expect(mockSocket.emit).not.toHaveBeenCalledWith(QUEUE_WS_EVENTS.LEAVE_TICKET, {
+      ticketId: null,
+    });
+    expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
+  });
+
+  it("tracks connection status transitions for connect, connect_error, and disconnect events", () => {
+    const { result } = renderHook(() => useCustomerQueueSocket("entry-123", "mock-token"));
+
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.CONNECTING);
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.CONNECT]();
+    });
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.CONNECTED);
+    expect(result.current.isConnected).toBe(true);
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.CONNECT_ERROR](new Error("Network error"));
+    });
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.RECONNECTING);
+    expect(result.current.isConnected).toBe(false);
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.DISCONNECT]("transport close");
+    });
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.DISCONNECTED);
+    expect(result.current.isConnected).toBe(false);
   });
 });

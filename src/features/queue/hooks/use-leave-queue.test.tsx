@@ -26,6 +26,7 @@ describe("useLeaveQueue", () => {
 
   const mockResponse: LeaveQueueResponse = {
     success: true,
+    statusCode: 200,
     message: "Left restaurant queue successfully",
     data: {
       queueEntryId,
