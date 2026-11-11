@@ -52,7 +52,7 @@ export function RevenueTimelineChart({
               Revenue & Growth Timeline
             </CardTitle>
             <p className="text-xs text-slate-500">
-              Subscription revenue performance & dynamic revenue run-rate
+              Subscription revenue performance & revenue run-rate
             </p>
           </div>
         </CardHeader>
@@ -170,9 +170,8 @@ export function RevenueTimelineChart({
                   >
                     {/* Amount pill above bar */}
                     <span
-                      className={`mb-1.5 text-[10px] font-semibold transition-colors ${
-                        isHovered ? "text-slate-900 font-bold" : "text-slate-400"
-                      }`}
+                      className={`mb-1.5 text-[10px] font-semibold transition-colors ${isHovered ? "text-slate-900 font-bold" : "text-slate-400"
+                        }`}
                     >
                       {formatRupees(point.grossRevenueRupees, true)}
                     </span>
@@ -180,9 +179,8 @@ export function RevenueTimelineChart({
                     {/* Bar */}
                     <div
                       style={{ height: `${heightPercent}%` }}
-                      className={`w-full max-w-[42px] rounded-t-md transition-all ${
-                        isHovered ? "bg-slate-900 shadow-xs" : "bg-slate-300 hover:bg-slate-400"
-                      }`}
+                      className={`w-full max-w-[42px] rounded-t-md transition-all ${isHovered ? "bg-slate-900 shadow-xs" : "bg-slate-300 hover:bg-slate-400"
+                        }`}
                     />
 
                     {/* X-axis label */}

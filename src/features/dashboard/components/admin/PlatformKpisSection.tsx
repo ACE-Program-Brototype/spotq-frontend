@@ -70,7 +70,7 @@ export function PlatformKpisSection({
       iconColor: "text-emerald-600 bg-emerald-50 border-emerald-200/60",
     },
     {
-      title: "Registered Customers",
+      title: "Total Customers",
       value: isUserAvailable ? formatNumber(customerGrowth?.totalRegisteredCustomers) : "—",
       subtitle: isUserAvailable
         ? `+${formatNumber(customerGrowth?.newCustomersInPeriod ?? 0)} new in period`
