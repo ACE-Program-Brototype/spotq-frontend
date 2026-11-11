@@ -4,7 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { CustomerGrowthSection } from "../../types/platform-analytics.types";
 import { formatNumber } from "../../utils/platform-analytics.utils";
 import { SectionUnavailableFallback } from "./SectionUnavailableFallback";
-import { ServiceHealthBadge } from "./ServiceHealthBadge";
 
 export interface CustomerGrowthCardProps {
   customerGrowth?: CustomerGrowthSection;
@@ -51,7 +50,6 @@ export function CustomerGrowthCard({
               Consumer acquisition &amp; registration telemetry
             </p>
           </div>
-          <ServiceHealthBadge serviceName="user-service" isAvailable={false} />
         </CardHeader>
         <CardContent className="pt-2">
           <SectionUnavailableFallback
@@ -79,7 +77,7 @@ export function CustomerGrowthCard({
 
   return (
     <Card className="border-slate-200/80 bg-white shadow-2xs">
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
+      <CardHeader className="pb-3">
         <div>
           <div className="flex items-center gap-1.5">
             <UserPlus className="size-4 text-purple-600" />
@@ -91,7 +89,6 @@ export function CustomerGrowthCard({
             Real-time consumer registrations &amp; platform community base
           </p>
         </div>
-        <ServiceHealthBadge serviceName="user-service" isAvailable={true} />
       </CardHeader>
 
       <CardContent className="space-y-3.5 pt-1">

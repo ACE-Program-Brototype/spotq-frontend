@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { RevenueSection } from "../../types/platform-analytics.types";
 import { formatNumber, formatPercentage, formatRupees } from "../../utils/platform-analytics.utils";
 import { SectionUnavailableFallback } from "./SectionUnavailableFallback";
-import { ServiceHealthBadge } from "./ServiceHealthBadge";
 
 export interface RevenueTimelineChartProps {
   revenue?: RevenueSection;
@@ -53,10 +52,9 @@ export function RevenueTimelineChart({
               Revenue & Growth Timeline
             </CardTitle>
             <p className="text-xs text-slate-500">
-              Subscription revenue performance & monthly MRR run-rate
+              Subscription revenue performance & monthly revenue run-rate
             </p>
           </div>
-          <ServiceHealthBadge serviceName="payment-svc" isAvailable={false} />
         </CardHeader>
         <CardContent className="pt-2">
           <SectionUnavailableFallback
@@ -90,10 +88,9 @@ export function RevenueTimelineChart({
             )}
           </div>
           <p className="text-xs text-slate-500">
-            Subscription revenue performance & monthly MRR run-rate
+            Subscription revenue performance & monthly revenue run-rate
           </p>
         </div>
-        <ServiceHealthBadge serviceName="payment-svc" isAvailable={true} />
       </CardHeader>
 
       <CardContent>
@@ -106,13 +103,13 @@ export function RevenueTimelineChart({
             </p>
           </div>
           <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-3">
-            <p className="text-[11px] font-medium text-slate-500">Current MRR</p>
+            <p className="text-[11px] font-medium text-slate-500">Monthly Revenue</p>
             <p className="mt-1 text-lg font-bold text-emerald-700">
               {formatRupees(revenue?.currentMrrRupees)}
             </p>
           </div>
           <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-3">
-            <p className="text-[11px] font-medium text-slate-500">Projected ARR</p>
+            <p className="text-[11px] font-medium text-slate-500">Annual Revenue</p>
             <p className="mt-1 text-lg font-bold text-slate-700">
               {formatRupees(revenue?.currentArrRupees)}
             </p>
@@ -140,7 +137,7 @@ export function RevenueTimelineChart({
                     </strong>
                   </span>
                   <span>
-                    MRR:{" "}
+                    Monthly Revenue:{" "}
                     <strong className="text-white">
                       {formatRupees(timeline[activeBucket].mrrRupees)}
                     </strong>

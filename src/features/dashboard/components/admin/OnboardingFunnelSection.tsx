@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { FunnelStageItem } from "../../types/platform-analytics.types";
 import { formatNumber } from "../../utils/platform-analytics.utils";
-import { ServiceHealthBadge } from "./ServiceHealthBadge";
 
 export interface OnboardingFunnelSectionProps {
   funnel?: FunnelStageItem[];
@@ -63,14 +62,13 @@ export function OnboardingFunnelSection({
 
   return (
     <Card className="border-slate-200/80 bg-white shadow-2xs">
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
+      <CardHeader className="pb-3">
         <div>
           <CardTitle className="text-base font-bold text-slate-900">
             Restaurant Onboarding Funnel
           </CardTitle>
           <p className="text-xs text-slate-500">Merchant onboarding progression stages</p>
         </div>
-        <ServiceHealthBadge serviceName="restaurant-svc" isAvailable={true} />
       </CardHeader>
 
       <CardContent className="space-y-3 pt-1">

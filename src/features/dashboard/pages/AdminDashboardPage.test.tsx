@@ -100,7 +100,7 @@ describe("AdminDashboardPage", () => {
     expect(screen.getAllByText("48").length).toBeGreaterThan(0);
   });
 
-  it("renders all 4 executive KPI cards with formatted values and service badges", () => {
+  it("renders all 4 executive KPI cards with formatted values", () => {
     render(<AdminDashboardPage />);
 
     expect(screen.getByText("Total Restaurants")).toBeInTheDocument();
@@ -109,15 +109,10 @@ describe("AdminDashboardPage", () => {
     expect(screen.getAllByText("118").length).toBeGreaterThan(0);
     expect(screen.getByText("Registered Customers")).toBeInTheDocument();
     expect(screen.getAllByText("12,500").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Current MRR").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Monthly Revenue").length).toBeGreaterThan(0);
 
     // Currency INR format check
     expect(screen.getAllByText(/₹\s*2,45,000/).length).toBeGreaterThan(0);
-
-    // Microservice attribution badges
-    expect(screen.getAllByText("restaurant-svc").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("payment-svc").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("user-service").length).toBeGreaterThan(0);
   });
 
   it("handles circuit breaker fallback when revenue service is UNAVAILABLE", () => {

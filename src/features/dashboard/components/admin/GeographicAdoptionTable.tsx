@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { GeographicBreakdownItem } from "../../types/platform-analytics.types";
 import { formatNumber } from "../../utils/platform-analytics.utils";
-import { ServiceHealthBadge } from "./ServiceHealthBadge";
 
 export interface GeographicAdoptionTableProps {
   geographicBreakdown?: GeographicBreakdownItem[];
@@ -90,7 +89,7 @@ export function GeographicAdoptionTable({
 
   return (
     <Card className="border-slate-200/80 bg-white shadow-2xs">
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
+      <CardHeader className="pb-3">
         <div>
           <div className="flex items-center gap-1.5">
             <MapPin className="size-4 text-slate-600" />
@@ -102,7 +101,6 @@ export function GeographicAdoptionTable({
             Regional distribution across active cities & states
           </p>
         </div>
-        <ServiceHealthBadge serviceName="restaurant-svc" isAvailable={true} />
       </CardHeader>
 
       <CardContent className="p-0">
