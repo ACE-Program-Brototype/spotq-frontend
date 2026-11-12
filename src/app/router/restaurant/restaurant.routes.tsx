@@ -1,5 +1,11 @@
 import { Navigate, type RouteObject, useParams } from "react-router-dom";
 
+import {
+  RestaurantAnalyticsLayout,
+  RestaurantAnalyticsOverviewPage,
+  RestaurantMenuPerformancePage,
+  RestaurantRevenueAnalyticsPage,
+} from "@/features/analytics";
 import RestaurantEmailVerificationPage from "@/features/auth/pages/restaurant/RestaurantEmailVerification";
 import OtpVerificationPage from "@/features/auth/pages/restaurant/ResturantOtpVerification";
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
@@ -134,6 +140,24 @@ export const restaurantRoutes: RouteObject[] = [
           {
             path: RESTAURANT_ROUTE_PATHS.DASHBOARD,
             Component: RestaurantDashboardPage,
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.ANALYTICS.ROOT,
+            Component: RestaurantAnalyticsLayout,
+            children: [
+              {
+                index: true,
+                Component: RestaurantAnalyticsOverviewPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.ANALYTICS.REVENUE,
+                Component: RestaurantRevenueAnalyticsPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.ANALYTICS.MENU,
+                Component: RestaurantMenuPerformancePage,
+              },
+            ],
           },
           {
             path: RESTAURANT_ROUTE_PATHS.ORDERS.ROOT,

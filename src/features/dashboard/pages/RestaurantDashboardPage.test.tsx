@@ -2,6 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { mockAnalyticsDashboardData } from "@/features/analytics/__tests__/fixtures/restaurant-analytics.fixture";
+import { restaurantAnalyticsApi } from "@/features/analytics/api/restaurant-analytics.api";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import RestaurantDashboardPage from "./RestaurantDashboardPage";
 
@@ -9,6 +11,12 @@ const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockNavigate,
+}));
+
+jest.mock("@/features/analytics/api/restaurant-analytics.api", () => ({
+  restaurantAnalyticsApi: {
+    getDashboard: jest.fn(),
+  },
 }));
 
 jest.mock("sonner", () => ({
@@ -62,6 +70,9 @@ describe("RestaurantDashboardPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (subscriptionService.fetchPlans as jest.Mock).mockResolvedValue(MOCK_PLANS);
+    (restaurantAnalyticsApi.getDashboard as jest.Mock).mockResolvedValue(
+      mockAnalyticsDashboardData,
+    );
   });
 
   afterEach(() => {
@@ -225,6 +236,33 @@ describe("RestaurantDashboardPage", () => {
     await waitFor(() => {
       expect(screen.queryByTestId("subscription-expiry-banner")).not.toBeInTheDocument();
       expect(screen.queryByTestId("renewal-modal")).not.toBeInTheDocument();
+    });
+  });
+
+  it("renders live analytics overview KPIs, fulfillment channels, and menu highlights", async () => {
+    (subscriptionService.fetchRestaurantStatus as jest.Mock).mockResolvedValueOnce({
+      restaurantId: "123",
+      restaurantName: "Test Kitchen",
+      verificationStatus: "APPROVED",
+      isSubscriptionActive: true,
+      subscriptionPlanCode: "QUEUE_PRO",
+    });
+
+    renderWithClient(<RestaurantDashboardPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Restaurant Analytics & Performance")).toBeInTheDocument();
+      expect(screen.getByText("Full Analytics Hub")).toBeInTheDocument();
+      expect(screen.getByText("Revenue Details")).toBeInTheDocument();
+      expect(screen.getByText("Menu Velocity")).toBeInTheDocument();
+      expect(screen.getByText("Menu Performance Highlights")).toBeInTheDocument();
+    });
+
+    // Check KPI and order fulfillment
+    await waitFor(() => {
+      expect(screen.getByText("Net Revenue")).toBeInTheDocument();
+      expect(screen.getByText("Total Orders")).toBeInTheDocument();
+      expect(screen.getByText("Order Fulfillment")).toBeInTheDocument();
     });
   });
 });

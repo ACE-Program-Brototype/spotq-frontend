@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Briefcase,
   CreditCard,
   DollarSign,
@@ -20,6 +21,16 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       title: "Dashboard",
       href: `${basePath}/dashboard`,
       icon: Grid,
+    },
+    {
+      title: "Analytics",
+      href: `${basePath}/analytics`,
+      icon: BarChart3,
+      children: [
+        { title: "Overview", href: `${basePath}/analytics` },
+        { title: "Revenue", href: `${basePath}/analytics/revenue` },
+        { title: "Menu Performance", href: `${basePath}/analytics/menu` },
+      ],
     },
     {
       title: "Restaurant",
