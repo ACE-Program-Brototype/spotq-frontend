@@ -65,12 +65,12 @@ export function AnalyticsFilterToolbar({
   return (
     <div
       className={cn(
-        "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3.5 p-3.5 sm:p-4 rounded-2xl border border-[#eddcd4] bg-white shadow-2xs",
+        "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 p-3 sm:p-4 rounded-2xl border border-[#eddcd4] bg-white shadow-2xs",
         className,
       )}
     >
       {/* Interval Selector Toggle */}
-      <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-[#faf7f5] border border-[#eddcd4] w-fit">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1 p-1 rounded-xl bg-[#faf7f5] border border-[#eddcd4] w-full sm:w-fit">
         {(Object.keys(ANALYTICS_PERIODS) as Array<keyof typeof ANALYTICS_PERIODS>).map((key) => {
           const periodValue = ANALYTICS_PERIODS[key];
           const isSelected = interval === periodValue;
@@ -80,7 +80,7 @@ export function AnalyticsFilterToolbar({
               type="button"
               onClick={() => onIntervalChange(periodValue)}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
+                "px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-center",
                 isSelected
                   ? "bg-white text-[#9a3412] shadow-2xs border border-[#eddcd4]"
                   : "text-neutral-600 hover:text-neutral-900",
@@ -93,18 +93,18 @@ export function AnalyticsFilterToolbar({
       </div>
 
       {/* Date & Status Selectors */}
-      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
         {/* Day Select (when DAY) */}
         {interval === ANALYTICS_PERIODS.DAY && onDayChange && (
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 col-span-1">
+            <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider shrink-0">
               Day:
             </span>
             <select
               value={day ?? 1}
               onChange={(e) => onDayChange(Number(e.target.value))}
               aria-label="Select day"
-              className="h-8 rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
+              className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
             >
               {dayOptions.map((d) => (
                 <option key={d} value={d}>
@@ -117,13 +117,13 @@ export function AnalyticsFilterToolbar({
 
         {/* Month Select (when DAY, WEEK, or MONTH) */}
         {interval !== ANALYTICS_PERIODS.YEAR && (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 col-span-1 min-w-0">
             <Calendar className="size-3.5 text-[#9a3412] shrink-0" />
             <select
               value={month}
               onChange={(e) => onMonthChange(Number(e.target.value))}
               aria-label="Select month"
-              className="h-8 rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
+              className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
             >
               {MONTH_NAMES.map((name, idx) => (
                 <option key={name} value={idx + 1}>
@@ -139,7 +139,7 @@ export function AnalyticsFilterToolbar({
           value={year}
           onChange={(e) => onYearChange(Number(e.target.value))}
           aria-label="Select year"
-          className="h-8 rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
+          className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] col-span-1"
         >
           {yearOptions.map((y) => (
             <option key={y} value={y}>
@@ -149,13 +149,13 @@ export function AnalyticsFilterToolbar({
         </select>
 
         {/* Status Filter */}
-        <div className="flex items-center gap-1.5 pl-1 sm:pl-2 border-l border-[#eddcd4]">
+        <div className="flex items-center gap-1.5 sm:pl-2 sm:border-l border-[#eddcd4] col-span-1 min-w-0">
           <Filter className="size-3.5 text-neutral-400 shrink-0" />
           <select
             value={status}
             onChange={(e) => onStatusChange(e.target.value as OrderStatusFilter)}
             aria-label="Filter order status"
-            className="h-8 rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
+            className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
           >
             {(Object.keys(ORDER_STATUS_FILTERS) as Array<keyof typeof ORDER_STATUS_FILTERS>).map(
               (key) => (
@@ -174,11 +174,11 @@ export function AnalyticsFilterToolbar({
             variant="ghost"
             size="sm"
             onClick={onReset}
-            className="h-8 gap-1 px-2.5 text-xs text-neutral-500 hover:text-neutral-900"
+            className="h-8 gap-1 px-2.5 text-xs text-neutral-500 hover:text-neutral-900 col-span-2 sm:col-span-1 justify-center sm:justify-start"
             title="Reset to default filters"
           >
             <RotateCcw className="size-3.5" />
-            <span className="hidden sm:inline">Reset</span>
+            <span>Reset</span>
           </Button>
         )}
       </div>

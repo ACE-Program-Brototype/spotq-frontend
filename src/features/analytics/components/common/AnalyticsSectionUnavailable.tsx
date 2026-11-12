@@ -19,20 +19,22 @@ export function AnalyticsSectionUnavailable({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center p-6 text-center rounded-2xl border border-amber-200 bg-amber-50/40 shadow-2xs",
+        "flex flex-col items-center justify-center p-3.5 sm:p-5 text-center rounded-xl sm:rounded-2xl border border-amber-200 bg-amber-50/40 shadow-2xs",
         className,
       )}
     >
-      <div className="flex size-10 items-center justify-center rounded-xl bg-amber-100 text-amber-800 border border-amber-200/60">
-        <AlertTriangle className="size-5" />
+      <div className="flex size-8 sm:size-10 items-center justify-center rounded-xl bg-amber-100 text-amber-800 border border-amber-200/60">
+        <AlertTriangle className="size-4 sm:size-5" />
       </div>
-      <h3 className="mt-3 text-sm font-bold text-neutral-900">{title}</h3>
-      <p className="mt-1 max-w-sm text-xs text-neutral-600">
+      <h3 className="mt-2 sm:mt-2.5 text-xs sm:text-sm font-bold text-neutral-900 leading-tight">
+        {title}
+      </h3>
+      <p className="mt-1 max-w-xs text-[11px] sm:text-xs text-neutral-600 line-clamp-2">
         {error?.message ||
           "This analytics section is temporarily unavailable while downstream services sync."}
       </p>
       {error?.code && (
-        <span className="mt-1.5 inline-block text-[10px] font-mono font-medium text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-sm">
+        <span className="mt-1 inline-block text-[9px] sm:text-[10px] font-mono font-medium text-amber-700 bg-amber-100/80 px-1.5 py-0.5 rounded-sm truncate max-w-full">
           {error.code}
         </span>
       )}
@@ -42,9 +44,9 @@ export function AnalyticsSectionUnavailable({
           variant="outline"
           size="sm"
           onClick={onRetry}
-          className="mt-3 h-7 gap-1.5 rounded-lg border-amber-300 bg-white text-xs font-semibold text-neutral-700 hover:bg-amber-50"
+          className="mt-2.5 h-6 sm:h-7 px-2.5 gap-1 rounded-lg border-amber-300 bg-white text-[11px] sm:text-xs font-semibold text-neutral-700 hover:bg-amber-50"
         >
-          <RefreshCw className="size-3 text-amber-700" />
+          <RefreshCw className="size-2.5 sm:size-3 text-amber-700" />
           <span>Retry</span>
         </Button>
       )}
