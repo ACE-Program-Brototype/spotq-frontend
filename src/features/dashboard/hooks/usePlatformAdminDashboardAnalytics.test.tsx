@@ -37,7 +37,7 @@ describe("usePlatformAdminDashboardAnalytics", () => {
     },
     customerGrowth: { status: "AVAILABLE", totalRegisteredCustomers: 1000 },
     revenue: { status: "AVAILABLE", currentMrrRupees: 100000 },
-    growth: { onboardingFunnel: [], onboardingTrend: [], geographicBreakdown: [] },
+    growth: { onboardingFunnel: [], onboardingTrend: [] },
     filters: { period: "MONTH", day: null, month: 11, year: 2026, billingCycle: "ALL" },
     generatedAt: "2026-11-10T12:00:00Z",
   };

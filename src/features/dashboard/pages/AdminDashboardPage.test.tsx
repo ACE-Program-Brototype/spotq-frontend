@@ -44,10 +44,6 @@ const mockAnalyticsData: PlatformDashboardAnalyticsResponse = {
       { stage: "APPROVED", count: 142, label: "Verified by Admin & Live" },
     ],
     onboardingTrend: [{ period: "2026-11", count: 24 }],
-    geographicBreakdown: [
-      { city: "Bangalore", state: "Karnataka", restaurantCount: 65 },
-      { city: "Kochi", state: "Kerala", restaurantCount: 42 },
-    ],
   },
   filters: {
     period: "MONTH",

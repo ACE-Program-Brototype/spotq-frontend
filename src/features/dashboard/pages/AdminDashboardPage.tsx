@@ -3,7 +3,6 @@ import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CustomerGrowthCard } from "../components/admin/CustomerGrowthCard";
 import { ExportReportsModal } from "../components/admin/ExportReportsModal";
-import { GeographicAdoptionTable } from "../components/admin/GeographicAdoptionTable";
 import { OnboardingFunnelSection } from "../components/admin/OnboardingFunnelSection";
 import { PlatformDashboardHeader } from "../components/admin/PlatformDashboardHeader";
 import { PlatformFilterBar } from "../components/admin/PlatformFilterBar";
@@ -11,8 +10,8 @@ import { PlatformKpisSection } from "../components/admin/PlatformKpisSection";
 import { RevenueTimelineChart } from "../components/admin/RevenueTimelineChart";
 import { SubscriptionTierDonutChart } from "../components/admin/SubscriptionTierDonutChart";
 import {
-  PLATFORM_ANALYTICS_MESSAGES,
   getDefaultFilters,
+  PLATFORM_ANALYTICS_MESSAGES,
 } from "../constants/platform-analytics.constants";
 import { usePlatformAdminDashboardAnalytics } from "../hooks/usePlatformAdminDashboardAnalytics";
 import type { PlatformDashboardFilters } from "../types/platform-analytics.types";
@@ -114,10 +113,7 @@ export default function AdminDashboardPage() {
             />
           </div>
           <div>
-            <SubscriptionTierDonutChart
-              overview={data?.overview}
-              isLoading={isLoading}
-            />
+            <SubscriptionTierDonutChart overview={data?.overview} isLoading={isLoading} />
           </div>
         </div>
       </section>
@@ -146,22 +142,10 @@ export default function AdminDashboardPage() {
             />
           </div>
         </div>
-
-        {/* Row 4: Geographic Adoption by City & State */}
-        <div>
-          <GeographicAdoptionTable
-            geographicBreakdown={data?.growth?.geographicBreakdown}
-            totalRestaurants={data?.overview?.totalRestaurants}
-            isLoading={isLoading}
-          />
-        </div>
       </section>
 
       {/* Export Reports Modal (SCRUM-804 entry point) */}
-      <ExportReportsModal
-        isOpen={isExportModalOpen}
-        onClose={() => setIsExportModalOpen(false)}
-      />
+      <ExportReportsModal isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)} />
     </div>
   );
 }

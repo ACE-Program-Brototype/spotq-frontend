@@ -58,16 +58,9 @@ export interface OnboardingTrendItem {
   count: number;
 }
 
-export interface GeographicBreakdownItem {
-  city: string;
-  state: string;
-  restaurantCount: number;
-}
-
 export interface PlatformGrowth {
   onboardingFunnel: FunnelStageItem[];
   onboardingTrend: OnboardingTrendItem[];
-  geographicBreakdown: GeographicBreakdownItem[];
 }
 
 export interface PlatformDashboardAnalyticsResponse {
