@@ -1,5 +1,6 @@
 import { AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PRODUCT_CLASSIFICATIONS } from "@/features/analytics/constants/restaurant-analytics.constants";
 import type {
   ProductItemDto,
   ProductRankingPaginationDto,
@@ -10,7 +11,7 @@ import { formatCurrency } from "@/lib/utils/currency";
 export interface SlowMovingTableProps {
   items: ProductItemDto[];
   pagination: ProductRankingPaginationDto;
-  onPageChange?: (page: number) => void;
+  onPageChange: (page: number) => void;
   className?: string;
 }
 
@@ -61,7 +62,9 @@ export function SlowMovingTable({
           </thead>
           <tbody className="divide-y divide-[#eddcd4]/60 text-neutral-800">
             {items.map((item, index) => {
-              const isZeroSales = item.classification === "ZERO_SALES" || item.quantitySold === 0;
+              const isZeroSales =
+                item.classification === PRODUCT_CLASSIFICATIONS.ZERO_SALES ||
+                item.quantitySold === 0;
 
               return (
                 <tr

@@ -1,5 +1,9 @@
 import type { SuccessResponse } from "@/components/common/types/common.types";
-import { RESTAURANT_ANALYTICS_ENDPOINTS } from "@/features/analytics/constants/restaurant-analytics.constants";
+import {
+  ORDER_STATUS_FILTERS,
+  RESTAURANT_ANALYTICS_DEFAULTS,
+  RESTAURANT_ANALYTICS_ENDPOINTS,
+} from "@/features/analytics/constants/restaurant-analytics.constants";
 import type {
   RestaurantAnalyticsDashboardResponseDto,
   RestaurantAnalyticsQueryParams,
@@ -13,7 +17,7 @@ export const restaurantAnalyticsApi = {
    */
   async getDashboard(
     restaurantId: string,
-    params?: RestaurantAnalyticsQueryParams,
+    params: RestaurantAnalyticsQueryParams = {},
   ): Promise<RestaurantAnalyticsDashboardResponseDto> {
     if (!restaurantId?.trim()) {
       throw new Error("Restaurant ID is required to fetch analytics dashboard");
@@ -21,27 +25,24 @@ export const restaurantAnalyticsApi = {
 
     const searchParams: Record<string, string | number> = {};
 
-    if (params?.interval) {
+    if (params.interval) {
       searchParams.interval = params.interval;
     }
-    if (params?.day !== undefined && params?.day !== null) {
+    if (params.day != null) {
       searchParams.day = params.day;
     }
-    if (params?.month !== undefined && params?.month !== null) {
+    if (params.month != null) {
       searchParams.month = params.month;
     }
-    if (params?.year !== undefined && params?.year !== null) {
+    if (params.year != null) {
       searchParams.year = params.year;
     }
-    if (params?.status && params.status !== "ALL") {
+    if (params.status && params.status !== ORDER_STATUS_FILTERS.ALL) {
       searchParams.status = params.status;
     }
-    if (params?.page) {
-      searchParams.page = params.page;
-    }
-    if (params?.limit) {
-      searchParams.limit = params.limit;
-    }
+
+    searchParams.page = params.page ?? RESTAURANT_ANALYTICS_DEFAULTS.PAGE;
+    searchParams.limit = params.limit ?? RESTAURANT_ANALYTICS_DEFAULTS.LIMIT;
 
     const response = await apiClient
       .get(RESTAURANT_ANALYTICS_ENDPOINTS.DASHBOARD(restaurantId.trim()), {

@@ -10,6 +10,14 @@ export interface OrderStatusDisplayConfig {
   bg: string;
 }
 
+export const ORDER_STATUS_CHART_MODES = {
+  PIE: "pie",
+  DONUT: "donut",
+} as const;
+
+export type OrderStatusChartMode =
+  (typeof ORDER_STATUS_CHART_MODES)[keyof typeof ORDER_STATUS_CHART_MODES];
+
 export const ORDER_STATUS_CHART_CONFIG = {
   SIZE: 220,
   OUTER_RADIUS: 88,

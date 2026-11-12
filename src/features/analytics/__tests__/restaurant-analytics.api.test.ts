@@ -1,5 +1,5 @@
+import { mockAnalyticsDashboardData } from "@/features/analytics/__tests__/fixtures/restaurant-analytics.fixture";
 import { restaurantAnalyticsApi } from "@/features/analytics/api/restaurant-analytics.api";
-import { mockAnalyticsDashboardData } from "@/features/analytics/fixtures/restaurant-analytics.fixture";
 import { apiClient } from "@/lib/api/client";
 
 jest.mock("@/lib/api/client", () => ({
@@ -34,7 +34,10 @@ describe("restaurantAnalyticsApi", () => {
     const result = await restaurantAnalyticsApi.getDashboard(restaurantId);
 
     expect(apiClient.get).toHaveBeenCalledWith(`restaurants/${restaurantId}/analytics/dashboard`, {
-      searchParams: {},
+      searchParams: {
+        page: 1,
+        limit: 10,
+      },
     });
     expect(result).toEqual(mockAnalyticsDashboardData);
   });
@@ -84,6 +87,8 @@ describe("restaurantAnalyticsApi", () => {
     expect(apiClient.get).toHaveBeenCalledWith(`restaurants/${restaurantId}/analytics/dashboard`, {
       searchParams: {
         interval: "MONTH",
+        page: 1,
+        limit: 10,
       },
     });
   });

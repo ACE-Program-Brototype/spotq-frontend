@@ -8,7 +8,7 @@ import type { RestaurantAnalyticsQueryParams } from "@/features/analytics/types/
 
 export function useRestaurantAnalytics(
   restaurantId: string,
-  params?: RestaurantAnalyticsQueryParams,
+  params: RestaurantAnalyticsQueryParams = {},
   options?: {
     enabled?: boolean;
     autoRefresh?: boolean;

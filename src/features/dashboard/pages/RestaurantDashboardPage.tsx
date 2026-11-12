@@ -6,7 +6,6 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import {
   AnalyticsFilterToolbar,
   AnalyticsSkeleton,
-  ChannelDistributionCard,
   OrderStatusDistributionCard,
   OverviewKpis,
   useAnalyticsFilters,
@@ -235,9 +234,8 @@ export default function RestaurantDashboardPage() {
               onRetry={refetchAnalytics}
             />
 
-            {/* 2. Channel Distribution & Order Status Breakdown */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-              <ChannelDistributionCard orders={analyticsData.overview.orders} />
+            {/* 2. Order Status Fulfillment Breakdown */}
+            <div>
               <OrderStatusDistributionCard breakdown={analyticsData.orderStatusBreakdown} />
             </div>
 

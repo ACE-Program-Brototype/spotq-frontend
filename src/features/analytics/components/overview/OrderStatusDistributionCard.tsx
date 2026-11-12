@@ -1,10 +1,13 @@
 import { CheckCircle2, Donut, PieChart as PieChartIcon, XCircle } from "lucide-react";
 import { useState } from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import {
   getOrderStatusDisplayInfo,
-  ORDER_STATUS_CHART_CONFIG,
+  ORDER_STATUS_CHART_MODES,
   ORDER_STATUS_CHART_STYLES,
+  type OrderStatusChartMode,
 } from "@/features/analytics/constants/order-status-chart.constants";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/analytics/constants/restaurant-analytics.constants";
 import type { OrderStatusBreakdownResultDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -14,14 +17,23 @@ export interface OrderStatusDistributionCardProps {
   className?: string;
 }
 
+interface ChartSliceData {
+  status: string;
+  name: string;
+  count: number;
+  percentage: number;
+  amountRupees: number;
+  color: string;
+}
+
 export function OrderStatusDistributionCard({
   breakdown,
   className,
 }: OrderStatusDistributionCardProps) {
   const [hoveredStatus, setHoveredStatus] = useState<string | null>(null);
-  const [chartMode, setChartMode] = useState<"pie" | "donut">("pie");
+  const [chartMode, setChartMode] = useState<OrderStatusChartMode>(ORDER_STATUS_CHART_MODES.PIE);
 
-  if (breakdown.status !== "AVAILABLE") {
+  if (breakdown.status !== ANALYTICS_SECTION_STATUSES.AVAILABLE) {
     return null;
   }
 
@@ -32,40 +44,20 @@ export function OrderStatusDistributionCard({
       ? totalOrdersTracked
       : validItems.reduce((acc, item) => acc + item.count, 0);
 
-  // SVG Geometry from constants
-  const size = ORDER_STATUS_CHART_CONFIG.SIZE;
-  const cx = size / 2;
-  const cy = size / 2;
-  const outerRadius = ORDER_STATUS_CHART_CONFIG.OUTER_RADIUS;
-  const innerRadius =
-    chartMode === "donut"
-      ? ORDER_STATUS_CHART_CONFIG.DONUT_INNER_RADIUS
-      : ORDER_STATUS_CHART_CONFIG.PIE_INNER_RADIUS;
-
-  // Build slices data
-  let currentAngle = -Math.PI / 2; // Start at 12 o'clock
-  const slices = validItems.map((item, idx) => {
-    const fraction = totalCount > 0 ? item.count / totalCount : 0;
-    const angle = fraction * 2 * Math.PI;
-    const startAngle = currentAngle;
-    const endAngle = currentAngle + angle;
-    currentAngle = endAngle;
-
-    const midAngle = (startAngle + endAngle) / 2;
+  const chartData: ChartSliceData[] = validItems.map((item, idx) => {
     const info = getOrderStatusDisplayInfo(item.status, idx);
-
     return {
-      item,
-      info,
-      fraction,
-      startAngle,
-      endAngle,
-      midAngle,
-      isSingle: validItems.length === 1 || fraction >= 0.9999,
+      status: item.status,
+      name: info.label,
+      count: item.count,
+      percentage: item.percentage,
+      amountRupees: item.amountRupees,
+      color: info.color,
     };
   });
 
-  const activeSlice = slices.find((s) => s.item.status === hoveredStatus);
+  const activeItem = chartData.find((item) => item.status === hoveredStatus);
+  const isDonut = chartMode === ORDER_STATUS_CHART_MODES.DONUT;
 
   return (
     <div className={cn(ORDER_STATUS_CHART_STYLES.CARD_CONTAINER, className)}>
@@ -83,11 +75,11 @@ export function OrderStatusDistributionCard({
           <div className={ORDER_STATUS_CHART_STYLES.TOGGLE_CONTAINER}>
             <button
               type="button"
-              onClick={() => setChartMode("pie")}
+              onClick={() => setChartMode(ORDER_STATUS_CHART_MODES.PIE)}
               title="Pie Chart View"
               className={cn(
                 ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_BASE,
-                chartMode === "pie"
+                chartMode === ORDER_STATUS_CHART_MODES.PIE
                   ? ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_ACTIVE
                   : ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_INACTIVE,
               )}
@@ -97,11 +89,11 @@ export function OrderStatusDistributionCard({
             </button>
             <button
               type="button"
-              onClick={() => setChartMode("donut")}
+              onClick={() => setChartMode(ORDER_STATUS_CHART_MODES.DONUT)}
               title="Donut Chart View"
               className={cn(
                 ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_BASE,
-                chartMode === "donut"
+                chartMode === ORDER_STATUS_CHART_MODES.DONUT
                   ? ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_ACTIVE
                   : ORDER_STATUS_CHART_STYLES.TOGGLE_BUTTON_INACTIVE,
               )}
@@ -117,141 +109,114 @@ export function OrderStatusDistributionCard({
         </div>
       </div>
 
-      {/* Main Content: Chart + Legend */}
+      {/* Main Content: Recharts Visualization + Legend */}
       <div className="mt-5 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        {/* Left: SVG Pie / Donut Chart */}
+        {/* Left: Recharts Pie / Donut Chart */}
         <div className="md:col-span-5 flex flex-col items-center justify-center">
-          <div className="relative size-[220px]">
-            {totalCount === 0 || validItems.length === 0 ? (
+          <div
+            role="img"
+            aria-label="Order status pie chart"
+            className="relative size-[220px] flex items-center justify-center"
+          >
+            {totalCount === 0 || chartData.length === 0 ? (
               <div className={ORDER_STATUS_CHART_STYLES.EMPTY_CONTAINER}>
                 <PieChartIcon className="size-8 text-neutral-400" />
                 <p className="mt-1 text-xs font-semibold text-neutral-600">No Orders</p>
                 <p className="text-[10px] text-neutral-400">Zero orders in this period</p>
               </div>
             ) : (
-              <svg
-                viewBox={`0 0 ${size} ${size}`}
-                className="size-full overflow-visible"
-                aria-label="Order status pie chart"
-                role="img"
-              >
-                {/* Slices */}
-                {slices.map((slice) => {
-                  const { item, info, isSingle, startAngle, endAngle, midAngle } = slice;
-                  const isHovered = hoveredStatus === item.status;
-                  const pullDistance = isHovered ? ORDER_STATUS_CHART_CONFIG.PULL_DISTANCE : 0;
-                  const dx = Math.cos(midAngle) * pullDistance;
-                  const dy = Math.sin(midAngle) * pullDistance;
-
-                  if (isSingle) {
-                    if (chartMode === "donut") {
-                      return (
-                        <circle
-                          key={item.status}
-                          cx={cx}
-                          cy={cy}
-                          r={(outerRadius + innerRadius) / 2}
-                          fill="none"
-                          stroke={info.color}
-                          strokeWidth={outerRadius - innerRadius}
-                          className="transition-all duration-300 cursor-pointer"
-                          onMouseEnter={() => setHoveredStatus(item.status)}
-                          onMouseLeave={() => setHoveredStatus(null)}
-                        />
-                      );
-                    }
-                    return (
-                      <circle
-                        key={item.status}
-                        cx={cx}
-                        cy={cy}
-                        r={outerRadius}
-                        fill={info.color}
-                        className="transition-all duration-300 cursor-pointer"
-                        onMouseEnter={() => setHoveredStatus(item.status)}
-                        onMouseLeave={() => setHoveredStatus(null)}
-                      />
-                    );
-                  }
-
-                  // Multi-slice Arc Math
-                  const x1 = cx + outerRadius * Math.cos(startAngle);
-                  const y1 = cy + outerRadius * Math.sin(startAngle);
-                  const x2 = cx + outerRadius * Math.cos(endAngle);
-                  const y2 = cy + outerRadius * Math.sin(endAngle);
-                  const largeArcFlag = endAngle - startAngle > Math.PI ? 1 : 0;
-
-                  let pathData = "";
-                  if (chartMode === "donut") {
-                    const x3 = cx + innerRadius * Math.cos(endAngle);
-                    const y3 = cy + innerRadius * Math.sin(endAngle);
-                    const x4 = cx + innerRadius * Math.cos(startAngle);
-                    const y4 = cy + innerRadius * Math.sin(startAngle);
-                    pathData = `M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x4} ${y4} Z`;
-                  } else {
-                    pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
-                  }
-
-                  return (
-                    <g
-                      key={item.status}
-                      transform={`translate(${dx}, ${dy})`}
-                      className="transition-transform duration-200 cursor-pointer"
-                      onMouseEnter={() => setHoveredStatus(item.status)}
+              <>
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      dataKey="count"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={isDonut ? 52 : 0}
+                      outerRadius={88}
+                      paddingAngle={chartData.length > 1 ? 1 : 0}
+                      isAnimationActive={false}
+                      onMouseEnter={(_, index) => {
+                        setHoveredStatus(chartData[index]?.status ?? null);
+                      }}
                       onMouseLeave={() => setHoveredStatus(null)}
                     >
-                      <path
-                        d={pathData}
-                        fill={info.color}
-                        stroke={ORDER_STATUS_CHART_CONFIG.STROKE_COLOR}
-                        strokeWidth={ORDER_STATUS_CHART_CONFIG.STROKE_WIDTH}
-                        className={cn(
-                          "transition-opacity duration-200",
-                          hoveredStatus && !isHovered && "opacity-60",
-                          isHovered && "opacity-100 drop-shadow-md",
-                        )}
-                      />
-                    </g>
-                  );
-                })}
+                      {chartData.map((entry) => {
+                        const isHovered = hoveredStatus === entry.status;
+                        return (
+                          <Cell
+                            key={`cell-${entry.status}`}
+                            fill={entry.color}
+                            stroke="#ffffff"
+                            strokeWidth={isHovered ? 3 : 1.5}
+                            opacity={hoveredStatus && !isHovered ? 0.6 : 1}
+                            className="cursor-pointer transition-opacity duration-200"
+                          />
+                        );
+                      })}
+                    </Pie>
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload?.length) {
+                          const data = payload[0].payload as ChartSliceData;
+                          return (
+                            <div className="rounded-lg border border-[#eddcd4] bg-white p-2.5 shadow-md text-xs">
+                              <p className="font-bold text-neutral-900 flex items-center gap-1.5">
+                                <span
+                                  className="size-2 rounded-full inline-block"
+                                  style={{ backgroundColor: data.color }}
+                                />
+                                {data.name}
+                              </p>
+                              <p className="text-neutral-600 mt-1">
+                                Orders:{" "}
+                                <span className="font-semibold text-neutral-900">
+                                  {data.count.toLocaleString()}
+                                </span>{" "}
+                                ({data.percentage}%)
+                              </p>
+                              <p className="text-neutral-600">
+                                Value:{" "}
+                                <span className="font-semibold text-neutral-900">
+                                  {formatCurrency(data.amountRupees)}
+                                </span>
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
 
-                {/* Donut center cutout content */}
-                {chartMode === "donut" && (
-                  <g className="pointer-events-none select-none">
-                    <circle cx={cx} cy={cy} r={innerRadius - 2} fill="#ffffff" />
-                    <text
-                      x={cx}
-                      y={cy - 5}
-                      textAnchor="middle"
-                      className="text-xl font-extrabold fill-neutral-900"
-                      dominantBaseline="middle"
-                    >
-                      {activeSlice ? activeSlice.item.count : totalCount}
-                    </text>
-                    <text
-                      x={cx}
-                      y={cy + 14}
-                      textAnchor="middle"
-                      className="text-[10px] font-semibold uppercase tracking-wider fill-neutral-500"
-                    >
-                      {activeSlice ? `${activeSlice.item.percentage}%` : "Total Orders"}
-                    </text>
-                  </g>
+                {/* Donut center cutout overlay */}
+                {isDonut && (
+                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center select-none">
+                    <p className="text-xl font-extrabold text-neutral-900 leading-none">
+                      {activeItem ? activeItem.count.toLocaleString() : totalCount.toLocaleString()}
+                    </p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 mt-1">
+                      {activeItem ? `${activeItem.percentage}%` : "Total Orders"}
+                    </p>
+                  </div>
                 )}
-              </svg>
+              </>
             )}
           </div>
 
-          {/* Active Slice Badge / Quick Tip */}
+          {/* Active Status Hint / Tip */}
           <div className="mt-2 text-center h-5">
-            {activeSlice ? (
+            {activeItem ? (
               <p className="text-xs font-semibold text-neutral-700 animate-in fade-in duration-200">
                 <span
                   className="inline-block size-2 rounded-full mr-1.5 align-middle"
-                  style={{ backgroundColor: activeSlice.info.color }}
+                  style={{ backgroundColor: activeItem.color }}
                 />
-                {activeSlice.info.label}: {activeSlice.item.count} orders (
-                {activeSlice.item.percentage}%)
+                {activeItem.name}: {activeItem.count.toLocaleString()} orders (
+                {activeItem.percentage}%)
               </p>
             ) : (
               <p className="text-[11px] text-neutral-400">Hover slice or status for details</p>
@@ -268,11 +233,15 @@ export function OrderStatusDistributionCard({
             const isCancelled = item.status === "CANCELLED";
 
             return (
-              <div
+              <button
+                type="button"
                 key={item.status}
                 onMouseEnter={() => setHoveredStatus(item.status)}
                 onMouseLeave={() => setHoveredStatus(null)}
+                onFocus={() => setHoveredStatus(item.status)}
+                onBlur={() => setHoveredStatus(null)}
                 className={cn(
+                  "w-full text-left",
                   ORDER_STATUS_CHART_STYLES.LEGEND_ROW_BASE,
                   isHovered
                     ? ORDER_STATUS_CHART_STYLES.LEGEND_ROW_ACTIVE
@@ -319,7 +288,7 @@ export function OrderStatusDistributionCard({
                     </span>
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

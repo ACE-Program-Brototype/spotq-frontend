@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import {
   mockAnalyticsDashboardData,
   mockDegradedAnalyticsData,
-} from "@/features/analytics/fixtures/restaurant-analytics.fixture";
+} from "@/features/analytics/__tests__/fixtures/restaurant-analytics.fixture";
 import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
 import RestaurantMenuPerformancePage from "@/features/analytics/pages/RestaurantMenuPerformancePage";
 

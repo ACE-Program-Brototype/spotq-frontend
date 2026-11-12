@@ -1,6 +1,7 @@
 import { IndianRupee, ShoppingBag, TrendingUp, Users } from "lucide-react";
 import { AnalyticsMetricCard } from "@/features/analytics/components/common/AnalyticsMetricCard";
 import { AnalyticsSectionUnavailable } from "@/features/analytics/components/common/AnalyticsSectionUnavailable";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/analytics/constants/restaurant-analytics.constants";
 import type {
   OperationSectionResultDto,
   OrderSectionResultDto,
@@ -23,9 +24,9 @@ export function OverviewKpis({
   onRetry,
   className,
 }: OverviewKpisProps) {
-  const isRevenueAvailable = revenue.status === "AVAILABLE";
-  const isOrdersAvailable = orders.status === "AVAILABLE";
-  const isOperationsAvailable = operations.status === "AVAILABLE";
+  const isRevenueAvailable = revenue.status === ANALYTICS_SECTION_STATUSES.AVAILABLE;
+  const isOrdersAvailable = orders.status === ANALYTICS_SECTION_STATUSES.AVAILABLE;
+  const isOperationsAvailable = operations.status === ANALYTICS_SECTION_STATUSES.AVAILABLE;
 
   // Calculate Average Order Value (AOV) safely
   const netSales = isRevenueAvailable ? revenue.netSalesRupees : 0;
@@ -40,6 +41,7 @@ export function OverviewKpis({
           label="Net Revenue"
           value={formatCurrency(revenue.netSalesRupees)}
           icon={IndianRupee}
+          subtitle="Net sales after discounts"
           trendPercentage={revenue.growthPercentage}
           trendText="vs previous period"
           iconBgClassName="bg-emerald-50 border-emerald-200"
@@ -59,6 +61,7 @@ export function OverviewKpis({
           label="Total Orders"
           value={orders.totalOrderCount.toLocaleString()}
           icon={ShoppingBag}
+          subtitle="All processed orders"
           trendPercentage={orders.growthPercentage}
           trendText="vs previous period"
           iconBgClassName="bg-[#fef3ec] border-[#fae2d3]"

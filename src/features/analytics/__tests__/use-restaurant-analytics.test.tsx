@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
+import { mockAnalyticsDashboardData } from "@/features/analytics/__tests__/fixtures/restaurant-analytics.fixture";
 import { restaurantAnalyticsApi } from "@/features/analytics/api/restaurant-analytics.api";
-import { mockAnalyticsDashboardData } from "@/features/analytics/fixtures/restaurant-analytics.fixture";
 import { useRestaurantAnalytics } from "@/features/analytics/hooks/use-restaurant-analytics";
 
 jest.mock("@/features/analytics/api/restaurant-analytics.api", () => ({

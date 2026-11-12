@@ -10,7 +10,7 @@ import { formatCurrency } from "@/lib/utils/currency";
 export interface TopSellingTableProps {
   items: ProductItemDto[];
   pagination: ProductRankingPaginationDto;
-  onPageChange?: (page: number) => void;
+  onPageChange: (page: number) => void;
   className?: string;
 }
 
@@ -92,7 +92,7 @@ export function TopSellingTable({
                     </span>
                   </td>
                   <td className="py-3 px-3.5 text-right font-extrabold text-neutral-900">
-                    {item.quantitySold.toLocaleString()}
+                    {item.quantitySold}
                   </td>
                   <td className="py-3 px-3.5 text-right font-bold text-emerald-800">
                     {formatCurrency(item.salesRupees)}

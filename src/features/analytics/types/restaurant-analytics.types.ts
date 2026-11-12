@@ -20,7 +20,22 @@ export const ORDER_STATUS_FILTERS = {
 
 export type OrderStatusFilter = (typeof ORDER_STATUS_FILTERS)[keyof typeof ORDER_STATUS_FILTERS];
 
-export type AnalyticsSectionStatus = "AVAILABLE" | "UNAVAILABLE";
+export const ANALYTICS_SECTION_STATUSES = {
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+
+export type AnalyticsSectionStatus =
+  (typeof ANALYTICS_SECTION_STATUSES)[keyof typeof ANALYTICS_SECTION_STATUSES];
+
+export const PRODUCT_CLASSIFICATIONS = {
+  ZERO_SALES: "ZERO_SALES",
+  LOW_VOLUME: "LOW_VOLUME",
+  NORMAL: "NORMAL",
+} as const;
+
+export type ProductClassification =
+  (typeof PRODUCT_CLASSIFICATIONS)[keyof typeof PRODUCT_CLASSIFICATIONS];
 
 export interface SectionErrorDto {
   code: string;
@@ -81,7 +96,7 @@ export interface ProductItemDto {
   salesRupees: number;
   isAvailable: boolean;
   percentageOfTotalSales?: number;
-  classification?: "ZERO_SALES" | "LOW_VOLUME" | "NORMAL";
+  classification?: ProductClassification;
 }
 
 export interface ProductRankingPaginationDto {

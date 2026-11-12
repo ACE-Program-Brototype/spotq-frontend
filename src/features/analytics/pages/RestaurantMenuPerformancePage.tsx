@@ -3,6 +3,7 @@ import { AnalyticsSectionUnavailable } from "@/features/analytics/components/com
 import { SlowMovingRuleBanner } from "@/features/analytics/components/menu/SlowMovingRuleBanner";
 import { SlowMovingTable } from "@/features/analytics/components/menu/SlowMovingTable";
 import { TopSellingTable } from "@/features/analytics/components/menu/TopSellingTable";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/analytics/constants/restaurant-analytics.constants";
 import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
 
 export default function RestaurantMenuPerformancePage() {
@@ -14,7 +15,7 @@ export default function RestaurantMenuPerformancePage() {
 
   const { products } = data;
 
-  if (products.status !== "AVAILABLE") {
+  if (products.status !== ANALYTICS_SECTION_STATUSES.AVAILABLE) {
     return (
       <AnalyticsSectionUnavailable
         title="Menu Analytics Unavailable"

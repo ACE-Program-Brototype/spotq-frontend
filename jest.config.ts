@@ -4,6 +4,7 @@ const config: Config = {
   testEnvironment: "jsdom",
   testTimeout: 15000,
   workerIdleMemoryLimit: "512MB",
+  testPathIgnorePatterns: ["/node_modules/", "/fixtures/"],
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   moduleNameMapper: {
     "^@/config/env$": "<rootDir>/__mocks__/env.ts",

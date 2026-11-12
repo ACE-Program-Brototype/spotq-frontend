@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { mockAnalyticsDashboardData } from "@/features/analytics/__tests__/fixtures/restaurant-analytics.fixture";
 import { restaurantAnalyticsApi } from "@/features/analytics/api/restaurant-analytics.api";
-import { mockAnalyticsDashboardData } from "@/features/analytics/fixtures/restaurant-analytics.fixture";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import RestaurantDashboardPage from "./RestaurantDashboardPage";
 
@@ -258,11 +258,11 @@ describe("RestaurantDashboardPage", () => {
       expect(screen.getByText("Menu Performance Highlights")).toBeInTheDocument();
     });
 
-    // Check KPI and channel distribution
+    // Check KPI and order fulfillment
     await waitFor(() => {
       expect(screen.getByText("Net Revenue")).toBeInTheDocument();
       expect(screen.getByText("Total Orders")).toBeInTheDocument();
-      expect(screen.getByText("Dining Channels")).toBeInTheDocument();
+      expect(screen.getByText("Order Fulfillment")).toBeInTheDocument();
     });
   });
 });

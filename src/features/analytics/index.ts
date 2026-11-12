@@ -8,7 +8,6 @@ export * from "./components/common/AnalyticsTabNav";
 export * from "./components/menu/SlowMovingRuleBanner";
 export * from "./components/menu/SlowMovingTable";
 export * from "./components/menu/TopSellingTable";
-export * from "./components/overview/ChannelDistributionCard";
 export * from "./components/overview/OrderStatusDistributionCard";
 export * from "./components/overview/OverviewKpis";
 export * from "./components/revenue/RevenueBreakdownCard";

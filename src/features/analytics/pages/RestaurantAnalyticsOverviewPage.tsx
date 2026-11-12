@@ -1,4 +1,3 @@
-import { ChannelDistributionCard } from "@/features/analytics/components/overview/ChannelDistributionCard";
 import { OrderStatusDistributionCard } from "@/features/analytics/components/overview/OrderStatusDistributionCard";
 import { OverviewKpis } from "@/features/analytics/components/overview/OverviewKpis";
 import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
@@ -24,12 +23,8 @@ export default function RestaurantAnalyticsOverviewPage() {
         />
       </section>
 
-      {/* 2. Channel Distribution & Order Status Breakdown */}
-      <section
-        aria-label="Fulfillment and Channels Breakdown"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
-      >
-        <ChannelDistributionCard orders={overview.orders} />
+      {/* 2. Order Status Breakdown */}
+      <section aria-label="Order Status Fulfillment Breakdown">
         <OrderStatusDistributionCard breakdown={orderStatusBreakdown} />
       </section>
     </div>

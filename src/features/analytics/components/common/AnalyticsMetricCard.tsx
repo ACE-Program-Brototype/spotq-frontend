@@ -5,7 +5,7 @@ export interface AnalyticsMetricCardProps {
   label: string;
   value: string | number;
   icon: LucideIcon;
-  subtitle?: string;
+  subtitle: string;
   trendPercentage?: number | null;
   trendText?: string;
   iconClassName?: string;

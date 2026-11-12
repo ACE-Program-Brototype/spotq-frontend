@@ -1,9 +1,12 @@
 import {
   ANALYTICS_PERIODS,
+  ANALYTICS_SECTION_STATUSES,
   ORDER_STATUS_FILTERS,
+  PRODUCT_CLASSIFICATIONS,
 } from "@/features/analytics/types/restaurant-analytics.types";
 
 export * from "./order-status-chart.constants";
+export { ANALYTICS_SECTION_STATUSES, ORDER_STATUS_FILTERS, PRODUCT_CLASSIFICATIONS };
 
 export const RESTAURANT_ANALYTICS_ENDPOINTS = {
   DASHBOARD: (restaurantId: string) => `restaurants/${restaurantId}/analytics/dashboard`,

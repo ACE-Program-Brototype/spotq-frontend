@@ -1,6 +1,7 @@
 import { IndianRupee, Percent, Receipt, TrendingUp } from "lucide-react";
 import { AnalyticsMetricCard } from "@/features/analytics/components/common/AnalyticsMetricCard";
 import { AnalyticsSectionUnavailable } from "@/features/analytics/components/common/AnalyticsSectionUnavailable";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/analytics/constants/restaurant-analytics.constants";
 import type { RevenueSectionResultDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { formatCurrency } from "@/lib/utils/currency";
 
@@ -11,7 +12,7 @@ export interface RevenueKpisProps {
 }
 
 export function RevenueKpis({ revenue, onRetry, className }: RevenueKpisProps) {
-  if (revenue.status !== "AVAILABLE") {
+  if (revenue.status !== ANALYTICS_SECTION_STATUSES.AVAILABLE) {
     return (
       <AnalyticsSectionUnavailable
         title="Revenue Unavailable"
@@ -34,6 +35,7 @@ export function RevenueKpis({ revenue, onRetry, className }: RevenueKpisProps) {
         label="Net Sales"
         value={formatCurrency(netSalesRupees)}
         icon={IndianRupee}
+        subtitle="Net sales after discounts"
         trendPercentage={growthPercentage}
         trendText="vs previous period"
         iconBgClassName="bg-emerald-50 border-emerald-200"

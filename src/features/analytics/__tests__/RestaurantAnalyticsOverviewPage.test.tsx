@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import {
   mockAnalyticsDashboardData,
   mockDegradedAnalyticsData,
-} from "@/features/analytics/fixtures/restaurant-analytics.fixture";
+} from "@/features/analytics/__tests__/fixtures/restaurant-analytics.fixture";
 import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
 import RestaurantAnalyticsOverviewPage from "@/features/analytics/pages/RestaurantAnalyticsOverviewPage";
 
@@ -43,11 +43,6 @@ describe("RestaurantAnalyticsOverviewPage", () => {
     expect(screen.getByText("Avg. Order Value")).toBeInTheDocument();
     expect(screen.getByText("Unique Customers")).toBeInTheDocument();
     expect(screen.getByText("380")).toBeInTheDocument();
-
-    // Channel Distribution
-    expect(screen.getByText("Dining Channels")).toBeInTheDocument();
-    expect(screen.getByText("Dine-In")).toBeInTheDocument();
-    expect(screen.getByText("Takeaway")).toBeInTheDocument();
 
     // Order Fulfillment
     expect(screen.getByText("Order Fulfillment")).toBeInTheDocument();
