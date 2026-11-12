@@ -2,9 +2,14 @@ import { TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { RevenueSection } from "../../types/platform-analytics.types";
-import { formatNumber, formatPercentage, formatRupees } from "../../utils/platform-analytics.utils";
-import { SectionUnavailableFallback } from "./SectionUnavailableFallback";
+import { SectionUnavailableFallback } from "@/features/dashboard/components/admin/SectionUnavailableFallback";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/dashboard/constants/platform-analytics.constants";
+import type { RevenueSection } from "@/features/dashboard/types/platform-analytics.types";
+import {
+  formatNumber,
+  formatPercentage,
+  formatRupees,
+} from "@/features/dashboard/utils/platform-analytics.utils";
 
 export interface RevenueTimelineChartProps {
   revenue?: RevenueSection;
@@ -43,7 +48,7 @@ export function RevenueTimelineChart({
     );
   }
 
-  if (revenue?.status === "UNAVAILABLE") {
+  if (revenue?.status === ANALYTICS_SECTION_STATUSES.UNAVAILABLE) {
     return (
       <Card className="border-slate-200/80 bg-white shadow-2xs">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
@@ -162,16 +167,20 @@ export function RevenueTimelineChart({
                 const isHovered = activeBucket === index;
 
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={point.bucketLabel}
-                    className="group relative flex flex-1 flex-col items-center justify-end h-full cursor-pointer"
+                    className="group relative flex flex-1 flex-col items-center justify-end h-full cursor-pointer bg-transparent border-0 p-0"
                     onMouseEnter={() => setActiveBucket(index)}
                     onMouseLeave={() => setActiveBucket(null)}
+                    onFocus={() => setActiveBucket(index)}
+                    onBlur={() => setActiveBucket(null)}
                   >
                     {/* Amount pill above bar */}
                     <span
-                      className={`mb-1.5 text-[10px] font-semibold transition-colors ${isHovered ? "text-slate-900 font-bold" : "text-slate-400"
-                        }`}
+                      className={`mb-1.5 text-[10px] font-semibold transition-colors ${
+                        isHovered ? "text-slate-900 font-bold" : "text-slate-400"
+                      }`}
                     >
                       {formatRupees(point.grossRevenueRupees, true)}
                     </span>
@@ -179,15 +188,16 @@ export function RevenueTimelineChart({
                     {/* Bar */}
                     <div
                       style={{ height: `${heightPercent}%` }}
-                      className={`w-full max-w-[42px] rounded-t-md transition-all ${isHovered ? "bg-slate-900 shadow-xs" : "bg-slate-300 hover:bg-slate-400"
-                        }`}
+                      className={`w-full max-w-[42px] rounded-t-md transition-all ${
+                        isHovered ? "bg-slate-900 shadow-xs" : "bg-slate-300 hover:bg-slate-400"
+                      }`}
                     />
 
                     {/* X-axis label */}
                     <span className="mt-2 text-[10px] sm:text-xs font-medium text-slate-500 truncate max-w-[60px] text-center">
                       {point.bucketLabel}
                     </span>
-                  </div>
+                  </button>
                 );
               })}
             </div>

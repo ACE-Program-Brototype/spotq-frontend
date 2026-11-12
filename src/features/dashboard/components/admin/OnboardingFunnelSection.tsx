@@ -1,8 +1,9 @@
 import { ArrowDown, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { FunnelStageItem } from "../../types/platform-analytics.types";
-import { formatNumber } from "../../utils/platform-analytics.utils";
+import { ONBOARDING_FUNNEL_STAGES } from "@/features/dashboard/constants/platform-analytics.constants";
+import type { FunnelStageItem } from "@/features/dashboard/types/platform-analytics.types";
+import { formatNumber } from "@/features/dashboard/utils/platform-analytics.utils";
 
 export interface OnboardingFunnelSectionProps {
   funnel?: FunnelStageItem[];
@@ -29,12 +30,13 @@ export function OnboardingFunnelSection({
   }
 
   // Only Verified and Approved statuses are required
-  const registeredStage = funnel.find((f) => f.stage === "REGISTERED") || funnel[0];
+  const registeredStage =
+    funnel.find((f) => f.stage === ONBOARDING_FUNNEL_STAGES.REGISTERED) || funnel[0];
   const approvedStage =
     funnel.find(
       (f) =>
-        f.stage === "APPROVED_ACTIVE" ||
-        f.stage === "APPROVED" ||
+        f.stage === ONBOARDING_FUNNEL_STAGES.APPROVED_ACTIVE ||
+        f.stage === ONBOARDING_FUNNEL_STAGES.APPROVED ||
         f.label?.toLowerCase().includes("approved"),
     ) || funnel[funnel.length - 1];
 
@@ -56,9 +58,7 @@ export function OnboardingFunnelSection({
       : null;
 
   const conversionRate =
-    stage1 && stage2 && stage1.count > 0
-      ? Math.round((stage2.count / stage1.count) * 100)
-      : null;
+    stage1 && stage2 && stage1.count > 0 ? Math.round((stage2.count / stage1.count) * 100) : null;
 
   return (
     <Card className="border-slate-200/80 bg-white shadow-2xs">
@@ -85,12 +85,8 @@ export function OnboardingFunnelSection({
                   1
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-                    {stage1.label}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 hidden sm:block">
-                    {stage1.subtitle}
-                  </p>
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900">{stage1.label}</h4>
+                  <p className="text-[11px] text-slate-500 hidden sm:block">{stage1.subtitle}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -121,12 +117,8 @@ export function OnboardingFunnelSection({
                     <Check className="size-4" />
                   </div>
                   <div>
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-                      {stage2.label}
-                    </h4>
-                    <p className="text-[11px] text-slate-500 hidden sm:block">
-                      {stage2.subtitle}
-                    </p>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">{stage2.label}</h4>
+                    <p className="text-[11px] text-slate-500 hidden sm:block">{stage2.subtitle}</p>
                   </div>
                 </div>
                 <div className="text-right">

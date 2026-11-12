@@ -1,11 +1,12 @@
 import { ArrowRight, TrendingUp, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ADMIN_ROUTES } from "@/app/router/admin/admin.routes.constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ADMIN_ROUTES } from "@/app/router/admin/admin.routes.constants";
-import type { CustomerGrowthSection } from "../../types/platform-analytics.types";
-import { formatNumber } from "../../utils/platform-analytics.utils";
-import { SectionUnavailableFallback } from "./SectionUnavailableFallback";
+import { SectionUnavailableFallback } from "@/features/dashboard/components/admin/SectionUnavailableFallback";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/dashboard/constants/platform-analytics.constants";
+import type { CustomerGrowthSection } from "@/features/dashboard/types/platform-analytics.types";
+import { formatNumber } from "@/features/dashboard/utils/platform-analytics.utils";
 
 export interface CustomerGrowthCardProps {
   customerGrowth?: CustomerGrowthSection;
@@ -37,7 +38,7 @@ export function CustomerGrowthCard({
     );
   }
 
-  if (customerGrowth?.status === "UNAVAILABLE") {
+  if (customerGrowth?.status === ANALYTICS_SECTION_STATUSES.UNAVAILABLE) {
     return (
       <Card className="border-slate-200/80 bg-white shadow-2xs">
         <CardHeader className="pb-3">
@@ -66,9 +67,7 @@ export function CustomerGrowthCard({
   const totalCustomers = customerGrowth?.totalRegisteredCustomers ?? 0;
 
   const growthPercentage =
-    totalCustomers > 0 && newCustomers > 0
-      ? Math.round((newCustomers / totalCustomers) * 100)
-      : 0;
+    totalCustomers > 0 && newCustomers > 0 ? Math.round((newCustomers / totalCustomers) * 100) : 0;
 
   return (
     <Card className="border-slate-200/80 bg-white shadow-2xs flex flex-col justify-between">
@@ -133,7 +132,8 @@ export function CustomerGrowthCard({
           </div>
 
           <p className="text-[11px] text-slate-500">
-            {growthPercentage}% of the platform&apos;s registered consumer base registered during this period.
+            {growthPercentage}% of the platform&apos;s registered consumer base registered during
+            this period.
           </p>
         </div>
 

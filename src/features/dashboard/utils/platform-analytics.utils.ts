@@ -1,5 +1,5 @@
 export function formatRupees(amount?: number | null, compact = false): string {
-  if (amount === undefined || amount === null || Number.isNaN(amount)) {
+  if (amount == null || Number.isNaN(amount)) {
     return "—";
   }
 
@@ -23,14 +23,14 @@ export function formatRupees(amount?: number | null, compact = false): string {
 }
 
 export function formatNumber(val?: number | null): string {
-  if (val === undefined || val === null || Number.isNaN(val)) {
+  if (val == null || Number.isNaN(val)) {
     return "—";
   }
   return new Intl.NumberFormat("en-IN").format(val);
 }
 
 export function formatPercentage(val?: number | null): string {
-  if (val === undefined || val === null || Number.isNaN(val)) {
+  if (val == null || Number.isNaN(val)) {
     return "—";
   }
   return `${val > 0 ? "+" : ""}${val.toFixed(1)}%`;

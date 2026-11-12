@@ -1,10 +1,10 @@
 import type { SuccessResponse } from "@/components/common";
-import { apiClient } from "@/lib/api/client";
-import { PLATFORM_ANALYTICS_ENDPOINTS } from "../constants/platform-analytics.constants";
+import { PLATFORM_ANALYTICS_ENDPOINTS } from "@/features/dashboard/constants/platform-analytics.constants";
 import type {
   PlatformDashboardAnalyticsResponse,
   PlatformDashboardFilters,
-} from "../types/platform-analytics.types";
+} from "@/features/dashboard/types/platform-analytics.types";
+import { apiClient } from "@/lib/api/client";
 
 export const platformAnalyticsService = {
   /**
@@ -18,13 +18,13 @@ export const platformAnalyticsService = {
       billingCycle: filters.billingCycle,
     };
 
-    if (filters.day !== undefined && filters.day !== null) {
+    if (filters.day != null) {
       searchParams.day = filters.day;
     }
-    if (filters.month !== undefined && filters.month !== null) {
+    if (filters.month != null) {
       searchParams.month = filters.month;
     }
-    if (filters.year !== undefined && filters.year !== null) {
+    if (filters.year != null) {
       searchParams.year = filters.year;
     }
     if (filters.from) {

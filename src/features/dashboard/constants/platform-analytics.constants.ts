@@ -1,8 +1,19 @@
-import type {
-  AnalyticsPeriod,
-  BillingCycle,
-  PlatformDashboardFilters,
-} from "../types/platform-analytics.types";
+import {
+  ANALYTICS_PERIOD_VALUES,
+  ANALYTICS_SECTION_STATUSES,
+  type AnalyticsPeriod,
+  BILLING_CYCLE_VALUES,
+  type BillingCycle,
+  ONBOARDING_FUNNEL_STAGES,
+  type PlatformDashboardFilters,
+} from "@/features/dashboard/types/platform-analytics.types";
+
+export {
+  ANALYTICS_PERIOD_VALUES,
+  ANALYTICS_SECTION_STATUSES,
+  BILLING_CYCLE_VALUES,
+  ONBOARDING_FUNNEL_STAGES,
+};
 
 export const PLATFORM_ANALYTICS_ENDPOINTS = {
   DASHBOARD: "restaurants/admin/analytics/dashboard",
@@ -15,16 +26,16 @@ export const PLATFORM_ANALYTICS_QUERY_KEYS = {
 };
 
 export const ANALYTICS_PERIODS: { label: string; value: AnalyticsPeriod }[] = [
-  { label: "Daily", value: "DAY" },
-  { label: "Weekly", value: "WEEK" },
-  { label: "Monthly", value: "MONTH" },
-  { label: "Yearly", value: "YEAR" },
+  { label: "Daily", value: ANALYTICS_PERIOD_VALUES.DAY },
+  { label: "Weekly", value: ANALYTICS_PERIOD_VALUES.WEEK },
+  { label: "Monthly", value: ANALYTICS_PERIOD_VALUES.MONTH },
+  { label: "Yearly", value: ANALYTICS_PERIOD_VALUES.YEAR },
 ];
 
 export const BILLING_CYCLES: { label: string; value: BillingCycle }[] = [
-  { label: "All Cycles", value: "ALL" },
-  { label: "Monthly", value: "MONTHLY" },
-  { label: "Yearly", value: "YEARLY" },
+  { label: "All Cycles", value: BILLING_CYCLE_VALUES.ALL },
+  { label: "Monthly", value: BILLING_CYCLE_VALUES.MONTHLY },
+  { label: "Yearly", value: BILLING_CYCLE_VALUES.YEARLY },
 ];
 
 export const MONTH_OPTIONS = [
@@ -52,12 +63,27 @@ export const getYearOptions = (currentYear: number = new Date().getFullYear()) =
 export const getDefaultFilters = (): PlatformDashboardFilters => {
   const now = new Date();
   return {
-    period: "MONTH",
+    period: ANALYTICS_PERIOD_VALUES.MONTH,
     month: now.getMonth() + 1,
     year: now.getFullYear(),
-    billingCycle: "ALL",
+    billingCycle: BILLING_CYCLE_VALUES.ALL,
   };
 };
+
+export const EXPORT_REPORT_TYPES = {
+  FINANCE: "finance",
+  GROWTH: "growth",
+  CUSTOMERS: "customers",
+} as const;
+
+export type ExportReportType = (typeof EXPORT_REPORT_TYPES)[keyof typeof EXPORT_REPORT_TYPES];
+
+export const EXPORT_FORMATS = {
+  CSV: "csv",
+  PDF: "pdf",
+} as const;
+
+export type ExportFormat = (typeof EXPORT_FORMATS)[keyof typeof EXPORT_FORMATS];
 
 export const PLATFORM_ANALYTICS_MESSAGES = {
   PAGE_TITLE: "Platform Analytics & Executive Dashboard",

@@ -1,12 +1,13 @@
 import { Building2, CreditCard, IndianRupee, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/dashboard/constants/platform-analytics.constants";
 import type {
   CustomerGrowthSection,
   PlatformOverview,
   RevenueSection,
-} from "../../types/platform-analytics.types";
-import { formatNumber, formatRupees } from "../../utils/platform-analytics.utils";
+} from "@/features/dashboard/types/platform-analytics.types";
+import { formatNumber, formatRupees } from "@/features/dashboard/utils/platform-analytics.utils";
 
 export interface PlatformKpisSectionProps {
   overview?: PlatformOverview;
@@ -48,8 +49,8 @@ export function PlatformKpisSection({
       ? Math.round((activeSubscribed / totalRestaurants) * 100)
       : null;
 
-  const isPaymentAvailable = revenue?.status === "AVAILABLE";
-  const isUserAvailable = customerGrowth?.status === "AVAILABLE";
+  const isPaymentAvailable = revenue?.status === ANALYTICS_SECTION_STATUSES.AVAILABLE;
+  const isUserAvailable = customerGrowth?.status === ANALYTICS_SECTION_STATUSES.AVAILABLE;
 
   const cards = [
     {

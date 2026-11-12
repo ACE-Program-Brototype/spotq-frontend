@@ -1,11 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { platformAnalyticsService } from "../services/platform-analytics.service";
-import type { PlatformDashboardAnalyticsResponse } from "../types/platform-analytics.types";
-import { usePlatformAdminDashboardAnalytics } from "./usePlatformAdminDashboardAnalytics";
+import { usePlatformAdminDashboardAnalytics } from "@/features/dashboard/hooks/usePlatformAdminDashboardAnalytics";
+import { platformAnalyticsService } from "@/features/dashboard/services/platform-analytics.service";
+import type { PlatformDashboardAnalyticsResponse } from "@/features/dashboard/types/platform-analytics.types";
 
-jest.mock("../services/platform-analytics.service", () => ({
+jest.mock("@/features/dashboard/services/platform-analytics.service", () => ({
   platformAnalyticsService: {
     getDashboardAnalytics: jest.fn(),
   },

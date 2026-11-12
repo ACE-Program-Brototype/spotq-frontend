@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { PLATFORM_ANALYTICS_QUERY_KEYS } from "../constants/platform-analytics.constants";
-import { platformAnalyticsService } from "../services/platform-analytics.service";
-import type { PlatformDashboardFilters } from "../types/platform-analytics.types";
+import { PLATFORM_ANALYTICS_QUERY_KEYS } from "@/features/dashboard/constants/platform-analytics.constants";
+import { platformAnalyticsService } from "@/features/dashboard/services/platform-analytics.service";
+import type { PlatformDashboardFilters } from "@/features/dashboard/types/platform-analytics.types";
 
 export function usePlatformAdminDashboardAnalytics(filters: PlatformDashboardFilters) {
   return useQuery({

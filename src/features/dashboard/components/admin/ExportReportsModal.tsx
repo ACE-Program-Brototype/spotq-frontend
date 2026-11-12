@@ -2,6 +2,12 @@ import { Download, FileSpreadsheet, FileText, X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  EXPORT_FORMATS,
+  EXPORT_REPORT_TYPES,
+  type ExportFormat,
+  type ExportReportType,
+} from "@/features/dashboard/constants/platform-analytics.constants";
 
 export interface ExportReportsModalProps {
   isOpen: boolean;
@@ -9,8 +15,8 @@ export interface ExportReportsModalProps {
 }
 
 export function ExportReportsModal({ isOpen, onClose }: ExportReportsModalProps) {
-  const [reportType, setReportType] = useState<"finance" | "growth" | "customers">("finance");
-  const [format, setFormat] = useState<"csv" | "pdf">("csv");
+  const [reportType, setReportType] = useState<ExportReportType>(EXPORT_REPORT_TYPES.FINANCE);
+  const [format, setFormat] = useState<ExportFormat>(EXPORT_FORMATS.CSV);
   const [isExporting, setIsExporting] = useState(false);
   const [exportComplete, setExportComplete] = useState(false);
 
@@ -63,23 +69,21 @@ export function ExportReportsModal({ isOpen, onClose }: ExportReportsModalProps)
         <div className="mt-5 space-y-4">
           {/* Report Type Selection */}
           <div>
-            <label className="text-xs font-semibold text-slate-700 block mb-2">
-              Select Report Dataset
-            </label>
+            <p className="text-xs font-semibold text-slate-700 block mb-2">Select Report Dataset</p>
             <div className="space-y-2">
               {[
                 {
-                  id: "finance",
+                  id: EXPORT_REPORT_TYPES.FINANCE,
                   name: "Platform Finance & Revenue Ledger",
                   desc: "MRR, ARR, subscription invoices, and settlement intake",
                 },
                 {
-                  id: "growth",
+                  id: EXPORT_REPORT_TYPES.GROWTH,
                   name: "Restaurant Growth & Onboarding",
                   desc: "Onboarding progression, partner verification, and regional counts",
                 },
                 {
-                  id: "customers",
+                  id: EXPORT_REPORT_TYPES.CUSTOMERS,
                   name: "Customer Acquisition & Users",
                   desc: "Consumer base metrics and registration timelines",
                 },
@@ -111,15 +115,13 @@ export function ExportReportsModal({ isOpen, onClose }: ExportReportsModalProps)
 
           {/* Export Format */}
           <div>
-            <label className="text-xs font-semibold text-slate-700 block mb-2">
-              File Format
-            </label>
+            <p className="text-xs font-semibold text-slate-700 block mb-2">File Format</p>
             <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
-                onClick={() => setFormat("csv")}
+                onClick={() => setFormat(EXPORT_FORMATS.CSV)}
                 className={`flex items-center justify-center gap-2 rounded-lg border p-2.5 text-xs font-medium transition-all ${
-                  format === "csv"
+                  format === EXPORT_FORMATS.CSV
                     ? "border-slate-900 bg-slate-900 text-white font-semibold"
                     : "border-slate-200 text-slate-700 hover:bg-slate-50"
                 }`}
@@ -129,9 +131,9 @@ export function ExportReportsModal({ isOpen, onClose }: ExportReportsModalProps)
               </button>
               <button
                 type="button"
-                onClick={() => setFormat("pdf")}
+                onClick={() => setFormat(EXPORT_FORMATS.PDF)}
                 className={`flex items-center justify-center gap-2 rounded-lg border p-2.5 text-xs font-medium transition-all ${
-                  format === "pdf"
+                  format === EXPORT_FORMATS.PDF
                     ? "border-slate-900 bg-slate-900 text-white font-semibold"
                     : "border-slate-200 text-slate-700 hover:bg-slate-50"
                 }`}

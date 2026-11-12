@@ -1,14 +1,15 @@
 import { Calendar, Filter } from "lucide-react";
 import {
+  ANALYTICS_PERIOD_VALUES,
   ANALYTICS_PERIODS,
   BILLING_CYCLES,
-  MONTH_OPTIONS,
   getYearOptions,
-} from "../../constants/platform-analytics.constants";
+  MONTH_OPTIONS,
+} from "@/features/dashboard/constants/platform-analytics.constants";
 import type {
   BillingCycle,
   PlatformDashboardFilters,
-} from "../../types/platform-analytics.types";
+} from "@/features/dashboard/types/platform-analytics.types";
 
 export interface PlatformFilterBarProps {
   filters: PlatformDashboardFilters;
@@ -57,7 +58,7 @@ export function PlatformFilterBar({
         {/* Filters Group: Month, Year, Billing Cycle */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Month Selector (Relevant for DAY, WEEK, MONTH) */}
-          {filters.period !== "YEAR" && (
+          {filters.period !== ANALYTICS_PERIOD_VALUES.YEAR && (
             <div className="flex items-center gap-1.5 text-xs">
               <label htmlFor="month-select" className="text-slate-500 font-medium">
                 Month:

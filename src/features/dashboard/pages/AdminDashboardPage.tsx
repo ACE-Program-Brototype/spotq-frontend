@@ -1,20 +1,21 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CustomerGrowthCard } from "../components/admin/CustomerGrowthCard";
-import { ExportReportsModal } from "../components/admin/ExportReportsModal";
-import { OnboardingFunnelSection } from "../components/admin/OnboardingFunnelSection";
-import { PlatformDashboardHeader } from "../components/admin/PlatformDashboardHeader";
-import { PlatformFilterBar } from "../components/admin/PlatformFilterBar";
-import { PlatformKpisSection } from "../components/admin/PlatformKpisSection";
-import { RevenueTimelineChart } from "../components/admin/RevenueTimelineChart";
-import { SubscriptionTierDonutChart } from "../components/admin/SubscriptionTierDonutChart";
+import { CustomerGrowthCard } from "@/features/dashboard/components/admin/CustomerGrowthCard";
+import { ExportReportsModal } from "@/features/dashboard/components/admin/ExportReportsModal";
+import { OnboardingFunnelSection } from "@/features/dashboard/components/admin/OnboardingFunnelSection";
+import { PlatformDashboardHeader } from "@/features/dashboard/components/admin/PlatformDashboardHeader";
+import { PlatformFilterBar } from "@/features/dashboard/components/admin/PlatformFilterBar";
+import { PlatformKpisSection } from "@/features/dashboard/components/admin/PlatformKpisSection";
+import { RevenueTimelineChart } from "@/features/dashboard/components/admin/RevenueTimelineChart";
+import { SubscriptionTierDonutChart } from "@/features/dashboard/components/admin/SubscriptionTierDonutChart";
 import {
+  ANALYTICS_PERIOD_VALUES,
   getDefaultFilters,
   PLATFORM_ANALYTICS_MESSAGES,
-} from "../constants/platform-analytics.constants";
-import { usePlatformAdminDashboardAnalytics } from "../hooks/usePlatformAdminDashboardAnalytics";
-import type { PlatformDashboardFilters } from "../types/platform-analytics.types";
+} from "@/features/dashboard/constants/platform-analytics.constants";
+import { usePlatformAdminDashboardAnalytics } from "@/features/dashboard/hooks/usePlatformAdminDashboardAnalytics";
+import type { PlatformDashboardFilters } from "@/features/dashboard/types/platform-analytics.types";
 
 export default function AdminDashboardPage() {
   const [filters, setFilters] = useState<PlatformDashboardFilters>(getDefaultFilters);
@@ -32,13 +33,13 @@ export default function AdminDashboardPage() {
 
   const getPeriodLabel = () => {
     switch (filters.period) {
-      case "DAY":
+      case ANALYTICS_PERIOD_VALUES.DAY:
         return "today";
-      case "WEEK":
+      case ANALYTICS_PERIOD_VALUES.WEEK:
         return "this week";
-      case "MONTH":
+      case ANALYTICS_PERIOD_VALUES.MONTH:
         return "this month";
-      case "YEAR":
+      case ANALYTICS_PERIOD_VALUES.YEAR:
         return "this year";
       default:
         return "in selected period";

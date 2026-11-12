@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { usePlatformAdminDashboardAnalytics } from "../hooks/usePlatformAdminDashboardAnalytics";
-import type { PlatformDashboardAnalyticsResponse } from "../types/platform-analytics.types";
-import AdminDashboardPage from "./AdminDashboardPage";
+import { usePlatformAdminDashboardAnalytics } from "@/features/dashboard/hooks/usePlatformAdminDashboardAnalytics";
+import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
+import type { PlatformDashboardAnalyticsResponse } from "@/features/dashboard/types/platform-analytics.types";
 
-jest.mock("../hooks/usePlatformAdminDashboardAnalytics");
+jest.mock("@/features/dashboard/hooks/usePlatformAdminDashboardAnalytics");
 
 const renderWithRouter = (ui: React.ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>);
 

@@ -1,6 +1,6 @@
+import { PLATFORM_ANALYTICS_ENDPOINTS } from "@/features/dashboard/constants/platform-analytics.constants";
+import { platformAnalyticsService } from "@/features/dashboard/services/platform-analytics.service";
 import { apiClient } from "@/lib/api/client";
-import { PLATFORM_ANALYTICS_ENDPOINTS } from "../constants/platform-analytics.constants";
-import { platformAnalyticsService } from "./platform-analytics.service";
 
 jest.mock("@/lib/api/client", () => ({
   apiClient: {

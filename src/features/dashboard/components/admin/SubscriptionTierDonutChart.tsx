@@ -1,7 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { PlatformOverview } from "../../types/platform-analytics.types";
-import { formatNumber, sanitizeTierLabel } from "../../utils/platform-analytics.utils";
+import type { PlatformOverview } from "@/features/dashboard/types/platform-analytics.types";
+import {
+  formatNumber,
+  sanitizeTierLabel,
+} from "@/features/dashboard/utils/platform-analytics.utils";
 
 export interface SubscriptionTierDonutChartProps {
   overview?: PlatformOverview;
@@ -41,7 +44,7 @@ export function SubscriptionTierDonutChart({
   }
 
   const rawDistribution = overview?.subscriptionTierDistribution;
-  const isAvailable = rawDistribution !== null && rawDistribution !== undefined;
+  const isAvailable = rawDistribution != null;
   const totalRestaurants = overview?.totalRestaurants ?? 0;
   const activeSubscribed = overview?.activeSubscribedRestaurants ?? 0;
 
@@ -87,16 +90,16 @@ export function SubscriptionTierDonutChart({
           <div className="flex flex-col items-center w-full">
             {/* SVG Donut Centered on Top */}
             <div className="relative flex shrink-0 items-center justify-center my-3">
-              <svg width="168" height="168" viewBox="0 0 168 168" className="rotate-[-90deg]">
+              <svg
+                role="img"
+                aria-label="Subscription tiers donut chart"
+                width="168"
+                height="168"
+                viewBox="0 0 168 168"
+                className="rotate-[-90deg]"
+              >
                 {/* Background ring */}
-                <circle
-                  cx="84"
-                  cy="84"
-                  r={radius}
-                  fill="none"
-                  stroke="#F1F5F9"
-                  strokeWidth="20"
-                />
+                <circle cx="84" cy="84" r={radius} fill="none" stroke="#F1F5F9" strokeWidth="20" />
 
                 {/* Segments */}
                 {tiers.map((t) => {

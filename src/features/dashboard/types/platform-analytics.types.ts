@@ -1,6 +1,37 @@
-export type AnalyticsPeriod = "DAY" | "WEEK" | "MONTH" | "YEAR";
-export type BillingCycle = "ALL" | "MONTHLY" | "YEARLY";
-export type AnalyticsSectionStatus = "AVAILABLE" | "UNAVAILABLE";
+export const ANALYTICS_PERIOD_VALUES = {
+  DAY: "DAY",
+  WEEK: "WEEK",
+  MONTH: "MONTH",
+  YEAR: "YEAR",
+} as const;
+
+export type AnalyticsPeriod =
+  (typeof ANALYTICS_PERIOD_VALUES)[keyof typeof ANALYTICS_PERIOD_VALUES];
+
+export const BILLING_CYCLE_VALUES = {
+  ALL: "ALL",
+  MONTHLY: "MONTHLY",
+  YEARLY: "YEARLY",
+} as const;
+
+export type BillingCycle = (typeof BILLING_CYCLE_VALUES)[keyof typeof BILLING_CYCLE_VALUES];
+
+export const ANALYTICS_SECTION_STATUSES = {
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+
+export type AnalyticsSectionStatus =
+  (typeof ANALYTICS_SECTION_STATUSES)[keyof typeof ANALYTICS_SECTION_STATUSES];
+
+export const ONBOARDING_FUNNEL_STAGES = {
+  REGISTERED: "REGISTERED",
+  APPROVED_ACTIVE: "APPROVED_ACTIVE",
+  APPROVED: "APPROVED",
+} as const;
+
+export type OnboardingFunnelStage =
+  (typeof ONBOARDING_FUNNEL_STAGES)[keyof typeof ONBOARDING_FUNNEL_STAGES];
 
 export interface PlatformDashboardFilters {
   period: AnalyticsPeriod;

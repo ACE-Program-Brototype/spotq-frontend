@@ -1,8 +1,8 @@
 import { Download, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PLATFORM_ANALYTICS_MESSAGES } from "../../constants/platform-analytics.constants";
-import { formatSyncTimestamp } from "../../utils/platform-analytics.utils";
+import { PLATFORM_ANALYTICS_MESSAGES } from "@/features/dashboard/constants/platform-analytics.constants";
+import { formatSyncTimestamp } from "@/features/dashboard/utils/platform-analytics.utils";
 
 export interface PlatformDashboardHeaderProps {
   generatedAt?: string;
