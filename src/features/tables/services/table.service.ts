@@ -5,16 +5,20 @@ import type {
   AdminTables,
   CreateTablePayload,
   CreateTableSectionPayload,
+  DeleteTableResponse,
   DeleteTableSectionResponse,
   GetTableSectionResponse,
   GetTablesResponse,
   PaginatedTableSectionsData,
+  ReleaseTablesPayload,
+  ReleaseTablesResponse,
   RestaurantTableDetails,
   StaffUpdatableStatus,
   TableItem,
   TableSectionAll,
   TableStatus,
   TablesGroupedBySection,
+  UpdateTablePayload,
   UpdateTableStatusResponse,
 } from "../types/table.types";
 
@@ -40,6 +44,57 @@ export const tableService = {
     }
 
     return response.data;
+  },
+
+  /**
+   * Updates table metadata (code, capacity, section, shape).
+   * Endpoint: PATCH /api/v1/restaurants/{restaurantId}/table/{tableId}
+   */
+  async updateTable(
+    restaurantId: string,
+    tableId: string,
+    payload: UpdateTablePayload,
+  ): Promise<TableItem> {
+    if (!restaurantId || !tableId) {
+      throw new Error(TABLE_SERVICE_ERRORS.DETAILS_IDS_REQUIRED);
+    }
+
+    const response = await apiClient
+      .patch(TABLE_ENDPOINTS.UPDATE(restaurantId, tableId), {
+        json: {
+          ...(payload.tableCode ? { tableCode: payload.tableCode.trim() } : {}),
+          ...(payload.capacity !== undefined ? { capacity: payload.capacity } : {}),
+          ...(payload.sectionId ? { sectionId: payload.sectionId.trim() } : {}),
+          ...(payload.type ? { type: payload.type } : {}),
+        },
+      })
+      .json<SuccessResponse<TableItem>>();
+
+    if (!response.success) {
+      throw new Error(response.message || TABLE_SERVICE_ERRORS.UPDATE_FAILED);
+    }
+
+    return response.data;
+  },
+
+  /**
+   * Soft deletes a table by removing it from active floor rotation.
+   * Endpoint: DELETE /api/v1/restaurants/{restaurantId}/table/{tableId}
+   */
+  async deleteTable(restaurantId: string, tableId: string): Promise<DeleteTableResponse> {
+    if (!restaurantId || !tableId) {
+      throw new Error(TABLE_SERVICE_ERRORS.DETAILS_IDS_REQUIRED);
+    }
+
+    const response = await apiClient
+      .delete(TABLE_ENDPOINTS.DELETE(restaurantId, tableId))
+      .json<SuccessResponse<DeleteTableResponse>>();
+
+    if (!response.success) {
+      throw new Error(response.message || TABLE_SERVICE_ERRORS.DELETE_FAILED);
+    }
+
+    return response.data || { success: true, message: response.message };
   },
 
   async getTableDetails(restaurantId: string, tableId: string): Promise<RestaurantTableDetails> {
@@ -165,5 +220,31 @@ export const tableService = {
         json: { status },
       })
       .json<UpdateTableStatusResponse>();
+  },
+
+  /**
+   * Releases partial or full occupancy from one or more tables.
+   * Endpoint: PATCH /api/v1/restaurants/{restaurantId}/tables/release
+   * Body: { tables: [{ tableId, occupancyToRelease }] }
+   */
+  async releaseTables(
+    restaurantId: string,
+    payload: ReleaseTablesPayload,
+  ): Promise<ReleaseTablesResponse> {
+    if (!restaurantId || !payload.tables?.length) {
+      throw new Error(TABLE_SERVICE_ERRORS.RELEASE_IDS_REQUIRED);
+    }
+
+    const response = await apiClient
+      .patch(TABLE_ENDPOINTS.RELEASE(restaurantId), {
+        json: payload,
+      })
+      .json<SuccessResponse<ReleaseTablesResponse>>();
+
+    if (!response.success) {
+      throw new Error(response.message || TABLE_SERVICE_ERRORS.RELEASE_FAILED);
+    }
+
+    return response.data;
   },
 };

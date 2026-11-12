@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { ReleaseTableModal } from "../components/ReleaseTableModal";
 import { TableCard } from "../components/TableCard";
 import { TableSectionTabs } from "../components/TableSectionTabs";
 import { TableSkeletonGrid } from "../components/TableSkeletonGrid";
@@ -39,8 +40,9 @@ export default function StaffTablePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<TableStatus | "ALL">("ALL");
 
-  // Selected table for status modal
+  // Selected table for status modal and release modal
   const [selectedTable, setSelectedTable] = useState<TableItem | null>(null);
+  const [tableToRelease, setTableToRelease] = useState<TableItem | null>(null);
 
   // Filter tables in active section
   const visibleTables = useMemo(() => {
@@ -238,7 +240,12 @@ export default function StaffTablePage() {
         {Boolean(restaurantId) && !isLoading && !isError && visibleTables.length > 0 && (
           <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3.5 sm:gap-4">
             {visibleTables.map((table) => (
-              <TableCard key={table.id} table={table} onClick={setSelectedTable} />
+              <TableCard
+                key={table.id}
+                table={table}
+                onClick={setSelectedTable}
+                onRelease={setTableToRelease}
+              />
             ))}
           </div>
         )}
@@ -249,6 +256,15 @@ export default function StaffTablePage() {
         table={selectedTable}
         isOpen={Boolean(selectedTable)}
         onClose={() => setSelectedTable(null)}
+        restaurantId={restaurantId}
+        sectionName={activeSection}
+      />
+
+      {/* Release Table Occupancy Modal */}
+      <ReleaseTableModal
+        table={tableToRelease}
+        isOpen={Boolean(tableToRelease)}
+        onClose={() => setTableToRelease(null)}
         restaurantId={restaurantId}
         sectionName={activeSection}
       />

@@ -13,6 +13,10 @@ import type {
   VerifyPaymentRequest,
   VerifyPaymentResponse,
 } from "@/features/subscription/types/subscription.types";
+import type {
+  GetSubscriptionHistoryParams,
+  SubscriptionBillingHistoryData,
+} from "@/features/subscription/types/subscription-history.types";
 import { apiClient } from "@/lib/api/client";
 
 export const subscriptionService = {
@@ -163,6 +167,34 @@ export const subscriptionService = {
           }
         : null,
     };
+  },
+
+  async getSubscriptionHistory(
+    restaurantId: string,
+    params: GetSubscriptionHistoryParams = {},
+  ): Promise<SubscriptionBillingHistoryData> {
+    if (!restaurantId) {
+      throw new Error("Restaurant identification is required to retrieve billing history.");
+    }
+
+    const searchParams = new URLSearchParams();
+    if (params.page && params.page > 0) {
+      searchParams.set("page", String(params.page));
+    }
+    if (params.limit && params.limit > 0) {
+      searchParams.set("limit", String(params.limit));
+    }
+    if (params.status && params.status !== "ALL") {
+      searchParams.set("status", params.status);
+    }
+
+    const response = await apiClient
+      .get(SUBSCRIPTION_ENDPOINTS.HISTORY(restaurantId), {
+        searchParams,
+      })
+      .json<ApiResponse<SubscriptionBillingHistoryData>>();
+
+    return response.data;
   },
 };
 

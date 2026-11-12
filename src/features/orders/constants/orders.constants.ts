@@ -66,6 +66,7 @@ export const ORDER_DEFAULT_PAGINATION = (
 
 export const ORDER_ENDPOINTS = {
   HISTORY: "orders/history",
+  DETAIL: (id: string) => `orders/${id}`,
 } as const;
 
 export const ORDER_QUERY_KEYS = {

@@ -13,6 +13,7 @@ export const ADMIN_ROUTE_PATHS = {
   },
   DASHBOARD: "dashboard",
   FINANCE: "finance",
+  ORDERS: "orders",
   RESTAURANTS: "restaurants",
   RESTAURANTS_MANAGEMENT: "restaurants/management",
   RESTAURANTS_ONBOARDING: "restaurants/onboarding",
@@ -40,6 +41,7 @@ export const ADMIN_ROUTES = {
 
   DASHBOARD: "/admin/dashboard",
   FINANCE: "/admin/finance",
+  ORDERS: "/admin/orders",
   RESTAURANTS: "/admin/restaurants",
   RESTAURANTS_MANAGEMENT: "/admin/restaurants/management",
   RESTAURANTS_ONBOARDING: "/admin/restaurants/onboarding",

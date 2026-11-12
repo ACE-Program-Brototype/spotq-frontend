@@ -43,7 +43,7 @@ const mockRefetch = jest.fn();
 const mockUseStaffOrders = jest.fn();
 const mockUseAuthStore = jest.fn();
 
-jest.mock("../hooks/use-staff-orders", () => ({
+jest.mock("@/features/orders/hooks/use-staff-orders", () => ({
   useStaffOrders: (restaurantId: string, params: unknown) =>
     mockUseStaffOrders(restaurantId, params),
 }));
@@ -119,6 +119,7 @@ describe("StaffOrdersPage", () => {
     expect(screen.getByText("Classic Veg Burger")).toBeInTheDocument();
     expect(screen.getByText("Cold Brew Coffee")).toBeInTheDocument();
     expect(screen.getByText("+Extra Cheese")).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /view details/i }).length).toBe(2);
   });
 
   it("triggers refetch when clicking the refresh button", () => {

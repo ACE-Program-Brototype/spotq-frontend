@@ -10,6 +10,7 @@ import {
   Store,
   Users,
   Utensils,
+  Wallet,
 } from "lucide-react";
 import type { NavItem } from "./types";
 
@@ -80,6 +81,11 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       ],
     },
     {
+      title: "Wallet",
+      href: `${basePath}/wallet`,
+      icon: Wallet,
+    },
+    {
       title: "Finance",
       href: `${basePath}/finance`,
       icon: DollarSign,
@@ -106,9 +112,8 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       href: `${basePath}/subscription`,
       icon: CreditCard,
       children: [
-        { title: "Overview", href: `${basePath}/subscription/overview` },
-        { title: "Billing", href: `${basePath}/subscription/billing` },
-        { title: "Invoices", href: `${basePath}/subscription/invoices` },
+        { title: "Overview", href: `${basePath}/subscription` },
+        { title: "Billing History", href: `${basePath}/settings/billing/history` },
       ],
     },
     {

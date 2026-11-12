@@ -1,6 +1,6 @@
 import { Inbox, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { STAFF_ORDERS_MESSAGES } from "../../constants/staff-orders.constants";
+import { STAFF_ORDERS_MESSAGES } from "@/features/orders/constants/staff-orders.constants";
 
 interface StaffOrdersEmptyStateProps {
   hasFilters: boolean;

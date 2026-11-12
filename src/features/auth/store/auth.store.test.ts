@@ -1,3 +1,4 @@
+import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
 import type { User } from "../types/auth.types";
 import { useAuthStore } from "./auth.store";
 
@@ -42,7 +43,16 @@ describe("useAuthStore State and Persistence", () => {
     expect(parsed.state.accessToken).toBeUndefined();
   });
 
-  it("clears user and session on clearAuth", () => {
+  it("clears user, session, and active queue ticket on clearAuth", () => {
+    localStorage.setItem(
+      ACTIVE_QUEUE_STORAGE_KEY,
+      JSON.stringify({
+        queueEntryId: "entry-1",
+        restaurantId: "rest-1",
+        queueNumber: "Q-001",
+      }),
+    );
+
     useAuthStore.getState().setAuth(mockUser, "test-token-value");
     useAuthStore.getState().clearAuth();
 
@@ -50,6 +60,7 @@ describe("useAuthStore State and Persistence", () => {
     expect(state.user).toBeNull();
     expect(state.accessToken).toBeNull();
     expect(state.isAuthenticated).toBe(false);
+    expect(localStorage.getItem(ACTIVE_QUEUE_STORAGE_KEY)).toBeNull();
 
     const localData = localStorage.getItem("spotq-auth-storage");
     expect(localData).not.toBeNull();
