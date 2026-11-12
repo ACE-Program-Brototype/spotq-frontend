@@ -11,25 +11,25 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils/date";
-import { CancelOrderTriggerButton } from "../components/admin/order/cancel-order/CancelOrderTriggerButton";
-import { CustomerOrderDetailSkeleton } from "../components/customer/CustomerOrderDetailSkeleton";
-import { OrderCustomerItemList } from "../components/customer/OrderCustomerItemList";
-import { OrderDiningContextCard } from "../components/customer/OrderDiningContextCard";
-import { OrderPaymentCard } from "../components/customer/OrderPaymentCard";
-import { OrderPricingCard } from "../components/customer/OrderPricingCard";
-import { OrderStatusHistoryTimeline } from "../components/customer/OrderStatusHistoryTimeline";
-import { OrderStatusTracker } from "../components/customer/OrderStatusTracker";
+import { CancelOrderTriggerButton } from "@/features/orders/components/admin/order/cancel-order/CancelOrderTriggerButton";
+import { CustomerOrderDetailSkeleton } from "@/features/orders/components/customer/CustomerOrderDetailSkeleton";
+import { OrderCustomerItemList } from "@/features/orders/components/customer/OrderCustomerItemList";
+import { OrderDiningContextCard } from "@/features/orders/components/customer/OrderDiningContextCard";
+import { OrderPaymentCard } from "@/features/orders/components/customer/OrderPaymentCard";
+import { OrderPricingCard } from "@/features/orders/components/customer/OrderPricingCard";
+import { OrderStatusHistoryTimeline } from "@/features/orders/components/customer/OrderStatusHistoryTimeline";
+import { OrderStatusTracker } from "@/features/orders/components/customer/OrderStatusTracker";
 import {
   CUSTOMER_ORDER_STATUS,
   CUSTOMER_PAYMENT_STATUS,
   ORDER_STATUS_VARIANTS,
-} from "../constants/customer-order-details.constants";
+} from "@/features/orders/constants/customer-order-details.constants";
 import {
   useCustomerOrderDetails,
   useCustomerOrderRefundStatus,
-} from "../hooks/use-customer-order-details";
-import { useDownloadInvoice } from "../hooks/use-download-invoice";
+} from "@/features/orders/hooks/use-customer-order-details";
+import { useDownloadInvoice } from "@/features/orders/hooks/use-download-invoice";
+import { formatDate } from "@/lib/utils/date";
 
 export default function CustomerOrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();

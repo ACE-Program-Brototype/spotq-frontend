@@ -7,6 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 import { formatDate } from "@/lib/utils/date";
 import { WALLET_LEDGER_STATUSES, WALLET_LEDGER_TYPES } from "../constants/wallet.constants";
 import type { WalletLedgerEntry, WalletLedgerPagination } from "../types/wallet.types";
+import { formatLabel } from "../utils/wallet.utils";
 
 interface WalletLedgerEntriesTableProps {
   entries: readonly WalletLedgerEntry[];
@@ -25,12 +26,6 @@ interface WalletLedgerEntriesTableProps {
   onPageChange: (page: number) => void;
   onClearFilters: () => void;
 }
-
-const formatLabel = (value: string) =>
-  value
-    .split("_")
-    .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-    .join(" ");
 
 export function WalletLedgerEntriesTable({
   entries,
