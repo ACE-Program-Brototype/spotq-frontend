@@ -15,9 +15,20 @@ export const WALLET_ENDPOINTS = {
   OVERVIEW: "payments/wallets",
   BANK_ACCOUNT: "payments/wallets/bank-account",
   WITHDRAW: "payments/wallets/withdraw",
+  LEDGER_ENTRIES: "payments/wallets/settlements",
 } as const;
+
+export const WALLET_LEDGER_TYPES = [
+  "CREDIT_ORDER_PAYMENT",
+  "DEBIT_PAYOUT_WITHDRAWAL",
+  "DEBIT_ORDER_REFUND",
+  "CREDIT_PAYOUT_REVERSAL",
+] as const;
+
+export const WALLET_LEDGER_STATUSES = ["PROCESSING", "PROCESSED", "FAILED", "REVERSED"] as const;
 
 export const WALLET_QUERY_KEYS = {
   all: ["wallet"] as const,
   overview: () => [...WALLET_QUERY_KEYS.all, "overview"] as const,
+  ledgerEntries: (params: unknown) => [...WALLET_QUERY_KEYS.all, "ledger-entries", params] as const,
 };

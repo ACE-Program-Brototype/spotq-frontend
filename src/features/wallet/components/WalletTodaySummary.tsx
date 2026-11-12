@@ -30,7 +30,7 @@ export function WalletTodaySummary({
         tone="orange"
       />
       <SummaryCard
-        title="Today's withdrawals"
+        title="Total withdrawals"
         amount={withdrawnPaise}
         note={`${pendingPayoutsCount} pending payout${pendingPayoutsCount === 1 ? "" : "s"}`}
         tone="orange"
