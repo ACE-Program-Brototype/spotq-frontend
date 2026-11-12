@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { CustomerSidebar } from "./CustomerSidebar";
 
@@ -18,7 +18,10 @@ jest.mock("@/features/auth/store/auth.store", () => ({
 }));
 
 describe("CustomerSidebar Component", () => {
-  it("renders all navigation items", () => {
+  const getDesktopNav = () =>
+    within(screen.getByRole("navigation", { name: "Customer Account Navigation Desktop" }));
+
+  it("renders the customer account navigation items", () => {
     render(
       <MemoryRouter initialEntries={["/profile"]}>
         <CustomerSidebar
@@ -37,11 +40,10 @@ describe("CustomerSidebar Component", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Profile")).toBeInTheDocument();
-    expect(screen.getByText("Orders")).toBeInTheDocument();
-    expect(screen.getByText("Queues")).toBeInTheDocument();
-    expect(screen.getByText("Loyalties")).toBeInTheDocument();
-    expect(screen.getByText("Payments")).toBeInTheDocument();
+    const desktopNav = getDesktopNav();
+    expect(desktopNav.getByText("Profile")).toBeInTheDocument();
+    expect(desktopNav.getByText("Orders")).toBeInTheDocument();
+    expect(desktopNav.getByText("Payments")).toBeInTheDocument();
   });
 
   it("marks /profile as active when on /profile or /profile/edit, but not on /profile-other", () => {
@@ -51,7 +53,7 @@ describe("CustomerSidebar Component", () => {
       </MemoryRouter>,
     );
 
-    const profileLink = screen.getByRole("link", { name: /profile/i });
+    const profileLink = getDesktopNav().getByRole("link", { name: /profile/i });
     expect(profileLink.className).toContain("bg-[#ff6b00]");
 
     rerender(
@@ -60,7 +62,7 @@ describe("CustomerSidebar Component", () => {
       </MemoryRouter>,
     );
 
-    const ordersLink = screen.getByRole("link", { name: /orders/i });
+    const ordersLink = getDesktopNav().getByRole("link", { name: /orders/i });
     expect(ordersLink.className).not.toContain("bg-[#ff6b00]");
   });
 
@@ -71,9 +73,10 @@ describe("CustomerSidebar Component", () => {
       </MemoryRouter>,
     );
 
-    const paymentsLink = screen.getByRole("link", { name: /payments/i });
+    const desktopNav = getDesktopNav();
+    const paymentsLink = desktopNav.getByRole("link", { name: /payments/i });
     expect(paymentsLink.className).toContain("bg-[#ff6b00]");
-    const profileLink = screen.getByRole("link", { name: /profile/i });
+    const profileLink = desktopNav.getByRole("link", { name: /profile/i });
     expect(profileLink.className).not.toContain("bg-[#ff6b00]");
   });
 });

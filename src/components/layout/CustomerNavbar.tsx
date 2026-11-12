@@ -3,13 +3,14 @@
  * Provides branding, global search, shopping cart access, notifications, and customer authentication links.
  */
 
-import { Bell, Home, Search, ShoppingCart, User } from "lucide-react";
+import { Bell, Home, LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
 import type { CustomerMobileNavProps, CustomerNavbarProps } from "./types";
@@ -140,17 +141,7 @@ export function CustomerNavbar({
           </Link>
 
           {user ? (
-            <Link
-              to={CUSTOMER_ROUTES.PROFILE.ROOT}
-              aria-label="My Profile"
-              className="flex items-center gap-2 pl-1"
-            >
-              <Avatar className="size-8.5 bg-[#1c1714] text-white font-bold border border-neutral-200">
-                <AvatarFallback className="bg-[#1c1714] text-white text-xs font-bold">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
+            <CustomerAccountMenu initials={initials} />
           ) : (
             <Link
               to={CUSTOMER_ROUTES.AUTH.LOGIN}
@@ -180,6 +171,49 @@ export function CustomerNavbar({
         </div>
       )}
     </header>
+  );
+}
+
+function CustomerAccountMenu({ initials }: { initials: string }) {
+  const { handleLogout, isLoading: isLoggingOut } = useLogout();
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative pl-1">
+      <button
+        type="button"
+        aria-label="Open account menu"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((open) => !open)}
+        className="flex items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
+      >
+        <Avatar className="size-8.5 bg-[#1c1714] text-white font-bold border border-neutral-200">
+          <AvatarFallback className="bg-[#1c1714] text-white text-xs font-bold">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg">
+          <Link
+            to={CUSTOMER_ROUTES.PROFILE.ROOT}
+            onClick={() => setIsOpen(false)}
+            className="block rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+          >
+            My profile
+          </Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-60"
+          >
+            <LogOut className="size-4" />
+            {isLoggingOut ? "Logging out..." : "Logout"}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 

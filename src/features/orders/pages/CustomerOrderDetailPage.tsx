@@ -11,18 +11,25 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants";
 import { Button } from "@/components/ui/button";
+import { CancelOrderTriggerButton } from "@/features/orders/components/admin/order/cancel-order/CancelOrderTriggerButton";
+import { CustomerOrderDetailSkeleton } from "@/features/orders/components/customer/CustomerOrderDetailSkeleton";
+import { OrderCustomerItemList } from "@/features/orders/components/customer/OrderCustomerItemList";
+import { OrderDiningContextCard } from "@/features/orders/components/customer/OrderDiningContextCard";
+import { OrderPaymentCard } from "@/features/orders/components/customer/OrderPaymentCard";
+import { OrderPricingCard } from "@/features/orders/components/customer/OrderPricingCard";
+import { OrderStatusHistoryTimeline } from "@/features/orders/components/customer/OrderStatusHistoryTimeline";
+import { OrderStatusTracker } from "@/features/orders/components/customer/OrderStatusTracker";
+import {
+  CUSTOMER_ORDER_STATUS,
+  CUSTOMER_PAYMENT_STATUS,
+  ORDER_STATUS_VARIANTS,
+} from "@/features/orders/constants/customer-order-details.constants";
+import {
+  useCustomerOrderDetails,
+  useCustomerOrderRefundStatus,
+} from "@/features/orders/hooks/use-customer-order-details";
+import { useDownloadInvoice } from "@/features/orders/hooks/use-download-invoice";
 import { formatDate } from "@/lib/utils/date";
-import { CancelOrderTriggerButton } from "../components/admin/order/cancel-order/CancelOrderTriggerButton";
-import { CustomerOrderDetailSkeleton } from "../components/customer/CustomerOrderDetailSkeleton";
-import { OrderCustomerItemList } from "../components/customer/OrderCustomerItemList";
-import { OrderDiningContextCard } from "../components/customer/OrderDiningContextCard";
-import { OrderPaymentCard } from "../components/customer/OrderPaymentCard";
-import { OrderPricingCard } from "../components/customer/OrderPricingCard";
-import { OrderStatusHistoryTimeline } from "../components/customer/OrderStatusHistoryTimeline";
-import { OrderStatusTracker } from "../components/customer/OrderStatusTracker";
-import { ORDER_STATUS_VARIANTS } from "../constants/customer-order-details.constants";
-import { useCustomerOrderDetails } from "../hooks/use-customer-order-details";
-import { useDownloadInvoice } from "../hooks/use-download-invoice";
 
 export default function CustomerOrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -36,6 +43,13 @@ export default function CustomerOrderDetailPage() {
     refetch,
     isFetching,
   } = useCustomerOrderDetails(activeOrderId);
+  const isOrderCancelled = order?.status?.toUpperCase() === CUSTOMER_ORDER_STATUS.CANCELLED;
+  const paymentStatus = order?.payment?.status?.toUpperCase();
+  const canShowRefundStatus =
+    isOrderCancelled &&
+    (paymentStatus === CUSTOMER_PAYMENT_STATUS.PAID ||
+      paymentStatus === CUSTOMER_PAYMENT_STATUS.REFUNDED);
+  const refundQuery = useCustomerOrderRefundStatus(activeOrderId, canShowRefundStatus);
   const { downloadInvoice, isDownloading: isDownloadingInvoice } = useDownloadInvoice();
 
   const handleBack = () => {
@@ -205,7 +219,16 @@ export default function CustomerOrderDetailPage() {
             specialInstructions={order.special_instructions}
           />
 
-          <OrderPaymentCard payment={order.payment} />
+          <OrderPaymentCard
+            payment={order.payment}
+            refundStatus={refundQuery.data}
+            isRefundLoading={canShowRefundStatus && refundQuery.isLoading}
+            refundError={
+              canShowRefundStatus && refundQuery.isError
+                ? "Unable to retrieve refund status. Please refresh to try again."
+                : undefined
+            }
+          />
 
           <OrderPricingCard pricing={order.pricing} />
         </div>
