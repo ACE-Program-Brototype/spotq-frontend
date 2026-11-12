@@ -167,3 +167,10 @@ export const mockDegradedAnalyticsData: RestaurantAnalyticsDashboardResponseDto 
   },
   generatedAt: "2026-11-11T02:00:00.000Z",
 };
+
+describe("restaurantAnalyticsFixture", () => {
+  it("exports valid mock analytics response data", () => {
+    expect(mockAnalyticsDashboardData).toBeDefined();
+    expect(mockDegradedAnalyticsData).toBeDefined();
+  });
+});
