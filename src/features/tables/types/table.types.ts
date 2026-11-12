@@ -97,8 +97,43 @@ export interface CreateTablePayload {
   tableShape: TableShape;
 }
 
+export interface UpdateTablePayload {
+  tableCode?: string;
+  capacity?: number;
+  sectionId?: string;
+  type?: TableShape;
+}
+
+export type UpdateTableResponse = TableItem;
+
+export interface DeleteTableResponse {
+  success: boolean;
+  message: string;
+}
+
 export interface TableStatusTransitionRule {
   allowed: boolean;
   targetStatus: StaffUpdatableStatus | null;
   reason?: string;
+}
+
+export interface ReleaseTableEntryInput {
+  tableId: string;
+  occupancyToRelease: number;
+}
+
+export interface ReleaseTablesPayload {
+  tables: ReleaseTableEntryInput[];
+}
+
+export interface ReleasedTableSummary {
+  tableId: string;
+  tableCode: string;
+  status: TableStatus;
+  currentOccupancy: number;
+  capacity: number;
+}
+
+export interface ReleaseTablesResponse {
+  releasedTables: ReleasedTableSummary[];
 }

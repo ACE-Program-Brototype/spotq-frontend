@@ -1,15 +1,20 @@
-import { Clock, Ticket, Utensils } from "lucide-react";
+import { ChevronRight, Clock, Eye, Ticket, Utensils } from "lucide-react";
+import { Link } from "react-router-dom";
+import { STAFF_ROUTES } from "@/app/router/staff/staff.routes.constants";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils/cn";
-import { formatDate } from "@/lib/utils/date";
+import { Button } from "@/components/ui/button";
+import { StaffOrdersEmptyState } from "@/features/orders/components/staff/StaffOrdersEmptyState";
+import { StaffOrdersPagination } from "@/features/orders/components/staff/StaffOrdersPagination";
+import { StaffOrdersSkeleton } from "@/features/orders/components/staff/StaffOrdersSkeleton";
 import {
+  STAFF_ORDER_DETAILS_MESSAGES,
   STAFF_ORDER_STATUS_CONFIG,
   STAFF_ORDER_TYPE_CONFIG,
-} from "../../constants/staff-orders.constants";
-import type { StaffOrderListItem } from "../../types/staff-orders.types";
-import { StaffOrdersEmptyState } from "./StaffOrdersEmptyState";
-import { StaffOrdersPagination } from "./StaffOrdersPagination";
-import { StaffOrdersSkeleton } from "./StaffOrdersSkeleton";
+  STAFF_ORDERS_DEFAULTS,
+} from "@/features/orders/constants/staff-orders.constants";
+import type { StaffOrderListItem } from "@/features/orders/types/staff-orders.types";
+import { cn } from "@/lib/utils/cn";
+import { formatDate } from "@/lib/utils/date";
 
 interface StaffOrdersTableProps {
   orders: StaffOrderListItem[];
@@ -57,15 +62,16 @@ export function StaffOrdersTable({
             const totalItemCount = order.items.reduce((acc, item) => acc + item.quantity, 0);
 
             return (
-              <div
+              <Link
                 key={order.id}
-                className="p-4 sm:p-5 transition-colors duration-150 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                to={STAFF_ROUTES.ORDER_DETAILS(order.id)}
+                className="p-4 sm:p-5 transition-colors duration-150 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-neutral-50/80 group cursor-pointer block"
               >
                 {/* Left Column: Order Number, Type, Queue, Status, Time */}
                 <div className="space-y-2.5 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     {/* Order Number */}
-                    <span className="text-sm sm:text-base font-black tracking-tight text-neutral-900">
+                    <span className="text-sm sm:text-base font-black tracking-tight text-neutral-900 group-hover:text-[#e8631b] transition-colors">
                       {order.orderNumber}
                     </span>
 
@@ -84,7 +90,11 @@ export function StaffOrdersTable({
                     {order.queueId && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-[10px] font-bold text-purple-700 border border-purple-200">
                         <Ticket className="size-3 text-purple-600" />
-                        <span>Queue #{order.queueId.slice(0, 8)}</span>
+                        <span>
+                          {STAFF_ORDER_DETAILS_MESSAGES.QUEUE_TAG(
+                            order.queueId.slice(0, STAFF_ORDERS_DEFAULTS.SHORT_ID_LENGTH),
+                          )}
+                        </span>
                       </span>
                     )}
 
@@ -130,17 +140,33 @@ export function StaffOrdersTable({
                   </div>
                 </div>
 
-                {/* Right Column: Order Time & Item Count */}
-                <div className="flex items-center md:flex-col md:items-end justify-between md:justify-center gap-1 text-xs text-neutral-400 shrink-0 border-t border-neutral-100 pt-2 md:border-t-0 md:pt-0">
-                  <span className="flex items-center gap-1 text-neutral-500 font-medium">
-                    <Clock className="size-3 text-neutral-400" />
-                    {formatDate(order.createdAt)}
-                  </span>
-                  <span className="text-[11px] font-semibold text-neutral-500">
-                    {totalItemCount} {totalItemCount === 1 ? "item" : "items"}
-                  </span>
+                {/* Right Column: Order Time, Item Count & View Details Button */}
+                <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 border-t border-neutral-100 pt-2 md:border-t-0 md:pt-0">
+                  <div className="flex items-center md:flex-col md:items-end justify-between md:justify-center gap-1 text-xs text-neutral-400 shrink-0">
+                    <span className="flex items-center gap-1 text-neutral-500 font-medium">
+                      <Clock className="size-3 text-neutral-400" />
+                      {formatDate(order.createdAt)}
+                    </span>
+                    <span className="text-[11px] font-semibold text-neutral-500">
+                      {totalItemCount}{" "}
+                      {totalItemCount === 1
+                        ? STAFF_ORDER_DETAILS_MESSAGES.ITEM_SINGULAR
+                        : STAFF_ORDER_DETAILS_MESSAGES.ITEM_PLURAL}
+                    </span>
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-neutral-200 text-xs font-semibold text-neutral-700 group-hover:border-[#e8631b] group-hover:text-[#e8631b] group-hover:bg-[#fef3ec] gap-1.5 shrink-0 h-8 px-3 transition-colors"
+                  >
+                    <Eye className="size-3.5 text-neutral-400 group-hover:text-[#e8631b]" />
+                    <span>View Details</span>
+                    <ChevronRight className="size-3.5 text-neutral-300 group-hover:text-[#e8631b] group-hover:translate-x-0.5 transition-transform" />
+                  </Button>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

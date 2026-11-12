@@ -41,6 +41,7 @@ export interface ConfirmDialogProps {
   loadingText?: string;
   onConfirm: () => void;
   onCancel?: () => void;
+  contentClassName?: string;
 }
 
 export interface SuccessResponse<T> {

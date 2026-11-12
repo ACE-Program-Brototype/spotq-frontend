@@ -31,14 +31,15 @@ export function ConfirmDialog({
   loadingText,
   onConfirm,
   onCancel,
+  contentClassName,
 }: ConfirmDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       {trigger && <AlertDialogTrigger render={trigger as React.ReactElement} />}
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+      <AlertDialogContent className={contentClassName}>
+        <AlertDialogHeader className="min-w-0">
+          <AlertDialogTitle className="break-all">{title}</AlertDialogTitle>
+          <AlertDialogDescription className="break-words">{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isLoading} onClick={onCancel}>

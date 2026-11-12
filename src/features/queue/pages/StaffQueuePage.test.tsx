@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useTables } from "@/features/tables/hooks/useTables";
 import { queueService } from "../services/queue.service";
+import type { StaffLiveQueueEntry } from "../types/queue.types";
 import StaffQueuePage from "./StaffQueuePage";
 
 jest.mock("../services/queue.service");
@@ -12,6 +13,42 @@ jest.mock("@/features/tables/hooks/useTables");
 describe("StaffQueuePage", () => {
   let queryClient: QueryClient;
   const mockRestaurantId = "rest-queue-123";
+
+  const mockEntry1: StaffLiveQueueEntry = {
+    queueEntryId: "entry-1",
+    queueNumber: "Q-001",
+    position: 1,
+    guestName: "Samantha Reed",
+    guestPhone: "+919876543210",
+    partySize: 4,
+    specialNotes: "High chair needed",
+    registrationType: "WALK_IN",
+    status: "WAITING",
+    assignedTableId: null,
+    joinedAt: "2026-11-09T12:00:00.000Z",
+    ringCount: 0,
+    lastRingAt: null,
+    responseDeadline: null,
+    waitDurationMinutes: 15,
+  };
+
+  const mockEntry2: StaffLiveQueueEntry = {
+    queueEntryId: "entry-2",
+    queueNumber: "Q-002",
+    position: 2,
+    guestName: "Alice Walker",
+    guestPhone: "+919123456789",
+    partySize: 2,
+    specialNotes: null,
+    registrationType: "ONLINE",
+    status: "WAITING",
+    assignedTableId: null,
+    joinedAt: "2026-11-09T12:05:00.000Z",
+    ringCount: 1,
+    lastRingAt: "2026-11-09T12:20:00.000Z",
+    responseDeadline: new Date(Date.now() + 180_000).toISOString(),
+    waitDurationMinutes: 18,
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -54,6 +91,59 @@ describe("StaffQueuePage", () => {
       error: null,
       refetch: jest.fn(),
     });
+
+    (queueService.getStaffLiveQueue as jest.Mock).mockResolvedValue({
+      success: true,
+      message: "Queue retrieved",
+      data: {
+        restaurantId: mockRestaurantId,
+        totalWaiting: 2,
+        entries: [mockEntry1, mockEntry2],
+      },
+    });
+
+    (queueService.ringCustomer as jest.Mock).mockResolvedValue({
+      success: true,
+      message: "Customer notified that table is ready",
+      data: {
+        queueEntryId: "entry-1",
+        status: "WAITING",
+        ringCount: 1,
+        lastRingAt: new Date().toISOString(),
+        responseDeadline: new Date(Date.now() + 180_000).toISOString(),
+      },
+    });
+
+    (queueService.skipParty as jest.Mock).mockResolvedValue({
+      success: true,
+      message: "Queue entry skipped successfully",
+      data: {
+        queueEntryId: "entry-1",
+        status: "SKIPPED",
+        newPosition: 3,
+      },
+    });
+
+    (queueService.cancelQueueEntry as jest.Mock).mockResolvedValue({
+      success: true,
+      message: "Queue entry marked as no-show successfully",
+      data: {
+        queueEntryId: "entry-1",
+        status: "NO_SHOW",
+      },
+    });
+
+    (queueService.assignTables as jest.Mock).mockResolvedValue({
+      success: true,
+      message: "Tables assigned and party seated successfully",
+      data: {
+        queueEntryId: "entry-1",
+        restaurantId: mockRestaurantId,
+        tableIds: ["table-1"],
+        status: "SEATED",
+        seatedAt: new Date().toISOString(),
+      },
+    });
   });
 
   const renderPage = () => {
@@ -64,134 +154,128 @@ describe("StaffQueuePage", () => {
     );
   };
 
-  it("renders page title and empty waitlist state initially", () => {
+  it("renders page title, live sync status, statistics, and live queue table", async () => {
     renderPage();
 
     expect(screen.getByRole("heading", { name: "Queue Management" })).toBeInTheDocument();
-    expect(screen.getByText("No Guests in Waitlist")).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /add to queue/i }).length).toBeGreaterThanOrEqual(
-      1,
-    );
-  });
-
-  it("opens Add to Queue modal when clicking Add to Queue button", async () => {
-    const user = userEvent.setup();
-    renderPage();
-
-    const addBtns = screen.getAllByRole("button", { name: /add to queue/i });
-    await user.click(addBtns[0]);
-
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByLabelText(/guest name/i)).toBeInTheDocument();
-  });
-
-  it("adds the registered party to the waitlist table on successful modal submission", async () => {
-    const user = userEvent.setup();
-    const mockResponse = {
-      success: true,
-      message: "Walk-in guest successfully registered to queue",
-      data: {
-        queueEntryId: "queue-entry-555",
-        restaurantId: mockRestaurantId,
-        userId: null,
-        guestName: "Samantha Reed",
-        guestPhone: "+919876543210",
-        partySize: 4,
-        specialNotes: "High chair needed",
-        registrationType: "WALK_IN",
-        position: 1,
-        estimatedWaitMinutes: 10,
-        status: "WAITING",
-        joinedAt: "2026-10-16T12:00:00.000Z",
-      },
-    };
-
-    (queueService.registerWalkIn as jest.Mock).mockResolvedValue(mockResponse);
-
-    renderPage();
-
-    const addBtns = screen.getAllByRole("button", { name: /add to queue/i });
-    await user.click(addBtns[0]);
-
-    await user.type(screen.getByLabelText(/guest name/i), "Samantha Reed");
-    await user.type(screen.getByLabelText(/phone number/i), "9876543210");
-    await user.click(screen.getByRole("button", { name: "Party size 4" }));
-    await user.type(screen.getByLabelText(/special notes/i), "High chair needed");
-
-    const modal = screen.getByRole("dialog");
-    const modalSubmitBtn = within(modal).getByRole("button", {
-      name: /add to queue/i,
-    });
-    await user.click(modalSubmitBtn);
+    expect(screen.getByTestId("queue-statistics-bar")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText("Samantha Reed")).toBeInTheDocument();
-      expect(screen.getByText("+919876543210")).toBeInTheDocument();
-      expect(screen.getByText("High chair needed")).toBeInTheDocument();
-      expect(screen.getByText("WAITING")).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /assign table/i })).toBeInTheDocument();
+      expect(screen.getByText("Alice Walker")).toBeInTheDocument();
+      expect(screen.getByText("#Q-001")).toBeInTheDocument();
+      expect(screen.getByText("#Q-002")).toBeInTheDocument();
     });
+
+    // Statistics should reflect 2 waiting parties and 1 ringing party
+    expect(screen.getByTestId("stat-waiting-parties")).toHaveTextContent("2");
+    expect(screen.getByTestId("stat-waiting-people")).toHaveTextContent("6");
+    expect(screen.getByTestId("stat-ringing-parties")).toHaveTextContent("1");
+    expect(screen.getByTestId("stat-ringing-people")).toHaveTextContent("2");
   });
 
-  it("opens Assign Table modal when clicking Assign Table and updates party status to SEATED on completion", async () => {
-    const user = userEvent.setup();
-    const mockRegisterResponse = {
+  it("renders empty state when there are no queue entries", async () => {
+    (queueService.getStaffLiveQueue as jest.Mock).mockResolvedValue({
       success: true,
-      message: "Walk-in registered",
+      message: "Queue retrieved",
       data: {
-        queueEntryId: "queue-entry-999",
         restaurantId: mockRestaurantId,
-        userId: null,
-        guestName: "Marcus Sterling",
-        guestPhone: "+919123456789",
-        partySize: 4,
-        specialNotes: null,
-        registrationType: "WALK_IN",
-        position: 1,
-        estimatedWaitMinutes: 5,
-        status: "WAITING",
-        joinedAt: "2026-10-16T12:00:00.000Z",
+        totalWaiting: 0,
+        entries: [],
       },
-    };
-
-    const mockAssignResponse = {
-      success: true,
-      message: "Tables assigned and party seated successfully",
-      data: {
-        queueEntryId: "queue-entry-999",
-        restaurantId: mockRestaurantId,
-        tableIds: ["table-1"],
-        status: "SEATED",
-        seatedAt: "2026-10-16T12:10:00.000Z",
-      },
-    };
-
-    (queueService.registerWalkIn as jest.Mock).mockResolvedValue(mockRegisterResponse);
-    (queueService.assignTables as jest.Mock).mockResolvedValue(mockAssignResponse);
+    });
 
     renderPage();
 
-    // 1. Add walk-in
-    const addBtns = screen.getAllByRole("button", { name: /add to queue/i });
-    await user.click(addBtns[0]);
-
-    await user.type(screen.getByLabelText(/guest name/i), "Marcus Sterling");
-    await user.type(screen.getByLabelText(/phone number/i), "9123456789");
-    await user.click(screen.getByRole("button", { name: "Party size 4" }));
-
-    const walkInModal = screen.getByRole("dialog");
-    await user.click(within(walkInModal).getByRole("button", { name: /add to queue/i }));
-
-    // Wait for row to appear
     await waitFor(() => {
-      expect(screen.getByText("Marcus Sterling")).toBeInTheDocument();
+      expect(screen.getByTestId("queue-empty-state")).toBeInTheDocument();
+      expect(screen.getByText("No Guests in Queue")).toBeInTheDocument();
+    });
+  });
+
+  it("filters live queue by registration type", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("Samantha Reed")).toBeInTheDocument();
+      expect(screen.getByText("Alice Walker")).toBeInTheDocument();
     });
 
-    // 2. Click Assign Table button on the row
-    const assignBtn = screen.getByRole("button", { name: /assign table/i });
-    await user.click(assignBtn);
+    // Filter to Online only
+    await user.click(screen.getByTestId("filter-registration-online"));
+    expect(screen.queryByText("Samantha Reed")).not.toBeInTheDocument();
+    expect(screen.getByText("Alice Walker")).toBeInTheDocument();
 
-    // 3. Verify Assign Table dialog opens
+    // Filter to Walk-In only
+    await user.click(screen.getByTestId("filter-registration-walk-in"));
+    expect(screen.getByText("Samantha Reed")).toBeInTheDocument();
+    expect(screen.queryByText("Alice Walker")).not.toBeInTheDocument();
+  });
+
+  it("filters live queue by party size bucket", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("Samantha Reed")).toBeInTheDocument(); // 4 guests (Medium)
+      expect(screen.getByText("Alice Walker")).toBeInTheDocument(); // 2 guests (Small)
+    });
+
+    // Small (1–2)
+    await user.click(screen.getByTestId("filter-party-size-small"));
+    expect(screen.queryByText("Samantha Reed")).not.toBeInTheDocument();
+    expect(screen.getByText("Alice Walker")).toBeInTheDocument();
+
+    // Medium (3–4)
+    await user.click(screen.getByTestId("filter-party-size-medium"));
+    expect(screen.getByText("Samantha Reed")).toBeInTheDocument();
+    expect(screen.queryByText("Alice Walker")).not.toBeInTheDocument();
+  });
+
+  it("filters live queue by search query", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("Samantha Reed")).toBeInTheDocument();
+    });
+
+    const searchInput = screen.getByTestId("queue-search-input");
+    await user.type(searchInput, "Alice");
+
+    expect(screen.queryByText("Samantha Reed")).not.toBeInTheDocument();
+    expect(screen.getByText("Alice Walker")).toBeInTheDocument();
+  });
+
+  it("triggers Ring Customer action only for ONLINE guests and hides it for WALK_IN", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      // WALK_IN guest should NOT have ring button
+      expect(screen.queryByTestId("action-ring-entry-1")).not.toBeInTheDocument();
+      // ONLINE guest should have ring button
+      expect(screen.getByTestId("action-ring-entry-2")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId("action-ring-entry-2"));
+
+    await waitFor(() => {
+      expect(queueService.ringCustomer).toHaveBeenCalledWith("entry-2");
+    });
+  });
+
+  it("opens Assign Table modal when clicking Assign button", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("action-assign-entry-1")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId("action-assign-entry-1"));
+
     expect(screen.getByRole("heading", { name: "Assign Table & Seat Party" })).toBeInTheDocument();
     expect(screen.getByText("Table T1")).toBeInTheDocument();
 
@@ -202,13 +286,80 @@ describe("StaffQueuePage", () => {
     const confirmBtn = screen.getByRole("button", { name: /confirm & seat party/i });
     await user.click(confirmBtn);
 
-    // 4. Verify assignment API was invoked and UI shows Seated
     await waitFor(() => {
-      expect(queueService.assignTables).toHaveBeenCalledWith("queue-entry-999", {
+      expect(queueService.assignTables).toHaveBeenCalledWith("entry-1", {
         tables: [{ tableId: "table-1", count: 4 }],
       });
-      expect(screen.getByText("SEATED")).toBeInTheDocument();
-      expect(screen.getByText("Seated")).toBeInTheDocument();
     });
+  });
+
+  it("opens Skip Party modal and submits skip mutation", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("action-skip-entry-1")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId("action-skip-entry-1"));
+
+    expect(screen.getByTestId("skip-queue-entry-modal")).toBeInTheDocument();
+    expect(screen.getByText("Skip Party in Queue")).toBeInTheDocument();
+
+    // Select a preset reason
+    await user.click(screen.getByText("Guest requested more time"));
+
+    // Click confirm skip
+    await user.click(screen.getByTestId("confirm-skip-button"));
+
+    await waitFor(() => {
+      expect(queueService.skipParty).toHaveBeenCalledWith(mockRestaurantId, "entry-1", {
+        skipPositions: 2,
+        reason: "Guest requested more time",
+      });
+    });
+  });
+
+  it("opens Cancel / No-Show modal and submits cancel mutation", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("action-cancel-entry-1")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId("action-cancel-entry-1"));
+
+    expect(screen.getByTestId("cancel-queue-entry-modal")).toBeInTheDocument();
+    expect(screen.getByText("Mark as No-Show")).toBeInTheDocument();
+
+    // Submit
+    await user.click(screen.getByTestId("confirm-cancel-button"));
+
+    await waitFor(() => {
+      expect(queueService.cancelQueueEntry).toHaveBeenCalledWith(mockRestaurantId, "entry-1", {
+        reason: "NO_SHOW",
+        notes: undefined,
+      });
+    });
+  });
+
+  it("opens Queue Entry Detail Drawer on row click and allows actions inside drawer", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("Alice Walker")).toBeInTheDocument();
+    });
+
+    // Click on row for Alice Walker (ONLINE guest)
+    await user.click(screen.getByTestId("queue-row-entry-2"));
+
+    const drawer = screen.getByTestId("queue-entry-detail-drawer");
+    expect(within(drawer).getByText("Ticket #Q-002")).toBeInTheDocument();
+
+    // Click Ring in drawer
+    await user.click(within(drawer).getByTestId("drawer-ring-button"));
+    expect(queueService.ringCustomer).toHaveBeenCalledWith("entry-2");
   });
 });

@@ -20,7 +20,7 @@ export type OrderType = "DINE_IN" | "TAKEAWAY" | "PRE_ORDER";
 
 export type PaymentMode = "ONLINE" | "COD" | "PAY_AT_COUNTER";
 
-export type PaymentStatus = "PAID" | "PENDING" | "FAILED" | "REFUNDED" | "PAID_OFFLINE";
+export type PaymentStatus = "PAID" | "PENDING" | "FAILED" | "REFUNDED";
 
 export interface RestaurantOrderMetricItem {
   id: string;

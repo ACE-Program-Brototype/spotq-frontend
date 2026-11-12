@@ -102,7 +102,7 @@ export function StaffSidebar({
   return (
     <aside
       className={cn(
-        "flex h-full w-64 flex-col justify-between bg-[#faf7f5] border-r border-[#eddcd4] px-4 py-6 select-none",
+        "flex h-full min-h-full w-64 flex-col justify-between bg-[#faf7f5] border-r border-[#eddcd4] px-4 py-6 select-none overflow-y-auto",
         className,
       )}
     >

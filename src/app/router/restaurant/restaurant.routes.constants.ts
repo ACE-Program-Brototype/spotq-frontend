@@ -65,6 +65,9 @@ export const RESTAURANT_ROUTE_PATHS = {
     CREATE: "create",
     VIEW: ":tableId",
   },
+  WALLET: {
+    ROOT: "wallet",
+  },
 
   FINANCE: {
     ROOT: "finance",
