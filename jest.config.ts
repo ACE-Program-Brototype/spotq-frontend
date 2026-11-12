@@ -3,6 +3,7 @@ import type { Config } from "jest";
 const config: Config = {
   testEnvironment: "jsdom",
   testTimeout: 15000,
+  workerIdleMemoryLimit: "512MB",
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   moduleNameMapper: {
     "^@/config/env$": "<rootDir>/__mocks__/env.ts",
