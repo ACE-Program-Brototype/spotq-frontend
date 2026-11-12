@@ -4,7 +4,7 @@
  * profile initials avatar, and logout button.
  */
 
-import { CreditCard, LogOut, ShoppingBag, Star, User as UserIcon, Users } from "lucide-react";
+import { CreditCard, LogOut, ShoppingBag, User as UserIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { useLogout } from "@/features/auth/hooks/use-logout";
@@ -39,16 +39,6 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
       icon: ShoppingBag,
     },
     {
-      label: "Queues",
-      href: CUSTOMER_ROUTES.QUEUES,
-      icon: Users,
-    },
-    {
-      label: "Loyalties",
-      href: CUSTOMER_ROUTES.LOYALTIES,
-      icon: Star,
-    },
-    {
       label: "Payments",
       href: CUSTOMER_ROUTES.PAYMENTS,
       icon: CreditCard,
@@ -67,14 +57,14 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   };
 
   return (
-    <aside
-      className={cn(
-        "hidden lg:flex w-64 shrink-0 flex-col justify-between rounded-3xl bg-neutral-50/70 p-4 border border-neutral-200/60 shadow-2xs box-border",
-        className,
-      )}
-      style={{ minHeight: "calc(100vh - 8rem)" }}
-    >
-      <nav className="flex flex-col gap-1.5" aria-label="Customer Account Navigation">
+    <>
+      <nav
+        className={cn(
+          "grid w-full min-w-0 grid-cols-3 gap-2 overflow-hidden rounded-2xl border border-neutral-200/60 bg-neutral-50/70 p-2 shadow-2xs lg:hidden",
+          className,
+        )}
+        aria-label="Customer Account Navigation Mobile"
+      >
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = isRouteActive(item.href);
@@ -84,44 +74,76 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
               key={item.label}
               to={item.href}
               className={cn(
-                "flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-all select-none",
+                "flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-xs font-semibold transition-colors select-none",
                 isActive
-                  ? "bg-[#ff6b00] text-white shadow-sm font-semibold"
-                  : "text-neutral-600 hover:bg-neutral-100/90 hover:text-neutral-900",
+                  ? "bg-[#ff6b00] text-white shadow-sm"
+                  : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
               )}
             >
               <Icon
-                className={cn("size-4.5 shrink-0", isActive ? "text-white" : "text-neutral-500")}
+                className={cn("size-4 shrink-0", isActive ? "text-white" : "text-neutral-500")}
               />
               <span>{item.label}</span>
             </Link>
           );
         })}
       </nav>
+      <aside
+        className={cn(
+          "hidden lg:flex w-64 shrink-0 flex-col justify-between rounded-3xl bg-neutral-50/70 p-4 border border-neutral-200/60 shadow-2xs box-border",
+          className,
+        )}
+        style={{ minHeight: "calc(100vh - 8rem)" }}
+      >
+        <nav className="flex flex-col gap-1.5" aria-label="Customer Account Navigation Desktop">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = isRouteActive(item.href);
 
-      <div className="mt-8 flex flex-col gap-3 pt-4 border-t border-neutral-200/60">
-        <div className="flex items-center gap-3 px-2">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#fde1cb] text-[#4a2e18] text-xs font-bold ring-1 ring-[#f7cbb1]">
-            {initials}
+            return (
+              <Link
+                key={item.label}
+                to={item.href}
+                className={cn(
+                  "flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-all select-none",
+                  isActive
+                    ? "bg-[#ff6b00] text-white shadow-sm font-semibold"
+                    : "text-neutral-600 hover:bg-neutral-100/90 hover:text-neutral-900",
+                )}
+              >
+                <Icon
+                  className={cn("size-4.5 shrink-0", isActive ? "text-white" : "text-neutral-500")}
+                />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-8 flex flex-col gap-3 pt-4 border-t border-neutral-200/60">
+          <div className="flex items-center gap-3 px-2">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#fde1cb] text-[#4a2e18] text-xs font-bold ring-1 ring-[#f7cbb1]">
+              {initials}
+            </div>
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-bold text-neutral-900">{displayName}</span>
+              <span className="truncate text-xs font-medium text-neutral-500">
+                {PROFILE_MESSAGES.CUSTOMER_ACCOUNT}
+              </span>
+            </div>
           </div>
-          <div className="flex min-w-0 flex-col">
-            <span className="truncate text-sm font-bold text-neutral-900">{displayName}</span>
-            <span className="truncate text-xs font-medium text-neutral-500">
-              {PROFILE_MESSAGES.CUSTOMER_ACCOUNT}
-            </span>
-          </div>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="flex items-center justify-start gap-2.5 w-full rounded-2xl bg-neutral-200/70 px-4 py-2.5 text-xs font-semibold text-neutral-800 hover:bg-neutral-300/80 transition-colors disabled:opacity-60 cursor-pointer select-none"
+          >
+            <LogOut className="size-4 text-neutral-700" />
+            <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
+          </button>
         </div>
-
-        <button
-          type="button"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          className="flex items-center justify-start gap-2.5 w-full rounded-2xl bg-neutral-200/70 px-4 py-2.5 text-xs font-semibold text-neutral-800 hover:bg-neutral-300/80 transition-colors disabled:opacity-60 cursor-pointer select-none"
-        >
-          <LogOut className="size-4 text-neutral-700" />
-          <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
-        </button>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

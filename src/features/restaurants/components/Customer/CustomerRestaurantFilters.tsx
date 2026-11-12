@@ -35,7 +35,7 @@ export function CustomerRestaurantFilters({
           <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-400 pointer-events-none" />
           <input
             type="text"
-            value={searchQuery}
+            defaultValue={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search restaurants or dishes..."
             className="h-9.5 w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-9 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-all focus:border-[#ff6b00] focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30 shadow-2xs"
@@ -57,7 +57,7 @@ export function CustomerRestaurantFilters({
           <MapPin className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-400 pointer-events-none" />
           <input
             type="text"
-            value={cityQuery}
+            defaultValue={cityQuery}
             onChange={(e) => onCityChange(e.target.value)}
             placeholder="Filter by city..."
             className="h-9.5 w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-9 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-all focus:border-[#ff6b00] focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30 shadow-2xs"

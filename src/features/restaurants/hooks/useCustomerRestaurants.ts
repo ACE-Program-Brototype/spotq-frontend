@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
@@ -22,7 +22,7 @@ export interface UseCustomerRestaurantsOptions {
 export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Read initial values from URL query parameters if available
+  // Initialize from the URL so shared/bookmarked links restore the same list and pagination.
   const urlPage = Number(searchParams.get("page")) || undefined;
   const urlCategory = searchParams.get("category") || undefined;
   const urlSearch = searchParams.get("search") || undefined;
@@ -41,37 +41,32 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
   const [selectedSort, setSelectedSort] = useState<CustomerSortOptionValue>(
     urlSort ?? options?.initialSort ?? CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT,
   );
+  const lastWrittenSearchParams = useRef<string | null>(searchParams.toString());
 
-  // Sync external search params changes (e.g. from navbar search or back/forward navigation)
+  // Only apply URL-to-state updates when the URL itself changes. Running this on local state
+  // changes can briefly restore the old URL page and make the pagination control jump.
   useEffect(() => {
+    const serializedParams = searchParams.toString();
+    if (lastWrittenSearchParams.current === serializedParams) {
+      lastWrittenSearchParams.current = null;
+      return;
+    }
+
     const paramSearch = searchParams.get("search") ?? "";
-    if (paramSearch !== searchQuery) {
-      setSearchQuery(paramSearch);
-    }
-
     const paramCity = searchParams.get("city") ?? "";
-    if (paramCity !== cityQuery) {
-      setCityQuery(paramCity);
-    }
-
     const paramCategory =
       searchParams.get("category") ?? CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY;
-    if (paramCategory !== selectedCategory) {
-      setSelectedCategory(paramCategory);
-    }
-
     const paramSort =
       (searchParams.get("sort") as CustomerSortOptionValue) ??
       CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT;
-    if (paramSort !== selectedSort) {
-      setSelectedSort(paramSort);
-    }
-
     const paramPage = Number(searchParams.get("page")) || 1;
-    if (paramPage !== page) {
-      setPage(paramPage);
-    }
-  }, [searchParams, searchQuery, cityQuery, selectedCategory, selectedSort, page]);
+
+    setSearchQuery(paramSearch);
+    setCityQuery(paramCity);
+    setSelectedCategory(paramCategory);
+    setSelectedSort(paramSort);
+    setPage(paramPage);
+  }, [searchParams]);
 
   const debouncedSearch = useDebounce(
     searchQuery.trim(),
@@ -82,38 +77,59 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     CUSTOMER_RESTAURANT_DEFAULTS.SEARCH_DEBOUNCE_MS,
   );
 
-  // Synchronize state changes back to URL search params
-  const updateUrlParams = (
-    nextSearch: string,
-    nextCity: string,
-    nextCategory: string,
-    nextSort: CustomerSortOptionValue,
-    nextPage: number,
-  ) => {
-    const nextParams = new URLSearchParams();
+  // Keep the URL in step with the filters so refresh, sharing, and browser navigation preserve them.
+  const updateUrlParams = useCallback(
+    (
+      nextSearch: string,
+      nextCity: string,
+      nextCategory: string,
+      nextSort: CustomerSortOptionValue,
+      nextPage: number,
+    ) => {
+      const nextParams = new URLSearchParams();
 
-    if (nextSearch.trim()) {
-      nextParams.set("search", nextSearch.trim());
-    }
+      if (nextSearch.trim()) {
+        nextParams.set("search", nextSearch.trim());
+      }
 
-    if (nextCity.trim()) {
-      nextParams.set("city", nextCity.trim());
-    }
+      if (nextCity.trim()) {
+        nextParams.set("city", nextCity.trim());
+      }
 
-    if (nextCategory && nextCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY) {
-      nextParams.set("category", nextCategory);
-    }
+      if (nextCategory && nextCategory !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY) {
+        nextParams.set("category", nextCategory);
+      }
 
-    if (nextSort && nextSort !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT) {
-      nextParams.set("sort", nextSort);
-    }
+      if (nextSort && nextSort !== CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT) {
+        nextParams.set("sort", nextSort);
+      }
 
-    if (nextPage > 1) {
-      nextParams.set("page", String(nextPage));
-    }
+      if (nextPage > 1) {
+        nextParams.set("page", String(nextPage));
+      }
 
-    setSearchParams(nextParams, { replace: true });
-  };
+      lastWrittenSearchParams.current = nextParams.toString();
+      setSearchParams(nextParams, { replace: true });
+    },
+    [setSearchParams],
+  );
+
+  const previousDebouncedFilters = useRef({
+    search: debouncedSearch,
+    city: debouncedCity,
+  });
+
+  // Wait until typing pauses before resetting pagination and syncing search/city to the URL.
+  // This avoids page changes on every keystroke while still starting filtered results at page 1.
+  useEffect(() => {
+    const searchChanged = previousDebouncedFilters.current.search !== debouncedSearch;
+    const cityChanged = previousDebouncedFilters.current.city !== debouncedCity;
+    if (!searchChanged && !cityChanged) return;
+
+    previousDebouncedFilters.current = { search: debouncedSearch, city: debouncedCity };
+    setPage(1);
+    updateUrlParams(debouncedSearch, debouncedCity, selectedCategory, selectedSort, 1);
+  }, [debouncedSearch, debouncedCity, selectedCategory, selectedSort, updateUrlParams]);
 
   const currentSortConfig = useMemo(() => {
     return (
@@ -121,6 +137,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     );
   }, [selectedSort]);
 
+  // Include every server-visible filter in the query key so TanStack Query caches each result set.
   const queryKey = CUSTOMER_RESTAURANT_QUERY_KEYS.LIST({
     page,
     limit,
@@ -144,18 +161,17 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
         sortOrder: currentSortConfig.sortOrder,
       }),
     staleTime: CUSTOMER_RESTAURANT_DEFAULTS.CACHE_STALE_TIME_MS,
+    // Keep the current list visible while a new page or filter result is loading.
+    placeholderData: keepPreviousData,
   });
 
+  // Search and city update immediately in the input; their debounced values drive fetching above.
   const handleSearchChange = (newSearch: string) => {
     setSearchQuery(newSearch);
-    setPage(1);
-    updateUrlParams(newSearch, cityQuery, selectedCategory, selectedSort, 1);
   };
 
   const handleCityChange = (newCity: string) => {
     setCityQuery(newCity);
-    setPage(1);
-    updateUrlParams(searchQuery, newCity, selectedCategory, selectedSort, 1);
   };
 
   const handleCategoryChange = (newCategory: string) => {
@@ -181,6 +197,7 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
     setSelectedCategory(CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_CATEGORY);
     setSelectedSort(CUSTOMER_RESTAURANT_DEFAULTS.DEFAULT_SORT);
     setPage(1);
+    lastWrittenSearchParams.current = "";
     setSearchParams(new URLSearchParams(), { replace: true });
   };
 
@@ -193,7 +210,6 @@ export function useCustomerRestaurants(options?: UseCustomerRestaurantsOptions) 
   const restaurants = Array.isArray(query.data?.restaurants) ? query.data.restaurants : [];
   const totalItems = query.data?.pagination?.total ?? restaurants.length;
   const totalPages = query.data?.pagination?.totalPages ?? (Math.ceil(totalItems / limit) || 1);
-
   return {
     restaurants,
     pagination: query.data?.pagination,
