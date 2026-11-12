@@ -1,6 +1,7 @@
 import { Calendar, Filter, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  MONTH_NAMES,
   ORDER_STATUS_FILTER_LABELS,
   RESTAURANT_ANALYTICS_INTERVAL_LABELS,
 } from "@/features/analytics/constants/restaurant-analytics.constants";
@@ -26,21 +27,6 @@ export interface AnalyticsFilterToolbarProps {
   onReset?: () => void;
   className?: string;
 }
-
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 export function AnalyticsFilterToolbar({
   interval,

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import {
+  ANALYTICS_SECTION_STATUSES,
   AnalyticsFilterToolbar,
   AnalyticsSkeleton,
   OrderStatusDistributionCard,
@@ -240,7 +241,7 @@ export default function RestaurantDashboardPage() {
             </div>
 
             {/* 3. Menu Performance Preview */}
-            {analyticsData.products.status === "AVAILABLE" && (
+            {analyticsData.products.status === ANALYTICS_SECTION_STATUSES.AVAILABLE && (
               <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 sm:p-6 shadow-2xs space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
