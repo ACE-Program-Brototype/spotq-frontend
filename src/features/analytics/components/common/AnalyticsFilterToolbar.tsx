@@ -51,12 +51,12 @@ export function AnalyticsFilterToolbar({
   return (
     <div
       className={cn(
-        "flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 p-3 sm:p-4 rounded-2xl border border-[#eddcd4] bg-white shadow-2xs",
+        "flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-3 p-2 sm:p-2.5 md:p-3 sm:md:p-4 rounded-xl md:rounded-2xl border border-[#eddcd4] bg-white shadow-2xs w-full max-w-full",
         className,
       )}
     >
-      {/* Interval Selector Toggle */}
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1 p-1 rounded-xl bg-[#faf7f5] border border-[#eddcd4] w-full sm:w-fit">
+      {/* Line 2 on mobile: Today and other (Single horizontal row on sm, compact inline on md+) */}
+      <div className="flex items-center gap-1 p-1 rounded-xl bg-[#faf7f5] border border-[#eddcd4] w-full md:w-fit">
         {(Object.keys(ANALYTICS_PERIODS) as Array<keyof typeof ANALYTICS_PERIODS>).map((key) => {
           const periodValue = ANALYTICS_PERIODS[key];
           const isSelected = interval === periodValue;
@@ -66,7 +66,7 @@ export function AnalyticsFilterToolbar({
               type="button"
               onClick={() => onIntervalChange(periodValue)}
               className={cn(
-                "px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-center",
+                "flex-1 md:flex-initial h-7 sm:h-8 md:h-auto px-1 sm:px-2 md:px-2.5 md:py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-all text-center flex items-center justify-center truncate",
                 isSelected
                   ? "bg-white text-[#9a3412] shadow-2xs border border-[#eddcd4]"
                   : "text-neutral-600 hover:text-neutral-900",
@@ -78,19 +78,19 @@ export function AnalyticsFilterToolbar({
         })}
       </div>
 
-      {/* Date & Status Selectors */}
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
+      {/* Line 3 on mobile: nov, year, all (Month, Year, Order Status, Reset in ONE line on sm; spacious on md+) */}
+      <div className="flex items-center md:flex-wrap md:justify-end gap-1 sm:gap-1.5 md:gap-2.5 w-full md:w-auto">
         {/* Day Select (when DAY) */}
         {interval === ANALYTICS_PERIODS.DAY && onDayChange && (
-          <div className="flex items-center gap-1.5 col-span-1">
-            <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider shrink-0">
+          <div className="flex items-center gap-1 md:gap-1.5 shrink-0">
+            <span className="hidden md:inline text-[11px] font-bold text-neutral-500 uppercase tracking-wider shrink-0">
               Day:
             </span>
             <select
               value={day ?? 1}
               onChange={(e) => onDayChange(Number(e.target.value))}
               aria-label="Select day"
-              className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
+              className="h-7 sm:h-8 md:h-8 w-14 md:w-auto shrink-0 rounded-lg sm:rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-1 md:px-2.5 text-[11px] sm:text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
             >
               {dayOptions.map((d) => (
                 <option key={d} value={d}>
@@ -101,15 +101,15 @@ export function AnalyticsFilterToolbar({
           </div>
         )}
 
-        {/* Month Select (when DAY, WEEK, or MONTH) */}
+        {/* Month Select */}
         {interval !== ANALYTICS_PERIODS.YEAR && (
-          <div className="flex items-center gap-1.5 col-span-1 min-w-0">
-            <Calendar className="size-3.5 text-[#9a3412] shrink-0" />
+          <div className="flex items-center gap-1 md:gap-1.5 flex-1 md:flex-initial min-w-0">
+            <Calendar className="hidden md:inline size-3.5 text-[#9a3412] shrink-0" />
             <select
               value={month}
               onChange={(e) => onMonthChange(Number(e.target.value))}
               aria-label="Select month"
-              className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
+              className="h-7 sm:h-8 md:h-8 w-full md:w-auto rounded-lg sm:rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-1.5 sm:px-2 text-[11px] sm:text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
             >
               {MONTH_NAMES.map((name, idx) => (
                 <option key={name} value={idx + 1}>
@@ -125,7 +125,7 @@ export function AnalyticsFilterToolbar({
           value={year}
           onChange={(e) => onYearChange(Number(e.target.value))}
           aria-label="Select year"
-          className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2.5 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] col-span-1"
+          className="h-7 sm:h-8 md:h-8 w-16 sm:w-20 md:w-auto shrink-0 rounded-lg sm:rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-1 sm:px-2 md:px-2.5 text-[11px] sm:text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412]"
         >
           {yearOptions.map((y) => (
             <option key={y} value={y}>
@@ -134,14 +134,14 @@ export function AnalyticsFilterToolbar({
           ))}
         </select>
 
-        {/* Status Filter */}
-        <div className="flex items-center gap-1.5 sm:pl-2 sm:border-l border-[#eddcd4] col-span-1 min-w-0">
-          <Filter className="size-3.5 text-neutral-400 shrink-0" />
+        {/* Order Status */}
+        <div className="flex items-center gap-1 md:gap-1.5 md:pl-2 md:border-l border-[#eddcd4] flex-1 md:flex-initial min-w-0">
+          <Filter className="hidden md:inline size-3.5 text-neutral-400 shrink-0" />
           <select
             value={status}
             onChange={(e) => onStatusChange(e.target.value as OrderStatusFilter)}
             aria-label="Filter order status"
-            className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
+            className="h-7 sm:h-8 md:h-8 w-full md:w-auto rounded-lg sm:rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-1.5 sm:px-2 text-[11px] sm:text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
           >
             {(Object.keys(ORDER_STATUS_FILTERS) as Array<keyof typeof ORDER_STATUS_FILTERS>).map(
               (key) => (
@@ -160,11 +160,11 @@ export function AnalyticsFilterToolbar({
             variant="ghost"
             size="sm"
             onClick={onReset}
-            className="h-8 gap-1 px-2.5 text-xs text-neutral-500 hover:text-neutral-900 col-span-2 sm:col-span-1 justify-center sm:justify-start"
+            className="h-7 sm:h-8 md:h-8 px-1.5 sm:px-2 md:px-2.5 text-xs font-medium text-neutral-500 hover:text-neutral-900 shrink-0 gap-1"
             title="Reset to default filters"
           >
-            <RotateCcw className="size-3.5" />
-            <span>Reset</span>
+            <RotateCcw className="size-3.5 text-neutral-500" />
+            <span className="hidden min-[420px]:inline text-[11px] md:text-xs">Reset</span>
           </Button>
         )}
       </div>

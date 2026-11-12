@@ -1,5 +1,12 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, BarChart3, TrendingUp, UtensilsCrossed } from "lucide-react";
+import {
+  AlertCircle,
+  BarChart3,
+  CheckCircle2,
+  LogOut,
+  TrendingUp,
+  UtensilsCrossed,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
@@ -106,40 +113,39 @@ export default function RestaurantDashboardPage() {
   return (
     <div className="space-y-6 max-w-full">
       {/* 1. Header & Subscription Banner */}
-      <div className="rounded-2xl border border-[#eddcd4] bg-white p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#9a3412]">
+      <div className="rounded-2xl border border-[#eddcd4] bg-white p-3.5 sm:p-5 md:p-6 lg:p-8 shadow-xs">
+        {/* Top Row: Welcome + Logout */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] text-[#9a3412]">
               Restaurant dashboard
             </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-neutral-900">
+            <h1 className="mt-0.5 md:mt-1 text-base sm:text-xl md:text-2xl lg:text-3xl font-bold text-neutral-900 truncate">
               {`Welcome, ${statusData?.restaurantName || restaurantEmail}`}
             </h1>
           </div>
+
           <button
             type="button"
             onClick={handleLogout}
-            className="self-start sm:self-auto rounded-xl border border-[#eddcd4] px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-2.5 py-1 md:px-4 md:py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs shrink-0"
           >
-            Logout
+            <LogOut className="size-3.5 text-neutral-500" />
+            <span>Logout</span>
           </button>
         </div>
 
-        <SubscriptionExpiryBanner
-          statusData={statusData}
-          isLoading={isLoadingStatus}
-          isError={isStatusError}
-          onRenewClick={() => setIsRenewalModalOpen(true)}
-        />
-
-        <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
-          <div className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5">
-            <p className="text-xs font-medium text-neutral-500">Account status</p>
-            <p className="mt-2 text-xl font-bold text-neutral-900">
-              {user?.status ?? statusData?.verificationStatus ?? "Active"}
-            </p>
+        {/* Status & Subscription Section */}
+        {/* On mobile (<md): single compact horizontal line. On desktop (md+): normal 2-card grid */}
+        <div className="mt-2.5 md:mt-4.5 pt-2.5 md:pt-0 border-t md:border-0 border-[#eddcd4]/70 flex flex-wrap md:grid md:grid-cols-2 items-center md:items-stretch gap-1.5 sm:gap-2 md:gap-3">
+          {/* Card 1: Account Status */}
+          <div className="inline-flex md:flex md:flex-col md:justify-center items-center md:items-start gap-1.5 md:gap-0 rounded-xl border border-emerald-200 md:border-[#eddcd4] bg-emerald-50 md:bg-[#faf7f5]/60 px-2.5 py-1 md:p-4 text-xs font-semibold text-emerald-800 md:text-neutral-900 shrink-0 md:shrink">
+            <span className="size-1.5 rounded-full bg-emerald-500 md:hidden" />
+            <p className="hidden md:block text-xs font-medium text-neutral-500">Account status</p>
+            <p className="md:mt-1 md:text-xl md:font-bold">{userStatus ?? "Active"}</p>
           </div>
 
+          {/* Card 2: Subscription Card */}
           <SubscriptionOverviewCard
             statusData={statusData}
             plans={plans}
@@ -149,41 +155,51 @@ export default function RestaurantDashboardPage() {
             onSubscribeClick={() => navigate(RESTAURANT_ROUTES.SUBSCRIPTION)}
           />
         </div>
+
+        <SubscriptionExpiryBanner
+          statusData={statusData}
+          isLoading={isLoadingStatus}
+          isError={isStatusError}
+          onRenewClick={() => setIsRenewalModalOpen(true)}
+        />
       </div>
 
       {/* 2. Restaurant Analytics & Operational Reporting */}
-      <section aria-label="Restaurant Analytics Overview" className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
-              Restaurant Analytics & Performance
+      <section aria-label="Restaurant Analytics Overview" className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="min-w-0">
+            <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold text-neutral-900 tracking-tight">
+              Restaurant Analytics &amp; Performance
             </h2>
-            <p className="mt-0.5 text-xs text-neutral-500">
+            <p className="hidden md:block mt-0.5 text-xs text-neutral-500">
               Live operational metrics, order fulfillment health, and revenue trends.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0">
             <Link
               to={RESTAURANT_ROUTES.ANALYTICS.ROOT}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1 md:gap-1.5 rounded-lg md:rounded-xl border border-[#eddcd4] bg-white px-2 py-1 md:px-3.5 md:py-2 text-[11px] sm:text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
             >
-              <BarChart3 className="size-3.5 text-[#e8631b]" />
-              Full Analytics Hub
+              <BarChart3 className="size-3 md:size-3.5 text-[#e8631b] shrink-0" />
+              <span className="hidden sm:inline">Full Analytics Hub</span>
+              <span className="sm:hidden">Hub</span>
             </Link>
             <Link
               to={RESTAURANT_ROUTES.ANALYTICS.REVENUE}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1 md:gap-1.5 rounded-lg md:rounded-xl border border-[#eddcd4] bg-white px-2 py-1 md:px-3.5 md:py-2 text-[11px] sm:text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
             >
-              <TrendingUp className="size-3.5 text-[#e8631b]" />
-              Revenue Details
+              <TrendingUp className="size-3 md:size-3.5 text-[#e8631b] shrink-0" />
+              <span className="hidden sm:inline">Revenue Details</span>
+              <span className="sm:hidden">Revenue</span>
             </Link>
             <Link
               to={RESTAURANT_ROUTES.ANALYTICS.MENU}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1 md:gap-1.5 rounded-lg md:rounded-xl border border-[#eddcd4] bg-white px-2 py-1 md:px-3.5 md:py-2 text-[11px] sm:text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
             >
-              <UtensilsCrossed className="size-3.5 text-[#e8631b]" />
-              Menu Velocity
+              <UtensilsCrossed className="size-3 md:size-3.5 text-[#e8631b] shrink-0" />
+              <span className="hidden sm:inline">Menu Velocity</span>
+              <span className="sm:hidden">Menu</span>
             </Link>
           </div>
         </div>
@@ -226,7 +242,7 @@ export default function RestaurantDashboardPage() {
             </button>
           </div>
         ) : analyticsData ? (
-          <div className="space-y-6">
+          <div className="space-y-3.5 sm:space-y-5 md:space-y-6">
             {/* 1. Core Overview KPI Cards */}
             <OverviewKpis
               revenue={analyticsData.overview.revenue}
@@ -242,7 +258,7 @@ export default function RestaurantDashboardPage() {
 
             {/* 3. Menu Performance Preview */}
             {analyticsData.products.status === ANALYTICS_SECTION_STATUSES.AVAILABLE && (
-              <div className="rounded-2xl border border-[#eddcd4] bg-white p-5 sm:p-6 shadow-2xs space-y-4">
+              <div className="rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-6 shadow-2xs space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
                     <h3 className="text-base font-bold text-neutral-900">
@@ -303,9 +319,10 @@ export default function RestaurantDashboardPage() {
                       </span>
                     </div>
                     {analyticsData.products.slowMoving.items.length === 0 ? (
-                      <p className="text-xs text-emerald-700 font-medium">
-                        &check; Healthy velocity! No items below threshold.
-                      </p>
+                      <div className="flex items-center gap-2 rounded-lg bg-emerald-50/80 px-3 py-2 text-xs font-medium text-emerald-800 border border-emerald-200/60">
+                        <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+                        <span>Healthy velocity! No items below threshold.</span>
+                      </div>
                     ) : (
                       <div className="space-y-2">
                         {analyticsData.products.slowMoving.items.slice(0, 3).map((item) => (
