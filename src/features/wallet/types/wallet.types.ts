@@ -1,3 +1,5 @@
+import type { WALLET_LEDGER_STATUSES, WALLET_LEDGER_TYPES } from "../constants/wallet.constants";
+
 export interface GetRestaurantWalletOverviewOutputDTO {
   walletId: string | null;
   restaurantId: string;
@@ -40,4 +42,40 @@ export interface WithdrawInput {
 export interface WithdrawRequest {
   input: WithdrawInput;
   idempotencyKey: string;
+}
+export type WalletLedgerType = (typeof WALLET_LEDGER_TYPES)[number];
+export type WalletLedgerStatus = (typeof WALLET_LEDGER_STATUSES)[number];
+
+export interface WalletLedgerEntry {
+  id: string;
+  type: WalletLedgerType | string;
+  status: WalletLedgerStatus | string;
+  amountPaise: number;
+  balanceBeforePaise: number;
+  balanceAfterPaise: number;
+  referenceId: string;
+  utrNumber: string | null;
+  createdAt: string;
+}
+
+export interface WalletLedgerPagination {
+  currentPage: number;
+  totalPages: number;
+  totalRecords: number;
+  limit: number;
+}
+
+export interface WalletLedgerEntriesData {
+  entries: WalletLedgerEntry[];
+  pagination: WalletLedgerPagination;
+}
+
+export interface WalletLedgerEntriesParams {
+  page: number;
+  limit: number;
+  type?: string;
+  status?: string;
+  search?: string;
+  startDate?: string;
+  endDate?: string;
 }
