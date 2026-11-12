@@ -20,8 +20,15 @@ import { OrderPaymentCard } from "../components/customer/OrderPaymentCard";
 import { OrderPricingCard } from "../components/customer/OrderPricingCard";
 import { OrderStatusHistoryTimeline } from "../components/customer/OrderStatusHistoryTimeline";
 import { OrderStatusTracker } from "../components/customer/OrderStatusTracker";
-import { ORDER_STATUS_VARIANTS } from "../constants/customer-order-details.constants";
-import { useCustomerOrderDetails } from "../hooks/use-customer-order-details";
+import {
+  CUSTOMER_ORDER_STATUS,
+  CUSTOMER_PAYMENT_STATUS,
+  ORDER_STATUS_VARIANTS,
+} from "../constants/customer-order-details.constants";
+import {
+  useCustomerOrderDetails,
+  useCustomerOrderRefundStatus,
+} from "../hooks/use-customer-order-details";
 import { useDownloadInvoice } from "../hooks/use-download-invoice";
 
 export default function CustomerOrderDetailPage() {
@@ -36,6 +43,13 @@ export default function CustomerOrderDetailPage() {
     refetch,
     isFetching,
   } = useCustomerOrderDetails(activeOrderId);
+  const isOrderCancelled = order?.status?.toUpperCase() === CUSTOMER_ORDER_STATUS.CANCELLED;
+  const paymentStatus = order?.payment?.status?.toUpperCase();
+  const canShowRefundStatus =
+    isOrderCancelled &&
+    (paymentStatus === CUSTOMER_PAYMENT_STATUS.PAID ||
+      paymentStatus === CUSTOMER_PAYMENT_STATUS.REFUNDED);
+  const refundQuery = useCustomerOrderRefundStatus(activeOrderId, canShowRefundStatus);
   const { downloadInvoice, isDownloading: isDownloadingInvoice } = useDownloadInvoice();
 
   const handleBack = () => {
@@ -205,7 +219,16 @@ export default function CustomerOrderDetailPage() {
             specialInstructions={order.special_instructions}
           />
 
-          <OrderPaymentCard payment={order.payment} />
+          <OrderPaymentCard
+            payment={order.payment}
+            refundStatus={refundQuery.data}
+            isRefundLoading={canShowRefundStatus && refundQuery.isLoading}
+            refundError={
+              canShowRefundStatus && refundQuery.isError
+                ? "Unable to retrieve refund status. Please refresh to try again."
+                : undefined
+            }
+          />
 
           <OrderPricingCard pricing={order.pricing} />
         </div>

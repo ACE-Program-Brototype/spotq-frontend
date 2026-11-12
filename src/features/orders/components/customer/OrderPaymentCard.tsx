@@ -1,15 +1,29 @@
 import { CheckCircle2, CreditCard, ShieldCheck, XCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
-import type { CustomerOrderPayment } from "../../types/customer-order-details.types";
+import { formatDate } from "@/lib/utils/date";
+import { CUSTOMER_PAYMENT_STATUS } from "../../constants/customer-order-details.constants";
+import type {
+  CustomerOrderPayment,
+  CustomerOrderRefundStatus,
+} from "../../types/customer-order-details.types";
 
 export interface OrderPaymentCardProps {
   payment: CustomerOrderPayment;
+  refundStatus?: CustomerOrderRefundStatus;
+  isRefundLoading?: boolean;
+  refundError?: string;
   className?: string;
 }
 
-export function OrderPaymentCard({ payment, className = "" }: OrderPaymentCardProps) {
-  const isPaid = payment.status?.toUpperCase() === "PAID";
-  const isFailed = payment.status?.toUpperCase() === "FAILED";
+export function OrderPaymentCard({
+  payment,
+  refundStatus,
+  isRefundLoading = false,
+  refundError,
+  className = "",
+}: OrderPaymentCardProps) {
+  const isPaid = payment.status?.toUpperCase() === CUSTOMER_PAYMENT_STATUS.PAID;
+  const isFailed = payment.status?.toUpperCase() === CUSTOMER_PAYMENT_STATUS.FAILED;
 
   return (
     <div
@@ -80,6 +94,61 @@ export function OrderPaymentCard({ payment, className = "" }: OrderPaymentCardPr
             <ShieldCheck className="size-3.5 text-emerald-600" />
             <span>Verified Secure Payment</span>
           </div>
+        )}
+
+        {refundStatus && (
+          <div
+            data-testid="order-refund-status"
+            className="space-y-2 border-t border-neutral-100 pt-3"
+          >
+            <div className="flex items-center justify-between gap-3 text-neutral-600">
+              <span className="font-medium">Refund status</span>
+              <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-800">
+                {refundStatus.status}
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-3 text-neutral-600">
+              <span className="font-medium">Refund amount</span>
+              <span className="font-bold text-neutral-900">
+                {formatCurrency(refundStatus.amountPaise / 100)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-3 text-neutral-600">
+              <span className="font-medium">Initiated</span>
+              <span className="text-right text-neutral-800">
+                {formatDate(refundStatus.timeline.initiatedAt)}
+              </span>
+            </div>
+            {refundStatus.timeline.gatewayProcessedAt && (
+              <div className="flex items-center justify-between gap-3 text-neutral-600">
+                <span className="font-medium">Processed</span>
+                <span className="text-right text-neutral-800">
+                  {formatDate(refundStatus.timeline.gatewayProcessedAt)}
+                </span>
+              </div>
+            )}
+            {refundStatus.reason && (
+              <p className="text-[11px] leading-relaxed text-neutral-500">
+                Reason: {refundStatus.reason}
+              </p>
+            )}
+            {refundStatus.supportReference.arn && (
+              <p className="break-all font-mono text-[11px] text-neutral-500">
+                ARN: {refundStatus.supportReference.arn}
+              </p>
+            )}
+          </div>
+        )}
+
+        {isRefundLoading && (
+          <p className="border-t border-neutral-100 pt-3 text-xs text-neutral-500">
+            Loading refund status…
+          </p>
+        )}
+        {refundError && (
+          <p role="alert" className="border-t border-neutral-100 pt-3 text-xs text-rose-700">
+            {refundError}
+          </p>
         )}
       </div>
     </div>
