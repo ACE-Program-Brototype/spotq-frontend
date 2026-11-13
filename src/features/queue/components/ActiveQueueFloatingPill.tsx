@@ -35,16 +35,16 @@ export function ActiveQueueFloatingPill() {
   };
 
   return (
-    <div className="fixed bottom-5 right-4 sm:right-6 z-40 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-none">
       <button
         type="button"
         onClick={handleClick}
-        className="group flex items-center gap-2.5 rounded-full bg-stone-900/95 backdrop-blur-md px-4 py-2.5 text-white shadow-xl shadow-stone-950/20 hover:bg-stone-900 hover:scale-102 transition-all cursor-pointer border border-stone-800"
+        className="pointer-events-auto group flex items-center gap-2 sm:gap-2.5 rounded-full bg-stone-900/95 backdrop-blur-md px-3.5 sm:px-4 py-2 sm:py-2.5 text-white shadow-xl shadow-stone-950/25 hover:bg-stone-900 active:scale-95 transition-all cursor-pointer border border-stone-800 shrink-0 whitespace-nowrap"
         aria-label="View active queue status"
       >
-        <span className="relative flex h-2.5 w-2.5">
+        <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          <span className="relative inline-flex h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-emerald-500" />
         </span>
 
         <div className="flex items-center gap-1.5 text-xs font-semibold">
