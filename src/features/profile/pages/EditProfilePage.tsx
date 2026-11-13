@@ -38,25 +38,25 @@ export function EditProfilePage() {
   };
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <div className="flex w-full flex-col lg:flex-row gap-8 items-start">
+    <div className="flex w-full flex-col gap-4 sm:gap-6">
+      <div className="flex w-full flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-start">
         <CustomerSidebar profile={profile} />
 
-        <div className="flex flex-1 w-full flex-col gap-6 min-w-0">
-          <div className="flex flex-col gap-3">
+        <div className="flex flex-1 w-full flex-col gap-4 sm:gap-6 min-w-0">
+          <div className="flex flex-col gap-2 sm:gap-3">
             <Link
               to={CUSTOMER_ROUTES.PROFILE.ROOT}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors self-start"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors self-start"
             >
-              <ArrowLeft className="size-4" />
+              <ArrowLeft className="size-3.5 sm:size-4" />
               <span>{PROFILE_MESSAGES.BACK_TO_PROFILE}</span>
             </Link>
 
-            <div className="flex flex-col gap-1">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
+            <div className="flex flex-col gap-0.5 sm:gap-1">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-neutral-900">
                 {PROFILE_MESSAGES.EDIT_PROFILE}
               </h1>
-              <p className="text-xs sm:text-sm font-medium text-neutral-500">
+              <p className="text-[11px] sm:text-sm font-medium text-neutral-500">
                 {PROFILE_MESSAGES.EDIT_PROFILE_SUBTITLE}
               </p>
             </div>

@@ -81,22 +81,22 @@ export function EditProfileForm({
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
-      className="flex flex-col gap-8 rounded-3xl bg-white p-6 sm:p-8 md:p-10 border border-neutral-200/80 shadow-xs"
+      className="flex flex-col gap-5 sm:gap-8 rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-8 md:p-10 border border-neutral-200/80 shadow-xs"
       noValidate
     >
-      <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-neutral-100">
-        <div className="relative">
-          <div className="flex size-24 shrink-0 items-center justify-center rounded-full bg-[#fde1cb] text-[#4a2e18] text-2xl sm:text-3xl font-extrabold ring-4 ring-[#fdf2e9] shadow-xs select-none">
+      <div className="flex flex-row items-center gap-4 sm:gap-6 pb-4 sm:pb-6 border-b border-neutral-100">
+        <div className="relative shrink-0">
+          <div className="flex size-14 sm:size-24 items-center justify-center rounded-full bg-[#fde1cb] text-[#4a2e18] text-lg sm:text-3xl font-extrabold ring-2 sm:ring-4 ring-[#fdf2e9] shadow-xs select-none">
             {initials}
           </div>
         </div>
-        <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1">
-          <h2 className="text-xl font-bold text-neutral-900">{profile.full_name}</h2>
-          <p className="text-xs sm:text-sm font-medium text-neutral-500">{profile.email}</p>
+        <div className="flex flex-col items-start text-left gap-0.5 sm:gap-1 min-w-0">
+          <h2 className="text-base sm:text-xl font-bold text-neutral-900 truncate">{profile.full_name}</h2>
+          <p className="text-xs sm:text-sm font-medium text-neutral-500 truncate">{profile.email}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div className="flex flex-col gap-2">
           <label
             htmlFor={fullNameId}

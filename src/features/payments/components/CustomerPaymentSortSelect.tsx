@@ -53,8 +53,8 @@ export function CustomerPaymentSortSelect({
         aria-label="Sort payment transactions"
         data-testid="customer-payment-sort-select"
         className={cn(
-          "h-9 pl-8 pr-7 rounded-xl bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/60",
-          "text-xs font-semibold text-neutral-700 hover:text-neutral-900 transition-colors cursor-pointer",
+          "h-8 sm:h-9 pl-7 sm:pl-8 pr-6 sm:pr-7 rounded-lg sm:rounded-xl bg-neutral-100 hover:bg-neutral-200/70 border border-neutral-200/60",
+          "text-[11px] sm:text-xs font-semibold text-neutral-700 hover:text-neutral-900 transition-colors cursor-pointer",
           "focus:outline-hidden focus:ring-2 focus:ring-[#ff6b00]/30 select-none appearance-none",
           disabled && "opacity-60 pointer-events-none",
         )}

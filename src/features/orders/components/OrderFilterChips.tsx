@@ -61,7 +61,7 @@ export function OrderFilterChips({
       role="tablist"
       aria-label="Order status filter"
       className={cn(
-        "flex w-full min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain p-1.5 rounded-2xl bg-neutral-100/70 border border-neutral-200/70 backdrop-blur-xs select-none sm:flex-wrap sm:overflow-visible",
+        "flex w-full min-w-0 flex-nowrap items-center gap-1 sm:gap-1.5 overflow-x-auto overscroll-x-contain p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-neutral-100/70 border border-neutral-200/70 backdrop-blur-xs select-none sm:flex-wrap sm:overflow-visible scrollbar-none",
         className,
       )}
     >
@@ -78,7 +78,7 @@ export function OrderFilterChips({
             disabled={disabled}
             onClick={() => onSelect(chip.value)}
             className={cn(
-              "inline-flex shrink-0 items-center gap-2 px-3 py-1.5 sm:px-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00] focus-visible:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed",
+              "inline-flex shrink-0 items-center gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00] focus-visible:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed",
               isSelected
                 ? "bg-[#ff6b00] text-white shadow-xs font-bold"
                 : "text-neutral-600 hover:text-neutral-900 hover:bg-white/80",

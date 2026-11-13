@@ -53,54 +53,56 @@ export default function CustomerPaymentHistoryPage() {
   const { handleRetry, handleDownloadInvoice, isRetrying, isDownloading } = useRetryPayment();
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <div className="flex w-full flex-col lg:flex-row gap-8 items-start">
+    <div className="flex w-full flex-col gap-4 sm:gap-6">
+      <div className="flex w-full flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-start">
         {/* Customer Sidebar Navigation */}
         <CustomerSidebar profile={profile} />
 
         {/* Main Content Area */}
-        <div className="flex flex-1 w-full flex-col gap-6 min-w-0">
+        <div className="flex flex-1 w-full flex-col gap-4 sm:gap-6 min-w-0">
           {/* Header & Filter Section */}
-          <div className="flex flex-col gap-4 pb-3 border-b border-neutral-100">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2.5">
-                  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-neutral-900">
+          <div className="flex flex-col gap-3 sm:gap-4 pb-2.5 sm:pb-3 border-b border-neutral-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
+              <div className="flex flex-col gap-0.5 sm:gap-1">
+                <div className="flex items-center gap-2 sm:gap-2.5">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-neutral-900">
                     {CUSTOMER_PAYMENT_MESSAGES.PAGE_TITLE}
                   </h1>
                   {pagination.totalItems > 0 && (
                     <span
                       data-testid="payment-count-badge"
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#fef3ec] text-[#e8631b] border border-[#fbd3b7] text-xs font-bold"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full bg-[#fef3ec] text-[#e8631b] border border-[#fbd3b7] text-[11px] sm:text-xs font-bold"
                     >
                       <CreditCard className="size-3" />
                       <span>{pagination.totalItems}</span>
                     </span>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-neutral-500">
+                <p className="text-[11px] sm:text-sm font-medium text-neutral-500">
                   {CUSTOMER_PAYMENT_MESSAGES.PAGE_SUBTITLE}
                 </p>
               </div>
             </div>
 
             {/* Segmented Status Filter Tabs, Date Picker & Sort Selector */}
-            <div className="flex flex-col gap-3 pt-1">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex flex-col gap-2.5 sm:gap-3 pt-0.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
                 <PaymentFilterTabs
                   selectedStatus={status}
                   onSelect={setStatus}
                   disabled={isFetching}
                 />
-                <CustomerPaymentSortSelect
-                  sortBy={sortBy}
-                  sortOrder={sortOrder}
-                  onChange={setSort}
-                  disabled={isFetching}
-                />
+                <div className="flex items-center justify-between sm:justify-end gap-2">
+                  <CustomerPaymentSortSelect
+                    sortBy={sortBy}
+                    sortOrder={sortOrder}
+                    onChange={setSort}
+                    disabled={isFetching}
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between w-full overflow-x-auto pb-0.5">
                 <CustomerPaymentDateFilter
                   startDate={startDate}
                   endDate={endDate}
@@ -119,13 +121,13 @@ export default function CustomerPaymentHistoryPage() {
           ) : isError ? (
             <div
               data-testid="customer-payment-history-error-state"
-              className="flex flex-col items-center justify-center rounded-3xl bg-white p-8 sm:p-12 text-center border border-red-100 shadow-xs gap-4"
+              className="flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl bg-white p-6 sm:p-12 text-center border border-red-100 shadow-xs gap-3 sm:gap-4"
             >
-              <div className="flex size-14 items-center justify-center rounded-2xl bg-red-50 text-red-600 border border-red-100">
-                <AlertCircle className="size-7" />
+              <div className="flex size-12 sm:size-14 items-center justify-center rounded-xl sm:rounded-2xl bg-red-50 text-red-600 border border-red-100">
+                <AlertCircle className="size-6 sm:size-7" />
               </div>
               <div className="flex flex-col gap-1 max-w-md">
-                <h3 className="text-lg font-bold text-neutral-900">
+                <h3 className="text-base sm:text-lg font-bold text-neutral-900">
                   {CUSTOMER_PAYMENT_MESSAGES.ERROR_TITLE}
                 </h3>
                 <p className="text-xs sm:text-sm text-neutral-500">
@@ -136,7 +138,7 @@ export default function CustomerPaymentHistoryPage() {
                 type="button"
                 onClick={() => refetch()}
                 disabled={isFetching}
-                className="mt-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold px-5 py-2.5 gap-2 cursor-pointer shadow-xs"
+                className="mt-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold px-4 py-2 sm:px-5 sm:py-2.5 gap-2 cursor-pointer shadow-xs"
               >
                 <RefreshCw className={`size-3.5 ${isFetching ? "animate-spin" : ""}`} />
                 <span>{CUSTOMER_PAYMENT_MESSAGES.ERROR_RETRY}</span>
@@ -152,7 +154,7 @@ export default function CustomerPaymentHistoryPage() {
               }}
             />
           ) : (
-            <div className="flex flex-col gap-6 w-full">
+            <div className="flex flex-col gap-4 sm:gap-6 w-full">
               {/* Desktop Table View (Figma 547:7577) */}
               <div className="hidden md:block">
                 <CustomerPaymentHistoryTable

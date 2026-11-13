@@ -33,21 +33,21 @@ export function ProfileHeroCard({ profile }: ProfileHeroCardProps) {
     : null;
 
   return (
-    <div className="relative flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 rounded-3xl bg-white p-6 sm:p-8 border border-neutral-200/80 shadow-xs">
+    <div className="relative flex flex-row items-center gap-4 sm:gap-8 rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-8 border border-neutral-200/80 shadow-xs">
       <div className="relative shrink-0">
-        <div className="flex size-28 sm:size-32 items-center justify-center rounded-full bg-[#fde1cb] text-[#3d2314] text-3xl sm:text-4xl font-black tracking-tight select-none ring-4 ring-[#fae4d4]">
+        <div className="flex size-16 sm:size-28 lg:size-32 items-center justify-center rounded-full bg-[#fde1cb] text-[#3d2314] text-xl sm:text-3xl lg:text-4xl font-black tracking-tight select-none ring-2 sm:ring-4 ring-[#fae4d4]">
           {initials}
         </div>
       </div>
 
-      <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-2 sm:gap-2.5">
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
+      <div className="flex flex-col items-start text-left gap-1 sm:gap-2.5 min-w-0">
+        <h2 className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-neutral-900 truncate">
           {displayName}
         </h2>
 
         {memberSinceStr && (
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-            <span className="inline-flex items-center rounded-full bg-[#fdf2e9] px-3.5 py-1 text-xs font-semibold text-[#5c3a21] border border-[#fae2ce]">
+          <div className="flex flex-wrap items-center justify-start gap-2 pt-0.5 sm:pt-1">
+            <span className="inline-flex items-center rounded-full bg-[#fdf2e9] px-2.5 py-0.5 sm:px-3.5 sm:py-1 text-[10px] sm:text-xs font-semibold text-[#5c3a21] border border-[#fae2ce]">
               {memberSinceStr}
             </span>
           </div>

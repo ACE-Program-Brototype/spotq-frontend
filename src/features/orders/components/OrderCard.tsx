@@ -134,7 +134,7 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
       tabIndex={onSelect ? 0 : undefined}
       role={onSelect ? "button" : undefined}
       className={cn(
-        "group relative flex flex-col justify-between overflow-hidden rounded-3xl bg-white p-5 sm:p-6 border border-neutral-200/80 shadow-xs hover:border-[#ff6b00]/40 hover:shadow-lg hover:shadow-neutral-200/40 hover:-translate-y-0.5 transition-all duration-200",
+        "group relative flex flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl bg-white p-3.5 sm:p-6 border border-neutral-200/80 shadow-xs hover:border-[#ff6b00]/40 hover:shadow-lg hover:shadow-neutral-200/40 hover:-translate-y-0.5 transition-all duration-200",
         onSelect &&
           "cursor-pointer focus-visible:outline-2 focus-visible:outline-[#ff6b00] focus-visible:outline-offset-2",
         className,
@@ -143,21 +143,21 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
       {/* Top subtle decorative gradient bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#ff6b00]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         {/* Header: Order Number, Icon & Status */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-neutral-100">
-          <div className="flex items-center gap-3.5 min-w-0">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#fff2e9] to-[#fde1cb] text-[#e8631b] border border-[#fbd3b7] shadow-2xs group-hover:scale-105 transition-transform duration-200">
-              <UtensilsCrossed className="size-5" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pb-3 sm:pb-3.5 border-b border-neutral-100">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+            <div className="flex size-9 sm:size-11 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#fff2e9] to-[#fde1cb] text-[#e8631b] border border-[#fbd3b7] shadow-2xs group-hover:scale-105 transition-transform duration-200">
+              <UtensilsCrossed className="size-4 sm:size-5" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="truncate text-base sm:text-lg font-extrabold tracking-tight text-neutral-900 group-hover:text-[#ff6b00] transition-colors">
+                <h3 className="truncate text-sm sm:text-lg font-extrabold tracking-tight text-neutral-900 group-hover:text-[#ff6b00] transition-colors">
                   Order #{order.order_number}
                 </h3>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-neutral-500 mt-0.5 min-w-0">
-                <Store className="size-3.5 text-neutral-400 shrink-0" />
+              <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-neutral-500 mt-0.5 min-w-0">
+                <Store className="size-3 sm:size-3.5 text-neutral-400 shrink-0" />
                 <span className="truncate font-semibold text-neutral-700">
                   {order.restaurant_name || ORDER_MESSAGES.DEFAULT_SUBTITLE}
                 </span>
@@ -176,26 +176,26 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
         </div>
 
         {/* Info Pills / Details Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <div className="flex items-center gap-2.5 rounded-xl bg-neutral-50/80 px-3.5 py-2 border border-neutral-100 text-xs sm:text-sm text-neutral-600">
-            <Calendar className="size-4 text-neutral-400 shrink-0" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5 rounded-lg sm:rounded-xl bg-neutral-50/80 px-3 py-1.5 sm:px-3.5 sm:py-2 border border-neutral-100 text-[11px] sm:text-sm text-neutral-600">
+            <Calendar className="size-3.5 sm:size-4 text-neutral-400 shrink-0" />
             <span className="truncate font-medium">{formattedDate}</span>
           </div>
 
-          <div className="flex items-center gap-2.5 rounded-xl bg-neutral-50/80 px-3.5 py-2 border border-neutral-100 text-xs sm:text-sm text-neutral-600">
-            <Sparkles className="size-4 text-amber-500 shrink-0" />
+          <div className="flex items-center gap-2 sm:gap-2.5 rounded-lg sm:rounded-xl bg-neutral-50/80 px-3 py-1.5 sm:px-3.5 sm:py-2 border border-neutral-100 text-[11px] sm:text-sm text-neutral-600">
+            <Sparkles className="size-3.5 sm:size-4 text-amber-500 shrink-0" />
             <span className="truncate font-medium">{itemsSummary}</span>
           </div>
         </div>
       </div>
 
       {/* Footer: Amount & View Details */}
-      <div className="mt-5 flex items-end justify-between pt-3.5 border-t border-neutral-100">
+      <div className="mt-3.5 sm:mt-5 flex items-end justify-between pt-2.5 sm:pt-3.5 border-t border-neutral-100">
         <div className="flex flex-col">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-neutral-400">
             Total Paid
           </span>
-          <span className="text-xl sm:text-2xl font-black tracking-tight text-neutral-900">
+          <span className="text-lg sm:text-2xl font-black tracking-tight text-neutral-900">
             {formattedAmount}
           </span>
         </div>
@@ -203,7 +203,7 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
         <Link
           to={CUSTOMER_ROUTES.ORDER_DETAILS(order.order_id)}
           data-testid="view-order-details-link"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 rounded-lg sm:rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold shadow-2xs transition-all cursor-pointer"
         >
           <span>View Details</span>
           <ChevronRight className="size-3.5 text-neutral-400" />

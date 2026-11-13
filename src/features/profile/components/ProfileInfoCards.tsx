@@ -66,23 +66,23 @@ export function ProfileInfoCards({ profile }: ProfileInfoCardsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-4">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
           <div
             key={card.id}
-            className="flex items-center gap-4 rounded-2xl bg-white p-4 sm:p-5 border border-neutral-200/80 shadow-xs hover:border-[#fae2ce] transition-colors"
+            className="flex items-center gap-3 sm:gap-4 rounded-xl sm:rounded-2xl bg-white p-3 sm:p-5 border border-neutral-200/80 shadow-xs hover:border-[#fae2ce] transition-colors"
           >
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#fdf2e9] text-[#8c522f] border border-[#fae2ce]">
-              <Icon className="size-5" />
+            <div className="flex size-9 sm:size-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-[#fdf2e9] text-[#8c522f] border border-[#fae2ce]">
+              <Icon className="size-4 sm:size-5" />
             </div>
 
             <div className="flex min-w-0 flex-col gap-0.5">
-              <span className="text-[10px] font-bold tracking-wider text-neutral-400 uppercase">
+              <span className="text-[9px] sm:text-[10px] font-bold tracking-wider text-neutral-400 uppercase">
                 {card.label}
               </span>
-              <span className="truncate text-sm font-bold text-neutral-800" title={card.value}>
+              <span className="truncate text-xs sm:text-sm font-bold text-neutral-800" title={card.value}>
                 {card.value}
               </span>
             </div>

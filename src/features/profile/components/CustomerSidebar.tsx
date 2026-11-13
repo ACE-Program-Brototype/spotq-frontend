@@ -60,7 +60,7 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
     <>
       <nav
         className={cn(
-          "grid w-full min-w-0 grid-cols-3 gap-2 overflow-hidden rounded-2xl border border-neutral-200/60 bg-neutral-50/70 p-2 shadow-2xs lg:hidden",
+          "grid w-full min-w-0 grid-cols-3 gap-1.5 overflow-hidden rounded-xl sm:rounded-2xl border border-neutral-200/60 bg-neutral-50/70 p-1.5 sm:p-2 shadow-2xs lg:hidden",
           className,
         )}
         aria-label="Customer Account Navigation Mobile"
@@ -74,14 +74,14 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
               key={item.label}
               to={item.href}
               className={cn(
-                "flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-xs font-semibold transition-colors select-none",
+                "flex min-w-0 items-center justify-center gap-1.5 rounded-lg sm:rounded-xl px-2 py-2 text-xs font-semibold transition-colors select-none",
                 isActive
                   ? "bg-[#ff6b00] text-white shadow-sm"
                   : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
               )}
             >
               <Icon
-                className={cn("size-4 shrink-0", isActive ? "text-white" : "text-neutral-500")}
+                className={cn("size-3.5 sm:size-4 shrink-0", isActive ? "text-white" : "text-neutral-500")}
               />
               <span>{item.label}</span>
             </Link>
