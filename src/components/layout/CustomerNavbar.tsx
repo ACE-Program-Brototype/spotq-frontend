@@ -19,7 +19,6 @@ export type { CustomerMobileNavProps, CustomerNavbarProps };
 
 export function CustomerNavbar({
   cartItemCount = 0,
-  unreadNotifications = 1,
   onSearch,
   className,
   ...props
@@ -241,7 +240,6 @@ function CustomerAccountMenu({ initials }: { initials: string }) {
 
 export function CustomerMobileNav({
   cartItemCount = 0,
-  unreadNotifications = 0,
   className,
 }: CustomerMobileNavProps) {
   const location = useLocation();
