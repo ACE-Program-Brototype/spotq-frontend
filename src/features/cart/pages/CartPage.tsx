@@ -77,8 +77,8 @@ export function CartPage() {
     : CUSTOMER_ROUTES.HOME;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 pb-12">
-      <div className="flex flex-col gap-2 border-b border-stone-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mx-auto max-w-5xl space-y-4 sm:space-y-6 pb-24 sm:pb-16">
+      <div className="flex flex-col gap-2.5 border-b border-stone-200 pb-4 sm:pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Link
             to={restaurantLink}
@@ -87,24 +87,26 @@ export function CartPage() {
             <ArrowLeft className="size-3.5" />
             {CART_MESSAGES.CONTINUE_SHOPPING}
           </Link>
-          <div className="mt-2 flex items-center gap-2">
-            <Store className="size-5 text-[#ff6b00]" />
-            <h1 className="text-2xl font-black tracking-tight text-stone-900">{restaurantName}</h1>
+          <div className="mt-1.5 sm:mt-2 flex items-center gap-2">
+            <Store className="size-4.5 sm:size-5 text-[#ff6b00] shrink-0" />
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-stone-900 truncate">
+              {restaurantName}
+            </h1>
           </div>
-          <p className="text-xs text-stone-500">
+          <p className="text-[11px] sm:text-xs text-stone-500 truncate">
             {CART_MESSAGES.RESTAURANT_LABEL}:{" "}
             <span className="font-semibold text-stone-700">{restaurantName}</span>
           </p>
         </div>
 
-        <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#f26500]">
+        <span className="w-fit self-start sm:self-auto rounded-full bg-orange-50 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold text-[#f26500]">
           {totalCount}{" "}
           {totalCount === 1 ? CART_MESSAGES.ITEM_COUNT_SINGULAR : CART_MESSAGES.ITEM_COUNT_PLURAL}
         </span>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-        <section aria-label="Cart Items" className="space-y-4">
+      <div className="grid gap-5 sm:gap-6 lg:gap-8 lg:grid-cols-[1fr_360px]">
+        <section aria-label="Cart Items" className="space-y-3 sm:space-y-4">
           {items.map((item) => (
             <CartItemCard
               key={item.id}
@@ -115,7 +117,7 @@ export function CartPage() {
           ))}
         </section>
 
-        <div>
+        <div className="lg:sticky lg:top-20 h-fit">
           <CartSummary
             restaurantId={restaurantId}
             totalCount={totalCount}
