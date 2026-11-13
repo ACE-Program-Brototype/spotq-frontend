@@ -1,11 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { WALLET_QUERY_KEYS } from "@/features/wallet/constants/wallet.constants";
 import { walletService } from "@/features/wallet/services/wallet.service";
+import type { WalletLedgerEntriesParams } from "@/features/wallet/types/wallet.types";
 
 export function useWalletOverview() {
   return useQuery({
     queryKey: WALLET_QUERY_KEYS.overview(),
     queryFn: walletService.getOverview,
+  });
+}
+
+export function useWalletLedgerEntries(params: WalletLedgerEntriesParams) {
+  return useQuery({
+    queryKey: WALLET_QUERY_KEYS.ledgerEntries(params),
+    queryFn: () => walletService.getLedgerEntries(params),
+    placeholderData: keepPreviousData,
   });
 }
 
