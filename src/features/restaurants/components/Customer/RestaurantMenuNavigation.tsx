@@ -1,5 +1,6 @@
-import { ShoppingBag, Users } from "lucide-react";
+import { CheckCircle2, ShoppingBag, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 import {
   CUSTOMER_QUEUE_BUTTON_LABELS,
   RESTAURANT_PLAN_TYPES,
@@ -15,6 +16,8 @@ interface RestaurantMenuNavigationProps {
   activeId: string;
   onActiveChange: (id: string) => void;
   onJoinQueueClick?: () => void;
+  isJoinedThisQueue?: boolean;
+  isJoinedOtherQueue?: boolean;
 }
 
 export function RestaurantMenuNavigation({
@@ -23,12 +26,16 @@ export function RestaurantMenuNavigation({
   activeId,
   onActiveChange,
   onJoinQueueClick,
+  isJoinedThisQueue: propIsJoinedThisQueue,
+  isJoinedOtherQueue: propIsJoinedOtherQueue,
 }: RestaurantMenuNavigationProps) {
   const planType = restaurant.subscriptionType ?? restaurant.type;
   const showQueueButton = planType === RESTAURANT_PLAN_TYPES.QUEUE_PRO;
   const isRestaurantOpen = (restaurant.isOpened ?? restaurant.settings?.isOpened) !== false;
-  const isJoinedThisQueue = Boolean(restaurant.queue?.hasJoinedThisRestaurantQueue);
-  const isJoinedOtherQueue = Boolean(restaurant.queue?.hasJoinedAnyQueue) && !isJoinedThisQueue;
+  const isJoinedThisQueue =
+    propIsJoinedThisQueue ?? Boolean(restaurant.queue?.hasJoinedThisRestaurantQueue);
+  const isJoinedOtherQueue =
+    propIsJoinedOtherQueue ?? (Boolean(restaurant.queue?.hasJoinedAnyQueue) && !isJoinedThisQueue);
   const queueButtonLabel = !isRestaurantOpen
     ? CUSTOMER_QUEUE_BUTTON_LABELS.RESTAURANT_CLOSED
     : isJoinedThisQueue
@@ -73,12 +80,20 @@ export function RestaurantMenuNavigation({
           disabled={
             !isRestaurantOpen ||
             !restaurant.settings?.acceptsQueue ||
-            isJoinedThisQueue ||
             isJoinedOtherQueue
           }
-          className="w-full rounded-xl bg-orange-600 font-bold text-white hover:bg-orange-700 disabled:bg-stone-300 cursor-pointer shadow-sm transition"
+          className={cn(
+            "w-full rounded-xl font-bold text-white shadow-sm transition cursor-pointer",
+            isJoinedThisQueue
+              ? "bg-emerald-600 hover:bg-emerald-700"
+              : "bg-orange-600 hover:bg-orange-700 disabled:bg-stone-300 disabled:cursor-not-allowed",
+          )}
         >
-          <Users className="mr-2 size-4" />
+          {isJoinedThisQueue ? (
+            <CheckCircle2 className="mr-2 size-4" />
+          ) : (
+            <Users className="mr-2 size-4" />
+          )}
           {queueButtonLabel}
         </Button>
       )}

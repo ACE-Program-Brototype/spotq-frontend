@@ -1,10 +1,13 @@
 import { ArrowLeft } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JoinQueueModal } from "@/features/queue/components/JoinQueueModal";
+import { useActiveCustomerQueue } from "@/features/queue/hooks/use-active-customer-queue";
+import type { ActiveCustomerTicket } from "@/features/queue/types/ring-alert.types";
+import { getActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
 import { RestaurantCover } from "../components/Customer/RestaurantCover";
 import { RestaurantMenuNavigation } from "../components/Customer/RestaurantMenuNavigation";
 import { RestaurantMenuSections } from "../components/Customer/RestaurantMenuSections";
@@ -14,27 +17,82 @@ import type { CustomerRestaurantDetails } from "../types/customer-restaurant.typ
 
 function RestaurantDetailsContent({ restaurant }: { restaurant: CustomerRestaurantDetails }) {
   const navigate = useNavigate();
+  const { data: activeQueueResponse } = useActiveCustomerQueue();
+  const [activeTicket, setActiveTicket] = useState<ActiveCustomerTicket | null>(() =>
+    activeQueueResponse?.data ?? getActiveCustomerTicket(),
+  );
+
+  useEffect(() => {
+    setActiveTicket(activeQueueResponse?.data ?? getActiveCustomerTicket());
+  }, [activeQueueResponse]);
+
+  useEffect(() => {
+    const handleStorage = () => {
+      setActiveTicket(getActiveCustomerTicket());
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  const isJoinedThisQueue = Boolean(
+    (activeTicket && activeTicket.restaurantId === restaurant.restaurantId) ||
+      restaurant.queue?.hasJoinedThisRestaurantQueue,
+  );
+  const isJoinedOtherQueue = Boolean(
+    (activeTicket && activeTicket.restaurantId !== restaurant.restaurantId) ||
+      (restaurant.queue?.hasJoinedAnyQueue && !isJoinedThisQueue),
+  );
+  const activeQueueEntryId =
+    (activeTicket && activeTicket.restaurantId === restaurant.restaurantId
+      ? activeTicket.queueEntryId
+      : null) ?? restaurant.queue?.queueEntryId ?? null;
+
+  // Enrich restaurant.queue so menu items and checkout know the user is active in queue
+  const enrichedRestaurant = useMemo(() => {
+    if (!isJoinedThisQueue && !isJoinedOtherQueue) return restaurant;
+    return {
+      ...restaurant,
+      queue: {
+        ...restaurant.queue,
+        hasJoinedThisRestaurantQueue: isJoinedThisQueue,
+        hasJoinedAnyQueue: isJoinedThisQueue || isJoinedOtherQueue,
+        isGuestUser: false,
+        queueEntryId: activeQueueEntryId,
+      },
+    };
+  }, [restaurant, isJoinedThisQueue, isJoinedOtherQueue, activeQueueEntryId]);
+
   const categories = useMemo(
-    () => [...(restaurant.menu ?? [])].sort((a, b) => a.displayOrder - b.displayOrder),
-    [restaurant.menu],
+    () => [...(enrichedRestaurant.menu ?? [])].sort((a, b) => a.displayOrder - b.displayOrder),
+    [enrichedRestaurant.menu],
   );
   const [activeId, setActiveId] = useState(categories[0]?.id ?? "overview");
   const [isJoinQueueOpen, setIsJoinQueueOpen] = useState(false);
 
+  const handleQueueButtonClick = () => {
+    if (isJoinedThisQueue && activeQueueEntryId) {
+      navigate(CUSTOMER_ROUTES.QUEUE_STATUS(restaurant.restaurantId, activeQueueEntryId));
+    } else {
+      setIsJoinQueueOpen(true);
+    }
+  };
+
   return (
     <>
-      <RestaurantCover restaurant={restaurant} />
+      <RestaurantCover restaurant={enrichedRestaurant} />
       <div className="mt-7 grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
         <RestaurantMenuNavigation
           categories={categories}
-          restaurant={restaurant}
+          restaurant={enrichedRestaurant}
           activeId={activeId}
           onActiveChange={setActiveId}
-          onJoinQueueClick={() => setIsJoinQueueOpen(true)}
+          onJoinQueueClick={handleQueueButtonClick}
+          isJoinedThisQueue={isJoinedThisQueue}
+          isJoinedOtherQueue={isJoinedOtherQueue}
         />
         <div className="min-w-0 space-y-10">
-          <RestaurantMenuSections categories={categories} restaurant={restaurant} />
-          <RestaurantOverview restaurant={restaurant} />
+          <RestaurantMenuSections categories={categories} restaurant={enrichedRestaurant} />
+          <RestaurantOverview restaurant={enrichedRestaurant} />
         </div>
       </div>
 
