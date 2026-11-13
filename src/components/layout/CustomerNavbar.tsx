@@ -5,7 +5,7 @@
 
 import { Bell, Home, LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -27,41 +27,38 @@ export function CustomerNavbar({
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState(
-    location.pathname === "/" ? (searchParams.get("search") ?? "") : "",
-  );
+  const isHomePage = location.pathname === CUSTOMER_ROUTES.HOME;
+
+  const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
+  // Automatically close mobile search drawer if navigated to home
   useEffect(() => {
-    if (location.pathname === "/") {
-      setSearchQuery(searchParams.get("search") ?? "");
+    if (isHomePage) {
+      setMobileSearchOpen(false);
     }
-  }, [searchParams, location.pathname]);
+  }, [isHomePage]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
     onSearch?.(val);
+  };
 
-    if (location.pathname === "/") {
-      const nextParams = new URLSearchParams(searchParams);
-      if (val.trim()) {
-        nextParams.set("search", val.trim());
-        nextParams.delete("page");
-      } else {
-        nextParams.delete("search");
-      }
-      setSearchParams(nextParams, { replace: true });
-    }
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const val = searchQuery.trim();
+    navigate(val ? `/?search=${encodeURIComponent(val)}` : "/");
+    setMobileSearchOpen(false);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && location.pathname !== "/") {
+    if (e.key === "Enter") {
       e.preventDefault();
       const val = searchQuery.trim();
       navigate(val ? `/?search=${encodeURIComponent(val)}` : "/");
+      setMobileSearchOpen(false);
     }
   };
 
@@ -90,31 +87,35 @@ export function CustomerNavbar({
           <span className="text-xl font-extrabold tracking-tight text-[#ff6b00]">spotQ</span>
         </Link>
 
-        <div className="mx-6 hidden max-w-lg flex-1 md:block">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-neutral-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Search for your favorite food or restaurant..."
-              className="h-10 w-full rounded-full border border-neutral-200 bg-neutral-100/70 pl-11 pr-4 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-all focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
-            />
-          </div>
-        </div>
+        {!isHomePage && (
+          <form onSubmit={handleSearchSubmit} className="mx-6 hidden max-w-lg flex-1 md:block">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-neutral-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="Search for your favorite food or restaurant..."
+                className="h-10 w-full rounded-full border border-neutral-200 bg-neutral-100/70 pl-11 pr-4 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-all focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
+              />
+            </div>
+          </form>
+        )}
 
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Search"
-            onClick={() => setMobileSearchOpen((prev) => !prev)}
-            className="md:hidden text-neutral-700 hover:bg-neutral-100 rounded-full"
-          >
-            <Search className="size-5" />
-          </Button>
+          {!isHomePage && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Search"
+              onClick={() => setMobileSearchOpen((prev) => !prev)}
+              className="md:hidden text-neutral-700 hover:bg-neutral-100 rounded-full"
+            >
+              <Search className="size-5" />
+            </Button>
+          )}
 
           <Link
             to={CUSTOMER_ROUTES.CART}
@@ -155,8 +156,11 @@ export function CustomerNavbar({
         </div>
       </div>
 
-      {mobileSearchOpen && (
-        <div className="border-t border-neutral-100 bg-neutral-50 px-4 py-2.5 md:hidden">
+      {!isHomePage && mobileSearchOpen && (
+        <form
+          onSubmit={handleSearchSubmit}
+          className="border-t border-neutral-100 bg-neutral-50 px-4 py-2.5 md:hidden"
+        >
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-400" />
             <input
@@ -168,7 +172,7 @@ export function CustomerNavbar({
               className="h-9 w-full rounded-full border border-neutral-200 bg-white pl-9 pr-4 text-xs text-neutral-800 placeholder:text-neutral-400 focus:border-[#ff6b00] focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
             />
           </div>
-        </div>
+        </form>
       )}
     </header>
   );
