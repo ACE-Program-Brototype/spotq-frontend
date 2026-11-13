@@ -15,36 +15,37 @@ export function SeatedStatusCard({
   tableNumber,
 }: SeatedStatusCardProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl border border-emerald-200 bg-linear-to-b from-emerald-50 via-white to-emerald-50/20 p-5 sm:p-8 text-center shadow-lg sm:shadow-xl">
-      <div className="relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl shadow-emerald-600/30">
-        <UtensilsCrossed className="h-8 w-8 sm:h-10 sm:w-10" />
-        <span className="absolute -top-1 -right-1 flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full bg-white text-emerald-600 shadow-sm">
-          <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-linear-to-b from-emerald-50/70 via-white to-emerald-50/20 p-4 sm:p-6 text-center shadow-xs">
+      <div className="relative flex size-14 sm:size-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
+        <UtensilsCrossed className="size-7 sm:size-8" />
+        <span className="absolute -top-0.5 -right-0.5 flex size-5 sm:size-6 items-center justify-center rounded-full bg-white text-emerald-600 shadow-xs">
+          <CheckCircle2 className="size-3.5 sm:size-4" />
         </span>
       </div>
 
-      <div className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-        <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+      <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-800">
+        <Sparkles className="size-3 text-emerald-600" />
         Seated
       </div>
 
-      <h2 className="mt-3 text-2xl font-black text-stone-900">You are Seated!</h2>
-      <p className="mt-1 max-w-sm text-sm text-stone-600">
+      <h2 className="mt-2 text-xl font-black text-neutral-900">You are Seated!</h2>
+      <p className="mt-0.5 max-w-xs text-xs text-neutral-600">
         Enjoy your dining experience{restaurantName ? ` at ${restaurantName}` : ""}.
       </p>
 
       {tableNumber && (
-        <div className="mt-4 rounded-xl border border-emerald-300 bg-emerald-100/60 px-4 py-2 text-sm font-bold text-emerald-950">
+        <div className="mt-3 rounded-lg border border-emerald-300 bg-emerald-100/60 px-3 py-1.5 text-xs font-bold text-emerald-950">
           Table Number: {tableNumber}
         </div>
       )}
 
-      <div className="mt-8 flex flex-col sm:flex-row gap-3 w-full max-w-xs">
+      <div className="mt-5 w-full max-w-xs">
         <Link
           to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurantId)}
           className={buttonVariants({
             variant: "default",
-            className: "w-full bg-stone-900 text-white hover:bg-stone-800",
+            size: "sm",
+            className: "w-full bg-[#2e1b12] text-white hover:bg-neutral-800 text-xs h-8.5 rounded-xl font-semibold",
           })}
         >
           View Menu

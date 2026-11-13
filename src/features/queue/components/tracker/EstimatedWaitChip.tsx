@@ -17,8 +17,8 @@ export function EstimatedWaitChip({ estimatedWaitMinutes }: EstimatedWaitChipPro
   }
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-full bg-stone-100/90 px-3 py-1.5 text-xs font-semibold text-stone-700 border border-stone-200">
-      <Clock className="h-3.5 w-3.5 text-orange-600" />
+    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fcf5f0] px-2.5 py-1 text-xs font-semibold text-[#9a3412] border border-[#eddcd4]">
+      <Clock className="h-3.5 w-3.5 text-[#e8631b]" />
       <span>{label}</span>
     </div>
   );

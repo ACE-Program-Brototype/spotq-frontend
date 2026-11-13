@@ -26,45 +26,45 @@ export function CircularPositionBadge({ position, peopleAhead }: CircularPositio
     <div className="flex flex-col items-center justify-center text-center">
       <div className="relative flex items-center justify-center">
         <div
-          className={`relative flex h-32 w-32 sm:h-44 sm:w-44 items-center justify-center rounded-full border-4 shadow-lg sm:shadow-xl transition-all duration-500 ${
+          className={`relative flex size-24 sm:size-28 items-center justify-center rounded-full border-[3px] shadow-sm transition-all duration-300 ${
             isNext
-              ? "border-emerald-500 bg-linear-to-b from-emerald-50 to-emerald-100/60 shadow-emerald-500/20"
-              : "border-orange-500 bg-linear-to-b from-orange-50 to-amber-50/50 shadow-orange-500/15"
+              ? "border-emerald-500 bg-emerald-50/70 text-emerald-800 shadow-emerald-500/10"
+              : "border-[#e8631b] bg-[#fcf5f0] text-[#9a3412] shadow-[#e8631b]/10"
           }`}
         >
           <div className="flex flex-col items-center">
             <span
-              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight transition-transform duration-300 scale-100 ${
-                isNext ? "text-emerald-700" : "text-stone-900"
+              className={`text-2xl sm:text-3xl font-black tracking-tight leading-none ${
+                isNext ? "text-emerald-700" : "text-neutral-900"
               }`}
             >
               {validPosition !== null ? getOrdinalSuffix(validPosition) : "—"}
             </span>
-            <span className="mt-0.5 text-[11px] sm:text-xs lg:text-sm font-semibold uppercase tracking-wider text-stone-500">
+            <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-neutral-500">
               in line
             </span>
           </div>
         </div>
 
         {isNext && (
-          <span className="absolute -top-2 rounded-full bg-emerald-600 px-2.5 sm:px-3 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide uppercase text-white shadow-md animate-bounce">
+          <span className="absolute -top-2 rounded-full bg-emerald-600 px-2 py-0.5 text-[9px] font-bold tracking-wide uppercase text-white shadow-xs animate-bounce">
             You're Next!
           </span>
         )}
       </div>
 
-      <div className="mt-3 sm:mt-4">
+      <div className="mt-2">
         {isNext ? (
-          <p className="text-xs sm:text-sm font-semibold text-emerald-700">
+          <p className="text-xs font-semibold text-emerald-700">
             Please be ready near the host stand
           </p>
         ) : resolvedPeopleAhead !== null ? (
-          <p className="text-xs sm:text-sm text-stone-600">
-            <span className="font-semibold text-stone-900">{resolvedPeopleAhead}</span>{" "}
+          <p className="text-xs text-neutral-600">
+            <span className="font-bold text-neutral-900">{resolvedPeopleAhead}</span>{" "}
             {resolvedPeopleAhead === 1 ? "party" : "parties"} ahead of you
           </p>
         ) : (
-          <p className="text-xs sm:text-sm text-stone-500">Updating queue position...</p>
+          <p className="text-xs text-neutral-500">Updating queue position...</p>
         )}
       </div>
     </div>

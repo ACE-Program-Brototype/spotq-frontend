@@ -3,7 +3,7 @@
  * Provides branding, global search, shopping cart access, notifications, and customer authentication links.
  */
 
-import { Bell, Home, LogOut, Search, ShoppingCart, User } from "lucide-react";
+import { Home, LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
@@ -127,17 +127,6 @@ export function CustomerNavbar({
               <span className="absolute -right-0.5 -top-0.5 flex size-4.5 items-center justify-center rounded-full bg-[#ff6b00] text-[10px] font-bold text-white shadow-xs">
                 {cartItemCount}
               </span>
-            )}
-          </Link>
-
-          <Link
-            to={CUSTOMER_ROUTES.NOTIFICATIONS}
-            aria-label="Notifications"
-            className="relative hidden sm:flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors"
-          >
-            <Bell className="size-5" />
-            {unreadNotifications > 0 && (
-              <span className="absolute right-2 top-2 size-2 rounded-full bg-[#ff6b00] ring-2 ring-white" />
             )}
           </Link>
 
@@ -269,12 +258,6 @@ export function CustomerMobileNav({
       href: "/cart",
       icon: ShoppingCart,
       badge: cartItemCount,
-    },
-    {
-      label: "Notifications",
-      href: "/notifications",
-      icon: Bell,
-      badge: unreadNotifications,
     },
     {
       label: "Profile",

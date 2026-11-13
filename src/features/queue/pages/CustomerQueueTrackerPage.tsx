@@ -190,32 +190,32 @@ export default function CustomerQueueTrackerPage() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-lg px-4 py-8 space-y-6">
-        <Skeleton className="h-6 w-36 bg-stone-200" />
-        <Skeleton className="h-44 w-full rounded-3xl bg-stone-200" />
-        <Skeleton className="h-64 w-full rounded-3xl bg-stone-200" />
+      <div className="mx-auto max-w-[420px] px-3.5 sm:px-4 py-4 space-y-3">
+        <Skeleton className="h-5 w-28 bg-[#eddcd4]/60 rounded-lg" />
+        <Skeleton className="h-72 w-full rounded-2xl bg-[#faf7f5] border border-[#eddcd4]" />
       </div>
     );
   }
 
   if (isError || !activeQueueEntryId || !initialData) {
     return (
-      <div className="mx-auto max-w-md px-4 py-16 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-stone-100 text-stone-500">
-          <UtensilsCrossed className="h-7 w-7" />
+      <div className="mx-auto max-w-[420px] px-4 py-12 text-center">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[#fcf5f0] text-[#9a3412]">
+          <UtensilsCrossed className="size-6" />
         </div>
-        <h2 className="mt-4 text-xl font-bold text-stone-900">Queue Entry Not Found</h2>
-        <p className="mt-1 text-sm text-stone-600">
+        <h2 className="mt-3 text-lg font-bold text-neutral-900">Queue Entry Not Found</h2>
+        <p className="mt-1 text-xs text-neutral-500">
           We couldn't retrieve an active queue entry for this session.
         </p>
-        <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+        <div className="mt-5 flex flex-col sm:flex-row justify-center gap-2.5">
           <Button
             variant="outline"
+            size="sm"
             onClick={() => refetch()}
             disabled={isRefetching}
-            className="border-stone-300"
+            className="border-[#eddcd4] text-xs h-8"
           >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? "animate-spin" : ""}`} />
+            <RefreshCw className={`mr-1.5 size-3.5 ${isRefetching ? "animate-spin" : ""}`} />
             Try Again
           </Button>
           {restaurantId && (
@@ -223,7 +223,8 @@ export default function CustomerQueueTrackerPage() {
               to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurantId)}
               className={buttonVariants({
                 variant: "default",
-                className: "bg-stone-900 text-white hover:bg-stone-800",
+                size: "sm",
+                className: "bg-[#2e1b12] text-white hover:bg-neutral-800 text-xs h-8",
               })}
             >
               Back to Restaurant
@@ -269,16 +270,16 @@ export default function CustomerQueueTrackerPage() {
         : null;
 
   return (
-    <div className="mx-auto max-w-lg px-3.5 sm:px-4 py-3 sm:py-6 space-y-3.5 sm:space-y-5 pb-24 sm:pb-12 animate-in fade-in duration-200">
-      <div className="flex items-center justify-between gap-4">
+    <div className="mx-auto max-w-[420px] px-3 sm:px-4 py-2 sm:py-4 space-y-2.5 sm:space-y-3 pb-20 sm:pb-8 animate-in fade-in duration-200">
+      <div className="flex items-center justify-between gap-3">
         <Link
           to={CUSTOMER_ROUTES.RESTAURANT_DETAIL(restaurantId || "")}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-stone-600 hover:text-stone-900 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-neutral-900 transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span>{restaurantName}</span>
+          <ArrowLeft className="size-3.5" />
+          <span className="truncate max-w-[200px]">{restaurantName}</span>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <ConnectionStatusBadge status={connectionStatus} />
           <Button
             variant="ghost"
@@ -287,9 +288,9 @@ export default function CustomerQueueTrackerPage() {
             disabled={isRefetching}
             title="Refresh status"
             aria-label="Refresh status"
-            className="text-stone-500 hover:text-stone-900 cursor-pointer"
+            className="text-neutral-500 hover:text-neutral-900 cursor-pointer size-7"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isRefetching ? "animate-spin" : ""}`} />
+            <RefreshCw className={`size-3.5 ${isRefetching ? "animate-spin" : ""}`} />
           </Button>
         </div>
       </div>
@@ -305,17 +306,17 @@ export default function CustomerQueueTrackerPage() {
       {hasActiveRing && (
         <div
           role="status"
-          className="rounded-2xl border border-emerald-300 bg-emerald-50/90 p-3.5 sm:p-4 text-emerald-950 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+          className="rounded-xl border border-emerald-300 bg-emerald-50/90 p-2.5 sm:p-3 text-emerald-950 shadow-xs flex items-center justify-between gap-2.5"
         >
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
-              <BellRing className="h-4 w-4" />
+          <div className="flex items-start gap-2.5">
+            <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-xs">
+              <BellRing className="size-3.5" />
             </div>
             <div>
-              <h4 className="text-xs sm:text-sm font-bold text-emerald-950">
-                Table Ready — Please Head to the Host Stand
+              <h4 className="text-xs font-bold text-emerald-950">
+                Table Ready — Head to Host Stand
               </h4>
-              <p className="mt-0.5 text-[11px] sm:text-xs text-emerald-800 leading-relaxed">
+              <p className="mt-0.5 text-[11px] text-emerald-800 leading-tight">
                 {liveRingData?.message ||
                   "Staff has called your party. Please check in at the host stand now."}
               </p>
@@ -329,9 +330,9 @@ export default function CustomerQueueTrackerPage() {
               ringMedia.stopAll();
               setIsRingModalOpen(false);
             }}
-            className="shrink-0 border-emerald-300 bg-white text-emerald-900 hover:bg-emerald-100 text-xs font-semibold h-7.5 sm:h-8 rounded-xl cursor-pointer"
+            className="shrink-0 border-emerald-300 bg-white text-emerald-900 hover:bg-emerald-100 text-[11px] font-semibold h-7 px-2 rounded-lg cursor-pointer"
           >
-            Silence Alert
+            Silence
           </Button>
         </div>
       )}
@@ -361,66 +362,66 @@ export default function CustomerQueueTrackerPage() {
       )}
 
       {!isTerminal && (
-        <div className="space-y-4 sm:space-y-5">
-          <Card className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-stone-200/80 bg-white p-4 sm:p-7 shadow-lg sm:shadow-xl">
-            <div className="flex items-center justify-between border-b border-stone-100 pb-3 sm:pb-4">
-              <div>
-                <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-stone-500">
-                  Queue Number
-                </span>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-black text-stone-900">{queueNumber}</div>
+        <Card className="relative overflow-hidden rounded-2xl border border-[#eddcd4] bg-white p-3.5 sm:p-5 shadow-xs">
+          <div className="flex items-center justify-between border-b border-[#eddcd4]/60 pb-2.5 sm:pb-3">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                Queue Number
+              </span>
+              <div className="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-0.5">
+                {queueNumber}
               </div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                {effectiveAssignedTable && (
-                  <div className="flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl bg-emerald-50 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-emerald-800 border border-emerald-200/60">
-                    <span>Table: {effectiveAssignedTable}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl bg-orange-50 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-orange-800 border border-orange-200/60">
-                  <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-orange-600" />
-                  <span>
-                    {partySize} {partySize === 1 ? "Guest" : "Guests"}
-                  </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {effectiveAssignedTable && (
+                <div className="flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-800 border border-emerald-200/60">
+                  <span>Table: {effectiveAssignedTable}</span>
                 </div>
+              )}
+              <div className="flex items-center gap-1 rounded-lg bg-[#fcf5f0] px-2 py-1 text-[11px] font-semibold text-[#9a3412] border border-[#eddcd4]">
+                <Users className="size-3 text-[#e8631b]" />
+                <span>
+                  {partySize} {partySize === 1 ? "Guest" : "Guests"}
+                </span>
               </div>
             </div>
+          </div>
 
-            <div className="py-4 sm:py-6">
-              <CircularPositionBadge
-                position={effectivePosition}
-                peopleAhead={effectivePeopleAhead}
-              />
+          <div className="py-2.5 sm:py-3.5">
+            <CircularPositionBadge
+              position={effectivePosition}
+              peopleAhead={effectivePeopleAhead}
+            />
+          </div>
+
+          <div className="pt-2 pb-2.5 border-t border-[#eddcd4]/50">
+            <QueueProgressBar
+              currentPosition={effectivePosition}
+              initialPosition={effectiveInitialPosition}
+            />
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pt-1">
+            <EstimatedWaitChip estimatedWaitMinutes={effectiveWaitMinutes} />
+            <span className="text-[10px] text-neutral-400">Auto-updates live</span>
+          </div>
+
+          {initialData?.canCancel !== false && (
+            <div className="pt-2.5 mt-2.5 border-t border-dashed border-[#eddcd4] flex items-center justify-between gap-2">
+              <span className="text-[11px] text-neutral-500">Need to cancel?</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsLeaveConfirmOpen(true)}
+                disabled={leaveQueueMutation.isPending}
+                className="border-[#eddcd4] text-neutral-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 text-xs font-semibold h-7.5 px-2.5 rounded-xl transition-all cursor-pointer"
+              >
+                <LogOut className="mr-1 size-3" />
+                Leave Queue
+              </Button>
             </div>
-
-            <div className="pt-2 pb-3.5 sm:pb-5 border-t border-stone-100">
-              <QueueProgressBar
-                currentPosition={effectivePosition}
-                initialPosition={effectiveInitialPosition}
-              />
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 pt-1 sm:pt-2">
-              <EstimatedWaitChip estimatedWaitMinutes={effectiveWaitMinutes} />
-              <span className="text-[11px] sm:text-xs text-stone-500">Auto-updates in real time</span>
-            </div>
-
-            {initialData?.canCancel !== false && (
-              <div className="pt-3.5 sm:pt-5 mt-3.5 sm:mt-5 border-t border-dashed border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3">
-                <span className="text-[11px] sm:text-xs text-stone-500">Need to cancel or change plans?</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsLeaveConfirmOpen(true)}
-                  disabled={leaveQueueMutation.isPending}
-                  className="w-full sm:w-auto border-stone-200 text-stone-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 text-xs font-semibold h-8 px-3 rounded-xl transition-all cursor-pointer"
-                >
-                  <LogOut className="mr-1.5 h-3.5 w-3.5" />
-                  Leave Queue
-                </Button>
-              </div>
-            )}
-          </Card>
-        </div>
+          )}
+        </Card>
       )}
 
       <ConfirmDialog
