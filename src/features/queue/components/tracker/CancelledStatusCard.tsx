@@ -15,9 +15,9 @@ export function CancelledStatusCard({
   reason,
 }: CancelledStatusCardProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-3xl border border-stone-200 bg-white p-8 text-center shadow-lg">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-stone-100 text-stone-500">
-        <Ban className="h-8 w-8" />
+    <div className="flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl border border-stone-200 bg-white p-5 sm:p-8 text-center shadow-md sm:shadow-lg">
+      <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-stone-100 text-stone-500">
+        <Ban className="h-7 w-7 sm:h-8 sm:w-8" />
       </div>
 
       <div className="mt-4 inline-flex items-center rounded-full bg-stone-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-stone-700">

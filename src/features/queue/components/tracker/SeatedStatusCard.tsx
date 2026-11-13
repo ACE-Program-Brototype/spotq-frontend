@@ -15,11 +15,11 @@ export function SeatedStatusCard({
   tableNumber,
 }: SeatedStatusCardProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-3xl border border-emerald-200 bg-linear-to-b from-emerald-50 via-white to-emerald-50/20 p-8 text-center shadow-xl">
-      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl shadow-emerald-600/30">
-        <UtensilsCrossed className="h-10 w-10" />
-        <span className="absolute -top-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-white text-emerald-600 shadow-sm">
-          <CheckCircle2 className="h-5 w-5" />
+    <div className="flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl border border-emerald-200 bg-linear-to-b from-emerald-50 via-white to-emerald-50/20 p-5 sm:p-8 text-center shadow-lg sm:shadow-xl">
+      <div className="relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl shadow-emerald-600/30">
+        <UtensilsCrossed className="h-8 w-8 sm:h-10 sm:w-10" />
+        <span className="absolute -top-1 -right-1 flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full bg-white text-emerald-600 shadow-sm">
+          <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>
       </div>
 
