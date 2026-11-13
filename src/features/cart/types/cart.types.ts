@@ -45,12 +45,16 @@ export interface CartState {
   savedAt: number | null;
 }
 
+export interface AddItemResult {
+  success: boolean;
+  requiresConfirmation?: boolean;
+  currentRestaurantName?: string;
+  maxQuantityExceeded?: boolean;
+  availableToAdd?: number;
+}
+
 export interface CartActions {
-  addItem: (input: AddCartItemInput) => {
-    success: boolean;
-    requiresConfirmation?: boolean;
-    currentRestaurantName?: string;
-  };
+  addItem: (input: AddCartItemInput) => AddItemResult;
   confirmReplaceCartAndAdd: (input: AddCartItemInput) => void;
   updateQuantity: (cartItemId: string, delta: number) => void;
   removeItem: (cartItemId: string) => void;

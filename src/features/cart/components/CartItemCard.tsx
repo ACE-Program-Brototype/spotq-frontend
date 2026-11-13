@@ -1,6 +1,10 @@
 import { Minus, Plus, Trash2, UtensilsCrossed } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
+import {
+  CART_MESSAGES,
+  CART_QUANTITY_LIMITS,
+} from "@/features/cart/constants/cart.constants";
 import type { CartItem } from "@/features/cart/types/cart.types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -92,9 +96,16 @@ export function CartItemCard({ item, onUpdateQuantity, onRemoveItem }: CartItemC
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() => onUpdateQuantity(item.id, 1)}
+            disabled={item.quantity >= CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY}
+            onClick={() => {
+              if (item.quantity >= CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY) {
+                toast.error(CART_MESSAGES.MAX_QUANTITY_REACHED);
+                return;
+              }
+              onUpdateQuantity(item.id, 1);
+            }}
             aria-label={CART_MESSAGES.INCREASE_QUANTITY}
-            className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900"
+            className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <Plus className="size-3.5" />
           </Button>

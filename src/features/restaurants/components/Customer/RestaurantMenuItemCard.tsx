@@ -4,7 +4,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CartRestaurantMismatchDialog } from "@/features/cart/components/CartRestaurantMismatchDialog";
-import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
+import {
+  CART_MESSAGES,
+  CART_QUANTITY_LIMITS,
+} from "@/features/cart/constants/cart.constants";
 import { useCartStore } from "@/features/cart/store/cart.store";
 import type { AddCartItemInput } from "@/features/cart/types/cart.types";
 import type {
@@ -164,9 +167,30 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
       return;
     }
 
+    if (result.maxQuantityExceeded) {
+      toast.error(
+        result.availableToAdd != null && result.availableToAdd > 0
+          ? `You can only add ${result.availableToAdd} more of this item (max limit is ${CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY}).`
+          : CART_MESSAGES.MAX_QUANTITY_REACHED,
+      );
+      return;
+    }
+
     if (result.success) {
       toast.success(CART_MESSAGES.ITEM_ADDED);
     }
+  };
+
+  const handleDecreaseQuantity = () => {
+    setQuantity((q) => Math.max(CART_QUANTITY_LIMITS.MIN_ITEM_QUANTITY, q - 1));
+  };
+
+  const handleIncreaseQuantity = () => {
+    if (quantity >= CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY) {
+      toast.error(CART_MESSAGES.MAX_QUANTITY_REACHED);
+      return;
+    }
+    setQuantity((q) => Math.min(CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY, q + 1));
   };
 
   const handleConfirmMismatch = () => {
@@ -317,10 +341,10 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                 type="button"
                 variant="ghost"
                 size="icon"
-                disabled={quantity <= 1}
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                disabled={quantity <= CART_QUANTITY_LIMITS.MIN_ITEM_QUANTITY}
+                onClick={handleDecreaseQuantity}
                 aria-label={CART_MESSAGES.DECREASE_QUANTITY}
-                className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900 disabled:opacity-40"
+                className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 <Minus className="size-3.5" />
               </Button>
@@ -336,9 +360,10 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                 type="button"
                 variant="ghost"
                 size="icon"
-                onClick={() => setQuantity((q) => q + 1)}
+                disabled={quantity >= CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY}
+                onClick={handleIncreaseQuantity}
                 aria-label={CART_MESSAGES.INCREASE_QUANTITY}
-                className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900"
+                className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 <Plus className="size-3.5" />
               </Button>
