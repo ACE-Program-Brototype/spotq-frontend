@@ -1,5 +1,11 @@
 import { Navigate, type RouteObject, useParams } from "react-router-dom";
 
+import {
+  RestaurantAnalyticsLayout,
+  RestaurantAnalyticsOverviewPage,
+  RestaurantMenuPerformancePage,
+  RestaurantRevenueAnalyticsPage,
+} from "@/features/analytics";
 import RestaurantEmailVerificationPage from "@/features/auth/pages/restaurant/RestaurantEmailVerification";
 import OtpVerificationPage from "@/features/auth/pages/restaurant/ResturantOtpVerification";
 import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
@@ -31,6 +37,7 @@ import RestaurantTableDetailPage from "@/features/tables/pages/RestaurantTableDe
 import RestaurantTablePage from "@/features/tables/pages/RestaurantTablePage";
 import RestaurantTableSectionsPage from "@/features/tables/pages/RestaurantTableSectionsPage";
 import { RestaurantTransactionsPage } from "@/features/transactions";
+import RestaurantWalletPage from "@/features/wallet/pages/RestaurantWalletPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -135,6 +142,24 @@ export const restaurantRoutes: RouteObject[] = [
             Component: RestaurantDashboardPage,
           },
           {
+            path: RESTAURANT_ROUTE_PATHS.ANALYTICS.ROOT,
+            Component: RestaurantAnalyticsLayout,
+            children: [
+              {
+                index: true,
+                Component: RestaurantAnalyticsOverviewPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.ANALYTICS.REVENUE,
+                Component: RestaurantRevenueAnalyticsPage,
+              },
+              {
+                path: RESTAURANT_ROUTE_PATHS.ANALYTICS.MENU,
+                Component: RestaurantMenuPerformancePage,
+              },
+            ],
+          },
+          {
             path: RESTAURANT_ROUTE_PATHS.ORDERS.ROOT,
             children: [
               {
@@ -224,6 +249,10 @@ export const restaurantRoutes: RouteObject[] = [
               { path: RESTAURANT_ROUTE_PATHS.TABLE.CREATE, Component: CreateTablePage },
               { path: RESTAURANT_ROUTE_PATHS.TABLE.VIEW, Component: RestaurantTableDetailPage },
             ],
+          },
+          {
+            path: RESTAURANT_ROUTE_PATHS.WALLET.ROOT,
+            Component: RestaurantWalletPage,
           },
           {
             path: RESTAURANT_ROUTE_PATHS.FINANCE.TRANSACTIONS,

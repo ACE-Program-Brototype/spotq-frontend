@@ -1,16 +1,16 @@
 import { ArrowDownUp, RotateCcw, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils/cn";
 import {
   STAFF_ORDER_FILTER_STATUS,
   STAFF_ORDER_STATUS_CONFIG,
-} from "../../constants/staff-orders.constants";
+} from "@/features/orders/constants/staff-orders.constants";
 import type {
   StaffOrderFilterStatus,
   StaffOrderSortOrder,
   StaffOrderStatus,
-} from "../../types/staff-orders.types";
+} from "@/features/orders/types/staff-orders.types";
+import { cn } from "@/lib/utils/cn";
 
 interface StaffOrdersFiltersProps {
   searchQuery: string;

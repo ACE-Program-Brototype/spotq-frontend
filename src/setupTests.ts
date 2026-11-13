@@ -4,6 +4,15 @@ import { TextDecoder, TextEncoder } from "node:util";
 Object.assign(globalThis, { TextDecoder, TextEncoder });
 
 if (typeof window !== "undefined") {
+  if (!globalThis.ResizeObserver) {
+    class ResizeObserverPolyfill {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = ResizeObserverPolyfill;
+    (window as unknown as { ResizeObserver: unknown }).ResizeObserver = ResizeObserverPolyfill;
+  }
   if (window.URL) {
     if (!window.URL.createObjectURL) {
       window.URL.createObjectURL = () => "";

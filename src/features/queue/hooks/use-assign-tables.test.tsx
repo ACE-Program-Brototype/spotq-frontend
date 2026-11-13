@@ -23,6 +23,7 @@ describe("useAssignTables", () => {
 
   const mockResponse: AssignTablesResponse = {
     success: true,
+    statusCode: 200,
     message: "Tables assigned and party seated successfully",
     data: {
       queueEntryId,

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { tableService } from "../services/table.service";
 import StaffTablePage from "./StaffTablePage";
@@ -8,6 +8,7 @@ jest.mock("../services/table.service", () => ({
   tableService: {
     getTablesBySection: jest.fn(),
     updateTableStatus: jest.fn(),
+    releaseTables: jest.fn(),
   },
 }));
 
@@ -190,5 +191,42 @@ describe("StaffTablePage", () => {
 
     expect(screen.getByText("No restaurant assigned")).toBeInTheDocument();
     expect(tableService.getTablesBySection).not.toHaveBeenCalled();
+  });
+
+  it("opens ReleaseTableModal from three-dot menu and triggers releaseTables", async () => {
+    (tableService.releaseTables as jest.Mock).mockResolvedValue({
+      releasedTables: [
+        {
+          tableId: "t-2",
+          tableCode: "T-02",
+          status: "PARTIAL_OCCUPIED",
+          currentOccupancy: 2,
+          capacity: 4,
+        },
+      ],
+    });
+
+    renderPage();
+
+    const triggers = await screen.findAllByTestId(/^table-actions-trigger-/);
+    const trigger = triggers[0];
+    const tableId =
+      trigger.getAttribute("data-testid")?.replace("table-actions-trigger-", "") ?? "";
+
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByTestId(`release-table-action-${tableId}`));
+
+    expect(screen.getByTestId("release-table-modal")).toBeInTheDocument();
+
+    const input = screen.getByTestId("occupancy-to-release-input");
+    fireEvent.change(input, { target: { value: "2" } });
+    fireEvent.click(screen.getByTestId("confirm-release-table-btn"));
+
+    await waitFor(() => {
+      expect(tableService.releaseTables).toHaveBeenCalledWith(expect.any(String), {
+        tables: [{ tableId, occupancyToRelease: 2 }],
+      });
+      expect(screen.queryByTestId("release-table-modal")).not.toBeInTheDocument();
+    });
   });
 });

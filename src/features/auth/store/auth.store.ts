@@ -4,6 +4,7 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import type { User } from "@/features/auth/types/auth.types";
 
 import { useOnboardStore } from "@/features/onboard/store/onboard.store";
+import { clearActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
 
 type AuthState = {
   user: User | null;
@@ -115,6 +116,7 @@ export const useAuthStore = create<AuthState>()(
 
         clearAuth: () => {
           useOnboardStore.getState().resetOnboardStore();
+          clearActiveCustomerTicket();
           return set(
             {
               user: null,

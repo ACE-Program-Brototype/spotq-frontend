@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { io } from "socket.io-client";
-import { QUEUE_WS_EVENTS } from "../constants/websocket.constants";
+import { QUEUE_WS_EVENTS, SOCKET_CONNECTION_STATUS } from "../constants/websocket.constants";
 import { ringMedia } from "../utils/ring-sound.utils";
 import { useCustomerQueueSocket } from "./use-customer-queue-socket";
 
@@ -71,9 +71,8 @@ describe("useCustomerQueueSocket", () => {
       }),
     );
 
-    // Simulate connect inside act
     act(() => {
-      eventHandlers.connect();
+      eventHandlers[QUEUE_WS_EVENTS.CONNECT]();
     });
 
     expect(mockSocket.emit).toHaveBeenCalledWith(
@@ -183,11 +182,202 @@ describe("useCustomerQueueSocket", () => {
 
     unmount();
 
+    expect(mockSocket.off).toHaveBeenCalledWith(QUEUE_WS_EVENTS.CONNECT, expect.any(Function));
+    expect(mockSocket.off).toHaveBeenCalledWith(QUEUE_WS_EVENTS.DISCONNECT, expect.any(Function));
+    expect(mockSocket.off).toHaveBeenCalledWith(
+      QUEUE_WS_EVENTS.CONNECT_ERROR,
+      expect.any(Function),
+    );
     expect(mockSocket.off).toHaveBeenCalledWith(
       QUEUE_WS_EVENTS.TICKET_CALLED,
       expect.any(Function),
     );
+    expect(mockSocket.off).toHaveBeenCalledWith(
+      QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW,
+      expect.any(Function),
+    );
     expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
     expect(ringMedia.stopAll).toHaveBeenCalledTimes(1);
+    expect(mockSocket.emit).toHaveBeenCalledWith(QUEUE_WS_EVENTS.LEAVE_TICKET, {
+      ticketId: "entry-123",
+    });
+  });
+
+  it("triggers onPositionUpdated when queue:position-updated event arrives", () => {
+    const onPositionUpdated = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onPositionUpdated,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_POSITION_UPDATED]({
+        queueEntryId: "entry-123",
+        position: 2,
+        estimatedWaitMinutes: 10,
+      });
+    });
+
+    expect(onPositionUpdated).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      position: 2,
+      estimatedWaitMinutes: 10,
+    });
+  });
+
+  it("triggers onSkipped when QUEUE_ENTRY_SKIPPED event arrives", () => {
+    const onSkipped = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onSkipped,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_SKIPPED]({
+        queueEntryId: "entry-123",
+        reason: "Party temporarily absent",
+        position: 4,
+      });
+    });
+
+    expect(onSkipped).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      reason: "Party temporarily absent",
+      position: 4,
+    });
+  });
+
+  it("triggers onCancelled when QUEUE_ENTRY_CANCELLED event arrives", () => {
+    const onCancelled = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onCancelled,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED]({
+        queueEntryId: "entry-123",
+        reason: "Customer cancelled",
+      });
+    });
+
+    expect(ringMedia.stopAll).toHaveBeenCalled();
+    expect(onCancelled).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      reason: "Customer cancelled",
+    });
+  });
+
+  it("leaves only the previous ticket and disconnects when queueEntryId becomes null", () => {
+    const { rerender } = renderHook(
+      ({ ticketId }: { ticketId: string | null }) => useCustomerQueueSocket(ticketId, "mock-token"),
+      {
+        initialProps: { ticketId: "entry-123" as string | null },
+      },
+    );
+
+    mockSocket.emit.mockClear();
+
+    rerender({ ticketId: null });
+
+    expect(mockSocket.emit).toHaveBeenCalledTimes(1);
+    expect(mockSocket.emit).toHaveBeenCalledWith(QUEUE_WS_EVENTS.LEAVE_TICKET, {
+      ticketId: "entry-123",
+    });
+    expect(mockSocket.emit).not.toHaveBeenCalledWith(QUEUE_WS_EVENTS.LEAVE_TICKET, {
+      ticketId: null,
+    });
+    expect(mockSocket.disconnect).toHaveBeenCalledTimes(1);
+  });
+
+  it("tracks connection status transitions for connect, connect_error, and disconnect events", () => {
+    const { result } = renderHook(() => useCustomerQueueSocket("entry-123", "mock-token"));
+
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.CONNECTING);
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.CONNECT]();
+    });
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.CONNECTED);
+    expect(result.current.isConnected).toBe(true);
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.CONNECT_ERROR](new Error("Network error"));
+    });
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.RECONNECTING);
+    expect(result.current.isConnected).toBe(false);
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.DISCONNECT]("transport close");
+    });
+    expect(result.current.connectionStatus).toBe(SOCKET_CONNECTION_STATUS.DISCONNECTED);
+    expect(result.current.isConnected).toBe(false);
+  });
+
+  it("ignores seated and cancelled events for a different queueEntryId", () => {
+    const onSeated = jest.fn();
+    const onCancelled = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onSeated,
+        onCancelled,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.TICKET_SEATED]({ queueEntryId: "other-entry" });
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_CANCELLED]({ queueEntryId: "other-entry" });
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW]({ queueEntryId: "other-entry" });
+    });
+
+    expect(ringMedia.stopAll).not.toHaveBeenCalled();
+    expect(onSeated).not.toHaveBeenCalled();
+    expect(onCancelled).not.toHaveBeenCalled();
+  });
+
+  it("handles QUEUE_ENTRY_SEATED and QUEUE_ENTRY_NO_SHOW events for the active ticket", () => {
+    const onSeated = jest.fn();
+    const onCancelled = jest.fn();
+
+    renderHook(() =>
+      useCustomerQueueSocket("entry-123", "mock-token", {
+        onSeated,
+        onCancelled,
+      }),
+    );
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_SEATED]({
+        queueEntryId: "entry-123",
+        tableIds: ["table-1"],
+      });
+    });
+
+    expect(onSeated).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      tableIds: ["table-1"],
+    });
+
+    act(() => {
+      eventHandlers[QUEUE_WS_EVENTS.QUEUE_ENTRY_NO_SHOW]({
+        queueEntryId: "entry-123",
+        status: "NO_SHOW",
+        reason: "Guest did not arrive",
+      });
+    });
+
+    expect(ringMedia.stopAll).toHaveBeenCalledTimes(2);
+    expect(onCancelled).toHaveBeenCalledWith({
+      queueEntryId: "entry-123",
+      status: "NO_SHOW",
+      reason: "Guest did not arrive",
+    });
   });
 });

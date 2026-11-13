@@ -11,6 +11,7 @@ import {
   Landmark,
   LogOut,
   Megaphone,
+  ShoppingBag,
   Store,
   Tag,
   Users,
@@ -35,6 +36,11 @@ const adminNavItems: NavItem[] = [
     title: "Dashboard",
     href: ADMIN_ROUTES.DASHBOARD,
     icon: Grid,
+  },
+  {
+    title: "Orders",
+    href: ADMIN_ROUTES.ORDERS,
+    icon: ShoppingBag,
   },
   {
     title: "Restaurants",

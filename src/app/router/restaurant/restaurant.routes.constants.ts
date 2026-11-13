@@ -29,6 +29,11 @@ export const RESTAURANT_ROUTE_PATHS = {
   },
 
   DASHBOARD: "dashboard",
+  ANALYTICS: {
+    ROOT: "analytics",
+    REVENUE: "revenue",
+    MENU: "menu",
+  },
   ORDERS: {
     ROOT: "orders",
     DETAIL: ":orderId",
@@ -59,6 +64,9 @@ export const RESTAURANT_ROUTE_PATHS = {
     SECTIONS: "sections",
     CREATE: "create",
     VIEW: ":tableId",
+  },
+  WALLET: {
+    ROOT: "wallet",
   },
 
   FINANCE: {
@@ -97,6 +105,11 @@ export const RESTAURANT_ROUTES = {
 
   // Admin Dashboard & Settings
   DASHBOARD: "/restaurant/dashboard",
+  ANALYTICS: {
+    ROOT: "/restaurant/analytics",
+    REVENUE: "/restaurant/analytics/revenue",
+    MENU: "/restaurant/analytics/menu",
+  },
   ORDERS: {
     ROOT: "/restaurant/orders",
     DETAIL_PATTERN: "/restaurant/orders/:orderId",

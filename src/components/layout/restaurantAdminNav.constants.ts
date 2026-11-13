@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Briefcase,
   CreditCard,
   DollarSign,
@@ -10,6 +11,7 @@ import {
   Store,
   Users,
   Utensils,
+  Wallet,
 } from "lucide-react";
 import type { NavItem } from "./types";
 
@@ -19,6 +21,16 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       title: "Dashboard",
       href: `${basePath}/dashboard`,
       icon: Grid,
+    },
+    {
+      title: "Analytics",
+      href: `${basePath}/analytics`,
+      icon: BarChart3,
+      children: [
+        { title: "Overview", href: `${basePath}/analytics` },
+        { title: "Revenue", href: `${basePath}/analytics/revenue` },
+        { title: "Menu Performance", href: `${basePath}/analytics/menu` },
+      ],
     },
     {
       title: "Restaurant",
@@ -78,6 +90,11 @@ export function getAdminNavItems(basePath: string): NavItem[] {
         { title: "Gateway", href: `${basePath}/payments/gateway` },
         { title: "Refunds", href: `${basePath}/payments/refunds` },
       ],
+    },
+    {
+      title: "Wallet",
+      href: `${basePath}/wallet`,
+      icon: Wallet,
     },
     {
       title: "Finance",

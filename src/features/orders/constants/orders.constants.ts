@@ -66,6 +66,8 @@ export const ORDER_DEFAULT_PAGINATION = (
 
 export const ORDER_ENDPOINTS = {
   HISTORY: "orders/history",
+  DETAIL: (id: string) => `orders/${id}`,
+  REFUND_STATUS: (orderId: string) => `payments/${orderId}/refund-status`,
 } as const;
 
 export const ORDER_QUERY_KEYS = {
@@ -74,6 +76,7 @@ export const ORDER_QUERY_KEYS = {
     ["customer", "orders", "history", params] as const,
   RECEIPT: (orderId?: string | null) => ["order-receipt", orderId] as const,
   DETAIL: (orderId?: string | null) => ["order", orderId] as const,
+  REFUND_STATUS: (orderId?: string | null) => ["order-refund-status", orderId] as const,
 } as const;
 
 export const ORDER_MESSAGES = {

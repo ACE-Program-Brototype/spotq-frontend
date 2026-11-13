@@ -97,6 +97,14 @@ describe("restaurantRoutes structure and protection", () => {
     expect(ordersGroup).toBeDefined();
     expect(ordersGroup?.children?.some((c) => c.index === true)).toBe(true);
     expect(ordersGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([":orderId"]);
+
+    const analyticsGroup = adminLayout?.children?.find((c) => c.path === "analytics");
+    expect(analyticsGroup).toBeDefined();
+    expect(analyticsGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(analyticsGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([
+      "revenue",
+      "menu",
+    ]);
   });
 
   it("redirects unauthenticated user accessing protected restaurant subscription route", () => {
