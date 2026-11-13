@@ -32,55 +32,59 @@ export function AnalyticsMetricCard({
   return (
     <div
       className={cn(
-        "flex flex-col justify-between rounded-xl sm:rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-2xs transition-all hover:shadow-xs",
+        "flex flex-col justify-center md:justify-between rounded-xl md:rounded-2xl border border-[#eddcd4] bg-white px-2.5 py-1.5 md:p-4 sm:md:p-5 shadow-2xs transition-all hover:shadow-xs",
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-1 md:gap-2">
         <p
-          className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-500 truncate"
+          className="text-[10px] sm:text-[11px] md:text-xs font-bold uppercase tracking-wider text-neutral-500 truncate"
           title={label}
         >
           {label}
         </p>
         <div
           className={cn(
-            "flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-xl border border-[#eddcd4] bg-[#faf7f5] text-[#9a3412]",
+            "flex size-5 sm:size-5.5 md:size-8 sm:md:size-9 shrink-0 items-center justify-center rounded-md md:rounded-xl border border-[#eddcd4] bg-[#faf7f5] text-[#9a3412]",
             iconBgClassName,
             iconClassName,
           )}
         >
-          <Icon className="size-4 sm:size-4.5" />
+          <Icon className="size-3 md:size-4 sm:md:size-4.5" />
         </div>
       </div>
 
-      <div className="mt-3">
-        <p className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-neutral-900 truncate">
+      <div className="mt-0.5 md:mt-3">
+        <p className="text-sm sm:text-base md:text-xl sm:md:text-2xl lg:text-3xl font-bold md:font-extrabold tracking-tight text-neutral-900 leading-tight md:leading-normal truncate">
           {value}
         </p>
 
-        <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
+        <div className="mt-0.5 md:mt-2 flex flex-wrap items-center gap-1 md:gap-1.5 text-[9px] sm:text-[10px] md:text-xs leading-tight">
           {hasGrowth && (
             <span
               className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-semibold text-[11px]",
+                "inline-flex items-center gap-0.5 md:gap-1 px-1 py-0.2 md:px-2 md:py-0.5 rounded-sm md:rounded-full font-semibold text-[9px] md:text-[11px] shrink-0",
                 isPositive && "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
                 isNegative && "bg-rose-50 text-rose-700 border border-rose-200/60",
                 isNeutral && "bg-neutral-100 text-neutral-600 border border-neutral-200",
               )}
             >
-              {isPositive && <TrendingUp className="size-3" />}
-              {isNegative && <TrendingDown className="size-3" />}
+              {isPositive && <TrendingUp className="size-2.5 md:size-3" />}
+              {isNegative && <TrendingDown className="size-2.5 md:size-3" />}
               <span>{isPositive ? `+${trendPercentage}%` : `${trendPercentage}%`}</span>
             </span>
           )}
 
           {trendText && (
-            <span className="text-neutral-500 font-medium text-[11px]">{trendText}</span>
+            <span className="text-neutral-500 font-medium text-[9px] sm:text-[10px] md:text-[11px] truncate">
+              {trendText}
+            </span>
           )}
 
           {subtitle && !trendText && (
-            <span className="text-neutral-400 truncate text-[11px]">{subtitle}</span>
+            <span className="text-neutral-400 truncate text-[9px] sm:text-[10px] md:text-[11px]">
+              {subtitle}
+            </span>
           )}
         </div>
       </div>

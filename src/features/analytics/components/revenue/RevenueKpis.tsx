@@ -29,7 +29,11 @@ export function RevenueKpis({ revenue, onRetry, className }: RevenueKpisProps) {
     totalBillAmountRupees > 0 ? ((discountRupees / totalBillAmountRupees) * 100).toFixed(1) : "0.0";
 
   return (
-    <div className={className ?? "grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 lg:gap-4"}>
+    <div
+      className={
+        className ?? "grid grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2.5 md:gap-3.5 lg:gap-4"
+      }
+    >
       {/* 1. Net Sales */}
       <AnalyticsMetricCard
         label="Net Sales"

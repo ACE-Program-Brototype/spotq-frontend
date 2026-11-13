@@ -41,3 +41,18 @@ export const ORDER_STATUS_FILTER_LABELS: Record<keyof typeof ORDER_STATUS_FILTER
   COMPLETED: "Completed",
   CANCELLED: "Cancelled",
 };
+
+export const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
