@@ -24,7 +24,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
       className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00] focus-visible:ring-offset-2"
     >
       {/* Cover Image Container */}
-      <div className="relative aspect-4/3 w-full overflow-hidden bg-neutral-100">
+      <div className="relative aspect-16/9 sm:aspect-4/3 w-full overflow-hidden bg-neutral-100">
         {isLoading ? (
           <Skeleton className="size-full rounded-none" />
         ) : imageUrl && !imageError ? (
@@ -37,8 +37,8 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           />
         ) : (
           <div className="flex size-full flex-col items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900 p-4 text-white">
-            <div className="flex size-12 items-center justify-center rounded-2xl bg-[#ff6b00]/15 text-[#ff6b00] border border-[#ff6b00]/25 mb-2 shadow-2xs">
-              <Store className="size-6" />
+            <div className="flex size-10 sm:size-12 items-center justify-center rounded-2xl bg-[#ff6b00]/15 text-[#ff6b00] border border-[#ff6b00]/25 mb-1.5 sm:mb-2 shadow-2xs">
+              <Store className="size-5 sm:size-6" />
             </div>
             <span className="text-xs font-bold text-neutral-200 line-clamp-1 text-center">
               {restaurant.restaurantName}
@@ -47,28 +47,28 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
         {restaurant.cuisineType && (
-          <span className="absolute bottom-2.5 left-2.5 rounded-full bg-white/95 backdrop-blur-xs px-2.5 py-1 text-[10px] font-bold text-neutral-800 shadow-xs border border-white/50">
+          <span className="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5 rounded-full bg-white/95 backdrop-blur-xs px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-neutral-800 shadow-xs border border-white/50">
             {restaurant.cuisineType.split(",")[0].trim()}
           </span>
         )}
       </div>
 
       {/* Card Content */}
-      <div className="flex flex-1 flex-col justify-between p-4">
-        <div className="space-y-2">
+      <div className="flex flex-1 flex-col justify-between p-3 sm:p-4">
+        <div className="space-y-1.5 sm:space-y-2">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-bold text-neutral-900 text-sm line-clamp-1 group-hover:text-[#ff6b00] transition-colors">
+            <h3 className="font-bold text-neutral-900 text-xs sm:text-sm line-clamp-1 group-hover:text-[#ff6b00] transition-colors">
               {restaurant.restaurantName}
             </h3>
             {locationLabel && (
               <span className="inline-flex items-center gap-1 text-[10px] font-medium text-neutral-400 shrink-0">
                 <MapPin className="size-3 text-neutral-400" />
-                <span className="max-w-[80px] truncate">{locationLabel}</span>
+                <span className="max-w-[70px] sm:max-w-[80px] truncate">{locationLabel}</span>
               </span>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-500">
+          <div className="flex flex-wrap items-center gap-2 text-[11px] sm:text-xs text-neutral-500">
             {restaurant.averageCost ? (
               <span className="inline-flex items-center gap-0.5 font-semibold text-neutral-700">
                 <span>{formatCurrency(restaurant.averageCost)} average</span>
@@ -80,9 +80,9 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         </div>
 
         {/* Card Footer */}
-        <div className="pt-3 border-t border-neutral-100 mt-3 flex items-center justify-between">
+        <div className="pt-2.5 sm:pt-3 border-t border-neutral-100 mt-2.5 sm:mt-3 flex items-center justify-between">
           <span
-            className={`inline-flex items-center gap-1 text-[11px] font-medium ${
+            className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-medium ${
               isOpen === true ? "text-emerald-600" : "text-neutral-400"
             }`}
           >
@@ -91,7 +91,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
               {isOpen === true ? "Open Now" : isOpen === false ? "Closed" : "Status unavailable"}
             </span>
           </span>
-          <span className="text-[10px] text-neutral-400 font-medium">
+          <span className="text-[9px] sm:text-[10px] text-neutral-400 font-medium">
             {restaurant.acceptsQueue === false ? "Queue Paused" : "Live Queue"}
           </span>
         </div>

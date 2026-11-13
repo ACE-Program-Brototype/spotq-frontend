@@ -23,7 +23,7 @@ export function RestaurantCategoryFilter({
             type="button"
             onClick={() => onSelectCategory(category)}
             className={cn(
-              "rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all border shadow-2xs cursor-pointer",
+              "rounded-full px-3 py-1 sm:px-4 sm:py-1.5 text-xs font-semibold whitespace-nowrap transition-all border shadow-2xs cursor-pointer",
               isSelected
                 ? "bg-[#ff6b00] text-white border-[#ff6b00] shadow-xs"
                 : "bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300",
