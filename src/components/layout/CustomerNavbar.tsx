@@ -4,7 +4,7 @@
  */
 
 import { Bell, Home, LogOut, Search, ShoppingCart, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
@@ -181,15 +181,41 @@ export function CustomerNavbar({
 function CustomerAccountMenu({ initials }: { initials: string }) {
   const { handleLogout, isLoading: isLoggingOut } = useLogout();
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close account menu dropdown on outside click or Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   return (
-    <div className="relative pl-1">
+    <div ref={menuRef} className="relative pl-1">
       <button
         type="button"
         aria-label="Open account menu"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
-        className="flex items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
+        className="flex items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00] cursor-pointer"
       >
         <Avatar className="size-8.5 bg-[#1c1714] text-white font-bold border border-neutral-200">
           <AvatarFallback className="bg-[#1c1714] text-white text-xs font-bold">
@@ -208,9 +234,12 @@ function CustomerAccountMenu({ initials }: { initials: string }) {
           </Link>
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={() => {
+              setIsOpen(false);
+              handleLogout();
+            }}
             disabled={isLoggingOut}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-60"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-60 cursor-pointer"
           >
             <LogOut className="size-4" />
             {isLoggingOut ? "Logging out..." : "Logout"}
