@@ -1,11 +1,7 @@
 import {
   AlertCircle,
   ArrowLeft,
-  Clock,
   RefreshCw,
-  ShieldCheck,
-  Sparkles,
-  Utensils,
 } from "lucide-react";
 import type React from "react";
 import { Link } from "react-router-dom";
@@ -56,31 +52,31 @@ export const CheckoutPage: React.FC = () => {
 
   // 3. Checkout Form View
   return (
-    <div className="w-full pb-16">
-      <div className="mx-auto max-w-6xl py-4 sm:py-6">
+    <div className="w-full pb-14">
+      <div className="mx-auto max-w-5xl px-3 sm:px-5 py-2.5 sm:py-3.5">
         {/* Navigation & Breadcrumb */}
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-2 sm:mb-2.5 flex items-center justify-between">
           <Link
             to={CUSTOMER_ROUTES.HOME}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-neutral-900 transition-colors"
+            className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-neutral-500 hover:text-neutral-900 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="size-3" />
             <span>Back to Menu</span>
           </Link>
 
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-400">
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-medium text-neutral-400">
             <span>SpotQ</span>
             <span>•</span>
-            <span className="text-[#ff6b00] font-semibold">Checkout</span>
+            <span className="text-[#e8631b] font-semibold">Checkout</span>
           </div>
         </div>
 
         {/* Page Title & Subtitle */}
-        <div className="mb-6 space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
+        <div className="mb-2.5 sm:mb-3.5 space-y-0.5">
+          <h1 className="text-lg sm:text-xl font-black tracking-tight text-neutral-900">
             Secure Checkout
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500">
+          <p className="text-[11px] sm:text-xs text-neutral-500">
             {cart?.restaurantName
               ? `Review your order from ${cart.restaurantName}`
               : "Complete your order details below"}
@@ -89,12 +85,12 @@ export const CheckoutPage: React.FC = () => {
 
         {/* Cart Error State (Real API Error) */}
         {cartError && (
-          <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50/80 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-rose-600 shrink-0 mt-0.5" />
+          <div className="mb-2.5 sm:mb-3.5 rounded-lg border border-rose-200 bg-rose-50/80 p-2.5 sm:p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="size-4 text-rose-600 shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-sm font-bold text-rose-900">Failed to load cart</h4>
-                <p className="text-xs text-rose-700 mt-0.5">{cartError}</p>
+                <h4 className="text-xs sm:text-[13px] font-bold text-rose-900">Failed to load cart</h4>
+                <p className="text-[10px] sm:text-[11px] text-rose-700 mt-0.5">{cartError}</p>
               </div>
             </div>
             <Button
@@ -102,9 +98,9 @@ export const CheckoutPage: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => refetchCart()}
-              className="rounded-xl border-rose-300 bg-white text-rose-800 hover:bg-rose-50 text-xs font-semibold shrink-0"
+              className="rounded-md border-rose-300 bg-white text-rose-800 hover:bg-rose-50 text-[11px] font-semibold shrink-0 h-7"
             >
-              <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+              <RefreshCw className="size-2.5 mr-1" />
               Retry Cart
             </Button>
           </div>
@@ -114,9 +110,9 @@ export const CheckoutPage: React.FC = () => {
         {cart?.restaurantName && <ContextBanner restaurantName={cart.restaurantName} />}
 
         {/* Main 2-Column Checkout Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-3.5 items-start">
           {/* Left Column: Order Items, Customer Info, Payment Method */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-2.5 sm:space-y-3">
             {/* 1. Order Details Card */}
             <OrderDetailsCard cart={cart} isLoading={isLoadingCart} />
 
@@ -132,7 +128,7 @@ export const CheckoutPage: React.FC = () => {
           </div>
 
           {/* Right Column: Order Summary (Sticky on Desktop) */}
-          <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
+          <div className="lg:col-span-5 lg:sticky lg:top-4">
             <OrderSummaryCard
               priceBreakdown={priceBreakdown}
               paymentMode="ONLINE"
@@ -140,29 +136,6 @@ export const CheckoutPage: React.FC = () => {
               onCheckout={handleCheckout}
               itemCount={cart?.itemCount || 0}
             />
-
-            {/* Trust and Service Guarantee Widget */}
-            <div className="rounded-2xl border border-neutral-200/80 bg-white p-4.5 shadow-xs space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-neutral-800">
-                <Sparkles className="h-4 w-4 text-[#ff6b00]" />
-                SpotQ Realtime Dining Experience
-              </div>
-
-              <div className="space-y-2 text-xs text-neutral-500">
-                <div className="flex items-start gap-2">
-                  <Utensils className="h-3.5 w-3.5 text-neutral-400 mt-0.5 shrink-0" />
-                  <span>Orders are synced real-time with kitchen display system (KDS).</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Clock className="h-3.5 w-3.5 text-neutral-400 mt-0.5 shrink-0" />
-                  <span>Live preparation tracking and counter paging upon order placement.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 mt-0.5 shrink-0" />
-                  <span>PCI-DSS compliant encrypted checkout with Instant Refund guarantee.</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

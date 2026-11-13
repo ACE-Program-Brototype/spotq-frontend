@@ -9,17 +9,18 @@ export const OrderDetailsSkeleton: React.FC<OrderDetailsSkeletonProps> = ({ coun
   const items = Array.from({ length: count }, (_, i) => `skeleton-item-${i}`);
 
   return (
-    <div className="space-y-4 py-2" data-testid="order-details-skeleton">
+    <div className="space-y-2 py-0.5" data-testid="order-details-skeleton">
       {items.map((id) => (
-        <div key={id} className="flex items-center gap-4">
-          <Skeleton className="h-16 w-16 rounded-xl shrink-0" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-3/4 rounded-md" />
-            <Skeleton className="h-3 w-1/2 rounded-md" />
+        <div key={id} className="flex items-center gap-2.5">
+          <Skeleton className="size-10 sm:size-11 rounded-md shrink-0" />
+          <div className="flex-1 space-y-1">
+            <Skeleton className="h-3 w-3/4 rounded-sm" />
+            <Skeleton className="h-2.5 w-1/2 rounded-sm" />
           </div>
-          <Skeleton className="h-6 w-16 rounded-md shrink-0" />
+          <Skeleton className="h-4 w-12 rounded-sm shrink-0" />
         </div>
       ))}
     </div>
   );
 };
+

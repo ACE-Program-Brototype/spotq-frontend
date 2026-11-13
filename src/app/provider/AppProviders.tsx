@@ -7,7 +7,14 @@ function AppProviders() {
   return (
     <QueryProvider>
       <RouterProvider router={router} />
-      <Toaster richColors position="top-right" />
+      <Toaster
+        richColors
+        closeButton
+        position="top-right"
+        offset={{ top: "72px", right: "16px" }}
+        mobileOffset={{ top: "72px", left: "16px", right: "16px" }}
+        duration={3500}
+      />
     </QueryProvider>
   );
 }
