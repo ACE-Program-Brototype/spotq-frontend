@@ -1,11 +1,12 @@
 /**
  * Restaurant Admin Navbar Component
- * Displays restaurant identification, global search, notifications indicator, and profile initials.
+ * Displays restaurant identification, global search, and interactive profile navigation.
  */
 
-import { Bell, Menu, Search, Utensils } from "lucide-react";
+import { Menu, Search, Utensils } from "lucide-react";
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -18,7 +19,6 @@ export function RestaurantAdminNavbar({
   restaurantName = "Basil Mandi",
   onToggleSidebar,
   onSearch,
-  unreadNotifications = 1,
   className,
   ...props
 }: RestaurantAdminNavbarProps) {
@@ -26,12 +26,12 @@ export function RestaurantAdminNavbar({
   const [searchValue, setSearchValue] = useState("");
 
   const initials =
-    user?.name
+    (user?.name || user?.fullName)
       ?.split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2) ?? "JD";
+      .slice(0, 2) ?? "RA";
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -88,30 +88,19 @@ export function RestaurantAdminNavbar({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Notifications"
-          className="relative size-8 text-neutral-600 hover:bg-[#fae2d3]/50 hover:text-neutral-900 rounded-full shrink-0"
+      <div className="flex items-center shrink-0">
+        <Link
+          to={RESTAURANT_ROUTES.PROFILE}
+          aria-label="View restaurant profile"
+          className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-neutral-800 hover:text-[#9a3412] hover:bg-[#fae2d3]/50 transition-colors"
         >
-          <Bell className="size-4" />
-          {unreadNotifications > 0 && (
-            <span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#e8631b]" />
-          )}
-        </Button>
-
-        <span className="h-4 w-px bg-[#eddcd4] hidden sm:block" />
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-neutral-800 hidden sm:inline">Profile</span>
-          <Avatar className="size-8 rounded-full bg-[#3d271d] text-white shadow-xs border border-[#eddcd4]">
+          <span className="text-xs font-semibold hidden sm:inline">Profile</span>
+          <Avatar className="size-8 rounded-full bg-[#3d271d] text-white shadow-xs border border-[#eddcd4] transition-transform hover:scale-105">
             <AvatarFallback className="bg-[#3d271d] text-white text-xs font-bold">
               {initials}
             </AvatarFallback>
           </Avatar>
-        </div>
+        </Link>
       </div>
     </header>
   );
