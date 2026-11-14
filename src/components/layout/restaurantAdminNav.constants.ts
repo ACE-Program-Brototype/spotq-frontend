@@ -34,11 +34,9 @@ export function getAdminNavItems(basePath: string): NavItem[] {
     },
     {
       title: "Restaurant",
-      href: `${basePath}/overview`,
+      href: `${basePath}/tables`,
       icon: Store,
       children: [
-        { title: "Overview", href: `${basePath}/overview` },
-        { title: "QR Management", href: `${basePath}/qr-management` },
         { title: "Table Sections", href: `${basePath}/tables/sections` },
         { title: "Tables", href: `${basePath}/tables` },
       ],
