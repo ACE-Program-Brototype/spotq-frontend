@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
-import { TABLE_MESSAGES, TABLE_SHAPE, TABLE_STATUS } from "../constants/table.constants";
+import {
+  TABLE_MESSAGES,
+  TABLE_NAME_MAX_LENGTH,
+  TABLE_SHAPE,
+  TABLE_STATUS,
+} from "../constants/table.constants";
 import { useTableSections } from "../hooks/useTableSections";
 import { type UpdateTableFormData, updateTableSchema } from "../schemas/update-table.schema";
 import type { RestaurantTableDetails } from "../types/table.types";
@@ -94,6 +99,9 @@ export function EditTableModal({
   const isOccupied =
     table.status === TABLE_STATUS.OCCUPIED || table.status === TABLE_STATUS.PARTIAL_OCCUPIED;
   const currentShape = watch("tableShape");
+  const currentTableCode = watch("tableCode") ?? "";
+  const remainingTableCodeChars = Math.max(0, TABLE_NAME_MAX_LENGTH - currentTableCode.length);
+  const isTableCodeLimitReached = currentTableCode.length >= TABLE_NAME_MAX_LENGTH;
   const isLongCode = Boolean(table.tableCode && table.tableCode.length > 10);
 
   const handleFormSubmit = async (data: UpdateTableFormData) => {
@@ -184,21 +192,43 @@ export function EditTableModal({
         {/* Form controls */}
         <form onSubmit={handleSubmit(handleFormSubmit)} className="mt-5 space-y-4">
           <div>
-            <label htmlFor="edit-tableCode" className="text-sm font-semibold text-[#353b36]">
-              Table Code / Number
-            </label>
+            <div className="flex items-center justify-between">
+              <label htmlFor="edit-tableCode" className="text-sm font-semibold text-[#353b36]">
+                Table Code / Number
+              </label>
+              <span
+                className={cn(
+                  "text-xs font-mono transition-colors",
+                  isTableCodeLimitReached
+                    ? "font-bold text-red-600"
+                    : remainingTableCodeChars <= 5
+                      ? "font-semibold text-amber-600"
+                      : "text-neutral-400",
+                )}
+                aria-live="polite"
+              >
+                ({currentTableCode.length}/{TABLE_NAME_MAX_LENGTH})
+              </span>
+            </div>
             <input
               id="edit-tableCode"
               type="text"
-              className={fieldClass}
+              className={cn(
+                fieldClass,
+                isTableCodeLimitReached && "border-amber-400 focus:border-red-500 focus:ring-red-100",
+              )}
               placeholder="e.g. T-12, Booth 4"
-              maxLength={40}
-              aria-invalid={Boolean(errors.tableCode)}
+              maxLength={TABLE_NAME_MAX_LENGTH}
+              aria-invalid={Boolean(errors.tableCode || isTableCodeLimitReached)}
               {...register("tableCode")}
             />
-            {errors.tableCode && (
+            {errors.tableCode ? (
               <p className="mt-1 text-xs text-red-700">{errors.tableCode.message}</p>
-            )}
+            ) : isTableCodeLimitReached ? (
+              <p className="mt-1 text-xs font-medium text-amber-700">
+                Maximum character limit of {TABLE_NAME_MAX_LENGTH} characters reached.
+              </p>
+            ) : null}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">

@@ -43,7 +43,9 @@ export function TableSectionTabs({
               isActive ? "text-[#9a3412]" : "text-neutral-500 hover:text-neutral-900",
             )}
           >
-            <span>{section}</span>
+            <span className="max-w-[140px] sm:max-w-[200px] truncate" title={section}>
+              {section}
+            </span>
             {typeof count === "number" && (
               <span
                 className={cn(

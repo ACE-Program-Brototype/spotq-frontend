@@ -81,4 +81,21 @@ describe("updateTableSchema", () => {
       );
     }
   });
+
+  it("fails validation when tableCode exceeds 30 characters", () => {
+    const invalidData = {
+      tableCode: "T".repeat(31),
+      sectionId: "123e4567-e89b-12d3-a456-426614174000",
+      capacity: 4,
+      tableShape: TABLE_SHAPE.SQUARE,
+    };
+
+    const result = updateTableSchema.safeParse(invalidData);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe(
+        UPDATE_TABLE_VALIDATION_MESSAGES.TABLE_CODE_MAX,
+      );
+    }
+  });
 });

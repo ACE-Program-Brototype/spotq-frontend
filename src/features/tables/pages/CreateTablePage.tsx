@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { cn } from "@/lib/utils/cn";
+import { TABLE_NAME_MAX_LENGTH } from "../constants/table.constants";
 import { useCreateTable } from "../hooks/useCreateTable";
 import { useTableSections } from "../hooks/useTableSections";
 import { type CreateTableFormData, createTableSchema } from "../schemas/create-table.schema";
@@ -25,6 +27,10 @@ export default function CreateTablePage() {
   });
   const sectionsQuery = useTableSections(restaurantId);
   const { sections } = sectionsQuery;
+
+  const tableCodeValue = watch("tableCode") ?? "";
+  const remainingChars = Math.max(0, TABLE_NAME_MAX_LENGTH - tableCodeValue.length);
+  const isLimitReached = tableCodeValue.length >= TABLE_NAME_MAX_LENGTH;
 
   const onSubmit = async (data: CreateTableFormData) => {
     try {
@@ -75,20 +81,42 @@ export default function CreateTablePage() {
         className="space-y-5 rounded-2xl border border-[#ede4de] bg-white p-5 shadow-[0_2px_10px_rgba(65,44,31,.03)] sm:p-7"
       >
         <div>
-          <label htmlFor="tableCode" className="text-sm font-semibold text-[#353b36]">
-            Table name or code
-          </label>
+          <div className="flex items-center justify-between">
+            <label htmlFor="tableCode" className="text-sm font-semibold text-[#353b36]">
+              Table name or code
+            </label>
+            <span
+              className={cn(
+                "text-xs font-mono transition-colors",
+                isLimitReached
+                  ? "font-bold text-red-600"
+                  : remainingChars <= 5
+                    ? "font-semibold text-amber-600"
+                    : "text-neutral-400",
+              )}
+              aria-live="polite"
+            >
+              ({tableCodeValue.length}/{TABLE_NAME_MAX_LENGTH})
+            </span>
+          </div>
           <input
             id="tableCode"
-            className={fieldClass}
+            className={cn(
+              fieldClass,
+              isLimitReached && "border-amber-400 focus:border-red-500 focus:ring-red-100",
+            )}
             placeholder="e.g. T1"
-            maxLength={40}
-            aria-invalid={Boolean(errors.tableCode)}
+            maxLength={TABLE_NAME_MAX_LENGTH}
+            aria-invalid={Boolean(errors.tableCode || isLimitReached)}
             {...register("tableCode")}
           />
-          {errors.tableCode && (
+          {errors.tableCode ? (
             <p className="mt-1 text-xs text-red-700">{errors.tableCode.message}</p>
-          )}
+          ) : isLimitReached ? (
+            <p className="mt-1 text-xs font-medium text-amber-700">
+              Maximum character limit of {TABLE_NAME_MAX_LENGTH} characters reached.
+            </p>
+          ) : null}
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>

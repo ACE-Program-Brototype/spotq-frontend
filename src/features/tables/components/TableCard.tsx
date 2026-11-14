@@ -68,7 +68,10 @@ export function TableCard({ table, onClick, onRelease, className }: TableCardPro
       >
         {/* Top Row: Table Code + Status Badge */}
         <div className="flex items-center justify-between gap-1.5 mb-3 w-full min-w-0">
-          <h3 className="text-xl sm:text-2xl font-black tracking-tight text-neutral-800 group-hover:text-neutral-950 transition-colors shrink-0">
+          <h3
+            className="text-xl sm:text-2xl font-black tracking-tight text-neutral-800 group-hover:text-neutral-950 transition-colors shrink min-w-0 max-w-[65%] truncate"
+            title={table.tableCode}
+          >
             {table.tableCode}
           </h3>
           <TableStatusBadge status={table.status} size="sm" useShortLabel />

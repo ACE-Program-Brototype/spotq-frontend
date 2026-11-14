@@ -1,8 +1,16 @@
 import { z } from "zod";
-import { TABLE_SHAPE, UPDATE_TABLE_VALIDATION_MESSAGES } from "../constants/table.constants";
+import {
+  TABLE_NAME_MAX_LENGTH,
+  TABLE_SHAPE,
+  UPDATE_TABLE_VALIDATION_MESSAGES,
+} from "../constants/table.constants";
 
 export const updateTableSchema = z.object({
-  tableCode: z.string().trim().min(1, UPDATE_TABLE_VALIDATION_MESSAGES.TABLE_CODE_REQUIRED).max(40),
+  tableCode: z
+    .string()
+    .trim()
+    .min(1, UPDATE_TABLE_VALIDATION_MESSAGES.TABLE_CODE_REQUIRED)
+    .max(TABLE_NAME_MAX_LENGTH, UPDATE_TABLE_VALIDATION_MESSAGES.TABLE_CODE_MAX),
   sectionId: z.string().min(1, UPDATE_TABLE_VALIDATION_MESSAGES.SECTION_REQUIRED),
   capacity: z
     .number({ message: UPDATE_TABLE_VALIDATION_MESSAGES.CAPACITY_NUMBER })
