@@ -10,6 +10,7 @@ import {
   ORDER_STATUS_FILTERS,
   type OrderStatusFilter,
 } from "@/features/analytics/types/restaurant-analytics.types";
+import { MONTH_OPTIONS } from "@/lib/constants/date.constants";
 import { cn } from "@/lib/utils/cn";
 
 export interface AnalyticsFilterToolbarProps {
@@ -27,21 +28,6 @@ export interface AnalyticsFilterToolbarProps {
   showStatusFilter?: boolean;
   className?: string;
 }
-
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 export function AnalyticsFilterToolbar({
   interval,
@@ -127,9 +113,9 @@ export function AnalyticsFilterToolbar({
               aria-label="Select month"
               className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
             >
-              {MONTH_NAMES.map((name, idx) => (
-                <option key={name} value={idx + 1}>
-                  {name}
+              {MONTH_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
                 </option>
               ))}
             </select>

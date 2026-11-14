@@ -1,6 +1,7 @@
 /**
  * Constants and user-facing messages for customer and staff profile features.
  */
+import { SHORT_MONTH_NAMES } from "@/lib/constants/date.constants";
 
 export const PROFILE_MESSAGES = {
   // Customer Profile Messages
@@ -107,20 +108,7 @@ export const profileHooks = {
   RESTAURANT_PROFILE_STALE_TIME: 5 * 60 * 1000,
 };
 
-export const MONTH_NAMES = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-] as const;
+export const MONTH_NAMES = SHORT_MONTH_NAMES;
 
 export const Gender = {
   MALE: "MALE",
