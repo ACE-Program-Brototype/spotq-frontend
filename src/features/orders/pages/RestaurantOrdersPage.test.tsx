@@ -1,6 +1,10 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import RestaurantOrdersPage from "./RestaurantOrdersPage";
+import {
+  ORDER_DATE_RANGE_FILTERS,
+  RESTAURANT_ORDER_STATUS_FILTERS,
+} from "@/features/orders/constants/restaurant-orders.constants";
+import RestaurantOrdersPage from "@/features/orders/pages/RestaurantOrdersPage";
 
 const mockedNavigate = jest.fn();
 
@@ -51,7 +55,7 @@ const mockOrders = [
 
 const mockUseRestaurantOrders = jest.fn();
 
-jest.mock("../hooks/use-restaurant-orders-overview", () => ({
+jest.mock("@/features/orders/hooks/use-restaurant-orders-overview", () => ({
   useRestaurantOrdersOverview: () => ({
     data: mockMetrics,
     isLoading: false,
@@ -59,7 +63,7 @@ jest.mock("../hooks/use-restaurant-orders-overview", () => ({
   }),
 }));
 
-jest.mock("../hooks/use-restaurant-orders", () => ({
+jest.mock("@/features/orders/hooks/use-restaurant-orders", () => ({
   useRestaurantOrders: (...args: unknown[]) => mockUseRestaurantOrders(...args),
 }));
 
@@ -218,20 +222,46 @@ describe("RestaurantOrdersPage UI Presentation", () => {
 
     // Simulate status filter change
     const statusSelect = screen.getByLabelText("Filter by order status");
-    fireEvent.change(statusSelect, { target: { value: "PLACED" } });
+    fireEvent.change(statusSelect, { target: { value: RESTAURANT_ORDER_STATUS_FILTERS.PLACED } });
 
     expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
       expect.any(String),
-      expect.objectContaining({ page: 1, status: "PLACED" }),
+      expect.objectContaining({ page: 1, status: RESTAURANT_ORDER_STATUS_FILTERS.PLACED }),
     );
 
     // Simulate date range change
     const dateSelect = screen.getByLabelText("Filter by date range");
-    fireEvent.change(dateSelect, { target: { value: "LAST_7_DAYS" } });
+    fireEvent.change(dateSelect, { target: { value: ORDER_DATE_RANGE_FILTERS.LAST_7_DAYS } });
 
     expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
       expect.any(String),
       expect.objectContaining({ page: 1 }),
+    );
+  });
+
+  it("shows custom date picker inputs when Custom Range is selected and passes date parameters", () => {
+    renderPage();
+
+    const dateSelect = screen.getByLabelText("Filter by date range");
+    fireEvent.change(dateSelect, { target: { value: ORDER_DATE_RANGE_FILTERS.CUSTOM } });
+
+    // Custom date picker inputs should be visible
+    const startDateInput = screen.getByLabelText("Custom start date");
+    const endDateInput = screen.getByLabelText("Custom end date");
+    expect(startDateInput).toBeInTheDocument();
+    expect(endDateInput).toBeInTheDocument();
+
+    // Selecting start and end dates
+    fireEvent.change(startDateInput, { target: { value: "2026-11-01" } });
+    fireEvent.change(endDateInput, { target: { value: "2026-11-07" } });
+
+    expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        page: 1,
+        from: expect.stringContaining("2026-11-01"),
+        to: expect.stringContaining("2026-11-07"),
+      }),
     );
   });
 });

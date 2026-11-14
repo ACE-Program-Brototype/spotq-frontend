@@ -2,10 +2,16 @@ import { Calendar, ChevronDown, RotateCcw, Search } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  ORDER_DATE_RANGE_FILTERS,
+  ORDER_DATE_RANGE_OPTIONS,
+  RESTAURANT_ORDER_STATUS_FILTERS,
+  RESTAURANT_ORDER_STATUS_FILTER_OPTIONS,
+} from "@/features/orders/constants/restaurant-orders.constants";
 import type {
   OrderDateRangeFilter,
   RestaurantOrderFilterStatus,
-} from "../../../types/restaurant-orders.types";
+} from "@/features/orders/types/restaurant-orders.types";
 
 export interface OrdersFiltersProps {
   searchQuery?: string;
@@ -14,25 +20,37 @@ export interface OrdersFiltersProps {
   onStatusChange?: (status: RestaurantOrderFilterStatus) => void;
   dateRange?: OrderDateRangeFilter;
   onDateRangeChange?: (range: OrderDateRangeFilter) => void;
+  customStartDate?: string;
+  customEndDate?: string;
+  onCustomStartDateChange?: (date: string) => void;
+  onCustomEndDateChange?: (date: string) => void;
   onClearFilters?: () => void;
 }
 
 export function OrdersFilters({
   searchQuery = "",
   onSearchChange,
-  statusFilter = "ALL",
+  statusFilter = RESTAURANT_ORDER_STATUS_FILTERS.ALL,
   onStatusChange,
-  dateRange = "TODAY",
+  dateRange = ORDER_DATE_RANGE_FILTERS.TODAY,
   onDateRangeChange,
+  customStartDate = "",
+  customEndDate = "",
+  onCustomStartDateChange,
+  onCustomEndDateChange,
   onClearFilters,
 }: OrdersFiltersProps) {
   const [internalSearch, setInternalSearch] = useState(searchQuery);
   const [internalStatus, setInternalStatus] = useState<RestaurantOrderFilterStatus>(statusFilter);
   const [internalDateRange, setInternalDateRange] = useState<OrderDateRangeFilter>(dateRange);
+  const [internalStartDate, setInternalStartDate] = useState(customStartDate);
+  const [internalEndDate, setInternalEndDate] = useState(customEndDate);
 
   const currentSearch = onSearchChange ? searchQuery : internalSearch;
   const currentStatus = onStatusChange ? statusFilter : internalStatus;
   const currentDateRange = onDateRangeChange ? dateRange : internalDateRange;
+  const currentStartDate = onCustomStartDateChange ? customStartDate : internalStartDate;
+  const currentEndDate = onCustomEndDateChange ? customEndDate : internalEndDate;
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -52,15 +70,42 @@ export function OrdersFilters({
     onDateRangeChange?.(val);
   };
 
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInternalStartDate(val);
+    onCustomStartDateChange?.(val);
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInternalEndDate(val);
+    onCustomEndDateChange?.(val);
+  };
+
+  const handleResetCustomDates = () => {
+    setInternalStartDate("");
+    setInternalEndDate("");
+    onCustomStartDateChange?.("");
+    onCustomEndDateChange?.("");
+  };
+
   const handleClear = () => {
     setInternalSearch("");
-    setInternalStatus("ALL");
-    setInternalDateRange("TODAY");
+    setInternalStatus(RESTAURANT_ORDER_STATUS_FILTERS.ALL);
+    setInternalDateRange(ORDER_DATE_RANGE_FILTERS.TODAY);
+    setInternalStartDate("");
+    setInternalEndDate("");
+    onCustomStartDateChange?.("");
+    onCustomEndDateChange?.("");
     onClearFilters?.();
   };
 
   const hasActiveFilters =
-    Boolean(currentSearch) || currentStatus !== "ALL" || currentDateRange !== "TODAY";
+    Boolean(currentSearch) ||
+    currentStatus !== RESTAURANT_ORDER_STATUS_FILTERS.ALL ||
+    currentDateRange !== ORDER_DATE_RANGE_FILTERS.TODAY ||
+    Boolean(currentStartDate) ||
+    Boolean(currentEndDate);
 
   return (
     <div className="rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-2xs">
@@ -90,9 +135,11 @@ export function OrdersFilters({
               aria-label="Filter by date range"
               className="h-10 w-full pl-8 pr-8 rounded-xl border border-[#eddcd4] bg-white text-xs font-medium text-neutral-700 hover:bg-[#faf7f5] appearance-none focus:outline-none focus:border-[#e8631b] cursor-pointer shadow-2xs transition-colors"
             >
-              <option value="TODAY">Today</option>
-              <option value="LAST_7_DAYS">Last 7 Days</option>
-              <option value="CUSTOM">Custom Range</option>
+              {ORDER_DATE_RANGE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
             </select>
             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-neutral-400 pointer-events-none" />
           </div>
@@ -105,12 +152,11 @@ export function OrdersFilters({
               aria-label="Filter by order status"
               className="h-10 w-full pl-3 pr-8 rounded-xl border border-[#eddcd4] bg-white text-xs font-medium text-neutral-700 hover:bg-[#faf7f5] appearance-none focus:outline-none focus:border-[#e8631b] cursor-pointer shadow-2xs transition-colors"
             >
-              <option value="ALL">All Statuses</option>
-              <option value="PLACED">Placed</option>
-              <option value="PREPARING">Preparing</option>
-              <option value="READY">Ready</option>
-              <option value="COMPLETED">Completed</option>
-              <option value="CANCELLED">Cancelled</option>
+              {RESTAURANT_ORDER_STATUS_FILTER_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
             </select>
             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-neutral-400 pointer-events-none" />
           </div>
@@ -129,6 +175,71 @@ export function OrdersFilters({
           </Button>
         </div>
       </div>
+
+      {/* Custom Date Range Picker Sub-Bar */}
+      {currentDateRange === ORDER_DATE_RANGE_FILTERS.CUSTOM && (
+        <div className="mt-3 pt-3 border-t border-[#eddcd4]/70 flex flex-wrap items-center justify-between gap-3 animate-in fade-in duration-200">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex size-6 items-center justify-center rounded-lg bg-[#fef3ec] text-[#e8631b]">
+              <Calendar className="size-3.5" />
+            </span>
+            <span className="text-xs font-bold text-neutral-800">Custom Date Range</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {/* Start Date */}
+            <div className="flex items-center gap-1.5 h-9 sm:h-10 px-2.5 sm:px-3 rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 hover:border-[#e8631b] focus-within:border-[#e8631b] focus-within:ring-1 focus-within:ring-[#e8631b] transition-colors">
+              <label
+                htmlFor="order-custom-start-date"
+                className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-neutral-500 cursor-pointer select-none"
+              >
+                From
+              </label>
+              <input
+                id="order-custom-start-date"
+                type="date"
+                value={currentStartDate}
+                max={currentEndDate || undefined}
+                onChange={handleStartDateChange}
+                aria-label="Custom start date"
+                className="bg-transparent text-xs font-semibold text-neutral-800 outline-none cursor-pointer"
+              />
+            </div>
+
+            <span className="text-neutral-400 font-semibold text-xs">to</span>
+
+            {/* End Date */}
+            <div className="flex items-center gap-1.5 h-9 sm:h-10 px-2.5 sm:px-3 rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 hover:border-[#e8631b] focus-within:border-[#e8631b] focus-within:ring-1 focus-within:ring-[#e8631b] transition-colors">
+              <label
+                htmlFor="order-custom-end-date"
+                className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-neutral-500 cursor-pointer select-none"
+              >
+                To
+              </label>
+              <input
+                id="order-custom-end-date"
+                type="date"
+                value={currentEndDate}
+                min={currentStartDate || undefined}
+                onChange={handleEndDateChange}
+                aria-label="Custom end date"
+                className="bg-transparent text-xs font-semibold text-neutral-800 outline-none cursor-pointer"
+              />
+            </div>
+
+            {(currentStartDate || currentEndDate) && (
+              <button
+                type="button"
+                onClick={handleResetCustomDates}
+                aria-label="Reset custom dates"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#9a3412] hover:text-[#b4532a] px-2 py-1 rounded-lg hover:bg-[#faf7f5] transition-colors cursor-pointer"
+              >
+                Reset range
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

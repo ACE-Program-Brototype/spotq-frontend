@@ -6,19 +6,23 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils/cn";
-import { OrdersFilters } from "../components/admin/order/OrdersFilters";
-import { OrdersOverview } from "../components/admin/order/OrdersOverview";
-import { OrdersTable } from "../components/admin/order/OrdersTable";
-import { RESTAURANT_ORDERS_DEFAULTS } from "../constants/restaurant-orders.constants";
-import { useRestaurantOrders } from "../hooks/use-restaurant-orders";
-import { useRestaurantOrdersOverview } from "../hooks/use-restaurant-orders-overview";
+import { OrdersFilters } from "@/features/orders/components/admin/order/OrdersFilters";
+import { OrdersOverview } from "@/features/orders/components/admin/order/OrdersOverview";
+import { OrdersTable } from "@/features/orders/components/admin/order/OrdersTable";
+import {
+  ORDER_DATE_RANGE_FILTERS,
+  RESTAURANT_ORDER_STATUS_FILTERS,
+  RESTAURANT_ORDERS_DEFAULTS,
+} from "@/features/orders/constants/restaurant-orders.constants";
+import { useRestaurantOrders } from "@/features/orders/hooks/use-restaurant-orders";
+import { useRestaurantOrdersOverview } from "@/features/orders/hooks/use-restaurant-orders-overview";
 import type {
   OrderDateRangeFilter,
   RestaurantOrderFilterStatus,
   RestaurantOrderListItem,
   RestaurantOrderSortBy,
   RestaurantOrderSortOrder,
-} from "../types/restaurant-orders.types";
+} from "@/features/orders/types/restaurant-orders.types";
 
 export default function RestaurantOrdersPage() {
   const navigate = useNavigate();
@@ -30,8 +34,12 @@ export default function RestaurantOrdersPage() {
     searchQuery,
     RESTAURANT_ORDERS_DEFAULTS.SEARCH_DEBOUNCE_MS,
   );
-  const [statusFilter, setStatusFilter] = useState<RestaurantOrderFilterStatus>("ALL");
-  const [dateRange, setDateRange] = useState<OrderDateRangeFilter>("TODAY");
+  const [statusFilter, setStatusFilter] = useState<RestaurantOrderFilterStatus>(
+    RESTAURANT_ORDER_STATUS_FILTERS.ALL,
+  );
+  const [dateRange, setDateRange] = useState<OrderDateRangeFilter>(ORDER_DATE_RANGE_FILTERS.TODAY);
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<RestaurantOrderSortBy>(
     RESTAURANT_ORDERS_DEFAULTS.DEFAULT_SORT_BY,
@@ -42,22 +50,47 @@ export default function RestaurantOrdersPage() {
 
   // Compute date range ISO strings for query
   const dateParams = useMemo(() => {
-    if (dateRange === "TODAY") {
+    if (dateRange === ORDER_DATE_RANGE_FILTERS.TODAY) {
       const from = new Date();
       from.setHours(0, 0, 0, 0);
       const to = new Date();
       to.setHours(23, 59, 59, 999);
       return { from: from.toISOString(), to: to.toISOString() };
     }
-    if (dateRange === "LAST_7_DAYS") {
+    if (dateRange === ORDER_DATE_RANGE_FILTERS.LAST_7_DAYS) {
       const from = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       from.setHours(0, 0, 0, 0);
       const to = new Date();
       to.setHours(23, 59, 59, 999);
       return { from: from.toISOString(), to: to.toISOString() };
     }
+    if (dateRange === ORDER_DATE_RANGE_FILTERS.CUSTOM) {
+      let fromIso: string | undefined;
+      let toIso: string | undefined;
+
+      if (customStartDate) {
+        const from = new Date(customStartDate);
+        if (!Number.isNaN(from.getTime())) {
+          from.setHours(0, 0, 0, 0);
+          fromIso = from.toISOString();
+        }
+      }
+
+      if (customEndDate) {
+        const to = new Date(customEndDate);
+        if (!Number.isNaN(to.getTime())) {
+          to.setHours(23, 59, 59, 999);
+          toIso = to.toISOString();
+        }
+      }
+
+      return {
+        ...(fromIso ? { from: fromIso } : {}),
+        ...(toIso ? { to: toIso } : {}),
+      };
+    }
     return {};
-  }, [dateRange]);
+  }, [dateRange, customStartDate, customEndDate]);
 
   // 1. Fetch Overview Metrics
   const {
@@ -76,7 +109,8 @@ export default function RestaurantOrdersPage() {
     page: currentPage,
     limit: RESTAURANT_ORDERS_DEFAULTS.LIMIT,
     search: debouncedSearchQuery,
-    status: statusFilter !== "ALL" ? statusFilter : undefined,
+    status:
+      statusFilter !== RESTAURANT_ORDER_STATUS_FILTERS.ALL ? statusFilter : undefined,
     from: dateParams.from,
     to: dateParams.to,
     sortBy,
@@ -118,10 +152,22 @@ export default function RestaurantOrdersPage() {
     setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
   };
 
+  const handleCustomStartDateChange = (date: string) => {
+    setCustomStartDate(date);
+    setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
+  };
+
+  const handleCustomEndDateChange = (date: string) => {
+    setCustomEndDate(date);
+    setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
+  };
+
   const handleClearFilters = () => {
     setSearchQuery("");
-    setStatusFilter("ALL");
-    setDateRange("TODAY");
+    setStatusFilter(RESTAURANT_ORDER_STATUS_FILTERS.ALL);
+    setDateRange(ORDER_DATE_RANGE_FILTERS.TODAY);
+    setCustomStartDate("");
+    setCustomEndDate("");
     setSortBy(RESTAURANT_ORDERS_DEFAULTS.DEFAULT_SORT_BY);
     setSortOrder(RESTAURANT_ORDERS_DEFAULTS.DEFAULT_SORT_ORDER);
     setCurrentPage(RESTAURANT_ORDERS_DEFAULTS.PAGE);
@@ -181,6 +227,10 @@ export default function RestaurantOrdersPage() {
         onStatusChange={handleStatusChange}
         dateRange={dateRange}
         onDateRangeChange={handleDateRangeChange}
+        customStartDate={customStartDate}
+        customEndDate={customEndDate}
+        onCustomStartDateChange={handleCustomStartDateChange}
+        onCustomEndDateChange={handleCustomEndDateChange}
         onClearFilters={handleClearFilters}
       />
 
