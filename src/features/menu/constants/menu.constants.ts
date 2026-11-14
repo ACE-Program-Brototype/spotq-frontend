@@ -25,6 +25,8 @@ export const MENU_ENDPOINTS = {
 
 export const MENU_ITEM_DETAIL_QUERY_KEY = "menu-item-detail" as const;
 
+export const CATEGORY_NAME_MAX_LENGTH = 100 as const;
+
 export const DIETARY_TYPES = ["VEG", "NON_VEG", "EGG"] as const;
 export type DietaryType = (typeof DIETARY_TYPES)[number];
 
@@ -205,7 +207,7 @@ export const MENU_MESSAGES = {
   VALIDATION_VARIANT_PRICE_NON_NEGATIVE: "Price cannot be negative",
   VALIDATION_ONE_DEFAULT_VARIANT: "Exactly one variant must be designated as the default",
   VALIDATION_CATEGORY_NAME_REQUIRED: "Category name is required",
-  VALIDATION_CATEGORY_NAME_MAX: "Category name cannot exceed 255 characters",
+  VALIDATION_CATEGORY_NAME_MAX: `Category name cannot exceed ${CATEGORY_NAME_MAX_LENGTH} characters`,
   VALIDATION_CATEGORY_ORDER_INTEGER: "Display order must be an integer",
   VALIDATION_ADDON_NAME_REQUIRED: "Add-on name is required",
   VALIDATION_ADDON_PRICE_REQUIRED: "Add-on price is required",
@@ -214,7 +216,7 @@ export const MENU_MESSAGES = {
   UPDATE_SUCCESS: "Menu category updated successfully.",
   UPDATE_ERROR: "Unable to update menu category. Please try again.",
   NAME_REQUIRED: "Category name cannot be empty.",
-  NAME_MAX_LENGTH: "Category name must not exceed 255 characters.",
+  NAME_MAX_LENGTH: `Category name must not exceed ${CATEGORY_NAME_MAX_LENGTH} characters.`,
   DESCRIPTION_MAX_LENGTH: "Description must not exceed 1000 characters.",
   DISPLAY_ORDER_INVALID: "Display order must be a valid non-negative integer.",
   STATUS_INVALID: "Status must be valid.",
@@ -246,3 +248,27 @@ export const MENU_MESSAGES = {
 export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;
 export const MENU_ITEMS_QUERY_KEY = "menu-items" as const;
 export const STAFF_MENU_ITEMS_QUERY_KEY = "staff-menu-items" as const;
+
+export const KEYBOARD_KEYS = {
+  ESCAPE: "Escape",
+  TAB: "Tab",
+} as const;
+
+export const DOM_EVENTS = {
+  KEY_DOWN: "keydown",
+  MOUSE_DOWN: "mousedown",
+} as const;
+
+export const CATEGORY_FORM_FIELDS = {
+  NAME: "name",
+  DESCRIPTION: "description",
+  DISPLAY_ORDER: "displayOrder",
+  IS_ACTIVE: "isActive",
+} as const;
+
+export const CREATE_CATEGORY_DEFAULT_VALUES = {
+  name: "",
+  description: "",
+  displayOrder: 0,
+  isActive: true,
+} as const;

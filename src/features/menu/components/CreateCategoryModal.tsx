@@ -7,13 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import {
+  CATEGORY_FORM_FIELDS,
+  CATEGORY_NAME_MAX_LENGTH,
+  CREATE_CATEGORY_DEFAULT_VALUES,
+  DOM_EVENTS,
+  KEYBOARD_KEYS,
+  MENU_MESSAGES,
+} from "@/features/menu/constants/menu.constants";
 import { useMenuCategories } from "@/features/menu/hooks/use-menu-categories";
 import {
   type CreateCategoryFormData,
   createCategorySchema,
 } from "@/features/menu/schemas/create-category.schema";
 import type { MenuCategory } from "@/features/menu/types/menu.types";
+import { cn } from "@/lib/utils/cn";
 
 interface CreateCategoryModalProps {
   isOpen: boolean;
@@ -39,26 +47,24 @@ export function CreateCategoryModal({
     formState: { errors },
   } = useForm<CreateCategoryFormData>({
     resolver: zodResolver(createCategorySchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      displayOrder: 0,
-      isActive: true,
-    },
+    defaultValues: CREATE_CATEGORY_DEFAULT_VALUES,
   });
 
-  const isActive = watch("isActive");
+  const isActive = watch(CATEGORY_FORM_FIELDS.IS_ACTIVE);
+  const currentName = watch(CATEGORY_FORM_FIELDS.NAME) ?? "";
+  const remainingNameChars = Math.max(0, CATEGORY_NAME_MAX_LENGTH - currentName.length);
+  const isNameLimitReached = currentName.length >= CATEGORY_NAME_MAX_LENGTH;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === KEYBOARD_KEYS.ESCAPE) {
         onClose();
       }
     };
     if (isOpen) {
-      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
     }
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -111,18 +117,41 @@ export function CreateCategoryModal({
         {/* Form Body */}
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4 overflow-y-auto">
           <div className="space-y-1.5">
-            <Label htmlFor="category-name" className="text-xs font-semibold text-neutral-800">
-              {MENU_MESSAGES.CATEGORY_NAME_LABEL} <span className="text-rose-500">*</span>
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="category-name" className="text-xs font-semibold text-neutral-800">
+                {MENU_MESSAGES.CATEGORY_NAME_LABEL} <span className="text-rose-500">*</span>
+              </Label>
+              <span
+                className={cn(
+                  "text-[11px] font-mono transition-colors",
+                  isNameLimitReached
+                    ? "font-bold text-red-600"
+                    : remainingNameChars <= 10
+                      ? "font-semibold text-amber-600"
+                      : "text-neutral-400",
+                )}
+                aria-live="polite"
+              >
+                ({currentName.length}/{CATEGORY_NAME_MAX_LENGTH})
+              </span>
+            </div>
             <Input
               id="category-name"
               placeholder={MENU_MESSAGES.CATEGORY_NAME_PLACEHOLDER}
-              {...register("name")}
-              className="h-10 text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
+              maxLength={CATEGORY_NAME_MAX_LENGTH}
+              {...register(CATEGORY_FORM_FIELDS.NAME)}
+              className={cn(
+                "h-10 text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]",
+                isNameLimitReached && "border-amber-400 focus:border-red-500",
+              )}
             />
-            {errors.name && (
+            {errors.name ? (
               <p className="text-xs font-medium text-rose-500">{errors.name.message}</p>
-            )}
+            ) : isNameLimitReached ? (
+              <p className="text-xs font-medium text-amber-700">
+                Maximum character limit of {CATEGORY_NAME_MAX_LENGTH} characters reached.
+              </p>
+            ) : null}
           </div>
 
           <div className="space-y-1.5">
@@ -136,7 +165,8 @@ export function CreateCategoryModal({
               id="category-description"
               rows={3}
               placeholder={MENU_MESSAGES.CATEGORY_DESC_PLACEHOLDER}
-              {...register("description")}
+              maxLength={1000}
+              {...register(CATEGORY_FORM_FIELDS.DESCRIPTION)}
               className="text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6] resize-none"
             />
             {errors.description && (
@@ -154,7 +184,7 @@ export function CreateCategoryModal({
                 type="number"
                 min="0"
                 placeholder={MENU_MESSAGES.CATEGORY_ORDER_PLACEHOLDER}
-                {...register("displayOrder", {
+                {...register(CATEGORY_FORM_FIELDS.DISPLAY_ORDER, {
                   setValueAs: (val) => (val === "" || Number.isNaN(Number(val)) ? 0 : Number(val)),
                 })}
                 className="h-10 text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
@@ -172,7 +202,7 @@ export function CreateCategoryModal({
                 </span>
                 <Switch
                   checked={isActive}
-                  onChange={(e) => setValue("isActive", e.target.checked)}
+                  onChange={(e) => setValue(CATEGORY_FORM_FIELDS.IS_ACTIVE, e.target.checked)}
                   aria-label="Category active status"
                 />
               </div>

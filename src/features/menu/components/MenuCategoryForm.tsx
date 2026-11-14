@@ -12,8 +12,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { type MenuCategorySchema, menuCategorySchema } from "../schemas/menu-category.schema";
-import type { MenuCategoryFormValues } from "../types/menu-category.types";
+import {
+  CATEGORY_FORM_FIELDS,
+  CATEGORY_NAME_MAX_LENGTH,
+  MENU_MESSAGES,
+} from "@/features/menu/constants/menu.constants";
+import { type MenuCategorySchema, menuCategorySchema } from "@/features/menu/schemas/menu-category.schema";
+import type { MenuCategoryFormValues } from "@/features/menu/types/menu-category.types";
+import { cn } from "@/lib/utils/cn";
 
 export interface MenuCategoryFormProps {
   mode?: "edit" | "create";
@@ -46,7 +52,10 @@ export function MenuCategoryForm({
     },
   });
 
-  const currentIsActive = watch("isActive");
+  const currentName = watch(CATEGORY_FORM_FIELDS.NAME) ?? "";
+  const remainingNameChars = Math.max(0, CATEGORY_NAME_MAX_LENGTH - currentName.length);
+  const isNameLimitReached = currentName.length >= CATEGORY_NAME_MAX_LENGTH;
+  const currentIsActive = watch(CATEGORY_FORM_FIELDS.IS_ACTIVE);
   const isPending = isLoading || isSubmitting;
 
   const onFormSubmit = async (data: MenuCategorySchema) => {
@@ -63,27 +72,43 @@ export function MenuCategoryForm({
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5" noValidate>
       {/* Category Name */}
       <div className="space-y-1.5">
-        <label
-          htmlFor="category-name"
-          className="flex items-center justify-between text-xs font-semibold text-neutral-700"
-        >
-          <span className="flex items-center gap-1.5">
+        <div className="flex items-center justify-between">
+          <label
+            htmlFor="category-name"
+            className="flex items-center gap-1.5 text-xs font-semibold text-neutral-700"
+          >
             <Tag className="size-3.5 text-neutral-400" />
             Category Name <span className="text-rose-500">*</span>
+          </label>
+          <span
+            className={cn(
+              "text-[11px] font-mono transition-colors",
+              isNameLimitReached
+                ? "font-bold text-red-600"
+                : remainingNameChars <= 10
+                  ? "font-semibold text-amber-600"
+                  : "text-neutral-400",
+            )}
+            aria-live="polite"
+          >
+            ({currentName.length}/{CATEGORY_NAME_MAX_LENGTH})
           </span>
-          <span className="text-[11px] font-normal text-neutral-400">Max 255 chars</span>
-        </label>
+        </div>
         <Input
           id="category-name"
           type="text"
           placeholder="e.g. Starters"
           disabled={isPending}
-          aria-invalid={errors.name ? "true" : "false"}
-          aria-describedby={errors.name ? "category-name-error" : undefined}
-          className="h-10 rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b]"
-          {...register("name")}
+          maxLength={CATEGORY_NAME_MAX_LENGTH}
+          aria-invalid={errors.name || isNameLimitReached ? "true" : "false"}
+          aria-describedby={errors.name || isNameLimitReached ? "category-name-error" : undefined}
+          className={cn(
+            "h-10 rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b]",
+            isNameLimitReached && "border-amber-400 focus:border-red-500 focus:ring-red-100",
+          )}
+          {...register(CATEGORY_FORM_FIELDS.NAME)}
         />
-        {errors.name && (
+        {errors.name ? (
           <p
             id="category-name-error"
             role="alert"
@@ -92,7 +117,16 @@ export function MenuCategoryForm({
             <AlertCircle className="size-3.5 shrink-0" />
             <span>{errors.name.message}</span>
           </p>
-        )}
+        ) : isNameLimitReached ? (
+          <p
+            id="category-name-error"
+            role="alert"
+            className="flex items-center gap-1 text-xs font-medium text-amber-700"
+          >
+            <AlertCircle className="size-3.5 shrink-0 text-amber-500" />
+            <span>Maximum character limit of {CATEGORY_NAME_MAX_LENGTH} characters reached.</span>
+          </p>
+        ) : null}
       </div>
 
       {/* Description */}
@@ -112,10 +146,11 @@ export function MenuCategoryForm({
           rows={3}
           placeholder="e.g. Delicious starters and appetizers."
           disabled={isPending}
+          maxLength={1000}
           aria-invalid={errors.description ? "true" : "false"}
           aria-describedby={errors.description ? "category-description-error" : undefined}
           className="rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b] resize-none"
-          {...register("description")}
+          {...register(CATEGORY_FORM_FIELDS.DESCRIPTION)}
         />
         {errors.description && (
           <p
@@ -151,7 +186,7 @@ export function MenuCategoryForm({
           aria-invalid={errors.displayOrder ? "true" : "false"}
           aria-describedby={errors.displayOrder ? "category-display-order-error" : undefined}
           className="h-10 rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b]"
-          {...register("displayOrder", { valueAsNumber: true })}
+          {...register(CATEGORY_FORM_FIELDS.DISPLAY_ORDER, { valueAsNumber: true })}
         />
         {errors.displayOrder && (
           <p
@@ -197,7 +232,7 @@ export function MenuCategoryForm({
           </div>
 
           <Controller
-            name="isActive"
+            name={CATEGORY_FORM_FIELDS.IS_ACTIVE}
             control={control}
             render={({ field }) => (
               <Switch
