@@ -193,13 +193,12 @@ export default function RestaurantDashboardPage() {
           day={filters.day}
           month={filters.month}
           year={filters.year}
-          status={filters.status}
           onIntervalChange={filters.setInterval}
           onDayChange={filters.setDay}
           onMonthChange={filters.setMonth}
           onYearChange={filters.setYear}
-          onStatusChange={filters.setStatus}
           onReset={filters.resetFilters}
+          showStatusFilter={false}
         />
 
         {/* Analytics Body */}

@@ -17,13 +17,14 @@ export interface AnalyticsFilterToolbarProps {
   day?: number;
   month: number;
   year: number;
-  status: OrderStatusFilter;
+  status?: OrderStatusFilter;
   onIntervalChange: (interval: AnalyticsPeriod) => void;
   onDayChange?: (day: number) => void;
   onMonthChange: (month: number) => void;
   onYearChange: (year: number) => void;
-  onStatusChange: (status: OrderStatusFilter) => void;
+  onStatusChange?: (status: OrderStatusFilter) => void;
   onReset?: () => void;
+  showStatusFilter?: boolean;
   className?: string;
 }
 
@@ -54,6 +55,7 @@ export function AnalyticsFilterToolbar({
   onYearChange,
   onStatusChange,
   onReset,
+  showStatusFilter = true,
   className,
 }: AnalyticsFilterToolbarProps) {
   const currentYear = new Date().getFullYear();
@@ -149,23 +151,25 @@ export function AnalyticsFilterToolbar({
         </select>
 
         {/* Status Filter */}
-        <div className="flex items-center gap-1.5 sm:pl-2 sm:border-l border-[#eddcd4] col-span-1 min-w-0">
-          <Filter className="size-3.5 text-neutral-400 shrink-0" />
-          <select
-            value={status}
-            onChange={(e) => onStatusChange(e.target.value as OrderStatusFilter)}
-            aria-label="Filter order status"
-            className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
-          >
-            {(Object.keys(ORDER_STATUS_FILTERS) as Array<keyof typeof ORDER_STATUS_FILTERS>).map(
-              (key) => (
-                <option key={key} value={ORDER_STATUS_FILTERS[key]}>
-                  {ORDER_STATUS_FILTER_LABELS[key]}
-                </option>
-              ),
-            )}
-          </select>
-        </div>
+        {showStatusFilter && status && onStatusChange && (
+          <div className="flex items-center gap-1.5 sm:pl-2 sm:border-l border-[#eddcd4] col-span-1 min-w-0">
+            <Filter className="size-3.5 text-neutral-400 shrink-0" />
+            <select
+              value={status}
+              onChange={(e) => onStatusChange(e.target.value as OrderStatusFilter)}
+              aria-label="Filter order status"
+              className="h-8 w-full sm:w-auto rounded-xl border border-[#eddcd4] bg-[#faf7f5] px-2 text-xs font-semibold text-neutral-800 hover:border-[#9a3412] focus:outline-hidden focus:ring-1 focus:ring-[#9a3412] truncate"
+            >
+              {(Object.keys(ORDER_STATUS_FILTERS) as Array<keyof typeof ORDER_STATUS_FILTERS>).map(
+                (key) => (
+                  <option key={key} value={ORDER_STATUS_FILTERS[key]}>
+                    {ORDER_STATUS_FILTER_LABELS[key]}
+                  </option>
+                ),
+              )}
+            </select>
+          </div>
+        )}
 
         {/* Reset Action */}
         {onReset && (
