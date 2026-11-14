@@ -5,7 +5,7 @@
 
 import { ArrowUpDown, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { MenuCategory } from "../types/menu-category.types";
+import type { MenuCategory } from "@/features/menu/types/menu-category.types";
 
 export interface CategoryCardProps {
   category: MenuCategory;
@@ -14,16 +14,16 @@ export interface CategoryCardProps {
 
 export function CategoryCard({ category, onEdit }: CategoryCardProps) {
   return (
-    <div className="group relative flex flex-col justify-between rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-xs hover:border-[#e8631b]/50 hover:shadow-md transition-all">
+    <div className="group relative flex flex-col justify-between rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-xs hover:border-[#e8631b]/50 hover:shadow-md transition-all min-w-0 max-w-full overflow-hidden">
       {/* Top Meta: Display Order & Status */}
-      <div className="flex items-center justify-between gap-2 mb-3">
-        <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#faf7f5] px-2.5 py-1 text-xs font-semibold text-neutral-600 border border-[#eddcd4]">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 min-w-0">
+        <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#faf7f5] px-2.5 py-1 text-xs font-semibold text-neutral-600 border border-[#eddcd4] shrink-0">
           <ArrowUpDown className="size-3 text-[#e8631b]" />
           <span>Display Order: #{category.displayOrder}</span>
         </div>
 
         <span
-          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold shrink-0 ${
             category.isActive
               ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
               : "bg-neutral-100 text-neutral-600 border border-neutral-200"
@@ -39,11 +39,14 @@ export function CategoryCard({ category, onEdit }: CategoryCardProps) {
       </div>
 
       {/* Category Info */}
-      <div className="space-y-1.5 mb-5 flex-1">
-        <h3 className="text-base font-bold text-neutral-900 group-hover:text-[#9a3412] transition-colors leading-snug">
+      <div className="space-y-1.5 mb-5 flex-1 min-w-0">
+        <h3
+          className="text-base font-bold text-neutral-900 group-hover:text-[#9a3412] transition-colors leading-snug break-words [overflow-wrap:anywhere] min-w-0"
+          title={category.name}
+        >
           {category.name}
         </h3>
-        <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed break-words [overflow-wrap:anywhere] min-w-0">
           {category.description || "No description provided."}
         </p>
       </div>

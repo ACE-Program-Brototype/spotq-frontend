@@ -22,16 +22,18 @@ export function RestaurantMenuSections({ categories, restaurant }: RestaurantMen
     <>
       {categories.map((category) => (
         <section key={category.id} id={category.id} className="scroll-mt-24">
-          <div className="mb-4 flex items-end justify-between">
-            <div>
-              <h2 className="text-2xl font-extrabold tracking-tight text-stone-900">
+          <div className="mb-4 flex items-end justify-between gap-3 min-w-0">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-2xl font-extrabold tracking-tight text-stone-900 break-words [overflow-wrap:anywhere] min-w-0">
                 {category.name}
               </h2>
               {category.description && (
-                <p className="mt-1 text-sm text-stone-500">{category.description}</p>
+                <p className="mt-1 text-sm text-stone-500 break-words [overflow-wrap:anywhere] min-w-0">
+                  {category.description}
+                </p>
               )}
             </div>
-            <span className="text-xs text-stone-400">{category.items.length} items</span>
+            <span className="text-xs text-stone-400 shrink-0">{category.items.length} items</span>
           </div>
           <div className="space-y-4">
             {category.items.map((item) => (
