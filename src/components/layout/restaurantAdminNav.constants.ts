@@ -52,11 +52,9 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       href: `${basePath}/menu`,
       icon: Utensils,
       children: [
-        { title: "Overview", href: `${basePath}/menu/overview` },
         { title: "Categories", href: `${basePath}/menu/categories` },
         { title: "Items", href: `${basePath}/menu/items` },
         { title: "Modifiers", href: `${basePath}/menu/modifiers` },
-        { title: "Availability", href: `${basePath}/menu/availability` },
       ],
     },
     {
