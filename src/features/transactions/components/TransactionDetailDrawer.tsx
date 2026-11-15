@@ -93,7 +93,7 @@ export function TransactionDetailDrawer({ transactionId, onClose }: TransactionD
       />
 
       {/* 480px Slide-Over Panel */}
-      <div className="fixed inset-y-0 right-0 flex max-w-full pl-10">
+      <div className="fixed inset-y-0 right-0 flex max-w-full pl-4 sm:pl-10">
         <aside className="w-screen max-w-md md:max-w-lg bg-white border-l border-neutral-200 shadow-2xl flex flex-col justify-between overflow-y-auto transform transition-transform duration-300 ease-in-out animate-in slide-in-from-right">
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-neutral-100 bg-white/90 backdrop-blur-md">
