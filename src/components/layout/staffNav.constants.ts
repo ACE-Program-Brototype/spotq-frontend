@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Receipt,
   Sparkles,
+  Table as TableIcon,
   UsersRound,
   Utensils,
 } from "lucide-react";
@@ -31,6 +32,12 @@ export const STAFF_NAV_ITEMS: StaffNavItem[] = [
     path: "/queue",
     icon: UsersRound,
     mobileLabel: "Queue",
+  },
+  {
+    title: "Table Management",
+    path: "/tables",
+    icon: TableIcon,
+    mobileLabel: "Tables",
   },
   {
     title: "Order Management",
