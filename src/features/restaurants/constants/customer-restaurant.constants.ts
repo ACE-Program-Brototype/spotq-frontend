@@ -97,9 +97,39 @@ export const RESTAURANT_PLAN_TYPES = {
   SELF_PRO_DISPLAY: "Self Pro",
 } as const;
 
+export const RESTAURANT_STATUS_LABELS = {
+  OPEN_TODAY: "Open today",
+  CLOSED: "Closed",
+  HOURS_VARY: "Hours vary",
+} as const;
+
+export const CUSTOMER_NAVIGATION_LABELS = {
+  EXPLORE_MENU: "Explore menu",
+  OVERVIEW_AND_HOURS: "Overview & hours",
+  CATEGORY_SINGULAR: "category",
+  CATEGORIES_PLURAL: "categories",
+} as const;
+
 export const CUSTOMER_QUEUE_BUTTON_LABELS = {
   JOIN_QUEUE: "Join Queue",
   JOINED_THIS_QUEUE: "Joined this queue",
   CANT_JOIN_QUEUE: "Can't join queue",
   RESTAURANT_CLOSED: "Restaurant Closed",
+} as const;
+
+export const CUSTOMER_OVERVIEW_LABELS = {
+  ABOUT_TITLE: "About the restaurant",
+  DEFAULT_DESCRIPTION: "Discover the menu and plan your visit.",
+  HOURS_TITLE: "Operating hours",
+  HOURS_NOT_LISTED: "Hours not listed",
+  CLOSED: "Closed",
+  LOCATION_TITLE: "Location & contact",
+  ADDRESS_HEADING: "Address",
+  ADDRESS_NOT_AVAILABLE: "Address not available",
+  OPEN_MAPS: "Open in Google Maps",
+  PHONE_HEADING: "Phone number",
+  PHONE_NOT_AVAILABLE: "Not available",
+  EMAIL_HEADING: "Email",
+  PRE_ORDERS_BADGE: "Pre-orders",
+  QR_ORDERS_BADGE: "QR orders",
 } as const;

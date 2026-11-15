@@ -4,6 +4,7 @@ import {
   DEFAULT_CUISINE_FALLBACK,
   FALLBACK_RESTAURANT_COVER_IMAGE,
   RESTAURANT_PLAN_TYPES,
+  RESTAURANT_STATUS_LABELS,
 } from "@/features/restaurants/constants/customer-restaurant.constants";
 import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant.types";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
@@ -37,7 +38,11 @@ export function RestaurantCover({ restaurant }: RestaurantCoverProps) {
         <div className="mb-3 flex flex-wrap gap-2 text-xs font-semibold">
           <span className="rounded-full bg-black/45 px-3 py-1.5 backdrop-blur">
             <Clock3 className="mr-1.5 inline size-3.5" />
-            {isOpen === true ? "Open today" : isOpen === false ? "Closed" : "Hours vary"}
+            {isOpen === true
+              ? RESTAURANT_STATUS_LABELS.OPEN_TODAY
+              : isOpen === false
+                ? RESTAURANT_STATUS_LABELS.CLOSED
+                : RESTAURANT_STATUS_LABELS.HOURS_VARY}
           </span>
           <span className="rounded-full bg-black/45 px-3 py-1.5 backdrop-blur">
             <MapPin className="mr-1.5 inline size-3.5" />

@@ -2,6 +2,7 @@ import { CheckCircle2, ShoppingBag, Users } from "lucide-react";
 import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  CUSTOMER_NAVIGATION_LABELS,
   CUSTOMER_QUEUE_BUTTON_LABELS,
   CUSTOMER_RESTAURANT_SECTIONS,
   RESTAURANT_PLAN_TYPES,
@@ -55,9 +56,14 @@ export function RestaurantMenuNavigation({
   return (
     <aside className="h-fit space-y-3 lg:sticky lg:top-24">
       <div className="rounded-2xl border border-stone-200 bg-white p-3 shadow-sm">
-        <p className="px-3 pb-1 pt-2 text-sm font-bold text-stone-900">Explore menu</p>
+        <p className="px-3 pb-1 pt-2 text-sm font-bold text-stone-900">
+          {CUSTOMER_NAVIGATION_LABELS.EXPLORE_MENU}
+        </p>
         <p className="px-3 pb-3 text-xs text-stone-400">
-          {categories.length} {categories.length === 1 ? "category" : "categories"}
+          {categories.length}{" "}
+          {categories.length === 1
+            ? CUSTOMER_NAVIGATION_LABELS.CATEGORY_SINGULAR
+            : CUSTOMER_NAVIGATION_LABELS.CATEGORIES_PLURAL}
         </p>
         {categories.map((category) => (
           <button
@@ -85,7 +91,7 @@ export function RestaurantMenuNavigation({
               : "text-stone-600 hover:bg-stone-50",
           )}
         >
-          Overview &amp; hours
+          {CUSTOMER_NAVIGATION_LABELS.OVERVIEW_AND_HOURS}
         </button>
       </div>
       {showQueueButton && (
