@@ -102,3 +102,13 @@ export const ADMIN_ORDERS_METRICS_LABELS = {
   RATE_CANCELLED: "rate",
 } as const;
 
+export const ADMIN_ORDERS_FILTER_LABELS = {
+  STATUS: "Status:",
+  PAYMENT: "Payment:",
+  MOBILE_STATUS_LABEL: "Order Status",
+  MOBILE_PAYMENT_LABEL: "Payment Status",
+  MOBILE_STATUS_ARIA: "Filter by order status",
+  MOBILE_PAYMENT_ARIA: "Filter by payment status",
+} as const;
+
+
