@@ -3,92 +3,24 @@
  * Provides primary shift navigation, brand details, settings, and staff clock-out actions.
  */
 
-import {
-  HelpCircle,
-  LayoutDashboard,
-  LogOut,
-  Receipt,
-  Sparkles,
-  Table as TableIcon,
-  User,
-  UsersRound,
-  Utensils,
-} from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import {
+  STAFF_NAV_ITEMS,
+  isStaffNavItemActive,
+} from "@/components/layout/staffNav.constants";
 import { Button } from "@/components/ui/button";
 import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import type { StaffNavItem, StaffSidebarProps } from "./types";
+import type { StaffSidebarProps } from "@/components/layout/types";
 
 export type { StaffSidebarProps };
-
-const staffNavItems: StaffNavItem[] = [
-  {
-    title: "Dashboard",
-    path: "/dashboard",
-    icon: LayoutDashboard,
-    mobileLabel: "Dashboard",
-  },
-  {
-    title: "Menu Items",
-    path: "/menu",
-    icon: Utensils,
-    mobileLabel: "Menu",
-  },
-  {
-    title: "Modifiers & Add-ons",
-    path: "/menu/addons",
-    icon: Sparkles,
-    mobileLabel: "Add-ons",
-  },
-  {
-    title: "Queue Management",
-    path: "/queue",
-    icon: UsersRound,
-    mobileLabel: "Queue",
-  },
-  {
-    title: "Table Management",
-    path: "/tables",
-    icon: TableIcon,
-    mobileLabel: "Tables",
-  },
-  {
-    title: "Order Management",
-    path: "/orders",
-    icon: Receipt,
-    mobileLabel: "Orders",
-  },
-];
-
-// to highlisgt which nav item is seleced. even if the url is
-// menu/item/varient/available the menu nav item needs to be selected
-export function isStaffNavItemActive(
-  pathname: string,
-  itemPath: string,
-  basePath: string,
-): boolean {
-  const fullHref = `${basePath}${itemPath}`;
-
-  if (itemPath === "/menu") {
-    return (
-      pathname === `${basePath}/menu` ||
-      pathname === `${basePath}/menu/items` ||
-      pathname.startsWith(`${basePath}/menu/items/`)
-    );
-  }
-
-  return (
-    pathname === fullHref ||
-    pathname.startsWith(`${fullHref}/`) ||
-    (itemPath === "/dashboard" && (pathname === basePath || pathname === `${basePath}/`))
-  );
-}
+export { isStaffNavItemActive };
 
 export function StaffSidebar({
   className,
@@ -118,7 +50,7 @@ export function StaffSidebar({
         </div>
 
         <nav className="flex flex-col gap-1.5" aria-label="Restaurant Staff Navigation">
-          {staffNavItems.map((item) => {
+          {STAFF_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const fullHref = `${basePath}${item.path}`;
             const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
@@ -157,18 +89,6 @@ export function StaffSidebar({
         >
           <User className="size-4 text-neutral-500" />
           <span>Profile</span>
-        </Link>
-
-        <Link
-          to={`${basePath}/support`}
-          onClick={onNavigate}
-          className={cn(
-            "flex items-center gap-3 rounded-xl px-3.5 py-2 text-xs font-medium text-neutral-600 hover:bg-[#eddcd4]/50 hover:text-neutral-900 transition-colors",
-            location.pathname.startsWith(`${basePath}/support`) && "font-bold text-neutral-900",
-          )}
-        >
-          <HelpCircle className="size-4 text-neutral-500" />
-          <span>Support</span>
         </Link>
 
         <ConfirmDialog
@@ -211,7 +131,7 @@ export function StaffMobileNav({
         className,
       )}
     >
-      {staffNavItems.map((item) => {
+      {STAFF_NAV_ITEMS.map((item) => {
         const Icon = item.icon;
         const fullHref = `${basePath}${item.path}`;
         const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);

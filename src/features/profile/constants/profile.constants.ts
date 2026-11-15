@@ -139,6 +139,14 @@ export const profileHooks = {
 
 export const MONTH_NAMES = SHORT_MONTH_NAMES;
 
+export const HTTP_STATUS = {
+  OK: 200,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+} as const;
+
 export const Gender = {
   MALE: "MALE",
   FEMALE: "FEMALE",
