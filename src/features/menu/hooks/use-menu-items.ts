@@ -7,8 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import { MENU_ITEMS_QUERY_KEY } from "../constants/menu.constants";
-import { menuItemService } from "../services/menu-item.service";
+import { MENU_ITEMS_QUERY_KEY } from "@/features/menu/constants/menu.constants";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
 import type {
   MenuItemPagination,
   MenuItemSortBy,
@@ -16,7 +16,7 @@ import type {
   MenuItemStats,
   MenuItemStatusFilter,
   MenuItemSummary,
-} from "../types/menu-item.types";
+} from "@/features/menu/types/menu-item.types";
 
 export interface UseMenuItemsOptions {
   initialLimit?: number;
@@ -133,6 +133,14 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
     setPage(1);
   }, []);
 
+  const handleSortChange = useCallback((field: MenuItemSortBy, order?: MenuItemSortOrder) => {
+    setSort({
+      sortBy: field,
+      sortOrder: order ?? "desc",
+    });
+    setPage(1);
+  }, []);
+
   const handleLimitChange = useCallback((newLimit: number) => {
     setLimit(newLimit);
     setPage(1);
@@ -173,6 +181,7 @@ export function useMenuItems(options?: UseMenuItemsOptions) {
     setCategoryFilter: handleCategoryChange,
     setStatusFilter: handleStatusChange,
     setVegFilter: handleVegFilterChange,
+    setSort: handleSortChange,
     toggleSort,
     resetFilters,
   };

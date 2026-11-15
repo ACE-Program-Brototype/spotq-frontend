@@ -5,14 +5,14 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
-import { MenuItemFilters } from "../components/MenuItemFilters";
-import { MenuItemStatsCards } from "../components/MenuItemStatsCards";
-import { MenuItemTable } from "../components/MenuItemTable";
-import { MENU_MESSAGES } from "../constants/menu.constants";
-import { useDeleteMenuItem } from "../hooks/use-delete-menu-item";
-import { useMenuCategories } from "../hooks/use-menu-categories";
-import { useMenuItems } from "../hooks/use-menu-items";
-import type { MenuItemSummary } from "../types/menu-item.types";
+import { MenuItemFilters } from "@/features/menu/components/MenuItemFilters";
+import { MenuItemStatsCards } from "@/features/menu/components/MenuItemStatsCards";
+import { MenuItemTable } from "@/features/menu/components/MenuItemTable";
+import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import { useDeleteMenuItem } from "@/features/menu/hooks/use-delete-menu-item";
+import { useMenuCategories } from "@/features/menu/hooks/use-menu-categories";
+import { useMenuItems } from "@/features/menu/hooks/use-menu-items";
+import type { MenuItemSummary } from "@/features/menu/types/menu-item.types";
 
 export default function RestaurantMenuItemsPage() {
   const { categories } = useMenuCategories();
@@ -31,6 +31,7 @@ export default function RestaurantMenuItemsPage() {
     vegFilter,
     sortBy,
     sortOrder,
+    setSort,
     setPage,
     setLimit,
     setSearchQuery,
@@ -60,22 +61,22 @@ export default function RestaurantMenuItemsPage() {
   );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-4 sm:space-y-6 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-4">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#9a3412]">
+            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.15em] text-[#9a3412]">
               Menu Management
             </span>
           </div>
-          <div className="flex items-center gap-3 mt-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900">Menu Items</h1>
-            <span className="rounded-full bg-[#fef3ec] px-2.5 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
+          <div className="flex items-center gap-2.5 sm:gap-3 mt-0.5 sm:mt-1">
+            <h1 className="text-xl sm:text-3xl font-bold text-neutral-900">Menu Items</h1>
+            <span className="rounded-full bg-[#fef3ec] px-2 py-0.5 text-[11px] sm:text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
               {stats.totalMenuItems} total
             </span>
           </div>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-neutral-500">
             View, filter, and manage your dishes, beverages, pricing, and availability.
           </p>
         </div>
@@ -85,7 +86,7 @@ export default function RestaurantMenuItemsPage() {
             to={RESTAURANT_ROUTES.MENU.CREATE}
             className={cn(
               buttonVariants({ size: "sm" }),
-              "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs",
+              "rounded-xl bg-[#e8631b] hover:bg-[#d45614] text-white shadow-xs gap-1.5 font-semibold text-xs h-9 sm:h-10 px-3 sm:px-4",
             )}
           >
             <Plus className="size-4" />
@@ -129,6 +130,9 @@ export default function RestaurantMenuItemsPage() {
           onStatusChange={setStatusFilter}
           vegFilter={vegFilter}
           onVegFilterChange={setVegFilter}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={setSort}
           onResetFilters={resetFilters}
           isFiltered={isFiltered}
         />

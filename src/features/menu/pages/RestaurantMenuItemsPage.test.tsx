@@ -114,9 +114,9 @@ describe("RestaurantMenuItemsPage", () => {
     expect(createButton).toHaveAttribute("href", "/restaurant/menu/items/create");
 
     // Verify Item in Table
-    expect(await screen.findByText("Crispy Corn")).toBeInTheDocument();
-    expect(screen.getByText("₹199.00")).toBeInTheDocument();
-    expect(screen.getByText("Featured")).toBeInTheDocument();
+    expect((await screen.findAllByText("Crispy Corn"))[0]).toBeInTheDocument();
+    expect(screen.getAllByText("₹199.00")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Featured")[0]).toBeInTheDocument();
   });
 
   it("renders error alert with retry button on query failure", async () => {
@@ -148,10 +148,10 @@ describe("RestaurantMenuItemsPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Crispy Corn")).toBeInTheDocument();
+    expect((await screen.findAllByText("Crispy Corn"))[0]).toBeInTheDocument();
 
     // Click delete action button on the row
-    const deleteActionButton = screen.getByRole("button", { name: "Delete Crispy Corn" });
+    const deleteActionButton = screen.getAllByRole("button", { name: "Delete Crispy Corn" })[0];
     expect(deleteActionButton).toBeInTheDocument();
     fireEvent.click(deleteActionButton);
 

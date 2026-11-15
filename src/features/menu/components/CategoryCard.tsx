@@ -41,12 +41,12 @@ export function CategoryCard({ category, onEdit }: CategoryCardProps) {
       {/* Category Info */}
       <div className="space-y-1.5 mb-5 flex-1 min-w-0">
         <h3
-          className="text-base font-bold text-neutral-900 group-hover:text-[#9a3412] transition-colors leading-snug break-words [overflow-wrap:anywhere] min-w-0"
+          className="text-base font-bold text-neutral-900 group-hover:text-[#9a3412] transition-colors leading-snug break-all break-words min-w-0"
           title={category.name}
         >
           {category.name}
         </h3>
-        <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed break-words [overflow-wrap:anywhere] min-w-0">
+        <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed break-all break-words min-w-0">
           {category.description || "No description provided."}
         </p>
       </div>

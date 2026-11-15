@@ -24,11 +24,11 @@ export function RestaurantMenuSections({ categories, restaurant }: RestaurantMen
         <section key={category.id} id={category.id} className="scroll-mt-24">
           <div className="mb-4 flex items-end justify-between gap-3 min-w-0">
             <div className="min-w-0 flex-1">
-              <h2 className="text-2xl font-extrabold tracking-tight text-stone-900 break-words [overflow-wrap:anywhere] min-w-0">
+              <h2 className="text-2xl font-extrabold tracking-tight text-stone-900 break-all break-words min-w-0">
                 {category.name}
               </h2>
               {category.description && (
-                <p className="mt-1 text-sm text-stone-500 break-words [overflow-wrap:anywhere] min-w-0">
+                <p className="mt-1 text-sm text-stone-500 break-all break-words min-w-0">
                   {category.description}
                 </p>
               )}
