@@ -33,6 +33,45 @@ export const RESTAURANT_SKELETON_KEYS = [
   "restaurant-sk-8",
 ] as const;
 
+export const RESTAURANT_DETAIL_SKELETON_CATEGORIES = [
+  "category-one",
+  "category-two",
+  "category-three",
+  "category-four",
+  "category-five",
+  "category-six",
+] as const;
+
+export const RESTAURANT_DETAIL_SKELETON_MENU_ITEMS = [
+  "menu-item-one",
+  "menu-item-two",
+  "menu-item-three",
+  "menu-item-four",
+] as const;
+
+export const CUSTOMER_RESTAURANT_SECTIONS = {
+  OVERVIEW: "overview",
+} as const;
+
+export const DOM_EVENTS = {
+  STORAGE: "storage",
+} as const;
+
+export const FALLBACK_RESTAURANT_COVER_IMAGE =
+  "https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=1800&q=85";
+
+export const DEFAULT_CUISINE_FALLBACK = "Local favorites";
+
+export const DAYS_OF_WEEK = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const;
+
 export const CUSTOMER_CUISINE_CATEGORIES = [
   "All",
   "Mandi",

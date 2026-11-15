@@ -16,7 +16,7 @@ import type {
 } from "@/features/restaurants/types/customer-restaurant.types";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import { formatCurrency } from "@/lib/utils";
-import { RESTAURANT_PLAN_TYPES } from "../../constants/customer-restaurant.constants";
+import { RESTAURANT_PLAN_TYPES } from "@/features/restaurants/constants/customer-restaurant.constants";
 
 interface RestaurantMenuItemCardProps {
   item: CustomerRestaurantMenuItem;
@@ -38,29 +38,33 @@ function AddonOption({
   const checkboxId = `addon-${itemId}-${addon.id}`;
 
   return (
-    <div className="flex items-start justify-between gap-3 text-sm text-stone-700">
-      <div className="flex min-w-0 items-start gap-2">
+    <div className="flex items-start justify-between gap-3 text-sm text-stone-700 min-w-0">
+      <div className="flex min-w-0 flex-1 items-start gap-2">
         <Checkbox
           id={checkboxId}
           checked={selected}
           onCheckedChange={(checked) => onToggle(checked === true)}
-          className="mt-0.5"
+          className="mt-0.5 shrink-0"
         />
-        <label htmlFor={checkboxId} className="flex min-w-0 cursor-pointer items-start gap-2">
+        <label htmlFor={checkboxId} className="flex min-w-0 flex-1 cursor-pointer items-start gap-2">
           {addon.imageKey && (
             <span className="size-10 shrink-0 overflow-hidden rounded-md bg-stone-100">
               {imageUrl && <img src={imageUrl} alt="" className="size-full object-cover" />}
             </span>
           )}
-          <span className="min-w-0">
-            {addon.name}
+          <span className="min-w-0 flex-1">
+            <span className="block truncate font-medium text-stone-900" title={addon.name}>
+              {addon.name}
+            </span>
             {addon.description && (
-              <span className="block text-xs text-stone-400">{addon.description}</span>
+              <span className="block text-xs text-stone-400 line-clamp-1 break-words [overflow-wrap:anywhere]" title={addon.description}>
+                {addon.description}
+              </span>
             )}
           </span>
         </label>
       </div>
-      <span className="shrink-0 font-semibold">
+      <span className="shrink-0 font-semibold whitespace-nowrap">
         {addon.price > 0 ? `+${formatCurrency(addon.price)}` : "Free"}
       </span>
     </div>
@@ -211,22 +215,22 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
     <>
       <article
         data-testid={`menu-item-card-${item.id}`}
-        className="rounded-2xl border border-stone-200 bg-white shadow-xs transition hover:-translate-y-0.5 hover:shadow-md"
+        className="rounded-2xl border border-stone-200 bg-white shadow-xs transition hover:-translate-y-0.5 hover:shadow-md min-w-0 max-w-full overflow-hidden"
       >
-        <div className="flex min-w-0 gap-4 p-4 sm:gap-6 sm:p-5">
-          <div className="size-24 shrink-0 overflow-hidden rounded-xl bg-stone-100 sm:size-28">
+        <div className="flex min-w-0 gap-3 sm:gap-6 p-3.5 sm:p-5">
+          <div className="size-20 sm:size-28 shrink-0 overflow-hidden rounded-xl bg-stone-100">
             {imageUrl ? (
               <img src={imageUrl} alt={item.name} className="size-full object-cover" />
             ) : (
               <div className="grid size-full place-items-center text-stone-300">
-                <UtensilsCrossed className="size-8" />
+                <UtensilsCrossed className="size-6 sm:size-8" />
               </div>
             )}
           </div>
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-4">
-            <div className="flex min-w-0 items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 sm:gap-4">
+            <div className="flex min-w-0 items-start justify-between gap-3 sm:gap-4">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 min-w-0">
                   <span
                     className={`size-2 shrink-0 rounded-full border ${
                       item.isVegetarian
@@ -238,12 +242,22 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                       item.isVegetarian ? CART_MESSAGES.VEGETARIAN : CART_MESSAGES.NON_VEGETARIAN
                     }
                   />
-                  <h3 className="truncate font-bold text-stone-900">{item.name}</h3>
+                  <h3
+                    className="truncate font-bold text-stone-900 text-sm sm:text-base"
+                    title={item.name}
+                  >
+                    {item.name}
+                  </h3>
                 </div>
                 {item.description && (
-                  <p className="mt-1 line-clamp-2 text-sm text-stone-500">{item.description}</p>
+                  <p
+                    className="mt-1 line-clamp-2 text-xs sm:text-sm text-stone-500 break-words [overflow-wrap:anywhere]"
+                    title={item.description}
+                  >
+                    {item.description}
+                  </p>
                 )}
-                <div className="mt-3 flex flex-wrap gap-3 text-xs text-stone-500">
+                <div className="mt-2 sm:mt-3 flex flex-wrap gap-2 sm:gap-3 text-xs text-stone-500">
                   {item.preparationTime != null && (
                     <span>
                       <Clock3 className="mr-1 inline size-3.5" />
@@ -254,21 +268,23 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                     <span className="font-semibold text-[#ff6b00]">Chef’s pick</span>
                   )}
                   {!item.isAvailable && (
-                    <span className="rounded-full bg-stone-100 px-2 py-1 font-semibold text-stone-600">
+                    <span className="rounded-full bg-stone-100 px-2 py-0.5 sm:py-1 text-[11px] font-semibold text-stone-600">
                       Currently unavailable
                     </span>
                   )}
                 </div>
               </div>
               <div className="shrink-0 text-right">
-                <p className="font-extrabold text-[#f26500]">{formatCurrency(totalItemPrice)}</p>
+                <p className="font-extrabold text-[#f26500] text-sm sm:text-base whitespace-nowrap">
+                  {formatCurrency(totalItemPrice)}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         {item.isAvailable && (availableVariants.length > 0 || availableAddons.length > 0) && (
-          <details className="group/options border-t border-stone-100 px-4 py-3 sm:px-5">
+          <details className="group/options border-t border-stone-100 px-3.5 py-2.5 sm:px-5 sm:py-3">
             <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold text-stone-600 [&::-webkit-details-marker]:hidden">
               <span>
                 {availableVariants.length > 0 && availableAddons.length > 0
@@ -281,7 +297,7 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
             </summary>
             <div className="mt-3 grid gap-4 sm:grid-cols-2">
               {availableVariants.length > 0 && (
-                <fieldset className="space-y-2">
+                <fieldset className="space-y-2 min-w-0">
                   <legend className="mb-2 text-[11px] font-bold uppercase tracking-wide text-stone-400">
                     Variant
                   </legend>
@@ -289,9 +305,9 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                     <label
                       key={variant.id}
                       htmlFor={`variant-${item.id}-${variant.id}`}
-                      className="flex cursor-pointer items-center justify-between gap-3 text-sm text-stone-700"
+                      className="flex cursor-pointer items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm text-stone-700 min-w-0"
                     >
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center gap-2 min-w-0 flex-1">
                         <input
                           id={`variant-${item.id}-${variant.id}`}
                           type="radio"
@@ -301,20 +317,24 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
                           onChange={() => {
                             setSelectedVariantId(variant.id);
                           }}
-                          className="accent-[#ff6b00]"
+                          className="accent-[#ff6b00] shrink-0"
                         />
-                        {variant.name}
+                        <span className="truncate" title={variant.name}>
+                          {variant.name}
+                        </span>
                         {variant.isDefault && (
-                          <span className="text-[10px] text-stone-400">Default</span>
+                          <span className="text-[10px] text-stone-400 shrink-0">Default</span>
                         )}
                       </span>
-                      <span className="font-semibold">{formatCurrency(variant.price)}</span>
+                      <span className="font-semibold shrink-0 whitespace-nowrap">
+                        {formatCurrency(variant.price)}
+                      </span>
                     </label>
                   ))}
                 </fieldset>
               )}
               {availableAddons.length > 0 && (
-                <fieldset className="space-y-2">
+                <fieldset className="space-y-2 min-w-0">
                   <legend className="mb-2 text-[11px] font-bold uppercase tracking-wide text-stone-400">
                     Add-ons
                   </legend>
@@ -335,8 +355,8 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
 
         {/* Card Actions: Quantity Selector & Add to Cart */}
         {item.isAvailable && (
-          <div className="flex items-center justify-between border-t border-stone-100 px-4 py-3 sm:px-5">
-            <div className="flex items-center gap-2 rounded-xl border border-stone-200 bg-stone-50 p-1">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 border-t border-stone-100 px-3.5 py-2.5 sm:px-5 sm:py-3">
+            <div className="flex items-center gap-1.5 sm:gap-2 rounded-xl border border-stone-200 bg-stone-50 p-1 shrink-0">
               <Button
                 type="button"
                 variant="ghost"
@@ -372,10 +392,10 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
             <Button
               type="button"
               onClick={handleAddToCart}
-              className="rounded-xl bg-[#ff6b00] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#e05e00] transition"
+              className="rounded-xl bg-[#ff6b00] px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#e05e00] transition cursor-pointer shrink-0"
             >
-              <ShoppingCart className="mr-1.5 size-3.5" />
-              Add to Cart ({formatCurrency(totalItemPrice)})
+              <ShoppingCart className="mr-1.5 size-3.5 shrink-0" />
+              <span>Add to Cart ({formatCurrency(totalItemPrice)})</span>
             </Button>
           </div>
         )}

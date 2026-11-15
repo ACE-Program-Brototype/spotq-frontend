@@ -1,11 +1,13 @@
 import { Clock3, MapPin } from "lucide-react";
+import { useMemo } from "react";
+import {
+  DEFAULT_CUISINE_FALLBACK,
+  FALLBACK_RESTAURANT_COVER_IMAGE,
+  RESTAURANT_PLAN_TYPES,
+} from "@/features/restaurants/constants/customer-restaurant.constants";
+import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant.types";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import { formatCurrency } from "@/lib/utils";
-import { RESTAURANT_PLAN_TYPES } from "../../constants/customer-restaurant.constants";
-import type { CustomerRestaurantDetails } from "../../types/customer-restaurant.types";
-
-const FALLBACK_COVER =
-  "https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=1800&q=85";
 
 interface RestaurantCoverProps {
   restaurant: CustomerRestaurantDetails;
@@ -16,10 +18,17 @@ export function RestaurantCover({ restaurant }: RestaurantCoverProps) {
   const isOpen = restaurant.isOpened ?? restaurant.settings?.isOpened;
   const planType = restaurant.type ?? restaurant.subscriptionType;
 
+  const cuisines = useMemo(() => {
+    return (restaurant.cuisineType || DEFAULT_CUISINE_FALLBACK)
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean);
+  }, [restaurant.cuisineType]);
+
   return (
     <div className="relative h-[300px] overflow-hidden rounded-[28px] bg-stone-900 sm:h-[360px] lg:h-[420px]">
       <img
-        src={imageUrl || FALLBACK_COVER}
+        src={imageUrl || FALLBACK_RESTAURANT_COVER_IMAGE}
         alt={`${restaurant.restaurantName} cuisine`}
         className="absolute inset-0 size-full object-cover"
       />
@@ -37,10 +46,10 @@ export function RestaurantCover({ restaurant }: RestaurantCoverProps) {
               .join(", ")}
           </span>
         </div>
-        <h1 className="text-4xl font-black tracking-tight sm:text-5xl">
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight break-words [overflow-wrap:anywhere] line-clamp-2" title={restaurant.restaurantName}>
           {restaurant.restaurantName}
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-white/85 sm:text-base">
+        <p className="mt-2 max-w-2xl text-sm text-white/85 sm:text-base break-words [overflow-wrap:anywhere] line-clamp-3">
           {restaurant.description}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
@@ -53,9 +62,9 @@ export function RestaurantCover({ restaurant }: RestaurantCoverProps) {
                   : planType}
             </span>
           )}
-          {(restaurant.cuisineType || "Local favorites").split(",").map((cuisine) => (
+          {cuisines.map((cuisine) => (
             <span key={cuisine} className="rounded-full bg-[#ff6b00] px-3 py-1 text-xs font-bold">
-              {cuisine.trim()}
+              {cuisine}
             </span>
           ))}
           {restaurant.averageCost != null && (

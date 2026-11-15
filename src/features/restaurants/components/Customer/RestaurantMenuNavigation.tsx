@@ -1,14 +1,16 @@
 import { CheckCircle2, ShoppingBag, Users } from "lucide-react";
+import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn";
 import {
   CUSTOMER_QUEUE_BUTTON_LABELS,
+  CUSTOMER_RESTAURANT_SECTIONS,
   RESTAURANT_PLAN_TYPES,
-} from "../../constants/customer-restaurant.constants";
+} from "@/features/restaurants/constants/customer-restaurant.constants";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuCategory,
-} from "../../types/customer-restaurant.types";
+} from "@/features/restaurants/types/customer-restaurant.types";
+import { cn } from "@/lib/utils/cn";
 
 interface RestaurantMenuNavigationProps {
   categories: CustomerRestaurantMenuCategory[];
@@ -43,10 +45,12 @@ export function RestaurantMenuNavigation({
       : isJoinedOtherQueue
         ? CUSTOMER_QUEUE_BUTTON_LABELS.CANT_JOIN_QUEUE
         : CUSTOMER_QUEUE_BUTTON_LABELS.JOIN_QUEUE;
-  const scrollTo = (id: string) => {
+  const scrollTo = useCallback((id: string) => {
     onActiveChange(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+    if (typeof document !== "undefined") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [onActiveChange]);
 
   return (
     <aside className="h-fit space-y-3 lg:sticky lg:top-24">
@@ -60,15 +64,26 @@ export function RestaurantMenuNavigation({
             key={category.id}
             type="button"
             onClick={() => scrollTo(category.id)}
-            className={`mb-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition ${activeId === category.id ? "bg-[#ff6b00] text-white" : "text-stone-600 hover:bg-orange-50 hover:text-[#f26500]"}`}
+            title={category.name}
+            className={cn(
+              "mb-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition truncate block min-w-0 cursor-pointer",
+              activeId === category.id
+                ? "bg-[#ff6b00] text-white shadow-xs"
+                : "text-stone-600 hover:bg-orange-50 hover:text-[#f26500]",
+            )}
           >
-            {category.name}
+            <span className="truncate block">{category.name}</span>
           </button>
         ))}
         <button
           type="button"
-          onClick={() => scrollTo("overview")}
-          className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${activeId === "overview" ? "bg-orange-50 text-[#f26500]" : "text-stone-600 hover:bg-stone-50"}`}
+          onClick={() => scrollTo(CUSTOMER_RESTAURANT_SECTIONS.OVERVIEW)}
+          className={cn(
+            "w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition cursor-pointer",
+            activeId === CUSTOMER_RESTAURANT_SECTIONS.OVERVIEW
+              ? "bg-orange-50 text-[#f26500]"
+              : "text-stone-600 hover:bg-stone-50",
+          )}
         >
           Overview &amp; hours
         </button>

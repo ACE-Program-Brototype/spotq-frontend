@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { CustomerRestaurantDetails } from "../../types/customer-restaurant.types";
-import { RestaurantMenuNavigation } from "./RestaurantMenuNavigation";
+import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant.types";
+import { RestaurantMenuNavigation } from "@/features/restaurants/components/Customer/RestaurantMenuNavigation";
 
 const baseRestaurant: CustomerRestaurantDetails = {
   restaurantId: "rest-1",
