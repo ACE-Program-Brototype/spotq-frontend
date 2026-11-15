@@ -49,10 +49,10 @@ export default function RestaurantMenuCategoriesPage() {
     if (categories.length === 0) {
       return (
         <EmptyState
-          icon={<Layers className="size-6" />}
+          icon={<Layers className="size-6 text-[#e8631b]" />}
           title="No categories found"
           description="No menu categories are currently available for this restaurant."
-          createLabel="Create Your First Category"
+          createLabel="Create Category"
           onCreateClick={() => setIsCreateModalOpen(true)}
         />
       );

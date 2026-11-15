@@ -86,10 +86,10 @@ export default function RestaurantMenuAddonsPage() {
     if (addons.length === 0) {
       return (
         <EmptyState
-          icon={<Sparkles className="size-6" />}
+          icon={<Sparkles className="size-6 text-[#e8631b]" />}
           title="No add-ons found"
           description="No modifiers or complementary add-ons are currently available for this restaurant."
-          createLabel="Create Your First Add-on"
+          createLabel="Create Add-on"
           onCreateClick={() => setIsCreateModalOpen(true)}
         />
       );
@@ -113,9 +113,9 @@ export default function RestaurantMenuAddonsPage() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6 sm:p-8 bg-[#faf7f5]/40 min-h-full">
+    <div className="flex-1 space-y-4 sm:space-y-6 p-3.5 sm:p-6 lg:p-8 bg-[#faf7f5]/40 min-h-full min-w-0 max-w-full overflow-x-hidden">
       {/* Page Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#f3e6de] pb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#f3e6de] pb-4 sm:pb-6 min-w-0">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">

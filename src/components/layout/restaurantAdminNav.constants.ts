@@ -9,7 +9,6 @@ import {
   Settings,
   ShoppingBag,
   Store,
-  Users,
   Utensils,
   Wallet,
 } from "lucide-react";
@@ -55,16 +54,6 @@ export function getAdminNavItems(basePath: string): NavItem[] {
         { title: "Categories", href: `${basePath}/menu/categories` },
         { title: "Items", href: `${basePath}/menu/items` },
         { title: "Modifiers", href: `${basePath}/menu/modifiers` },
-      ],
-    },
-    {
-      title: "Customers",
-      href: `${basePath}/customers`,
-      icon: Users,
-      children: [
-        { title: "Directory", href: `${basePath}/customers/directory` },
-        { title: "Intelligence", href: `${basePath}/customers/intelligence` },
-        { title: "Analytics", href: `${basePath}/customers/analytics` },
       ],
     },
     {
