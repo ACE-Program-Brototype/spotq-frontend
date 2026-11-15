@@ -181,15 +181,34 @@ export const MENU_MESSAGES = {
   ADDON_UPDATED_SUCCESS: "Add-on updated successfully.",
   ADDON_UPDATE_FAILED: "Failed to update add-on.",
   ADDON_MARKED_IN_STOCK: "Add-on marked as in stock",
-  ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as unavailable",
+  ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as out of stock",
   ADDON_DELETED_SUCCESS: "Add-on deleted successfully.",
   ADDON_DELETE_FAILED: "Failed to delete add-on.",
   VARIANT_MARKED_IN_STOCK: "Variant marked as in stock",
-  VARIANT_MARKED_OUT_OF_STOCK: "Variant marked as 86'd / unavailable",
+  VARIANT_MARKED_OUT_OF_STOCK: "Variant marked as out of stock",
   VARIANT_AVAILABILITY_UPDATE_FAILED: "Failed to update variant availability status",
   STAFF_ADDONS_TITLE: "Modifiers & Add-ons",
   STAFF_ADDONS_SUBTITLE:
-    "Real-time 86'd stock monitoring and operational availability toggles for add-ons.",
+    "Real-time stock monitoring and operational availability toggles for add-ons.",
+  STAFF_ADDONS_ERROR_TITLE: "Failed to load add-ons",
+  STAFF_ADDONS_ERROR_DESC:
+    "We encountered a problem loading modifiers. Please check your connection and try again.",
+  STAFF_ADDONS_EMPTY_TITLE: "No modifiers found",
+  STAFF_ADDONS_EMPTY_DESC:
+    "No add-ons or modifiers are currently registered for this restaurant.",
+  STAFF_ADDONS_NO_RESULTS_TITLE: "No results found",
+  STAFF_ADDONS_NO_RESULTS_DESC:
+    "No modifiers match your search or filter. Try adjusting your search keywords or switching filters to see other modifiers.",
+  RESTAURANT_ADDONS_TITLE: "Modifiers & Add-ons",
+  RESTAURANT_ADDONS_SUBTITLE:
+    "Manage complementary items, toppings, and extras available for your menu items.",
+  RESTAURANT_ADDONS_ERROR_TITLE: "Failed to load add-ons",
+  RESTAURANT_ADDONS_ERROR_DESC:
+    "We encountered a problem loading your modifiers and add-ons. Please check your connection and try again.",
+  RESTAURANT_ADDONS_EMPTY_TITLE: "No add-ons found",
+  RESTAURANT_ADDONS_EMPTY_DESC:
+    "No modifiers or complementary add-ons are currently available for this restaurant.",
+  RESTAURANT_ADDONS_CREATE_BTN: "Create Add-on",
 
   VALIDATION_ITEM_NAME_REQUIRED: "Menu item name is required",
   VALIDATION_ITEM_NAME_MAX: "Item name cannot exceed 255 characters",
@@ -272,3 +291,11 @@ export const CREATE_CATEGORY_DEFAULT_VALUES = {
   displayOrder: 0,
   isActive: true,
 } as const;
+
+export const ADDON_AVAILABILITY_FILTERS = {
+  ALL: "ALL",
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+export type AddonAvailabilityFilter =
+  (typeof ADDON_AVAILABILITY_FILTERS)[keyof typeof ADDON_AVAILABILITY_FILTERS];

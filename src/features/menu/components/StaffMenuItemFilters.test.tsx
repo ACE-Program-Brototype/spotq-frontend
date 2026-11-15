@@ -51,7 +51,7 @@ describe("StaffMenuItemFilters", () => {
     expect(screen.getByText("Starters")).toBeInTheDocument();
     expect(screen.getByText("Mains")).toBeInTheDocument();
     expect(screen.getByText("In Stock")).toBeInTheDocument();
-    expect(screen.getByText("86'd Items")).toBeInTheDocument();
+    expect(screen.getByText("Out of Stock")).toBeInTheDocument();
   });
 
   it("triggers category change when a category pill is clicked", () => {
@@ -64,7 +64,7 @@ describe("StaffMenuItemFilters", () => {
   it("triggers availability change when availability pill is clicked", () => {
     render(<StaffMenuItemFilters {...defaultProps} />);
 
-    fireEvent.click(screen.getByText("86'd Items"));
+    fireEvent.click(screen.getByText("Out of Stock"));
     expect(defaultProps.onAvailabilityChange).toHaveBeenCalledWith("UNAVAILABLE");
   });
 

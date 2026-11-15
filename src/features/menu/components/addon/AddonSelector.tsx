@@ -156,7 +156,7 @@ export function AddonSelector({
                         min="0"
                         placeholder={String(addon.price)}
                         value={
-                          overridePrice !== undefined && overridePrice !== null ? overridePrice : ""
+                          overridePrice != null ? overridePrice : ""
                         }
                         onChange={(e) => handleOverrideChange(addon.id, e.target.value)}
                         className="pl-5 h-7 text-[11px] bg-white border-[#ecd8cc]"

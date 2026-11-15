@@ -1,7 +1,7 @@
 /**
  * Staff Menu Item Detail Modal Component
  * Displays dish details and an interactive portion sizes/variants availability table for staff.
- * Allows instant 86'ing and restoring of individual variants without extra page navigation or backend changes.
+ * Allows instant toggling and restoring of individual variants without extra page navigation or backend changes.
  */
 
 import { Loader2, Power, PowerOff, Sparkles, Tag, Utensils, X } from "lucide-react";

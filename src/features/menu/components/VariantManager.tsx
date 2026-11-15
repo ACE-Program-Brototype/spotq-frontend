@@ -127,7 +127,7 @@ export function VariantManager({ form }: VariantManagerProps) {
                   {/* Availability Switch */}
                   <div className="flex items-center gap-1 sm:gap-1.5 bg-white/80 rounded-lg px-1.5 sm:px-2 py-0.5 border border-[#eddcd4]">
                     <span className="text-[10px] font-semibold text-neutral-600 hidden sm:inline">
-                      {isAvailable ? "In Stock" : "86'd"}
+                      {isAvailable ? "In Stock" : "Out of Stock"}
                     </span>
                     <Switch
                       checked={isAvailable}

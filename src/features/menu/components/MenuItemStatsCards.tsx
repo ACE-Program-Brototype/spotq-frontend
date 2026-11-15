@@ -68,7 +68,7 @@ export function MenuItemStatsCards({ stats }: MenuItemStatsCardsProps) {
           {stats.outOfStockItems}
         </p>
         <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-neutral-400 truncate">
-          Temporarily 86'd
+          Temporarily unavailable
         </p>
       </div>
     </div>

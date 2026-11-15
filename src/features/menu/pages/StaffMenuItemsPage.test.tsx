@@ -161,9 +161,9 @@ describe("StaffMenuItemsPage", () => {
     expect(screen.getByText("Mango Kulfi")).toBeInTheDocument();
     expect(screen.getByText(/CHK-01/)).toBeInTheDocument();
     expect(screen.getByText("2 Total Items")).toBeInTheDocument();
-    expect(screen.getByText("Total Menu Items")).toBeInTheDocument();
-    expect(screen.getByText("In Stock (Current Page)")).toBeInTheDocument();
-    expect(screen.getAllByText(/86'd \/ Out of Stock/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText("Total Dishes")).toBeInTheDocument();
+    expect(screen.getByText("In Stock")).toBeInTheDocument();
+    expect(screen.getAllByText("Out of Stock").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders error alert with retry button when query fails", async () => {

@@ -56,7 +56,7 @@ describe("StaffMenuItemTable", () => {
     expect(screen.getByText("In Stock")).toBeInTheDocument();
   });
 
-  it("triggers onToggleAvailability when actions 86 Item button is clicked", () => {
+  it("triggers onToggleAvailability when actions Mark Out of Stock button is clicked", () => {
     const onToggleMock = jest.fn();
     render(<StaffMenuItemTable items={mockItems} onToggleAvailability={onToggleMock} />);
 
@@ -64,7 +64,7 @@ describe("StaffMenuItemTable", () => {
       name: "Toggle Paneer Tikka availability",
     });
     expect(actionBtn).toBeInTheDocument();
-    expect(screen.getByText("86 Item")).toBeInTheDocument();
+    expect(screen.getByText("Mark Out of Stock")).toBeInTheDocument();
 
     fireEvent.click(actionBtn);
     expect(onToggleMock).toHaveBeenCalledWith(mockItems[0]);

@@ -1,8 +1,8 @@
 import { Edit3, Loader2, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { AddonThumbnail } from "@/features/menu/components/addon/AddonThumbnail";
 import type { MenuAddon } from "@/features/menu/types/menu.types";
-import { AddonThumbnail } from "./AddonThumpnail";
 
 export interface AddonCardProps {
   addon: MenuAddon;
@@ -42,15 +42,15 @@ export function AddonCard({
           className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-semibold shrink-0 whitespace-nowrap ${
             addon.isAvailable
               ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-              : "bg-neutral-100 text-neutral-600 border border-neutral-200"
+              : "bg-rose-50 text-rose-700 border border-rose-200"
           }`}
         >
           <span
             className={`size-1.5 rounded-full shrink-0 ${
-              addon.isAvailable ? "bg-emerald-500" : "bg-neutral-400"
+              addon.isAvailable ? "bg-emerald-500" : "bg-rose-500"
             }`}
           />
-          {addon.isAvailable ? "In Stock" : "Unavailable"}
+          {addon.isAvailable ? "In Stock" : "Out of Stock"}
         </span>
       </div>
 
@@ -87,7 +87,7 @@ export function AddonCard({
             {isToggling && <Loader2 className="size-3.5 animate-spin text-[#e8631b]" />}
             <div className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-[#faf7f5] border border-[#eddcd4] px-2.5 sm:px-3 py-1 sm:py-1.5">
               <span className="text-[11px] sm:text-xs font-semibold text-neutral-700">
-                {addon.isAvailable ? "Available" : "86'd"}
+                {addon.isAvailable ? "In Stock" : "Out of Stock"}
               </span>
               <Switch
                 checked={addon.isAvailable}
