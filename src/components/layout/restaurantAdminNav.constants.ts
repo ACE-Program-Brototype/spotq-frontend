@@ -4,7 +4,6 @@ import {
   CreditCard,
   DollarSign,
   Grid,
-  Megaphone,
   Settings,
   ShoppingBag,
   Store,
@@ -80,17 +79,6 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       icon: DollarSign,
       children: [
         { title: "Transactions", href: `${basePath}/finance/transactions` },
-      ],
-    },
-    {
-      title: "Marketing",
-      href: `${basePath}/marketing`,
-      icon: Megaphone,
-      children: [
-        { title: "Dashboard", href: `${basePath}/marketing/dashboard` },
-        { title: "Campaigns", href: `${basePath}/marketing/campaigns` },
-        { title: "Coupons", href: `${basePath}/marketing/coupons` },
-        { title: "Analytics", href: `${basePath}/marketing/analytics` },
       ],
     },
     {
