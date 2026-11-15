@@ -73,6 +73,23 @@ export const ADMIN_PAYMENT_STATUS_OPTIONS: {
   { label: "Failed", value: "FAILED" },
 ];
 
+export const ADMIN_DATE_PRESETS = {
+  ALL: "ALL",
+  TODAY: "TODAY",
+  LAST_7_DAYS: "LAST_7_DAYS",
+  LAST_30_DAYS: "LAST_30_DAYS",
+} as const;
+
+export type AdminDatePreset = (typeof ADMIN_DATE_PRESETS)[keyof typeof ADMIN_DATE_PRESETS];
+
+export const ADMIN_DATE_PRESET_OPTIONS: { label: string; value: AdminDatePreset }[] = [
+  { label: "All Time", value: ADMIN_DATE_PRESETS.ALL },
+  { label: "Today", value: ADMIN_DATE_PRESETS.TODAY },
+  { label: "Last 7 Days", value: ADMIN_DATE_PRESETS.LAST_7_DAYS },
+  { label: "Last 30 Days", value: ADMIN_DATE_PRESETS.LAST_30_DAYS },
+];
+
+
 export const ADMIN_ORDERS_MESSAGES = {
   PAGE_TITLE: "Platform Orders",
   PAGE_SUBTITLE: "System-wide order monitor, financial ledger summaries, and real-time statuses.",

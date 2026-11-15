@@ -8,10 +8,12 @@ import { Calendar, ChevronDown, RotateCcw, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  ADMIN_DATE_PRESET_OPTIONS,
   ADMIN_ORDER_STATUS_OPTIONS,
   ADMIN_ORDERS_FILTER_LABELS,
   ADMIN_ORDERS_MESSAGES,
   ADMIN_PAYMENT_STATUS_OPTIONS,
+  type AdminDatePreset,
 } from "@/features/orders/constants/admin-orders.constants";
 import type {
   AdminOrderFilterPaymentStatus,
@@ -19,7 +21,7 @@ import type {
 } from "@/features/orders/types/admin-orders.types";
 import { cn } from "@/lib/utils/cn";
 
-export type AdminDatePreset = "ALL" | "TODAY" | "LAST_7_DAYS" | "LAST_30_DAYS";
+export type { AdminDatePreset };
 
 interface AdminOrdersFiltersProps {
   searchQuery: string;
@@ -35,12 +37,6 @@ interface AdminOrdersFiltersProps {
   disabled?: boolean;
 }
 
-const DATE_PRESETS: { label: string; value: AdminDatePreset }[] = [
-  { label: "All Time", value: "ALL" },
-  { label: "Today", value: "TODAY" },
-  { label: "Last 7 Days", value: "LAST_7_DAYS" },
-  { label: "Last 30 Days", value: "LAST_30_DAYS" },
-];
 
 export function AdminOrdersFilters({
   searchQuery,
@@ -90,7 +86,7 @@ export function AdminOrdersFilters({
             <div className="flex items-center px-1.5 text-slate-400 shrink-0">
               <Calendar className="size-3.5" />
             </div>
-            {DATE_PRESETS.map((preset) => {
+            {ADMIN_DATE_PRESET_OPTIONS.map((preset) => {
               const isSelected = datePreset === preset.value;
               return (
                 <button
