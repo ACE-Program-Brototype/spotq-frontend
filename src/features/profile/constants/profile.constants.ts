@@ -39,6 +39,7 @@ export const PROFILE_MESSAGES = {
     PHONE_REQUIRED: "Phone number is required.",
     OWNER_NAME_REQUIRED: "Owner name is required.",
     AVERAGE_COST_INVALID: "Average cost must be a valid positive number.",
+    SEATING_CAPACITY_NEGATIVE: "Seating capacity cannot be negative",
     HOURS_REQUIRED: (day: string) => `Please set valid open and close times for ${day}.`,
     HOURS_CHRONOLOGICAL: (day: string) => `Closing time must be after opening time for ${day}.`,
   },
@@ -100,6 +101,34 @@ export const DAYS_OF_WEEK = [
   { id: 5, label: "Friday" },
   { id: 6, label: "Saturday" },
   { id: 7, label: "Sunday" },
+] as const;
+
+export const DEFAULT_BUSINESS_HOURS = {
+  OPEN_TIME: "09:00",
+  CLOSE_TIME: "22:00",
+} as const;
+
+export const RESTAURANT_SETTINGS_FIELDS = [
+  {
+    key: "acceptsQueue",
+    title: "Accepts Queue",
+    description: "Allow customers to join virtual queue remotely or at door",
+  },
+  {
+    key: "acceptsQrOrders",
+    title: "Accepts QR Orders",
+    description: "Enable table-side QR scanning and direct menu ordering",
+  },
+  {
+    key: "loyaltyEnabled",
+    title: "Loyalty Enabled",
+    description: "Allow customers to earn and redeem SpotQ rewards points",
+  },
+  {
+    key: "autoAcceptQueue",
+    title: "Auto Accept Queue",
+    description: "Automatically accept newly placed queue entries",
+  },
 ] as const;
 
 export const profileHooks = {
