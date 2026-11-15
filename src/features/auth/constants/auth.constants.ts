@@ -12,6 +12,40 @@ export const AUTH_ROLES = {
   CUSTOMER: "CUSTOMER",
 } as const;
 
+export const USER_ROLES = {
+  ADMIN: "ADMIN",
+  CUSTOMER: "CUSTOMER",
+  RESTAURANT_ADMIN: "RESTAURANT_ADMIN",
+  RESTAURANT_OWNER: "RESTAURANT_OWNER",
+  STAFF: "STAFF",
+  RESTAURANT_STAFF: "RESTAURANT_STAFF",
+} as const;
+export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
+
+export const USER_STATUS = {
+  PENDING: "PENDING",
+  ACTIVE: "ACTIVE",
+  APPROVED: "APPROVED",
+  VERIFIED: "VERIFIED",
+  SUBMITTED: "SUBMITTED",
+  UNDER_REVIEW: "UNDER_REVIEW",
+  REJECTED: "REJECTED",
+  BLOCKED: "BLOCKED",
+} as const;
+export type UserStatus = (typeof USER_STATUS)[keyof typeof USER_STATUS];
+
+export const ONBOARDING_STATUS = {
+  PENDING: "PENDING",
+  IN_PROGRESS: "IN_PROGRESS",
+  COMPLETED: "COMPLETED",
+} as const;
+export type OnboardingStatus = (typeof ONBOARDING_STATUS)[keyof typeof ONBOARDING_STATUS];
+
+export const AUTH_REFRESH_ERRORS = {
+  MISSING_BASE_URL: "VITE_API_BASE_URL is not configured.",
+  MISSING_ACCESS_TOKEN: "No access token returned from refresh endpoint.",
+} as const;
+
 export const AUTH_ROUTES = {
   LOGIN: "/login",
   REGISTER: "/register",
