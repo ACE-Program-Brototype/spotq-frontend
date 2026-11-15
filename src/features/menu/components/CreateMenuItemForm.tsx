@@ -158,7 +158,7 @@ export function CreateMenuItemForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
       {/* Basic Information Section */}
       <MenuItemGeneralInfoSection
         register={register}
@@ -171,15 +171,10 @@ export function CreateMenuItemForm({
       />
 
       {/* Dish Image Card */}
-      <div className="rounded-2xl border border-[#eddcd4] bg-white p-6 shadow-xs space-y-4">
-        <div>
-          <h3 className="text-base font-bold text-neutral-900 leading-tight">
-            {MENU_MESSAGES.IMAGE_LABEL} <span className="text-rose-500">*</span>
-          </h3>
-          <p className="text-xs text-neutral-500">
-            High resolution photo of the dish to entice diners
-          </p>
-        </div>
+      <div className="rounded-2xl border border-[#eddcd4] bg-white p-3.5 sm:p-5 shadow-xs space-y-2.5">
+        <h3 className="text-xs sm:text-sm font-bold text-neutral-900">
+          {MENU_MESSAGES.IMAGE_LABEL} <span className="text-rose-500">*</span>
+        </h3>
         <ImageUploader
           value={imageUrl}
           onChange={(url) => setValue("imageUrl", url, { shouldValidate: true })}
@@ -191,12 +186,12 @@ export function CreateMenuItemForm({
       </div>
 
       {/* Variants & Portion Sizes Card (SCRUM-1113) */}
-      <div className="rounded-2xl border border-[#eddcd4] bg-white p-6 shadow-xs">
+      <div className="rounded-2xl border border-[#eddcd4] bg-white p-3.5 sm:p-5 shadow-xs">
         <VariantManager form={form} />
       </div>
 
       {/* Complementary Add-ons Card */}
-      <div className="rounded-2xl border border-[#eddcd4] bg-white p-6 shadow-xs">
+      <div className="rounded-2xl border border-[#eddcd4] bg-white p-3.5 sm:p-5 shadow-xs">
         <AddonSelector
           restaurantId={restaurantId}
           selectedIds={selectedAddonIds}
@@ -209,20 +204,20 @@ export function CreateMenuItemForm({
       </div>
 
       {/* Form Footer Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-2">
+      <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 pt-1">
         <Button
           type="button"
           variant="outline"
           onClick={() => navigate(RESTAURANT_ROUTES.MENU.ITEMS)}
           disabled={isSubmitting}
-          className="border-neutral-200 text-neutral-700 hover:bg-neutral-50 px-5"
+          className="border-[#eddcd4] text-neutral-700 hover:bg-[#faf7f5] h-10 px-5 text-xs font-semibold rounded-xl"
         >
           {MENU_MESSAGES.BTN_CANCEL}
         </Button>
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="bg-[#e8631b] hover:bg-[#cf5413] text-white px-6 font-semibold shadow-xs"
+          className="bg-[#e8631b] hover:bg-[#cf5413] text-white h-10 px-6 font-semibold text-xs rounded-xl shadow-xs"
         >
           {isSubmitting ? (
             <>

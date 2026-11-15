@@ -62,24 +62,21 @@ export function AddonSelector({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div>
-          <h4 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
-            <Sparkles className="size-4 text-[#e8631b]" />
-            {MENU_MESSAGES.ADDONS_SECTION_TITLE}
-          </h4>
-          <p className="text-xs text-neutral-500">{MENU_MESSAGES.ADDONS_SECTION_DESC}</p>
-        </div>
+      <div className="flex items-center justify-between pb-1.5 border-b border-[#f3e6de]">
+        <h4 className="text-xs sm:text-sm font-bold text-neutral-900 flex items-center gap-1.5">
+          <Sparkles className="size-3.5 sm:size-4 text-[#e8631b]" />
+          {MENU_MESSAGES.ADDONS_SECTION_TITLE}
+        </h4>
       </div>
 
       {addons.length > 5 && (
         <div className="relative">
-          <Search className="absolute left-3 top-2.5 size-3.5 text-neutral-400" />
+          <Search className="absolute left-3 top-2.5 size-3.5 text-neutral-400 pointer-events-none" />
           <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={MENU_MESSAGES.SEARCH_ADDONS_PLACEHOLDER}
-            className="pl-8 h-8 text-xs bg-neutral-50/50"
+            className="pl-8.5 h-8.5 text-xs bg-neutral-50/50 focus:bg-white border-[#eddcd4]"
           />
         </div>
       )}
@@ -90,13 +87,13 @@ export function AddonSelector({
           <Skeleton className="h-12 w-full rounded-xl" />
         </div>
       ) : addons.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#ecd8cc] p-4 text-center bg-[#fffdfb]">
-          <p className="text-xs text-neutral-500 mb-2">
-            No add-ons created yet. Manage your modifiers and add-ons in the Modifiers section.
+        <div className="rounded-xl border border-dashed border-[#ecd8cc] p-3 text-center bg-[#fffdfb]">
+          <p className="text-xs text-neutral-500 mb-1">
+            No add-ons created yet.
           </p>
           <Link
             to={RESTAURANT_ROUTES.MENU.MODIFIERS}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#e8631b] hover:text-[#9a3412] underline"
+            className="inline-flex items-center gap-1 text-xs font-bold text-[#e8631b] hover:text-[#9a3412] underline"
           >
             Manage Add-ons
           </Link>
@@ -144,7 +141,7 @@ export function AddonSelector({
                   <div className="mt-2.5 pt-2 border-t border-[#f3e6de] flex items-center justify-between gap-2">
                     <label
                       htmlFor={`override-${addon.id}`}
-                      className="text-[10px] text-neutral-500 font-medium cursor-pointer"
+                      className="text-[10px] sm:text-[11px] text-neutral-500 font-medium cursor-pointer"
                     >
                       {MENU_MESSAGES.PRICE_OVERRIDE_LABEL}:
                     </label>
@@ -162,7 +159,7 @@ export function AddonSelector({
                           overridePrice !== undefined && overridePrice !== null ? overridePrice : ""
                         }
                         onChange={(e) => handleOverrideChange(addon.id, e.target.value)}
-                        className="pl-5 h-6 text-[11px] bg-white border-[#ecd8cc]"
+                        className="pl-5 h-7 text-[11px] bg-white border-[#ecd8cc]"
                       />
                     </div>
                   </div>
