@@ -5,7 +5,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -40,13 +40,30 @@ export function RestaurantAdminSidebar({
 
   const adminNavItems = getAdminNavItems(basePath);
 
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    Restaurant: true,
-    Settings: true,
-  });
+  // Find the active section based on current location
+  const activeSectionTitle = adminNavItems.find(
+    (item) =>
+      item.children?.some(
+        (child) =>
+          location.pathname === child.href ||
+          location.pathname.startsWith(`${child.href}/`),
+      ) || (item.href && location.pathname === item.href),
+  )?.title;
+
+  // Single open accordion section at a time
+  const [openSection, setOpenSection] = useState<string | null>(
+    activeSectionTitle ?? null,
+  );
+
+  // Synchronize accordion to open active section when route changes
+  useEffect(() => {
+    if (activeSectionTitle) {
+      setOpenSection(activeSectionTitle);
+    }
+  }, [activeSectionTitle]);
 
   const toggleSection = (title: string) => {
-    setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
+    setOpenSection((prev) => (prev === title ? null : title));
   };
 
   const initials =
@@ -82,7 +99,7 @@ export function RestaurantAdminSidebar({
               );
               const isParentActive =
                 isChildActive || (item.href && location.pathname === item.href);
-              const isOpen = openSections[item.title] ?? isParentActive;
+              const isOpen = openSection === item.title;
 
               return (
                 <div key={item.title} className="flex flex-col">
@@ -121,9 +138,21 @@ export function RestaurantAdminSidebar({
                   {isOpen && (
                     <div className="ml-7 mt-1 flex flex-col gap-1 border-l border-[#eddcd4] pl-3 py-1">
                       {item.children.map((sub) => {
-                        const isSubActive =
+                        const isMatch =
                           location.pathname === sub.href ||
                           location.pathname.startsWith(`${sub.href}/`);
+
+                        const hasMoreSpecificSibling =
+                          isMatch &&
+                          item.children?.some(
+                            (sibling) =>
+                              sibling.href !== sub.href &&
+                              sibling.href.length > sub.href.length &&
+                              (location.pathname === sibling.href ||
+                                location.pathname.startsWith(`${sibling.href}/`)),
+                          );
+
+                        const isSubActive = isMatch && !hasMoreSpecificSibling;
 
                         return (
                           <Link

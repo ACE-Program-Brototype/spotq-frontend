@@ -169,9 +169,21 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
                   {isOpen && (
                     <div className="ml-8 mt-1 flex flex-col gap-1 border-l-2 border-slate-200/80 pl-3">
                       {item.children.map((sub) => {
-                        const isSubActive =
+                        const isMatch =
                           location.pathname === sub.href ||
                           location.pathname.startsWith(`${sub.href}/`);
+
+                        const hasMoreSpecificSibling =
+                          isMatch &&
+                          item.children?.some(
+                            (sibling) =>
+                              sibling.href !== sub.href &&
+                              sibling.href.length > sub.href.length &&
+                              (location.pathname === sibling.href ||
+                                location.pathname.startsWith(`${sibling.href}/`)),
+                          );
+
+                        const isSubActive = isMatch && !hasMoreSpecificSibling;
                         return (
                           <Link
                             key={sub.title}
