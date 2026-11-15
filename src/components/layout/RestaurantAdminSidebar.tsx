@@ -8,11 +8,14 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { RestaurantAdminUserProfile } from "@/components/layout/RestaurantAdminUserProfile";
+import {
+  getAdminNavItems,
+  RESTAURANT_ADMIN_NAV_DEFAULTS,
+} from "@/components/layout/restaurantAdminNav.constants";
+import type { RestaurantAdminSidebarProps } from "@/components/layout/types";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import { RestaurantAdminUserProfile } from "./RestaurantAdminUserProfile";
-import { getAdminNavItems } from "./restaurantAdminNav.constants";
-import type { RestaurantAdminSidebarProps } from "./types";
 
 export type { RestaurantAdminSidebarProps };
 
@@ -72,7 +75,7 @@ export function RestaurantAdminSidebar({
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2) ?? "JD";
+      .slice(0, 2) ?? RESTAURANT_ADMIN_NAV_DEFAULTS.FALLBACK_INITIALS;
 
   return (
     <aside
@@ -211,7 +214,11 @@ export function RestaurantAdminSidebar({
 
       <RestaurantAdminUserProfile
         userName={user?.name}
-        userRole={user?.role ? user.role.replace(/_/g, " ") : "Restaurant Admin"}
+        userRole={
+          user?.role
+            ? user.role.replace(/_/g, " ")
+            : RESTAURANT_ADMIN_NAV_DEFAULTS.FALLBACK_ROLE
+        }
         initials={initials}
         onLogout={handleLogout}
       />

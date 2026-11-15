@@ -12,7 +12,12 @@ import {
   Utensils,
   Wallet,
 } from "lucide-react";
-import type { NavItem } from "./types";
+import type { NavItem } from "@/components/layout/types";
+
+export const RESTAURANT_ADMIN_NAV_DEFAULTS = {
+  FALLBACK_ROLE: "Restaurant Admin",
+  FALLBACK_INITIALS: "RA",
+} as const;
 
 export function getAdminNavItems(basePath: string): NavItem[] {
   return [

@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { useAdminLogout } from "@/features/auth/hooks/useAdminLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import type { AdminSidebarProps, NavItem } from "./types";
+import type { AdminSidebarProps, NavItem } from "@/components/layout/types";
 
 export type { AdminSidebarProps };
 
