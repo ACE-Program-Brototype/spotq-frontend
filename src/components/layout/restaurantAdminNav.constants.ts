@@ -5,7 +5,6 @@ import {
   DollarSign,
   Grid,
   Megaphone,
-  Receipt,
   Settings,
   ShoppingBag,
   Store,
@@ -71,30 +70,16 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       ],
     },
     {
-      title: "Payments",
-      href: `${basePath}/payments`,
-      icon: Receipt,
-      children: [
-        { title: "Overview", href: `${basePath}/payments/overview` },
-        { title: "History", href: `${basePath}/payments/history` },
-        { title: "Gateway", href: `${basePath}/payments/gateway` },
-        { title: "Refunds", href: `${basePath}/payments/refunds` },
-      ],
-    },
-    {
       title: "Wallet",
       href: `${basePath}/wallet`,
       icon: Wallet,
     },
     {
       title: "Finance",
-      href: `${basePath}/finance`,
+      href: `${basePath}/finance/transactions`,
       icon: DollarSign,
       children: [
-        { title: "Overview", href: `${basePath}/finance/overview` },
         { title: "Transactions", href: `${basePath}/finance/transactions` },
-        { title: "Revenue", href: `${basePath}/finance/revenue` },
-        { title: "Settlements", href: `${basePath}/finance/settlements` },
       ],
     },
     {
