@@ -67,37 +67,37 @@ export function TransactionMobileCard({ transaction, onSelect }: TransactionMobi
         </div>
       </div>
 
-      {/* Middle Row: Status & Settlement Badges */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <TransactionStatusBadge status={transaction.status} />
-        <SettlementStatusBadge status={transaction.settlementStatus} />
+      {/* Middle Row: Status & Settlement Badges (Left) + Date (Right) */}
+      <div className="flex items-center justify-between gap-2 flex-wrap min-w-0">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <TransactionStatusBadge status={transaction.status} />
+          <SettlementStatusBadge status={transaction.settlementStatus} />
+        </div>
+        <span className="text-[11px] font-medium text-neutral-500 whitespace-nowrap">
+          {formatDate(transaction.createdAt)}
+        </span>
       </div>
 
-      {/* Bottom Row: Payment Method Badge (Left) + Date / Details (Right) */}
-      <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-neutral-100 text-xs text-neutral-500">
+      {/* Bottom Row: Payment Method Badge (Left) + View Details Action (Right) */}
+      <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-neutral-100 text-xs">
         <div className="shrink-0">
           <PaymentMethodBadge method={transaction.paymentMethod} />
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-[11px] font-medium text-neutral-500 whitespace-nowrap">
-            {formatDate(transaction.createdAt)}
-          </span>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(transaction.id);
-            }}
-            data-testid={`view-details-${transaction.id}`}
-            className="h-7 px-2 text-xs font-semibold text-[#9a3412] hover:bg-[#faf0e8] hover:text-[#8a3b14] rounded-lg gap-1"
-          >
-            <Eye className="size-3.5" />
-            <span>{TRANSACTION_MESSAGES.VIEW_DETAILS}</span>
-          </Button>
-        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(transaction.id);
+          }}
+          data-testid={`view-details-${transaction.id}`}
+          className="h-7 px-2.5 text-xs font-semibold text-[#9a3412] hover:bg-[#faf0e8] hover:text-[#8a3b14] rounded-lg gap-1.5 shrink-0"
+        >
+          <Eye className="size-3.5" />
+          <span>{TRANSACTION_MESSAGES.VIEW_DETAILS}</span>
+        </Button>
       </div>
     </div>
   );

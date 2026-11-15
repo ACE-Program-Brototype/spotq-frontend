@@ -83,10 +83,9 @@ export function getAdminNavItems(basePath: string): NavItem[] {
     },
     {
       title: "Subscription",
-      href: `${basePath}/subscription`,
+      href: `${basePath}/settings/billing/history`,
       icon: CreditCard,
       children: [
-        { title: "Overview", href: `${basePath}/subscription` },
         { title: "Billing History", href: `${basePath}/settings/billing/history` },
       ],
     },
@@ -96,7 +95,6 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       icon: Settings,
       children: [
         { title: "Account", href: `${basePath}/profile` },
-        { title: "Security", href: `${basePath}/settings/security` },
       ],
     },
   ];
