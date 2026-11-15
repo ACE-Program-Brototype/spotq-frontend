@@ -109,7 +109,7 @@ export function StaffAcceptInvitationForm({
             <Input
               id="staff-reg-fullname"
               type="text"
-              placeholder="e.g. John Doe"
+              placeholder="Enter Your Name"
               disabled={isSubmitting}
               className="pl-10 h-10.5 rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 text-xs focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b]"
               {...register("fullname")}
@@ -133,7 +133,7 @@ export function StaffAcceptInvitationForm({
               id="staff-reg-phone"
               type="tel"
               maxLength={10}
-              placeholder="98765 43210"
+              placeholder="Enter Your Number"
               disabled={isSubmitting}
               className="border-0 bg-transparent h-10.5 text-xs focus-visible:ring-0 focus-visible:outline-none"
               {...register("phone")}
