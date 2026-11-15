@@ -84,3 +84,20 @@ export const PLATFORM_ANALYTICS_MESSAGES = {
   PAYMENT_SERVICE_UNAVAILABLE: "Payment Service revenue metrics are temporarily unavailable",
   USER_SERVICE_UNAVAILABLE: "User Service customer growth metrics are temporarily unavailable",
 } as const;
+
+export const REVENUE_TIMELINE_CONSTANTS = {
+  TITLE: "Revenue & Growth Timeline",
+  SUBTITLE: "Subscription revenue performance & dynamic revenue run-rate",
+  UNAVAILABLE_TITLE: "Subscription Revenue Metrics Unavailable",
+  UNAVAILABLE_SERVICE: "spotq-payment-service",
+  EMPTY_TIMELINE: "No revenue activity recorded in selected timeframe.",
+  FOOTER_TIMEZONE: "Timeline breakdown (Asia/Kolkata)",
+  LEGEND_GROSS: "Gross Revenue",
+  GROSS_REVENUE_LABEL: "Gross Subscription Revenue",
+  MRR_LABEL: "Monthly Revenue",
+  ARR_LABEL: "Annual Revenue",
+  TOOLTIP_GROSS: "Gross Revenue:",
+  TOOLTIP_MRR: "Monthly Revenue:",
+  TOOLTIP_NEW_SUBSCRIPTIONS: "New Subscriptions:",
+} as const;
+
