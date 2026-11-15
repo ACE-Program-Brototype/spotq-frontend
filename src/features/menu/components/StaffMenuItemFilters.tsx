@@ -17,11 +17,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils/cn";
-import type { MenuCategory } from "../types/menu.types";
+import type { MenuCategory } from "@/features/menu/types/menu.types";
 import type {
   StaffMenuAvailabilityFilter,
   StaffMenuSortOption,
-} from "../types/staff-menu-item.types";
+} from "@/features/menu/types/staff-menu-item.types";
 
 export interface StaffMenuItemFiltersProps {
   searchQuery: string;
@@ -65,7 +65,7 @@ export function StaffMenuItemFilters({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search items by name, description, variant or SKU..."
+            placeholder="Search items by name, description, or variant..."
             className="pl-9.5 pr-8 h-10 rounded-xl border-[#eddcd4] bg-[#faf7f5]/60 text-xs sm:text-sm focus-visible:ring-[#e8631b]/30"
           />
           {searchQuery && (
@@ -156,14 +156,15 @@ export function StaffMenuItemFilters({
               key={cat.id}
               type="button"
               onClick={() => onCategoryChange(cat.id)}
+              title={cat.name}
               className={cn(
-                "px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer",
+                "px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer max-w-[140px] sm:max-w-[200px] truncate",
                 selectedCategoryId === cat.id
                   ? "bg-[#9a3412] text-white shadow-xs"
                   : "bg-[#faf7f5] text-neutral-600 border border-[#eddcd4] hover:bg-[#eddcd4]/60 hover:text-neutral-900",
               )}
             >
-              {cat.name}
+              <span className="truncate block">{cat.name}</span>
             </button>
           ))}
         </div>
@@ -209,7 +210,7 @@ export function StaffMenuItemFilters({
             )}
           >
             <XCircle className="size-3 text-rose-600" />
-            86'd Items
+            Out of Stock
           </button>
         </div>
       </div>

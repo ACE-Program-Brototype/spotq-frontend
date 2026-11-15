@@ -236,7 +236,7 @@ export const MENU_MESSAGES = {
     "Failed to load staff menu items. Please check your connection and try again.",
   STAFF_MENU_TITLE: "Staff Menu Directory",
   STAFF_MENU_SUBTITLE:
-    "Real-time menu catalog with live 86'd stock tracking, variant pricing, and category mapping.",
+    "Real-time menu catalog with live stock tracking, portion pricing, and category management.",
   NO_STAFF_MENU_ITEMS: "No menu items found.",
   NO_STAFF_MENU_ITEMS_DESC: "No menu items match your search or filter criteria.",
   CLEAR_FILTERS_BTN: "Clear Filters",

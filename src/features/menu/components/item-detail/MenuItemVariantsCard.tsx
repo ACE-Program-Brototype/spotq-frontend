@@ -5,14 +5,15 @@
  */
 
 import { Layers } from "lucide-react";
+import { MenuItemVariantRow } from "@/features/menu/components/item-detail/MenuItemVariantRow";
 import type { MenuItemDetailVariant } from "@/features/menu/types/menu-item.types";
-import { MenuItemVariantRow } from "./MenuItemVariantRow";
 
 export interface MenuItemVariantsCardProps {
   variants: MenuItemDetailVariant[];
   basePrice: number;
   onToggleVariant?: (variantId: string) => void;
   togglingVariantIds?: Set<string>;
+  hideSku?: boolean;
 }
 
 export function MenuItemVariantsCard({
@@ -20,6 +21,7 @@ export function MenuItemVariantsCard({
   basePrice,
   onToggleVariant,
   togglingVariantIds,
+  hideSku = false,
 }: MenuItemVariantsCardProps) {
   return (
     <div className="rounded-3xl border border-[#eddcd4] bg-white p-4 sm:p-6 md:p-8 shadow-xs space-y-5">
@@ -55,7 +57,7 @@ export function MenuItemVariantsCard({
               <tr className="bg-[#faf7f5] border-b border-[#eddcd4] text-neutral-600 font-bold uppercase tracking-wider text-[11px]">
                 <th className="py-3.5 px-4">Variant Name</th>
                 <th className="py-3.5 px-4">Portion / Description</th>
-                <th className="py-3.5 px-4">SKU / Code</th>
+                {!hideSku && <th className="py-3.5 px-4">SKU / Code</th>}
                 <th className="py-3.5 px-4">Price (INR)</th>
                 <th className="py-3.5 px-4">Status</th>
                 {onToggleVariant && (
@@ -71,6 +73,7 @@ export function MenuItemVariantsCard({
                   basePrice={basePrice}
                   onToggleVariant={onToggleVariant}
                   isToggling={togglingVariantIds?.has(variant.id)}
+                  hideSku={hideSku}
                 />
               ))}
             </tbody>

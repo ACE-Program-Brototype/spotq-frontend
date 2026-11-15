@@ -5,10 +5,10 @@ import {
   MENU_ITEMS_QUERY_KEY,
   MENU_MESSAGES,
   STAFF_MENU_ITEMS_QUERY_KEY,
-} from "../constants/menu.constants";
-import { menuItemService } from "../services/menu-item.service";
-import { staffMenuService } from "../services/staff-menu.service";
-import type { StaffMenuItem } from "../types/staff-menu-item.types";
+} from "@/features/menu/constants/menu.constants";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
+import { staffMenuService } from "@/features/menu/services/staff-menu.service";
+import type { StaffMenuItem } from "@/features/menu/types/staff-menu-item.types";
 
 export interface UseStaffMenuMutationsOptions {
   restaurantId: string;

@@ -30,7 +30,7 @@ export function StaffMenuStatsCards({
       description: "Total dishes in catalog",
     },
     {
-      title: "In Stock (Current Page)",
+      title: "In Stock",
       value: availableItems,
       icon: CheckCircle2,
       color: "text-emerald-700",
@@ -39,7 +39,7 @@ export function StaffMenuStatsCards({
       description: "Available items on active page",
     },
     {
-      title: "86'd / Out of Stock (Page)",
+      title: "Out of Stock",
       value: outOfStockItems,
       icon: XCircle,
       color: "text-rose-700",

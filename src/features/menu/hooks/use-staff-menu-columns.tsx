@@ -4,8 +4,8 @@ import type { Column } from "@/components/common/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
-import { StaffMenuItemThumbnail } from "../components/StaffMenuItemThumbnail";
-import type { StaffMenuItem, StaffMenuSortOption } from "../types/staff-menu-item.types";
+import { StaffMenuItemThumbnail } from "@/features/menu/components/StaffMenuItemThumbnail";
+import type { StaffMenuItem, StaffMenuSortOption } from "@/features/menu/types/staff-menu-item.types";
 
 export interface UseStaffMenuColumnsOptions {
   onSort?: (key: StaffMenuSortOption) => void;
@@ -20,13 +20,14 @@ export function useStaffMenuColumns({
   onToggleAvailability,
   onViewDetails,
   pendingItemIds,
+  togglingItemId,
 }: UseStaffMenuColumnsOptions = {}): Column<StaffMenuItem>[] {
   return useMemo<Column<StaffMenuItem>[]>(
     () => [
       {
         key: "name",
         sortKey: "name",
-        header: "Item & SKU",
+        header: "Item",
         sortable: Boolean(onSort),
         cell: ({ row: item }) => (
           <div className="flex items-start gap-3 py-1">
@@ -43,18 +44,13 @@ export function useStaffMenuColumns({
                 {item.name}
               </p>
               <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                {item.sku ? (
-                  <span className="font-mono text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">
-                    {item.sku}
+                {item.description ? (
+                  <span className="text-[11px] text-neutral-400 truncate max-w-[200px]">
+                    {item.description}
                   </span>
                 ) : (
                   <span className="text-[10px] text-neutral-400 font-mono">
                     ID: {item.id.slice(0, 8)}...
-                  </span>
-                )}
-                {item.description && (
-                  <span className="text-[11px] text-neutral-400 truncate max-w-[200px] hidden md:inline">
-                    • {item.description}
                   </span>
                 )}
               </div>
@@ -68,12 +64,17 @@ export function useStaffMenuColumns({
         header: "Category",
         sortable: Boolean(onSort),
         cell: ({ row: item }) => (
-          <div className="flex items-center gap-1.5">
-            <span className="inline-flex items-center gap-1 rounded-lg bg-[#fef3ec] px-2 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
-              <Tag className="size-3 text-[#e8631b]" />
-              {item.categoryName || "Unassigned"}
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span
+              className="inline-flex items-center gap-1 rounded-lg bg-[#fef3ec] px-2 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3] max-w-[130px] sm:max-w-[180px]"
+              title={item.categoryName || "Unassigned"}
+            >
+              <Tag className="size-3 text-[#e8631b] shrink-0" />
+              <span className="truncate">{item.categoryName || "Unassigned"}</span>
             </span>
-            <span className="text-[10px] text-neutral-400 font-mono">#{item.displayOrder}</span>
+            <span className="text-[10px] text-neutral-400 font-mono shrink-0">
+              #{item.displayOrder}
+            </span>
           </div>
         ),
       },
@@ -122,7 +123,7 @@ export function useStaffMenuColumns({
         header: "Live Status",
         sortable: Boolean(onSort),
         cell: ({ row: item }) => {
-          const isPending = pendingItemIds?.has(item.id);
+          const isPending = pendingItemIds?.has(item.id) || togglingItemId === item.id;
 
           return (
             <div className="flex flex-col gap-1 items-start">
@@ -141,7 +142,7 @@ export function useStaffMenuColumns({
                     item.isAvailable ? "bg-emerald-500" : "bg-rose-500",
                   )}
                 />
-                {isPending ? "Updating..." : item.isAvailable ? "In Stock" : "86'd (Unavailable)"}
+                {isPending ? "Updating..." : item.isAvailable ? "In Stock" : "Out of Stock"}
               </Badge>
 
               {!item.isAvailable && item.autoResetAt && (
@@ -164,7 +165,7 @@ export function useStaffMenuColumns({
         header: "Quick Actions",
         className: "text-right",
         cell: ({ row: item }) => {
-          const isPending = pendingItemIds?.has(item.id);
+          const isPending = pendingItemIds?.has(item.id) || togglingItemId === item.id;
 
           return (
             <div className="flex items-center justify-end gap-2">
@@ -192,7 +193,7 @@ export function useStaffMenuColumns({
                   ) : (
                     <Power className="size-3.5 mr-1" />
                   )}
-                  {item.isAvailable ? "86 Item" : "Mark In Stock"}
+                  {item.isAvailable ? "Mark Out of Stock" : "Mark In Stock"}
                 </Button>
               )}
 
@@ -212,6 +213,6 @@ export function useStaffMenuColumns({
         },
       },
     ],
-    [onSort, onToggleAvailability, onViewDetails, pendingItemIds],
+    [onSort, onToggleAvailability, onViewDetails, pendingItemIds, togglingItemId],
   );
 }
