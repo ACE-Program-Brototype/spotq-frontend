@@ -87,3 +87,18 @@ export const ADMIN_ORDERS_MESSAGES = {
   ORDER_DETAILS_TITLE: "Order Breakdown",
   COPIED_TO_CLIPBOARD: "Copied to clipboard",
 } as const;
+
+export const ADMIN_ORDERS_METRICS_LABELS = {
+  SECTION_ARIA: "Platform Order Metrics",
+  TOTAL_ORDERS: "Total Orders",
+  TOTAL_ORDERS_SUBTITLE: "All-time orders",
+  GROSS_ORDER_VALUE: "Gross Order Value",
+  GROSS_ORDER_VALUE_SUBTITLE: "Platform GMV",
+  COMPLETED: "Completed",
+  ACTIVE_ORDERS: "Active Orders",
+  ACTIVE_ORDERS_SUBTITLE: "Kitchen & Service",
+  CANCELLED: "Cancelled",
+  RATE_COMPLETED: "completed",
+  RATE_CANCELLED: "rate",
+} as const;
+
