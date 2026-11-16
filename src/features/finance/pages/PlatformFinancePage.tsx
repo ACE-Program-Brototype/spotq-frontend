@@ -64,6 +64,8 @@ export default function PlatformFinancePage() {
     queryKey: ["admin", "restaurants", "lookup"],
     queryFn: () => restaurantService.getAdminRestaurants({ limit: 100 }),
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: false,
   });
 
   const restaurantMap = useMemo(() => {

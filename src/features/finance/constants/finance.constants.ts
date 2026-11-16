@@ -7,6 +7,10 @@ export const LEDGER_ENTRY_TYPE = {
 } as const;
 
 export const FINANCE_PAGE_SIZE = 10;
+export const FINANCE_DEFAULTS = {
+  PAGE_SIZE: 10,
+  STALE_TIME_MS: 60 * 1000,
+} as const;
 export const DEFAULT_FINANCE_DATE_PRESET = "LAST_30_DAYS";
 export const FINANCE_MESSAGES = {
   ERROR: "Unable to load finance data. Please try again.",
