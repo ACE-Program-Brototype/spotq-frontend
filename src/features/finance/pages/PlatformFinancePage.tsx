@@ -242,6 +242,7 @@ export default function PlatformFinancePage() {
         pageSize={FINANCE_PAGE_SIZE}
         loading={ledgerQuery.isPending || ledgerQuery.isFetching}
         error={ledgerError}
+        restaurantMap={restaurantMap}
         filters={{
           search: filters.search,
           type: filters.type,
