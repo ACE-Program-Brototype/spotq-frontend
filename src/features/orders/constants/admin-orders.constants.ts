@@ -43,6 +43,8 @@ export const ADMIN_ORDER_FILTER_STATUS = {
   CANCELLED: "CANCELLED",
 } as const satisfies Record<string, AdminOrderFilterStatus>;
 
+export const ADMIN_ORDERS_STATUS_FILTERS = ADMIN_ORDER_FILTER_STATUS;
+
 export const ADMIN_PAYMENT_FILTER_STATUS = {
   ALL: "ALL",
   PAID: "PAID",
@@ -50,6 +52,8 @@ export const ADMIN_PAYMENT_FILTER_STATUS = {
   REFUNDED: "REFUNDED",
   FAILED: "FAILED",
 } as const satisfies Record<string, AdminOrderFilterPaymentStatus>;
+
+export const ADMIN_ORDERS_PAYMENT_STATUS_FILTERS = ADMIN_PAYMENT_FILTER_STATUS;
 
 export const ADMIN_ORDER_STATUS_OPTIONS: { label: string; value: AdminOrderFilterStatus }[] = [
   { label: "All Statuses", value: "ALL" },

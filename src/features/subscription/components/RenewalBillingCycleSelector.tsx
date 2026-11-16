@@ -4,7 +4,7 @@ import {
   SUBSCRIPTION_BILLING_CYCLE_LABELS,
   SUBSCRIPTION_BILLING_CYCLE_OPTIONS,
 } from "@/features/subscription/constants/subscription.constants";
-import type { BillingCycle, SubscriptionPlan } from "@/features/subscription/types/subscription.types";
+import type { BillingCycle, RenewalPlansByCycle } from "@/features/subscription/types/subscription.types";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
 
@@ -12,7 +12,7 @@ interface RenewalBillingCycleSelectorProps {
   isLoadingPlans: boolean;
   isPlansError: boolean;
   onRetryPlans?: () => void;
-  plansByCycle: Record<BillingCycle, SubscriptionPlan | null>;
+  plansByCycle: RenewalPlansByCycle;
   selectedCycle: BillingCycle;
   isSubmitting: boolean;
   hasValidPlanAndPrice: boolean;
@@ -118,3 +118,4 @@ export function RenewalBillingCycleSelector({
     </section>
   );
 }
+

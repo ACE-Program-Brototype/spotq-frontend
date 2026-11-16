@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { QUEUE_STATUS } from "@/features/queue/constants/queue.constants";
 import { useCustomerQueueSocket } from "@/features/queue/hooks/use-customer-queue-socket";
-import type { CustomerQueueStatusResponse, QueueStatus } from "@/features/queue/types/queue.types";
+import type { CustomerQueueStatusSnapshot, QueueStatus } from "@/features/queue/types/queue.types";
 import type { CustomerRingPayload } from "@/features/queue/types/ring-alert.types";
 import { clearActiveCustomerTicket, resolveDisplayTableLabel } from "@/features/queue/utils/active-queue.utils";
 
 export function useTrackerLiveState(
   activeQueueEntryId: string | null,
   accessToken: string | null,
-  initialData?: CustomerQueueStatusResponse | null,
+  initialData?: CustomerQueueStatusSnapshot | null,
 ) {
   const [liveStatus, setLiveStatus] = useState<QueueStatus | null>(null);
   const [livePosition, setLivePosition] = useState<number | null>(null);
@@ -131,3 +131,4 @@ export function useTrackerLiveState(
     initialJoinState,
   };
 }
+
