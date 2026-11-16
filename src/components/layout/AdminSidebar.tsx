@@ -22,12 +22,12 @@ import { Link, useLocation } from "react-router-dom";
 import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import type { AdminSidebarProps, NavItem } from "@/components/layout/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAdminLogout } from "@/features/auth/hooks/useAdminLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import type { AdminSidebarProps, NavItem } from "@/components/layout/types";
 
 export type { AdminSidebarProps };
 
@@ -66,14 +66,6 @@ const adminNavItems: NavItem[] = [
     icon: Landmark,
   },
   {
-    title: "Payments",
-    icon: CreditCard,
-    children: [
-      { title: "Order Payments", href: ADMIN_ROUTES.PAYMENTS.ORDERS },
-      { title: "Subscription Payments", href: ADMIN_ROUTES.PAYMENTS.SUBSCRIPTIONS },
-    ],
-  },
-  {
     title: "Campaigns",
     href: ADMIN_ROUTES.CAMPAIGNS,
     icon: Megaphone,
@@ -92,7 +84,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Restaurants: true,
-    Payments: false,
   });
 
   const toggleSection = (title: string) => {

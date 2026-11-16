@@ -1,4 +1,4 @@
-import type { RouteObject } from "react-router-dom";
+import { Navigate, type RouteObject } from "react-router-dom";
 
 import AdminForgotPasswordPage from "@/features/auth/pages/admin/AdminForgotPasswordPage";
 import AdminLoginPage from "@/features/auth/pages/admin/AdminLoginPage";
@@ -95,7 +95,10 @@ export const adminRoutes: RouteObject[] = [
           },
           { path: ADMIN_ROUTE_PATHS.FINANCE, Component: PlatformFinancePage },
           { path: ADMIN_ROUTE_PATHS.ORDERS, Component: AdminOrdersPage },
-          { path: ADMIN_ROUTE_PATHS.PAYMENTS.ORDERS, Component: AdminOrdersPage },
+          {
+            path: ADMIN_ROUTE_PATHS.PAYMENTS.ORDERS,
+            element: <Navigate to={ADMIN_ROUTES.ORDERS} replace />,
+          },
         ],
       },
     ],
