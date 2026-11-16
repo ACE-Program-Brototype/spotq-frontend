@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import type { Column } from "@/components/common/table";
 import { useDebounce } from "@/lib/hooks/use-debounce";
@@ -16,6 +16,7 @@ import {
 import { useFinanceLedger } from "@/features/finance/hooks/useFinanceLedger";
 import { useFinanceSummary } from "@/features/finance/hooks/useFinanceSummary";
 import { financeService } from "@/features/finance/services/finance.service";
+import { restaurantService } from "@/features/restaurants/services/restaurant.service";
 import type { DatePreset, LedgerEntryType, MasterLedgerEntry } from "@/features/finance/types/finance.types";
 import { getDateRange } from "@/features/finance/utils/finance.utils";
 import { formatDate, formatPaise, typeLabels, typeStyles } from "@/features/finance/utils/finance-display.utils";
@@ -79,6 +80,23 @@ export default function PlatformFinancePage() {
   const summary = summaryQuery.data;
   const entries = ledgerQuery.data?.entries ?? [];
   const totalPages = ledgerQuery.data?.pagination?.totalPages ?? 1;
+
+  const restaurantsQuery = useQuery({
+    queryKey: ["admin", "restaurants", "lookup"],
+    queryFn: () => restaurantService.getAdminRestaurants({ limit: 100 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const restaurantMap = useMemo(() => {
+    const map = new Map<string, string>();
+    if (restaurantsQuery.data?.restaurants) {
+      for (const r of restaurantsQuery.data.restaurants) {
+        map.set(r.id, r.name);
+      }
+    }
+    return map;
+  }, [restaurantsQuery.data?.restaurants]);
+
   const exportMutation = useMutation({ mutationFn: financeService.downloadFinanceCsv });
   const exporting = exportMutation.isPending;
   const summaryError = getErrorMessage(summaryQuery.error, FINANCE_MESSAGES.SUMMARY_ERROR);
@@ -122,13 +140,6 @@ export default function PlatformFinancePage() {
       ),
     },
     {
-      key: "id",
-      header: "Entry ID",
-      cell: ({ row }) => (
-        <span className="font-mono text-xs font-medium text-slate-500">{row.id}</span>
-      ),
-    },
-    {
       key: "type",
       header: "Type",
       cell: ({ row }) => (
@@ -144,18 +155,36 @@ export default function PlatformFinancePage() {
       ),
     },
     {
-      key: "restaurantId",
+      key: "restaurant",
       header: "Restaurant",
-      cell: ({ row }) => (
-        <span className="font-mono text-xs text-slate-600">{row.restaurantId || "—"}</span>
-      ),
+      cell: ({ row }) => {
+        const name =
+          row.restaurantName ||
+          (row.restaurantId ? restaurantMap.get(row.restaurantId) : null) ||
+          (row.restaurantId ? "SpotQ Partner Venue" : "SpotQ Platform");
+        return (
+          <span className="text-xs font-semibold text-slate-800 break-words">
+            {name}
+          </span>
+        );
+      },
     },
     {
-      key: "reference",
-      header: "Ref / order ID",
-      cell: ({ row }) => (
-        <span className="font-mono text-xs text-slate-600">{row.referenceId || "—"}</span>
-      ),
+      key: "referenceId",
+      header: "Order ID",
+      cell: ({ row }) => {
+        if (!row.referenceId) {
+          return <span className="font-mono text-xs text-slate-400">—</span>;
+        }
+        return (
+          <span
+            className="inline-block max-w-[130px] truncate rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-medium text-slate-700 border border-slate-200/60"
+            title={row.referenceId}
+          >
+            {row.referenceId}
+          </span>
+        );
+      },
     },
     {
       key: "amount",
@@ -248,6 +277,10 @@ export default function PlatformFinancePage() {
       {selected && (
         <FinanceDetailDrawer
           entry={selected}
+          restaurantName={
+            selected.restaurantName ||
+            (selected.restaurantId ? restaurantMap.get(selected.restaurantId) : null)
+          }
           copied={copied}
           onCopy={() => void copyTransactionId()}
           onClose={() => setSelected(null)}

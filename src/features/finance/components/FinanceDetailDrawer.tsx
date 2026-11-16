@@ -13,28 +13,44 @@ import {
 } from "@/features/finance/utils/finance-display.utils";
 import { cn } from "@/lib/utils/cn";
 
-export function FinanceDetailDrawer({
-  entry,
-  copied,
-  onCopy,
-  onClose,
-}: {
+interface FinanceDetailDrawerProps {
   entry: MasterLedgerEntry;
+  restaurantName?: string | null;
   copied: boolean;
   onCopy: () => void;
   onClose: () => void;
-}) {
+}
+
+export function FinanceDetailDrawer({
+  entry,
+  restaurantName,
+  copied,
+  onCopy,
+  onClose,
+}: FinanceDetailDrawerProps) {
   const entryType = entry.type as keyof typeof typeLabels;
-  const details = [
+  const resolvedRestaurantName =
+    restaurantName ||
+    entry.restaurantName ||
+    (entry.restaurantId ? "SpotQ Partner Venue" : "SpotQ Platform");
+
+  const details: {
+    title: string;
+    values: [string, string | undefined, boolean?][];
+  }[] = [
     {
       title: "Ledger details",
       values: [
-        ["Restaurant ID", entry.restaurantId ?? undefined],
-        ["Reference ID", entry.referenceId ?? undefined],
-        ["Date & time", formatDate(entry.createdAt)],
+        ["Restaurant", resolvedRestaurantName, false],
+        ["Order ID", entry.referenceId ?? undefined, true],
+        ["Entry ID", entry.id, true],
+        ["Date & time", formatDate(entry.createdAt), false],
       ],
     },
-    { title: "Balance", values: [["Running balance", formatPaise(entry.runningBalancePaise)]] },
+    {
+      title: "Balance",
+      values: [["Running balance", formatPaise(entry.runningBalancePaise), true]],
+    },
   ];
 
   return (
@@ -50,7 +66,7 @@ export function FinanceDetailDrawer({
               <Dialog.Title className="mt-1 text-lg font-bold text-slate-950">
                 Transaction details
               </Dialog.Title>
-              <p className="mt-1 font-mono text-xs text-slate-500">{entry.id}</p>
+              <p className="mt-1 font-mono text-xs text-slate-500 break-all select-all">{entry.id}</p>
             </div>
             <Button variant="ghost" size="icon" aria-label="Close details" onClick={onClose}>
               <X className="size-5" />
@@ -85,8 +101,8 @@ export function FinanceDetailDrawer({
             </div>
             {details.map((section) => (
               <DetailSection key={section.title} title={section.title}>
-                {section.values.map(([label, value]) => (
-                  <Detail key={label} label={label || ""} value={value} />
+                {section.values.map(([label, value, isMono]) => (
+                  <Detail key={label} label={label || ""} value={value} isMono={isMono} />
                 ))}
               </DetailSection>
             ))}
@@ -122,11 +138,24 @@ function DetailSection({ title, children }: { title: string; children: React.Rea
   );
 }
 
-function Detail({ label, value }: { label: string; value?: string }) {
+function Detail({
+  label,
+  value,
+  isMono = false,
+}: {
+  label: string;
+  value?: string;
+  isMono?: boolean;
+}) {
   return (
     <div className="flex items-start justify-between gap-4 py-3">
-      <span className="text-xs text-slate-500">{label}</span>
-      <span className="max-w-[60%] break-all text-right text-xs font-medium text-slate-900">
+      <span className="text-xs text-slate-500 shrink-0">{label}</span>
+      <span
+        className={cn(
+          "max-w-[70%] break-all text-right text-xs font-medium text-slate-900 select-all",
+          isMono && "font-mono text-slate-700",
+        )}
+      >
         {value || "Not provided"}
       </span>
     </div>

@@ -32,6 +32,7 @@ export interface GetPlatformMasterLedgerOutputDTO {
     amountPaise: string;
     runningBalancePaise: string;
     restaurantId: string | null;
+    restaurantName?: string | null;
     referenceId: string | null;
     createdAt: string;
   }>;
