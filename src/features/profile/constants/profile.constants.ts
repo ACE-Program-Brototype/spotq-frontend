@@ -110,26 +110,32 @@ export const DEFAULT_BUSINESS_HOURS = {
 
 export const RESTAURANT_SETTINGS_FIELDS = [
   {
+    key: "isOpened",
+    title: "Store Open Status",
+    description: "Open or close your restaurant for online takeaway ordering",
+  },
+  {
     key: "acceptsQueue",
-    title: "Accepts Queue",
-    description: "Allow customers to join virtual queue remotely or at door",
-  },
-  {
-    key: "acceptsQrOrders",
-    title: "Accepts QR Orders",
-    description: "Enable table-side QR scanning and direct menu ordering",
-  },
-  {
-    key: "loyaltyEnabled",
-    title: "Loyalty Enabled",
-    description: "Allow customers to earn and redeem SpotQ rewards points",
-  },
-  {
-    key: "autoAcceptQueue",
-    title: "Auto Accept Queue",
-    description: "Automatically accept newly placed queue entries",
+    title: "Virtual Queue Acceptance",
+    description: "Allow customers to join virtual takeaway queues (QueuePro plan only)",
   },
 ] as const;
+
+export const RESTAURANT_SETTINGS_MESSAGES = {
+  TITLE: "Restaurant Settings",
+  SUBTITLE: "Manage store open/closed availability and virtual queue preferences",
+  QUEUE_PRO_REQUIRED_BADGE: "QueuePro Plan Required",
+  QUEUE_PRO_REQUIRED_HINT:
+    "Virtual queue management is exclusively available on the QueuePro subscription plan.",
+  UPGRADE_LINK: "Upgrade Plan →",
+  STATUS_OPEN: "OPEN",
+  STATUS_CLOSED: "CLOSED",
+  STATUS_ENABLED: "ENABLED",
+  STATUS_DISABLED: "DISABLED",
+  CANCEL: "Cancel",
+  UPDATE_SETTINGS: "Update Settings",
+  UPDATING: "Updating...",
+} as const;
 
 export const profileHooks = {
   STAFF_PROFILE_STALE_TIME: 5 * 60 * 1000,
