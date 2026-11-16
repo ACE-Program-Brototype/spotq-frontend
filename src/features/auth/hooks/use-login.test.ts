@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { useLoginMutation } from "./use-auth-mutations";
 import { useLogin } from "./use-login";
 
@@ -18,7 +18,7 @@ jest.mock("sonner", () => ({
 }));
 
 const mockSetAuth = jest.fn();
-jest.mock("../store/auth.store", () => ({
+jest.mock("@/features/auth/store/auth.store", () => ({
   useAuthStore: () => ({
     setAuth: mockSetAuth,
   }),

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
-import type { PaymentModeType, PriceBreakdown } from "../types/checkout.types";
+import type { PaymentModeType, PriceBreakdown } from "@/features/checkout/types/checkout.types";
 
 interface OrderSummaryCardProps {
   priceBreakdown: PriceBreakdown;

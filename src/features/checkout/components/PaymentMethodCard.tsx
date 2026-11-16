@@ -3,7 +3,7 @@ import { CreditCard, Zap } from "lucide-react";
 import type React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { PaymentModeType } from "../types/checkout.types";
+import type { PaymentModeType } from "@/features/checkout/types/checkout.types";
 
 interface PaymentMethodCardProps {
   paymentMode?: PaymentModeType;

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { FormField, FormInput, PasswordField, SubmitButton } from "@/components/common/form";
 import { cn } from "@/lib/utils/cn";
-import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
+import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema";
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues) => Promise<void> | void;

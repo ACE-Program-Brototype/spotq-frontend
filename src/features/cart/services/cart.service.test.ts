@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { CART_ENDPOINTS } from "../constants/cart.constants";
+import { CART_ENDPOINTS } from "@/features/cart/constants/cart.constants";
 import { cartService } from "./cart.service";
 
 jest.mock("@/lib/api/client", () => ({

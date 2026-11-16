@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { useAuthStore } from "../store/auth.store";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useGoogleLoginMutation } from "./use-auth-mutations";
 
 export const useGoogleAuth = (destination = "/") => {

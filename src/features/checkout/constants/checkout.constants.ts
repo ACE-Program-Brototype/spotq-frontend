@@ -12,6 +12,11 @@ export const CHECKOUT_VIEW_STATUS = {
 
 export type CheckoutViewStatus = (typeof CHECKOUT_VIEW_STATUS)[keyof typeof CHECKOUT_VIEW_STATUS];
 
+export const CHECKOUT_PAYMENT_STATUS = {
+  CAPTURED: "CAPTURED",
+  FAILED: "FAILED",
+} as const;
+
 export const PHONE_REGEX = /^\+?[0-9\s-]{7,20}$/;
 
 export const CHECKOUT_MESSAGES = {

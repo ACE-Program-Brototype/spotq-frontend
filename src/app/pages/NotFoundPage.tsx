@@ -19,6 +19,7 @@ import {
 } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Button } from "@/components/ui/button";
+import { USER_ROLES } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { User } from "@/features/auth/types/auth.types";
 
@@ -32,7 +33,7 @@ interface DestinationConfig {
 function getNavigationConfig(user: User | null, pathname: string): DestinationConfig {
   const role = user?.role;
 
-  if (role === "ADMIN") {
+  if (role === USER_ROLES.ADMIN) {
     return {
       path: ADMIN_ROUTES.DASHBOARD,
       label: "Go to Admin Dashboard",
@@ -44,7 +45,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "RESTAURANT_ADMIN") {
+  if (role === USER_ROLES.RESTAURANT_ADMIN) {
     return {
       path: RESTAURANT_ROUTES.DASHBOARD,
       label: "Go to Partner Dashboard",
@@ -56,7 +57,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "STAFF") {
+  if (role === USER_ROLES.STAFF) {
     return {
       path: STAFF_ROUTES.DASHBOARD,
       label: "Go to Staff Dashboard",
@@ -68,7 +69,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "CUSTOMER") {
+  if (role === USER_ROLES.CUSTOMER) {
     return {
       path: CUSTOMER_ROUTES.HOME,
       label: "Return to Home",

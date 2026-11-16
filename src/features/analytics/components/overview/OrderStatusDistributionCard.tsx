@@ -7,7 +7,10 @@ import {
   ORDER_STATUS_CHART_STYLES,
   type OrderStatusChartMode,
 } from "@/features/analytics/constants/order-status-chart.constants";
-import { ANALYTICS_SECTION_STATUSES } from "@/features/analytics/constants/restaurant-analytics.constants";
+import {
+  ANALYTICS_SECTION_STATUSES,
+  ORDER_STATUS_FILTERS,
+} from "@/features/analytics/constants/restaurant-analytics.constants";
 import type { OrderStatusBreakdownResultDto } from "@/features/analytics/types/restaurant-analytics.types";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -229,8 +232,8 @@ export function OrderStatusDistributionCard({
           {distribution.map((item, idx) => {
             const info = getOrderStatusDisplayInfo(item.status, idx);
             const isHovered = hoveredStatus === item.status;
-            const isCompleted = item.status === "COMPLETED";
-            const isCancelled = item.status === "CANCELLED";
+            const isCompleted = item.status === ORDER_STATUS_FILTERS.COMPLETED;
+            const isCancelled = item.status === ORDER_STATUS_FILTERS.CANCELLED;
 
             return (
               <button

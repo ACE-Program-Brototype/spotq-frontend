@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { toast } from "sonner";
 
-import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { useResendEmailOtp } from "./use-auth-mutations";
 import { useResendOtp } from "./use-resend-otp";
 

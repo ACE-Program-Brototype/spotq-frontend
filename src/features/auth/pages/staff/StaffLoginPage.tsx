@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Button } from "@/components/ui/button";
+import { USER_STATUS } from "@/features/auth/constants/auth.constants";
 import StaffLoginForm from "@/features/auth/components/StaffLoginForm";
 import { useStaffLogin } from "@/features/auth/hooks/useStaffLogin";
 
@@ -79,7 +80,7 @@ export default function StaffLoginPage() {
                     {selectionData.restaurants.map((restaurant) => {
                       const restId = restaurant.restaurantId;
                       const restName = restaurant.restaurantName;
-                      const isInactive = restaurant.status !== "ACTIVE";
+                      const isInactive = restaurant.status !== USER_STATUS.ACTIVE;
                       const isSelected = selectedRestaurantId === restId;
                       return (
                         <button

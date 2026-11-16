@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 
 export const verifyOtpSchema = z.object({
   otp: z

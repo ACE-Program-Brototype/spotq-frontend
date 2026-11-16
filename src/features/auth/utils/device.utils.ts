@@ -3,8 +3,8 @@ import {
   DEVICE_STORAGE_KEYS,
   NOTIFICATION_PERMISSIONS,
   UUID_V4_TEMPLATE,
-} from "../constants/auth.constants";
-import type { RegisterDeviceRequest } from "../types/device.types";
+} from "@/features/auth/constants/auth.constants";
+import type { RegisterDeviceRequest } from "@/features/auth/types/device.types";
 
 /**
  * Generates a standard RFC4122 v4 UUID.

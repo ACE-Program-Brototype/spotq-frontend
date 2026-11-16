@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { useRegisterMutation } from "./use-auth-mutations";
 import { useRegister } from "./use-register";
 

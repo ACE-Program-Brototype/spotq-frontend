@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
-import type { OrderPlacementResponse } from "../types/checkout.types";
+import type { OrderPlacementResponse } from "@/features/checkout/types/checkout.types";
 
 interface CheckoutSuccessPageProps {
   order?: OrderPlacementResponse["data"];

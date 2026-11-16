@@ -13,7 +13,7 @@ import type {
 import { mapApiAuthResponseToAuthResult } from "@/features/auth/utils/auth.mapper";
 import { apiClient } from "@/lib/api/client";
 import type { ApiResponse } from "@/types/api.types";
-import { getDeviceName } from "../utils/device.utils";
+import { getDeviceName } from "@/features/auth/utils/device.utils";
 
 const getDeviceInfo = () => ({
   deviceName: getDeviceName(),

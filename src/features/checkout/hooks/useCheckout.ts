@@ -4,10 +4,10 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { CHECKOUT_VIEW_STATUS, type CheckoutViewStatus } from "../constants/checkout.constants";
-import { type CheckoutFormValues, checkoutFormSchema } from "../schemas/checkout-form.schema";
-import { checkoutService } from "../services/checkout.service";
-import type { PlacedOrderData, PlaceOrderPayload, PriceBreakdown } from "../types/checkout.types";
+import { CHECKOUT_VIEW_STATUS, type CheckoutViewStatus } from "@/features/checkout/constants/checkout.constants";
+import { type CheckoutFormValues, checkoutFormSchema } from "@/features/checkout/schemas/checkout-form.schema";
+import { checkoutService } from "@/features/checkout/services/checkout.service";
+import type { PlacedOrderData, PlaceOrderPayload, PriceBreakdown } from "@/features/checkout/types/checkout.types";
 import { useOrderRazorpay } from "./useOrderRazorpay";
 
 export { CHECKOUT_VIEW_STATUS, type CheckoutViewStatus };

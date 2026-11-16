@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DEVICE_QUERY_KEYS } from "../constants/auth.constants";
-import { deviceService } from "../services/device.service";
+import { DEVICE_QUERY_KEYS } from "@/features/auth/constants/auth.constants";
+import { deviceService } from "@/features/auth/services/device.service";
 import type {
   CustomerDevicesResponse,
   DeactivateDeviceResponse,
   RegisterDeviceRequest,
   RegisterDeviceResponse,
-} from "../types/device.types";
+} from "@/features/auth/types/device.types";
 
 /**
  * Mutation hook to register or update customer device FID and info.

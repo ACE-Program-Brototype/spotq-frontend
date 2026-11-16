@@ -1,4 +1,4 @@
-import type { User } from "../types/auth.types";
+import type { User } from "@/features/auth/types/auth.types";
 import { getUserDisplayName, getUserInitials } from "./user.utils";
 
 describe("user.utils", () => {

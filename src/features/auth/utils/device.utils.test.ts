@@ -1,4 +1,4 @@
-import { DEVICE_STORAGE_KEYS } from "../constants/auth.constants";
+import { DEVICE_STORAGE_KEYS } from "@/features/auth/constants/auth.constants";
 import {
   buildDevicePayload,
   clearStoredDeviceId,

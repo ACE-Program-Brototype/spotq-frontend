@@ -2,7 +2,7 @@ import { UtensilsCrossed } from "lucide-react";
 import type React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-import type { CartData } from "../types/checkout.types";
+import type { CartData } from "@/features/checkout/types/checkout.types";
 import { OrderDetailsSkeleton } from "./OrderDetailsSkeleton";
 
 interface OrderDetailsCardProps {

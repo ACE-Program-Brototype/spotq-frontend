@@ -4,7 +4,7 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { CheckoutFormValues } from "../schemas/checkout-form.schema";
+import type { CheckoutFormValues } from "@/features/checkout/schemas/checkout-form.schema";
 
 interface CustomerDetailsCardProps {
   register: UseFormRegister<CheckoutFormValues>;

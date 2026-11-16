@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { PriceBreakdown } from "../types/checkout.types";
+import type { PriceBreakdown } from "@/features/checkout/types/checkout.types";
 import { OrderSummaryCard } from "./OrderSummaryCard";
 
 describe("OrderSummaryCard", () => {

@@ -61,8 +61,7 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
         toast.error(PUSH_NOTIFICATION_MESSAGES.BLOCKED_ERROR);
       }
       return false;
-    } catch (error) {
-      console.warn("Failed to enable push notifications:", error);
+    } catch (_error) {
       toast.error(PUSH_NOTIFICATION_MESSAGES.ENABLE_FAILED);
       return false;
     }
@@ -191,9 +190,7 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
       currentPermission === NOTIFICATION_PERMISSIONS.GRANTED ||
       currentPermission === NOTIFICATION_PERMISSIONS.DEFAULT
     ) {
-      registerPushNotifications().catch((err) => {
-        console.warn("FCM registration error:", err);
-      });
+      void registerPushNotifications();
     }
 
     return () => {

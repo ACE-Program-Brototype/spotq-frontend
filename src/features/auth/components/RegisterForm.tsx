@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils/cn";
-import { type RegisterFormValues, registerSchema } from "../schemas/register.schema";
+import { type RegisterFormValues, registerSchema } from "@/features/auth/schemas/register.schema";
 
 interface RegisterFormProps {
   onSubmit: (values: RegisterFormValues) => Promise<void> | void;

@@ -5,8 +5,9 @@ import type {
   RazorpayOptions,
   RazorpayPaymentSuccessResponse,
 } from "@/features/subscription/types/subscription.types";
-import { checkoutService } from "../services/checkout.service";
-import type { PaymentDraftData, PlacedOrderData } from "../types/checkout.types";
+import { CHECKOUT_PAYMENT_STATUS } from "@/features/checkout/constants/checkout.constants";
+import { checkoutService } from "@/features/checkout/services/checkout.service";
+import type { PaymentDraftData, PlacedOrderData } from "@/features/checkout/types/checkout.types";
 
 interface UseOrderRazorpayOptions {
   onSuccess: (order: PlacedOrderData) => void;
@@ -56,7 +57,7 @@ export function useOrderRazorpay({ onSuccess, onFailure, onDismiss }: UseOrderRa
               razorpaySignature: response.razorpay_signature,
             });
 
-            if (verifyResponse.data?.status !== "CAPTURED") {
+            if (verifyResponse.data?.status !== CHECKOUT_PAYMENT_STATUS.CAPTURED) {
               throw new Error(
                 verifyResponse.message || "Payment capture failed or was declined by the bank.",
               );
