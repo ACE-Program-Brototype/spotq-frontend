@@ -3,9 +3,8 @@
  * Centralized TypeScript type definitions and interfaces for common shared UI components.
  */
 
-import type { VariantProps } from "class-variance-authority";
 import type { HTMLAttributes, ReactNode } from "react";
-import type { buttonVariants } from "@/components/ui/button.variants";
+import type { ButtonVariant } from "@/components/ui/button.variants";
 
 export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {
   currentPage: number;
@@ -36,7 +35,7 @@ export interface ConfirmDialogProps {
   description: ReactNode;
   confirmText?: string;
   cancelText?: string;
-  confirmVariant?: VariantProps<typeof buttonVariants>["variant"];
+  confirmVariant?: ButtonVariant;
   isLoading?: boolean;
   loadingText?: string;
   onConfirm: () => void;

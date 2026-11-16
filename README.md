@@ -12,14 +12,15 @@ Frontend application for the **spotQ** platform, built with React and TypeScript
 * React Router v7
 * Zustand
 * Infisical
-* Vercel
+* Cloudflare Pages
 * Ky http - client
 * Tailwind / shadcn
 
-## Architecture & Engineering Standards
+## Architecture, Deployment & Engineering Standards
 
 For detailed architecture patterns, reusable form & skeleton primitives, Material Design 3 guidelines, and file decomposition rules, see:
 * [Frontend Architecture Guide](docs/frontend-architecture.md)
+* [Cloudflare Pages + AWS Deployment & Situation Handling Guide](CLOUDFLARE_PAGES_AWS_GUIDE.md)
 
 ## Getting Started
 
