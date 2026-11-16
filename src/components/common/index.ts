@@ -1,3 +1,4 @@
+export * from "./ComingSoonPage";
 export * from "./ConfirmDialog";
 export * from "./ErrorBoundary";
 export * from "./form";

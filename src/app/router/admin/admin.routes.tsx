@@ -4,6 +4,7 @@ import AdminForgotPasswordPage from "@/features/auth/pages/admin/AdminForgotPass
 import AdminLoginPage from "@/features/auth/pages/admin/AdminLoginPage";
 import AdminResetPasswordPage from "@/features/auth/pages/admin/AdminResetPasswordPage";
 import AdminVerifyOtpPage from "@/features/auth/pages/admin/AdminVerifyOtpPage";
+import ComingSoonPage from "@/components/common/ComingSoonPage";
 import AdminCustomerDetailsPage from "@/features/customers/pages/AdminCustomerDetailsPage";
 import AdminCustomersPage from "@/features/customers/pages/AdminCustomersPage";
 import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
@@ -95,6 +96,8 @@ export const adminRoutes: RouteObject[] = [
           },
           { path: ADMIN_ROUTE_PATHS.FINANCE, Component: PlatformFinancePage },
           { path: ADMIN_ROUTE_PATHS.ORDERS, Component: AdminOrdersPage },
+          { path: ADMIN_ROUTE_PATHS.CAMPAIGNS, Component: ComingSoonPage },
+          { path: ADMIN_ROUTE_PATHS.COUPONS, Component: ComingSoonPage },
           {
             path: ADMIN_ROUTE_PATHS.PAYMENTS.ORDERS,
             element: <Navigate to={ADMIN_ROUTES.ORDERS} replace />,
