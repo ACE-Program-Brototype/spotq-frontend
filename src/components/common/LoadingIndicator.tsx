@@ -128,7 +128,7 @@ export function LoadingIndicator({
       role="status"
       aria-live="polite"
       className={cn(
-        "flex flex-col items-center justify-center gap-3 transition-all",
+        "flex flex-col items-center justify-center gap-3 transition-opacity",
         center && "py-12 w-full",
         className,
       )}

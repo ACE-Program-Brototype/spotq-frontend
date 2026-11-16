@@ -45,7 +45,7 @@ export function StaffJoinExistingCard({
           type="button"
           disabled={isSubmitting}
           onClick={onJoinExisting}
-          className="w-full h-11 rounded-xl bg-gradient-to-r from-[#e8631b] to-[#ff6b00] hover:from-[#d45614] hover:to-[#ea580c] text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+          className="w-full h-11 rounded-xl bg-gradient-to-r from-[#e8631b] to-[#ff6b00] hover:from-[#d45614] hover:to-[#ea580c] text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
         >
           {isSubmitting ? (
             <div className="flex items-center justify-center gap-2">

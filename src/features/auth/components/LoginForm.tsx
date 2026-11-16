@@ -84,7 +84,7 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
         size="lg"
         isLoading={isLoading}
         loadingText="Logging in..."
-        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
+        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-[background-color,transform] font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
       >
         <span>Login</span>
         <span className="text-lg leading-none">→</span>

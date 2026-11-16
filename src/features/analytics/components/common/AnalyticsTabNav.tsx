@@ -46,7 +46,7 @@ export function AnalyticsTabNav({ className }: AnalyticsTabNavProps) {
             end={tab.end}
             className={({ isActive }) =>
               cn(
-                "inline-flex items-center justify-center sm:justify-start gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all",
+                "inline-flex items-center justify-center sm:justify-start gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors",
                 isActive
                   ? "bg-white text-[#9a3412] shadow-2xs border border-[#eddcd4]"
                   : "text-neutral-600 hover:text-neutral-900 hover:bg-white/60",

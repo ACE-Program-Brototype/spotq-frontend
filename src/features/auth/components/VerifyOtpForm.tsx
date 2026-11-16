@@ -70,27 +70,27 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
               <InputOTPGroup className="w-full justify-between gap-2 sm:gap-3">
                 <InputOTPSlot
                   index={0}
-                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-all data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
+                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-colors data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
                 />
                 <InputOTPSlot
                   index={1}
-                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-all data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
+                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-colors data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
                 />
                 <InputOTPSlot
                   index={2}
-                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-all data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
+                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-colors data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
                 />
                 <InputOTPSlot
                   index={3}
-                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-all data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
+                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-colors data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
                 />
                 <InputOTPSlot
                   index={4}
-                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-all data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
+                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-colors data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
                 />
                 <InputOTPSlot
                   index={5}
-                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-all data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
+                  className="h-14 w-12 sm:w-14 rounded-2xl bg-spotq-cream border border-spotq-border text-2xl font-bold text-gray-900 transition-colors data-[active=true]:border-spotq-orange data-[active=true]:ring-2 data-[active=true]:ring-spotq-orange/20 shadow-none"
                 />
               </InputOTPGroup>
             </InputOTP>
@@ -124,7 +124,7 @@ export function VerifyOtpForm({ initialEmail }: VerifyOtpFormProps) {
         type="submit"
         size="lg"
         disabled={isVerifying}
-        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
+        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-[background-color,transform] font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
       >
         {isVerifying ? (
           <>

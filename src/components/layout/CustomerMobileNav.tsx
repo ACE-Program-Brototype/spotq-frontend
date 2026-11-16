@@ -50,7 +50,7 @@ export function CustomerMobileNav({
             key={tab.label}
             to={tab.href}
             className={cn(
-              "relative flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-all",
+              "relative flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-colors",
               isActive
                 ? "text-[#ff6b00] font-bold"
                 : "text-neutral-500 hover:text-neutral-800 font-medium",

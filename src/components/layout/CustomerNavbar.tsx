@@ -73,7 +73,7 @@ export function CustomerNavbar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 w-full max-w-full border-b border-neutral-200/80 bg-white/95 backdrop-blur shadow-2xs box-border transition-all",
+        "sticky top-0 z-40 w-full max-w-full border-b border-neutral-200/80 bg-white/95 backdrop-blur shadow-2xs box-border transition-colors",
         className,
       )}
       {...props}
@@ -96,7 +96,7 @@ export function CustomerNavbar({
                 onChange={handleSearchChange}
                 onKeyDown={handleSearchKeyDown}
                 placeholder="Search for your favorite food or restaurant..."
-                className="h-10 w-full rounded-full border border-neutral-200 bg-neutral-100/70 pl-11 pr-4 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-all focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
+                className="h-10 w-full rounded-full border border-neutral-200 bg-neutral-100/70 pl-11 pr-4 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-colors focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
               />
             </div>
           </form>

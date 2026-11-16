@@ -123,7 +123,7 @@ export const ORDER_STATUS_CHART_STYLES = {
     "flex size-full flex-col items-center justify-center rounded-full border-2 border-dashed border-neutral-300 bg-[#faf7f5] p-4 text-center",
   LEGEND_CONTAINER: "md:col-span-7 flex flex-col gap-2 max-h-[290px] overflow-y-auto pr-1",
   LEGEND_ROW_BASE:
-    "flex items-center justify-between p-2.5 rounded-xl border transition-all duration-200 cursor-pointer",
+    "flex items-center justify-between p-2.5 rounded-xl border transition-colors duration-200 cursor-pointer",
   LEGEND_ROW_ACTIVE: "border-[#9a3412] bg-[#fef3ec]/50 shadow-xs",
   LEGEND_ROW_INACTIVE: "border-[#eddcd4]/70 bg-[#faf7f5]/70 hover:bg-[#faf7f5]",
   LEGEND_AMOUNT_COMPLETED: "text-xs font-bold text-emerald-700",

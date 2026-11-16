@@ -22,7 +22,7 @@ export const RegisterHeroPanel = () => {
           </p>
         </div>
 
-        <div className="w-full aspect-[4/3] rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl relative group/card transition-all duration-300 hover:scale-[1.02]">
+        <div className="w-full aspect-[4/3] rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl relative group/card transition-transform duration-300 hover:scale-[1.02]">
           <div className="size-24 rounded-full bg-white/20 flex items-center justify-center border border-white/30 animate-pulse">
             <UserPlus className="size-12 text-white" />
           </div>

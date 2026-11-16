@@ -17,7 +17,7 @@ export const AuthHeroPanel = ({
   const renderIconGraphic = () => {
     if (iconType === "reset-lock") {
       return (
-        <div className="size-24 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-xl relative group/card transition-all duration-300 hover:scale-105">
+        <div className="size-24 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-xl relative group/card transition-transform duration-300 hover:scale-105">
           <div className="relative flex items-center justify-center">
             <RotateCcw className="size-12 text-white stroke-[2.5]" />
             <Lock className="size-4 text-white absolute" />
@@ -28,7 +28,7 @@ export const AuthHeroPanel = ({
 
     if (iconType === "shield-lock") {
       return (
-        <div className="w-full aspect-[4/3] rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl relative group/card transition-all duration-300 hover:scale-[1.02]">
+        <div className="w-full aspect-[4/3] rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl relative group/card transition-transform duration-300 hover:scale-[1.02]">
           <div className="relative flex items-center justify-center size-24 rounded-2xl bg-white/15 border border-white/25 shadow-inner">
             <Shield className="size-14 text-white fill-white/20 stroke-[1.5]" />
             <Lock className="size-6 text-white absolute mt-1" />
@@ -38,7 +38,7 @@ export const AuthHeroPanel = ({
     }
 
     return (
-      <div className="w-full aspect-[4/3] rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl relative group/card transition-all duration-300 hover:scale-[1.02]">
+      <div className="w-full aspect-[4/3] rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl relative group/card transition-transform duration-300 hover:scale-[1.02]">
         <div className="size-24 rounded-full bg-white/20 flex items-center justify-center border border-white/30 animate-pulse">
           <User className="size-12 text-white" />
         </div>

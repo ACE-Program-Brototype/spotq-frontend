@@ -32,7 +32,7 @@ export function AnalyticsMetricCard({
   return (
     <div
       className={cn(
-        "flex flex-col justify-between rounded-xl sm:rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-2xs transition-all hover:shadow-xs",
+        "flex flex-col justify-between rounded-xl sm:rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-2xs transition-shadow hover:shadow-xs",
         className,
       )}
     >

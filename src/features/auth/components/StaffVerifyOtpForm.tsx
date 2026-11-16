@@ -77,7 +77,7 @@ export function StaffVerifyOtpForm({ initialEmail }: StaffVerifyOtpFormProps) {
                   <InputOTPSlot
                     key={index}
                     index={index}
-                    className="h-12 w-11 sm:h-13 sm:w-12 rounded-lg border border-gray-300 bg-white text-lg font-semibold text-gray-900 shadow-none transition-all data-[active=true]:border-[#9E460E] data-[active=true]:ring-2 data-[active=true]:ring-[#9E460E]/20"
+                    className="h-12 w-11 sm:h-13 sm:w-12 rounded-lg border border-gray-300 bg-white text-lg font-semibold text-gray-900 shadow-none transition-colors data-[active=true]:border-[#9E460E] data-[active=true]:ring-2 data-[active=true]:ring-[#9E460E]/20"
                   />
                 ))}
               </InputOTPGroup>

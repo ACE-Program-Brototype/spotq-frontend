@@ -43,7 +43,7 @@ export function InputOTPSlot({
       data-slot="input-otp-slot"
       data-active={slot?.isActive}
       className={cn(
-        "relative flex h-12 w-10 sm:w-12 items-center justify-center border-b-2 border-border/80 bg-transparent text-xl font-bold text-foreground transition-all",
+        "relative flex h-12 w-10 sm:w-12 items-center justify-center border-b-2 border-border/80 bg-transparent text-xl font-bold text-foreground transition-colors",
         "data-[active=true]:border-foreground data-[active=true]:ring-1 data-[active=true]:ring-ring/20",
         className,
       )}

@@ -41,7 +41,7 @@ export function RestaurantAdminNavbar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 flex h-16 w-full max-w-full items-center justify-between border-b border-[#f3e6de] bg-[#fffcf9] px-4 sm:px-6 lg:px-8 shadow-2xs box-border transition-all",
+        "sticky top-0 z-20 flex h-16 w-full max-w-full items-center justify-between border-b border-[#f3e6de] bg-[#fffcf9] px-4 sm:px-6 lg:px-8 shadow-2xs box-border transition-colors",
         className,
       )}
       {...props}
@@ -83,7 +83,7 @@ export function RestaurantAdminNavbar({
             value={searchValue}
             onChange={handleSearchChange}
             placeholder="Search orders, menu, customers..."
-            className="h-9 w-full rounded-full border border-[#f0ded4] bg-[#fcf5f0]/80 pl-9 pr-4 text-xs text-neutral-800 placeholder:text-neutral-400 focus:border-[#e8631b] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#e8631b]/30 transition-all"
+            className="h-9 w-full rounded-full border border-[#f0ded4] bg-[#fcf5f0]/80 pl-9 pr-4 text-xs text-neutral-800 placeholder:text-neutral-400 focus:border-[#e8631b] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#e8631b]/30 transition-colors"
           />
         </div>
       </div>

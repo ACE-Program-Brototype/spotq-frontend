@@ -92,7 +92,7 @@ export default function StaffLoginPage() {
                               setSelectedRestaurantId(restId);
                             }
                           }}
-                          className={`w-full flex items-center justify-between p-3.5 rounded-xl border transition-all text-left ${
+                          className={`w-full flex items-center justify-between p-3.5 rounded-xl border transition-colors text-left ${
                             isInactive
                               ? "border-[#eddcd4]/60 bg-neutral-50/70 opacity-60 cursor-not-allowed"
                               : isSelected
@@ -147,7 +147,7 @@ export default function StaffLoginPage() {
                     !selectedRestaurantId || isSelecting || selectionData.restaurants.length === 0
                   }
                   onClick={() => handleSelectRestaurant(selectedRestaurantId)}
-                  className="h-11 w-full rounded-md bg-[#b84b00] text-sm font-semibold text-white hover:bg-[#9d3f00] focus-visible:ring-2 focus-visible:ring-[#b84b00]/30 active:translate-y-px transition-all cursor-pointer"
+                  className="h-11 w-full rounded-md bg-[#b84b00] text-sm font-semibold text-white hover:bg-[#9d3f00] focus-visible:ring-2 focus-visible:ring-[#b84b00]/30 active:translate-y-px transition-[background-color,transform] cursor-pointer"
                 >
                   {isSelecting ? (
                     <>

@@ -60,7 +60,7 @@ export function StaffSidebar({
                 to={fullHref}
                 onClick={onNavigate}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all shadow-2xs",
+                  "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors shadow-2xs",
                   isActive
                     ? "bg-[#fed7aa]/80 text-[#9a3412] font-bold shadow-xs"
                     : "bg-transparent text-neutral-600 hover:bg-[#eddcd4]/50 hover:text-neutral-900",
@@ -95,7 +95,7 @@ export function StaffSidebar({
             <Button
               variant="default"
               disabled={isLoading}
-              className="mt-2 w-full bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold shadow-sm transition-all rounded-xl h-10"
+              className="mt-2 w-full bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold shadow-sm transition-colors rounded-xl h-10"
             >
               <LogOut className="size-4 mr-2" />
               Clock Out
@@ -140,7 +140,7 @@ export function StaffMobileNav({
             key={item.mobileLabel}
             to={fullHref}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-all",
+              "flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-colors",
               isActive ? "text-[#9a3412] font-bold" : "text-neutral-500 hover:text-neutral-800",
             )}
           >

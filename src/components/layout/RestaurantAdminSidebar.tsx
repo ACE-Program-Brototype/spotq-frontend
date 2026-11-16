@@ -110,7 +110,7 @@ export function RestaurantAdminSidebar({
                     type="button"
                     onClick={() => toggleSection(item.title)}
                     className={cn(
-                      "relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-all overflow-hidden",
+                      "relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors overflow-hidden",
                       isParentActive
                         ? "bg-[#fef3ec] text-[#9a3412]"
                         : "text-neutral-700 hover:bg-[#faf0e8]/60 hover:text-neutral-900",
@@ -190,7 +190,7 @@ export function RestaurantAdminSidebar({
                 to={item.href ?? "#"}
                 onClick={onNavigate}
                 className={cn(
-                  "relative flex items-center rounded-xl px-3 py-2.5 text-xs font-semibold transition-all overflow-hidden",
+                  "relative flex items-center rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors overflow-hidden",
                   isActive
                     ? "bg-[#fef3ec] text-[#9a3412]"
                     : "text-neutral-700 hover:bg-[#faf0e8]/60 hover:text-neutral-900",

@@ -139,7 +139,7 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
                     type="button"
                     onClick={() => toggleSection(item.title)}
                     className={cn(
-                      "flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all",
+                      "flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors",
                       isChildActive
                         ? "text-[#1e3a5f] font-semibold"
                         : "text-slate-600 hover:bg-slate-200/60 hover:text-slate-900",
@@ -210,7 +210,7 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
                 to={item.href ?? "#"}
                 onClick={onNavigate}
                 className={cn(
-                  "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-all shadow-xs",
+                  "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-colors shadow-xs",
                   isActive
                     ? "bg-[#1e3a5f] text-white font-semibold shadow-md"
                     : "bg-transparent text-slate-600 hover:bg-slate-200/60 hover:text-slate-900 shadow-none",

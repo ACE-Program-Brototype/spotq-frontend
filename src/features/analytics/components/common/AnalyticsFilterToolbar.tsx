@@ -68,7 +68,7 @@ export function AnalyticsFilterToolbar({
               type="button"
               onClick={() => onIntervalChange(periodValue)}
               className={cn(
-                "px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-center",
+                "px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors text-center",
                 isSelected
                   ? "bg-white text-[#9a3412] shadow-2xs border border-[#eddcd4]"
                   : "text-neutral-600 hover:text-neutral-900",

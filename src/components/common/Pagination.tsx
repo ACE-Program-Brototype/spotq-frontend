@@ -158,7 +158,7 @@ export function Pagination({
               aria-current={isActive ? "page" : undefined}
               aria-label={`Page ${p}`}
               className={cn(
-                "flex size-8 items-center justify-center rounded-md text-xs font-medium transition-all",
+                "flex size-8 items-center justify-center rounded-md text-xs font-medium transition-colors",
                 isActive
                   ? activeStyles
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
