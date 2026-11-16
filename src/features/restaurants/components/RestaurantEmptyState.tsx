@@ -5,12 +5,21 @@ import { RESTAURANT_MESSAGES } from "@/features/restaurants/constants/restaurant
 export interface RestaurantEmptyStateProps {
   isFiltered?: boolean;
   onClearFilters?: () => void;
+  title?: string;
+  description?: string;
 }
 
 export function RestaurantEmptyState({
   isFiltered = false,
   onClearFilters,
+  title,
+  description,
 }: RestaurantEmptyStateProps) {
+  const displayTitle = title ?? RESTAURANT_MESSAGES.EMPTY_TITLE;
+  const displayDescription =
+    description ??
+    (isFiltered ? RESTAURANT_MESSAGES.EMPTY_DESCRIPTION : RESTAURANT_MESSAGES.EMPTY_DEFAULT);
+
   return (
     <div
       role="status"
@@ -25,10 +34,10 @@ export function RestaurantEmptyState({
         )}
       </div>
 
-      <h3 className="text-base font-bold text-slate-900">{RESTAURANT_MESSAGES.EMPTY_TITLE}</h3>
+      <h3 className="text-base font-bold text-slate-900">{displayTitle}</h3>
 
       <p className="mt-1 text-xs text-slate-500 max-w-sm">
-        {isFiltered ? RESTAURANT_MESSAGES.EMPTY_DESCRIPTION : RESTAURANT_MESSAGES.EMPTY_DEFAULT}
+        {displayDescription}
       </p>
 
       {isFiltered && onClearFilters && (

@@ -118,7 +118,16 @@ export function AdminRestaurantApplicationsPage() {
               </div>
             </div>
           ) : applications.length === 0 ? (
-            <RestaurantEmptyState isFiltered={isFiltered} onClearFilters={resetFilters} />
+            <RestaurantEmptyState
+              isFiltered={isFiltered}
+              onClearFilters={resetFilters}
+              title={APPLICATION_MESSAGES.EMPTY_TITLE}
+              description={
+                isFiltered
+                  ? APPLICATION_MESSAGES.EMPTY_DESCRIPTION
+                  : APPLICATION_MESSAGES.EMPTY_DEFAULT
+              }
+            />
           ) : (
             <RestaurantApplicationTable
               applications={applications}
