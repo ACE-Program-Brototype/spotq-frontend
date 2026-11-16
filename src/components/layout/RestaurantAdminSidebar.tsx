@@ -110,14 +110,14 @@ export function RestaurantAdminSidebar({
                     type="button"
                     onClick={() => toggleSection(item.title)}
                     className={cn(
-                      "relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-all",
+                      "relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-all overflow-hidden",
                       isParentActive
                         ? "bg-[#fef3ec] text-[#9a3412]"
                         : "text-neutral-700 hover:bg-[#faf0e8]/60 hover:text-neutral-900",
                     )}
                   >
                     {isParentActive && (
-                      <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#9a3412]" />
+                      <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#9a3412]" />
                     )}
 
                     <div className="flex items-center gap-2.5 pl-1.5">
@@ -181,7 +181,7 @@ export function RestaurantAdminSidebar({
 
             const isActive =
               location.pathname === item.href ||
-              (item.href?.endsWith("/dashboard") &&
+              (item.href?.endsWith(RESTAURANT_ADMIN_NAV_DEFAULTS.DASHBOARD_SUFFIX) &&
                 (location.pathname === basePath || location.pathname === `${basePath}/`));
 
             return (
@@ -190,22 +190,24 @@ export function RestaurantAdminSidebar({
                 to={item.href ?? "#"}
                 onClick={onNavigate}
                 className={cn(
-                  "relative flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all",
+                  "relative flex items-center rounded-xl px-3 py-2.5 text-xs font-semibold transition-all overflow-hidden",
                   isActive
                     ? "bg-[#fef3ec] text-[#9a3412]"
                     : "text-neutral-700 hover:bg-[#faf0e8]/60 hover:text-neutral-900",
                 )}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#9a3412]" />
+                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#9a3412]" />
                 )}
-                <Icon
-                  className={cn(
-                    "size-4 shrink-0 pl-0.5",
-                    isActive ? "text-[#9a3412]" : "text-neutral-600",
-                  )}
-                />
-                <span>{item.title}</span>
+                <div className="flex items-center gap-2.5 pl-1.5">
+                  <Icon
+                    className={cn(
+                      "size-4 shrink-0",
+                      isActive ? "text-[#9a3412]" : "text-neutral-600",
+                    )}
+                  />
+                  <span>{item.title}</span>
+                </div>
               </Link>
             );
           })}
