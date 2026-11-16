@@ -61,14 +61,14 @@ export function SlowMovingTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-[#eddcd4]/60 text-neutral-800">
-            {items.map((item, index) => {
+            {items.map((item) => {
               const isZeroSales =
                 item.classification === PRODUCT_CLASSIFICATIONS.ZERO_SALES ||
                 item.quantitySold === 0;
 
               return (
                 <tr
-                  key={item.menuItemId || `${item.name}-${index}`}
+                  key={item.menuItemId}
                   className="hover:bg-[#faf7f5]/80 transition-colors"
                 >
                   <td className="py-3 px-3.5 font-bold text-neutral-900">{item.name}</td>

@@ -5,7 +5,8 @@
 
 import { Layers, Plus, RefreshCw } from "lucide-react";
 import { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button.variants";
 import { cn } from "@/lib/utils/cn";
 import { CategoryCard } from "@/features/menu/components/CategoryCard";
 import { CategoryListSkeleton } from "@/features/menu/components/CategoryListSkeleton";

@@ -168,7 +168,7 @@ export default function ImageUploadSection({
         <div className="mt-4 space-y-2">
           {images.map((img, index) => (
             <div
-              key={img.objectKey || index}
+              key={img.objectKey || `${img.fileName}-${img.displayOrder}`}
               className="flex items-center justify-between rounded-xl border border-neutral-200 bg-white px-3 py-2 text-xs"
             >
               <div className="flex items-center gap-2.5 truncate">

@@ -5,7 +5,7 @@
 
 import type { VariantProps } from "class-variance-authority";
 import type { HTMLAttributes, ReactNode } from "react";
-import type { buttonVariants } from "@/components/ui/button";
+import type { buttonVariants } from "@/components/ui/button.variants";
 
 export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {
   currentPage: number;

@@ -1,7 +1,7 @@
 import { CheckCircle2, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button.variants";
 
 export interface SeatedStatusCardProps {
   restaurantId: string;

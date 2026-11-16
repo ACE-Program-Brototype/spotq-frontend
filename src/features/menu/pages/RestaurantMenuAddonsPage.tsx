@@ -5,7 +5,8 @@
 
 import { Plus, RefreshCw, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button.variants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { AddonCard } from "@/features/menu/components/addon/AddonCard";
 import { AddonListSkeleton } from "@/features/menu/components/addon/AddonListSkeleton";

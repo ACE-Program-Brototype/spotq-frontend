@@ -28,10 +28,9 @@ export function OrderCustomerItemList({ items = [], className = "" }: OrderCusto
       </div>
 
       <div className="divide-y divide-neutral-100 p-4 sm:p-5">
-        {items.map((item, index) => (
+        {items.map((item) => (
           <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: order item row list is static and requires index for duplicate line items
-            key={`${item.menu_item_id}-${item.variant?.variant_id ?? "default"}-${index}`}
+            key={`${item.menu_item_id}-${item.variant?.variant_id ?? "base"}-${(item.addons ?? []).map((a) => a.addon_id).sort().join("-")}`}
             data-testid="order-item-row"
             className="py-3.5 first:pt-1 last:pb-1 flex items-start justify-between gap-4"
           >

@@ -114,9 +114,10 @@ describe("restaurantRoutes structure and protection", () => {
           <Routes>
             <Route path="/restaurant">
               <Route path="login" element={<div>Restaurant Email Verification</div>} />
-              {restaurantRoutes.map((route, i) => {
+              {restaurantRoutes.map((route) => {
                 const Layout = route.Component as ComponentType | undefined;
-                const groupKey = route.path ?? `group-${i}`;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
 
                 if (!route.children) {
                   return Layout ? (
@@ -126,9 +127,12 @@ describe("restaurantRoutes structure and protection", () => {
 
                 return Layout ? (
                   <Route key={groupKey} element={<Layout />}>
-                    {route.children?.map((child, j) => {
+                    {route.children?.map((child) => {
                       const ChildComp = child.Component as ComponentType | undefined;
-                      const childKey = child.path ?? `child-${j}`;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
                       if (child.children) {
                         return (
                           <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
@@ -172,9 +176,10 @@ describe("restaurantRoutes structure and protection", () => {
           <Routes>
             <Route path="/restaurant">
               <Route path="login" element={<div>Restaurant Email Verification</div>} />
-              {restaurantRoutes.map((route, i) => {
+              {restaurantRoutes.map((route) => {
                 const Layout = route.Component as ComponentType | undefined;
-                const groupKey = route.path ?? `group-${i}`;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
 
                 if (!route.children) {
                   return Layout ? (
@@ -184,9 +189,12 @@ describe("restaurantRoutes structure and protection", () => {
 
                 return Layout ? (
                   <Route key={groupKey} element={<Layout />}>
-                    {route.children?.map((child, j) => {
+                    {route.children?.map((child) => {
                       const ChildComp = child.Component as ComponentType | undefined;
-                      const childKey = child.path ?? `child-${j}`;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
                       if (child.children) {
                         return (
                           <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
@@ -238,9 +246,10 @@ describe("restaurantRoutes structure and protection", () => {
           <Routes>
             <Route path="/restaurant">
               <Route path="login" element={<div>Restaurant Email Verification</div>} />
-              {restaurantRoutes.map((route, i) => {
+              {restaurantRoutes.map((route) => {
                 const Layout = route.Component as ComponentType | undefined;
-                const groupKey = route.path ?? `group-${i}`;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
 
                 if (!route.children) {
                   return Layout ? (
@@ -250,9 +259,12 @@ describe("restaurantRoutes structure and protection", () => {
 
                 return Layout ? (
                   <Route key={groupKey} element={<Layout />}>
-                    {route.children?.map((child, j) => {
+                    {route.children?.map((child) => {
                       const ChildComp = child.Component as ComponentType | undefined;
-                      const childKey = child.path ?? `child-${j}`;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
                       if (child.children) {
                         return (
                           <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
@@ -304,9 +316,10 @@ describe("restaurantRoutes structure and protection", () => {
           <Routes>
             <Route path="/restaurant">
               <Route path="login" element={<div>Restaurant Email Verification</div>} />
-              {restaurantRoutes.map((route, i) => {
+              {restaurantRoutes.map((route) => {
                 const Layout = route.Component as ComponentType | undefined;
-                const groupKey = route.path ?? `group-${i}`;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
 
                 if (!route.children) {
                   return Layout ? (
@@ -316,9 +329,12 @@ describe("restaurantRoutes structure and protection", () => {
 
                 return Layout ? (
                   <Route key={groupKey} element={<Layout />}>
-                    {route.children?.map((child, j) => {
+                    {route.children?.map((child) => {
                       const ChildComp = child.Component as ComponentType | undefined;
-                      const childKey = child.path ?? `child-${j}`;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
                       if (child.children) {
                         return (
                           <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>

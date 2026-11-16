@@ -28,7 +28,7 @@ export interface OrderCardProps {
   onSelect?: (order: OrderHistoryItem) => void;
 }
 
-export function getStatusBadge(status?: OrderStatus | string) {
+function OrderStatusBadge({ status }: { status?: OrderStatus | string }) {
   const normalized = (status ?? ORDER_STATUS.PLACED).toUpperCase();
 
   switch (normalized) {
@@ -166,7 +166,7 @@ export function OrderCard({ order, className, onSelect }: OrderCardProps) {
           </div>
 
           <div className="self-start sm:self-auto shrink-0 flex items-center gap-2">
-            {getStatusBadge(order.status)}
+            <OrderStatusBadge status={order.status} />
             <CancelOrderTriggerButton
               orderId={order.order_id}
               orderNumber={order.order_number}

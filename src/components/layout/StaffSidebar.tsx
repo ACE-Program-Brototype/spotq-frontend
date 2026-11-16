@@ -20,7 +20,6 @@ import { cn } from "@/lib/utils/cn";
 import type { StaffSidebarProps } from "@/components/layout/types";
 
 export type { StaffSidebarProps };
-export { isStaffNavItemActive };
 
 export function StaffSidebar({
   className,

@@ -5,11 +5,8 @@ import type React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { CANCEL_ORDER_MESSAGES } from "@/features/orders/constants/cancel-order.constants";
 import { ORDER_STATUS } from "@/features/orders/constants/orders.constants";
-import {
-  CancelOrderTriggerButton,
-  getDisabledTooltip,
-  isOrderCancellable,
-} from "./CancelOrderTriggerButton";
+import { CancelOrderTriggerButton } from "./CancelOrderTriggerButton";
+import { getDisabledTooltip, isOrderCancellable } from "./cancel-order.utils";
 
 jest.mock("@/features/orders/services/order.service");
 

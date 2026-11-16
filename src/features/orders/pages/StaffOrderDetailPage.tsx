@@ -131,7 +131,10 @@ export default function StaffOrderDetailPage() {
             <div className="space-y-3.5">
               {order.items.map((item, index) => (
                 <StaffOrderItemCard
-                  key={item.id ?? `${order.id}-item-${item.menuItemId}-${index}`}
+                  key={
+                    item.id ??
+                    `${order.id}-item-${item.menuItemId}-${item.variant?.id ?? "base"}-${(item.addons ?? []).map((a) => a.id).sort().join("-")}`
+                  }
                   item={item}
                   itemNumber={index + 1}
                 />
