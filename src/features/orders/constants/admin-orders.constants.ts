@@ -103,6 +103,7 @@ export const ADMIN_ORDERS_MESSAGES = {
   TRY_AGAIN: "Try again",
   ORDER_DETAILS_TITLE: "Order Breakdown",
   COPIED_TO_CLIPBOARD: "Copied to clipboard",
+  COPY_FAILED: "Failed to copy to clipboard",
 } as const;
 
 export const ADMIN_ORDERS_METRICS_LABELS = {
@@ -126,6 +127,49 @@ export const ADMIN_ORDERS_FILTER_LABELS = {
   MOBILE_PAYMENT_LABEL: "Payment Status",
   MOBILE_STATUS_ARIA: "Filter by order status",
   MOBILE_PAYMENT_ARIA: "Filter by payment status",
+} as const;
+
+export const ADMIN_ORDERS_TABLE_COLUMNS = {
+  ORDER: "Order #",
+  RESTAURANT: "Restaurant",
+  STATUS: "Order Status",
+  PAYMENT: "Payment",
+  AMOUNT: "Amount",
+  DATE: "Date",
+  ACTION: "Action",
+} as const;
+
+export const ADMIN_ORDERS_SORT_BY = {
+  CREATED_AT: "createdAt",
+  UPDATED_AT: "updatedAt",
+  TOTAL_AMOUNT: "totalAmount",
+  STATUS: "status",
+} as const satisfies Record<string, AdminOrdersSortBy>;
+
+export const ADMIN_ORDERS_SORT_ORDER = {
+  ASC: "asc",
+  DESC: "desc",
+} as const satisfies Record<string, AdminOrdersSortOrder>;
+
+export const ARIA_SORT_VALUES = {
+  ASCENDING: "ascending",
+  DESCENDING: "descending",
+  NONE: "none",
+} as const;
+
+export const ADMIN_ORDERS_TABLE_LABELS = {
+  SORT_BY_STATUS: "Sort by Status",
+  SORT_BY_TOTAL_AMOUNT: "Sort by Total Amount",
+  SORT_BY_DATE: "Sort by Date Created",
+  COPY_ORDER_NUMBER: "Copy order number",
+  PLATFORM_FEE_ASSESSED: "Platform fee assessed",
+  VIEW_ORDER_BREAKDOWN: "View order breakdown",
+  VIEW_DETAILS: "View Details",
+  FEE_PREFIX: "Fee:",
+  TOTAL: "Total",
+  PLATFORM_FEE: "Platform Fee",
+  DEFAULT_RESTAURANT_NAME: "SpotQ Restaurant",
+  VIEW_ORDER_ARIA: (orderNumber: string) => `View order ${orderNumber}`,
 } as const;
 
 

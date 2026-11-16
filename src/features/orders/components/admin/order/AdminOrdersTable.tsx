@@ -4,10 +4,19 @@
  * responsive mobile view, and drawer/modal trigger.
  */
 
-import { ArrowDown, ArrowUp, ArrowUpDown, Check, Copy, Eye, User } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Check, Copy, Eye } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
+import {
+  ADMIN_ORDERS_MESSAGES,
+  ADMIN_ORDERS_SORT_BY,
+  ADMIN_ORDERS_SORT_ORDER,
+  ADMIN_ORDERS_TABLE_COLUMNS,
+  ADMIN_ORDERS_TABLE_LABELS,
+  ARIA_SORT_VALUES,
+} from "@/features/orders/constants/admin-orders.constants";
 import type {
   AdminOrderListItem,
   AdminOrdersSortBy,
@@ -61,8 +70,8 @@ export function AdminOrdersTable({
         setCopiedId(id);
         setTimeout(() => setCopiedId(null), 2000);
       }
-    } catch (err) {
-      console.error("Failed to copy text to clipboard:", err);
+    } catch {
+      toast.error(ADMIN_ORDERS_MESSAGES.COPY_FAILED);
     }
   };
 
@@ -70,7 +79,7 @@ export function AdminOrdersTable({
     if (sortBy !== field) {
       return <ArrowUpDown className="size-3 text-slate-400 group-hover:text-slate-600" />;
     }
-    return sortOrder === "asc" ? (
+    return sortOrder === ADMIN_ORDERS_SORT_ORDER.ASC ? (
       <ArrowUp className="size-3 text-[#0052cc]" />
     ) : (
       <ArrowDown className="size-3 text-[#0052cc]" />
@@ -95,71 +104,70 @@ export function AdminOrdersTable({
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-slate-200/80 bg-slate-50/60 text-slate-500 uppercase tracking-wider font-semibold select-none">
-                <th className="py-3.5 px-4">Order #</th>
-                <th className="py-3.5 px-4">Restaurant</th>
-                <th className="py-3.5 px-4">Customer</th>
+                <th className="py-3.5 px-4">{ADMIN_ORDERS_TABLE_COLUMNS.ORDER}</th>
+                <th className="py-3.5 px-4">{ADMIN_ORDERS_TABLE_COLUMNS.RESTAURANT}</th>
                 <th
                   className="py-3.5 px-4"
                   aria-sort={
-                    sortBy === "status"
-                      ? sortOrder === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : "none"
+                    sortBy === ADMIN_ORDERS_SORT_BY.STATUS
+                      ? sortOrder === ADMIN_ORDERS_SORT_ORDER.ASC
+                        ? ARIA_SORT_VALUES.ASCENDING
+                        : ARIA_SORT_VALUES.DESCENDING
+                      : ARIA_SORT_VALUES.NONE
                   }
                 >
                   <button
                     type="button"
-                    onClick={() => onSortChange("status")}
+                    onClick={() => onSortChange(ADMIN_ORDERS_SORT_BY.STATUS)}
                     className="flex items-center gap-1.5 uppercase tracking-wider font-semibold hover:text-slate-800 transition-colors cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0052cc] rounded-xs"
-                    title="Sort by Status"
+                    title={ADMIN_ORDERS_TABLE_LABELS.SORT_BY_STATUS}
                   >
-                    <span>Order Status</span>
-                    {renderSortIcon("status")}
+                    <span>{ADMIN_ORDERS_TABLE_COLUMNS.STATUS}</span>
+                    {renderSortIcon(ADMIN_ORDERS_SORT_BY.STATUS)}
                   </button>
                 </th>
-                <th className="py-3.5 px-4">Payment</th>
+                <th className="py-3.5 px-4">{ADMIN_ORDERS_TABLE_COLUMNS.PAYMENT}</th>
                 <th
                   className="py-3.5 px-4"
                   aria-sort={
-                    sortBy === "totalAmount"
-                      ? sortOrder === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : "none"
+                    sortBy === ADMIN_ORDERS_SORT_BY.TOTAL_AMOUNT
+                      ? sortOrder === ADMIN_ORDERS_SORT_ORDER.ASC
+                        ? ARIA_SORT_VALUES.ASCENDING
+                        : ARIA_SORT_VALUES.DESCENDING
+                      : ARIA_SORT_VALUES.NONE
                   }
                 >
                   <button
                     type="button"
-                    onClick={() => onSortChange("totalAmount")}
+                    onClick={() => onSortChange(ADMIN_ORDERS_SORT_BY.TOTAL_AMOUNT)}
                     className="flex items-center gap-1.5 uppercase tracking-wider font-semibold hover:text-slate-800 transition-colors cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0052cc] rounded-xs"
-                    title="Sort by Total Amount"
+                    title={ADMIN_ORDERS_TABLE_LABELS.SORT_BY_TOTAL_AMOUNT}
                   >
-                    <span>Amount</span>
-                    {renderSortIcon("totalAmount")}
+                    <span>{ADMIN_ORDERS_TABLE_COLUMNS.AMOUNT}</span>
+                    {renderSortIcon(ADMIN_ORDERS_SORT_BY.TOTAL_AMOUNT)}
                   </button>
                 </th>
                 <th
                   className="py-3.5 px-4"
                   aria-sort={
-                    sortBy === "createdAt"
-                      ? sortOrder === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : "none"
+                    sortBy === ADMIN_ORDERS_SORT_BY.CREATED_AT
+                      ? sortOrder === ADMIN_ORDERS_SORT_ORDER.ASC
+                        ? ARIA_SORT_VALUES.ASCENDING
+                        : ARIA_SORT_VALUES.DESCENDING
+                      : ARIA_SORT_VALUES.NONE
                   }
                 >
                   <button
                     type="button"
-                    onClick={() => onSortChange("createdAt")}
+                    onClick={() => onSortChange(ADMIN_ORDERS_SORT_BY.CREATED_AT)}
                     className="flex items-center gap-1.5 uppercase tracking-wider font-semibold hover:text-slate-800 transition-colors cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0052cc] rounded-xs"
-                    title="Sort by Date Created"
+                    title={ADMIN_ORDERS_TABLE_LABELS.SORT_BY_DATE}
                   >
-                    <span>Date</span>
-                    {renderSortIcon("createdAt")}
+                    <span>{ADMIN_ORDERS_TABLE_COLUMNS.DATE}</span>
+                    {renderSortIcon(ADMIN_ORDERS_SORT_BY.CREATED_AT)}
                   </button>
                 </th>
-                <th className="py-3.5 px-4 text-right">Action</th>
+                <th className="py-3.5 px-4 text-right">{ADMIN_ORDERS_TABLE_COLUMNS.ACTION}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -183,7 +191,7 @@ export function AdminOrdersTable({
                             handleCopy(e, order.orderNumber, `orderNum-${order.orderId}`)
                           }
                           className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-600 p-0.5 rounded transition-opacity"
-                          title="Copy order number"
+                          title={ADMIN_ORDERS_TABLE_LABELS.COPY_ORDER_NUMBER}
                         >
                           {copiedId === `orderNum-${order.orderId}` ? (
                             <Check className="size-3 text-emerald-600" />
@@ -200,16 +208,8 @@ export function AdminOrdersTable({
                         className="font-semibold text-slate-900 truncate max-w-[180px]"
                         title={order.restaurantName ?? ""}
                       >
-                        {order.restaurantName || "SpotQ Restaurant"}
+                        {order.restaurantName || ADMIN_ORDERS_TABLE_LABELS.DEFAULT_RESTAURANT_NAME}
                       </p>
-                    </td>
-
-                    {/* Customer */}
-                    <td className="py-3.5 px-4">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700">
-                        <User className="size-3.5 text-slate-400" />
-                        <span>{order.customerId ? "Customer" : "Guest"}</span>
-                      </span>
                     </td>
 
                     {/* Order Status */}
@@ -229,9 +229,9 @@ export function AdminOrdersTable({
                       </span>
                       <span
                         className="text-[10px] text-slate-400 block"
-                        title="Platform fee assessed"
+                        title={ADMIN_ORDERS_TABLE_LABELS.PLATFORM_FEE_ASSESSED}
                       >
-                        Fee: {formatCurrency(order.platformFeeAssessed)}
+                        {ADMIN_ORDERS_TABLE_LABELS.FEE_PREFIX} {formatCurrency(order.platformFeeAssessed)}
                       </span>
                     </td>
 
@@ -251,8 +251,8 @@ export function AdminOrdersTable({
                           onOrderClick(order);
                         }}
                         className="rounded-lg text-slate-400 hover:text-[#0052cc] hover:bg-blue-50"
-                        title="View order breakdown"
-                        aria-label={`View order ${order.orderNumber}`}
+                        title={ADMIN_ORDERS_TABLE_LABELS.VIEW_ORDER_BREAKDOWN}
+                        aria-label={ADMIN_ORDERS_TABLE_LABELS.VIEW_ORDER_ARIA(order.orderNumber)}
                       >
                         <Eye className="size-4" />
                       </Button>
@@ -292,7 +292,7 @@ export function AdminOrdersTable({
                     #{order.orderNumber}
                   </span>
                   <p className="text-[11px] text-slate-500 font-medium">
-                    {order.restaurantName || "SpotQ Restaurant"}
+                    {order.restaurantName || ADMIN_ORDERS_TABLE_LABELS.DEFAULT_RESTAURANT_NAME}
                   </p>
                 </div>
                 <span className="text-xs text-slate-400">{formatDate(order.createdAt)}</span>
@@ -308,7 +308,7 @@ export function AdminOrdersTable({
               <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                    Total
+                    {ADMIN_ORDERS_TABLE_LABELS.TOTAL}
                   </span>
                   <span className="text-sm font-black text-slate-900">
                     {formatCurrency(order.totalAmount)}
@@ -317,7 +317,7 @@ export function AdminOrdersTable({
 
                 <div className="text-right">
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                    Platform Fee
+                    {ADMIN_ORDERS_TABLE_LABELS.PLATFORM_FEE}
                   </span>
                   <span className="font-bold text-[#0052cc]">
                     {formatCurrency(order.platformFeeAssessed)}
@@ -335,7 +335,7 @@ export function AdminOrdersTable({
                   className="rounded-xl border-slate-200 text-xs font-semibold gap-1.5 h-8 text-[#0052cc]"
                 >
                   <Eye className="size-3.5" />
-                  <span>View Details</span>
+                  <span>{ADMIN_ORDERS_TABLE_LABELS.VIEW_DETAILS}</span>
                 </Button>
               </div>
             </div>
