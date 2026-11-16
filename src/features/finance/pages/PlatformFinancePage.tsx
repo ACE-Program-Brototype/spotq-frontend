@@ -12,38 +12,17 @@ import {
   DEFAULT_FINANCE_DATE_PRESET,
   FINANCE_MESSAGES,
   FINANCE_PAGE_SIZE,
+  LEDGER_ENTRY_TYPE,
 } from "@/features/finance/constants/finance.constants";
 import { useFinanceLedger } from "@/features/finance/hooks/useFinanceLedger";
 import { useFinanceSummary } from "@/features/finance/hooks/useFinanceSummary";
 import { financeService } from "@/features/finance/services/finance.service";
 import { restaurantService } from "@/features/restaurants/services/restaurant.service";
 import type { DatePreset, LedgerEntryType, MasterLedgerEntry } from "@/features/finance/types/finance.types";
-import { getDateRange } from "@/features/finance/utils/finance.utils";
+import { getDateRange, getErrorMessage } from "@/features/finance/utils/finance.utils";
 import { formatDate, formatPaise, typeLabels, typeStyles } from "@/features/finance/utils/finance-display.utils";
 
 export type { DatePreset } from "@/features/finance/types/finance.types";
-
-function getErrorMessage(error: unknown, fallback = FINANCE_MESSAGES.ERROR): string {
-  if (!error) return "";
-  const raw =
-    error instanceof Error
-      ? error.message
-      : typeof error === "string"
-        ? error
-        : "";
-  if (!raw) return fallback;
-
-  // Mask database ORM / raw SQL crash messages leaked from development backend
-  const isTechnicalDatabaseLeak =
-    /prisma|queryraw|relation\s*["'].*["']\s*does not exist|syntax error|code:\s*['"]?[0-9a-z]+/i.test(
-      raw,
-    );
-
-  if (isTechnicalDatabaseLeak) {
-    return fallback;
-  }
-  return raw;
-}
 
 export default function PlatformFinancePage() {
   // Keep ledger filters and pagination together so filter changes can reset the page.
@@ -91,7 +70,7 @@ export default function PlatformFinancePage() {
     const map = new Map<string, string>();
     if (restaurantsQuery.data?.restaurants) {
       for (const r of restaurantsQuery.data.restaurants) {
-        map.set(r.id, r.name);
+        map.set(r.id, r.restaurant_name);
       }
     }
     return map;
@@ -191,14 +170,14 @@ export default function PlatformFinancePage() {
       header: "Amount",
       align: "right",
       cell: ({ row }) => {
-        const positive = row.type === "CUSTOMER_PAYMENT_INTAKE";
+        const positive = row.type === LEDGER_ENTRY_TYPE.CUSTOMER_PAYMENT_INTAKE;
         return (
           <span
             className={cn(
               "whitespace-nowrap font-mono font-bold tabular-nums",
               positive
                 ? "text-emerald-700"
-                : row.type === "REFUND_EXPENSE"
+                : row.type === LEDGER_ENTRY_TYPE.REFUND_EXPENSE
                   ? "text-rose-700"
                   : "text-purple-700",
             )}

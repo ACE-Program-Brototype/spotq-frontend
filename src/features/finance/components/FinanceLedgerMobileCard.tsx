@@ -3,6 +3,7 @@
  * Responsive card presentation of a master ledger entry for mobile viewports (< 640px).
  */
 
+import { LEDGER_ENTRY_TYPE } from "@/features/finance/constants/finance.constants";
 import type { LedgerEntryType, MasterLedgerEntry } from "@/features/finance/types/finance.types";
 import {
   formatDate,
@@ -23,7 +24,7 @@ export function FinanceLedgerMobileCard({
   restaurantName,
   onClick,
 }: FinanceLedgerMobileCardProps) {
-  const positive = entry.type === "CUSTOMER_PAYMENT_INTAKE";
+  const positive = entry.type === LEDGER_ENTRY_TYPE.CUSTOMER_PAYMENT_INTAKE;
 
   return (
     <div
@@ -63,7 +64,7 @@ export function FinanceLedgerMobileCard({
               "font-mono text-base font-bold tabular-nums whitespace-nowrap",
               positive
                 ? "text-emerald-700"
-                : entry.type === "REFUND_EXPENSE"
+                : entry.type === LEDGER_ENTRY_TYPE.REFUND_EXPENSE
                   ? "text-rose-700"
                   : "text-purple-700",
             )}
@@ -92,3 +93,4 @@ export function FinanceLedgerMobileCard({
     </div>
   );
 }
+

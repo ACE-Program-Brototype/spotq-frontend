@@ -4,8 +4,8 @@ import type { Column } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
 import { FINANCE_MESSAGES } from "@/features/finance/constants/finance.constants";
 import type { MasterLedgerEntry } from "@/features/finance/types/finance.types";
-import { FinanceLedgerMobileCard } from "./FinanceLedgerMobileCard";
-import { LedgerFilters, type LedgerFiltersProps } from "./LedgerFilters";
+import { FinanceLedgerMobileCard } from "@/features/finance/components/FinanceLedgerMobileCard";
+import { LedgerFilters, type LedgerFiltersProps } from "@/features/finance/components/LedgerFilters";
 
 interface FinanceLedgerProps {
   entries: MasterLedgerEntry[];

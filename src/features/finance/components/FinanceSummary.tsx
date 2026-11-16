@@ -4,7 +4,7 @@ import { FINANCE_MESSAGES } from "@/features/finance/constants/finance.constants
 import type { FinanceSummary as FinanceSummaryData } from "@/features/finance/types/finance.types";
 import { formatPaise } from "@/features/finance/utils/finance-display.utils";
 import { cn } from "@/lib/utils/cn";
-import { FinanceMetricCard } from "./FinanceMetricCard";
+import { FinanceMetricCard } from "@/features/finance/components/FinanceMetricCard";
 
 interface FinanceSummaryProps {
   summary: FinanceSummaryData | null;
