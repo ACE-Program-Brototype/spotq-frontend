@@ -24,10 +24,10 @@ import type {
 } from "@/features/orders/types/admin-orders.types";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate } from "@/lib/utils/date";
-import { AdminOrdersEmptyState } from "./AdminOrdersEmptyState";
-import { AdminOrdersSkeleton } from "./AdminOrdersSkeleton";
-import { AdminPaymentStatusBadge } from "./AdminPaymentStatusBadge";
-import { OrderStatusBadge } from "./OrderStatusBadge";
+import { AdminOrdersEmptyState } from "@/features/orders/components/admin/order/AdminOrdersEmptyState";
+import { AdminOrdersSkeleton } from "@/features/orders/components/admin/order/AdminOrdersSkeleton";
+import { AdminPaymentStatusBadge } from "@/features/orders/components/admin/order/AdminPaymentStatusBadge";
+import { OrderStatusBadge } from "@/features/orders/components/admin/order/OrderStatusBadge";
 
 interface AdminOrdersTableProps {
   orders: AdminOrderListItem[];

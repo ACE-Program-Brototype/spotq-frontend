@@ -6,12 +6,19 @@
 
 import { Check, Clock, Copy, CreditCard, Receipt, Store, User, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  ADMIN_ORDERS_MESSAGES,
+  ADMIN_ORDERS_TABLE_LABELS,
+  ADMIN_ORDER_COPY_FIELDS,
+  ADMIN_ORDER_DETAIL_LABELS,
+} from "@/features/orders/constants/admin-orders.constants";
 import type { AdminOrderListItem } from "@/features/orders/types/admin-orders.types";
+import { AdminPaymentStatusBadge } from "@/features/orders/components/admin/order/AdminPaymentStatusBadge";
+import { OrderStatusBadge } from "@/features/orders/components/admin/order/OrderStatusBadge";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate } from "@/lib/utils/date";
-import { AdminPaymentStatusBadge } from "./AdminPaymentStatusBadge";
-import { OrderStatusBadge } from "./OrderStatusBadge";
 
 interface AdminOrderDetailModalProps {
   order: AdminOrderListItem | null;
@@ -105,8 +112,8 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
         setCopiedField(field);
         setTimeout(() => setCopiedField(null), 2000);
       }
-    } catch (err) {
-      console.error("Failed to copy text to clipboard:", err);
+    } catch {
+      toast.error(ADMIN_ORDERS_MESSAGES.COPY_FAILED);
     }
   };
 
@@ -124,7 +131,7 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
         type="button"
         tabIndex={-1}
         aria-hidden="true"
-        aria-label="Close modal overlay"
+        aria-label={ADMIN_ORDER_DETAIL_LABELS.CLOSE_OVERLAY_ARIA}
         onClick={onClose}
         className="fixed inset-0 cursor-default"
       />
@@ -144,22 +151,22 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
             <div>
               <div className="flex items-center gap-2">
                 <h2 id="order-details-title" className="text-base font-bold text-slate-900">
-                  Order #{order.orderNumber}
+                  {ADMIN_ORDER_DETAIL_LABELS.TITLE_PREFIX}{order.orderNumber}
                 </h2>
                 <button
                   type="button"
-                  onClick={() => handleCopy(order.orderNumber, "orderNumber")}
-                  className="text-slate-400 hover:text-slate-600 transition-colors p-0.5"
-                  title="Copy order number"
+                  onClick={() => handleCopy(order.orderNumber, ADMIN_ORDER_COPY_FIELDS.ORDER_NUMBER)}
+                  className="text-slate-400 hover:text-slate-600 transition-colors p-0.5 cursor-pointer rounded-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0052cc]"
+                  title={ADMIN_ORDERS_TABLE_LABELS.COPY_ORDER_NUMBER}
+                  aria-label={ADMIN_ORDERS_TABLE_LABELS.COPY_ORDER_NUMBER}
                 >
-                  {copiedField === "orderNumber" ? (
+                  {copiedField === ADMIN_ORDER_COPY_FIELDS.ORDER_NUMBER ? (
                     <Check className="size-3.5 text-emerald-600" />
                   ) : (
                     <Copy className="size-3.5" />
                   )}
                 </button>
               </div>
-              <p className="text-xs text-slate-500 font-mono truncate max-w-xs">{order.orderId}</p>
             </div>
           </div>
 
@@ -167,7 +174,7 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
             variant="ghost"
             size="icon-sm"
             onClick={onClose}
-            aria-label="Close dialog"
+            aria-label={ADMIN_ORDER_DETAIL_LABELS.CLOSE_DIALOG_ARIA}
             className="rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100"
           >
             <X className="size-5" />
@@ -180,14 +187,14 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
           <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200/60">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                Order Lifecycle
+                {ADMIN_ORDER_DETAIL_LABELS.ORDER_LIFECYCLE}
               </span>
               <OrderStatusBadge status={order.status} size="md" />
             </div>
 
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                Payment Status
+                {ADMIN_ORDER_DETAIL_LABELS.PAYMENT_STATUS}
               </span>
               <AdminPaymentStatusBadge status={order.paymentStatus} size="md" />
             </div>
@@ -199,13 +206,10 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
             <div className="rounded-xl border border-slate-200/80 p-4 bg-white shadow-2xs space-y-1.5">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <Store className="size-3.5 text-slate-400" />
-                <span>Restaurant</span>
+                <span>{ADMIN_ORDER_DETAIL_LABELS.RESTAURANT}</span>
               </div>
               <p className="text-sm font-bold text-slate-900">
-                {order.restaurantName || "SpotQ Restaurant"}
-              </p>
-              <p className="text-xs text-slate-400 font-mono truncate" title={order.restaurantId}>
-                ID: {order.restaurantId}
+                {order.restaurantName || ADMIN_ORDERS_TABLE_LABELS.DEFAULT_RESTAURANT_NAME}
               </p>
             </div>
 
@@ -213,16 +217,12 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
             <div className="rounded-xl border border-slate-200/80 p-4 bg-white shadow-2xs space-y-1.5">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <User className="size-3.5 text-slate-400" />
-                <span>Customer</span>
+                <span>{ADMIN_ORDER_DETAIL_LABELS.CUSTOMER}</span>
               </div>
               <p className="text-sm font-bold text-slate-900">
-                {order.customerId ? `User (${order.customerId.slice(0, 8)})` : "Guest Customer"}
-              </p>
-              <p
-                className="text-xs text-slate-400 font-mono truncate"
-                title={order.customerId ?? "Guest"}
-              >
-                ID: {order.customerId ?? "N/A"}
+                {order.customerId
+                  ? ADMIN_ORDER_DETAIL_LABELS.REGISTERED_CUSTOMER
+                  : ADMIN_ORDER_DETAIL_LABELS.GUEST_CUSTOMER}
               </p>
             </div>
           </div>
@@ -232,59 +232,60 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <CreditCard className="size-3.5 text-slate-400" />
-                <span>Payment Reference</span>
+                <span>{ADMIN_ORDER_DETAIL_LABELS.PAYMENT_REFERENCE}</span>
               </div>
               {paymentRef && (
                 <button
                   type="button"
-                  onClick={() => handleCopy(paymentRef, "paymentRef")}
-                  className="inline-flex items-center gap-1 text-xs font-medium text-[#0052cc] hover:underline"
+                  onClick={() => handleCopy(paymentRef, ADMIN_ORDER_COPY_FIELDS.PAYMENT_REF)}
+                  className="inline-flex items-center gap-1 text-xs font-medium text-[#0052cc] hover:underline cursor-pointer"
+                  aria-label={ADMIN_ORDER_DETAIL_LABELS.COPY}
                 >
-                  {copiedField === "paymentRef" ? (
+                  {copiedField === ADMIN_ORDER_COPY_FIELDS.PAYMENT_REF ? (
                     <>
                       <Check className="size-3 text-emerald-600" />
-                      <span>Copied</span>
+                      <span>{ADMIN_ORDER_DETAIL_LABELS.COPIED}</span>
                     </>
                   ) : (
                     <>
                       <Copy className="size-3" />
-                      <span>Copy</span>
+                      <span>{ADMIN_ORDER_DETAIL_LABELS.COPY}</span>
                     </>
                   )}
                 </button>
               )}
             </div>
             <p className="text-xs sm:text-sm font-mono text-slate-800 break-all bg-slate-50 p-2.5 rounded-lg border border-slate-200/60">
-              {paymentRef || "No gateway reference (Pending or not recorded)"}
+              {paymentRef || ADMIN_ORDER_DETAIL_LABELS.NO_GATEWAY_REFERENCE}
             </p>
           </div>
 
           {/* Pricing Ledger / Financial Breakdown */}
           <div className="rounded-xl border border-slate-200/80 p-4 bg-white shadow-2xs space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Authoritative Financial Breakdown
+              {ADMIN_ORDER_DETAIL_LABELS.FINANCIAL_BREAKDOWN}
             </h3>
 
             <div className="space-y-2 text-xs sm:text-sm">
               <div className="flex justify-between text-slate-600">
-                <span>Subtotal (Items Net)</span>
+                <span>{ADMIN_ORDER_DETAIL_LABELS.SUBTOTAL}</span>
                 <span className="font-semibold">{formatCurrency(order.subtotal)}</span>
               </div>
 
               <div className="flex justify-between text-slate-600">
-                <span>Tax Amount (GST / VAT)</span>
+                <span>{ADMIN_ORDER_DETAIL_LABELS.TAX_AMOUNT}</span>
                 <span className="font-semibold">{formatCurrency(order.taxAmount)}</span>
               </div>
 
               <div className="flex justify-between text-slate-600">
-                <span>Platform Fee Assessed</span>
+                <span>{ADMIN_ORDER_DETAIL_LABELS.PLATFORM_FEE}</span>
                 <span className="font-semibold text-[#0052cc]">
                   {formatCurrency(order.platformFeeAssessed)}
                 </span>
               </div>
 
               <div className="pt-2 border-t border-slate-200 flex justify-between text-sm sm:text-base font-black text-slate-900">
-                <span>Grand Total</span>
+                <span>{ADMIN_ORDER_DETAIL_LABELS.GRAND_TOTAL}</span>
                 <span className="text-emerald-600">{formatCurrency(order.totalAmount)}</span>
               </div>
             </div>
@@ -294,11 +295,11 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
           <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 gap-2 px-1">
             <div className="flex items-center gap-1.5">
               <Clock className="size-3.5" />
-              <span>Created: {formatDate(order.createdAt)}</span>
+              <span>{ADMIN_ORDER_DETAIL_LABELS.CREATED} {formatDate(order.createdAt)}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="size-3.5" />
-              <span>Updated: {formatDate(order.updatedAt)}</span>
+              <span>{ADMIN_ORDER_DETAIL_LABELS.UPDATED} {formatDate(order.updatedAt)}</span>
             </div>
           </div>
         </div>
@@ -311,7 +312,7 @@ export function AdminOrderDetailModal({ order, isOpen, onClose }: AdminOrderDeta
             onClick={onClose}
             className="rounded-xl border-slate-200 text-xs font-semibold"
           >
-            Close
+            {ADMIN_ORDER_DETAIL_LABELS.CLOSE}
           </Button>
         </div>
       </div>

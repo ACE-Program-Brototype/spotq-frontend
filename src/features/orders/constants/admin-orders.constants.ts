@@ -172,4 +172,33 @@ export const ADMIN_ORDERS_TABLE_LABELS = {
   VIEW_ORDER_ARIA: (orderNumber: string) => `View order ${orderNumber}`,
 } as const;
 
+export const ADMIN_ORDER_DETAIL_LABELS = {
+  TITLE_PREFIX: "Order #",
+  ORDER_LIFECYCLE: "Order Lifecycle",
+  PAYMENT_STATUS: "Payment Status",
+  RESTAURANT: "Restaurant",
+  CUSTOMER: "Customer",
+  REGISTERED_CUSTOMER: "Registered Customer",
+  GUEST_CUSTOMER: "Guest Customer",
+  PAYMENT_REFERENCE: "Payment Reference",
+  NO_GATEWAY_REFERENCE: "No gateway reference (Pending or not recorded)",
+  FINANCIAL_BREAKDOWN: "Authoritative Financial Breakdown",
+  SUBTOTAL: "Subtotal (Items Net)",
+  TAX_AMOUNT: "Tax Amount (GST / VAT)",
+  PLATFORM_FEE: "Platform Fee Assessed",
+  GRAND_TOTAL: "Grand Total",
+  CREATED: "Created:",
+  UPDATED: "Updated:",
+  CLOSE: "Close",
+  COPIED: "Copied",
+  COPY: "Copy",
+  CLOSE_OVERLAY_ARIA: "Close modal overlay",
+  CLOSE_DIALOG_ARIA: "Close dialog",
+} as const;
+
+export const ADMIN_ORDER_COPY_FIELDS = {
+  ORDER_NUMBER: "orderNumber",
+  PAYMENT_REF: "paymentRef",
+} as const;
+
 
