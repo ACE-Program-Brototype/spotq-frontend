@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { io } from "socket.io-client";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { QUEUE_WS_EVENTS } from "../constants/websocket.constants";
+import { QUEUE_WS_EVENTS } from "@/features/queue/constants/websocket.constants";
 import { useStaffQueueSocket } from "./use-staff-queue-socket";
 
 jest.mock("socket.io-client");

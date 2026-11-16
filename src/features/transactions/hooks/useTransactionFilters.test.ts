@@ -3,7 +3,7 @@ import {
   DATE_PRESET_OPTIONS,
   PAYMENT_METHOD_FILTER,
   TRANSACTION_STATUS_FILTER,
-} from "../constants/transaction.constants";
+} from "@/features/transactions/constants/transaction.constants";
 import { getDateRangeFromPreset, useTransactionFilters } from "./useTransactionFilters";
 
 describe("useTransactionFilters", () => {

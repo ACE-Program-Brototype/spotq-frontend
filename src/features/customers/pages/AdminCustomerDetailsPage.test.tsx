@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { CUSTOMER_STATUS } from "../constants/customer.constants";
-import { useCustomerDetails, useUpdateCustomerStatus } from "../hooks/use-customers";
+import { CUSTOMER_STATUS } from "@/features/customers/constants/customer.constants";
+import { useCustomerDetails, useUpdateCustomerStatus } from "@/features/customers/hooks/use-customers";
 import { AdminCustomerDetailsPage } from "./AdminCustomerDetailsPage";
 
 const mockNavigate = jest.fn();
@@ -12,7 +12,7 @@ jest.mock("react-router-dom", () => ({
   useParams: () => mockParams,
 }));
 
-jest.mock("../hooks/use-customers", () => ({
+jest.mock("@/features/customers/hooks/use-customers", () => ({
   useCustomerDetails: jest.fn(),
   useUpdateCustomerStatus: jest.fn(),
 }));

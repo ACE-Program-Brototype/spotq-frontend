@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/lib/utils";
 import { formatDate } from "@/lib/utils/date";
-import { WALLET_LEDGER_STATUSES, WALLET_LEDGER_TYPES } from "../constants/wallet.constants";
-import type { WalletLedgerEntry, WalletLedgerPagination } from "../types/wallet.types";
-import { formatLabel } from "../utils/wallet.utils";
+import { WALLET_LEDGER_STATUSES, WALLET_LEDGER_TYPES } from "@/features/wallet/constants/wallet.constants";
+import type { WalletLedgerEntry, WalletLedgerPagination } from "@/features/wallet/types/wallet.types";
+import { formatLabel } from "@/features/wallet/utils/wallet.utils";
 
 interface WalletLedgerEntriesTableProps {
   entries: readonly WalletLedgerEntry[];

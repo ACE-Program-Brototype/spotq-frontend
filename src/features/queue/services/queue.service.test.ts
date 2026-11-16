@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { QUEUE_ENDPOINTS } from "../constants/queue.constants";
+import { QUEUE_ENDPOINTS } from "@/features/queue/constants/queue.constants";
 import { queueService } from "./queue.service";
 
 jest.mock("@/lib/api/client", () => ({

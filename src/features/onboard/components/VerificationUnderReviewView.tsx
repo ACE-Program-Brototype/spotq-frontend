@@ -1,3 +1,5 @@
+import { ONBOARDING_VERIFICATION_STATUS } from "@/features/onboard/constants/onboard.constants";
+
 export interface VerificationUnderReviewViewProps {
   status: string;
   restaurantEmail: string;
@@ -13,7 +15,7 @@ export function VerificationUnderReviewView({
   onCheckStatus,
   onSignOut,
 }: VerificationUnderReviewViewProps) {
-  const isSubmitted = status === "SUBMITTED";
+  const isSubmitted = status === ONBOARDING_VERIFICATION_STATUS.SUBMITTED;
 
   return (
     <>

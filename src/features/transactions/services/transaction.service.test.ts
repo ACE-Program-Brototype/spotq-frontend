@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { TRANSACTION_DEFAULTS, TRANSACTION_ENDPOINTS } from "../constants/transaction.constants";
+import { TRANSACTION_DEFAULTS, TRANSACTION_ENDPOINTS } from "@/features/transactions/constants/transaction.constants";
 import { transactionService } from "./transaction.service";
 
 jest.mock("@/lib/api/client", () => ({

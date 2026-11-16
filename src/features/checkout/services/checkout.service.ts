@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { CHECKOUT_ENDPOINTS } from "../constants/checkout.constants";
+import { CHECKOUT_ENDPOINTS } from "@/features/checkout/constants/checkout.constants";
 import type {
   CheckoutDetailsData,
   CheckoutDetailsResponse,
@@ -8,7 +8,7 @@ import type {
   PlaceOrderPayload,
   VerifyOrderPaymentPayload,
   VerifyOrderPaymentResponse,
-} from "../types/checkout.types";
+} from "@/features/checkout/types/checkout.types";
 
 export const checkoutService = {
   /**

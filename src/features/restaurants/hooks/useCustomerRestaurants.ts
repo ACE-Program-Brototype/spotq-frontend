@@ -6,9 +6,9 @@ import {
   CUSTOMER_RESTAURANT_DEFAULTS,
   CUSTOMER_RESTAURANT_QUERY_KEYS,
   CUSTOMER_SORT_OPTIONS,
-} from "../constants/customer-restaurant.constants";
-import { customerRestaurantService } from "../services/customer-restaurant.service";
-import type { CustomerSortOptionValue } from "../types/customer-restaurant.types";
+} from "@/features/restaurants/constants/customer-restaurant.constants";
+import { customerRestaurantService } from "@/features/restaurants/services/customer-restaurant.service";
+import type { CustomerSortOptionValue } from "@/features/restaurants/types/customer-restaurant.types";
 
 export interface UseCustomerRestaurantsOptions {
   initialPage?: number;

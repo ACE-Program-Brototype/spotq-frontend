@@ -1,5 +1,5 @@
 import { formatCurrency } from "@/lib/utils/currency";
-import { SUBSCRIBER_MESSAGES, SUBSCRIBER_STATUS } from "../constants/subscriber.constants";
+import { SUBSCRIBER_MESSAGES, SUBSCRIBER_STATUS } from "@/features/subscribers/constants/subscriber.constants";
 
 /**
  * Format price in paise to currency string (default INR)

@@ -1,7 +1,7 @@
 import { ChevronDown, MapPin, RotateCcw, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CUSTOMER_SORT_OPTIONS } from "../../constants/customer-restaurant.constants";
-import type { CustomerSortOptionValue } from "../../types/customer-restaurant.types";
+import { CUSTOMER_SORT_OPTIONS } from "@/features/restaurants/constants/customer-restaurant.constants";
+import type { CustomerSortOptionValue } from "@/features/restaurants/types/customer-restaurant.types";
 
 export interface CustomerRestaurantFiltersProps {
   searchQuery: string;

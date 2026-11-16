@@ -1,11 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
-import { queueService } from "../services/queue.service";
-import type { CustomerQueueStatusResponse } from "../types/queue.types";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { CustomerQueueStatusResponse } from "@/features/queue/types/queue.types";
 import { useCustomerQueueStatus } from "./use-customer-queue-status";
 
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 
 describe("useCustomerQueueStatus", () => {
   let queryClient: QueryClient;

@@ -1,7 +1,7 @@
 import type { BeforeRequestHook } from "ky";
 import { PUBLIC_AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { getOrRefreshAccessToken } from "../auth-refresh";
+import { getOrRefreshAccessToken } from "@/lib/api/auth-refresh";
 
 export const beforeRequest: BeforeRequestHook = async ({ request }) => {
   const isPublicAuthEndpoint = PUBLIC_AUTH_ENDPOINTS.some((endpoint) =>

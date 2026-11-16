@@ -1,6 +1,6 @@
 import { DataTable, Pagination } from "@/components/common";
 import type { Column } from "@/components/common/table";
-import type { MasterLedgerEntry } from "../types/finance.types";
+import type { MasterLedgerEntry } from "@/features/finance/types/finance.types";
 import { LedgerFilters, type LedgerFiltersProps } from "./LedgerFilters";
 
 interface FinanceLedgerProps {

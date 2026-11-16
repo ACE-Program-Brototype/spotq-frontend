@@ -1,7 +1,7 @@
 import { AlertTriangle, Loader2, ShieldAlert, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RESTAURANT_MESSAGES } from "../../constants/restaurant.constants";
+import { RESTAURANT_MESSAGES } from "@/features/restaurants/constants/restaurant.constants";
 
 export interface BlockRestaurantModalProps {
   isOpen: boolean;

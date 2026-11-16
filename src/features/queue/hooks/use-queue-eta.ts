@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import { QUEUE_ETA_CONFIG, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { QueueEtaResponse } from "../types/queue.types";
+import { QUEUE_ETA_CONFIG, QUEUE_QUERY_KEYS } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { QueueEtaResponse } from "@/features/queue/types/queue.types";
 
 export interface UseQueueEtaOptions {
   enabled?: boolean;

@@ -1,4 +1,4 @@
-import { TABLE_SHAPE, UPDATE_TABLE_VALIDATION_MESSAGES } from "../constants/table.constants";
+import { TABLE_SHAPE, UPDATE_TABLE_VALIDATION_MESSAGES } from "@/features/tables/constants/table.constants";
 import { updateTableSchema } from "./update-table.schema";
 
 describe("updateTableSchema", () => {

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/cn";
-import { CUSTOMER_CUISINE_CATEGORIES } from "../../constants/customer-restaurant.constants";
+import { CUSTOMER_CUISINE_CATEGORIES } from "@/features/restaurants/constants/customer-restaurant.constants";
 
 export interface RestaurantCategoryFilterProps {
   selectedCategory: string;

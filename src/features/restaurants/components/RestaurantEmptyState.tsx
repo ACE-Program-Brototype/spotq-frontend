@@ -1,6 +1,6 @@
 import { RotateCcw, Store, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { RESTAURANT_MESSAGES } from "../constants/restaurant.constants";
+import { RESTAURANT_MESSAGES } from "@/features/restaurants/constants/restaurant.constants";
 
 export interface RestaurantEmptyStateProps {
   isFiltered?: boolean;

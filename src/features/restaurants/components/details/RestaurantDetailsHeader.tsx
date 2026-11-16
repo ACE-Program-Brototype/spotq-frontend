@@ -16,9 +16,13 @@ import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RESTAURANT_MESSAGES, RESTAURANT_STATUS } from "../../constants/restaurant.constants";
-import { useBlockRestaurant, useUnblockRestaurant } from "../../hooks/useRestaurantStatusMutation";
-import type { RestaurantDetails } from "../../types/restaurant.types";
+import {
+  ONBOARDING_STATUS,
+  RESTAURANT_MESSAGES,
+  RESTAURANT_STATUS,
+} from "@/features/restaurants/constants/restaurant.constants";
+import { useBlockRestaurant, useUnblockRestaurant } from "@/features/restaurants/hooks/useRestaurantStatusMutation";
+import type { RestaurantDetails } from "@/features/restaurants/types/restaurant.types";
 import { BlockRestaurantModal } from "./BlockRestaurantModal";
 
 interface RestaurantDetailsHeaderProps {
@@ -159,7 +163,7 @@ export function RestaurantDetailsHeader({ restaurant }: RestaurantDetailsHeaderP
               </h1>
               {renderStatusBadge()}
 
-              {restaurant.onboarding_status === "COMPLETED" ? (
+              {restaurant.onboarding_status === ONBOARDING_STATUS.COMPLETED ? (
                 <Badge
                   variant="outline"
                   className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[11px] font-semibold"

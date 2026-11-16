@@ -1,7 +1,7 @@
 import {
   SOCKET_CONNECTION_STATUS,
   type SocketConnectionStatus,
-} from "../../constants/websocket.constants";
+} from "@/features/queue/constants/websocket.constants";
 
 export interface ConnectionStatusBadgeProps {
   status: SocketConnectionStatus;

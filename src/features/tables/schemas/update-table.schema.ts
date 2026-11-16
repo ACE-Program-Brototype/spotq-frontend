@@ -3,7 +3,7 @@ import {
   TABLE_NAME_MAX_LENGTH,
   TABLE_SHAPE,
   UPDATE_TABLE_VALIDATION_MESSAGES,
-} from "../constants/table.constants";
+} from "@/features/tables/constants/table.constants";
 
 export const updateTableSchema = z.object({
   tableCode: z

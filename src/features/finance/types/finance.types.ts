@@ -11,7 +11,7 @@ export interface GetPlatformFinanceSummaryOutputDTO {
 
 export type FinanceSummary = GetPlatformFinanceSummaryOutputDTO;
 
-import type { LEDGER_ENTRY_TYPE } from "../constants/finance.constants";
+import type { LEDGER_ENTRY_TYPE } from "@/features/finance/constants/finance.constants";
 
 export type LedgerEntryType = (typeof LEDGER_ENTRY_TYPE)[keyof typeof LEDGER_ENTRY_TYPE];
 

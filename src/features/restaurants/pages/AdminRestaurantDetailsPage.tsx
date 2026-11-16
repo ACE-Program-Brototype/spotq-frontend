@@ -13,13 +13,13 @@ import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { LoadingIndicator } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RestaurantDetailsHeader } from "../components/details/RestaurantDetailsHeader";
-import { RestaurantDocumentsTab } from "../components/details/RestaurantDocumentsTab";
-import { RestaurantImagesTab } from "../components/details/RestaurantImagesTab";
-import { RestaurantOverviewTab } from "../components/details/RestaurantOverviewTab";
-import { RestaurantStaffTab } from "../components/details/RestaurantStaffTab";
-import { RESTAURANT_MESSAGES } from "../constants/restaurant.constants";
-import { useAdminRestaurantDetails } from "../hooks/useAdminRestaurantDetails";
+import { RestaurantDetailsHeader } from "@/features/restaurants/components/details/RestaurantDetailsHeader";
+import { RestaurantDocumentsTab } from "@/features/restaurants/components/details/RestaurantDocumentsTab";
+import { RestaurantImagesTab } from "@/features/restaurants/components/details/RestaurantImagesTab";
+import { RestaurantOverviewTab } from "@/features/restaurants/components/details/RestaurantOverviewTab";
+import { RestaurantStaffTab } from "@/features/restaurants/components/details/RestaurantStaffTab";
+import { RESTAURANT_MESSAGES } from "@/features/restaurants/constants/restaurant.constants";
+import { useAdminRestaurantDetails } from "@/features/restaurants/hooks/useAdminRestaurantDetails";
 
 export type RestaurantDetailsTabType = "overview" | "staff" | "documents" | "images";
 

@@ -1,7 +1,7 @@
 import { ArrowDownToLine, ArrowDownUp, Clock3, Wallet } from "lucide-react";
 
-import type { FinanceSummary as FinanceSummaryData } from "../types/finance.types";
-import { formatPaise } from "../utils/finance-display.utils";
+import type { FinanceSummary as FinanceSummaryData } from "@/features/finance/types/finance.types";
+import { formatPaise } from "@/features/finance/utils/finance-display.utils";
 import { FinanceMetricCard } from "./FinanceMetricCard";
 
 export function FinanceSummary({

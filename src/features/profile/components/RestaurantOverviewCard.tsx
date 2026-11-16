@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useUpdateRestaurantProfile } from "@/features/profile/hooks/use-update-restaurant-profile";
 import type {
   RestaurantOverviewDetails,
   RestaurantProfileData,
   RestaurantProfileDetails,
   UpdateRestaurantProfilePayload,
-} from "../types/restaurant-profile.types";
-import { resolveMediaUrl } from "../utils/profile.utils";
+} from "@/features/profile/types/restaurant-profile.types";
+import { resolveMediaUrl } from "@/features/profile/utils/profile.utils";
 import { RestaurantOverviewActionButtons } from "./RestaurantOverviewActionButtons";
 import { RestaurantOverviewCoverBanner } from "./RestaurantOverviewCoverBanner";
 import { RestaurantOverviewDetailsView } from "./RestaurantOverviewDetailsView";

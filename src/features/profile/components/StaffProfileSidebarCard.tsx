@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { StaffProfile } from "../types/profile.types";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { StaffProfile } from "@/features/profile/types/profile.types";
 
 export interface StaffProfileSidebarCardProps {
   profile: StaffProfile;

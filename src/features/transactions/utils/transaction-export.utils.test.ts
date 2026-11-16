@@ -1,4 +1,4 @@
-import type { PaymentTransactionItem } from "../types/transaction.types";
+import type { PaymentTransactionItem } from "@/features/transactions/types/transaction.types";
 import {
   downloadTransactionsCsv,
   escapeCsvField,

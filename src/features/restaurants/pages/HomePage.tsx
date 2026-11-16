@@ -8,16 +8,16 @@ import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getUserDisplayName, getUserInitials } from "@/features/auth/utils/user.utils";
-import { CustomerRestaurantEmptyState } from "../components/Customer/CustomerRestaurantEmptyState";
-import { CustomerRestaurantFilters } from "../components/Customer/CustomerRestaurantFilters";
-import { RestaurantCard } from "../components/Customer/RestaurantCard";
-import { RestaurantCardSkeleton } from "../components/Customer/RestaurantCardSkeleton";
-import { RestaurantCategoryFilter } from "../components/Customer/RestaurantCategoryFilter";
+import { CustomerRestaurantEmptyState } from "@/features/restaurants/components/Customer/CustomerRestaurantEmptyState";
+import { CustomerRestaurantFilters } from "@/features/restaurants/components/Customer/CustomerRestaurantFilters";
+import { RestaurantCard } from "@/features/restaurants/components/Customer/RestaurantCard";
+import { RestaurantCardSkeleton } from "@/features/restaurants/components/Customer/RestaurantCardSkeleton";
+import { RestaurantCategoryFilter } from "@/features/restaurants/components/Customer/RestaurantCategoryFilter";
 import {
   CUSTOMER_RESTAURANT_DEFAULTS,
   RESTAURANT_SKELETON_KEYS,
-} from "../constants/customer-restaurant.constants";
-import { useCustomerRestaurants } from "../hooks/useCustomerRestaurants";
+} from "@/features/restaurants/constants/customer-restaurant.constants";
+import { useCustomerRestaurants } from "@/features/restaurants/hooks/useCustomerRestaurants";
 
 export function HomePage() {
   const { user } = useAuthStore();

@@ -1,7 +1,7 @@
 import { ExternalLink, MapPin, Navigation } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import env from "@/config/env";
-import type { RestaurantDetails } from "../../types/restaurant.types";
+import type { RestaurantDetails } from "@/features/restaurants/types/restaurant.types";
 
 export function RestaurantLocationCard({ address }: { address?: RestaurantDetails["address"] }) {
   return (

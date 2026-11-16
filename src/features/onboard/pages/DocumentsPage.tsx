@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import DocumentUploadCard from "../components/DocumentUploadCard";
-import ImageUploadSection from "../components/ImageUploadSection";
-import { useOnboardStore } from "../store/onboard.store";
-import type { DocumentsState } from "../types/onboard.types";
+import DocumentUploadCard from "@/features/onboard/components/DocumentUploadCard";
+import ImageUploadSection from "@/features/onboard/components/ImageUploadSection";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
+import type { DocumentsState } from "@/features/onboard/types/onboard.types";
 
 interface DocumentFieldConfig {
   key: keyof DocumentsState;

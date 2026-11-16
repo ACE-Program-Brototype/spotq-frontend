@@ -1,4 +1,4 @@
-import type { LedgerQuery } from "../services/finance.service";
+import type { LedgerQuery } from "@/features/finance/services/finance.service";
 
 export const LEDGER_ENTRY_TYPE = {
   CUSTOMER_PAYMENT_INTAKE: "CUSTOMER_PAYMENT_INTAKE",

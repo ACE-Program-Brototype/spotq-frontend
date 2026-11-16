@@ -3,15 +3,16 @@
  * Handles API communication for restaurant menu items via SpotQ HTTP client.
  */
 
+import { MENU_ITEM_FILTER_STATUS } from "@/features/menu/constants/menu.constants";
 import { apiClient } from "@/lib/api/client";
-import { MENU_ENDPOINTS } from "../constants/menu.constants";
+import { MENU_ENDPOINTS } from "@/features/menu/constants/menu.constants";
 import type {
   GetMenuItemApiResponse,
   ListMenuItemsApiResponse,
   ListMenuItemsData,
   ListMenuItemsQueryParams,
   MenuItemDetail,
-} from "../types/menu-item.types";
+} from "@/features/menu/types/menu-item.types";
 
 export const menuItemService = {
   /**
@@ -49,7 +50,7 @@ export const menuItemService = {
     if (params?.search && params.search.trim() !== "") searchParams.search = params.search.trim();
     if (params?.categoryId && params.categoryId !== "ALL")
       searchParams.categoryId = params.categoryId;
-    if (params?.status && params.status !== "ALL") searchParams.status = params.status;
+    if (params?.status && params.status !== MENU_ITEM_FILTER_STATUS.ALL) searchParams.status = params.status;
     if (
       params?.minPrice !== undefined &&
       params.minPrice !== null &&

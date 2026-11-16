@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TABLE_QUERY_KEYS, TABLE_SECTION_MESSAGES } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
-import type { CreateTableSectionPayload } from "../types/table.types";
+import { TABLE_QUERY_KEYS, TABLE_SECTION_MESSAGES } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
+import type { CreateTableSectionPayload } from "@/features/tables/types/table.types";
 
 export function useCreateTableSection(restaurantId: string) {
   const queryClient = useQueryClient();

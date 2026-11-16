@@ -1,6 +1,6 @@
 import { MessageSquare, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import type { QueueEntry } from "../types/queue.types";
+import type { QueueEntry } from "@/features/queue/types/queue.types";
 
 interface AssignTableGuestSummaryProps {
   queueEntry: QueueEntry;

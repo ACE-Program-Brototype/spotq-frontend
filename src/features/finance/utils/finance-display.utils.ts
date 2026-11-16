@@ -1,4 +1,4 @@
-import type { LedgerEntryType } from "../types/finance.types";
+import type { LedgerEntryType } from "@/features/finance/types/finance.types";
 
 export const typeLabels: Record<LedgerEntryType, string> = {
   CUSTOMER_PAYMENT_INTAKE: "Customer inflow",

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { useCustomerQueueSocket } from "../hooks/use-customer-queue-socket";
-import type { ActiveCustomerTicket, CustomerRingPayload } from "../types/ring-alert.types";
-import { clearActiveCustomerTicket, getActiveCustomerTicket } from "../utils/active-queue.utils";
+import { useCustomerQueueSocket } from "@/features/queue/hooks/use-customer-queue-socket";
+import type { ActiveCustomerTicket, CustomerRingPayload } from "@/features/queue/types/ring-alert.types";
+import { clearActiveCustomerTicket, getActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
 import { CustomerRingAlertModal } from "./CustomerRingAlertModal";
 
 export interface CustomerRingAlertContainerProps {

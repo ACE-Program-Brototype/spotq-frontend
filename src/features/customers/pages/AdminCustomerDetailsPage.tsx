@@ -4,11 +4,11 @@ import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CustomerDetailsErrorState } from "../components/CustomerDetailsErrorState";
-import { CustomerDetailsSkeleton } from "../components/CustomerDetailsSkeleton";
-import { CUSTOMER_MESSAGES, CUSTOMER_STATUS } from "../constants/customer.constants";
-import { useCustomerDetails } from "../hooks/use-customers";
-import { formatMemberSince, getCustomerInitials } from "../utils/customer.utils";
+import { CustomerDetailsErrorState } from "@/features/customers/components/CustomerDetailsErrorState";
+import { CustomerDetailsSkeleton } from "@/features/customers/components/CustomerDetailsSkeleton";
+import { CUSTOMER_MESSAGES, CUSTOMER_STATUS } from "@/features/customers/constants/customer.constants";
+import { useCustomerDetails } from "@/features/customers/hooks/use-customers";
+import { formatMemberSince, getCustomerInitials } from "@/features/customers/utils/customer.utils";
 
 export function AdminCustomerDetailsPage() {
   const { id } = useParams<{ id: string }>();

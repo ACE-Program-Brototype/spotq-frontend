@@ -25,6 +25,7 @@ import type {
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate } from "@/lib/utils/date";
 import { AdminOrdersEmptyState } from "@/features/orders/components/admin/order/AdminOrdersEmptyState";
+import { AdminOrdersMobileList } from "@/features/orders/components/admin/order/AdminOrdersMobileList";
 import { AdminOrdersSkeleton } from "@/features/orders/components/admin/order/AdminOrdersSkeleton";
 import { AdminPaymentStatusBadge } from "@/features/orders/components/admin/order/AdminPaymentStatusBadge";
 import { OrderStatusBadge } from "@/features/orders/components/admin/order/OrderStatusBadge";
@@ -98,7 +99,7 @@ export function AdminOrdersTable({
 
   return (
     <div className="space-y-4" data-testid="admin-orders-table-container">
-      {/* ── Desktop & Tablet Table ── */}
+      {/* Desktop & Tablet Table */}
       <div className="hidden md:block rounded-2xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
@@ -277,83 +278,16 @@ export function AdminOrdersTable({
         </div>
       </div>
 
-      {/* ── Mobile Cards View (< md) ── */}
-      <div className="md:hidden space-y-3">
-        {orders.map((order) => {
-          return (
-            <div
-              key={order.orderId}
-              className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs space-y-3"
-            >
-              {/* Card Header: Order # + Created Date */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="font-mono text-sm font-bold text-slate-900">
-                    #{order.orderNumber}
-                  </span>
-                  <p className="text-[11px] text-slate-500 font-medium">
-                    {order.restaurantName || ADMIN_ORDERS_TABLE_LABELS.DEFAULT_RESTAURANT_NAME}
-                  </p>
-                </div>
-                <span className="text-xs text-slate-400">{formatDate(order.createdAt)}</span>
-              </div>
-
-              {/* Status Badges */}
-              <div className="flex flex-wrap items-center gap-2">
-                <OrderStatusBadge status={order.status} size="sm" />
-                <AdminPaymentStatusBadge status={order.paymentStatus} size="sm" />
-              </div>
-
-              {/* Financials */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                    {ADMIN_ORDERS_TABLE_LABELS.TOTAL}
-                  </span>
-                  <span className="text-sm font-black text-slate-900">
-                    {formatCurrency(order.totalAmount)}
-                  </span>
-                </div>
-
-                <div className="text-right">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                    {ADMIN_ORDERS_TABLE_LABELS.PLATFORM_FEE}
-                  </span>
-                  <span className="font-bold text-[#0052cc]">
-                    {formatCurrency(order.platformFeeAssessed)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Mobile Card Action */}
-              <div className="pt-2 border-t border-slate-100 flex justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onOrderClick(order)}
-                  className="rounded-xl border-slate-200 text-xs font-semibold gap-1.5 h-8 text-[#0052cc]"
-                >
-                  <Eye className="size-3.5" />
-                  <span>{ADMIN_ORDERS_TABLE_LABELS.VIEW_DETAILS}</span>
-                </Button>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Mobile Pagination */}
-        <div className="pt-2">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={totalOrders}
-            pageSize={limit}
-            onPageChange={onPageChange}
-            theme="admin"
-          />
-        </div>
-      </div>
+      {/* Mobile Cards View */}
+      <AdminOrdersMobileList
+        orders={orders}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalOrders={totalOrders}
+        limit={limit}
+        onPageChange={onPageChange}
+        onOrderClick={onOrderClick}
+      />
     </div>
   );
 }

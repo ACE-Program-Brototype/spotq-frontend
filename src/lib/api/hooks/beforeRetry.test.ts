@@ -1,12 +1,12 @@
 import { HTTPError, type NormalizedOptions } from "ky";
 import { ADMIN_AUTH_ENDPOINTS, AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import * as authRefreshModule from "../auth-refresh";
-import { redirectToPortalLogin } from "../portal-redirect";
+import * as authRefreshModule from "@/lib/api/auth-refresh";
+import { redirectToPortalLogin } from "@/lib/api/portal-redirect";
 import { beforeRetry } from "./beforeRetry";
 
-jest.mock("../auth-refresh");
-jest.mock("../portal-redirect", () => ({
+jest.mock("@/lib/api/auth-refresh");
+jest.mock("@/lib/api/portal-redirect", () => ({
   redirectToPortalLogin: jest.fn(),
 }));
 

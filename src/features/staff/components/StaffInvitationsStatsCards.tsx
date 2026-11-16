@@ -1,5 +1,5 @@
 import { CheckCircle2, Clock, Mail, ShieldAlert } from "lucide-react";
-import type { StaffInvitationStats } from "../types/staff-invitation.types";
+import type { StaffInvitationStats } from "@/features/staff/types/staff-invitation.types";
 
 export function StaffInvitationsStatsCards({ stats }: { stats: StaffInvitationStats }) {
   return (

@@ -1,16 +1,16 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import { useTransactions } from "../hooks/useTransactions";
-import { transactionService } from "../services/transaction.service";
-import { downloadTransactionsCsv } from "../utils/transaction-export.utils";
+import { useTransactions } from "@/features/transactions/hooks/useTransactions";
+import { transactionService } from "@/features/transactions/services/transaction.service";
+import { downloadTransactionsCsv } from "@/features/transactions/utils/transaction-export.utils";
 import { RestaurantTransactionsPage } from "./RestaurantTransactionsPage";
 
-jest.mock("../hooks/useTransactions");
-jest.mock("../services/transaction.service", () => ({
+jest.mock("@/features/transactions/hooks/useTransactions");
+jest.mock("@/features/transactions/services/transaction.service", () => ({
   transactionService: {
     getTransactions: jest.fn(),
   },
 }));
-jest.mock("../utils/transaction-export.utils", () => ({
+jest.mock("@/features/transactions/utils/transaction-export.utils", () => ({
   downloadTransactionsCsv: jest.fn(() => true),
 }));
 

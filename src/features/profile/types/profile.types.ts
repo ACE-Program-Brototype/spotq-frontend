@@ -1,4 +1,4 @@
-import type { Gender } from "../constants/profile.constants";
+import type { Gender } from "@/features/profile/constants/profile.constants";
 
 export type { Gender };
 

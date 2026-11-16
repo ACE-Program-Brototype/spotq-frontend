@@ -9,13 +9,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
-import { CustomerSidebar } from "../components/CustomerSidebar";
-import { EditProfileForm } from "../components/EditProfileForm";
-import { ProfileSkeleton } from "../components/ProfileSkeleton";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useCustomerProfile } from "../hooks/use-customer-profile";
-import { useUpdateCustomerProfile } from "../hooks/use-update-customer-profile";
-import type { UpdateCustomerProfileDto } from "../types/profile.types";
+import { CustomerSidebar } from "@/features/profile/components/CustomerSidebar";
+import { EditProfileForm } from "@/features/profile/components/EditProfileForm";
+import { ProfileSkeleton } from "@/features/profile/components/ProfileSkeleton";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useCustomerProfile } from "@/features/profile/hooks/use-customer-profile";
+import { useUpdateCustomerProfile } from "@/features/profile/hooks/use-update-customer-profile";
+import type { UpdateCustomerProfileDto } from "@/features/profile/types/profile.types";
 
 export function EditProfilePage() {
   const navigate = useNavigate();

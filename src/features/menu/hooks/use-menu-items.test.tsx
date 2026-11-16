@@ -2,10 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { type ReactNode, StrictMode } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { menuItemService } from "../services/menu-item.service";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
 import { useMenuItems } from "./use-menu-items";
 
-jest.mock("../services/menu-item.service", () => ({
+jest.mock("@/features/menu/services/menu-item.service", () => ({
   menuItemService: {
     getMenuItems: jest.fn(),
   },

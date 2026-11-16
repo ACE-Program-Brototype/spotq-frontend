@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
-import { EditStaffProfileForm } from "../components/EditStaffProfileForm";
-import { StaffProfileErrorState } from "../components/StaffProfileErrorState";
-import { StaffProfileSkeleton } from "../components/StaffProfileSkeleton";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useUpdateStaffProfile } from "../hooks/use-update-staff-profile";
-import { useStaffProfile } from "../hooks/useStaffProfile";
-import type { UpdateStaffProfileDto } from "../types/profile.types";
+import { EditStaffProfileForm } from "@/features/profile/components/EditStaffProfileForm";
+import { StaffProfileErrorState } from "@/features/profile/components/StaffProfileErrorState";
+import { StaffProfileSkeleton } from "@/features/profile/components/StaffProfileSkeleton";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useUpdateStaffProfile } from "@/features/profile/hooks/use-update-staff-profile";
+import { useStaffProfile } from "@/features/profile/hooks/useStaffProfile";
+import type { UpdateStaffProfileDto } from "@/features/profile/types/profile.types";
 
 export default function EditStaffProfilePage() {
   return (

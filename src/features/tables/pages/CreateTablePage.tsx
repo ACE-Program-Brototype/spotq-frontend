@@ -6,10 +6,10 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import { TABLE_NAME_MAX_LENGTH } from "../constants/table.constants";
-import { useCreateTable } from "../hooks/useCreateTable";
-import { useTableSections } from "../hooks/useTableSections";
-import { type CreateTableFormData, createTableSchema } from "../schemas/create-table.schema";
+import { TABLE_NAME_MAX_LENGTH } from "@/features/tables/constants/table.constants";
+import { useCreateTable } from "@/features/tables/hooks/useCreateTable";
+import { useTableSections } from "@/features/tables/hooks/useTableSections";
+import { type CreateTableFormData, createTableSchema } from "@/features/tables/schemas/create-table.schema";
 
 export default function CreateTablePage() {
   const navigate = useNavigate();

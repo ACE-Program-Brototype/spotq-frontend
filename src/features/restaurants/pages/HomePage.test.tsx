@@ -2,10 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { customerRestaurantService } from "../services/customer-restaurant.service";
+import { customerRestaurantService } from "@/features/restaurants/services/customer-restaurant.service";
 import { HomePage } from "./HomePage";
 
-jest.mock("../services/customer-restaurant.service", () => ({
+jest.mock("@/features/restaurants/services/customer-restaurant.service", () => ({
   customerRestaurantService: {
     getRestaurants: jest.fn(),
   },

@@ -15,8 +15,8 @@ import {
   DATE_PRESET_OPTIONS,
   PAYMENT_METHOD_FILTER,
   TRANSACTION_STATUS_FILTER,
-} from "../constants/transaction.constants";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
+} from "@/features/transactions/constants/transaction.constants";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
 
 interface TransactionFiltersProps {
   searchInput: string;

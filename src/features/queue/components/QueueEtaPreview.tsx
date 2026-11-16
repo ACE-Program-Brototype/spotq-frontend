@@ -1,5 +1,5 @@
 import { Clock, Info, Users } from "lucide-react";
-import { QUEUE_MESSAGES } from "../constants/queue.constants";
+import { QUEUE_MESSAGES } from "@/features/queue/constants/queue.constants";
 
 export interface QueueEtaPreviewProps {
   isLoading: boolean;

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/cn";
-import type { TablesGroupedBySection } from "../types/table.types";
+import type { TablesGroupedBySection } from "@/features/tables/types/table.types";
 
 interface TableSectionTabsProps {
   sections: string[];

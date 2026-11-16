@@ -2,14 +2,14 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { useCreateTableSection } from "../hooks/useCreateTableSection";
-import { useTableSectionsPaginated } from "../hooks/useTableSectionsPaginated";
-import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
+import { useCreateTableSection } from "@/features/tables/hooks/useCreateTableSection";
+import { useTableSectionsPaginated } from "@/features/tables/hooks/useTableSectionsPaginated";
+import { useUnlistTableSection } from "@/features/tables/hooks/useUnlistTableSection";
 import RestaurantTableSectionsPage from "./RestaurantTableSectionsPage";
 
-jest.mock("../hooks/useTableSectionsPaginated");
-jest.mock("../hooks/useCreateTableSection");
-jest.mock("../hooks/useUnlistTableSection");
+jest.mock("@/features/tables/hooks/useTableSectionsPaginated");
+jest.mock("@/features/tables/hooks/useCreateTableSection");
+jest.mock("@/features/tables/hooks/useUnlistTableSection");
 jest.mock("sonner", () => ({
   toast: {
     success: jest.fn(),

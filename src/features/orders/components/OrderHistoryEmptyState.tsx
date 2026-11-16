@@ -6,8 +6,8 @@
 import { ShoppingBag, UtensilsCrossed } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
-import { ORDER_FILTER_STATUS, ORDER_MESSAGES } from "../constants/orders.constants";
-import type { OrderFilterStatus } from "../types/orders.types";
+import { ORDER_FILTER_STATUS, ORDER_MESSAGES } from "@/features/orders/constants/orders.constants";
+import type { OrderFilterStatus } from "@/features/orders/types/orders.types";
 
 export interface OrderHistoryEmptyStateProps {
   statusFilter: OrderFilterStatus;

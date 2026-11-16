@@ -292,6 +292,14 @@ export const CREATE_CATEGORY_DEFAULT_VALUES = {
   isActive: true,
 } as const;
 
+export const MENU_ITEM_FILTER_STATUS = {
+  ALL: "ALL",
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+export type MenuItemFilterStatus =
+  (typeof MENU_ITEM_FILTER_STATUS)[keyof typeof MENU_ITEM_FILTER_STATUS];
+
 export const ADDON_AVAILABILITY_FILTERS = {
   ALL: "ALL",
   AVAILABLE: "AVAILABLE",

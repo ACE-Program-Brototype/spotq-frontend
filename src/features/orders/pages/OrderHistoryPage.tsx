@@ -8,13 +8,13 @@ import { AlertCircle, Receipt, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomerSidebar } from "@/features/profile/components/CustomerSidebar";
 import { useCustomerProfile } from "@/features/profile/hooks/use-customer-profile";
-import { OrderCard } from "../components/OrderCard";
-import { OrderFilterChips } from "../components/OrderFilterChips";
-import { OrderHistoryEmptyState } from "../components/OrderHistoryEmptyState";
-import { OrderHistorySkeleton } from "../components/OrderHistorySkeleton";
-import { OrderPagination } from "../components/OrderPagination";
-import { ORDER_FILTER_STATUS, ORDER_MESSAGES } from "../constants/orders.constants";
-import { useOrderHistory } from "../hooks/use-order-history";
+import { OrderCard } from "@/features/orders/components/OrderCard";
+import { OrderFilterChips } from "@/features/orders/components/OrderFilterChips";
+import { OrderHistoryEmptyState } from "@/features/orders/components/OrderHistoryEmptyState";
+import { OrderHistorySkeleton } from "@/features/orders/components/OrderHistorySkeleton";
+import { OrderPagination } from "@/features/orders/components/OrderPagination";
+import { ORDER_FILTER_STATUS, ORDER_MESSAGES } from "@/features/orders/constants/orders.constants";
+import { useOrderHistory } from "@/features/orders/hooks/use-order-history";
 
 export function OrderHistoryPage() {
   const { data: profile } = useCustomerProfile();

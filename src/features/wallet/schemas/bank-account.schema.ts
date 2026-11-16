@@ -3,7 +3,7 @@ import {
   ACCOUNT_NUMBER_REGEX,
   IFSC_REGEX,
   WALLET_VALIDATION_MESSAGES,
-} from "../constants/wallet.constants";
+} from "@/features/wallet/constants/wallet.constants";
 
 export const bankAccountSchema = z
   .object({

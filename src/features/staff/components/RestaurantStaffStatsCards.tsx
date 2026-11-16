@@ -1,5 +1,5 @@
 import { Mail, UserCheck, UserX } from "lucide-react";
-import type { StaffDirectoryStats } from "../services/staff-member.service";
+import type { StaffDirectoryStats } from "@/features/staff/services/staff-member.service";
 
 interface RestaurantStaffStatsCardsProps {
   stats: StaffDirectoryStats;

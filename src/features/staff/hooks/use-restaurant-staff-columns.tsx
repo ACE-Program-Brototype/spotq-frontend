@@ -5,9 +5,9 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import type { Column } from "@/components/common/table";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatDate } from "@/lib/utils/date";
-import { RestaurantStaffStatusBadge } from "../components/RestaurantStaffStatusBadge";
-import type { StaffMember } from "../types/staff-invitation.types";
-import { getStaffInitials } from "../utils/staff.helpers";
+import { RestaurantStaffStatusBadge } from "@/features/staff/components/RestaurantStaffStatusBadge";
+import type { StaffMember } from "@/features/staff/types/staff-invitation.types";
+import { getStaffInitials } from "@/features/staff/utils/staff.helpers";
 
 export function useRestaurantStaffColumns(): Column<StaffMember>[] {
   return useMemo<Column<StaffMember>[]>(

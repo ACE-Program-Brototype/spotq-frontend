@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { SOCKET_CONNECTION_STATUS } from "../../constants/websocket.constants";
+import { SOCKET_CONNECTION_STATUS } from "@/features/queue/constants/websocket.constants";
 import { ConnectionStatusBadge } from "./ConnectionStatusBadge";
 
 describe("ConnectionStatusBadge", () => {

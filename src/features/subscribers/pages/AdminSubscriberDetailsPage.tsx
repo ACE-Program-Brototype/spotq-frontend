@@ -4,14 +4,14 @@ import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils/date";
-import { SubscriberDetailsErrorState } from "../components/SubscriberDetailsErrorState";
-import { SubscriberDetailsSkeleton } from "../components/SubscriberDetailsSkeleton";
-import { SubscriberInvoicesTable } from "../components/SubscriberInvoicesTable";
-import { SubscriberPlanSection } from "../components/SubscriberPlanSection";
-import { SubscriberStatusBadge } from "../components/SubscriberStatusBadge";
-import { SubscriberTransactionsTable } from "../components/SubscriberTransactionsTable";
-import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
-import { useSubscriberDetails } from "../hooks/use-subscriber-details";
+import { SubscriberDetailsErrorState } from "@/features/subscribers/components/SubscriberDetailsErrorState";
+import { SubscriberDetailsSkeleton } from "@/features/subscribers/components/SubscriberDetailsSkeleton";
+import { SubscriberInvoicesTable } from "@/features/subscribers/components/SubscriberInvoicesTable";
+import { SubscriberPlanSection } from "@/features/subscribers/components/SubscriberPlanSection";
+import { SubscriberStatusBadge } from "@/features/subscribers/components/SubscriberStatusBadge";
+import { SubscriberTransactionsTable } from "@/features/subscribers/components/SubscriberTransactionsTable";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
+import { useSubscriberDetails } from "@/features/subscribers/hooks/use-subscriber-details";
 
 export function AdminSubscriberDetailsPage() {
   const { id } = useParams<{ id: string }>();

@@ -3,11 +3,11 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useTables } from "@/features/tables/hooks/useTables";
-import { queueService } from "../services/queue.service";
-import type { StaffLiveQueueEntry } from "../types/queue.types";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { StaffLiveQueueEntry } from "@/features/queue/types/queue.types";
 import StaffQueuePage from "./StaffQueuePage";
 
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 jest.mock("@/features/tables/hooks/useTables");
 
 describe("StaffQueuePage", () => {

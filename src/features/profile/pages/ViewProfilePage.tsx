@@ -8,12 +8,12 @@ import { AlertCircle, Edit3, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
-import { CustomerSidebar } from "../components/CustomerSidebar";
-import { ProfileHeroCard } from "../components/ProfileHeroCard";
-import { ProfileInfoCards } from "../components/ProfileInfoCards";
-import { ProfileSkeleton } from "../components/ProfileSkeleton";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useCustomerProfile } from "../hooks/use-customer-profile";
+import { CustomerSidebar } from "@/features/profile/components/CustomerSidebar";
+import { ProfileHeroCard } from "@/features/profile/components/ProfileHeroCard";
+import { ProfileInfoCards } from "@/features/profile/components/ProfileInfoCards";
+import { ProfileSkeleton } from "@/features/profile/components/ProfileSkeleton";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useCustomerProfile } from "@/features/profile/hooks/use-customer-profile";
 
 export function ViewProfilePage() {
   const { data: profile, isLoading, isError, error, refetch, isFetching } = useCustomerProfile();

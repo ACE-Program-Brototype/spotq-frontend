@@ -17,7 +17,7 @@ import {
 } from "@/features/wallet/hooks/useWallet";
 import { createIdempotencyKey } from "@/lib/api/idempotency";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import type { BankAccountFormValues } from "../schemas/bank-account.schema";
+import type { BankAccountFormValues } from "@/features/wallet/schemas/bank-account.schema";
 
 export default function RestaurantWalletPage() {
   const [ledgerFilters, setLedgerFilters] = useState({

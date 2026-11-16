@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { RESTAURANT_DEFAULTS, RESTAURANT_QUERY_KEYS } from "../constants/restaurant.constants";
-import { restaurantService } from "../services/restaurant.service";
-import type { RestaurantDetails } from "../types/restaurant.types";
+import { RESTAURANT_DEFAULTS, RESTAURANT_QUERY_KEYS } from "@/features/restaurants/constants/restaurant.constants";
+import { restaurantService } from "@/features/restaurants/services/restaurant.service";
+import type { RestaurantDetails } from "@/features/restaurants/types/restaurant.types";
 
 export function useAdminRestaurantDetails(restaurantId?: string) {
   const query = useQuery<RestaurantDetails, Error>({

@@ -1,9 +1,9 @@
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils/date";
-import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
-import type { SubscriberDetail } from "../types/subscriber.types";
-import { formatBillingCycle, formatPrice } from "../utils/subscriber.utils";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
+import type { SubscriberDetail } from "@/features/subscribers/types/subscriber.types";
+import { formatBillingCycle, formatPrice } from "@/features/subscribers/utils/subscriber.utils";
 
 export interface SubscriberPlanSectionProps {
   subscriber: SubscriberDetail;

@@ -5,9 +5,9 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { MENU_CATEGORIES_QUERY_KEY, MENU_MESSAGES } from "../constants/menu.constants";
-import { menuCategoryService } from "../services/menu-category.service";
-import type { MenuCategory, UpdateMenuCategoryPayload } from "../types/menu-category.types";
+import { MENU_CATEGORIES_QUERY_KEY, MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import { menuCategoryService } from "@/features/menu/services/menu-category.service";
+import type { MenuCategory, UpdateMenuCategoryPayload } from "@/features/menu/types/menu-category.types";
 
 interface UpdateMenuCategoryVariables {
   restaurantId: string;

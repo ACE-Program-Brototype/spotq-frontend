@@ -8,10 +8,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { toast } from "sonner";
-import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useCustomerProfile } from "../hooks/use-customer-profile";
-import { useUpdateCustomerProfile } from "../hooks/use-update-customer-profile";
-import type { CustomerProfile } from "../types/profile.types";
+import { Gender, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useCustomerProfile } from "@/features/profile/hooks/use-customer-profile";
+import { useUpdateCustomerProfile } from "@/features/profile/hooks/use-update-customer-profile";
+import type { CustomerProfile } from "@/features/profile/types/profile.types";
 import { EditProfilePage } from "./EditProfilePage";
 
 jest.mock("sonner", () => ({
@@ -21,8 +21,8 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("../hooks/use-customer-profile");
-jest.mock("../hooks/use-update-customer-profile");
+jest.mock("@/features/profile/hooks/use-customer-profile");
+jest.mock("@/features/profile/hooks/use-update-customer-profile");
 
 const mockUseCustomerProfile = useCustomerProfile as jest.MockedFunction<typeof useCustomerProfile>;
 const mockUseUpdateCustomerProfile = useUpdateCustomerProfile as jest.MockedFunction<

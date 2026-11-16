@@ -1,7 +1,7 @@
 import { AlertTriangle, Loader2, ShieldAlert, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { APPLICATION_MESSAGES } from "../../constants/restaurant-application.constants";
+import { APPLICATION_MESSAGES } from "@/features/restaurants/constants/restaurant-application.constants";
 
 export interface RejectApplicationModalProps {
   isOpen: boolean;

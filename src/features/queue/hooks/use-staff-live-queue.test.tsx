@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
-import { PARTY_SIZE_BUCKET, REGISTRATION_TYPE_FILTER } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { StaffLiveQueueEntry } from "../types/queue.types";
+import { PARTY_SIZE_BUCKET, REGISTRATION_TYPE_FILTER } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { StaffLiveQueueEntry } from "@/features/queue/types/queue.types";
 import { useStaffLiveQueue } from "./use-staff-live-queue";
 
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 
 describe("useStaffLiveQueue", () => {
   let queryClient: QueryClient;

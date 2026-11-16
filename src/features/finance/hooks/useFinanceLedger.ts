@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { FINANCE_QUERY_KEY } from "../constants/finance.constants";
-import type { LedgerQuery } from "../services/finance.service";
-import { financeService } from "../services/finance.service";
+import { FINANCE_QUERY_KEY } from "@/features/finance/constants/finance.constants";
+import type { LedgerQuery } from "@/features/finance/services/finance.service";
+import { financeService } from "@/features/finance/services/finance.service";
 
 export function useFinanceLedger(query: LedgerQuery) {
   return useQuery({

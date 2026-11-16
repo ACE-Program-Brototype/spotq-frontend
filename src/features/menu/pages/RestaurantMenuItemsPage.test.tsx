@@ -2,18 +2,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { menuCategoryService } from "../services/menu-category.service";
-import { menuItemService } from "../services/menu-item.service";
+import { menuCategoryService } from "@/features/menu/services/menu-category.service";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
 import RestaurantMenuItemsPage from "./RestaurantMenuItemsPage";
 
-jest.mock("../services/menu-item.service", () => ({
+jest.mock("@/features/menu/services/menu-item.service", () => ({
   menuItemService: {
     getMenuItems: jest.fn(),
     deleteMenuItem: jest.fn(),
   },
 }));
 
-jest.mock("../services/menu-category.service", () => ({
+jest.mock("@/features/menu/services/menu-category.service", () => ({
   menuCategoryService: {
     getCategories: jest.fn(),
   },

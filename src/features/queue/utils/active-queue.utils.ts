@@ -1,6 +1,6 @@
 import env from "@/config/env";
-import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
-import type { ActiveCustomerTicket } from "../types/ring-alert.types";
+import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
+import type { ActiveCustomerTicket } from "@/features/queue/types/ring-alert.types";
 
 /**
  * Persists active customer queue ticket to local storage for session restoration.
@@ -11,10 +11,8 @@ export function setActiveCustomerTicket(ticket: ActiveCustomerTicket): void {
     localStorage.setItem(ACTIVE_QUEUE_STORAGE_KEY, JSON.stringify(ticket));
     // Dispatch in-tab storage event so current tab listeners immediately sync
     window.dispatchEvent(new Event("storage"));
-  } catch (err) {
-    if (env.isDev) {
-      console.warn("Failed to persist active customer ticket:", err);
-    }
+  } catch {
+    // Fail gracefully if localStorage is restricted
   }
 }
 

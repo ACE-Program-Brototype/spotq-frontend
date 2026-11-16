@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { QUEUE_QUERY_KEYS } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { CustomerQueueStatusResponse } from "../types/queue.types";
+import { QUEUE_QUERY_KEYS } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { CustomerQueueStatusResponse } from "@/features/queue/types/queue.types";
 
 export interface UseCustomerQueueStatusOptions {
   enabled?: boolean;

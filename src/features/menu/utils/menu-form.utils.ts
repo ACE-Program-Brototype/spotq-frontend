@@ -1,6 +1,6 @@
-import type { DietaryType } from "../constants/menu.constants";
-import type { CreateMenuItemFormData } from "../schemas/create-menu-item.schema";
-import type { MenuItemDetails } from "../types/menu.types";
+import type { DietaryType } from "@/features/menu/constants/menu.constants";
+import type { CreateMenuItemFormData } from "@/features/menu/schemas/create-menu-item.schema";
+import type { MenuItemDetails } from "@/features/menu/types/menu.types";
 
 export const parseVariantNamePortion = (fullName: string = "") => {
   if (!fullName) return { name: "", portion: "" };

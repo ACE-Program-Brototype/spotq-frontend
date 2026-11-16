@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import {
+  STAFF_DEFAULTS,
   STAFF_ENDPOINTS,
   STAFF_MESSAGES,
   type StaffStatus,
@@ -46,7 +47,7 @@ export function useUpdateStaffStatus({
       });
 
       const message =
-        status === "ACTIVE"
+        status === STAFF_DEFAULTS.STATUS
           ? STAFF_MESSAGES.STAFF_ACTIVATE_SUCCESS
           : STAFF_MESSAGES.STAFF_DEACTIVATE_SUCCESS;
 

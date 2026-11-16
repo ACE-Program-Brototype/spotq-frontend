@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PARTY_SIZE_LIMITS } from "../constants/queue.constants";
+import { PARTY_SIZE_LIMITS } from "@/features/queue/constants/queue.constants";
 
 export function isValidPhone(phone: string): boolean {
   const trimmed = phone.trim().replace(/[\s-]/g, "");

@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { TABLE_QUERY_KEYS } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
-import type { TablesGroupedBySection } from "../types/table.types";
+import { TABLE_QUERY_KEYS, TABLE_STATUS } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
+import type { TablesGroupedBySection } from "@/features/tables/types/table.types";
 
 /**
  * Hook to fetch tables grouped by section and compute summary statistics.
@@ -36,8 +36,8 @@ export function useTables(restaurantId: string) {
       totalCapacity += t.capacity || 0;
       currentDiners += t.currentOccupancy || 0;
 
-      if (t.status === "AVAILABLE") available++;
-      else if (t.status === "MAINTENANCE") maintenance++;
+      if (t.status === TABLE_STATUS.AVAILABLE) available++;
+      else if (t.status === TABLE_STATUS.MAINTENANCE) maintenance++;
       else occupied++; // OCCUPIED or PARTIAL_OCCUPIED
     }
 

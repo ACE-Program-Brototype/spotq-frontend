@@ -1,8 +1,13 @@
 import { LogOut, MoreVertical, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils/cn";
-import { DOM_EVENTS, KEYBOARD_KEYS, TABLE_STATUS_CONFIG } from "../constants/table.constants";
-import type { TableItem } from "../types/table.types";
+import {
+  DOM_EVENTS,
+  KEYBOARD_KEYS,
+  TABLE_STATUS,
+  TABLE_STATUS_CONFIG,
+} from "@/features/tables/constants/table.constants";
+import type { TableItem } from "@/features/tables/types/table.types";
 import { TableStatusBadge } from "./TableStatusBadge";
 
 interface TableCardProps {
@@ -12,13 +17,20 @@ interface TableCardProps {
   className?: string;
 }
 
+/**
+ * TableCard Component
+ *
+ * @deprecated SpotQ domain strictly encompasses digital takeaway ordering and virtual queue ticketing.
+ * Dine-in table management is legacy and subject to platform deprecation guidelines.
+ */
 export function TableCard({ table, onClick, onRelease, className }: TableCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const config = TABLE_STATUS_CONFIG[table.status] || TABLE_STATUS_CONFIG.AVAILABLE;
 
   // Format capacity or occupancy display
-  const isOccupiedOrPartial = table.status === "OCCUPIED" || table.status === "PARTIAL_OCCUPIED";
+  const isOccupiedOrPartial =
+    table.status === TABLE_STATUS.OCCUPIED || table.status === TABLE_STATUS.PARTIAL_OCCUPIED;
   const canRelease = Boolean(onRelease && isOccupiedOrPartial && table.currentOccupancy > 0);
 
   const occupancyText = isOccupiedOrPartial

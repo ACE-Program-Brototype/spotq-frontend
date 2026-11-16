@@ -5,14 +5,14 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { CreateSectionModal } from "../components/CreateSectionModal";
-import { TableSectionCard } from "../components/TableSectionCard";
-import { TableSkeletonGrid } from "../components/TableSkeletonGrid";
-import { UnlistSectionDialog } from "../components/UnlistSectionDialog";
-import { useCreateTableSection } from "../hooks/useCreateTableSection";
-import { useTableSectionsPaginated } from "../hooks/useTableSectionsPaginated";
-import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
-import type { TableSectionAll } from "../types/table.types";
+import { CreateSectionModal } from "@/features/tables/components/CreateSectionModal";
+import { TableSectionCard } from "@/features/tables/components/TableSectionCard";
+import { TableSkeletonGrid } from "@/features/tables/components/TableSkeletonGrid";
+import { UnlistSectionDialog } from "@/features/tables/components/UnlistSectionDialog";
+import { useCreateTableSection } from "@/features/tables/hooks/useCreateTableSection";
+import { useTableSectionsPaginated } from "@/features/tables/hooks/useTableSectionsPaginated";
+import { useUnlistTableSection } from "@/features/tables/hooks/useUnlistTableSection";
+import type { TableSectionAll } from "@/features/tables/types/table.types";
 
 const PAGE_SIZE = 8;
 

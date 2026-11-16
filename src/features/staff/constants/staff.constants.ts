@@ -20,6 +20,21 @@ export const STAFF_STATUSES = ["ACTIVE", "INACTIVE", "SUSPENDED", "INVITED", "RE
 
 export type StaffStatus = (typeof STAFF_STATUSES)[number];
 
+export const STAFF_INVITATION_STATUS = {
+  PENDING: "PENDING",
+  ACCEPTED: "ACCEPTED",
+  EXPIRED: "EXPIRED",
+  REVOKED: "REVOKED",
+} as const;
+
+export type StaffInvitationStatus =
+  (typeof STAFF_INVITATION_STATUS)[keyof typeof STAFF_INVITATION_STATUS];
+
+export const STAFF_FILTER_STATUS = {
+  ALL: "ALL",
+  ...STAFF_INVITATION_STATUS,
+} as const;
+
 export const STAFF_DESIGNATIONS = [
   "Manager",
   "Head Chef",

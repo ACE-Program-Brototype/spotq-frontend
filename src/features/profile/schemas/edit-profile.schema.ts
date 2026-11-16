@@ -4,7 +4,7 @@
  */
 
 import { z } from "zod";
-import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
+import { Gender, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 
 const nameRegex = /^[\p{L}\p{M}]+(?:[' -][\p{L}\p{M}]+)*$/u;
 

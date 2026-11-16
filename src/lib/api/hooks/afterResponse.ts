@@ -1,6 +1,6 @@
 import type { AfterResponseHook } from "ky";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { redirectToPortalLogin } from "../portal-redirect";
+import { redirectToPortalLogin } from "@/lib/api/portal-redirect";
 
 export const afterResponse: AfterResponseHook = async ({ response }) => {
   if (response.status === 403 || response.status === 401) {

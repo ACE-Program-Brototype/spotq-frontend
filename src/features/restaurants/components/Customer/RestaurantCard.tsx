@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
-import { usePresignedUrl } from "../../hooks/usePresignedUrl";
-import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
+import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
+import type { CustomerRestaurantItem } from "@/features/restaurants/types/customer-restaurant.types";
 
 export interface RestaurantCardProps {
   restaurant: CustomerRestaurantItem;

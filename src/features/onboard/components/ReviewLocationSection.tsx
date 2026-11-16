@@ -1,4 +1,4 @@
-import type { RestaurantAddress } from "../types/onboard.types";
+import type { RestaurantAddress } from "@/features/onboard/types/onboard.types";
 
 interface ReviewLocationSectionProps {
   location: RestaurantAddress | null;

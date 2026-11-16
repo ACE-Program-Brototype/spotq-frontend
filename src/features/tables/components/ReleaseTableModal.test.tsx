@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { toast } from "sonner";
-import { TABLE_MESSAGES } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
-import type { TableItem } from "../types/table.types";
+import { TABLE_MESSAGES } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
+import type { TableItem } from "@/features/tables/types/table.types";
 import { ReleaseTableModal } from "./ReleaseTableModal";
 
-jest.mock("../services/table.service", () => ({
+jest.mock("@/features/tables/services/table.service", () => ({
   tableService: {
     releaseTables: jest.fn(),
   },

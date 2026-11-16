@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useDeleteS3Object } from "@/hooks/useDeleteS3Object";
 import { STORAGE_MESSAGES } from "@/services/storage/storage.constants";
 import { uploadFile } from "@/services/storage/storage.service";
-import type { DocumentItem } from "../types/onboard.types";
+import type { DocumentItem } from "@/features/onboard/types/onboard.types";
 
 interface DocumentUploadCardProps {
   id: string;

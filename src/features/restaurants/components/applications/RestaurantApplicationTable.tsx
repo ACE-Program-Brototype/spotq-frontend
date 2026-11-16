@@ -18,12 +18,12 @@ import { formatDate } from "@/lib/utils/date";
 import {
   APPLICATION_MESSAGES,
   APPLICATION_STATUS,
-} from "../../constants/restaurant-application.constants";
+} from "@/features/restaurants/constants/restaurant-application.constants";
 import type {
   ApplicationSortByType,
   ApplicationSortOrderType,
   RestaurantApplicationItem,
-} from "../../types/restaurant-application.types";
+} from "@/features/restaurants/types/restaurant-application.types";
 
 export interface RestaurantApplicationTableProps {
   applications: RestaurantApplicationItem[];

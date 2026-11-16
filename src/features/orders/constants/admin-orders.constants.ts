@@ -8,7 +8,7 @@ import type {
   AdminOrderFilterStatus,
   AdminOrdersSortBy,
   AdminOrdersSortOrder,
-} from "../types/admin-orders.types";
+} from "@/features/orders/types/admin-orders.types";
 
 export const ADMIN_ORDERS_ENDPOINTS = {
   LIST: "orders/admin",

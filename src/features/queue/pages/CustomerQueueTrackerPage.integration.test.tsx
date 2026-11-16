@@ -2,14 +2,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { io } from "socket.io-client";
-import { ACTIVE_QUEUE_STORAGE_KEY, QUEUE_WS_EVENTS } from "../constants/websocket.constants";
-import { queueService } from "../services/queue.service";
-import { ringMedia } from "../utils/ring-sound.utils";
+import { ACTIVE_QUEUE_STORAGE_KEY, QUEUE_WS_EVENTS } from "@/features/queue/constants/websocket.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import { ringMedia } from "@/features/queue/utils/ring-sound.utils";
 import CustomerQueueTrackerPage from "./CustomerQueueTrackerPage";
 
 jest.mock("socket.io-client");
-jest.mock("../services/queue.service");
-jest.mock("../utils/ring-sound.utils", () => ({
+jest.mock("@/features/queue/services/queue.service");
+jest.mock("@/features/queue/utils/ring-sound.utils", () => ({
   ringMedia: {
     playChime: jest.fn(),
     playAlarmSound: jest.fn(),

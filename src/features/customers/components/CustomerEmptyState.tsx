@@ -1,6 +1,6 @@
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CUSTOMER_MESSAGES } from "../constants/customer.constants";
+import { CUSTOMER_MESSAGES } from "@/features/customers/constants/customer.constants";
 
 export interface CustomerEmptyStateProps {
   isFiltered?: boolean;

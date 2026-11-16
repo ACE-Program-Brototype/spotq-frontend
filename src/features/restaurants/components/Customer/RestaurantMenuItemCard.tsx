@@ -1,8 +1,6 @@
-import { ChevronDown, Clock3, Minus, Plus, ShoppingCart, UtensilsCrossed } from "lucide-react";
+import { Clock3, UtensilsCrossed } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { CartRestaurantMismatchDialog } from "@/features/cart/components/CartRestaurantMismatchDialog";
 import {
   CART_MESSAGES,
@@ -10,65 +8,19 @@ import {
 } from "@/features/cart/constants/cart.constants";
 import { useCartStore } from "@/features/cart/store/cart.store";
 import type { AddCartItemInput } from "@/features/cart/types/cart.types";
+import { MenuItemCardActions } from "@/features/restaurants/components/Customer/MenuItemCardActions";
+import { MenuItemCustomizer } from "@/features/restaurants/components/Customer/MenuItemCustomizer";
+import { RESTAURANT_PLAN_TYPES } from "@/features/restaurants/constants/customer-restaurant.constants";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuItem,
 } from "@/features/restaurants/types/customer-restaurant.types";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
 import { formatCurrency } from "@/lib/utils";
-import { RESTAURANT_PLAN_TYPES } from "@/features/restaurants/constants/customer-restaurant.constants";
 
 interface RestaurantMenuItemCardProps {
   item: CustomerRestaurantMenuItem;
   restaurant: CustomerRestaurantDetails;
-}
-
-function AddonOption({
-  addon,
-  itemId,
-  selected,
-  onToggle,
-}: {
-  addon: NonNullable<CustomerRestaurantMenuItem["addons"]>[number];
-  itemId: string;
-  selected: boolean;
-  onToggle: (checked: boolean) => void;
-}) {
-  const { data: imageUrl } = usePresignedUrl(addon.imageKey);
-  const checkboxId = `addon-${itemId}-${addon.id}`;
-
-  return (
-    <div className="flex items-start justify-between gap-3 text-sm text-stone-700 min-w-0">
-      <div className="flex min-w-0 flex-1 items-start gap-2">
-        <Checkbox
-          id={checkboxId}
-          checked={selected}
-          onCheckedChange={(checked) => onToggle(checked === true)}
-          className="mt-0.5 shrink-0"
-        />
-        <label htmlFor={checkboxId} className="flex min-w-0 flex-1 cursor-pointer items-start gap-2">
-          {addon.imageKey && (
-            <span className="size-10 shrink-0 overflow-hidden rounded-md bg-stone-100">
-              {imageUrl && <img src={imageUrl} alt="" className="size-full object-cover" />}
-            </span>
-          )}
-          <span className="min-w-0 flex-1">
-            <span className="block truncate font-medium text-stone-900" title={addon.name}>
-              {addon.name}
-            </span>
-            {addon.description && (
-              <span className="block text-xs text-stone-400 line-clamp-1 break-words [overflow-wrap:anywhere]" title={addon.description}>
-                {addon.description}
-              </span>
-            )}
-          </span>
-        </label>
-      </div>
-      <span className="shrink-0 font-semibold whitespace-nowrap">
-        {addon.price > 0 ? `+${formatCurrency(addon.price)}` : "Free"}
-      </span>
-    </div>
-  );
 }
 
 export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemCardProps) {
@@ -283,121 +235,28 @@ export function RestaurantMenuItemCard({ item, restaurant }: RestaurantMenuItemC
           </div>
         </div>
 
-        {item.isAvailable && (availableVariants.length > 0 || availableAddons.length > 0) && (
-          <details className="group/options border-t border-stone-100 px-3.5 py-2.5 sm:px-5 sm:py-3">
-            <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold text-stone-600 [&::-webkit-details-marker]:hidden">
-              <span>
-                {availableVariants.length > 0 && availableAddons.length > 0
-                  ? "Customize this item"
-                  : availableVariants.length > 0
-                    ? "Choose a size"
-                    : "Add extras"}
-              </span>
-              <ChevronDown className="size-4 transition-transform group-open/options:rotate-180" />
-            </summary>
-            <div className="mt-3 grid gap-4 sm:grid-cols-2">
-              {availableVariants.length > 0 && (
-                <fieldset className="space-y-2 min-w-0">
-                  <legend className="mb-2 text-[11px] font-bold uppercase tracking-wide text-stone-400">
-                    Variant
-                  </legend>
-                  {availableVariants.map((variant) => (
-                    <label
-                      key={variant.id}
-                      htmlFor={`variant-${item.id}-${variant.id}`}
-                      className="flex cursor-pointer items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm text-stone-700 min-w-0"
-                    >
-                      <span className="flex items-center gap-2 min-w-0 flex-1">
-                        <input
-                          id={`variant-${item.id}-${variant.id}`}
-                          type="radio"
-                          name={`variant-${item.id}`}
-                          value={variant.id}
-                          checked={selectedVariantId === variant.id}
-                          onChange={() => {
-                            setSelectedVariantId(variant.id);
-                          }}
-                          className="accent-[#ff6b00] shrink-0"
-                        />
-                        <span className="truncate" title={variant.name}>
-                          {variant.name}
-                        </span>
-                        {variant.isDefault && (
-                          <span className="text-[10px] text-stone-400 shrink-0">Default</span>
-                        )}
-                      </span>
-                      <span className="font-semibold shrink-0 whitespace-nowrap">
-                        {formatCurrency(variant.price)}
-                      </span>
-                    </label>
-                  ))}
-                </fieldset>
-              )}
-              {availableAddons.length > 0 && (
-                <fieldset className="space-y-2 min-w-0">
-                  <legend className="mb-2 text-[11px] font-bold uppercase tracking-wide text-stone-400">
-                    Add-ons
-                  </legend>
-                  {availableAddons.map((addon) => (
-                    <AddonOption
-                      key={addon.id}
-                      addon={addon}
-                      itemId={item.id}
-                      selected={selectedAddonIds.includes(addon.id)}
-                      onToggle={(checked) => toggleAddon(addon.id, checked)}
-                    />
-                  ))}
-                </fieldset>
-              )}
-            </div>
-          </details>
+        {item.isAvailable && (
+          <MenuItemCustomizer
+            itemId={item.id}
+            availableVariants={availableVariants}
+            availableAddons={availableAddons}
+            selectedVariantId={selectedVariantId}
+            onSelectVariant={setSelectedVariantId}
+            selectedAddonIds={selectedAddonIds}
+            onToggleAddon={toggleAddon}
+          />
         )}
 
         {/* Card Actions: Quantity Selector & Add to Cart */}
         {item.isAvailable && (
-          <div className="flex flex-wrap items-center justify-between gap-2.5 border-t border-stone-100 px-3.5 py-2.5 sm:px-5 sm:py-3">
-            <div className="flex items-center gap-1.5 sm:gap-2 rounded-xl border border-stone-200 bg-stone-50 p-1 shrink-0">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled={quantity <= CART_QUANTITY_LIMITS.MIN_ITEM_QUANTITY}
-                onClick={handleDecreaseQuantity}
-                aria-label={CART_MESSAGES.DECREASE_QUANTITY}
-                className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              >
-                <Minus className="size-3.5" />
-              </Button>
-
-              <span
-                data-testid={`quantity-selector-${item.id}`}
-                className="w-7 text-center text-sm font-bold text-stone-900"
-              >
-                {quantity}
-              </span>
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled={quantity >= CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY}
-                onClick={handleIncreaseQuantity}
-                aria-label={CART_MESSAGES.INCREASE_QUANTITY}
-                className="size-7 rounded-lg text-stone-700 hover:bg-white hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              >
-                <Plus className="size-3.5" />
-              </Button>
-            </div>
-
-            <Button
-              type="button"
-              onClick={handleAddToCart}
-              className="rounded-xl bg-[#ff6b00] px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#e05e00] transition cursor-pointer shrink-0"
-            >
-              <ShoppingCart className="mr-1.5 size-3.5 shrink-0" />
-              <span>Add to Cart ({formatCurrency(totalItemPrice)})</span>
-            </Button>
-          </div>
+          <MenuItemCardActions
+            itemId={item.id}
+            quantity={quantity}
+            totalItemPrice={totalItemPrice}
+            onDecreaseQuantity={handleDecreaseQuantity}
+            onIncreaseQuantity={handleIncreaseQuantity}
+            onAddToCart={handleAddToCart}
+          />
         )}
       </article>
 

@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   CREATE_TABLE_VALIDATION_MESSAGES,
   TABLE_NAME_MAX_LENGTH,
-} from "../constants/table.constants";
+} from "@/features/tables/constants/table.constants";
 
 export const createTableSchema = z.object({
   tableCode: z

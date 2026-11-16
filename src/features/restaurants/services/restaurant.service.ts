@@ -5,7 +5,7 @@ import {
   RESTAURANT_FILTER_PLANS,
   RESTAURANT_FILTER_STATUS,
   RESTAURANT_SUBSCRIPTION_ACTIVE_FILTER,
-} from "../constants/restaurant.constants";
+} from "@/features/restaurants/constants/restaurant.constants";
 import type {
   AdminRestaurantDetailsApiResponse,
   AdminRestaurantsApiResponse,
@@ -17,7 +17,7 @@ import type {
   RestaurantListItem,
   UnblockRestaurantInput,
   UnblockRestaurantResponse,
-} from "../types/restaurant.types";
+} from "@/features/restaurants/types/restaurant.types";
 
 export const restaurantService = {
   /**

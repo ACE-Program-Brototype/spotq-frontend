@@ -1,9 +1,10 @@
 import { apiClient } from "@/lib/api/client";
+import { ORDER_FILTER_STATUS } from "@/features/orders/constants/orders.constants";
 import {
   RESTAURANT_ORDERS_DEFAULTS,
   RESTAURANT_ORDERS_ENDPOINTS,
   RESTAURANT_ORDERS_SERVICE_ERRORS,
-} from "../constants/restaurant-orders.constants";
+} from "@/features/orders/constants/restaurant-orders.constants";
 import type {
   GetRestaurantOrdersOverviewApiResponse,
   GetRestaurantOrdersParams,
@@ -11,7 +12,7 @@ import type {
   RestaurantOrderDetailApiResponse,
   RestaurantOrderMetrics,
   RestaurantOrdersListApiResponse,
-} from "../types/restaurant-orders.types";
+} from "@/features/orders/types/restaurant-orders.types";
 
 export const restaurantOrdersService = {
   /**
@@ -87,7 +88,7 @@ export const restaurantOrdersService = {
       searchParams.search = params.search.trim();
     }
 
-    if (params?.status && params.status !== "ALL") {
+    if (params?.status && params.status !== ORDER_FILTER_STATUS.ALL) {
       searchParams.status = params.status;
     }
 

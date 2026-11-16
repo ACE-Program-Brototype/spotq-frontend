@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { Customer } from "../types/customer.types";
+import type { Customer } from "@/features/customers/types/customer.types";
 import { CustomerTable } from "./CustomerTable";
 
 const mockCustomers: Customer[] = [

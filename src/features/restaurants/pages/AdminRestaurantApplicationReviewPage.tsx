@@ -5,12 +5,12 @@ import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { LoadingIndicator } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ApplicationDocumentsTab } from "../components/applications/ApplicationDocumentsTab";
-import { ApplicationImagesTab } from "../components/applications/ApplicationImagesTab";
-import { ApplicationOverviewTab } from "../components/applications/ApplicationOverviewTab";
-import { ApplicationReviewHeader } from "../components/applications/ApplicationReviewHeader";
-import { APPLICATION_MESSAGES } from "../constants/restaurant-application.constants";
-import { useRestaurantApplicationDetails } from "../hooks/useRestaurantApplicationDetails";
+import { ApplicationDocumentsTab } from "@/features/restaurants/components/applications/ApplicationDocumentsTab";
+import { ApplicationImagesTab } from "@/features/restaurants/components/applications/ApplicationImagesTab";
+import { ApplicationOverviewTab } from "@/features/restaurants/components/applications/ApplicationOverviewTab";
+import { ApplicationReviewHeader } from "@/features/restaurants/components/applications/ApplicationReviewHeader";
+import { APPLICATION_MESSAGES } from "@/features/restaurants/constants/restaurant-application.constants";
+import { useRestaurantApplicationDetails } from "@/features/restaurants/hooks/useRestaurantApplicationDetails";
 
 export type ApplicationReviewTabType = "overview" | "documents" | "images";
 

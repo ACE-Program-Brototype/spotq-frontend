@@ -4,11 +4,11 @@ import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { SubscriberFilters } from "../components/SubscriberFilters";
-import { SubscriberTable } from "../components/SubscriberTable";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
-import { useSubscribers } from "../hooks/use-subscribers";
-import type { SubscriberSummary } from "../types/subscriber.types";
+import { SubscriberFilters } from "@/features/subscribers/components/SubscriberFilters";
+import { SubscriberTable } from "@/features/subscribers/components/SubscriberTable";
+import { SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
+import { useSubscribers } from "@/features/subscribers/hooks/use-subscribers";
+import type { SubscriberSummary } from "@/features/subscribers/types/subscriber.types";
 
 export function AdminSubscribersPage() {
   const {

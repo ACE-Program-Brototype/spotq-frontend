@@ -19,8 +19,8 @@ import { CUSTOMER_ROUTES } from "@/app/router/customer/customer.routes.constants
 import { CancelOrderTriggerButton } from "@/features/orders/components/admin/order/cancel-order";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
-import { ORDER_MESSAGES, ORDER_STATUS } from "../constants/orders.constants";
-import type { OrderHistoryItem, OrderStatus } from "../types/orders.types";
+import { ORDER_MESSAGES, ORDER_STATUS } from "@/features/orders/constants/orders.constants";
+import type { OrderHistoryItem, OrderStatus } from "@/features/orders/types/orders.types";
 
 export interface OrderCardProps {
   order: OrderHistoryItem;

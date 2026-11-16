@@ -4,7 +4,7 @@
  */
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 
 const skeletonCardKeys = ["sk-email", "sk-phone", "sk-gender", "sk-dob"];
 

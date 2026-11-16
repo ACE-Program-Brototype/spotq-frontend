@@ -1,6 +1,6 @@
 import type { SuccessResponse } from "@/components/common";
 import { apiClient } from "@/lib/api/client";
-import { TABLE_ENDPOINTS, TABLE_SERVICE_ERRORS } from "../constants/table.constants";
+import { TABLE_ENDPOINTS, TABLE_SERVICE_ERRORS } from "@/features/tables/constants/table.constants";
 import type {
   AdminTables,
   CreateTablePayload,
@@ -20,7 +20,7 @@ import type {
   TablesGroupedBySection,
   UpdateTablePayload,
   UpdateTableStatusResponse,
-} from "../types/table.types";
+} from "@/features/tables/types/table.types";
 
 export const tableService = {
   async createTable(restaurantId: string, payload: CreateTablePayload): Promise<TableItem> {

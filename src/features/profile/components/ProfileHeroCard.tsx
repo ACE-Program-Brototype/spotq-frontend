@@ -4,8 +4,8 @@
  * full name, and Member Since badge.
  */
 
-import { MONTH_NAMES, PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { ProfileHeroCardProps } from "../types/profile.types";
+import { MONTH_NAMES, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { ProfileHeroCardProps } from "@/features/profile/types/profile.types";
 
 export function ProfileHeroCard({ profile }: ProfileHeroCardProps) {
   const displayName = profile.full_name?.trim() || "Customer";

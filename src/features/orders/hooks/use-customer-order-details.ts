@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { CUSTOMER_PAYMENT_STATUS } from "../constants/customer-order-details.constants";
-import { ORDER_QUERY_KEYS } from "../constants/orders.constants";
-import { orderService } from "../services/order.service";
+import { CUSTOMER_PAYMENT_STATUS } from "@/features/orders/constants/customer-order-details.constants";
+import { ORDER_QUERY_KEYS } from "@/features/orders/constants/orders.constants";
+import { orderService } from "@/features/orders/services/order.service";
 import type {
   CustomerOrderDetails,
   CustomerOrderRefundStatus,
-} from "../types/customer-order-details.types";
+} from "@/features/orders/types/customer-order-details.types";
 
 export function useCustomerOrderDetails(orderId?: string | null) {
   return useQuery<CustomerOrderDetails, Error>({

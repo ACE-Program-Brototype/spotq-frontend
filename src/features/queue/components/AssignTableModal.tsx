@@ -1,17 +1,17 @@
-import { AlertCircle, Check, Table as TableIcon } from "lucide-react";
+import { AlertCircle, Check } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { TABLE_STATUS } from "@/features/tables/constants/table.constants";
 import { useTables } from "@/features/tables/hooks/useTables";
 import type { TableItem } from "@/features/tables/types/table.types";
-import { QUEUE_MESSAGES } from "../constants/queue.constants";
-import { useAssignTables } from "../hooks/use-assign-tables";
-import type { QueueEntry } from "../types/queue.types";
-import { AssignTableCapacityBanner } from "./AssignTableCapacityBanner";
-import { AssignTableCard } from "./AssignTableCard";
-import { AssignTableGuestSummary } from "./AssignTableGuestSummary";
-import { AssignTableModalHeader } from "./AssignTableModalHeader";
+import { AssignTableCapacityBanner } from "@/features/queue/components/AssignTableCapacityBanner";
+import { AssignTableGuestSummary } from "@/features/queue/components/AssignTableGuestSummary";
+import { AssignTableList } from "@/features/queue/components/AssignTableList";
+import { AssignTableModalHeader } from "@/features/queue/components/AssignTableModalHeader";
+import { QUEUE_MESSAGES } from "@/features/queue/constants/queue.constants";
+import { useAssignTables } from "@/features/queue/hooks/use-assign-tables";
+import type { QueueEntry } from "@/features/queue/types/queue.types";
 
 interface AssignTableModalProps {
   isOpen: boolean;
@@ -164,8 +164,6 @@ export function AssignTableModal({
       onSuccess?.(updatedEntry, response.data.tableIds);
       onClose();
     } catch {
-      // If table assignment fails (e.g. table is already occupied by another staff member),
-      // toast is triggered by useAssignTables and we close the modal to dismiss stale state
       onClose();
     }
   };
@@ -212,93 +210,22 @@ export function AssignTableModal({
             remainingNeeded={remainingNeeded}
           />
 
-          {/* Section Filter Chips (if multiple sections exist) */}
-          {sections.length > 0 && (
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-              <button
-                type="button"
-                onClick={() => setActiveSectionFilter("ALL")}
-                className={`h-7 px-3 rounded-lg text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
-                  activeSectionFilter === "ALL"
-                    ? "bg-[#9a3412] text-white shadow-2xs"
-                    : "bg-[#faf7f5] text-neutral-600 hover:bg-[#eddcd4]/50 border border-[#eddcd4]"
-                }`}
-              >
-                All Sections ({allTables.length})
-              </button>
-              {sections.map((sec) => (
-                <button
-                  key={sec}
-                  type="button"
-                  onClick={() => setActiveSectionFilter(sec)}
-                  className={`h-7 px-3 rounded-lg text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
-                    activeSectionFilter === sec
-                      ? "bg-[#9a3412] text-white shadow-2xs"
-                      : "bg-[#faf7f5] text-neutral-600 hover:bg-[#eddcd4]/50 border border-[#eddcd4]"
-                  }`}
-                >
-                  {sec}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Loading Tables State */}
-          {isLoadingTables && (
-            <div className="flex flex-col items-center justify-center p-10 text-center">
-              <Spinner className="size-6 text-[#9a3412] mb-2" />
-              <p className="text-xs text-neutral-500">Loading dining floor tables...</p>
-            </div>
-          )}
-
-          {/* Tables Loading Error */}
-          {isTablesError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="size-4 text-red-600 shrink-0" />
-                <span>{tablesError?.message || "Failed to load tables"}</span>
-              </div>
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => refetchTables()}
-                className="h-7 px-2.5 rounded-lg bg-red-700 text-white font-bold text-xs"
-              >
-                Retry
-              </Button>
-            </div>
-          )}
-
-          {/* No Tables Available State */}
-          {!isLoadingTables && !isTablesError && displayedTables.length === 0 && (
-            <div className="flex flex-col items-center justify-center p-8 text-center rounded-xl border border-dashed border-[#eddcd4] bg-[#faf7f5]/60">
-              <TableIcon className="size-7 text-[#9a3412] mb-2" />
-              <p className="text-sm font-bold text-neutral-900">No Tables in This Section</p>
-              <p className="text-xs text-neutral-500 mt-0.5">
-                Switch section filter or create tables from the Tables management page.
-              </p>
-            </div>
-          )}
-
-          {/* Tables Grid */}
-          {!isLoadingTables && !isTablesError && displayedTables.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs font-bold text-neutral-700">Select Available Tables:</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
-                {displayedTables.map((table) => (
-                  <AssignTableCard
-                    key={table.id}
-                    table={table}
-                    isSelected={selectedTables[table.id] !== undefined}
-                    allocatedSeats={selectedTables[table.id]}
-                    isSubmitting={isSubmitting}
-                    onToggle={handleToggleTable}
-                    onAdjustSeats={handleAdjustSeatCount}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Tables Section & Selection Grid */}
+          <AssignTableList
+            sections={sections}
+            activeSectionFilter={activeSectionFilter}
+            onSelectSection={setActiveSectionFilter}
+            allTablesCount={allTables.length}
+            displayedTables={displayedTables}
+            isLoadingTables={isLoadingTables}
+            isTablesError={isTablesError}
+            tablesErrorMessage={tablesError?.message}
+            onRetryTables={() => refetchTables()}
+            selectedTables={selectedTables}
+            isSubmitting={isSubmitting}
+            onToggleTable={handleToggleTable}
+            onAdjustSeats={handleAdjustSeatCount}
+          />
 
           {/* API Submission Error Banner */}
           {apiError && (

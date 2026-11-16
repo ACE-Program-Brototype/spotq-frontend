@@ -2,8 +2,9 @@ import { Eye, Mail, Send, Trash2 } from "lucide-react";
 import { useMemo } from "react";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import type { Column } from "@/components/common/table";
-import { StaffInvitationStatusBadge } from "../components/StaffInvitationStatusBadge";
-import type { StaffInvitation } from "../types/staff-invitation.types";
+import { StaffInvitationStatusBadge } from "@/features/staff/components/StaffInvitationStatusBadge";
+import { STAFF_INVITATION_STATUS } from "@/features/staff/constants/staff.constants";
+import type { StaffInvitation } from "@/features/staff/types/staff-invitation.types";
 
 interface UseStaffInvitationColumnsOptions {
   isResending: string | null;
@@ -89,7 +90,7 @@ export function useStaffInvitationColumns({
               <Eye className="size-4" />
             </button>
 
-            {invitation.status !== "ACCEPTED" && (
+            {invitation.status !== STAFF_INVITATION_STATUS.ACCEPTED && (
               <button
                 type="button"
                 onClick={() => onResend(invitation.email)}
@@ -106,7 +107,7 @@ export function useStaffInvitationColumns({
               </button>
             )}
 
-            {invitation.status === "PENDING" && (
+            {invitation.status === STAFF_INVITATION_STATUS.PENDING && (
               <button
                 type="button"
                 onClick={() => onRevokeTarget(invitation)}

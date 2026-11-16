@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { TABLE_QUERY_KEYS } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
+import { TABLE_QUERY_KEYS } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
 
 export function useTableSectionsPaginated(restaurantId: string, page = 1, limit = 8) {
   const normalizedRestaurantId = (restaurantId ?? "").trim();

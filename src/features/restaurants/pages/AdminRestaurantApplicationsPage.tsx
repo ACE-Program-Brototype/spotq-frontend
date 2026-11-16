@@ -3,12 +3,12 @@ import { LoadingIndicator } from "@/components/common/LoadingIndicator";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RestaurantApplicationFilters } from "../components/applications/RestaurantApplicationFilters";
-import { RestaurantApplicationTable } from "../components/applications/RestaurantApplicationTable";
-import { RestaurantEmptyState } from "../components/RestaurantEmptyState";
-import { APPLICATION_MESSAGES } from "../constants/restaurant-application.constants";
-import { useRestaurantApplications } from "../hooks/useRestaurantApplications";
-import type { ApplicationSortByType } from "../types/restaurant-application.types";
+import { RestaurantApplicationFilters } from "@/features/restaurants/components/applications/RestaurantApplicationFilters";
+import { RestaurantApplicationTable } from "@/features/restaurants/components/applications/RestaurantApplicationTable";
+import { RestaurantEmptyState } from "@/features/restaurants/components/RestaurantEmptyState";
+import { APPLICATION_MESSAGES } from "@/features/restaurants/constants/restaurant-application.constants";
+import { useRestaurantApplications } from "@/features/restaurants/hooks/useRestaurantApplications";
+import type { ApplicationSortByType } from "@/features/restaurants/types/restaurant-application.types";
 
 export function AdminRestaurantApplicationsPage() {
   const {

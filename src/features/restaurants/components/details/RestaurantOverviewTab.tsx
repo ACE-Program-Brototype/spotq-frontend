@@ -1,7 +1,7 @@
 import { Calendar, CheckCircle2, Clock, Mail, Phone, Store, Tag, UserCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { RestaurantDetails } from "../../types/restaurant.types";
+import type { RestaurantDetails } from "@/features/restaurants/types/restaurant.types";
 import { RestaurantLocationCard } from "./RestaurantLocationCard";
 import { RestaurantQuickMetrics } from "./RestaurantQuickMetrics";
 import { RestaurantSubscriptionCard } from "./RestaurantSubscriptionCard";

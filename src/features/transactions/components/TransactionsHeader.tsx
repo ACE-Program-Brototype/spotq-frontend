@@ -6,7 +6,7 @@
 
 import { Download, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
 
 interface TransactionsHeaderProps {
   isLoading: boolean;

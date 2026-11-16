@@ -7,9 +7,10 @@ import {
   type VerificationStatus,
 } from "@/features/auth/services/auth.service";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { VerificationApprovedView } from "../components/VerificationApprovedView";
-import { VerificationRejectedView } from "../components/VerificationRejectedView";
-import { VerificationUnderReviewView } from "../components/VerificationUnderReviewView";
+import { VerificationApprovedView } from "@/features/onboard/components/VerificationApprovedView";
+import { VerificationRejectedView } from "@/features/onboard/components/VerificationRejectedView";
+import { VerificationUnderReviewView } from "@/features/onboard/components/VerificationUnderReviewView";
+import { ONBOARDING_VERIFICATION_STATUS } from "@/features/onboard/constants/onboard.constants";
 
 export default function VerificationStatusPage() {
   const navigate = useNavigate();
@@ -38,12 +39,12 @@ export default function VerificationStatusPage() {
           if (response.data.rejectionReason) {
             setRejectionReason(response.data.rejectionReason);
           }
-          if (fetchedStatus === "VERIFIED") {
+          if (fetchedStatus === ONBOARDING_VERIFICATION_STATUS.VERIFIED) {
             const currentUser = useAuthStore.getState().user;
-            if (currentUser && currentUser.status !== "VERIFIED") {
+            if (currentUser && currentUser.status !== ONBOARDING_VERIFICATION_STATUS.VERIFIED) {
               useAuthStore.getState().setUser({
                 ...currentUser,
-                status: "VERIFIED",
+                status: ONBOARDING_VERIFICATION_STATUS.VERIFIED,
                 onboardingStatus: "COMPLETED",
               });
             }
@@ -123,11 +124,11 @@ export default function VerificationStatusPage() {
   return (
     <div className="w-full max-w-2xl space-y-6">
       <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 shadow-xs sm:p-8">
-        {status === "VERIFIED" && (
+        {status === ONBOARDING_VERIFICATION_STATUS.VERIFIED && (
           <VerificationApprovedView onProceedToSubscription={handleGoToSubscription} />
         )}
 
-        {status === "REJECTED" && (
+        {status === ONBOARDING_VERIFICATION_STATUS.REJECTED && (
           <VerificationRejectedView
             rejectionReason={rejectionReason}
             onEditApplication={handleEditApplication}
@@ -135,7 +136,7 @@ export default function VerificationStatusPage() {
           />
         )}
 
-        {(status === "SUBMITTED" || status === "UNDER_REVIEW") && (
+        {(status === ONBOARDING_VERIFICATION_STATUS.SUBMITTED || status === ONBOARDING_VERIFICATION_STATUS.UNDER_REVIEW) && (
           <VerificationUnderReviewView
             status={status}
             restaurantEmail={restaurantEmail}

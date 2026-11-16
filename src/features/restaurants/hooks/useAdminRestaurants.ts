@@ -9,9 +9,9 @@ import {
   type RestaurantFilterPlanType,
   type RestaurantFilterStatusType,
   type RestaurantSubscriptionActiveFilterType,
-} from "../constants/restaurant.constants";
-import { restaurantService } from "../services/restaurant.service";
-import type { RestaurantSortByType, RestaurantSortOrderType } from "../types/restaurant.types";
+} from "@/features/restaurants/constants/restaurant.constants";
+import { restaurantService } from "@/features/restaurants/services/restaurant.service";
+import type { RestaurantSortByType, RestaurantSortOrderType } from "@/features/restaurants/types/restaurant.types";
 
 export interface UseAdminRestaurantsOptions {
   initialPage?: number;

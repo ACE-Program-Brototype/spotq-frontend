@@ -2,25 +2,25 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { menuCategoryService } from "../services/menu-category.service";
-import { menuItemService } from "../services/menu-item.service";
-import { staffMenuService } from "../services/staff-menu.service";
+import { menuCategoryService } from "@/features/menu/services/menu-category.service";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
+import { staffMenuService } from "@/features/menu/services/staff-menu.service";
 import StaffMenuItemsPage from "./StaffMenuItemsPage";
 
-jest.mock("../services/staff-menu.service", () => ({
+jest.mock("@/features/menu/services/staff-menu.service", () => ({
   staffMenuService: {
     getStaffMenuItems: jest.fn(),
     getStaffCategories: jest.fn(),
   },
 }));
 
-jest.mock("../services/menu-category.service", () => ({
+jest.mock("@/features/menu/services/menu-category.service", () => ({
   menuCategoryService: {
     getCategories: jest.fn(),
   },
 }));
 
-jest.mock("../services/menu-item.service", () => ({
+jest.mock("@/features/menu/services/menu-item.service", () => ({
   menuItemService: {
     updateMenuItemAvailability: jest.fn(),
   },

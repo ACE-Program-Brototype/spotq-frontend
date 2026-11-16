@@ -4,9 +4,9 @@
  */
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { ADMIN_ORDERS_QUERY_KEYS } from "../constants/admin-orders.constants";
-import { adminOrdersService } from "../services/admin-orders.service";
-import type { GetAdminOrdersParams } from "../types/admin-orders.types";
+import { ADMIN_ORDERS_QUERY_KEYS } from "@/features/orders/constants/admin-orders.constants";
+import { adminOrdersService } from "@/features/orders/services/admin-orders.service";
+import type { GetAdminOrdersParams } from "@/features/orders/types/admin-orders.types";
 
 export interface UseAdminOrdersOptions {
   enabled?: boolean;

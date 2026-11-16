@@ -13,8 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils/date";
-import { usePresignedUrl } from "../../hooks/usePresignedUrl";
-import type { RestaurantDocument } from "../../types/restaurant.types";
+import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
+import type { RestaurantDocument } from "@/features/restaurants/types/restaurant.types";
 
 interface RestaurantDocumentsTabProps {
   documents?: RestaurantDocument[];

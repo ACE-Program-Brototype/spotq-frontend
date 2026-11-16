@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { useCreateTable } from "../hooks/useCreateTable";
-import { useTableSections } from "../hooks/useTableSections";
+import { useCreateTable } from "@/features/tables/hooks/useCreateTable";
+import { useTableSections } from "@/features/tables/hooks/useTableSections";
 import CreateTablePage from "./CreateTablePage";
 
 jest.mock("react-router-dom", () => ({
@@ -11,8 +11,8 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => jest.fn(),
 }));
 jest.mock("@/features/auth/store/auth.store", () => ({ useAuthStore: jest.fn() }));
-jest.mock("../hooks/useCreateTable", () => ({ useCreateTable: jest.fn() }));
-jest.mock("../hooks/useTableSections", () => ({ useTableSections: jest.fn() }));
+jest.mock("@/features/tables/hooks/useCreateTable", () => ({ useCreateTable: jest.fn() }));
+jest.mock("@/features/tables/hooks/useTableSections", () => ({ useTableSections: jest.fn() }));
 
 describe("CreateTablePage", () => {
   const mutateAsync = jest.fn();

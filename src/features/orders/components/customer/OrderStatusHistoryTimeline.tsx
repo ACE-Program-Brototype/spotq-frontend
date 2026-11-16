@@ -1,6 +1,6 @@
 import { History } from "lucide-react";
 import { formatDate } from "@/lib/utils/date";
-import type { CustomerOrderStatusHistory } from "../../types/customer-order-details.types";
+import type { CustomerOrderStatusHistory } from "@/features/orders/types/customer-order-details.types";
 
 export interface OrderStatusHistoryTimelineProps {
   statusHistory: CustomerOrderStatusHistory[];

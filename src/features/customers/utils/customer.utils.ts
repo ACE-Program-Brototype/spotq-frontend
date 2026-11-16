@@ -1,4 +1,4 @@
-import { CUSTOMER_MESSAGES } from "../constants/customer.constants";
+import { CUSTOMER_MESSAGES } from "@/features/customers/constants/customer.constants";
 
 export interface FormatMemberSinceOptions {
   includePrefix?: boolean;

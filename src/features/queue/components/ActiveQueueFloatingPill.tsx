@@ -2,8 +2,8 @@ import { ArrowRight, UtensilsCrossed } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
-import type { ActiveCustomerTicket } from "../types/ring-alert.types";
-import { formatQueueNumber, getActiveCustomerTicket } from "../utils/active-queue.utils";
+import type { ActiveCustomerTicket } from "@/features/queue/types/ring-alert.types";
+import { formatQueueNumber, getActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
 
 export function ActiveQueueFloatingPill() {
   const location = useLocation();

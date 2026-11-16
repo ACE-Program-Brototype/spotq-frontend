@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { useOnboardStore } from "../store/onboard.store";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 import BusinessInformationPage from "./BusinessInformationPage";
 
 describe("BusinessInformationPage", () => {

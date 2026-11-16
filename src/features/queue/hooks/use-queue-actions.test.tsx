@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { toast } from "sonner";
-import { queueService } from "../services/queue.service";
+import { queueService } from "@/features/queue/services/queue.service";
 import { useQueueActions } from "./use-queue-actions";
 
 jest.mock("sonner", () => ({
@@ -12,7 +12,7 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 
 describe("useQueueActions", () => {
   let queryClient: QueryClient;

@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TABLE_MESSAGES, TABLE_QUERY_KEYS } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
-import type { TableItem, UpdateTablePayload } from "../types/table.types";
+import { TABLE_MESSAGES, TABLE_QUERY_KEYS } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
+import type { TableItem, UpdateTablePayload } from "@/features/tables/types/table.types";
 
 export interface UpdateTableMutationVariables {
   tableId: string;

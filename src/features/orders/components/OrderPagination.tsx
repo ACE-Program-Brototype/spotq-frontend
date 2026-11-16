@@ -4,7 +4,7 @@
  */
 
 import { Pagination } from "@/components/common/Pagination";
-import type { OrderPaginationData } from "../types/orders.types";
+import type { OrderPaginationData } from "@/features/orders/types/orders.types";
 
 export interface OrderPaginationProps {
   pagination: OrderPaginationData;

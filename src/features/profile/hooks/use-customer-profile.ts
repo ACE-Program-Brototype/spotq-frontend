@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { PROFILE_QUERY_KEYS, profileHooks } from "../constants/profile.constants";
-import { getCustomerProfile } from "../services/profile.service";
-import type { CustomerProfile } from "../types/profile.types";
+import { PROFILE_QUERY_KEYS, profileHooks } from "@/features/profile/constants/profile.constants";
+import { getCustomerProfile } from "@/features/profile/services/profile.service";
+import type { CustomerProfile } from "@/features/profile/types/profile.types";
 
 /**
  * React Query hook to retrieve and cache the authenticated customer's profile.

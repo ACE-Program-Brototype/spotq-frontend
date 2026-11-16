@@ -4,8 +4,13 @@
  */
 
 import { apiClient } from "@/lib/api/client";
-import { ADMIN_ORDERS_DEFAULTS, ADMIN_ORDERS_ENDPOINTS } from "../constants/admin-orders.constants";
-import type { AdminOrdersApiResponse, GetAdminOrdersParams } from "../types/admin-orders.types";
+import {
+  ADMIN_ORDERS_DEFAULTS,
+  ADMIN_ORDERS_ENDPOINTS,
+  ADMIN_ORDERS_PAYMENT_STATUS_FILTERS,
+  ADMIN_ORDERS_STATUS_FILTERS,
+} from "@/features/orders/constants/admin-orders.constants";
+import type { AdminOrdersApiResponse, GetAdminOrdersParams } from "@/features/orders/types/admin-orders.types";
 
 export const adminOrdersService = {
   /**
@@ -24,11 +29,11 @@ export const adminOrdersService = {
       searchParams.search = params.search.trim();
     }
 
-    if (params?.status?.trim() && params.status !== "ALL") {
+    if (params?.status?.trim() && params.status !== ADMIN_ORDERS_STATUS_FILTERS.ALL) {
       searchParams.status = params.status.trim();
     }
 
-    if (params?.paymentStatus && params.paymentStatus !== "ALL") {
+    if (params?.paymentStatus && params.paymentStatus !== ADMIN_ORDERS_PAYMENT_STATUS_FILTERS.ALL) {
       searchParams.paymentStatus = params.paymentStatus;
     }
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CHECKOUT_MESSAGES, PHONE_REGEX } from "../constants/checkout.constants";
+import { CHECKOUT_MESSAGES, PHONE_REGEX } from "@/features/checkout/constants/checkout.constants";
 
 export const checkoutFormSchema = z.object({
   userName: z.string().trim().optional(),

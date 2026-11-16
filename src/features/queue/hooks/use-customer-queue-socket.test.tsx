@@ -1,11 +1,11 @@
 import { act, renderHook } from "@testing-library/react";
 import { io } from "socket.io-client";
-import { QUEUE_WS_EVENTS, SOCKET_CONNECTION_STATUS } from "../constants/websocket.constants";
-import { ringMedia } from "../utils/ring-sound.utils";
+import { QUEUE_WS_EVENTS, SOCKET_CONNECTION_STATUS } from "@/features/queue/constants/websocket.constants";
+import { ringMedia } from "@/features/queue/utils/ring-sound.utils";
 import { useCustomerQueueSocket } from "./use-customer-queue-socket";
 
 jest.mock("socket.io-client");
-jest.mock("../utils/ring-sound.utils", () => ({
+jest.mock("@/features/queue/utils/ring-sound.utils", () => ({
   ringMedia: {
     playChime: jest.fn(),
     playAlarmSound: jest.fn(),

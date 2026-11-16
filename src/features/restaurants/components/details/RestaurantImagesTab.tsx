@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils/date";
-import { usePresignedUrl } from "../../hooks/usePresignedUrl";
-import type { RestaurantImage } from "../../types/restaurant.types";
+import { usePresignedUrl } from "@/features/restaurants/hooks/usePresignedUrl";
+import type { RestaurantImage } from "@/features/restaurants/types/restaurant.types";
 
 interface RestaurantImagesTabProps {
   images?: RestaurantImage[];

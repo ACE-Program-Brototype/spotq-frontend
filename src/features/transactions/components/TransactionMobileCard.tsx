@@ -6,8 +6,8 @@
 import { Eye, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils/date";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
-import type { PaymentTransactionItem } from "../types/transaction.types";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
+import type { PaymentTransactionItem } from "@/features/transactions/types/transaction.types";
 import { PaymentMethodBadge } from "./PaymentMethodBadge";
 import { SettlementStatusBadge } from "./SettlementStatusBadge";
 import { TransactionStatusBadge } from "./TransactionStatusBadge";

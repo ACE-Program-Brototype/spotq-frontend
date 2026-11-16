@@ -7,7 +7,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
+import { STAFF_INVITATION_STATUS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import { staffInvitationService } from "@/features/staff/services/staff-invitation.service";
 import type {
   StaffInvitation,
@@ -88,10 +88,10 @@ export function useStaffInvitations() {
   const stats: StaffInvitationStats = useMemo(() => {
     return {
       total: pagination.total || invitations.length,
-      pending: invitations.filter((i) => i.status === "PENDING").length,
-      accepted: invitations.filter((i) => i.status === "ACCEPTED").length,
-      expired: invitations.filter((i) => i.status === "EXPIRED").length,
-      revoked: invitations.filter((i) => i.status === "REVOKED").length,
+      pending: invitations.filter((i) => i.status === STAFF_INVITATION_STATUS.PENDING).length,
+      accepted: invitations.filter((i) => i.status === STAFF_INVITATION_STATUS.ACCEPTED).length,
+      expired: invitations.filter((i) => i.status === STAFF_INVITATION_STATUS.EXPIRED).length,
+      revoked: invitations.filter((i) => i.status === STAFF_INVITATION_STATUS.REVOKED).length,
     };
   }, [pagination.total, invitations]);
 

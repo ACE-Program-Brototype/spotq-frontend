@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { StaffMenuItem } from "../types/staff-menu-item.types";
+import type { StaffMenuItem } from "@/features/menu/types/staff-menu-item.types";
 import { StaffMenuItemTable } from "./StaffMenuItemTable";
 
 describe("StaffMenuItemTable", () => {

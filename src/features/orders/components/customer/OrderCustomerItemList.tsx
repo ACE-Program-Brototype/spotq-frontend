@@ -1,6 +1,6 @@
 import { Sparkles, UtensilsCrossed } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
-import type { CustomerOrderItem } from "../../types/customer-order-details.types";
+import type { CustomerOrderItem } from "@/features/orders/types/customer-order-details.types";
 
 export interface OrderCustomerItemListProps {
   items: CustomerOrderItem[];

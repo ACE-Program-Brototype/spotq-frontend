@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
-import { MENU_MESSAGES } from "../constants/menu.constants";
-import { menuService } from "../services/menu.service";
+import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import { menuService } from "@/features/menu/services/menu.service";
 import { useUpdateMenuItem } from "./use-update-menu-item";
 
-jest.mock("../services/menu.service", () => ({
+jest.mock("@/features/menu/services/menu.service", () => ({
   menuService: {
     updateMenuItem: jest.fn(),
   },

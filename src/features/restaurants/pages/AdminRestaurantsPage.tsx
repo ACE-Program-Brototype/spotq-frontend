@@ -3,11 +3,11 @@ import { LoadingIndicator } from "@/components/common/LoadingIndicator";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RestaurantEmptyState } from "../components/RestaurantEmptyState";
-import { RestaurantFilters } from "../components/RestaurantFilters";
-import { RestaurantTable } from "../components/RestaurantTable";
-import { RESTAURANT_MESSAGES } from "../constants/restaurant.constants";
-import { useAdminRestaurants } from "../hooks/useAdminRestaurants";
+import { RestaurantEmptyState } from "@/features/restaurants/components/RestaurantEmptyState";
+import { RestaurantFilters } from "@/features/restaurants/components/RestaurantFilters";
+import { RestaurantTable } from "@/features/restaurants/components/RestaurantTable";
+import { RESTAURANT_MESSAGES } from "@/features/restaurants/constants/restaurant.constants";
+import { useAdminRestaurants } from "@/features/restaurants/hooks/useAdminRestaurants";
 
 export function AdminRestaurantsPage() {
   const {

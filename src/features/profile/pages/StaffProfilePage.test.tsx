@@ -2,10 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { profileService } from "../services/profile.service";
+import { profileService } from "@/features/profile/services/profile.service";
 import StaffProfilePage from "./StaffProfilePage";
 
-jest.mock("../services/profile.service");
+jest.mock("@/features/profile/services/profile.service");
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({

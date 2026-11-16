@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { customerPaymentService } from "@/features/payments/services/customer-payment.service";
-import { orderService } from "../services/order.service";
-import type { CustomerOrderDetails } from "../types/customer-order-details.types";
+import { orderService } from "@/features/orders/services/order.service";
+import type { CustomerOrderDetails } from "@/features/orders/types/customer-order-details.types";
 import CustomerOrderDetailPage from "./CustomerOrderDetailPage";
 
-jest.mock("../services/order.service");
+jest.mock("@/features/orders/services/order.service");
 jest.mock("@/features/payments/services/customer-payment.service", () => ({
   customerPaymentService: {
     getInvoiceDownloadUrl: jest.fn(),

@@ -2,14 +2,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { toast } from "sonner";
-import { queueService } from "../services/queue.service";
-import type { LeaveQueueResponse } from "../types/queue.types";
-import { clearActiveCustomerTicket } from "../utils/active-queue.utils";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { LeaveQueueResponse } from "@/features/queue/types/queue.types";
+import { clearActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
 import { useLeaveQueue } from "./use-leave-queue";
 
-jest.mock("../services/queue.service");
-jest.mock("../utils/active-queue.utils", () => ({
-  ...jest.requireActual("../utils/active-queue.utils"),
+jest.mock("@/features/queue/services/queue.service");
+jest.mock("@/features/queue/utils/active-queue.utils", () => ({
+  ...jest.requireActual("@/features/queue/utils/active-queue.utils"),
   clearActiveCustomerTicket: jest.fn(),
 }));
 jest.mock("sonner", () => ({

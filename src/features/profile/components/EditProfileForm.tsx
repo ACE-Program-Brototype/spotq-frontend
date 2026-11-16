@@ -19,9 +19,9 @@ import {
 import { useId } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
-import { type EditProfileFormData, editProfileSchema } from "../schemas/edit-profile.schema";
-import type { EditProfileFormProps, UpdateCustomerProfileDto } from "../types/profile.types";
+import { Gender, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { type EditProfileFormData, editProfileSchema } from "@/features/profile/schemas/edit-profile.schema";
+import type { EditProfileFormProps, UpdateCustomerProfileDto } from "@/features/profile/types/profile.types";
 
 export function EditProfileForm({
   profile,

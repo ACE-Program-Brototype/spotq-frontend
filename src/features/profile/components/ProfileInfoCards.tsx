@@ -4,8 +4,8 @@
  */
 
 import { Calendar, Mail, Phone, User as UserIcon } from "lucide-react";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { ProfileInfoCardsProps } from "../types/profile.types";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { ProfileInfoCardsProps } from "@/features/profile/types/profile.types";
 
 export function ProfileInfoCards({ profile }: ProfileInfoCardsProps) {
   const formattedDob = profile.dob

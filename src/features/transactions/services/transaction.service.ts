@@ -10,18 +10,18 @@ import {
   TRANSACTION_DEFAULTS,
   TRANSACTION_ENDPOINTS,
   TRANSACTION_STATUS_FILTER,
-} from "../constants/transaction.constants";
+} from "@/features/transactions/constants/transaction.constants";
 import type {
   GetTransactionsParams,
   ListTransactionsData,
   PaymentTransactionItem,
   TransactionDetail,
-} from "../types/transaction.types";
+} from "@/features/transactions/types/transaction.types";
 import {
   type ApiTransactionDetailItem,
   type ApiTransactionDetailResponse,
   mapApiTransactionDetailToDetail,
-} from "../utils/transaction.mapper";
+} from "@/features/transactions/utils/transaction.mapper";
 
 interface RawBackendListResponse {
   transactions: PaymentTransactionItem[];

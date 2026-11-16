@@ -1,8 +1,8 @@
 import { AlertTriangle, Check, Clock } from "lucide-react";
 import { formatTime } from "@/lib/utils/date";
-import { ORDER_TRACKER_STEPS } from "../../constants/customer-order-details.constants";
-import type { CustomerOrderStatusHistory } from "../../types/customer-order-details.types";
-import type { OrderStatus } from "../../types/orders.types";
+import { ORDER_TRACKER_STEPS } from "@/features/orders/constants/customer-order-details.constants";
+import type { CustomerOrderStatusHistory } from "@/features/orders/types/customer-order-details.types";
+import type { OrderStatus } from "@/features/orders/types/orders.types";
 
 export interface OrderStatusTrackerProps {
   status: OrderStatus | string;

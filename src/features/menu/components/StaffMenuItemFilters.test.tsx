@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { MenuCategory } from "../types/menu.types";
+import type { MenuCategory } from "@/features/menu/types/menu.types";
 import { StaffMenuItemFilters } from "./StaffMenuItemFilters";
 
 describe("StaffMenuItemFilters", () => {

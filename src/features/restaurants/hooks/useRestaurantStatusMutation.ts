@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { RESTAURANT_MESSAGES, RESTAURANT_QUERY_KEYS } from "../constants/restaurant.constants";
-import { restaurantService } from "../services/restaurant.service";
-import type { BlockRestaurantInput, UnblockRestaurantInput } from "../types/restaurant.types";
+import { RESTAURANT_MESSAGES, RESTAURANT_QUERY_KEYS } from "@/features/restaurants/constants/restaurant.constants";
+import { restaurantService } from "@/features/restaurants/services/restaurant.service";
+import type { BlockRestaurantInput, UnblockRestaurantInput } from "@/features/restaurants/types/restaurant.types";
 
 /**
  * Mutation hook for blocking a restaurant with a reason

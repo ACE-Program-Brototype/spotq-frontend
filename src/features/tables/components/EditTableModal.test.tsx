@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { TABLE_SHAPE, TABLE_STATUS } from "../constants/table.constants";
-import type { RestaurantTableDetails } from "../types/table.types";
+import { TABLE_SHAPE, TABLE_STATUS } from "@/features/tables/constants/table.constants";
+import type { RestaurantTableDetails } from "@/features/tables/types/table.types";
 import { EditTableModal } from "./EditTableModal";
 
 jest.mock("../hooks/useTableSections", () => ({

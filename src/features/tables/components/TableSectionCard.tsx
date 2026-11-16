@@ -1,11 +1,17 @@
 import { Layers, Trash2 } from "lucide-react";
-import type { TableSectionAll } from "../types/table.types";
+import type { TableSectionAll } from "@/features/tables/types/table.types";
 
 interface TableSectionCardProps {
   section: TableSectionAll;
   onUnlist: (section: TableSectionAll) => void;
 }
 
+/**
+ * TableSectionCard Component
+ *
+ * @deprecated SpotQ domain strictly encompasses digital takeaway ordering and virtual queue ticketing.
+ * Dine-in table management is legacy and subject to platform deprecation guidelines.
+ */
 export function TableSectionCard({ section, onUnlist }: TableSectionCardProps) {
   return (
     <article

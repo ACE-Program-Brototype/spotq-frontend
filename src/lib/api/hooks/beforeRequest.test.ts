@@ -1,10 +1,10 @@
 import type { NormalizedOptions } from "ky";
 import { AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import * as authRefreshModule from "../auth-refresh";
+import * as authRefreshModule from "@/lib/api/auth-refresh";
 import { beforeRequest } from "./beforeRequest";
 
-jest.mock("../auth-refresh");
+jest.mock("@/lib/api/auth-refresh");
 
 describe("beforeRequest hook", () => {
   const dummyOptions = {} as NormalizedOptions;

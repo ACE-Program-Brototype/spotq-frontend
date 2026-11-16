@@ -4,7 +4,7 @@ import {
   MAX_PARTY_SIZE,
   MIN_CUSTOM_PARTY_SIZE,
   PARTY_SIZE_PRESETS,
-} from "../constants/queue.constants";
+} from "@/features/queue/constants/queue.constants";
 
 interface PartySizeSelectorProps {
   partySize: number;

@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import {
   APPLICATION_DEFAULTS,
   RESTAURANT_APPLICATION_QUERY_KEYS,
-} from "../constants/restaurant-application.constants";
-import { restaurantApplicationService } from "../services/restaurant-application.service";
+} from "@/features/restaurants/constants/restaurant-application.constants";
+import { restaurantApplicationService } from "@/features/restaurants/services/restaurant-application.service";
 
 export function useRestaurantApplicationDetails(id?: string) {
   const query = useQuery({

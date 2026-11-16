@@ -4,9 +4,9 @@
  */
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { TRANSACTIONS_QUERY_KEYS } from "../constants/transaction.constants";
-import { transactionService } from "../services/transaction.service";
-import type { GetTransactionsParams } from "../types/transaction.types";
+import { TRANSACTIONS_QUERY_KEYS } from "@/features/transactions/constants/transaction.constants";
+import { transactionService } from "@/features/transactions/services/transaction.service";
+import type { GetTransactionsParams } from "@/features/transactions/types/transaction.types";
 
 export function useTransactions(params?: GetTransactionsParams) {
   return useQuery({

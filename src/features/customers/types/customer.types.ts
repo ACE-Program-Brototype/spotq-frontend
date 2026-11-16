@@ -3,7 +3,7 @@ import type {
   CustomerSortByType,
   CustomerSortOrderType,
   CustomerStatusType,
-} from "../constants/customer.constants";
+} from "@/features/customers/constants/customer.constants";
 
 export interface Customer {
   id: string;

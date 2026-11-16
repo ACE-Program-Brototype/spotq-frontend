@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CUSTOMER_RESTAURANT_QUERY_KEYS } from "@/features/restaurants/constants/customer-restaurant.constants";
-import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { JoinQueueInput, JoinQueueResponse, QueueEntry } from "../types/queue.types";
+import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { JoinQueueInput, JoinQueueResponse, QueueEntry } from "@/features/queue/types/queue.types";
 
 export interface UseJoinQueueOptions {
   onSuccess?: (entry: QueueEntry) => void;

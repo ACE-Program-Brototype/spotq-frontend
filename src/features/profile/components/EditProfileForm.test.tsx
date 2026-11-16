@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { Gender } from "../constants/profile.constants";
-import type { CustomerProfile } from "../types/profile.types";
+import { Gender } from "@/features/profile/constants/profile.constants";
+import type { CustomerProfile } from "@/features/profile/types/profile.types";
 import { EditProfileForm } from "./EditProfileForm";
 
 describe("EditProfileForm Component", () => {

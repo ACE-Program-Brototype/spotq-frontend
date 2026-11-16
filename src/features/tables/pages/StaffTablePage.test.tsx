@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { tableService } from "../services/table.service";
+import { tableService } from "@/features/tables/services/table.service";
 import StaffTablePage from "./StaffTablePage";
 
-jest.mock("../services/table.service", () => ({
+jest.mock("@/features/tables/services/table.service", () => ({
   tableService: {
     getTablesBySection: jest.fn(),
     updateTableStatus: jest.fn(),

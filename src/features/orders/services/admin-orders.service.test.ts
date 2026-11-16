@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { ADMIN_ORDERS_DEFAULTS, ADMIN_ORDERS_ENDPOINTS } from "../constants/admin-orders.constants";
+import { ADMIN_ORDERS_DEFAULTS, ADMIN_ORDERS_ENDPOINTS } from "@/features/orders/constants/admin-orders.constants";
 import { adminOrdersService } from "./admin-orders.service";
 
 jest.mock("@/lib/api/client", () => ({

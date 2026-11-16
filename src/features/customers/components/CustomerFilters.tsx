@@ -4,7 +4,7 @@ import {
   CUSTOMER_MESSAGES,
   type CustomerFilterStatusType,
   type CustomerSortOrderType,
-} from "../constants/customer.constants";
+} from "@/features/customers/constants/customer.constants";
 
 export interface CustomerFiltersProps {
   search: string;

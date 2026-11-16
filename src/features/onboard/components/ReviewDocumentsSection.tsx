@@ -1,4 +1,4 @@
-import type { DocumentsState, RestaurantImageItem } from "../types/onboard.types";
+import type { DocumentsState, RestaurantImageItem } from "@/features/onboard/types/onboard.types";
 
 const DOCUMENT_LABELS: Record<string, string> = {
   fssai: "FSSAI License Certificate",

@@ -1,4 +1,4 @@
-import type { WALLET_LEDGER_STATUSES, WALLET_LEDGER_TYPES } from "../constants/wallet.constants";
+import type { WALLET_LEDGER_STATUSES, WALLET_LEDGER_TYPES } from "@/features/wallet/constants/wallet.constants";
 
 export interface GetRestaurantWalletOverviewOutputDTO {
   walletId: string | null;

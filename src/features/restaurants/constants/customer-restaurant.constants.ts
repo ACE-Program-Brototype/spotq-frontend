@@ -1,4 +1,4 @@
-import type { CustomerSortConfig } from "../types/customer-restaurant.types";
+import type { CustomerSortConfig } from "@/features/restaurants/types/customer-restaurant.types";
 
 export const CUSTOMER_RESTAURANT_ENDPOINTS = {
   LIST: "restaurants/customers",

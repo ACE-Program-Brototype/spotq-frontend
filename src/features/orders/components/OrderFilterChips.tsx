@@ -4,8 +4,8 @@
  */
 
 import { cn } from "@/lib/utils/cn";
-import { ORDER_FILTER_CHIPS } from "../constants/orders.constants";
-import type { OrderFilterStatus } from "../types/orders.types";
+import { ORDER_FILTER_CHIPS } from "@/features/orders/constants/orders.constants";
+import type { OrderFilterStatus } from "@/features/orders/types/orders.types";
 
 export interface OrderFilterChipsProps {
   selectedStatus: OrderFilterStatus;

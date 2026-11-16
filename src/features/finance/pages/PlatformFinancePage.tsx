@@ -3,24 +3,24 @@ import { useEffect, useMemo, useState } from "react";
 import type { Column } from "@/components/common/table";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import { cn } from "@/lib/utils/cn";
-import { FinanceDetailDrawer } from "../components/FinanceDetailDrawer";
-import { FinanceLedger } from "../components/FinanceLedger";
-import { FinancePageHeader } from "../components/FinancePageHeader";
-import { FinanceSummary as FinanceSummaryCards } from "../components/FinanceSummary";
-import type { LedgerFilterState } from "../components/LedgerFilters";
+import { FinanceDetailDrawer } from "@/features/finance/components/FinanceDetailDrawer";
+import { FinanceLedger } from "@/features/finance/components/FinanceLedger";
+import { FinancePageHeader } from "@/features/finance/components/FinancePageHeader";
+import { FinanceSummary as FinanceSummaryCards } from "@/features/finance/components/FinanceSummary";
+import type { LedgerFilterState } from "@/features/finance/components/LedgerFilters";
 import {
   DEFAULT_FINANCE_DATE_PRESET,
   FINANCE_MESSAGES,
   FINANCE_PAGE_SIZE,
-} from "../constants/finance.constants";
-import { useFinanceLedger } from "../hooks/useFinanceLedger";
-import { useFinanceSummary } from "../hooks/useFinanceSummary";
-import { financeService } from "../services/finance.service";
-import type { DatePreset, LedgerEntryType, MasterLedgerEntry } from "../types/finance.types";
-import { getDateRange } from "../utils/finance.utils";
-import { formatDate, formatPaise, typeLabels, typeStyles } from "../utils/finance-display.utils";
+} from "@/features/finance/constants/finance.constants";
+import { useFinanceLedger } from "@/features/finance/hooks/useFinanceLedger";
+import { useFinanceSummary } from "@/features/finance/hooks/useFinanceSummary";
+import { financeService } from "@/features/finance/services/finance.service";
+import type { DatePreset, LedgerEntryType, MasterLedgerEntry } from "@/features/finance/types/finance.types";
+import { getDateRange } from "@/features/finance/utils/finance.utils";
+import { formatDate, formatPaise, typeLabels, typeStyles } from "@/features/finance/utils/finance-display.utils";
 
-export type { DatePreset } from "../types/finance.types";
+export type { DatePreset } from "@/features/finance/types/finance.types";
 
 function getErrorMessage(error: unknown, fallback = FINANCE_MESSAGES.ERROR): string {
   if (!error) return "";

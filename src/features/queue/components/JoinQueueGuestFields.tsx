@@ -1,8 +1,8 @@
 import { Phone, User } from "lucide-react";
 import type { UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { COUNTRY_DIAL_CODES } from "../constants/queue.constants";
-import type { JoinQueueFormData } from "../schemas/join-queue.schema";
+import { COUNTRY_DIAL_CODES } from "@/features/queue/constants/queue.constants";
+import type { JoinQueueFormData } from "@/features/queue/schemas/join-queue.schema";
 
 interface JoinQueueGuestFieldsProps {
   register: UseFormRegister<JoinQueueFormData>;

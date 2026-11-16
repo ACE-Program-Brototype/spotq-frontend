@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { SubscriberSummary } from "../types/subscriber.types";
+import type { SubscriberSummary } from "@/features/subscribers/types/subscriber.types";
 import { SubscriberTable } from "./SubscriberTable";
 
 const mockSubscribers: SubscriberSummary[] = [

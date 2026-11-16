@@ -2,7 +2,7 @@ import type {
   StaffUpdatableStatus,
   TableStatus,
   TableStatusTransitionRule,
-} from "../types/table.types";
+} from "@/features/tables/types/table.types";
 
 export const statusStyles: Record<TableStatus, string> = {
   AVAILABLE: "bg-emerald-50 text-emerald-700 ring-emerald-200",

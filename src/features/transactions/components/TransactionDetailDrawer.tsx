@@ -6,10 +6,8 @@
 
 import {
   AlertTriangle,
-  Building2,
   Calendar,
   Copy,
-  CreditCard,
   Receipt,
   RotateCcw,
   User,
@@ -19,10 +17,10 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils/date";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
-import { useTransactionDetail } from "../hooks/useTransactionDetail";
-import { PaymentMethodBadge } from "./PaymentMethodBadge";
-import { SettlementStatusBadge } from "./SettlementStatusBadge";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
+import { useTransactionDetail } from "@/features/transactions/hooks/useTransactionDetail";
+import { TransactionDrawerFinancials } from "./TransactionDrawerFinancials";
+import { TransactionDrawerGateway } from "./TransactionDrawerGateway";
 import { TransactionStatusBadge } from "./TransactionStatusBadge";
 import { TransactionDrawerSkeleton } from "./TransactionsSkeleton";
 
@@ -234,187 +232,16 @@ export function TransactionDetailDrawer({ transactionId, onClose }: TransactionD
                 </div>
 
                 {/* Section: Financial Billing Breakdown */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
-                    {TRANSACTION_MESSAGES.SECTION_FINANCIAL}
-                  </h3>
-                  <div className="p-4 rounded-xl border border-neutral-200/80 bg-white space-y-2.5 text-xs">
-                    <div className="flex items-center justify-between text-neutral-600">
-                      <span>{TRANSACTION_MESSAGES.LABEL_FOOD_SUBTOTAL}</span>
-                      <span className="font-medium text-neutral-900">
-                        {detail.financialBreakdown?.subtotalFormatted || "₹0.00"}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-neutral-600">
-                      <span>
-                        {TRANSACTION_MESSAGES.LABEL_GST} (
-                        {detail.financialBreakdown?.gstPercentage ?? 5}%)
-                      </span>
-                      <span className="font-medium text-neutral-900">
-                        {detail.financialBreakdown?.gstFormatted || "₹0.00"}
-                      </span>
-                    </div>
-
-                    {detail.financialBreakdown?.discountPaise > 0 && (
-                      <div className="flex items-center justify-between text-emerald-600">
-                        <span>{TRANSACTION_MESSAGES.LABEL_DISCOUNTS}</span>
-                        <span className="font-medium">
-                          -{detail.financialBreakdown?.discountFormatted}
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between pt-2.5 border-t border-neutral-200 text-sm font-bold text-neutral-900">
-                      <span>{TRANSACTION_MESSAGES.LABEL_TOTAL_AMOUNT}</span>
-                      <span className="text-base text-neutral-900">
-                        {detail.financialBreakdown?.totalFormatted || "₹0.00"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <TransactionDrawerFinancials
+                  financialBreakdown={detail.financialBreakdown}
+                  refund={detail.refund}
+                />
 
                 {/* Section: Payment Gateway Metadata */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
-                    {TRANSACTION_MESSAGES.SECTION_GATEWAY}
-                  </h3>
-                  <div className="p-4 rounded-xl border border-neutral-200/80 bg-white space-y-3 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-neutral-500 flex items-center gap-1.5">
-                        <Building2 className="size-3.5 text-neutral-400" />
-                        {TRANSACTION_MESSAGES.LABEL_GATEWAY_PROVIDER}
-                      </span>
-                      <span className="font-semibold text-neutral-900">
-                        {detail.gateway?.name || "Razorpay"}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                      <span className="text-neutral-500">
-                        {TRANSACTION_MESSAGES.LABEL_PAYMENT_ID}
-                      </span>
-                      <div className="flex items-center gap-1.5 font-mono text-neutral-800">
-                        <span className="truncate max-w-[170px]">
-                          {detail.gateway?.paymentId || "N/A"}
-                        </span>
-                        {detail.gateway?.paymentId && (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleCopy(
-                                detail.gateway.paymentId,
-                                TRANSACTION_MESSAGES.LABEL_PAYMENT_ID,
-                              )
-                            }
-                            className="text-neutral-400 hover:text-neutral-700 p-0.5 rounded"
-                            title={TRANSACTION_MESSAGES.COPY}
-                          >
-                            <Copy className="size-3" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                      <span className="text-neutral-500 flex items-center gap-1.5">
-                        <CreditCard className="size-3.5 text-neutral-400" />
-                        {TRANSACTION_MESSAGES.LABEL_VPA_CARD}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <PaymentMethodBadge method={detail.gateway?.method || "UPI"} />
-                        <span className="font-medium text-neutral-800 font-mono">
-                          {detail.gateway?.vpaOrCard || "N/A"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                      <span className="text-neutral-500">
-                        {TRANSACTION_MESSAGES.LABEL_BANK_RRN}
-                      </span>
-                      <div className="flex items-center gap-1.5 font-mono text-neutral-800">
-                        <span>{detail.gateway?.bankRrn || "N/A"}</span>
-                        {detail.gateway?.bankRrn && (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleCopy(
-                                detail.gateway.bankRrn,
-                                TRANSACTION_MESSAGES.LABEL_BANK_RRN,
-                              )
-                            }
-                            className="text-neutral-400 hover:text-neutral-700 p-0.5 rounded"
-                            title={TRANSACTION_MESSAGES.COPY}
-                          >
-                            <Copy className="size-3" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                      <span className="text-neutral-500">
-                        {TRANSACTION_MESSAGES.LABEL_SETTLEMENT_STATUS}
-                      </span>
-                      <SettlementStatusBadge
-                        status={detail.gateway?.settlementStatus || "PENDING_EOD"}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                      <span className="text-neutral-500">
-                        {TRANSACTION_MESSAGES.LABEL_SETTLEMENT_DATE}
-                      </span>
-                      <span className="font-medium text-neutral-800">
-                        {detail.gateway?.expectedSettlementDate || "Next Business Day"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section: Refund Record (if present) */}
-                {detail.refund && (
-                  <div className="space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-purple-600">
-                      {TRANSACTION_MESSAGES.SECTION_REFUND}
-                    </h3>
-                    <div className="p-4 rounded-xl border border-purple-200 bg-purple-50/40 space-y-2.5 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="text-neutral-600">
-                          {TRANSACTION_MESSAGES.LABEL_REFUND_ID}
-                        </span>
-                        <span className="font-mono font-medium text-purple-900">
-                          {detail.refund.id}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between pt-1 border-t border-purple-100">
-                        <span className="text-neutral-600">
-                          {TRANSACTION_MESSAGES.LABEL_REFUND_AMOUNT}
-                        </span>
-                        <span className="font-bold text-purple-900">
-                          {detail.refund.amountFormatted}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between pt-1 border-t border-purple-100">
-                        <span className="text-neutral-600">
-                          {TRANSACTION_MESSAGES.LABEL_REFUND_REASON}
-                        </span>
-                        <span className="font-medium text-neutral-800">
-                          {detail.refund.reason || "Customer requested"}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between pt-1 border-t border-purple-100">
-                        <span className="text-neutral-600">
-                          {TRANSACTION_MESSAGES.LABEL_REFUND_DATE}
-                        </span>
-                        <span className="font-medium text-neutral-800">
-                          {formatDate(detail.refund.createdAt)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <TransactionDrawerGateway
+                  gateway={detail.gateway}
+                  onCopy={handleCopy}
+                />
               </>
             )}
           </div>

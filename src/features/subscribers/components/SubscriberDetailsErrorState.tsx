@@ -1,7 +1,7 @@
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import { SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
 
 export interface SubscriberDetailsErrorStateProps {
   isNotFound?: boolean;

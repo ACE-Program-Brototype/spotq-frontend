@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { TABLE_ENDPOINTS } from "../constants/table.constants";
+import { TABLE_ENDPOINTS } from "@/features/tables/constants/table.constants";
 import { tableService } from "./table.service";
 
 jest.mock("@/lib/api/client", () => ({

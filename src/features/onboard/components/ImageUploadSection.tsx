@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useDeleteS3Object } from "@/hooks/useDeleteS3Object";
 import { STORAGE_MESSAGES } from "@/services/storage/storage.constants";
 import { uploadFile } from "@/services/storage/storage.service";
-import type { RestaurantImageItem } from "../types/onboard.types";
+import type { RestaurantImageItem } from "@/features/onboard/types/onboard.types";
 
 interface ImageUploadSectionProps {
   images: RestaurantImageItem[];

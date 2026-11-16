@@ -1,5 +1,5 @@
 import { Armchair, Gift, Store, UtensilsCrossed } from "lucide-react";
-import type { RestaurantDetails } from "../../types/restaurant.types";
+import type { RestaurantDetails } from "@/features/restaurants/types/restaurant.types";
 
 export function RestaurantQuickMetrics({ settings }: { settings?: RestaurantDetails["settings"] }) {
   return (

@@ -1,4 +1,4 @@
-import type { DatePreset } from "../types/finance.types";
+import type { DatePreset } from "@/features/finance/types/finance.types";
 
 export function getTodayDateString() {
   const date = new Date();

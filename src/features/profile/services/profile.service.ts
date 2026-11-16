@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { PROFILE_ENDPOINTS, PROFILE_MESSAGES } from "../constants/profile.constants";
+import { PROFILE_ENDPOINTS, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 import type {
   CustomerProfile,
   CustomerProfileApiResponse,
@@ -7,13 +7,13 @@ import type {
   StaffProfileApiResponse,
   UpdateCustomerProfileDto,
   UpdateStaffProfileDto,
-} from "../types/profile.types";
+} from "@/features/profile/types/profile.types";
 import type {
   RestaurantProfileApiResponse,
   RestaurantProfileData,
   UpdateRestaurantProfilePayload,
-} from "../types/restaurant-profile.types";
-import { normalizeStaffProfile } from "../utils/profile.utils";
+} from "@/features/profile/types/restaurant-profile.types";
+import { normalizeStaffProfile } from "@/features/profile/utils/profile.utils";
 
 export const profileService = {
   // Customer Profile

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { TableItem } from "../types/table.types";
+import type { TableItem } from "@/features/tables/types/table.types";
 import { TableCard } from "./TableCard";
 
 describe("TableCard", () => {

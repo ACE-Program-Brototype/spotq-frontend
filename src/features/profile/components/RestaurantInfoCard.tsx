@@ -3,13 +3,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useUpdateRestaurantProfile } from "@/features/profile/hooks/use-update-restaurant-profile";
 import type {
   RestaurantProfileData,
   RestaurantProfileDetails,
   UpdateRestaurantProfilePayload,
-} from "../types/restaurant-profile.types";
+} from "@/features/profile/types/restaurant-profile.types";
 
 interface RestaurantInfoCardProps {
   profile: RestaurantProfileDetails;

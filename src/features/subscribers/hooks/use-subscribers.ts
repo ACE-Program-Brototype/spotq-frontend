@@ -7,9 +7,9 @@ import {
   SUBSCRIBER_QUERY_KEYS,
   SUBSCRIBER_SORT_BY,
   SUBSCRIBER_SORT_ORDER,
-} from "../constants/subscriber.constants";
-import { subscriberService } from "../services/subscriber.service";
-import type { SubscriberFilterStatus } from "../types/subscriber.types";
+} from "@/features/subscribers/constants/subscriber.constants";
+import { subscriberService } from "@/features/subscribers/services/subscriber.service";
+import type { SubscriberFilterStatus } from "@/features/subscribers/types/subscriber.types";
 
 export interface UseSubscribersOptions {
   initialPage?: number;

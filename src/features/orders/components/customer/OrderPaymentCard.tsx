@@ -1,11 +1,11 @@
 import { CheckCircle2, CreditCard, ShieldCheck, XCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate } from "@/lib/utils/date";
-import { CUSTOMER_PAYMENT_STATUS } from "../../constants/customer-order-details.constants";
+import { CUSTOMER_PAYMENT_STATUS } from "@/features/orders/constants/customer-order-details.constants";
 import type {
   CustomerOrderPayment,
   CustomerOrderRefundStatus,
-} from "../../types/customer-order-details.types";
+} from "@/features/orders/types/customer-order-details.types";
 
 export interface OrderPaymentCardProps {
   payment: CustomerOrderPayment;

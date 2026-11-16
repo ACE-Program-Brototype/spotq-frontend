@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import * as storageService from "@/services/storage/storage.service";
-import { useOnboardStore } from "../store/onboard.store";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 import DocumentsPage from "./DocumentsPage";
 
 const mockNavigate = jest.fn();

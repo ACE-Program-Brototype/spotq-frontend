@@ -10,8 +10,8 @@ import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { CustomerSidebarProps } from "../types/profile.types";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { CustomerSidebarProps } from "@/features/profile/types/profile.types";
 
 export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   const location = useLocation();

@@ -2,10 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { menuService } from "../services/menu.service";
+import { menuService } from "@/features/menu/services/menu.service";
 import EditMenuItemPage from "./EditMenuItemPage";
 
-jest.mock("../services/menu.service", () => ({
+jest.mock("@/features/menu/services/menu.service", () => ({
   menuService: {
     getMenuItem: jest.fn(),
     getCategories: jest.fn(),

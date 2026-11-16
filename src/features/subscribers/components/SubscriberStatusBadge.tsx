@@ -1,4 +1,4 @@
-import { getSubscriberStatusStyles } from "../utils/subscriber.utils";
+import { getSubscriberStatusStyles } from "@/features/subscribers/utils/subscriber.utils";
 
 export interface SubscriberStatusBadgeProps {
   status?: string | null;

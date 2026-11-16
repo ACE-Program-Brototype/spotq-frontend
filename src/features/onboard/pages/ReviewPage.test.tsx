@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { useOnboardStore } from "../store/onboard.store";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 import ReviewPage from "./ReviewPage";
 
 const mockNavigate = jest.fn();

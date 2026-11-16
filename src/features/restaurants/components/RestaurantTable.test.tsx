@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import type { RestaurantListItem, RestaurantStatusType } from "../types/restaurant.types";
+import type { RestaurantListItem, RestaurantStatusType } from "@/features/restaurants/types/restaurant.types";
 import { RestaurantTable } from "./RestaurantTable";
 
 const mockRestaurants: RestaurantListItem[] = [

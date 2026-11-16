@@ -5,9 +5,9 @@ import {
   DATE_ONLY_FORMAT_OPTIONS,
   SUBSCRIBER_MESSAGES,
   SUBSCRIBER_SORT_BY,
-} from "../constants/subscriber.constants";
-import type { SubscriberSummary } from "../types/subscriber.types";
-import { formatBillingCycle, formatPrice } from "../utils/subscriber.utils";
+} from "@/features/subscribers/constants/subscriber.constants";
+import type { SubscriberSummary } from "@/features/subscribers/types/subscriber.types";
+import { formatBillingCycle, formatPrice } from "@/features/subscribers/utils/subscriber.utils";
 import { SubscriberEmptyState } from "./SubscriberEmptyState";
 import { SubscriberStatusBadge } from "./SubscriberStatusBadge";
 

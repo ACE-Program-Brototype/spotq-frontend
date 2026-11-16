@@ -1,7 +1,8 @@
 import { CheckCircle2, CreditCard, ShieldAlert, ShieldCheck, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { RestaurantDetails } from "../../types/restaurant.types";
+import { RESTAURANT_STATUS } from "@/features/restaurants/constants/restaurant.constants";
+import type { RestaurantDetails } from "@/features/restaurants/types/restaurant.types";
 
 interface RestaurantSubscriptionCardProps {
   restaurant: RestaurantDetails;
@@ -57,7 +58,7 @@ export function RestaurantSubscriptionCard({
 
         <div className="py-2.5 flex justify-between items-center">
           <span className="text-slate-500">Account Block Status</span>
-          {restaurant.is_blocked || restaurant.status === "SUSPENDED" ? (
+          {restaurant.is_blocked || restaurant.status === RESTAURANT_STATUS.SUSPENDED ? (
             <Badge
               variant="destructive"
               className="text-xs font-bold gap-1"

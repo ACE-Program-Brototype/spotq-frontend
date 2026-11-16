@@ -1,4 +1,4 @@
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 import {
   normalizeStaffPhone,
   updateStaffProfileSchema,

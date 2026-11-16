@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { PROFILE_QUERY_KEYS, profileHooks } from "../constants/profile.constants";
-import { profileService } from "../services/profile.service";
-import type { RestaurantProfileData } from "../types/restaurant-profile.types";
+import { PROFILE_QUERY_KEYS, profileHooks } from "@/features/profile/constants/profile.constants";
+import { profileService } from "@/features/profile/services/profile.service";
+import type { RestaurantProfileData } from "@/features/profile/types/restaurant-profile.types";
 
 export function useRestaurantProfile() {
   return useQuery<RestaurantProfileData, Error>({

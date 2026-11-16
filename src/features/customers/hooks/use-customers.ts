@@ -8,9 +8,9 @@ import {
   type CustomerFilterStatusType,
   type CustomerSortByType,
   type CustomerSortOrderType,
-} from "../constants/customer.constants";
-import { customerService } from "../services/customer.service";
-import type { UpdateCustomerStatusInput } from "../types/customer.types";
+} from "@/features/customers/constants/customer.constants";
+import { customerService } from "@/features/customers/services/customer.service";
+import type { UpdateCustomerStatusInput } from "@/features/customers/types/customer.types";
 
 export interface UseCustomersOptions {
   initialPage?: number;

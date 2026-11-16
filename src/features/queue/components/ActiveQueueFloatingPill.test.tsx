@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
+import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
 import { ActiveQueueFloatingPill } from "./ActiveQueueFloatingPill";
 
 const mockNavigate = jest.fn();

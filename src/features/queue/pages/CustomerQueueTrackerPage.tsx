@@ -1,29 +1,23 @@
-import { ArrowLeft, BellRing, LogOut, RefreshCw, Users, UtensilsCrossed } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, BellRing, RefreshCw, UtensilsCrossed } from "lucide-react";
+import { useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { CustomerRingAlertModal } from "@/features/queue/components/CustomerRingAlertModal";
+import { ActiveQueueTrackerCard } from "@/features/queue/components/tracker/ActiveQueueTrackerCard";
 import { CancelledStatusCard } from "@/features/queue/components/tracker/CancelledStatusCard";
-import { CircularPositionBadge } from "@/features/queue/components/tracker/CircularPositionBadge";
 import { ConnectionStatusBadge } from "@/features/queue/components/tracker/ConnectionStatusBadge";
-import { EstimatedWaitChip } from "@/features/queue/components/tracker/EstimatedWaitChip";
-import { QueueProgressBar } from "@/features/queue/components/tracker/QueueProgressBar";
 import { SeatedStatusCard } from "@/features/queue/components/tracker/SeatedStatusCard";
 import { SkippedBanner } from "@/features/queue/components/tracker/SkippedBanner";
 import { SkippedStatusCard } from "@/features/queue/components/tracker/SkippedStatusCard";
 import { QUEUE_STATUS } from "@/features/queue/constants/queue.constants";
-import { useCustomerQueueSocket } from "@/features/queue/hooks/use-customer-queue-socket";
 import { useCustomerQueueStatus } from "@/features/queue/hooks/use-customer-queue-status";
 import { useLeaveQueue } from "@/features/queue/hooks/use-leave-queue";
-import type { QueueStatus } from "@/features/queue/types/queue.types";
-import type { CustomerRingPayload } from "@/features/queue/types/ring-alert.types";
+import { useTrackerLiveState } from "@/features/queue/hooks/use-tracker-live-state";
 import {
-  clearActiveCustomerTicket,
   formatQueueNumber,
   getActiveCustomerTicket,
   resolveDisplayTableLabel,
@@ -71,115 +65,23 @@ export default function CustomerQueueTrackerPage() {
 
   const initialData = statusResponse?.data;
 
-  const [liveStatus, setLiveStatus] = useState<QueueStatus | null>(null);
-  const [livePosition, setLivePosition] = useState<number | null>(null);
-  const [livePeopleAhead, setLivePeopleAhead] = useState<number | null>(null);
-  const [liveWaitMinutes, setLiveWaitMinutes] = useState<number | null | undefined>(undefined);
-  const [assignedTableNumber, setAssignedTableNumber] = useState<string | null | undefined>(
-    undefined,
-  );
-  const [skippedNotice, setSkippedNotice] = useState<{
-    eventId: number;
-    reason?: string;
-    position?: number;
-  } | null>(null);
-  const [skippedReason, setSkippedReason] = useState<string | undefined>(undefined);
-  const [cancelledReason, setCancelledReason] = useState<string | undefined>(undefined);
-  const [liveRingData, setLiveRingData] = useState<CustomerRingPayload | null>(null);
-  const [isRingModalOpen, setIsRingModalOpen] = useState(false);
-  const [initialJoinState, setInitialJoinState] = useState<{
-    queueEntryId: string;
-    position: number;
-  } | null>(null);
-  const lastSyncedEntryIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!initialData) return;
-
-    setLiveStatus(null);
-    setLivePosition(null);
-    setLivePeopleAhead(null);
-    setLiveWaitMinutes(undefined);
-    setAssignedTableNumber(undefined);
-
-    if (lastSyncedEntryIdRef.current !== initialData.queueEntryId) {
-      lastSyncedEntryIdRef.current = initialData.queueEntryId;
-      setSkippedNotice(null);
-      setSkippedReason(undefined);
-      setCancelledReason(undefined);
-      setLiveRingData(null);
-      setIsRingModalOpen(false);
-      setInitialJoinState(
-        typeof initialData.position === "number" && initialData.position > 0
-          ? { queueEntryId: initialData.queueEntryId, position: initialData.position }
-          : null,
-      );
-    }
-  }, [initialData]);
-
-  const { connectionStatus } = useCustomerQueueSocket(activeQueueEntryId, accessToken, {
-    onPositionUpdated: (payload) => {
-      setLivePosition(payload.position);
-      setLivePeopleAhead(Math.max(0, payload.position - 1));
-      setLiveWaitMinutes(payload.estimatedWaitMinutes);
-    },
-    onRing: (payload) => {
-      setLiveStatus(QUEUE_STATUS.CALLED);
-      setLiveRingData(payload);
-      setIsRingModalOpen(true);
-      const tableLabel = resolveDisplayTableLabel(
-        payload.assignedTableNumber,
-        payload.assignedTableIds,
-      );
-      if (tableLabel) {
-        setAssignedTableNumber(tableLabel);
-      }
-    },
-    onSkipped: (payload) => {
-      if (payload.status === QUEUE_STATUS.SKIPPED && typeof payload.position !== "number") {
-        setLiveStatus(QUEUE_STATUS.SKIPPED);
-        setSkippedReason(payload.reason);
-        setSkippedNotice(null);
-        setIsRingModalOpen(false);
-        clearActiveCustomerTicket();
-        return;
-      }
-
-      setSkippedNotice((prev) => ({
-        eventId: (prev?.eventId ?? 0) + 1,
-        reason: payload.reason,
-        position: typeof payload.position === "number" ? payload.position : undefined,
-      }));
-      if (typeof payload.position === "number") {
-        setLivePosition(payload.position);
-        setLivePeopleAhead(Math.max(0, payload.position - 1));
-      }
-    },
-    onSeated: (payload) => {
-      setLiveStatus(QUEUE_STATUS.SEATED);
-      setIsRingModalOpen(false);
-      const tableLabel = resolveDisplayTableLabel(
-        payload?.tableNumber,
-        payload?.tableIds ?? (payload?.tableId ? [payload.tableId] : null),
-      );
-      if (tableLabel) {
-        setAssignedTableNumber(tableLabel);
-      }
-      clearActiveCustomerTicket();
-    },
-    onCancelled: (payload) => {
-      setLiveStatus(
-        payload?.status === QUEUE_STATUS.NO_SHOW ? QUEUE_STATUS.NO_SHOW : QUEUE_STATUS.CANCELLED,
-      );
-      setCancelledReason(payload?.reason);
-      setSkippedNotice(null);
-      setIsRingModalOpen(false);
-      clearActiveCustomerTicket();
-    },
-  });
+  const {
+    connectionStatus,
+    liveStatus,
+    livePosition,
+    livePeopleAhead,
+    liveWaitMinutes,
+    assignedTableNumber,
+    skippedNotice,
+    skippedReason,
+    cancelledReason,
+    liveRingData,
+    isRingModalOpen,
+    setIsRingModalOpen,
+    initialJoinState,
+  } = useTrackerLiveState(activeQueueEntryId, accessToken, initialData);
 
   const isMatchingStoredTicket = matchingStoredTicket?.queueEntryId === activeQueueEntryId;
-
   const restaurantName = initialData?.restaurantName || "Restaurant";
   const rawQueueNumber =
     initialData?.queueNumber ||
@@ -362,66 +264,18 @@ export default function CustomerQueueTrackerPage() {
       )}
 
       {!isTerminal && (
-        <Card className="relative overflow-hidden rounded-2xl border border-[#eddcd4] bg-white p-3.5 sm:p-5 shadow-xs">
-          <div className="flex items-center justify-between border-b border-[#eddcd4]/60 pb-2.5 sm:pb-3">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
-                Queue Number
-              </span>
-              <div className="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-none mt-0.5">
-                {queueNumber}
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              {effectiveAssignedTable && (
-                <div className="flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-800 border border-emerald-200/60">
-                  <span>Table: {effectiveAssignedTable}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-1 rounded-lg bg-[#fcf5f0] px-2 py-1 text-[11px] font-semibold text-[#9a3412] border border-[#eddcd4]">
-                <Users className="size-3 text-[#e8631b]" />
-                <span>
-                  {partySize} {partySize === 1 ? "Guest" : "Guests"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="py-2.5 sm:py-3.5">
-            <CircularPositionBadge
-              position={effectivePosition}
-              peopleAhead={effectivePeopleAhead}
-            />
-          </div>
-
-          <div className="pt-2 pb-2.5 border-t border-[#eddcd4]/50">
-            <QueueProgressBar
-              currentPosition={effectivePosition}
-              initialPosition={effectiveInitialPosition}
-            />
-          </div>
-
-          <div className="flex items-center justify-between gap-2 pt-1">
-            <EstimatedWaitChip estimatedWaitMinutes={effectiveWaitMinutes} />
-            <span className="text-[10px] text-neutral-400">Auto-updates live</span>
-          </div>
-
-          {initialData?.canCancel !== false && (
-            <div className="pt-2.5 mt-2.5 border-t border-dashed border-[#eddcd4] flex items-center justify-between gap-2">
-              <span className="text-[11px] text-neutral-500">Need to cancel?</span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsLeaveConfirmOpen(true)}
-                disabled={leaveQueueMutation.isPending}
-                className="border-[#eddcd4] text-neutral-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 text-xs font-semibold h-7.5 px-2.5 rounded-xl transition-all cursor-pointer"
-              >
-                <LogOut className="mr-1 size-3" />
-                Leave Queue
-              </Button>
-            </div>
-          )}
-        </Card>
+        <ActiveQueueTrackerCard
+          queueNumber={queueNumber}
+          partySize={partySize}
+          effectiveAssignedTable={effectiveAssignedTable}
+          effectivePosition={effectivePosition}
+          effectivePeopleAhead={effectivePeopleAhead}
+          effectiveInitialPosition={effectiveInitialPosition}
+          effectiveWaitMinutes={effectiveWaitMinutes}
+          canCancel={initialData?.canCancel !== false}
+          isLeaving={leaveQueueMutation.isPending}
+          onLeaveClick={() => setIsLeaveConfirmOpen(true)}
+        />
       )}
 
       <ConfirmDialog

@@ -5,12 +5,12 @@ import {
   APPLICATION_FILTER_STATUS,
   APPLICATION_MESSAGES,
   APPLICATION_SORT_OPTIONS,
-} from "../../constants/restaurant-application.constants";
+} from "@/features/restaurants/constants/restaurant-application.constants";
 import type {
   ApplicationFilterStatusType,
   ApplicationSortByType,
   ApplicationSortOrderType,
-} from "../../types/restaurant-application.types";
+} from "@/features/restaurants/types/restaurant-application.types";
 
 export interface RestaurantApplicationFiltersProps {
   search: string;

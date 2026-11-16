@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { RESTAURANT_ORDERS_QUERY_KEYS } from "../constants/restaurant-orders.constants";
-import { restaurantOrdersService } from "../services/restaurant-orders.service";
-import type { GetRestaurantOrdersParams } from "../types/restaurant-orders.types";
+import { RESTAURANT_ORDERS_QUERY_KEYS } from "@/features/orders/constants/restaurant-orders.constants";
+import { restaurantOrdersService } from "@/features/orders/services/restaurant-orders.service";
+import type { GetRestaurantOrdersParams } from "@/features/orders/types/restaurant-orders.types";
 
 export function useRestaurantOrders(restaurantId: string, params?: GetRestaurantOrdersParams) {
   const normalizedId = (restaurantId ?? "").trim();

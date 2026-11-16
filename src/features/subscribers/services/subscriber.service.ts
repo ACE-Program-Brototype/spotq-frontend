@@ -3,7 +3,7 @@ import {
   SUBSCRIBER_DEFAULTS,
   SUBSCRIBER_ENDPOINTS,
   SUBSCRIBER_FILTER_STATUS,
-} from "../constants/subscriber.constants";
+} from "@/features/subscribers/constants/subscriber.constants";
 import type {
   GetSubscribersParams,
   SubscriberBillingCycle,
@@ -16,7 +16,7 @@ import type {
   SubscribersApiResponse,
   SubscribersListData,
   SubscriberTransaction,
-} from "../types/subscriber.types";
+} from "@/features/subscribers/types/subscriber.types";
 
 interface RawPlanPayload {
   id?: string;

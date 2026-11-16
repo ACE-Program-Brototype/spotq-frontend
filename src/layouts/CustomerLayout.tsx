@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { CustomerFooter } from "@/components/layout/CustomerFooter";
 import { CustomerMobileNav, CustomerNavbar } from "@/components/layout/CustomerNavbar";
 import { NotificationBanner } from "@/components/layout/NotificationBanner";
+import { USER_ROLES } from "@/features/auth/constants/auth.constants";
 import { usePushNotification } from "@/features/auth/context/push-notification.context";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
@@ -20,7 +21,7 @@ export function CustomerLayout() {
   const cartItemCount = useCartStore((state) => state.totalCount);
   const location = useLocation();
 
-  if (isAuthenticated && user?.role && user.role !== "CUSTOMER") {
+  if (isAuthenticated && user?.role && user.role !== USER_ROLES.CUSTOMER) {
     return <Navigate to={getRoleHome(user.role)} replace />;
   }
 

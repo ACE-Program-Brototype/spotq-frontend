@@ -1,4 +1,4 @@
-import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
+import { Gender, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 import { editProfileSchema } from "./edit-profile.schema";
 
 describe("editProfileSchema", () => {
