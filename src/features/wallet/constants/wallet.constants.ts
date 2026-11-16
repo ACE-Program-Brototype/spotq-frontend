@@ -27,6 +27,18 @@ export const WALLET_LEDGER_TYPES = [
 
 export const WALLET_LEDGER_STATUSES = ["PROCESSING", "PROCESSED", "FAILED", "REVERSED"] as const;
 
+export const WALLET_MESSAGES = {
+  NOT_INITIALIZED_TITLE: "Wallet Not Initialized Yet",
+  NOT_INITIALIZED_DESCRIPTION:
+    "Your restaurant wallet is activated automatically when your restaurant receives its first takeaway order or completes subscription verification. Once active, your balance, daily earnings, and payout ledger will be available here.",
+  UNABLE_TO_LOAD_TITLE: "Unable to load wallet",
+  UNABLE_TO_LOAD_DESCRIPTION:
+    "We encountered an issue connecting to your wallet service. Please try again.",
+  ACTION_DASHBOARD: "Go to Dashboard",
+  ACTION_RETRY: "Try again",
+  ACTION_CHECK_AGAIN: "Check Again",
+} as const;
+
 export const WALLET_QUERY_KEYS = {
   all: ["wallet"] as const,
   overview: () => [...WALLET_QUERY_KEYS.all, "overview"] as const,
