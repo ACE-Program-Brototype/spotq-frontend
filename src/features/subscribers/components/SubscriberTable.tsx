@@ -1,7 +1,5 @@
-import { Eye } from "lucide-react";
 import { useMemo } from "react";
 import { type Column, DataTable } from "@/components/common/table";
-import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils/date";
 import {
   DATE_ONLY_FORMAT_OPTIONS,
@@ -134,29 +132,8 @@ export function SubscriberTable({
           </span>
         ),
       },
-      {
-        key: "actions",
-        header: SUBSCRIBER_MESSAGES.TABLE_HEADER_ACTIONS,
-        align: "right",
-        width: "120px",
-        headerClassName: "text-right font-semibold text-slate-700 min-w-[105px]",
-        className: "text-right",
-        cell: ({ row }) => (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => onViewDetails(row)}
-            className="gap-1.5 text-xs text-slate-700 hover:text-slate-900 border-slate-200 hover:bg-slate-100"
-            data-testid={`view-subscriber-btn-${row.id}`}
-          >
-            <Eye className="size-3.5" />
-            <span>{SUBSCRIBER_MESSAGES.VIEW_DETAILS}</span>
-          </Button>
-        ),
-      },
     ],
-    [onViewDetails],
+    [],
   );
 
   return (
@@ -165,6 +142,8 @@ export function SubscriberTable({
       columns={columns}
       getRowId={(row) => row.id}
       getRowTestId={(row) => `subscriber-row-${row.id}`}
+      onRowClick={(row) => onViewDetails(row)}
+      rowClassName="hover:bg-slate-50/80 cursor-pointer transition-colors"
       isLoading={isLoading}
       loadingRowCount={loadingRowCount}
       sortBy={sortBy}

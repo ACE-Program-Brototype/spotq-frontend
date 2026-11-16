@@ -44,11 +44,11 @@ describe("SubscriberTable", () => {
     expect(screen.getByTestId("subscriber-status-badge")).toBeInTheDocument();
   });
 
-  it("should call onViewDetails when View Details button is clicked", () => {
+  it("should call onViewDetails when subscriber row is clicked", () => {
     render(<SubscriberTable {...defaultProps} />);
 
-    const viewBtn = screen.getByTestId("view-subscriber-btn-sub-1");
-    fireEvent.click(viewBtn);
+    const row = screen.getByTestId("subscriber-row-sub-1");
+    fireEvent.click(row);
 
     expect(defaultProps.onViewDetails).toHaveBeenCalledWith(mockSubscribers[0]);
   });
