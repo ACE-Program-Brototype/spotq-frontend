@@ -1,27 +1,52 @@
-import { ArrowDownToLine, ArrowDownUp, Clock3, Wallet } from "lucide-react";
-
+import { AlertCircle, ArrowDownToLine, ArrowDownUp, Clock3, RotateCcw, Wallet } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FINANCE_MESSAGES } from "@/features/finance/constants/finance.constants";
 import type { FinanceSummary as FinanceSummaryData } from "@/features/finance/types/finance.types";
 import { formatPaise } from "@/features/finance/utils/finance-display.utils";
+import { cn } from "@/lib/utils/cn";
 import { FinanceMetricCard } from "./FinanceMetricCard";
+
+interface FinanceSummaryProps {
+  summary: FinanceSummaryData | null;
+  loading: boolean;
+  error?: string | null;
+  onRetry?: () => void;
+  isRetrying?: boolean;
+}
 
 export function FinanceSummary({
   summary,
   loading,
   error,
-}: {
-  summary: FinanceSummaryData | null;
-  loading: boolean;
-  error: string;
-}) {
+  onRetry,
+  isRetrying = false,
+}: FinanceSummaryProps) {
   return (
     <section aria-label="Finance summary">
       {error && (
-        <p
+        <div
           role="alert"
-          className="mb-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800"
+          data-testid="finance-summary-error"
+          className="mb-4 flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50/90 p-4 text-sm text-rose-900 sm:flex-row sm:items-center sm:justify-between shadow-xs transition-all"
         >
-          {error}
-        </p>
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="size-5 text-rose-600 shrink-0" aria-hidden="true" />
+            <span className="font-medium text-rose-900">{error}</span>
+          </div>
+          {onRetry && (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={onRetry}
+              disabled={isRetrying}
+              className="gap-1.5 rounded-xl border-rose-200 bg-white text-rose-700 hover:bg-rose-100 hover:text-rose-900 shrink-0 font-semibold cursor-pointer"
+            >
+              <RotateCcw className={cn("size-3.5", isRetrying && "animate-spin")} aria-hidden="true" />
+              <span>{isRetrying ? FINANCE_MESSAGES.RETRYING : FINANCE_MESSAGES.RETRY}</span>
+            </Button>
+          )}
+        </div>
       )}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <FinanceMetricCard

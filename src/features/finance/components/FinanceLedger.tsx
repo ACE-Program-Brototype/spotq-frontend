@@ -1,5 +1,8 @@
+import { AlertCircle, RotateCcw } from "lucide-react";
 import { DataTable, Pagination } from "@/components/common";
 import type { Column } from "@/components/common/table";
+import { Button } from "@/components/ui/button";
+import { FINANCE_MESSAGES } from "@/features/finance/constants/finance.constants";
 import type { MasterLedgerEntry } from "@/features/finance/types/finance.types";
 import { LedgerFilters, type LedgerFiltersProps } from "./LedgerFilters";
 
@@ -87,16 +90,22 @@ function FinanceLedgerError({ error, onRetry }: { error: string; onRetry: () => 
   return (
     <div
       role="alert"
-      className="m-4 flex flex-col gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 sm:flex-row sm:items-center sm:justify-between"
+      className="m-4 flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50/90 p-4 text-sm text-rose-900 sm:flex-row sm:items-center sm:justify-between shadow-xs"
     >
-      <span>{error}</span>
-      <button
+      <div className="flex items-center gap-2.5">
+        <AlertCircle className="size-5 text-rose-600 shrink-0" aria-hidden="true" />
+        <span className="font-medium text-rose-900">{error}</span>
+      </div>
+      <Button
         type="button"
+        size="sm"
+        variant="outline"
         onClick={onRetry}
-        className="rounded-lg border border-rose-200 bg-white px-3 py-2 text-sm"
+        className="gap-1.5 rounded-xl border-rose-200 bg-white text-rose-700 hover:bg-rose-100 hover:text-rose-900 shrink-0 font-semibold cursor-pointer"
       >
-        Retry
-      </button>
+        <RotateCcw className="size-3.5" aria-hidden="true" />
+        <span>{FINANCE_MESSAGES.RETRY}</span>
+      </Button>
     </div>
   );
 }

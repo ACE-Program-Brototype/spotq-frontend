@@ -24,8 +24,24 @@ export type { DatePreset } from "@/features/finance/types/finance.types";
 
 function getErrorMessage(error: unknown, fallback = FINANCE_MESSAGES.ERROR): string {
   if (!error) return "";
-  if (error instanceof Error && error.message) return error.message;
-  return fallback;
+  const raw =
+    error instanceof Error
+      ? error.message
+      : typeof error === "string"
+        ? error
+        : "";
+  if (!raw) return fallback;
+
+  // Mask database ORM / raw SQL crash messages leaked from development backend
+  const isTechnicalDatabaseLeak =
+    /prisma|queryraw|relation\s*["'].*["']\s*does not exist|syntax error|code:\s*['"]?[0-9a-z]+/i.test(
+      raw,
+    );
+
+  if (isTechnicalDatabaseLeak) {
+    return fallback;
+  }
+  return raw;
 }
 
 export default function PlatformFinancePage() {
@@ -65,7 +81,7 @@ export default function PlatformFinancePage() {
   const totalPages = ledgerQuery.data?.pagination?.totalPages ?? 1;
   const exportMutation = useMutation({ mutationFn: financeService.downloadFinanceCsv });
   const exporting = exportMutation.isPending;
-  const summaryError = getErrorMessage(summaryQuery.error);
+  const summaryError = getErrorMessage(summaryQuery.error, FINANCE_MESSAGES.SUMMARY_ERROR);
   const ledgerError = getErrorMessage(ledgerQuery.error);
   const exportError = getErrorMessage(exportMutation.error);
 
@@ -185,6 +201,8 @@ export default function PlatformFinancePage() {
         summary={summary ?? null}
         loading={summaryQuery.isPending}
         error={summaryError}
+        onRetry={() => summaryQuery.refetch()}
+        isRetrying={summaryQuery.isFetching}
       />
 
       <FinanceLedger

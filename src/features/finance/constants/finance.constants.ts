@@ -10,10 +10,13 @@ export const FINANCE_PAGE_SIZE = 10;
 export const DEFAULT_FINANCE_DATE_PRESET = "LAST_30_DAYS";
 export const FINANCE_MESSAGES = {
   ERROR: "Unable to load finance data. Please try again.",
+  SUMMARY_ERROR: "Unable to load platform finance metrics. Please try again.",
   LEDGER_START_DATE_FUTURE: "Start date cannot be in the future.",
   LEDGER_START_DATE_AFTER_END: "Start date must be on or before the end date.",
   LEDGER_END_DATE_FUTURE: "End date cannot be in the future.",
   LEDGER_END_DATE_BEFORE_START: "End date must be on or after the start date.",
+  RETRY: "Retry",
+  RETRYING: "Retrying...",
 } as const;
 export const FINANCE_ENDPOINTS = {
   SUMMARY: "/payments/admin/finance/summary",
