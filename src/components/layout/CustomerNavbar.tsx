@@ -3,7 +3,7 @@
  * Provides branding, global search, shopping cart access, notifications, and customer authentication links.
  */
 
-import { Home, LogOut, Search, ShoppingCart, User } from "lucide-react";
+import { LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
