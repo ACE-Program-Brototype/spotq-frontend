@@ -18,13 +18,15 @@ const isExemptRestaurantPath = (targetPath: string): boolean =>
     (exempt) => targetPath === exempt || targetPath.startsWith(`${exempt}/`),
   );
 
-export function redirectToPortalLogin(): void {
-  if (typeof window === "undefined" || !window.location) return;
+export function redirectToPortalLogin(
+  targetWindow: Window | { location: { pathname: string; href: string } } = window,
+): void {
+  if (typeof targetWindow === "undefined" || !targetWindow.location) return;
 
   const user = useAuthStore.getState().user;
   const role = user?.role?.toUpperCase();
 
-  const path = window.location.pathname || "";
+  const path = targetWindow.location.pathname || "";
   const isAdminRoute = path === ADMIN_ROUTES.ROOT || path.startsWith(`${ADMIN_ROUTES.ROOT}/`);
   const isStaffRoute = path === STAFF_ROUTES.ROOT || path.startsWith(`${STAFF_ROUTES.ROOT}/`);
   const isRestaurantRoute =
@@ -32,7 +34,7 @@ export function redirectToPortalLogin(): void {
 
   if (role === USER_ROLES.ADMIN || isAdminRoute) {
     if (path !== ADMIN_ROUTES.LOGIN) {
-      window.location.href = ADMIN_ROUTES.LOGIN;
+      targetWindow.location.href = ADMIN_ROUTES.LOGIN;
     }
   } else if (
     role === USER_ROLES.STAFF ||
@@ -40,7 +42,7 @@ export function redirectToPortalLogin(): void {
     isStaffRoute
   ) {
     if (path !== STAFF_ROUTES.LOGIN) {
-      window.location.href = STAFF_ROUTES.LOGIN;
+      targetWindow.location.href = STAFF_ROUTES.LOGIN;
     }
   } else if (
     role === USER_ROLES.RESTAURANT_ADMIN ||
@@ -48,10 +50,10 @@ export function redirectToPortalLogin(): void {
     isRestaurantRoute
   ) {
     if (!isExemptRestaurantPath(path)) {
-      window.location.href = RESTAURANT_ROUTES.LOGIN;
+      targetWindow.location.href = RESTAURANT_ROUTES.LOGIN;
     }
   } else if (path !== CUSTOMER_ROUTES.AUTH.LOGIN) {
-    window.location.href = CUSTOMER_ROUTES.AUTH.LOGIN;
+    targetWindow.location.href = CUSTOMER_ROUTES.AUTH.LOGIN;
   }
 }
 

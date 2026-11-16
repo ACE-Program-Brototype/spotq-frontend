@@ -500,11 +500,11 @@ describe("CustomerQueueTrackerPage", () => {
       });
     });
 
-    expect(screen.getByText("Table Ready — Please Head to the Host Stand")).toBeInTheDocument();
+    expect(screen.getByText("Table Ready — Head to Host Stand")).toBeInTheDocument();
     expect(screen.getByRole("alertdialog")).toBeInTheDocument();
     expect(screen.getByText("Your Table is Ready!")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /silence alert/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Silence" }));
     expect(ringMedia.stopAll).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
   });
@@ -530,7 +530,7 @@ describe("CustomerQueueTrackerPage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Table Ready — Please Head to the Host Stand")).toBeInTheDocument();
+    expect(screen.getByText("Table Ready — Head to Host Stand")).toBeInTheDocument();
 
     act(() => {
       capturedSocketOptions.onSkipped?.({

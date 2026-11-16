@@ -159,10 +159,9 @@ describe("StaffMenuItemsPage", () => {
     // Wait for items to load
     expect(await screen.findByText("Chicken Biriyani")).toBeInTheDocument();
     expect(screen.getByText("Mango Kulfi")).toBeInTheDocument();
-    expect(screen.getByText(/CHK-01/)).toBeInTheDocument();
     expect(screen.getByText("2 Total Items")).toBeInTheDocument();
     expect(screen.getByText("Total Dishes")).toBeInTheDocument();
-    expect(screen.getByText("In Stock")).toBeInTheDocument();
+    expect(screen.getAllByText("In Stock").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText("Out of Stock").length).toBeGreaterThanOrEqual(1);
   });
 

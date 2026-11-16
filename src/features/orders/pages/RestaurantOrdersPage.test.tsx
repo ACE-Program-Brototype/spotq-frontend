@@ -255,12 +255,17 @@ describe("RestaurantOrdersPage UI Presentation", () => {
     fireEvent.change(startDateInput, { target: { value: "2026-11-01" } });
     fireEvent.change(endDateInput, { target: { value: "2026-11-07" } });
 
+    const expectedFrom = new Date("2026-11-01");
+    expectedFrom.setHours(0, 0, 0, 0);
+    const expectedTo = new Date("2026-11-07");
+    expectedTo.setHours(23, 59, 59, 999);
+
     expect(mockUseRestaurantOrders).toHaveBeenLastCalledWith(
       expect.any(String),
       expect.objectContaining({
         page: 1,
-        from: expect.stringContaining("2026-11-01"),
-        to: expect.stringContaining("2026-11-07"),
+        from: expectedFrom.toISOString(),
+        to: expectedTo.toISOString(),
       }),
     );
   });

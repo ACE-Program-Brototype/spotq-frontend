@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useRestaurantProfile } from "@/features/profile/hooks/use-restaurant-profile";
+import { RESTAURANT_SETTINGS_FIELDS } from "@/features/profile/constants/profile.constants";
 import type { RestaurantProfileData } from "@/features/profile/types/restaurant-profile.types";
 import RestaurantProfilePage from "./RestaurantProfilePage";
 
@@ -127,11 +128,14 @@ describe("RestaurantProfilePage", () => {
       screen.getByText("Specializing in traditional Arabian Mandi and grills."),
     ).toBeInTheDocument();
 
-    expect(screen.getByText("Accepts Queue")).toBeInTheDocument();
-    expect(screen.getByText("Accepts QR Orders")).toBeInTheDocument();
+    expect(screen.getByText(RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title)).toBeInTheDocument();
+    expect(
+      screen.getByText(RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title),
+    ).toBeInTheDocument();
 
     expect(screen.getByText("Monday")).toBeInTheDocument();
-    expect(screen.getByText("11:00 AM - 11:00 PM")).toBeInTheDocument();
+    expect(screen.getByLabelText("Monday open time")).toHaveValue("11:00");
+    expect(screen.getByLabelText("Monday close time")).toHaveValue("23:00");
     expect(screen.getByText("Sunday")).toBeInTheDocument();
   });
 });

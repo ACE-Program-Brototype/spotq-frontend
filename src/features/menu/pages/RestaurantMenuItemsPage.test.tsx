@@ -105,7 +105,7 @@ describe("RestaurantMenuItemsPage", () => {
 
     // Verify Title & Badges
     expect(await screen.findByRole("heading", { name: "Menu Items" })).toBeInTheDocument();
-    expect(screen.getByText("Available In-Stock")).toBeInTheDocument();
+    expect(screen.getAllByText("In Stock")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Out of Stock").length).toBeGreaterThanOrEqual(1);
 
     // Verify Create Menu Item Button

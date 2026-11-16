@@ -15,7 +15,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   CATEGORY_FORM_FIELDS,
   CATEGORY_NAME_MAX_LENGTH,
-  MENU_MESSAGES,
 } from "@/features/menu/constants/menu.constants";
 import { type MenuCategorySchema, menuCategorySchema } from "@/features/menu/schemas/menu-category.schema";
 import type { MenuCategoryFormValues } from "@/features/menu/types/menu-category.types";
@@ -211,16 +210,14 @@ export function MenuCategoryForm({
         <div className="flex items-center justify-between rounded-xl border border-[#fae2d3] bg-[#fffcf9] p-3.5">
           <div className="flex items-center gap-2.5">
             <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                currentIsActive
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${currentIsActive
                   ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                   : "bg-neutral-100 text-neutral-600 border border-neutral-200"
-              }`}
+                }`}
             >
               <span
-                className={`size-1.5 rounded-full ${
-                  currentIsActive ? "bg-emerald-500" : "bg-neutral-400"
-                }`}
+                className={`size-1.5 rounded-full ${currentIsActive ? "bg-emerald-500" : "bg-neutral-400"
+                  }`}
               />
               {currentIsActive ? "Active" : "Inactive"}
             </span>

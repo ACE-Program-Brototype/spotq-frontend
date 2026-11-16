@@ -45,7 +45,7 @@ describe("StaffMenuItemFilters", () => {
     render(<StaffMenuItemFilters {...defaultProps} />);
 
     expect(
-      screen.getByPlaceholderText(/Search items by name, description, variant or SKU.../i),
+      screen.getByPlaceholderText(/Search items by name, description, or variant/i),
     ).toBeInTheDocument();
     expect(screen.getByText("All Categories")).toBeInTheDocument();
     expect(screen.getByText("Starters")).toBeInTheDocument();

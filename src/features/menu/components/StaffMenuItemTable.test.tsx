@@ -37,7 +37,6 @@ describe("StaffMenuItemTable", () => {
     render(<StaffMenuItemTable items={mockItems} />);
 
     expect(screen.getByText("Paneer Tikka")).toBeInTheDocument();
-    expect(screen.getByText("PAN-TIK-01")).toBeInTheDocument();
     expect(screen.getByText("Appetizers")).toBeInTheDocument();
     expect(screen.getAllByText("₹210.00").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("In Stock")).toBeInTheDocument();

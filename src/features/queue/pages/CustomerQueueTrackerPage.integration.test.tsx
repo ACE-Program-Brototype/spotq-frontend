@@ -223,7 +223,7 @@ describe("CustomerQueueTrackerPage integration (HTTP + WebSocket lifecycle)", ()
 
     expect(ringMedia.playChime).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("alertdialog")).toBeInTheDocument();
-    expect(screen.getByText("Table Ready — Please Head to the Host Stand")).toBeInTheDocument();
+    expect(screen.getByText("Table Ready — Head to Host Stand")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /I'm Heading Over/i }));
     expect(ringMedia.stopAll).toHaveBeenCalled();

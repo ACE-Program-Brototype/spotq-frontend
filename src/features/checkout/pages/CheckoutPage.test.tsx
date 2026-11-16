@@ -94,7 +94,7 @@ describe("CheckoutPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Order Details")).toBeInTheDocument();
       expect(screen.getByText("Wok-Tossed Hakka Noodles")).toBeInTheDocument();
-      expect(screen.getByText(/Ordering from Spice Garden Cafe/i)).toBeInTheDocument();
+      expect(screen.getByText(/Review your order from Spice Garden Cafe/i)).toBeInTheDocument();
     });
 
     expect(screen.getByText("Customer Details")).toBeInTheDocument();
