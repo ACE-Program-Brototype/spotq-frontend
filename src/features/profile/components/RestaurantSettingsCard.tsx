@@ -5,13 +5,19 @@ import { Link } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { RESTAURANT_SETTINGS_MESSAGES } from "@/features/profile/constants/profile.constants";
+import {
+  QUEUE_PRO_PLAN_IDENTIFIERS,
+  RESTAURANT_SETTINGS_FIELDS,
+  RESTAURANT_SETTINGS_MESSAGES,
+  profileHooks,
+} from "@/features/profile/constants/profile.constants";
 import { useUpdateRestaurantProfile } from "@/features/profile/hooks/use-update-restaurant-profile";
 import type {
   RestaurantProfileData,
   RestaurantSettingsDetails,
   UpdateRestaurantProfilePayload,
 } from "@/features/profile/types/restaurant-profile.types";
+import { SUBSCRIPTION_QUERY_KEYS } from "@/features/subscription/constants/subscription.constants";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 import { cn } from "@/lib/utils/cn";
 
@@ -26,7 +32,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
 
   // Query subscription status to evaluate QueuePro entitlement
   const { data: statusData } = useQuery({
-    queryKey: ["restaurant-status"],
+    queryKey: SUBSCRIPTION_QUERY_KEYS.RESTAURANT_STATUS,
     queryFn: async () => {
       try {
         return await subscriptionService.fetchRestaurantStatus();
@@ -34,7 +40,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
         return null;
       }
     },
-    staleTime: 60 * 1000,
+    staleTime: profileHooks.RESTAURANT_STATUS_STALE_TIME,
   });
 
   const planCode = (
@@ -42,7 +48,9 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
     statusData?.subscriptionPlanCode ??
     ""
   ).toUpperCase();
-  const hasQueuePro = planCode.includes("QUEUE_PRO") || planCode.includes("QUEUE PRO");
+  const hasQueuePro = QUEUE_PRO_PLAN_IDENTIFIERS.some((identifier) =>
+    planCode.includes(identifier),
+  );
 
   useEffect(() => {
     setIsOpened(Boolean(settings.isOpened));
@@ -157,7 +165,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-sm font-bold text-neutral-900 leading-tight">
-                  Store Open Status
+                  {RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title}
                 </p>
                 <span
                   className={cn(
@@ -173,7 +181,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
                 </span>
               </div>
               <p className="text-xs text-neutral-500 mt-1 leading-snug">
-                Open or close your restaurant for online takeaway ordering
+                {RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.description}
               </p>
             </div>
           </div>
@@ -183,7 +191,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
               checked={isOpened}
               onChange={(e) => setIsOpened(e.target.checked)}
               disabled={isSaving}
-              aria-label="Store Open Status"
+              aria-label={RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title}
               className="cursor-pointer"
             />
           </div>
@@ -212,7 +220,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-sm font-bold text-neutral-900 leading-tight">
-                  Virtual Queue Acceptance
+                  {RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title}
                 </p>
                 {hasQueuePro ? (
                   <span
@@ -235,7 +243,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
                 )}
               </div>
               <p className="text-xs text-neutral-500 mt-1 leading-snug">
-                Allow customers to join virtual takeaway queues
+                {RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.description}
               </p>
               {!hasQueuePro && (
                 <div className="mt-1.5">
@@ -255,7 +263,7 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
               checked={hasQueuePro && acceptsQueue}
               onChange={(e) => setAcceptsQueue(e.target.checked)}
               disabled={!hasQueuePro || isSaving}
-              aria-label="Virtual Queue Acceptance"
+              aria-label={RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title}
               className={hasQueuePro ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
             />
           </div>

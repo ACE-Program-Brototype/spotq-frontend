@@ -108,18 +108,20 @@ export const DEFAULT_BUSINESS_HOURS = {
   CLOSE_TIME: "22:00",
 } as const;
 
-export const RESTAURANT_SETTINGS_FIELDS = [
-  {
+export const QUEUE_PRO_PLAN_IDENTIFIERS = ["QUEUE_PRO", "QUEUE PRO"] as const;
+
+export const RESTAURANT_SETTINGS_FIELDS = {
+  STORE_OPEN: {
     key: "isOpened",
     title: "Store Open Status",
     description: "Open or close your restaurant for online takeaway ordering",
   },
-  {
+  VIRTUAL_QUEUE: {
     key: "acceptsQueue",
     title: "Virtual Queue Acceptance",
-    description: "Allow customers to join virtual takeaway queues (QueuePro plan only)",
+    description: "Allow customers to join virtual takeaway queues",
   },
-] as const;
+} as const;
 
 export const RESTAURANT_SETTINGS_MESSAGES = {
   TITLE: "Restaurant Settings",
@@ -141,6 +143,7 @@ export const profileHooks = {
   STAFF_PROFILE_STALE_TIME: 5 * 60 * 1000,
   CUSTOMER_PROFILE_STALE_TIME: 5 * 60 * 1000,
   RESTAURANT_PROFILE_STALE_TIME: 5 * 60 * 1000,
+  RESTAURANT_STATUS_STALE_TIME: 60 * 1000,
 };
 
 export const MONTH_NAMES = SHORT_MONTH_NAMES;
