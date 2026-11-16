@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
@@ -19,6 +19,15 @@ export default function VerificationStatusPage() {
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) {
+        clearTimeout(redirectTimerRef.current);
+      }
+    };
+  }, []);
 
   const restaurantEmail = user?.email || "your email";
   const restaurantId = user?.restaurantId || user?.id || user?._id;
@@ -49,7 +58,7 @@ export default function VerificationStatusPage() {
               });
             }
             toast.success("Application approved! Redirecting to subscription...");
-            setTimeout(() => {
+            redirectTimerRef.current = setTimeout(() => {
               navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
             }, 1200);
           } else if (isManualRefresh) {

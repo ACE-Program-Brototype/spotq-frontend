@@ -74,9 +74,10 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
     if (!enabled || typeof navigator === "undefined" || !("permissions" in navigator)) return;
 
     let permissionStatus: PermissionStatus | null = null;
+    let isMounted = true;
 
     const handlePermissionChange = () => {
-      if (!permissionStatus) return;
+      if (!permissionStatus || !isMounted) return;
       const state = permissionStatus.state;
       const normalizedPermission: NotificationPermission =
         state === NOTIFICATION_PERMISSIONS.GRANTED
@@ -96,12 +97,14 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
     navigator.permissions
       .query({ name: NOTIFICATION_EVENTS.PERMISSION_NAME as PermissionName })
       .then((status) => {
+        if (!isMounted) return;
         permissionStatus = status;
         status.addEventListener(NOTIFICATION_EVENTS.CHANGE, handlePermissionChange);
       })
       .catch(() => {});
 
     return () => {
+      isMounted = false;
       if (permissionStatus) {
         permissionStatus.removeEventListener(NOTIFICATION_EVENTS.CHANGE, handlePermissionChange);
       }

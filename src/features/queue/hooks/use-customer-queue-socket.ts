@@ -48,7 +48,9 @@ export function useCustomerQueueSocket(
   const lastProcessedRingKeyRef = useRef<string | null>(null);
 
   const optionsRef = useRef(options);
-  optionsRef.current = options;
+  useEffect(() => {
+    optionsRef.current = options;
+  });
 
   const updateStatus = useCallback((status: SocketConnectionStatus) => {
     setConnectionStatus(status);

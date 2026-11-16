@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { loadRazorpayScript } from "@/features/subscription/hooks/useRazorpayCheckout";
 import type {
@@ -17,6 +17,14 @@ interface UseOrderRazorpayOptions {
 
 export function useOrderRazorpay({ onSuccess, onFailure, onDismiss }: UseOrderRazorpayOptions) {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const launchPayment = async (
     order: PlacedOrderData,
@@ -74,12 +82,16 @@ export function useOrderRazorpay({ onSuccess, onFailure, onDismiss }: UseOrderRa
             toast.error(message);
             onFailure(message);
           } finally {
-            setIsProcessingPayment(false);
+            if (isMountedRef.current) {
+              setIsProcessingPayment(false);
+            }
           }
         },
         modal: {
           ondismiss: () => {
-            setIsProcessingPayment(false);
+            if (isMountedRef.current) {
+              setIsProcessingPayment(false);
+            }
             toast.info("Payment was cancelled or closed");
             onDismiss?.();
           },
@@ -88,7 +100,9 @@ export function useOrderRazorpay({ onSuccess, onFailure, onDismiss }: UseOrderRa
 
       const razorpayInstance = new window.Razorpay(options);
       razorpayInstance.on?.("payment.failed", (response) => {
-        setIsProcessingPayment(false);
+        if (isMountedRef.current) {
+          setIsProcessingPayment(false);
+        }
         const failureMessage =
           response?.error?.description || response?.error?.reason || "Payment failed via gateway";
         toast.error(failureMessage);
@@ -97,7 +111,9 @@ export function useOrderRazorpay({ onSuccess, onFailure, onDismiss }: UseOrderRa
 
       razorpayInstance.open();
     } catch (err: unknown) {
-      setIsProcessingPayment(false);
+      if (isMountedRef.current) {
+        setIsProcessingPayment(false);
+      }
       const message = err instanceof Error ? err.message : "Failed to initiate payment gateway";
       toast.error(message);
       onFailure(message);

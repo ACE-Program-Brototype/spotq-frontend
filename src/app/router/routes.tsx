@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import StaffAcceptInvitationPage from "@/features/auth/pages/staff/StaffAcceptInvitationPage";
 import RootLayout from "@/layouts/RootLayout";
+import RootRouteErrorBoundary from "./RootRouteErrorBoundary";
 import NotFoundPage from "@/app/pages/NotFoundPage";
 import { adminRoutes } from "./admin/admin.routes";
 import { customerRoutes } from "./customer/customer.routes";
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
   [
     {
       Component: RootLayout,
+      ErrorBoundary: RootRouteErrorBoundary,
       children: [
         {
           path: ROOT_ROUTE_PATHS.SUBSCRIPTION,

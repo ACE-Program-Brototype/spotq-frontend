@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { SUBSCRIPTION_MESSAGES } from "@/features/subscription/constants/subscription.constants";
@@ -26,6 +26,14 @@ export function useRazorpayCheckout({
 }: UseRazorpayCheckoutOptions = {}) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const startCheckout = async (planId: string) => {
     if (isProcessing) return;
@@ -72,14 +80,18 @@ export function useRazorpayCheckout({
             toast.error(message);
             onError?.(err instanceof Error ? err : new Error(message));
           } finally {
-            setIsProcessing(false);
-            setSelectedPlanId(null);
+            if (isMountedRef.current) {
+              setIsProcessing(false);
+              setSelectedPlanId(null);
+            }
           }
         },
         modal: {
           ondismiss: () => {
-            setIsProcessing(false);
-            setSelectedPlanId(null);
+            if (isMountedRef.current) {
+              setIsProcessing(false);
+              setSelectedPlanId(null);
+            }
             toast.info(SUBSCRIPTION_MESSAGES.PAYMENT_CANCELLED);
           },
         },
@@ -87,8 +99,10 @@ export function useRazorpayCheckout({
 
       const razorpayInstance = new window.Razorpay(options);
       razorpayInstance.on?.("payment.failed", (response) => {
-        setIsProcessing(false);
-        setSelectedPlanId(null);
+        if (isMountedRef.current) {
+          setIsProcessing(false);
+          setSelectedPlanId(null);
+        }
         const failureMessage =
           response?.error?.description ||
           response?.error?.reason ||
@@ -98,8 +112,10 @@ export function useRazorpayCheckout({
       });
       razorpayInstance.open();
     } catch (err: unknown) {
-      setIsProcessing(false);
-      setSelectedPlanId(null);
+      if (isMountedRef.current) {
+        setIsProcessing(false);
+        setSelectedPlanId(null);
+      }
 
       let message: string = SUBSCRIPTION_MESSAGES.ORDER_CREATION_FAILED;
       let isAlreadyActive = false;
