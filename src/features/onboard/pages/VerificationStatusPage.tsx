@@ -10,12 +10,19 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { VerificationApprovedView } from "@/features/onboard/components/VerificationApprovedView";
 import { VerificationRejectedView } from "@/features/onboard/components/VerificationRejectedView";
 import { VerificationUnderReviewView } from "@/features/onboard/components/VerificationUnderReviewView";
-import { ONBOARDING_VERIFICATION_STATUS } from "@/features/onboard/constants/onboard.constants";
+import {
+  ONBOARDING_MESSAGES,
+  ONBOARDING_STATUS,
+  ONBOARDING_TIMINGS,
+  ONBOARDING_VERIFICATION_STATUS,
+} from "@/features/onboard/constants/onboard.constants";
 
 export default function VerificationStatusPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const [status, setStatus] = useState<VerificationStatus>("UNDER_REVIEW");
+  const [status, setStatus] = useState<VerificationStatus>(
+    ONBOARDING_VERIFICATION_STATUS.UNDER_REVIEW,
+  );
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -29,7 +36,7 @@ export default function VerificationStatusPage() {
     };
   }, []);
 
-  const restaurantEmail = user?.email || "your email";
+  const restaurantEmail = user?.email || ONBOARDING_MESSAGES.DEFAULT_EMAIL_PLACEHOLDER;
   const restaurantId = user?.restaurantId || user?.id || user?._id;
 
   const fetchStatus = useCallback(
@@ -54,22 +61,20 @@ export default function VerificationStatusPage() {
               useAuthStore.getState().setUser({
                 ...currentUser,
                 status: ONBOARDING_VERIFICATION_STATUS.VERIFIED,
-                onboardingStatus: "COMPLETED",
+                onboardingStatus: ONBOARDING_STATUS.COMPLETED,
               });
             }
-            toast.success("Application approved! Redirecting to subscription...");
+            toast.success(ONBOARDING_MESSAGES.APPROVED_REDIRECTING);
             redirectTimerRef.current = setTimeout(() => {
               navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
-            }, 1200);
+            }, ONBOARDING_TIMINGS.REDIRECT_DELAY_MS);
           } else if (isManualRefresh) {
-            toast.info(
-              `Status refreshed: Application is ${fetchedStatus.replace("_", " ").toLowerCase()}.`,
-            );
+            toast.info(ONBOARDING_MESSAGES.STATUS_REFRESHED(fetchedStatus));
           }
         }
       } catch (err) {
         const errorMsg =
-          err instanceof Error ? err.message : "Failed to fetch verification status.";
+          err instanceof Error ? err.message : ONBOARDING_MESSAGES.FETCH_STATUS_FAILED;
         toast.error(errorMsg);
       } finally {
         setIsLoading(false);
@@ -145,7 +150,8 @@ export default function VerificationStatusPage() {
           />
         )}
 
-        {(status === ONBOARDING_VERIFICATION_STATUS.SUBMITTED || status === ONBOARDING_VERIFICATION_STATUS.UNDER_REVIEW) && (
+        {(status === ONBOARDING_VERIFICATION_STATUS.SUBMITTED ||
+          status === ONBOARDING_VERIFICATION_STATUS.UNDER_REVIEW) && (
           <VerificationUnderReviewView
             status={status}
             restaurantEmail={restaurantEmail}
