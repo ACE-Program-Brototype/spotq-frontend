@@ -2,23 +2,23 @@ import { render, screen } from "@testing-library/react";
 import { ContextBanner } from "./ContextBanner";
 
 describe("ContextBanner", () => {
-  it("renders restaurant name and Direct Kitchen Sync badge", () => {
+  it("renders restaurant name and Takeaway badge", () => {
     render(<ContextBanner restaurantName="Spice Garden Cafe" />);
 
-    expect(screen.getByText("Ordering from Spice Garden Cafe")).toBeInTheDocument();
-    expect(screen.getByText("Direct Kitchen Sync")).toBeInTheDocument();
-    expect(screen.getByText(/PCI-DSS Secure Prepay/i)).toBeInTheDocument();
+    expect(screen.getByText("Spice Garden Cafe")).toBeInTheDocument();
+    expect(screen.getByText("Takeaway")).toBeInTheDocument();
   });
 
-  it("renders Table badge when tableNumber is provided", () => {
-    render(<ContextBanner restaurantName="Spice Garden Cafe" tableNumber={4} />);
+  it("renders takeaway context with restaurant name", () => {
+    render(<ContextBanner restaurantName="Spice Garden Cafe" />);
 
-    expect(screen.getByText("Table 4")).toBeInTheDocument();
+    expect(screen.getByText(/Takeaway from/i)).toBeInTheDocument();
+    expect(screen.getByText("Spice Garden Cafe")).toBeInTheDocument();
   });
 
-  it("renders fallback heading when restaurantName is omitted", () => {
-    render(<ContextBanner />);
+  it("renders nothing when restaurantName is omitted", () => {
+    const { container } = render(<ContextBanner />);
 
-    expect(screen.getByText("Direct Kitchen Order")).toBeInTheDocument();
+    expect(container.firstChild).toBeNull();
   });
 });
