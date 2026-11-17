@@ -1,4 +1,3 @@
-import env from "@/config/env";
 import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
 import type { ActiveCustomerTicket } from "@/features/queue/types/ring-alert.types";
 

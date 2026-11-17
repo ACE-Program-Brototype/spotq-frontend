@@ -5,6 +5,7 @@ import {
   logoutStaff,
   selectStaffRestaurant,
 } from "@/features/auth/services/auth.service";
+import type { ApiResponse } from "@/types/api.types";
 import type {
   GoogleLoginResult,
   LoginInput,

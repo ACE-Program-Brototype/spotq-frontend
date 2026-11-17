@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
-import { ANALYTICS_SECTION_STATUSES } from "@/features/analytics";
-import type { RestaurantAnalyticsResponse } from "@/features/analytics/types/analytics.types";
+import {
+  ANALYTICS_SECTION_STATUSES,
+  type ProductSectionResultDto,
+} from "@/features/analytics";
 
 interface DashboardMenuPerformanceProps {
-  products: RestaurantAnalyticsResponse["data"]["products"];
+  products: ProductSectionResultDto;
 }
 
 export function DashboardMenuPerformance({ products }: DashboardMenuPerformanceProps) {

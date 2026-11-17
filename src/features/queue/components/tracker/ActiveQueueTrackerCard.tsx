@@ -71,7 +71,7 @@ export function ActiveQueueTrackerCard({
       </div>
 
       <div className="flex items-center justify-between gap-2 pt-1">
-        <EstimatedWaitChip estimatedWaitMinutes={effectiveWaitMinutes} />
+        <EstimatedWaitChip estimatedWaitMinutes={effectiveWaitMinutes ?? null} />
         <span className="text-[10px] text-neutral-400">Auto-updates live</span>
       </div>
 

@@ -1,5 +1,8 @@
-import { STAFF_INVITATION_STATUS, STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
-import type { StaffInvitationStatus } from "@/features/staff/types/staff-invitation.types";
+import {
+  STAFF_INVITATION_STATUS,
+  STAFF_MESSAGES,
+  type StaffInvitationStatus,
+} from "@/features/staff/constants/staff.constants";
 import { formatDate } from "@/lib/utils/date";
 
 /**
