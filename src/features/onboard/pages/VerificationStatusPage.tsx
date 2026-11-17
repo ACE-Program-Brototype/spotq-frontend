@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
@@ -26,15 +26,15 @@ export default function VerificationStatusPage() {
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    return () => {
-      if (redirectTimerRef.current) {
-        clearTimeout(redirectTimerRef.current);
-      }
-    };
-  }, []);
+    if (status === ONBOARDING_VERIFICATION_STATUS.VERIFIED) {
+      const redirectTimer = setTimeout(() => {
+        navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
+      }, ONBOARDING_TIMINGS.REDIRECT_DELAY_MS);
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [status, navigate]);
 
   const restaurantEmail = user?.email || ONBOARDING_MESSAGES.DEFAULT_EMAIL_PLACEHOLDER;
   const restaurantId = user?.restaurantId || user?.id || user?._id;
@@ -65,9 +65,6 @@ export default function VerificationStatusPage() {
               });
             }
             toast.success(ONBOARDING_MESSAGES.APPROVED_REDIRECTING);
-            redirectTimerRef.current = setTimeout(() => {
-              navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
-            }, ONBOARDING_TIMINGS.REDIRECT_DELAY_MS);
           } else if (isManualRefresh) {
             toast.info(ONBOARDING_MESSAGES.STATUS_REFRESHED(fetchedStatus));
           }

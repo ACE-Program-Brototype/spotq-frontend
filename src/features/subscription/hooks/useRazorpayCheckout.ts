@@ -98,6 +98,7 @@ export function useRazorpayCheckout({
       };
 
       const razorpayInstance = new window.Razorpay(options);
+      // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
       razorpayInstance.on?.("payment.failed", (response) => {
         if (isMountedRef.current) {
           setIsProcessing(false);

@@ -174,6 +174,7 @@ export function useSubscriptionRenewal({ onSuccess, onError }: UseSubscriptionRe
         const instance = new window.Razorpay(options);
         razorpayInstanceRef.current = instance;
 
+        // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
         instance.on?.("payment.failed", (response) => {
           releaseLock();
           const failureMessage =

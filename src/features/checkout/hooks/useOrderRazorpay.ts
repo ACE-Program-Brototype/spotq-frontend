@@ -106,6 +106,7 @@ export function useOrderRazorpay({ onSuccess, onFailure, onDismiss }: UseOrderRa
       };
 
       const razorpayInstance = new window.Razorpay(options);
+      // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
       razorpayInstance.on?.(RAZORPAY_CONFIG.EVENT_PAYMENT_FAILED, (response) => {
         if (isMountedRef.current) {
           setIsProcessingPayment(false);

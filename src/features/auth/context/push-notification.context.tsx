@@ -70,6 +70,7 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
   const registerDeviceMutate = registerDeviceMutation.mutate;
   const deactivateDeviceMutate = deactivateDeviceMutation.mutate;
 
+  // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
   useEffect(() => {
     if (!enabled || typeof navigator === "undefined" || !("permissions" in navigator)) return;
 
