@@ -53,35 +53,43 @@ jobs:
             | sudo -E bash
           sudo apt-get install -y infisical
 
-      # Authenticate Infisical using Machine Identity
-      - name: Authenticate Infisical
+  
+      # 7. Authenticate, build and deploy
+      - name: Build and deploy
         env:
           INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
           INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
-        run: |
-          infisical login \
-            --method=universal-auth \
-            --client-id="$INFISICAL_CLIENT_ID" \
-            --client-secret="$INFISICAL_CLIENT_SECRET"
-
-      # 7. Build and deploy frontend
-      - name: Build and deploy
-        env:
           INFISICAL_PROJECT_ID: ${{ vars.INFISICAL_PROJECT_ID }}
+
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
         run: |
+          set -euo pipefail
+
+          # Authenticate using Universal Auth and obtain access token
+          export INFISICAL_TOKEN=$(infisical login \
+            --method=universal-auth \
+            --client-id="$INFISICAL_CLIENT_ID" \
+            --client-secret="$INFISICAL_CLIENT_SECRET" \
+            --silent \
+            --plain)
+
+          # Select Infisical environment based on Git branch
           if [ "$GITHUB_REF_NAME" = "main" ]; then
             INFISICAL_ENV="prod"
           else
             INFISICAL_ENV="dev"
           fi
 
+          # Build frontend with Infisical secrets
           infisical run \
+            --token="$INFISICAL_TOKEN" \
             --projectId="$INFISICAL_PROJECT_ID" \
             --env="$INFISICAL_ENV" \
             -- pnpm build
 
+          # Deploy to Cloudflare Pages
           npx wrangler pages deploy dist \
             --project-name=spotq-frontend \
             --branch="$GITHUB_REF_NAME"
