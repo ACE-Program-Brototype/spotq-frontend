@@ -27,16 +27,9 @@ export function FinanceLedgerMobileCard({
   const positive = entry.type === LEDGER_ENTRY_TYPE.CUSTOMER_PAYMENT_INTAKE;
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={() => onClick(entry)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick(entry);
-        }
-      }}
       data-testid={`ledger-mobile-card-${entry.id}`}
       aria-label={`Ledger transaction for ${restaurantName}, ${entry.type}`}
       className="w-full rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs hover:border-indigo-200 hover:shadow-xs active:bg-slate-50 transition-all flex flex-col gap-3 cursor-pointer text-left focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-500"
@@ -90,7 +83,6 @@ export function FinanceLedgerMobileCard({
           {formatDate(entry.createdAt)}
         </span>
       </div>
-    </div>
+    </button>
   );
 }
-

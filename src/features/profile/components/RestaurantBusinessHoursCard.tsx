@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils/cn";
 import {
   DAYS_OF_WEEK,
   DEFAULT_BUSINESS_HOURS,
@@ -15,6 +14,7 @@ import type {
   RestaurantProfileData,
   UpdateRestaurantProfilePayload,
 } from "@/features/profile/types/restaurant-profile.types";
+import { cn } from "@/lib/utils/cn";
 
 interface RestaurantBusinessHoursCardProps {
   businessHours: BusinessHoursItem[];
@@ -28,29 +28,23 @@ interface LocalDayHours {
   isClosed: boolean;
 }
 
+function getInitialHours(hours: BusinessHoursItem[]): LocalDayHours[] {
+  const map = new Map<number, BusinessHoursItem>(hours.map((item) => [item.dayOfWeek, item]));
+  return DAYS_OF_WEEK.map((day) => {
+    const existing = map.get(day.id);
+    return {
+      dayOfWeek: day.id,
+      openTime: existing?.openTime || DEFAULT_BUSINESS_HOURS.OPEN_TIME,
+      closeTime: existing?.closeTime || DEFAULT_BUSINESS_HOURS.CLOSE_TIME,
+      isClosed: existing?.isClosed ?? (!existing?.openTime && !existing?.closeTime),
+    };
+  });
+}
+
 export function RestaurantBusinessHoursCard({
   businessHours,
   fullData,
 }: RestaurantBusinessHoursCardProps) {
-  const hoursMap = new Map<number, BusinessHoursItem>(
-    businessHours.map((item) => [item.dayOfWeek, item]),
-  );
-
-  const getInitialHours = (hours: BusinessHoursItem[]): LocalDayHours[] => {
-    const map = new Map<number, BusinessHoursItem>(
-      hours.map((item) => [item.dayOfWeek, item]),
-    );
-    return DAYS_OF_WEEK.map((day) => {
-      const existing = map.get(day.id);
-      return {
-        dayOfWeek: day.id,
-        openTime: existing?.openTime || DEFAULT_BUSINESS_HOURS.OPEN_TIME,
-        closeTime: existing?.closeTime || DEFAULT_BUSINESS_HOURS.CLOSE_TIME,
-        isClosed: existing?.isClosed ?? (!existing?.openTime && !existing?.closeTime),
-      };
-    });
-  };
-
   const [localHours, setLocalHours] = useState<LocalDayHours[]>(() =>
     getInitialHours(businessHours),
   );
@@ -78,7 +72,7 @@ export function RestaurantBusinessHoursCard({
   };
 
   const isDirty = localHours.some((local) => {
-    const orig = hoursMap.get(local.dayOfWeek);
+    const orig = businessHours.find((item) => item.dayOfWeek === local.dayOfWeek);
     const origOpen = orig?.openTime || DEFAULT_BUSINESS_HOURS.OPEN_TIME;
     const origClose = orig?.closeTime || DEFAULT_BUSINESS_HOURS.CLOSE_TIME;
     const origClosed = orig?.isClosed ?? (!orig?.openTime && !orig?.closeTime);

@@ -5,6 +5,7 @@ const config: Config = {
   testTimeout: 15000,
   workerIdleMemoryLimit: "512MB",
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
+  testPathIgnorePatterns: ["/node_modules/", "/fixtures/"],
   moduleNameMapper: {
     "^@/config/env$": "<rootDir>/__mocks__/env.ts",
     "^ky$": "<rootDir>/__mocks__/ky.ts",

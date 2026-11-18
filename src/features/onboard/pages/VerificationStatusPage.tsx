@@ -78,7 +78,7 @@ export default function VerificationStatusPage() {
         setIsRefreshing(false);
       }
     },
-    [restaurantId, navigate],
+    [restaurantId],
   );
 
   useEffect(() => {

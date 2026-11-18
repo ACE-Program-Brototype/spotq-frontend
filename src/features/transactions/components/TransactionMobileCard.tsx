@@ -4,10 +4,9 @@
  */
 
 import { Eye, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils/date";
 import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
 import type { PaymentTransactionItem } from "@/features/transactions/types/transaction.types";
+import { formatDate } from "@/lib/utils/date";
 import { PaymentMethodBadge } from "./PaymentMethodBadge";
 import { SettlementStatusBadge } from "./SettlementStatusBadge";
 import { TransactionStatusBadge } from "./TransactionStatusBadge";
@@ -22,16 +21,9 @@ export function TransactionMobileCard({ transaction, onSelect }: TransactionMobi
     transaction.amountFormatted || `₹${(transaction.amountPaise / 100).toFixed(2)}`;
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={() => onSelect(transaction.id)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onSelect(transaction.id);
-        }
-      }}
       data-testid={`transaction-card-${transaction.id}`}
       aria-label={`Transaction for ${transaction.customerName || "Guest"}, ${formattedAmount}`}
       className="w-full rounded-[14px] border border-neutral-200/80 bg-white p-3.5 sm:p-4 shadow-2xs hover:border-[#eddcd4] hover:shadow-xs active:bg-neutral-50/80 transition-all flex flex-col gap-3 cursor-pointer text-left focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#e8631b]"
@@ -84,22 +76,14 @@ export function TransactionMobileCard({ transaction, onSelect }: TransactionMobi
           <PaymentMethodBadge method={transaction.paymentMethod} />
         </div>
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(transaction.id);
-          }}
+        <span
           data-testid={`view-details-${transaction.id}`}
-          className="h-7 px-2.5 text-xs font-semibold text-[#9a3412] hover:bg-[#faf0e8] hover:text-[#8a3b14] rounded-lg gap-1.5 shrink-0"
+          className="inline-flex items-center h-7 px-2.5 text-xs font-semibold text-[#9a3412] rounded-lg gap-1.5 shrink-0"
         >
           <Eye className="size-3.5" />
           <span>{TRANSACTION_MESSAGES.VIEW_DETAILS}</span>
-        </Button>
+        </span>
       </div>
-    </div>
+    </button>
   );
 }
-
