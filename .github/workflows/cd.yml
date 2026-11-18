@@ -21,23 +21,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Configure Node.js and enable pnpm
+      # 2. Setup Node.js
       - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 3. Install pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      # 4. Configure pnpm dependency cache
+      - name: Configure pnpm cache
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
 
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-
-      # 3. Install dependencies using the lockfile
+      # 5. Install dependencies
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # 4. Install Infisical CLI
+      # 6. Install Infisical CLI
       - name: Install Infisical CLI
         run: |
           curl -1sLf \
@@ -45,7 +53,7 @@ jobs:
             | sudo -E bash
           sudo apt-get install -y infisical
 
-      # 5. Build and deploy frontend
+      # 7. Build and deploy frontend
       - name: Build and deploy
         env:
           # Infisical Machine Identity credentials
