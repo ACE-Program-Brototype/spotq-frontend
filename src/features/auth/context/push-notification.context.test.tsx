@@ -20,9 +20,11 @@ jest.mock("sonner", () => ({
 }));
 
 let mockIsAuthenticated = false;
+let mockUser: { role?: string } | null = { role: "CUSTOMER" };
 jest.mock("@/features/auth/store/auth.store", () => ({
-  useAuthStore: (selector: (state: { isAuthenticated: boolean }) => boolean) =>
-    selector({ isAuthenticated: mockIsAuthenticated }),
+  useAuthStore: (
+    selector: (state: { isAuthenticated: boolean; user: typeof mockUser }) => unknown,
+  ) => selector({ isAuthenticated: mockIsAuthenticated, user: mockUser }),
 }));
 
 const mockRegisterDeviceMutateAsync = jest.fn();
@@ -62,6 +64,7 @@ describe("PushNotificationContext / usePushNotification", () => {
     mockUnregisterPushNotifications.mockReset();
     mockUnregisterPushNotifications.mockResolvedValue(undefined);
     mockIsAuthenticated = false;
+    mockUser = { role: "CUSTOMER" };
     // @ts-expect-error mocking Notification
     window.Notification = {
       permission: "default",
@@ -164,6 +167,7 @@ describe("PushNotificationContext / usePushNotification", () => {
 
   it("does not prompt or register when user is unauthenticated", async () => {
     mockIsAuthenticated = false;
+    mockUser = { role: "CUSTOMER" };
     // @ts-expect-error mocking Notification
     window.Notification.permission = "default";
 
@@ -172,6 +176,20 @@ describe("PushNotificationContext / usePushNotification", () => {
     });
 
     expect(mockRegisterPushNotifications).not.toHaveBeenCalled();
+  });
+
+  it("does not register device when authenticated user is not a customer", async () => {
+    mockIsAuthenticated = true;
+    mockUser = { role: "STAFF" };
+    // @ts-expect-error mocking Notification
+    window.Notification.permission = "default";
+
+    await act(async () => {
+      renderHook(() => usePushNotification(), { wrapper });
+    });
+
+    expect(mockRegisterPushNotifications).not.toHaveBeenCalled();
+    expect(mockRegisterDeviceMutate).not.toHaveBeenCalled();
   });
 
   it("registers device token on server when onRegisteredFid emits a fid", async () => {

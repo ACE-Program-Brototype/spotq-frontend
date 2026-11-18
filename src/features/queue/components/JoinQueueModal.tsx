@@ -6,6 +6,7 @@ import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { getStoredFid } from "@/lib/firebase/firebase";
 import { MAX_PARTY_SIZE, MIN_CUSTOM_PARTY_SIZE } from "../constants/queue.constants";
 import { useJoinQueue } from "../hooks/use-join-queue";
 import { useQueueEta } from "../hooks/use-queue-eta";
@@ -145,12 +146,15 @@ export function JoinQueueModal({
 
     try {
       const fullPhone = formatFullPhone(data.countryCode, data.phone);
+      const fid = await getStoredFid();
+      console.log("[JoinQueue] Joining queue with FID:", fid);
 
       const response = await joinQueue({
         guestName: data.guestName,
         guestPhone: fullPhone,
         partySize: data.partySize,
         specialNotes: data.specialNotes,
+        ...(fid ? { fid } : {}),
       });
 
       const entry = response.data;
