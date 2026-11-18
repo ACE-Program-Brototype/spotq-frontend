@@ -53,12 +53,20 @@ jobs:
             | sudo -E bash
           sudo apt-get install -y infisical
 
+      # Authenticate Infisical using Machine Identity
+      - name: Authenticate Infisical
+        env:
+          INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+          INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+        run: |
+          infisical login \
+            --method=universal-auth \
+            --client-id="$INFISICAL_CLIENT_ID" \
+            --client-secret="$INFISICAL_CLIENT_SECRET"
+
       # 7. Build and deploy frontend
       - name: Build and deploy
         env:
-          # Infisical Machine Identity credentials
-          INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
-          INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
           INFISICAL_PROJECT_ID: ${{ vars.INFISICAL_PROJECT_ID }}
 
           # Cloudflare credentials
