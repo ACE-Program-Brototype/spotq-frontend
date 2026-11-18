@@ -1,4 +1,5 @@
 import { type FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
+import { getId, getInstallations } from "firebase/installations";
 import {
   getMessaging,
   isSupported,
@@ -156,4 +157,27 @@ export const onForegroundMessage = async (
   if (!messaging) return null;
 
   return onMessage(messaging, callback);
+};
+
+/**
+ * Retrieves the Firebase Installation ID (FID) using the official Firebase SDK.
+ * The SDK automatically checks its IndexedDB cache first and handles lifecycle
+ * synchronization transparently.
+ */
+export const getStoredFid = async (): Promise<string | null> => {
+  if (typeof window === "undefined" || !("indexedDB" in window) || !window.indexedDB) {
+    return null;
+  }
+
+  try {
+    const app = getFirebaseApp();
+    if (!app) return null;
+
+    const installations = getInstallations(app);
+    const fid = await getId(installations);
+    const resolvedFid = fid?.trim() || null;
+    return resolvedFid;
+  } catch (err) {
+    return null;
+  }
 };

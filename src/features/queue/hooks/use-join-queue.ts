@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CUSTOMER_RESTAURANT_QUERY_KEYS } from "@/features/restaurants/constants/customer-restaurant.constants";
+import { getStoredFid } from "@/lib/firebase/firebase";
 import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
 import { queueService } from "../services/queue.service";
 import type { JoinQueueInput, JoinQueueResponse, QueueEntry } from "../types/queue.types";
@@ -17,11 +18,15 @@ export function useJoinQueue(restaurantId: string | undefined, options?: UseJoin
   const queryClient = useQueryClient();
 
   return useMutation<JoinQueueResponse, Error, JoinQueueInput>({
-    mutationFn: (input: JoinQueueInput) => {
+    mutationFn: async (input: JoinQueueInput) => {
       if (!restaurantId) {
         throw new Error(QUEUE_MESSAGES.RESTAURANT_REQUIRED);
       }
-      return queueService.joinQueue(restaurantId, input);
+      const fid = input.fid !== undefined ? input.fid : await getStoredFid();
+      return queueService.joinQueue(restaurantId, {
+        ...input,
+        ...(fid ? { fid } : {}),
+      });
     },
     onSuccess: (response) => {
       if (restaurantId) {

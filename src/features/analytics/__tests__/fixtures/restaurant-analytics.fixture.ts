@@ -1,5 +1,6 @@
 import type { RestaurantAnalyticsDashboardResponseDto } from "@/features/analytics/types/restaurant-analytics.types";
 
+// biome-ignore lint/suspicious/noExportsInTest: fixture exported for tests
 export const mockAnalyticsDashboardData: RestaurantAnalyticsDashboardResponseDto = {
   restaurantId: "3dc35af0-3ff5-4ee9-a60a-fbb47124731b",
   overview: {
@@ -117,6 +118,7 @@ export const mockAnalyticsDashboardData: RestaurantAnalyticsDashboardResponseDto
   generatedAt: "2026-11-11T02:00:00.000Z",
 };
 
+// biome-ignore lint/suspicious/noExportsInTest: fixture exported for tests
 export const mockDegradedAnalyticsData: RestaurantAnalyticsDashboardResponseDto = {
   restaurantId: "3dc35af0-3ff5-4ee9-a60a-fbb47124731b",
   overview: {

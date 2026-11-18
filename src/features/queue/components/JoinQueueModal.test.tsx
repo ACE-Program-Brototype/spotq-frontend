@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { getStoredFid } from "@/lib/firebase/firebase";
 import { useJoinQueue } from "../hooks/use-join-queue";
 import { useQueueEta } from "../hooks/use-queue-eta";
 import { setActiveCustomerTicket } from "../utils/active-queue.utils";
@@ -9,6 +10,10 @@ import { JoinQueueModal } from "./JoinQueueModal";
 
 jest.mock("../hooks/use-queue-eta");
 jest.mock("../hooks/use-join-queue");
+jest.mock("@/lib/firebase/firebase", () => ({
+  ...jest.requireActual("@/lib/firebase/firebase"),
+  getStoredFid: jest.fn(() => Promise.resolve(null)),
+}));
 jest.mock("../utils/active-queue.utils", () => ({
   ...jest.requireActual("../utils/active-queue.utils"),
   setActiveCustomerTicket: jest.fn(),
@@ -195,6 +200,44 @@ describe("JoinQueueModal", () => {
 
     expect(defaultProps.onSuccess).toHaveBeenCalledWith(mockCreatedEntry);
     expect(defaultProps.onClose).toHaveBeenCalled();
+  });
+
+  it("retrieves and passes fid from IndexedDB when available", async () => {
+    (getStoredFid as jest.Mock).mockResolvedValueOnce("mocked-fcm-fid-999");
+    const user = userEvent.setup();
+
+    mockMutateAsync.mockResolvedValue({
+      success: true,
+      data: {
+        queueEntryId: "entry-fid-123",
+        restaurantId: "rest-test-999",
+        guestName: "Marcus Vance",
+        guestPhone: "+919876543210",
+        partySize: 2,
+        position: 1,
+        estimatedWaitMinutes: 10,
+        status: "WAITING",
+        queueNumber: "Q-001",
+      },
+    });
+
+    renderComponent();
+
+    await user.type(screen.getByLabelText(/Guest Name/i), "Marcus Vance");
+    await user.type(screen.getByLabelText(/Phone Number/i), "9876543210");
+
+    const submitBtn = screen.getByRole("button", { name: /^Join Queue$/i });
+    await user.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledWith({
+        guestName: "Marcus Vance",
+        guestPhone: "+919876543210",
+        partySize: 2,
+        specialNotes: "",
+        fid: "mocked-fcm-fid-999",
+      });
+    });
   });
 
   it("closes dialog on Escape key", () => {

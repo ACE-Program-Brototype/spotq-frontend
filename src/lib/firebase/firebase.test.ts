@@ -1,6 +1,7 @@
 import {
   getFirebaseApp,
   getFirebaseMessaging,
+  getStoredFid,
   onForegroundMessage,
   onRegisteredFid,
   onUnregisteredFid,
@@ -27,6 +28,13 @@ jest.mock("firebase/messaging", () => ({
   onUnregistered: (...args: unknown[]) => mockOnUnregistered(...args),
   onMessage: (...args: unknown[]) => mockOnMessage(...args),
   isSupported: () => mockIsSupported(),
+}));
+
+const mockGetId = jest.fn((_installations?: unknown) => Promise.resolve(""));
+const mockGetInstallations = jest.fn((_app?: unknown) => ({}));
+jest.mock("firebase/installations", () => ({
+  getInstallations: (app?: unknown) => mockGetInstallations(app),
+  getId: (installations?: unknown) => mockGetId(installations),
 }));
 
 describe("Firebase Messaging Service", () => {
@@ -115,6 +123,48 @@ describe("Firebase Messaging Service", () => {
         registeredHandler("new-listener-fid-999");
         expect(callback).toHaveBeenCalledWith("new-listener-fid-999");
       }
+    });
+  });
+
+  describe("getStoredFid", () => {
+    const originalIndexedDB = window.indexedDB;
+
+    beforeEach(() => {
+      Object.defineProperty(window, "indexedDB", {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+    });
+
+    afterEach(() => {
+      Object.defineProperty(window, "indexedDB", {
+        value: originalIndexedDB,
+        writable: true,
+        configurable: true,
+      });
+    });
+
+    it("returns null when window.indexedDB is undefined", async () => {
+      Object.defineProperty(window, "indexedDB", {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+      const fid = await getStoredFid();
+      expect(fid).toBeNull();
+    });
+
+    it("returns installation ID from Firebase Installations SDK when available", async () => {
+      mockGetId.mockResolvedValue("sample-firebase-fid-123");
+      const fid = await getStoredFid();
+      expect(fid).toBe("sample-firebase-fid-123");
+    });
+
+    it("returns null when SDK throws an error", async () => {
+      mockGetId.mockRejectedValue(new Error("FIS failed"));
+      const fid = await getStoredFid();
+      expect(fid).toBeNull();
     });
   });
 });

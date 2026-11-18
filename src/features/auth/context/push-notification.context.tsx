@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { PushNotificationToast } from "@/components/notifications/PushNotificationToast";
 import {
+  AUTH_ROLES,
   NOTIFICATION_EVENTS,
   NOTIFICATION_PERMISSIONS,
   PUSH_NOTIFICATION_MESSAGES,
@@ -35,6 +36,8 @@ const PushNotificationContext = createContext<PushNotificationContextValue | nul
 export const usePushNotificationState = (enabled = true): PushNotificationContextValue => {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
+  const isCustomer = user?.role === AUTH_ROLES.CUSTOMER;
   const registerDeviceMutation = useRegisterDevice();
   const deactivateDeviceMutation = useDeactivateDevice();
   const [permission, setPermission] = useState<
@@ -110,7 +113,7 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
   }, [enabled]);
 
   useEffect(() => {
-    if (!enabled || !isAuthenticated) return;
+    if (!enabled || !isAuthenticated || !isCustomer) return;
 
     let unsubRegistered: (() => void) | null = null;
     let unsubUnregistered: (() => void) | null = null;
@@ -202,7 +205,14 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
       unsubUnregistered?.();
       unsubForeground?.();
     };
-  }, [enabled, isAuthenticated, registerDeviceMutate, deactivateDeviceMutate, navigate]);
+  }, [
+    enabled,
+    isAuthenticated,
+    isCustomer,
+    registerDeviceMutate,
+    deactivateDeviceMutate,
+    navigate,
+  ]);
 
   return {
     enableNotifications,
