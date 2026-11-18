@@ -1,0 +1,52 @@
+
+name: Frontend Deployment
+
+on:
+  push:
+    branches:
+      - main
+      # REMOVE IT AFTER TESTING
+      - development
+      - fix/the-complete-UI-bug-fix
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Infisical CLI
+        run: |
+          curl -1sLf \
+            'https://artifacts-cli.infisical.com/setup.deb.sh' \
+            | sudo -E bash
+          sudo apt-get install -y infisical
+
+      - name: Build and deploy
+        env:
+          INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+          INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          infisical run \
+            --projectId="$INFISICAL_PROJECT_ID" \
+            --env=prod \
+            -- npm run build
+
+          npx wrangler pages deploy dist \
+            --project-name=spotq-frontend \
+            --branch=main
