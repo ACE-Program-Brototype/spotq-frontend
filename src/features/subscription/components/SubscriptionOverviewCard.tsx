@@ -57,90 +57,105 @@ export function SubscriptionOverviewCard({
   return (
     <div
       data-testid="subscription-overview-card"
-      className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 p-5"
+      className="rounded-xl border border-[#eddcd4] bg-[#faf7f5]/60 px-2.5 py-1 md:p-4 flex flex-row md:flex-col items-center md:items-stretch justify-between md:justify-center gap-2 md:gap-1.5 shrink-0 md:shrink"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium text-neutral-500">Subscription</p>
-
-          {isSubscriptionActive ? (
-            <div className="mt-2 space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <CheckCircle2 className="size-5 text-emerald-600 shrink-0" aria-hidden="true" />
-                <span className="text-xl font-bold text-neutral-900">{planDisplayName}</span>
-                {cycleLabel && (
-                  <span className="rounded-full border border-neutral-200 bg-white px-2 py-0.5 text-xs font-medium text-neutral-600">
-                    {cycleLabel}
-                  </span>
-                )}
-              </div>
-              {endsAtIso && (
-                <p
-                  data-testid="subscription-overview-expiry"
-                  className="text-xs font-medium text-neutral-600"
-                >
-                  {`Expires ${formatSubscriptionCalendarDate(endsAtIso)}`}
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="mt-2">
-              <span className="text-lg font-medium text-amber-700">Inactive</span>
-            </div>
-          )}
-        </div>
+      <div className="flex items-center md:block gap-1.5 md:space-y-1 min-w-0">
+        <p className="hidden md:block text-xs font-medium text-neutral-500">Subscription</p>
 
         {isSubscriptionActive ? (
-          <div className="relative shrink-0">
-            {isDisabledWithTooltip ? (
-              <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
-                <TooltipTrigger
-                  render={
-                    <button
-                      type="button"
-                      aria-disabled="true"
-                      data-testid="overview-renew-button"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        setTooltipOpen((prev) => !prev);
-                      }}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-400 cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+          <div className="flex items-center md:block gap-1.5 md:mt-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0">
+              <CheckCircle2
+                className="size-3.5 md:size-5 text-emerald-600 shrink-0"
+                aria-hidden="true"
+              />
+              <span className="text-xs sm:text-sm md:text-xl font-semibold md:font-bold text-neutral-900 truncate">
+                {planDisplayName}
+              </span>
+              {cycleLabel && (
+                <span className="hidden md:inline-block rounded-full border border-neutral-200 bg-white px-2 py-0.5 text-xs font-medium text-neutral-600">
+                  {cycleLabel}
+                </span>
+              )}
+
+              {/* Renew button right next to Queue Pro */}
+              <div className="relative shrink-0 md:ml-2">
+                {isDisabledWithTooltip ? (
+                  <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+                    <TooltipTrigger
+                      render={
+                        <button
+                          type="button"
+                          aria-disabled="true"
+                          data-testid="overview-renew-button"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            setTooltipOpen((prev) => !prev);
+                          }}
+                          className="inline-flex items-center gap-1 md:gap-1.5 rounded-lg border border-neutral-200 bg-neutral-100 px-2 py-0.5 md:px-2.5 md:py-1 text-xs font-semibold text-neutral-400 cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+                        >
+                          <RefreshCw className="size-3 md:size-3.5" aria-hidden="true" />
+                          <span>Renew Now</span>
+                          <Info
+                            className="size-3 md:size-3.5 text-neutral-400 hidden md:inline"
+                            aria-hidden="true"
+                          />
+                        </button>
+                      }
+                    />
+                    <TooltipContent
+                      data-testid="renewal-eligibility-tooltip"
+                      className="max-w-[240px]"
                     >
-                      <RefreshCw className="size-3.5" aria-hidden="true" />
-                      Renew Now
-                      <Info className="size-3.5 text-neutral-400" aria-hidden="true" />
-                    </button>
-                  }
-                />
-                <TooltipContent data-testid="renewal-eligibility-tooltip" className="max-w-[240px]">
-                  {eligibility.tooltipMessage}
-                </TooltipContent>
-              </Tooltip>
-            ) : (
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                disabled={!canLaunchRenewal}
-                onClick={onRenewClick}
-                data-testid="overview-renew-button"
-                className="gap-1.5 border-orange-200 bg-white text-orange-700 hover:bg-orange-50 hover:text-orange-800"
+                      {eligibility.tooltipMessage}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={!canLaunchRenewal}
+                    onClick={onRenewClick}
+                    data-testid="overview-renew-button"
+                    className="h-6 md:h-7 px-2 md:px-2.5 text-xs gap-1 md:gap-1.5 border-orange-200 bg-white text-orange-700 hover:bg-orange-50 hover:text-orange-800 shadow-2xs"
+                  >
+                    <RefreshCw className="size-3 md:size-3.5" aria-hidden="true" />
+                    <span>Renew Now</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {endsAtIso && (
+              <p
+                data-testid="subscription-overview-expiry"
+                className="text-[11px] md:text-xs font-normal md:font-medium text-neutral-500 md:text-neutral-600 truncate hidden min-[440px]:inline md:block md:mt-0.5"
               >
-                <RefreshCw className="size-3.5" aria-hidden="true" />
-                Renew Now
-              </Button>
+                <span className="md:hidden">
+                  ({`Expires ${formatSubscriptionCalendarDate(endsAtIso)}`})
+                </span>
+                <span className="hidden md:inline">
+                  {`Expires ${formatSubscriptionCalendarDate(endsAtIso)}`}
+                </span>
+              </p>
             )}
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={onSubscribeClick}
-            data-testid="overview-subscribe-button"
-            className="flex items-center gap-1 text-sm font-semibold text-orange-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-md px-1"
-          >
-            <CreditCard className="size-4" aria-hidden="true" />
-            Subscribe
-          </button>
+          <div className="mt-0 md:mt-1 flex items-center gap-2">
+            <span className="text-xs md:text-lg font-semibold md:font-medium text-amber-700">
+              Inactive
+            </span>
+            <button
+              type="button"
+              onClick={onSubscribeClick}
+              data-testid="overview-subscribe-button"
+              className="flex items-center gap-1 text-xs md:text-sm font-semibold text-orange-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-md px-1"
+            >
+              <CreditCard className="size-3.5 md:size-4" aria-hidden="true" />
+              <span>Subscribe</span>
+            </button>
+          </div>
         )}
       </div>
     </div>

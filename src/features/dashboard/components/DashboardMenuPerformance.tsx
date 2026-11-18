@@ -1,3 +1,4 @@
+import { CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import {
@@ -76,9 +77,10 @@ export function DashboardMenuPerformance({ products }: DashboardMenuPerformanceP
             </span>
           </div>
           {products.slowMoving.items.length === 0 ? (
-            <p className="text-xs text-emerald-700 font-medium">
-              &check; Healthy velocity! No items below threshold.
-            </p>
+            <div className="flex items-center gap-2 rounded-lg bg-emerald-50/80 px-3 py-2 text-xs font-medium text-emerald-800 border border-emerald-200/60">
+              <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+              <span>Healthy velocity! No items below threshold.</span>
+            </div>
           ) : (
             <div className="space-y-2">
               {products.slowMoving.items.slice(0, 3).map((item) => (

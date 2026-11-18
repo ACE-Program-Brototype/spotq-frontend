@@ -118,38 +118,38 @@ export default function RestaurantDashboardPage() {
       />
 
       {/* 2. Restaurant Analytics & Operational Reporting */}
-      <section aria-label="Restaurant Analytics Overview" className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <section aria-label="Restaurant Analytics Overview" className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
+            <h2 className="text-base sm:text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">
               Restaurant Analytics & Performance
             </h2>
-            <p className="mt-0.5 text-xs text-neutral-500">
+            <p className="mt-0.5 text-[11px] sm:text-xs text-neutral-500">
               Live operational metrics, order fulfillment health, and revenue trends.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <Link
               to={RESTAURANT_ROUTES.ANALYTICS.ROOT}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1 sm:gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-[11px] sm:text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
             >
               <BarChart3 className="size-3.5 text-[#e8631b]" />
-              Full Analytics Hub
+              <span>Full Analytics Hub</span>
             </Link>
             <Link
               to={RESTAURANT_ROUTES.ANALYTICS.REVENUE}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1 sm:gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-[11px] sm:text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
             >
               <TrendingUp className="size-3.5 text-[#e8631b]" />
-              Revenue Details
+              <span>Revenue Details</span>
             </Link>
             <Link
               to={RESTAURANT_ROUTES.ANALYTICS.MENU}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1 sm:gap-1.5 rounded-xl border border-[#eddcd4] bg-white px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-[11px] sm:text-xs font-semibold text-neutral-700 hover:bg-[#faf7f5] transition-colors shadow-2xs"
             >
               <UtensilsCrossed className="size-3.5 text-[#e8631b]" />
-              Menu Velocity
+              <span>Menu Velocity</span>
             </Link>
           </div>
         </div>
@@ -160,12 +160,13 @@ export default function RestaurantDashboardPage() {
           day={filters.day}
           month={filters.month}
           year={filters.year}
+          status={filters.status}
           onIntervalChange={filters.setInterval}
           onDayChange={filters.setDay}
           onMonthChange={filters.setMonth}
           onYearChange={filters.setYear}
+          onStatusChange={filters.setStatus}
           onReset={filters.resetFilters}
-          showStatusFilter={false}
         />
 
         {/* Analytics Body */}
@@ -191,7 +192,7 @@ export default function RestaurantDashboardPage() {
             </button>
           </div>
         ) : analyticsData ? (
-          <div className="space-y-6">
+          <div className="space-y-3.5 sm:space-y-6">
             {/* Core Overview KPI Cards */}
             <OverviewKpis
               revenue={analyticsData.overview.revenue}
