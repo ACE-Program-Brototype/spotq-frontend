@@ -30,12 +30,12 @@ export function CustomerNavbar({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState(
-    location.pathname === "/" ? (searchParams.get("search") ?? "") : "",
+    location.pathname === CUSTOMER_ROUTES.HOME ? (searchParams.get("search") ?? "") : "",
   );
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (location.pathname === CUSTOMER_ROUTES.HOME) {
       setSearchQuery(searchParams.get("search") ?? "");
     }
   }, [searchParams, location.pathname]);
@@ -45,7 +45,7 @@ export function CustomerNavbar({
     setSearchQuery(val);
     onSearch?.(val);
 
-    if (location.pathname === "/") {
+    if (location.pathname === CUSTOMER_ROUTES.HOME) {
       const nextParams = new URLSearchParams(searchParams);
       if (val.trim()) {
         nextParams.set("search", val.trim());
@@ -58,10 +58,12 @@ export function CustomerNavbar({
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && location.pathname !== "/") {
+    if (e.key === "Enter" && location.pathname !== CUSTOMER_ROUTES.HOME) {
       e.preventDefault();
       const val = searchQuery.trim();
-      navigate(val ? `/?search=${encodeURIComponent(val)}` : "/");
+      navigate(
+        val ? `${CUSTOMER_ROUTES.HOME}?search=${encodeURIComponent(val)}` : CUSTOMER_ROUTES.HOME,
+      );
     }
   };
 
@@ -262,7 +264,8 @@ export function CustomerMobileNav({
         const Icon = tab.icon;
         const isActive =
           location.pathname === tab.href ||
-          (tab.href === "/" && (location.pathname === "" || location.pathname === "/restaurants"));
+          (tab.href === CUSTOMER_ROUTES.HOME &&
+            (location.pathname === CUSTOMER_ROUTES.HOME || location.pathname === "/restaurants"));
 
         return (
           <Link
