@@ -1,8 +1,11 @@
 import {
   ArrowRight,
+  BarChart3,
+  Bell,
   CheckCircle2,
   ChefHat,
   ChevronRight,
+  ClipboardList,
   Clock,
   Compass,
   LogIn,
@@ -10,6 +13,7 @@ import {
   MapPin,
   Menu,
   ShieldCheck,
+  Smartphone,
   Sparkles,
   Store,
   TrendingUp,
@@ -330,55 +334,254 @@ export function LandingPage() {
       </header>
 
       {/* ─────────────────────────────────────────────────────────────
-          3. ELEGANT HERO SECTION (Clean, Editorial, High-End Craft)
+          3. ELEGANT HERO SECTION WITH INTERACTIVE SHOWCASE
       ───────────────────────────────────────────────────────────── */}
-      <section className="bg-white pt-16 pb-20 sm:pt-24 sm:pb-28 border-b border-neutral-200/70">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          {/* Subtle Tag */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200/90 bg-[#faf9f6] px-3.5 py-1 text-xs font-semibold text-neutral-800 shadow-2xs">
-            <span className="size-1.5 rounded-full bg-[#ff6b00]" />
-            <span>Smart Virtual Queuing &amp; Pre-Order Dining</span>
+      <section className="relative bg-white pt-16 pb-20 sm:pt-24 sm:pb-28 border-b border-neutral-200/70 overflow-hidden">
+        {/* Soft Radial Ambient Glow */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-16 left-1/2 -translate-x-1/2 w-[700px] sm:w-[950px] h-[400px] bg-[#ff6b00]/10 blur-[140px] rounded-full"
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            {/* Subtle Tag */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200/90 bg-[#faf9f6] px-3.5 py-1 text-xs font-semibold text-neutral-800 shadow-2xs">
+              <span className="size-1.5 rounded-full bg-[#ff6b00]" />
+              <span>Smart Virtual Queuing &amp; Pre-Order Dining</span>
+            </div>
+
+            {/* Refined Headline */}
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-neutral-950 leading-[1.08]">
+              Skip the wait. <br />
+              <span className="text-[#ff6b00]">Savor every moment.</span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className="text-base sm:text-xl text-neutral-600 leading-relaxed font-normal max-w-2xl mx-auto">
+              Join live restaurant waitlists from your phone, track real-time queue ETAs, and
+              pre-order your meals before you step foot in the dining room.
+            </p>
+
+            {/* Action CTAs */}
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+              <Link
+                to={CUSTOMER_ROUTES.HOME}
+                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-[#ff6b00] hover:bg-[#e05e00] text-white text-sm font-bold shadow-xs hover:shadow transition-all"
+              >
+                <span>Explore Restaurants</span>
+                <ArrowRight className="size-4" />
+              </Link>
+
+              {!isAuthenticated ? (
+                <Link
+                  to={CUSTOMER_ROUTES.AUTH.REGISTER}
+                  className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-white hover:bg-neutral-50 text-neutral-900 text-sm font-semibold border border-neutral-300 shadow-2xs transition-all"
+                >
+                  <UserPlus className="size-4 text-neutral-600" />
+                  <span>Create Free Account</span>
+                </Link>
+              ) : (
+                <Link
+                  to={getDashboardRoute()}
+                  className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-white hover:bg-neutral-50 text-neutral-900 text-sm font-semibold border border-neutral-300 shadow-2xs transition-all"
+                >
+                  <span>Go to Dashboard</span>
+                  <ChevronRight className="size-4 text-neutral-600" />
+                </Link>
+              )}
+            </div>
           </div>
 
-          {/* Refined Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-neutral-950 leading-[1.08]">
-            Skip the wait. <br />
-            <span className="text-[#ff6b00]">Savor every moment.</span>
-          </h1>
+          {/* ── Interactive Smartphone Showcase Stage (Matching Reference Image) ── */}
+          <div className="relative min-h-[560px] sm:min-h-[620px] flex items-end justify-center mt-12 sm:mt-16">
+            {/* ── Left Floating Feature Cards (Desktop) ── */}
+            {/* Card 1: Live Queue */}
+            <div className="hidden md:flex absolute left-[4%] lg:left-[10%] top-[8%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-xs">
+                <ClipboardList className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">Live Queue</span>
+            </div>
 
-          {/* Subtitle */}
-          <p className="text-base sm:text-xl text-neutral-600 leading-relaxed font-normal max-w-2xl mx-auto">
-            Join live restaurant waitlists from your phone, track real-time queue ETAs, and
-            pre-order your meals before you step foot in the dining room.
-          </p>
+            {/* Card 2: Walk-ins */}
+            <div className="hidden md:flex absolute left-[18%] lg:left-[22%] top-[30%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shadow-xs">
+                <UserPlus className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">Walk-ins</span>
+            </div>
 
-          {/* Action CTAs */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            <Link
-              to={CUSTOMER_ROUTES.HOME}
-              className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-[#ff6b00] hover:bg-[#e05e00] text-white text-sm font-bold shadow-xs hover:shadow transition-all"
-            >
-              <span>Explore Restaurants</span>
-              <ArrowRight className="size-4" />
-            </Link>
+            {/* Card 3: Table Assign */}
+            <div className="hidden md:flex absolute left-[2%] lg:left-[8%] top-[50%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shadow-xs">
+                <UtensilsCrossed className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">
+                Table Assign
+              </span>
+            </div>
 
-            {!isAuthenticated ? (
-              <Link
-                to={CUSTOMER_ROUTES.AUTH.REGISTER}
-                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-white hover:bg-neutral-50 text-neutral-900 text-sm font-semibold border border-neutral-300 shadow-2xs transition-all"
-              >
-                <UserPlus className="size-4 text-neutral-600" />
-                <span>Create Free Account</span>
-              </Link>
-            ) : (
-              <Link
-                to={getDashboardRoute()}
-                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-white hover:bg-neutral-50 text-neutral-900 text-sm font-semibold border border-neutral-300 shadow-2xs transition-all"
-              >
-                <span>Go to Dashboard</span>
-                <ChevronRight className="size-4 text-neutral-600" />
-              </Link>
-            )}
+            {/* Card 4: Staff Tools */}
+            <div className="hidden md:flex absolute left-[16%] lg:left-[20%] top-[70%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-xs">
+                <Store className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">Staff Tools</span>
+            </div>
+
+            {/* ── Centerpiece: Smartphone Mockup ── */}
+            <div className="relative z-20 w-[290px] sm:w-[330px] bg-neutral-950 rounded-t-[44px] p-2.5 sm:p-3 shadow-2xl border-t-[6px] border-x-[6px] border-neutral-900 overflow-hidden">
+              <div className="w-full bg-[#fbfbfb] rounded-t-[36px] pt-2 px-3.5 pb-6 flex flex-col items-center min-h-[460px] relative">
+                {/* Status Bar */}
+                <div className="w-full flex items-center justify-between text-[11px] font-semibold text-neutral-800 px-2 pt-1 select-none">
+                  <span>2:41</span>
+                  {/* Dynamic Island */}
+                  <div className="w-24 h-5 bg-neutral-950 rounded-full flex items-center justify-between px-2.5 shadow-inner">
+                    <div className="size-2 rounded-full bg-neutral-800" />
+                    <div className="size-2 rounded-full bg-[#ff6b00]" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-bold">5G</span>
+                    <div className="w-4 h-2 border border-neutral-800 rounded-xs p-0.5 flex items-center">
+                      <div className="w-2 h-full bg-neutral-800 rounded-2xs" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mockup Center Floating Feature: Manage your queue */}
+                <div className="w-48 bg-white rounded-2xl p-4 shadow-lg border border-neutral-100 flex flex-col items-center text-center gap-2 mt-5 animate-in fade-in duration-300">
+                  <div className="size-11 rounded-xl bg-orange-50 text-[#ff6b00] flex items-center justify-center shadow-xs">
+                    <Clock className="size-6 text-[#ff6b00]" />
+                  </div>
+                  <span className="text-xs font-bold text-neutral-800 tracking-tight">
+                    Manage your queue
+                  </span>
+                </div>
+
+                {/* Inside-Phone Live Token Card */}
+                <div className="w-full bg-white rounded-2xl p-3.5 shadow-sm border border-neutral-100 mt-3 space-y-2.5">
+                  <div className="flex items-center justify-between text-[10px] font-bold">
+                    <span className="text-neutral-400 uppercase tracking-wider">Live Waitlist</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-bold">
+                      Calling Next
+                    </span>
+                  </div>
+                  <div className="flex items-baseline justify-between">
+                    <div className="text-2xl font-black text-[#ff6b00]">#Q-18</div>
+                    <span className="text-xs font-semibold text-neutral-500">3 Guests</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#ff6b00] w-4/5 rounded-full" />
+                  </div>
+                  <div className="flex justify-between text-[10px] text-neutral-500 font-medium">
+                    <span>Copper Kettle Bistro</span>
+                    <span className="text-[#ff6b00] font-bold">~7 mins</span>
+                  </div>
+                </div>
+
+                {/* Seat Guest Action */}
+                <div className="w-full mt-3">
+                  <div className="w-full py-2.5 rounded-xl bg-neutral-950 text-white text-xs font-bold text-center shadow-xs">
+                    Seat Guest Now
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Right Floating Feature Cards (Desktop) ── */}
+            {/* Card 5: AI ETA */}
+            <div className="hidden md:flex absolute right-[4%] lg:right-[10%] top-[8%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-xs">
+                <Sparkles className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">AI ETA</span>
+            </div>
+
+            {/* Card 6: Guest Alerts */}
+            <div className="hidden md:flex absolute right-[18%] lg:right-[22%] top-[28%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-yellow-50 text-yellow-600 flex items-center justify-center shadow-xs">
+                <Bell className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">
+                Guest Alerts
+              </span>
+            </div>
+
+            {/* Card 7: Analytics */}
+            <div className="hidden md:flex absolute right-[2%] lg:right-[8%] top-[52%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-xs">
+                <BarChart3 className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">Analytics</span>
+            </div>
+
+            {/* Card 8: Remote Join */}
+            <div className="hidden md:flex absolute right-[16%] lg:right-[20%] top-[72%] z-10 w-28 sm:w-32 bg-white rounded-3xl p-4 shadow-xl shadow-neutral-200/70 border border-neutral-100 flex-col items-center text-center gap-2.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+              <div className="size-11 sm:size-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center shadow-xs">
+                <Smartphone className="size-5 sm:size-6" />
+              </div>
+              <span className="text-xs font-bold text-neutral-800 tracking-tight">Remote Join</span>
+            </div>
+          </div>
+
+          {/* ── Mobile Grid Fallback (Shown on screens < md) ── */}
+          <div className="md:hidden mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <ClipboardList className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">Live Queue</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <UserPlus className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">Walk-ins</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                <UtensilsCrossed className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">Table Assign</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                <Store className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">Staff Tools</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Sparkles className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">AI ETA</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-yellow-50 text-yellow-600 flex items-center justify-center">
+                <Bell className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">Guest Alerts</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <BarChart3 className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">Analytics</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-3.5 shadow-md border border-neutral-100 flex flex-col items-center text-center gap-2">
+              <div className="size-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center">
+                <Smartphone className="size-5" />
+              </div>
+              <span className="text-[11px] font-bold text-neutral-800">Remote Join</span>
+            </div>
           </div>
 
           {/* Editorial Metric Strip */}
