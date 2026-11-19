@@ -43,7 +43,7 @@ export const customerRoutes: RouteObject[] = [
         Component: HomePage,
       },
       {
-        path: "restaurants",
+        path: CUSTOMER_ROUTE_PATHS.RESTAURANTS,
         element: <Navigate to={CUSTOMER_ROUTES.HOME} replace />,
       },
       {
@@ -122,7 +122,7 @@ export const customerRoutes: RouteObject[] = [
         Component: RegisterPage,
       },
       {
-        path: "registration",
+        path: CUSTOMER_ROUTE_PATHS.AUTH.REGISTRATION,
         element: <Navigate to={CUSTOMER_ROUTES.AUTH.REGISTER} replace />,
       },
       {

@@ -7,6 +7,7 @@
 export const CUSTOMER_ROUTE_PATHS = {
   LANDING: "/",
   HOME: "/home",
+  RESTAURANTS: "restaurants",
   ABOUT: "/about",
   RESTAURANT_DETAIL: "/restaurants/:id",
 
@@ -19,6 +20,7 @@ export const CUSTOMER_ROUTE_PATHS = {
   AUTH: {
     LOGIN: "/login",
     REGISTER: "/register",
+    REGISTRATION: "registration",
     FORGOT_PASSWORD: "/forgot-password",
     FORGOT_PASSWORD_VERIFY: "/forgot-password/verify",
     FORGOT_PASSWORD_RESET: "/forgot-password/reset-password",
@@ -47,7 +49,6 @@ export const CUSTOMER_ROUTES = {
   LANDING: "/",
   HOME: "/home",
   ABOUT: "/about",
-  RESTAURANTS: "/home",
   RESTAURANT_DETAIL: (id: string | number) => `/restaurants/${id}`,
 
   PROFILE: {
