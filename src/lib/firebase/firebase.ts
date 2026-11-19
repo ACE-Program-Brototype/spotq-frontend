@@ -177,7 +177,7 @@ export const getStoredFid = async (): Promise<string | null> => {
     const fid = await getId(installations);
     const resolvedFid = fid?.trim() || null;
     return resolvedFid;
-  } catch (err) {
+  } catch {
     return null;
   }
 };

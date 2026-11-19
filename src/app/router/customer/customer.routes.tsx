@@ -1,4 +1,4 @@
-import type { RouteObject } from "react-router-dom";
+import { Navigate, type RouteObject } from "react-router-dom";
 import ForgotPasswordPage from "@/features/auth/pages/customer/ForgotPasswordPage";
 import LoginPage from "@/features/auth/pages/customer/LoginPage";
 import OtpVerificationPage from "@/features/auth/pages/customer/OtpVerificationPage";
@@ -8,6 +8,7 @@ import VerifyOtpPage from "@/features/auth/pages/customer/VerifyOtpPage";
 import CartPage from "@/features/cart/pages/CartPage";
 import CheckoutPage from "@/features/checkout/pages/CheckoutPage";
 import AboutPage from "@/features/demo/pages/AboutPage";
+import LandingPage from "@/features/landing/pages/LandingPage";
 import CookiePolicyPage from "@/features/legal/pages/CookiePolicyPage";
 import PrivacyPolicyPage from "@/features/legal/pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "@/features/legal/pages/TermsAndConditionsPage";
@@ -31,11 +32,19 @@ const CustomerProtectedLayout = () => (
 
 export const customerRoutes: RouteObject[] = [
   {
+    path: CUSTOMER_ROUTE_PATHS.LANDING,
+    Component: LandingPage,
+  },
+  {
     Component: CustomerLayout,
     children: [
       {
         path: CUSTOMER_ROUTE_PATHS.HOME,
         Component: HomePage,
+      },
+      {
+        path: "restaurants",
+        element: <Navigate to={CUSTOMER_ROUTES.HOME} replace />,
       },
       {
         path: CUSTOMER_ROUTE_PATHS.RESTAURANT_DETAIL,
@@ -111,6 +120,10 @@ export const customerRoutes: RouteObject[] = [
       {
         path: CUSTOMER_ROUTE_PATHS.AUTH.REGISTER,
         Component: RegisterPage,
+      },
+      {
+        path: "registration",
+        element: <Navigate to={CUSTOMER_ROUTES.AUTH.REGISTER} replace />,
       },
       {
         path: CUSTOMER_ROUTE_PATHS.AUTH.FORGOT_PASSWORD,

@@ -5,7 +5,8 @@
 
 // Route paths used in React Router route definitions
 export const CUSTOMER_ROUTE_PATHS = {
-  HOME: "/",
+  LANDING: "/",
+  HOME: "/home",
   ABOUT: "/about",
   RESTAURANT_DETAIL: "/restaurants/:id",
 
@@ -43,9 +44,10 @@ export const CUSTOMER_ROUTE_PATHS = {
 
 // Absolute paths and route builders for navigate() and <Link to="..." />
 export const CUSTOMER_ROUTES = {
-  HOME: "/",
+  LANDING: "/",
+  HOME: "/home",
   ABOUT: "/about",
-  RESTAURANTS: "/restaurants",
+  RESTAURANTS: "/home",
   RESTAURANT_DETAIL: (id: string | number) => `/restaurants/${id}`,
 
   PROFILE: {

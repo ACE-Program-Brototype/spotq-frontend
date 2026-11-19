@@ -1,11 +1,12 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useAuthStore } from "../store/auth.store";
 import { useGoogleLoginMutation } from "./use-auth-mutations";
 
-export const useGoogleAuth = (destination = "/") => {
+export const useGoogleAuth = (destination: string = CUSTOMER_ROUTES.HOME) => {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
 

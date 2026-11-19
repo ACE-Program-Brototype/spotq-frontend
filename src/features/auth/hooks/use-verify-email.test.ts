@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 
 import { AUTH_MESSAGES } from "../constants/auth.constants";
 import { useAuthStore } from "../store/auth.store";
@@ -103,7 +104,7 @@ describe("useVerifyOtp", () => {
     expect(mockSetAuth).toHaveBeenCalledTimes(1);
     expect(mockSetAuth).toHaveBeenCalledWith(user, accessToken);
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith("/", {
+    expect(mockNavigate).toHaveBeenCalledWith(CUSTOMER_ROUTES.HOME, {
       replace: true,
     });
   });
