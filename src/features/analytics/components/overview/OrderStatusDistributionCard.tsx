@@ -110,13 +110,13 @@ export function OrderStatusDistributionCard({
       </div>
 
       {/* Main Content: Recharts Visualization + Legend */}
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+      <div className="mt-3 md:mt-5 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-center">
         {/* Left: Recharts Pie / Donut Chart */}
         <div className="md:col-span-5 flex flex-col items-center justify-center">
           <div
             role="img"
             aria-label="Order status pie chart"
-            className="relative size-[220px] flex items-center justify-center"
+            className="relative size-[190px] sm:size-[220px] flex items-center justify-center"
           >
             {totalCount === 0 || chartData.length === 0 ? (
               <div className={ORDER_STATUS_CHART_STYLES.EMPTY_CONTAINER}>

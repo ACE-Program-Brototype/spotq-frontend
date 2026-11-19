@@ -41,12 +41,12 @@ export function RestaurantAdminNavbar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 flex h-16 w-full max-w-full items-center justify-between border-b border-[#f3e6de] bg-[#fffcf9] px-4 sm:px-6 lg:px-8 shadow-2xs box-border transition-all",
+        "sticky top-0 z-20 flex h-16 w-full max-w-full items-center justify-between border-b border-[#f3e6de] bg-[#fffcf9] px-3 sm:px-6 lg:px-8 shadow-2xs box-border transition-all",
         className,
       )}
       {...props}
     >
-      <div className="flex items-center gap-3 sm:gap-6 flex-1 min-w-0 pr-2">
+      <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 flex-1 min-w-0 pr-2">
         {onToggleSidebar && (
           <Button
             type="button"
@@ -60,18 +60,20 @@ export function RestaurantAdminNavbar({
           </Button>
         )}
 
-        <div className="flex items-center gap-2.5 lg:hidden shrink-0">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-[#e8631b] text-white shadow-xs">
-            <Utensils className="size-4.5" />
+        <div className="flex items-center gap-2 sm:gap-2.5 lg:hidden shrink-0">
+          <div className="flex size-8 sm:size-9 items-center justify-center rounded-xl bg-[#e8631b] text-white shadow-xs">
+            <Utensils className="size-4 sm:size-4.5" />
           </div>
           <div>
-            <span className="text-sm font-bold text-[#8a3b14]">SpotQ</span>
-            <p className="text-[10px] text-neutral-400">Admin Portal</p>
+            <span className="text-xs sm:text-sm font-bold text-[#8a3b14] leading-tight block">
+              SpotQ
+            </span>
+            <p className="text-[10px] text-neutral-400 leading-tight">Admin Portal</p>
           </div>
         </div>
 
         <div className="hidden sm:block shrink-0">
-          <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#8a3b14]">
+          <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#8a3b14] truncate max-w-[180px] lg:max-w-xs">
             {restaurantName}
           </h2>
         </div>
@@ -88,7 +90,7 @@ export function RestaurantAdminNavbar({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
         <Button
           type="button"
           variant="ghost"

@@ -33,7 +33,7 @@ export function AnalyticsTabNav({ className }: AnalyticsTabNavProps) {
     <nav
       aria-label="Analytics Navigation"
       className={cn(
-        "grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2 p-1.5 rounded-xl bg-[#faf7f5] border border-[#eddcd4]",
+        "flex flex-wrap items-center gap-1.5 sm:gap-2 p-1.5 rounded-xl bg-[#faf7f5] border border-[#eddcd4] w-full",
         className,
       )}
     >

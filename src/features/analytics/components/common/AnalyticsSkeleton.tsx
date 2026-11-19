@@ -15,20 +15,20 @@ export function AnalyticsSkeleton({
   return (
     <div className={cn("space-y-6 animate-pulse", className)}>
       {/* KPI Cards Skeleton */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2.5 md:gap-3.5 lg:gap-4">
         {Array.from({ length: cardsCount }).map((_, i) => (
           <div
             // biome-ignore lint/suspicious/noArrayIndexKey: Static skeleton array
             key={i}
-            className="rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-2xs"
+            className="rounded-xl md:rounded-2xl border border-[#eddcd4] bg-white px-2.5 py-1.5 md:p-4 sm:md:p-5 shadow-2xs"
           >
-            <div className="flex items-center justify-between gap-2">
-              <Skeleton className="h-3 w-24 bg-neutral-200" />
-              <Skeleton className="size-8 rounded-xl bg-neutral-200" />
+            <div className="flex items-center justify-between gap-1 md:gap-2">
+              <Skeleton className="h-2.5 md:h-3 w-16 md:w-24 bg-neutral-200" />
+              <Skeleton className="size-5 md:size-8 rounded-md md:rounded-xl bg-neutral-200" />
             </div>
-            <div className="mt-3 space-y-2">
-              <Skeleton className="h-7 w-32 bg-neutral-200" />
-              <Skeleton className="h-4 w-20 rounded-full bg-neutral-100" />
+            <div className="mt-0.5 md:mt-3 space-y-0.5 md:space-y-2">
+              <Skeleton className="h-4.5 md:h-7 w-20 md:w-32 bg-neutral-200" />
+              <Skeleton className="h-3 md:h-4 w-14 md:w-20 rounded-sm md:rounded-full bg-neutral-100" />
             </div>
           </div>
         ))}
