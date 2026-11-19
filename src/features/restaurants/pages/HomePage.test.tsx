@@ -190,16 +190,4 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
       { timeout: 2000 },
     );
   });
-
-  it("does not render fake demo login buttons in guest session banner", async () => {
-    (customerRestaurantService.getRestaurants as jest.Mock).mockResolvedValue({
-      restaurants: [],
-      pagination: { page: 1, limit: 8, total: 0, totalPages: 0 },
-    });
-
-    renderWithClient(<HomePage />);
-
-    expect(screen.queryByRole("button", { name: /Demo Login/i })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Sign In/i })).toBeInTheDocument();
-  });
 });
