@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -6,14 +6,15 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { RestaurantAdminNavbar } from "@/components/layout/RestaurantAdminNavbar";
 import { RestaurantAdminSidebar } from "@/components/layout/RestaurantAdminSidebar";
 import { Button } from "@/components/ui/button";
+import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export function RestaurantAdminLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const { user, clearAuth } = useAuthStore();
+  const { user } = useAuthStore();
+  const { handleLogout } = useRestaurantLogout();
 
   const { data: statusData, isLoading: isLoadingStatus } = useQuery({
     queryKey: ["restaurant-status"],
@@ -27,12 +28,6 @@ export function RestaurantAdminLayout() {
       navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
     }
   }, [isLoadingStatus, statusData, navigate]);
-
-  const handleLogout = () => {
-    clearAuth();
-    queryClient.clear();
-    navigate(RESTAURANT_ROUTES.LOGIN, { replace: true });
-  };
 
   if (isLoadingStatus) {
     return (

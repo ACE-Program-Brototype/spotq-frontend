@@ -104,3 +104,20 @@ export async function getRestaurantVerificationStatus(
     : AUTH_ENDPOINTS.RESTAURANT_VERIFICATION_STATUS;
   return apiClient.get(endpoint).json<VerificationStatusResponse>();
 }
+
+export async function logoutRestaurant(): Promise<ApiResponse> {
+  try {
+    return await apiClient
+      .post(AUTH_ENDPOINTS.STAFF_LOGOUT, {
+        json: {},
+      })
+      .json<ApiResponse>();
+  } catch {
+    // If the network call fails or server returns error, return fallback so client logout proceeds
+    return {
+      success: true,
+      statusCode: 200,
+      message: "Logged out",
+    };
+  }
+}

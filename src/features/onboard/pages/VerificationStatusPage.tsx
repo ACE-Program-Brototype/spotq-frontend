@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 import {
   getRestaurantVerificationStatus,
   type VerificationStatus,
@@ -20,6 +21,7 @@ import {
 export default function VerificationStatusPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
+  const { handleLogout, isLoading: isLoggingOut } = useRestaurantLogout();
   const [status, setStatus] = useState<VerificationStatus>(
     ONBOARDING_VERIFICATION_STATUS.UNDER_REVIEW,
   );
@@ -98,8 +100,7 @@ export default function VerificationStatusPage() {
   };
 
   const handleSignOut = () => {
-    useAuthStore.getState().clearAuth();
-    navigate(RESTAURANT_ROUTES.LOGIN);
+    handleLogout();
   };
 
   if (isLoading) {
@@ -144,6 +145,7 @@ export default function VerificationStatusPage() {
             rejectionReason={rejectionReason}
             onEditApplication={handleEditApplication}
             onSignOut={handleSignOut}
+            isLoggingOut={isLoggingOut}
           />
         )}
 
@@ -155,6 +157,7 @@ export default function VerificationStatusPage() {
             isRefreshing={isRefreshing}
             onCheckStatus={handleCheckStatus}
             onSignOut={handleSignOut}
+            isLoggingOut={isLoggingOut}
           />
         )}
       </div>
