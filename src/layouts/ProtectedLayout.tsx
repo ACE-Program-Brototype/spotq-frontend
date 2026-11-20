@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import {
   ADMIN_ROUTES,
@@ -6,6 +6,7 @@ import {
   RESTAURANT_ROUTES,
   STAFF_ROUTES,
 } from "@/app/router/routes.constants";
+import { PageSkeleton } from "@/components/common/skeletons";
 import {
   ONBOARDING_STATUS,
   USER_ROLES,
@@ -51,7 +52,11 @@ export default function ProtectedLayout({
 
   if (!isAuthenticated) {
     if (location.pathname === redirectTo) {
-      return null;
+      return (
+        <Suspense fallback={<PageSkeleton />}>
+          <Outlet />
+        </Suspense>
+      );
     }
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
@@ -93,7 +98,7 @@ export default function ProtectedLayout({
 
     if (!isRestaurantPath) {
       if (location.pathname === roleHome) {
-        return null;
+        return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
       }
       return <Navigate to={roleHome} replace />;
     }
@@ -104,7 +109,7 @@ export default function ProtectedLayout({
     location.pathname.startsWith(`${ADMIN_ROUTES.ROOT}/`);
   if (normalizedRole === USER_ROLES.ADMIN && !isAdminPath) {
     if (location.pathname === roleHome) {
-      return null;
+      return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
     }
     return <Navigate to={roleHome} replace />;
   }
@@ -121,7 +126,7 @@ export default function ProtectedLayout({
     !isStaffAllowedPath
   ) {
     if (location.pathname === roleHome) {
-      return null;
+      return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
     }
     return <Navigate to={roleHome} replace />;
   }
@@ -130,11 +135,15 @@ export default function ProtectedLayout({
     const isAllowed = allowedRoles.some((r) => r.toUpperCase() === normalizedRole);
     if (!isAllowed) {
       if (location.pathname === roleHome) {
-        return null;
+        return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
       }
       return <Navigate to={roleHome} state={{ from: location }} replace />;
     }
   }
 
-  return <Outlet />;
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <Outlet />
+    </Suspense>
+  );
 }

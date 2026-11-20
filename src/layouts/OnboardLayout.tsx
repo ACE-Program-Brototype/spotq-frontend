@@ -1,7 +1,9 @@
 import { LogOut } from "lucide-react";
+import { Suspense } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { PageSkeleton } from "@/components/common/skeletons";
 import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 import OnboardSidebar from "@/features/onboard/components/Onboardsidebar";
 import { useOnboardStore } from "@/features/onboard/store/onboard.store";
@@ -100,7 +102,9 @@ export default function OnboardLayout() {
         <OnboardSidebar />
 
         <main className="flex-1">
-          <Outlet />
+          <Suspense fallback={<PageSkeleton />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

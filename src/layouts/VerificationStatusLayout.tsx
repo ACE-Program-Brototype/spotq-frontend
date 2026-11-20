@@ -1,6 +1,8 @@
 import { LogOut } from "lucide-react";
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { PageSkeleton } from "@/components/common/skeletons";
 import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 
 export default function VerificationStatusLayout() {
@@ -44,7 +46,9 @@ export default function VerificationStatusLayout() {
       </header>
 
       <div className="mx-auto flex max-w-4xl justify-center px-4 py-8 sm:px-6 sm:py-10">
-        <Outlet />
+        <Suspense fallback={<PageSkeleton />}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   );

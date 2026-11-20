@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Suspense, useEffect, useState } from "react";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { RestaurantAdminNavbar } from "@/components/layout/RestaurantAdminNavbar";
 import { RestaurantAdminSidebar } from "@/components/layout/RestaurantAdminSidebar";
+import { PageSkeleton } from "@/components/common/skeletons";
 import { Button } from "@/components/ui/button";
 import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -41,7 +42,7 @@ export function RestaurantAdminLayout() {
   }
 
   if (statusData && !statusData.isSubscriptionActive) {
-    return null;
+    return <Navigate to={RESTAURANT_ROUTES.SUBSCRIPTION} replace />;
   }
 
   const restaurantName = statusData?.restaurantName || user?.fullName || user?.name || "Restaurant";
@@ -88,7 +89,9 @@ export function RestaurantAdminLayout() {
         />
 
         <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 box-border overflow-y-auto">
-          <Outlet />
+          <Suspense fallback={<PageSkeleton />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

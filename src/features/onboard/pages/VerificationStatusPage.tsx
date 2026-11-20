@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { USER_STATUS } from "@/features/auth/constants/auth.constants";
 import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 import {
   getRestaurantVerificationStatus,
@@ -29,14 +30,21 @@ export default function VerificationStatusPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const normalizedStatus = (status || "").toUpperCase();
+  const isApproved =
+    normalizedStatus === ONBOARDING_VERIFICATION_STATUS.VERIFIED ||
+    normalizedStatus === USER_STATUS.APPROVED ||
+    normalizedStatus === USER_STATUS.ACTIVE;
+  const isRejected = normalizedStatus === ONBOARDING_VERIFICATION_STATUS.REJECTED;
+
   useEffect(() => {
-    if (status === ONBOARDING_VERIFICATION_STATUS.VERIFIED) {
+    if (isApproved) {
       const redirectTimer = setTimeout(() => {
         navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
       }, ONBOARDING_TIMINGS.REDIRECT_DELAY_MS);
       return () => clearTimeout(redirectTimer);
     }
-  }, [status, navigate]);
+  }, [isApproved, navigate]);
 
   const restaurantEmail = user?.email || ONBOARDING_MESSAGES.DEFAULT_EMAIL_PLACEHOLDER;
   const restaurantId = user?.restaurantId || user?.id || user?._id;
@@ -57,12 +65,17 @@ export default function VerificationStatusPage() {
           if (response.data.rejectionReason) {
             setRejectionReason(response.data.rejectionReason);
           }
-          if (fetchedStatus === ONBOARDING_VERIFICATION_STATUS.VERIFIED) {
+          const normalizedFetched = (fetchedStatus || "").toUpperCase();
+          if (
+            normalizedFetched === ONBOARDING_VERIFICATION_STATUS.VERIFIED ||
+            normalizedFetched === USER_STATUS.APPROVED ||
+            normalizedFetched === USER_STATUS.ACTIVE
+          ) {
             const currentUser = useAuthStore.getState().user;
-            if (currentUser && currentUser.status !== ONBOARDING_VERIFICATION_STATUS.VERIFIED) {
+            if (currentUser && currentUser.status !== normalizedFetched) {
               useAuthStore.getState().setUser({
                 ...currentUser,
-                status: ONBOARDING_VERIFICATION_STATUS.VERIFIED,
+                status: normalizedFetched,
                 onboardingStatus: ONBOARDING_STATUS.COMPLETED,
               });
             }
@@ -136,11 +149,11 @@ export default function VerificationStatusPage() {
   return (
     <div className="w-full max-w-2xl space-y-6">
       <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 shadow-xs sm:p-8">
-        {status === ONBOARDING_VERIFICATION_STATUS.VERIFIED && (
+        {isApproved && (
           <VerificationApprovedView onProceedToSubscription={handleGoToSubscription} />
         )}
 
-        {status === ONBOARDING_VERIFICATION_STATUS.REJECTED && (
+        {isRejected && (
           <VerificationRejectedView
             rejectionReason={rejectionReason}
             onEditApplication={handleEditApplication}
@@ -149,8 +162,7 @@ export default function VerificationStatusPage() {
           />
         )}
 
-        {(status === ONBOARDING_VERIFICATION_STATUS.SUBMITTED ||
-          status === ONBOARDING_VERIFICATION_STATUS.UNDER_REVIEW) && (
+        {!isApproved && !isRejected && (
           <VerificationUnderReviewView
             status={status}
             restaurantEmail={restaurantEmail}
