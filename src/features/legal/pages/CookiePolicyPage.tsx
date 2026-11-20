@@ -83,10 +83,10 @@ export default function CookiePolicyPage() {
             If you have questions about our use of cookies or tracking technologies, please contact
             us at{" "}
             <a
-              href="mailto:privacy@spotq.com"
+              href="mailto:privacy@spotq.site"
               className="font-semibold text-spotq-orange transition-colors hover:text-spotq-orange/80"
             >
-              privacy@spotq.com
+              privacy@spotq.site
             </a>
             .
           </p>

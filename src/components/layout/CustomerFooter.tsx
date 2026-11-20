@@ -39,7 +39,7 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
 
             <div className="flex items-center gap-2 pt-0.5">
               <a
-                href="https://spotq.com"
+                href="https://spotq.site"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Website"
@@ -48,7 +48,7 @@ export function CustomerFooter({ className }: CustomerFooterProps) {
                 <Globe className="size-4" />
               </a>
               <a
-                href="mailto:contact@spotq.com"
+                href="mailto:contact@spotq.site"
                 aria-label="Email Us"
                 className="flex size-8 items-center justify-center rounded-full border border-[#eddcd4] text-neutral-600 hover:border-[#e8631b] hover:text-[#e8631b] hover:bg-orange-50/50 transition-colors"
               >
