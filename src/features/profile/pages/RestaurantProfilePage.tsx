@@ -1,11 +1,11 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { RestaurantBusinessHoursCard } from "../components/RestaurantBusinessHoursCard";
-import { RestaurantInfoCard } from "../components/RestaurantInfoCard";
-import { RestaurantOverviewCard } from "../components/RestaurantOverviewCard";
-import { RestaurantProfileSkeleton } from "../components/RestaurantProfileSkeleton";
-import { RestaurantSettingsCard } from "../components/RestaurantSettingsCard";
-import { useRestaurantProfile } from "../hooks/use-restaurant-profile";
+import { RestaurantBusinessHoursCard } from "@/features/profile/components/RestaurantBusinessHoursCard";
+import { RestaurantInfoCard } from "@/features/profile/components/RestaurantInfoCard";
+import { RestaurantOverviewCard } from "@/features/profile/components/RestaurantOverviewCard";
+import { RestaurantProfileSkeleton } from "@/features/profile/components/RestaurantProfileSkeleton";
+import { RestaurantSettingsCard } from "@/features/profile/components/RestaurantSettingsCard";
+import { useRestaurantProfile } from "@/features/profile/hooks/use-restaurant-profile";
 
 export default function RestaurantProfilePage() {
   const { data, isLoading, isError, error, refetch, isFetching } = useRestaurantProfile();

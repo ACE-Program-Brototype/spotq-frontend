@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
-import { TABLE_QUERY_KEYS } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
-import type { RestaurantTableDetails } from "../types/table.types";
+import { TABLE_QUERY_KEYS } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
+import type { RestaurantTableDetails } from "@/features/tables/types/table.types";
 
 export function useRestaurantTableDetails(restaurantId?: string, tableId?: string) {
   const navigate = useNavigate();

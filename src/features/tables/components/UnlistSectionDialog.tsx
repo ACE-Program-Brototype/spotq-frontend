@@ -1,5 +1,5 @@
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import type { TableSectionAll } from "../types/table.types";
+import type { TableSectionAll } from "@/features/tables/types/table.types";
 
 interface UnlistSectionDialogProps {
   section: TableSectionAll | null;

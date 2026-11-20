@@ -4,8 +4,8 @@
  */
 
 import { cn } from "@/lib/utils/cn";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
-import type { SettlementStatus } from "../types/transaction.types";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
+import type { SettlementStatus } from "@/features/transactions/types/transaction.types";
 
 interface SettlementStatusBadgeProps {
   status: SettlementStatus | string;

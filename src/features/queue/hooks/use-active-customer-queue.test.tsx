@@ -2,12 +2,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
-import { queueService } from "../services/queue.service";
-import type { ActiveCustomerQueueResponse } from "../types/queue.types";
+import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { ActiveCustomerQueueResponse } from "@/features/queue/types/queue.types";
 import { useActiveCustomerQueue } from "./use-active-customer-queue";
 
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 
 describe("useActiveCustomerQueue", () => {
   let queryClient: QueryClient;

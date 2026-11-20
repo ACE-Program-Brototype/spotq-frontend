@@ -2,7 +2,7 @@ import type {
   ApplicationFilterStatusType,
   ApplicationSortByType,
   ApplicationSortOrderType,
-} from "../types/restaurant-application.types";
+} from "@/features/restaurants/types/restaurant-application.types";
 
 export const RESTAURANT_APPLICATION_ENDPOINTS = {
   LIST: "restaurants/admin/restaurants/applications",

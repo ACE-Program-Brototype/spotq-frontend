@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { FormField, FormInput, PasswordField, SubmitButton } from "@/components/common/form";
 import { cn } from "@/lib/utils/cn";
-import { type LoginFormValues, loginSchema } from "../schemas/login.schema";
+import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema";
 
 interface LoginFormProps {
   onSubmit: (values: LoginFormValues) => Promise<void> | void;
@@ -84,7 +84,7 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
         size="lg"
         isLoading={isLoading}
         loadingText="Logging in..."
-        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
+        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-[background-color,transform] font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
       >
         <span>Login</span>
         <span className="text-lg leading-none">→</span>

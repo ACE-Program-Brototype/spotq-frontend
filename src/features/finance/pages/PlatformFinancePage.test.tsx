@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { financeService } from "../services/finance.service";
-import { getDateRange } from "../utils/finance.utils";
+import { financeService } from "@/features/finance/services/finance.service";
+import { getDateRange } from "@/features/finance/utils/finance.utils";
 import PlatformFinancePage from "./PlatformFinancePage";
 
-jest.mock("../services/finance.service", () => ({
+jest.mock("@/features/finance/services/finance.service", () => ({
   financeService: {
     getFinanceLedger: jest.fn(),
     getFinanceSummary: jest.fn(),

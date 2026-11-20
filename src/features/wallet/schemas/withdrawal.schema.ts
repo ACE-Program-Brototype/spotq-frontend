@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AMOUNT_FORMAT_REGEX, WALLET_VALIDATION_MESSAGES } from "../constants/wallet.constants";
+import { AMOUNT_FORMAT_REGEX, WALLET_VALIDATION_MESSAGES } from "@/features/wallet/constants/wallet.constants";
 
 export const withdrawalSchema = z.object({
   amountRupees: z

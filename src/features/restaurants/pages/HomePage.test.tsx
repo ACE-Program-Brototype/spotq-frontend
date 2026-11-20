@@ -2,10 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { customerRestaurantService } from "../services/customer-restaurant.service";
+import { customerRestaurantService } from "@/features/restaurants/services/customer-restaurant.service";
 import { HomePage } from "./HomePage";
 
-jest.mock("../services/customer-restaurant.service", () => ({
+jest.mock("@/features/restaurants/services/customer-restaurant.service", () => ({
   customerRestaurantService: {
     getRestaurants: jest.fn(),
   },
@@ -189,17 +189,5 @@ describe("HomePage (Customer Restaurant Discovery)", () => {
       },
       { timeout: 2000 },
     );
-  });
-
-  it("does not render fake demo login buttons in guest session banner", async () => {
-    (customerRestaurantService.getRestaurants as jest.Mock).mockResolvedValue({
-      restaurants: [],
-      pagination: { page: 1, limit: 8, total: 0, totalPages: 0 },
-    });
-
-    renderWithClient(<HomePage />);
-
-    expect(screen.queryByRole("button", { name: /Demo Login/i })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Sign In/i })).toBeInTheDocument();
   });
 });

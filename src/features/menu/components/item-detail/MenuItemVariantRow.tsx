@@ -13,6 +13,7 @@ export interface MenuItemVariantRowProps {
   basePrice: number;
   onToggleVariant?: (variantId: string) => void;
   isToggling?: boolean;
+  hideSku?: boolean;
 }
 
 export function MenuItemVariantRow({
@@ -20,6 +21,7 @@ export function MenuItemVariantRow({
   basePrice,
   onToggleVariant,
   isToggling = false,
+  hideSku = false,
 }: MenuItemVariantRowProps) {
   const variantPrice = Number(variant.price) || 0;
   const parsedBasePrice = Number(basePrice) || 0;
@@ -51,19 +53,21 @@ export function MenuItemVariantRow({
       </td>
 
       {/* 3. SKU / Code (Mobile: Middle-Right, Desktop: Col 3) */}
-      <td className="order-4 col-span-1 md:order-none py-0 md:py-3.5 px-0 md:px-4 font-mono text-neutral-500">
-        <div className="flex items-center justify-end md:justify-start gap-1.5">
-          <span className="md:hidden font-sans font-medium text-neutral-400 text-[11px]">SKU:</span>
-          {variant.sku ? (
-            <span className="inline-flex items-center gap-1 rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] font-medium text-neutral-700">
-              <Tag className="size-2.5 text-neutral-400" />
-              {variant.sku}
-            </span>
-          ) : (
-            <span>—</span>
-          )}
-        </div>
-      </td>
+      {!hideSku && (
+        <td className="order-4 col-span-1 md:order-none py-0 md:py-3.5 px-0 md:px-4 font-mono text-neutral-500">
+          <div className="flex items-center justify-end md:justify-start gap-1.5">
+            <span className="md:hidden font-sans font-medium text-neutral-400 text-[11px]">SKU:</span>
+            {variant.sku ? (
+              <span className="inline-flex items-center gap-1 rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] font-medium text-neutral-700">
+                <Tag className="size-2.5 text-neutral-400" />
+                {variant.sku}
+              </span>
+            ) : (
+              <span>—</span>
+            )}
+          </div>
+        </td>
+      )}
 
       {/* 4. Price & Delta (Mobile: Bottom-Left, Desktop: Col 4) */}
       <td

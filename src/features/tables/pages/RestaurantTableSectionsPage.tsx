@@ -5,14 +5,14 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { CreateSectionModal } from "../components/CreateSectionModal";
-import { TableSectionCard } from "../components/TableSectionCard";
-import { TableSkeletonGrid } from "../components/TableSkeletonGrid";
-import { UnlistSectionDialog } from "../components/UnlistSectionDialog";
-import { useCreateTableSection } from "../hooks/useCreateTableSection";
-import { useTableSectionsPaginated } from "../hooks/useTableSectionsPaginated";
-import { useUnlistTableSection } from "../hooks/useUnlistTableSection";
-import type { TableSectionAll } from "../types/table.types";
+import { CreateSectionModal } from "@/features/tables/components/CreateSectionModal";
+import { TableSectionCard } from "@/features/tables/components/TableSectionCard";
+import { TableSkeletonGrid } from "@/features/tables/components/TableSkeletonGrid";
+import { UnlistSectionDialog } from "@/features/tables/components/UnlistSectionDialog";
+import { useCreateTableSection } from "@/features/tables/hooks/useCreateTableSection";
+import { useTableSectionsPaginated } from "@/features/tables/hooks/useTableSectionsPaginated";
+import { useUnlistTableSection } from "@/features/tables/hooks/useUnlistTableSection";
+import type { TableSectionAll } from "@/features/tables/types/table.types";
 
 const PAGE_SIZE = 8;
 
@@ -70,7 +70,7 @@ export default function RestaurantTableSectionsPage() {
 
       {/* Page Header */}
       <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2.5">
             <p className="text-xs font-bold uppercase tracking-[.16em] text-[#b4532a]">
               Floor Configuration
@@ -88,14 +88,14 @@ export default function RestaurantTableSectionsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => void refetch()}
             disabled={isLoading || isFetching}
-            className="h-10 rounded-xl border-[#ede4de] bg-white text-xs font-semibold text-[#51483f] hover:bg-[#faf4f0]"
+            className="flex-1 sm:flex-initial h-10 rounded-xl border-[#ede4de] bg-white text-xs font-semibold text-[#51483f] hover:bg-[#faf4f0]"
           >
             <RefreshCw
               className={`size-3.5 mr-1.5 ${isLoading || isFetching ? "animate-spin" : ""}`}
@@ -106,7 +106,7 @@ export default function RestaurantTableSectionsPage() {
           <Button
             type="button"
             onClick={() => setIsCreateOpen(true)}
-            className="h-10 gap-2 rounded-xl bg-[#b4532a] px-4 text-xs font-semibold text-white shadow-xs hover:bg-[#963f1d]"
+            className="flex-1 sm:flex-initial h-10 gap-2 rounded-xl bg-[#b4532a] px-4 text-xs font-semibold text-white shadow-xs hover:bg-[#963f1d]"
           >
             <Plus className="size-4" />
             Create Section
@@ -116,23 +116,23 @@ export default function RestaurantTableSectionsPage() {
 
       {/* Metrics Banner */}
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="flex items-center gap-3 rounded-2xl border border-[#ede4de] bg-white p-4 shadow-[0_2px_8px_rgba(65,44,31,.03)]">
+        <div className="flex items-center gap-3 rounded-2xl border border-[#ede4de] bg-white p-4 shadow-[0_2px_8px_rgba(65,44,31,.03)] min-w-0">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#f8f3ef] text-[#9a3412]">
             <Layers className="size-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-medium text-[#8c948e]">Total Sections</p>
             <p className="text-xl font-bold text-[#252a26]">{totalItems}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 rounded-2xl border border-[#ede4de] bg-[#fffcf9] p-4 shadow-[0_2px_8px_rgba(65,44,31,.03)]">
+        <div className="flex items-center gap-3 rounded-2xl border border-[#ede4de] bg-[#fffcf9] p-4 shadow-[0_2px_8px_rgba(65,44,31,.03)] min-w-0">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#fff7ed] text-[#c2410c]">
             <ShieldAlert className="size-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-medium text-[#8c948e]">Deletion Guard</p>
-            <p className="text-xs font-semibold text-[#666c66]">Protected when tables exist</p>
+            <p className="text-xs font-semibold text-[#666c66] truncate">Protected when tables exist</p>
           </div>
         </div>
       </section>
@@ -176,7 +176,7 @@ export default function RestaurantTableSectionsPage() {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3.5 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {sections.map((section) => (
             <TableSectionCard
               key={section.id}

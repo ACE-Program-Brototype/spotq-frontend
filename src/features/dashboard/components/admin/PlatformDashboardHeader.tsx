@@ -1,4 +1,4 @@
-import { Download, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PLATFORM_ANALYTICS_MESSAGES } from "@/features/dashboard/constants/platform-analytics.constants";
@@ -8,14 +8,12 @@ export interface PlatformDashboardHeaderProps {
   generatedAt?: string;
   isFetching?: boolean;
   onRefresh?: () => void;
-  onExportClick?: () => void;
 }
 
 export function PlatformDashboardHeader({
   generatedAt,
   isFetching = false,
   onRefresh,
-  onExportClick,
 }: PlatformDashboardHeaderProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80 pb-5">
@@ -55,16 +53,6 @@ export function PlatformDashboardHeader({
             <span className="hidden sm:inline">Refresh</span>
           </Button>
         )}
-
-        <Button
-          type="button"
-          size="sm"
-          onClick={onExportClick}
-          className="bg-slate-900 text-white hover:bg-slate-800 text-xs font-medium shadow-xs gap-1.5"
-        >
-          <Download className="size-3.5" />
-          {PLATFORM_ANALYTICS_MESSAGES.EXPORT_BUTTON}
-        </Button>
       </div>
     </div>
   );

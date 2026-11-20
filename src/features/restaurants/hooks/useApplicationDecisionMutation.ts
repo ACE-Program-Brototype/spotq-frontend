@@ -4,12 +4,12 @@ import {
   APPLICATION_MESSAGES,
   APPLICATION_STATUS,
   RESTAURANT_APPLICATION_QUERY_KEYS,
-} from "../constants/restaurant-application.constants";
-import { restaurantApplicationService } from "../services/restaurant-application.service";
+} from "@/features/restaurants/constants/restaurant-application.constants";
+import { restaurantApplicationService } from "@/features/restaurants/services/restaurant-application.service";
 import type {
   RejectApplicationInput,
   RestaurantApplicationItem,
-} from "../types/restaurant-application.types";
+} from "@/features/restaurants/types/restaurant-application.types";
 
 export function useApproveApplication() {
   const queryClient = useQueryClient();

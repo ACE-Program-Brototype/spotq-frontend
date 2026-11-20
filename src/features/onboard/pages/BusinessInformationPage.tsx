@@ -5,8 +5,8 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import {
   type BusinessInformationFormValues,
   businessInformationSchema,
-} from "../schemas/business-information.schema";
-import { useOnboardStore } from "../store/onboard.store";
+} from "@/features/onboard/schemas/business-information.schema";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 
 export default function BusinessInformationPage() {
   const navigate = useNavigate();

@@ -68,7 +68,9 @@ describe("OtpVerificationPage", () => {
     const submitBtn = screen.getByRole("button", { name: /send verification code/i });
     await user.click(submitBtn);
 
-    expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
+    });
     expect(mockHandleResendOtp).not.toHaveBeenCalled();
   });
 

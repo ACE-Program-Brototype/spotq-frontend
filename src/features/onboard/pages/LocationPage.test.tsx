@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import * as locationIqService from "@/services/locationiq/locationiq.service";
-import { useOnboardStore } from "../store/onboard.store";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 import LocationPage from "./LocationPage";
 
 const mockNavigate = jest.fn();

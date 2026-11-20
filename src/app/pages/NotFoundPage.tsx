@@ -19,6 +19,7 @@ import {
 } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { Button } from "@/components/ui/button";
+import { USER_ROLES } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { User } from "@/features/auth/types/auth.types";
 
@@ -32,7 +33,7 @@ interface DestinationConfig {
 function getNavigationConfig(user: User | null, pathname: string): DestinationConfig {
   const role = user?.role;
 
-  if (role === "ADMIN") {
+  if (role === USER_ROLES.ADMIN) {
     return {
       path: ADMIN_ROUTES.DASHBOARD,
       label: "Go to Admin Dashboard",
@@ -44,7 +45,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "RESTAURANT_ADMIN") {
+  if (role === USER_ROLES.RESTAURANT_ADMIN) {
     return {
       path: RESTAURANT_ROUTES.DASHBOARD,
       label: "Go to Partner Dashboard",
@@ -56,7 +57,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "STAFF") {
+  if (role === USER_ROLES.STAFF) {
     return {
       path: STAFF_ROUTES.DASHBOARD,
       label: "Go to Staff Dashboard",
@@ -68,7 +69,7 @@ function getNavigationConfig(user: User | null, pathname: string): DestinationCo
     };
   }
 
-  if (role === "CUSTOMER") {
+  if (role === USER_ROLES.CUSTOMER) {
     return {
       path: CUSTOMER_ROUTES.HOME,
       label: "Return to Home",
@@ -217,7 +218,7 @@ export function NotFoundPage() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             to={navConfig.path}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#e8631b] to-[#ff6b00] px-6 text-sm font-bold text-white shadow-md shadow-orange-500/20 transition-all hover:from-[#d45614] hover:to-[#ea580c] hover:shadow-lg active:scale-[0.98]"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#e8631b] to-[#ff6b00] px-6 text-sm font-bold text-white shadow-md shadow-orange-500/20 transition-[box-shadow,transform] hover:from-[#d45614] hover:to-[#ea580c] hover:shadow-lg active:scale-[0.98]"
           >
             <Home className="size-4" />
             <span>{navConfig.label}</span>
@@ -246,7 +247,7 @@ export function NotFoundPage() {
                 <Link
                   key={item.label}
                   to={item.path}
-                  className="flex items-center gap-2.5 rounded-xl border border-neutral-100 bg-neutral-50/70 p-2.5 text-left text-xs font-semibold text-neutral-700 transition-all hover:border-[#fae2d3] hover:bg-[#fff9f5] hover:text-[#e8631b]"
+                  className="flex items-center gap-2.5 rounded-xl border border-neutral-100 bg-neutral-50/70 p-2.5 text-left text-xs font-semibold text-neutral-700 transition-colors hover:border-[#fae2d3] hover:bg-[#fff9f5] hover:text-[#e8631b]"
                 >
                   <div className="flex size-7 items-center justify-center rounded-lg bg-white text-[#e8631b] shadow-2xs">
                     <Icon className="size-3.5" />

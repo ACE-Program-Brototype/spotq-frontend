@@ -29,7 +29,7 @@ export function PushNotificationToast({
   };
 
   return (
-    <aside className="group relative flex w-[356px] min-w-[356px] max-w-[calc(100vw-32px)] items-center rounded-xl border border-neutral-200/90 bg-white/95 p-3 shadow-lg backdrop-blur-md transition-all duration-200 hover:border-orange-500/30 hover:shadow-xl">
+    <aside className="group relative flex w-[356px] min-w-[356px] max-w-[calc(100vw-32px)] items-center rounded-xl border border-neutral-200/90 bg-white/95 p-3 shadow-lg backdrop-blur-md transition-[border-color,box-shadow] duration-200 hover:border-orange-500/30 hover:shadow-xl">
       <button
         type="button"
         onClick={handleClick}
@@ -47,7 +47,7 @@ export function PushNotificationToast({
         </div>
 
         {deepLink && (
-          <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#ff6b00] text-white shadow-xs transition-all duration-200 group-hover:scale-105 group-hover:bg-[#e05e00] group-hover:translate-x-0.5">
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#ff6b00] text-white shadow-xs transition-[background-color,transform] duration-200 group-hover:scale-105 group-hover:bg-[#e05e00] group-hover:translate-x-0.5">
             <ArrowRight className="size-3.5" />
           </div>
         )}

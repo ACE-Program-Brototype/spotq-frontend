@@ -1,17 +1,23 @@
 /**
  * TransactionsTable Component
  * Responsive tabular presentation built with SpotQ's shared DataTable primitive.
+ * - Desktop (>= 640px): Full DataTable with column sorting and pagination.
+ * - Mobile (< 640px): Vertically stacked modern transaction cards with dedicated touch targets.
  */
 
-import { Eye, User } from "lucide-react";
+import { Eye, Inbox, User } from "lucide-react";
 import { useMemo } from "react";
+import { Pagination } from "@/components/common/Pagination";
 import { type Column, DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { formatDate } from "@/lib/utils/date";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
-import type { PaginationData, PaymentTransactionItem } from "../types/transaction.types";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
+import type { PaginationData, PaymentTransactionItem } from "@/features/transactions/types/transaction.types";
 import { PaymentMethodBadge } from "./PaymentMethodBadge";
 import { SettlementStatusBadge } from "./SettlementStatusBadge";
+import { TransactionMobileCard } from "./TransactionMobileCard";
+import { TransactionMobileSkeleton } from "./TransactionMobileSkeleton";
 import { TransactionStatusBadge } from "./TransactionStatusBadge";
 
 interface TransactionsTableProps {
@@ -35,6 +41,8 @@ export function TransactionsTable({
   onPageChange,
   onSelectTransaction,
 }: TransactionsTableProps) {
+  const isMobile = useIsMobile(640);
+
   const columns = useMemo<Column<PaymentTransactionItem>[]>(() => {
     return [
       {
@@ -138,8 +146,66 @@ export function TransactionsTable({
       }
     : undefined;
 
+  // On Mobile: Render stacked card list
+  if (isMobile) {
+    if (isLoading) {
+      return <TransactionMobileSkeleton count={5} />;
+    }
+
+    if (transactions.length === 0) {
+      return (
+        <div
+          data-testid="transactions-mobile-empty"
+          className="rounded-[14px] border border-neutral-200/80 bg-white p-8 text-center flex flex-col items-center justify-center shadow-2xs"
+        >
+          <div className="size-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-400 mb-3">
+            <Inbox className="size-6 stroke-[1.5]" />
+          </div>
+          <h3 className="text-sm font-semibold text-neutral-900">
+            {TRANSACTION_MESSAGES.EMPTY_TITLE}
+          </h3>
+          <p className="mt-1 text-xs text-neutral-500 max-w-xs leading-relaxed">
+            {TRANSACTION_MESSAGES.EMPTY_DESCRIPTION}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3" data-testid="transactions-mobile-cards">
+        <div className="flex flex-col gap-3">
+          {transactions.map((transaction) => (
+            <TransactionMobileCard
+              key={transaction.id}
+              transaction={transaction}
+              onSelect={onSelectTransaction}
+            />
+          ))}
+        </div>
+
+        {paginationProps && (
+          <div className="rounded-[14px] border border-neutral-200/80 bg-white p-3 shadow-2xs">
+            <Pagination
+              currentPage={paginationProps.currentPage}
+              totalPages={paginationProps.totalPages}
+              totalItems={paginationProps.totalItems}
+              pageSize={paginationProps.pageSize}
+              theme="restaurant"
+              onPageChange={paginationProps.onPageChange}
+              className="p-0 border-0 bg-transparent justify-center"
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // On Desktop: Render full DataTable
   return (
-    <div className="rounded-2xl border border-neutral-200/80 bg-white shadow-2xs overflow-hidden">
+    <div
+      className="rounded-2xl border border-neutral-200/80 bg-white shadow-2xs overflow-hidden"
+      data-testid="transactions-desktop-table"
+    >
       <DataTable<PaymentTransactionItem>
         data={transactions}
         columns={columns}

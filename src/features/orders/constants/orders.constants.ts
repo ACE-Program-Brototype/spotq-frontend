@@ -3,7 +3,7 @@
  * Filter chip definitions, default settings, query keys, query params, status options, and user-facing messages.
  */
 
-import type { OrderFilterStatus, OrderPaginationData } from "../types/orders.types";
+import type { OrderFilterStatus, OrderPaginationData } from "@/features/orders/types/orders.types";
 
 export const ORDER_QUERY_PARAMS = {
   PAGE: "page",
@@ -44,6 +44,13 @@ export const ORDER_STATUS = {
   SERVED: "SERVED",
   COMPLETED: "COMPLETED",
   CANCELLED: "CANCELLED",
+} as const;
+
+export const ORDER_PAYMENT_STATUS = {
+  PAID: "PAID",
+  PENDING: "PENDING",
+  REFUNDED: "REFUNDED",
+  FAILED: "FAILED",
 } as const;
 
 export const ORDER_DEFAULTS = {

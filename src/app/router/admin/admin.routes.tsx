@@ -1,20 +1,27 @@
-import type { RouteObject } from "react-router-dom";
+import { lazy } from "react";
+import { Navigate, type RouteObject } from "react-router-dom";
 
-import AdminForgotPasswordPage from "@/features/auth/pages/admin/AdminForgotPasswordPage";
-import AdminLoginPage from "@/features/auth/pages/admin/AdminLoginPage";
-import AdminResetPasswordPage from "@/features/auth/pages/admin/AdminResetPasswordPage";
-import AdminVerifyOtpPage from "@/features/auth/pages/admin/AdminVerifyOtpPage";
-import AdminCustomerDetailsPage from "@/features/customers/pages/AdminCustomerDetailsPage";
-import AdminCustomersPage from "@/features/customers/pages/AdminCustomersPage";
-import AdminDashboardPage from "@/features/dashboard/pages/AdminDashboardPage";
-import PlatformFinancePage from "@/features/finance/pages/PlatformFinancePage";
-import AdminOrdersPage from "@/features/orders/pages/AdminOrdersPage";
-import AdminRestaurantApplicationReviewPage from "@/features/restaurants/pages/AdminRestaurantApplicationReviewPage";
-import AdminRestaurantApplicationsPage from "@/features/restaurants/pages/AdminRestaurantApplicationsPage";
-import AdminRestaurantDetailsPage from "@/features/restaurants/pages/AdminRestaurantDetailsPage";
-import AdminRestaurantsPage from "@/features/restaurants/pages/AdminRestaurantsPage";
-import AdminSubscriberDetailsPage from "@/features/subscribers/pages/AdminSubscriberDetailsPage";
-import AdminSubscribersPage from "@/features/subscribers/pages/AdminSubscribersPage";
+const AdminForgotPasswordPage = lazy(() => import("@/features/auth/pages/admin/AdminForgotPasswordPage"));
+const AdminLoginPage = lazy(() => import("@/features/auth/pages/admin/AdminLoginPage"));
+const AdminResetPasswordPage = lazy(() => import("@/features/auth/pages/admin/AdminResetPasswordPage"));
+const AdminVerifyOtpPage = lazy(() => import("@/features/auth/pages/admin/AdminVerifyOtpPage"));
+const ComingSoonPage = lazy(() => import("@/components/common/ComingSoonPage"));
+const AdminCustomerDetailsPage = lazy(() => import("@/features/customers/pages/AdminCustomerDetailsPage"));
+const AdminCustomersPage = lazy(() => import("@/features/customers/pages/AdminCustomersPage"));
+const AdminDashboardPage = lazy(() => import("@/features/dashboard/pages/AdminDashboardPage"));
+const PlatformFinancePage = lazy(() => import("@/features/finance/pages/PlatformFinancePage"));
+const AdminOrdersPage = lazy(() => import("@/features/orders/pages/AdminOrdersPage"));
+const AdminRestaurantApplicationReviewPage = lazy(
+  () => import("@/features/restaurants/pages/AdminRestaurantApplicationReviewPage"),
+);
+const AdminRestaurantApplicationsPage = lazy(
+  () => import("@/features/restaurants/pages/AdminRestaurantApplicationsPage"),
+);
+const AdminRestaurantDetailsPage = lazy(() => import("@/features/restaurants/pages/AdminRestaurantDetailsPage"));
+const AdminRestaurantsPage = lazy(() => import("@/features/restaurants/pages/AdminRestaurantsPage"));
+const AdminSubscriberDetailsPage = lazy(() => import("@/features/subscribers/pages/AdminSubscriberDetailsPage"));
+const AdminSubscribersPage = lazy(() => import("@/features/subscribers/pages/AdminSubscribersPage"));
+
 import AdminLayout from "@/layouts/AdminLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
@@ -95,7 +102,12 @@ export const adminRoutes: RouteObject[] = [
           },
           { path: ADMIN_ROUTE_PATHS.FINANCE, Component: PlatformFinancePage },
           { path: ADMIN_ROUTE_PATHS.ORDERS, Component: AdminOrdersPage },
-          { path: ADMIN_ROUTE_PATHS.PAYMENTS.ORDERS, Component: AdminOrdersPage },
+          { path: ADMIN_ROUTE_PATHS.CAMPAIGNS, Component: ComingSoonPage },
+          { path: ADMIN_ROUTE_PATHS.COUPONS, Component: ComingSoonPage },
+          {
+            path: ADMIN_ROUTE_PATHS.PAYMENTS.ORDERS,
+            element: <Navigate to={ADMIN_ROUTES.ORDERS} replace />,
+          },
         ],
       },
     ],

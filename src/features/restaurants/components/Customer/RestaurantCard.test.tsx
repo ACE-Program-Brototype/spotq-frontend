@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
-import type { CustomerRestaurantItem } from "../../types/customer-restaurant.types";
+import type { CustomerRestaurantItem } from "@/features/restaurants/types/customer-restaurant.types";
 import { RestaurantCard } from "./RestaurantCard";
 
 function renderWithProviders(ui: React.ReactElement) {

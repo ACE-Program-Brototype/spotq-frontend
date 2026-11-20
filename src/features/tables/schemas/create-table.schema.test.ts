@@ -22,4 +22,15 @@ describe("createTableSchema", () => {
       }).success,
     ).toBe(false);
   });
+
+  it("rejects tableCode exceeding 30 characters", () => {
+    expect(
+      createTableSchema.safeParse({
+        tableCode: "A".repeat(31),
+        sectionId: "section-1",
+        capacity: 4,
+        tableShape: "CIRCLE",
+      }).success,
+    ).toBe(false);
+  });
 });

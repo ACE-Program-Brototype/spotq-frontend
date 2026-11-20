@@ -7,15 +7,15 @@ import { AlertCircle, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { TransactionDetailDrawer } from "../components/TransactionDetailDrawer";
-import { TransactionFilters } from "../components/TransactionFilters";
-import { TransactionsHeader } from "../components/TransactionsHeader";
-import { TransactionsTable } from "../components/TransactionsTable";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
-import { useTransactionFilters } from "../hooks/useTransactionFilters";
-import { useTransactions } from "../hooks/useTransactions";
-import { transactionService } from "../services/transaction.service";
-import { downloadTransactionsCsv } from "../utils/transaction-export.utils";
+import { TransactionDetailDrawer } from "@/features/transactions/components/TransactionDetailDrawer";
+import { TransactionFilters } from "@/features/transactions/components/TransactionFilters";
+import { TransactionsHeader } from "@/features/transactions/components/TransactionsHeader";
+import { TransactionsTable } from "@/features/transactions/components/TransactionsTable";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
+import { useTransactionFilters } from "@/features/transactions/hooks/useTransactionFilters";
+import { useTransactions } from "@/features/transactions/hooks/useTransactions";
+import { transactionService } from "@/features/transactions/services/transaction.service";
+import { downloadTransactionsCsv } from "@/features/transactions/utils/transaction-export.utils";
 
 export function RestaurantTransactionsPage() {
   const [selectedTransactionId, setSelectedTransactionId] = useState<string | null>(null);

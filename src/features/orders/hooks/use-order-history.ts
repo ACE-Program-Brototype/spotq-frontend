@@ -12,9 +12,9 @@ import {
   ORDER_FILTER_STATUS,
   ORDER_QUERY_KEYS,
   ORDER_QUERY_PARAMS,
-} from "../constants/orders.constants";
-import { ordersService } from "../services/orders.service";
-import type { OrderFilterStatus } from "../types/orders.types";
+} from "@/features/orders/constants/orders.constants";
+import { ordersService } from "@/features/orders/services/orders.service";
+import type { OrderFilterStatus } from "@/features/orders/types/orders.types";
 
 export interface UseOrderHistoryOptions {
   initialPage?: number;

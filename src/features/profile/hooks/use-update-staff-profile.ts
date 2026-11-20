@@ -3,9 +3,9 @@ import { HTTPError } from "ky";
 import { useNavigate } from "react-router-dom";
 import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { PROFILE_QUERY_KEYS } from "../constants/profile.constants";
-import { profileService } from "../services/profile.service";
-import type { StaffProfile, UpdateStaffProfileDto } from "../types/profile.types";
+import { PROFILE_QUERY_KEYS } from "@/features/profile/constants/profile.constants";
+import { profileService } from "@/features/profile/services/profile.service";
+import type { StaffProfile, UpdateStaffProfileDto } from "@/features/profile/types/profile.types";
 
 interface UpdateStaffProfileParams {
   restaurantId: string;

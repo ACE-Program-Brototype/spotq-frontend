@@ -25,6 +25,8 @@ export const MENU_ENDPOINTS = {
 
 export const MENU_ITEM_DETAIL_QUERY_KEY = "menu-item-detail" as const;
 
+export const CATEGORY_NAME_MAX_LENGTH = 100 as const;
+
 export const DIETARY_TYPES = ["VEG", "NON_VEG", "EGG"] as const;
 export type DietaryType = (typeof DIETARY_TYPES)[number];
 
@@ -179,15 +181,34 @@ export const MENU_MESSAGES = {
   ADDON_UPDATED_SUCCESS: "Add-on updated successfully.",
   ADDON_UPDATE_FAILED: "Failed to update add-on.",
   ADDON_MARKED_IN_STOCK: "Add-on marked as in stock",
-  ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as unavailable",
+  ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as out of stock",
   ADDON_DELETED_SUCCESS: "Add-on deleted successfully.",
   ADDON_DELETE_FAILED: "Failed to delete add-on.",
   VARIANT_MARKED_IN_STOCK: "Variant marked as in stock",
-  VARIANT_MARKED_OUT_OF_STOCK: "Variant marked as 86'd / unavailable",
+  VARIANT_MARKED_OUT_OF_STOCK: "Variant marked as out of stock",
   VARIANT_AVAILABILITY_UPDATE_FAILED: "Failed to update variant availability status",
   STAFF_ADDONS_TITLE: "Modifiers & Add-ons",
   STAFF_ADDONS_SUBTITLE:
-    "Real-time 86'd stock monitoring and operational availability toggles for add-ons.",
+    "Real-time stock monitoring and operational availability toggles for add-ons.",
+  STAFF_ADDONS_ERROR_TITLE: "Failed to load add-ons",
+  STAFF_ADDONS_ERROR_DESC:
+    "We encountered a problem loading modifiers. Please check your connection and try again.",
+  STAFF_ADDONS_EMPTY_TITLE: "No modifiers found",
+  STAFF_ADDONS_EMPTY_DESC:
+    "No add-ons or modifiers are currently registered for this restaurant.",
+  STAFF_ADDONS_NO_RESULTS_TITLE: "No results found",
+  STAFF_ADDONS_NO_RESULTS_DESC:
+    "No modifiers match your search or filter. Try adjusting your search keywords or switching filters to see other modifiers.",
+  RESTAURANT_ADDONS_TITLE: "Modifiers & Add-ons",
+  RESTAURANT_ADDONS_SUBTITLE:
+    "Manage complementary items, toppings, and extras available for your menu items.",
+  RESTAURANT_ADDONS_ERROR_TITLE: "Failed to load add-ons",
+  RESTAURANT_ADDONS_ERROR_DESC:
+    "We encountered a problem loading your modifiers and add-ons. Please check your connection and try again.",
+  RESTAURANT_ADDONS_EMPTY_TITLE: "No add-ons found",
+  RESTAURANT_ADDONS_EMPTY_DESC:
+    "No modifiers or complementary add-ons are currently available for this restaurant.",
+  RESTAURANT_ADDONS_CREATE_BTN: "Create Add-on",
 
   VALIDATION_ITEM_NAME_REQUIRED: "Menu item name is required",
   VALIDATION_ITEM_NAME_MAX: "Item name cannot exceed 255 characters",
@@ -205,7 +226,7 @@ export const MENU_MESSAGES = {
   VALIDATION_VARIANT_PRICE_NON_NEGATIVE: "Price cannot be negative",
   VALIDATION_ONE_DEFAULT_VARIANT: "Exactly one variant must be designated as the default",
   VALIDATION_CATEGORY_NAME_REQUIRED: "Category name is required",
-  VALIDATION_CATEGORY_NAME_MAX: "Category name cannot exceed 255 characters",
+  VALIDATION_CATEGORY_NAME_MAX: `Category name cannot exceed ${CATEGORY_NAME_MAX_LENGTH} characters`,
   VALIDATION_CATEGORY_ORDER_INTEGER: "Display order must be an integer",
   VALIDATION_ADDON_NAME_REQUIRED: "Add-on name is required",
   VALIDATION_ADDON_PRICE_REQUIRED: "Add-on price is required",
@@ -214,7 +235,7 @@ export const MENU_MESSAGES = {
   UPDATE_SUCCESS: "Menu category updated successfully.",
   UPDATE_ERROR: "Unable to update menu category. Please try again.",
   NAME_REQUIRED: "Category name cannot be empty.",
-  NAME_MAX_LENGTH: "Category name must not exceed 255 characters.",
+  NAME_MAX_LENGTH: `Category name must not exceed ${CATEGORY_NAME_MAX_LENGTH} characters.`,
   DESCRIPTION_MAX_LENGTH: "Description must not exceed 1000 characters.",
   DISPLAY_ORDER_INVALID: "Display order must be a valid non-negative integer.",
   STATUS_INVALID: "Status must be valid.",
@@ -234,7 +255,7 @@ export const MENU_MESSAGES = {
     "Failed to load staff menu items. Please check your connection and try again.",
   STAFF_MENU_TITLE: "Staff Menu Directory",
   STAFF_MENU_SUBTITLE:
-    "Real-time menu catalog with live 86'd stock tracking, variant pricing, and category mapping.",
+    "Real-time menu catalog with live stock tracking, portion pricing, and category management.",
   NO_STAFF_MENU_ITEMS: "No menu items found.",
   NO_STAFF_MENU_ITEMS_DESC: "No menu items match your search or filter criteria.",
   CLEAR_FILTERS_BTN: "Clear Filters",
@@ -246,3 +267,43 @@ export const MENU_MESSAGES = {
 export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;
 export const MENU_ITEMS_QUERY_KEY = "menu-items" as const;
 export const STAFF_MENU_ITEMS_QUERY_KEY = "staff-menu-items" as const;
+
+export const KEYBOARD_KEYS = {
+  ESCAPE: "Escape",
+  TAB: "Tab",
+} as const;
+
+export const DOM_EVENTS = {
+  KEY_DOWN: "keydown",
+  MOUSE_DOWN: "mousedown",
+} as const;
+
+export const CATEGORY_FORM_FIELDS = {
+  NAME: "name",
+  DESCRIPTION: "description",
+  DISPLAY_ORDER: "displayOrder",
+  IS_ACTIVE: "isActive",
+} as const;
+
+export const CREATE_CATEGORY_DEFAULT_VALUES = {
+  name: "",
+  description: "",
+  displayOrder: 0,
+  isActive: true,
+} as const;
+
+export const MENU_ITEM_FILTER_STATUS = {
+  ALL: "ALL",
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+export type MenuItemFilterStatus =
+  (typeof MENU_ITEM_FILTER_STATUS)[keyof typeof MENU_ITEM_FILTER_STATUS];
+
+export const ADDON_AVAILABILITY_FILTERS = {
+  ALL: "ALL",
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+export type AddonAvailabilityFilter =
+  (typeof ADDON_AVAILABILITY_FILTERS)[keyof typeof ADDON_AVAILABILITY_FILTERS];

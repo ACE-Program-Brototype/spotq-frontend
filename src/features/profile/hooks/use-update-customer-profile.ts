@@ -4,9 +4,9 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { PROFILE_QUERY_KEYS } from "../constants/profile.constants";
-import { updateCustomerProfile } from "../services/profile.service";
-import type { CustomerProfile, UpdateCustomerProfileDto } from "../types/profile.types";
+import { PROFILE_QUERY_KEYS } from "@/features/profile/constants/profile.constants";
+import { updateCustomerProfile } from "@/features/profile/services/profile.service";
+import type { CustomerProfile, UpdateCustomerProfileDto } from "@/features/profile/types/profile.types";
 
 export function useUpdateCustomerProfile() {
   const queryClient = useQueryClient();

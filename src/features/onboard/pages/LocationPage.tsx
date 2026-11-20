@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { FormField, FormInput } from "@/components/common/form";
-import LocationAutocomplete from "../components/LocationAutocomplete";
-import { type LocationFormValues, locationSchema } from "../schemas/location.schema";
-import { useOnboardStore } from "../store/onboard.store";
-import type { RestaurantAddress } from "../types/onboard.types";
+import LocationAutocomplete from "@/features/onboard/components/LocationAutocomplete";
+import { type LocationFormValues, locationSchema } from "@/features/onboard/schemas/location.schema";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
+import type { RestaurantAddress } from "@/features/onboard/types/onboard.types";
 
 export default function LocationPage() {
   const navigate = useNavigate();

@@ -5,14 +5,17 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { RestaurantAdminUserProfile } from "@/components/layout/RestaurantAdminUserProfile";
+import {
+  getAdminNavItems,
+  RESTAURANT_ADMIN_NAV_DEFAULTS,
+} from "@/components/layout/restaurantAdminNav.constants";
+import type { RestaurantAdminSidebarProps } from "@/components/layout/types";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import { RestaurantAdminUserProfile } from "./RestaurantAdminUserProfile";
-import { getAdminNavItems } from "./restaurantAdminNav.constants";
-import type { RestaurantAdminSidebarProps } from "./types";
 
 export type { RestaurantAdminSidebarProps };
 
@@ -40,13 +43,46 @@ export function RestaurantAdminSidebar({
 
   const adminNavItems = getAdminNavItems(basePath);
 
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    Restaurant: true,
-    Settings: true,
-  });
+  // Find the active section based on current location
+  const activeSectionTitle = adminNavItems.find(
+    (item) =>
+      item.children?.some(
+        (child) =>
+          location.pathname === child.href ||
+          location.pathname.startsWith(`${child.href}/`),
+      ) || (item.href && location.pathname === item.href),
+  )?.title;
 
-  const toggleSection = (title: string) => {
-    setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
+  // Single open accordion section at a time
+  const [openSection, setOpenSection] = useState<string | null>(
+    activeSectionTitle ?? null,
+  );
+
+  // Synchronize accordion to open active section when route changes
+  useEffect(() => {
+    if (activeSectionTitle) {
+      setOpenSection(activeSectionTitle);
+    }
+  }, [activeSectionTitle]);
+
+  const handleSectionClick = (item: (typeof adminNavItems)[number]) => {
+    const firstChild = item.children?.[0];
+    const isCurrentlyOpen = openSection === item.title;
+    const isAlreadyOnFirstChild = Boolean(
+      firstChild && location.pathname === firstChild.href,
+    );
+
+    if (!isCurrentlyOpen) {
+      setOpenSection(item.title);
+    } else if (isAlreadyOnFirstChild) {
+      setOpenSection(null);
+      return;
+    }
+
+    if (firstChild?.href && location.pathname !== firstChild.href) {
+      navigate(firstChild.href);
+      onNavigate?.();
+    }
   };
 
   const initials =
@@ -55,7 +91,7 @@ export function RestaurantAdminSidebar({
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2) ?? "JD";
+      .slice(0, 2) ?? RESTAURANT_ADMIN_NAV_DEFAULTS.FALLBACK_INITIALS;
 
   return (
     <aside
@@ -74,7 +110,7 @@ export function RestaurantAdminSidebar({
           {adminNavItems.map((item) => {
             const Icon = item.icon;
 
-            if (item.children) {
+            if (item.children && item.children.length > 0) {
               const isChildActive = item.children.some(
                 (child) =>
                   location.pathname === child.href ||
@@ -82,22 +118,22 @@ export function RestaurantAdminSidebar({
               );
               const isParentActive =
                 isChildActive || (item.href && location.pathname === item.href);
-              const isOpen = openSections[item.title] ?? isParentActive;
+              const isOpen = openSection === item.title;
 
               return (
                 <div key={item.title} className="flex flex-col">
                   <button
                     type="button"
-                    onClick={() => toggleSection(item.title)}
+                    onClick={() => handleSectionClick(item)}
                     className={cn(
-                      "relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-all",
+                      "relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors overflow-hidden cursor-pointer",
                       isParentActive
                         ? "bg-[#fef3ec] text-[#9a3412]"
                         : "text-neutral-700 hover:bg-[#faf0e8]/60 hover:text-neutral-900",
                     )}
                   >
                     {isParentActive && (
-                      <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#9a3412]" />
+                      <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#9a3412]" />
                     )}
 
                     <div className="flex items-center gap-2.5 pl-1.5">
@@ -121,9 +157,21 @@ export function RestaurantAdminSidebar({
                   {isOpen && (
                     <div className="ml-7 mt-1 flex flex-col gap-1 border-l border-[#eddcd4] pl-3 py-1">
                       {item.children.map((sub) => {
-                        const isSubActive =
+                        const isMatch =
                           location.pathname === sub.href ||
                           location.pathname.startsWith(`${sub.href}/`);
+
+                        const hasMoreSpecificSibling =
+                          isMatch &&
+                          item.children?.some(
+                            (sibling) =>
+                              sibling.href !== sub.href &&
+                              sibling.href.length > sub.href.length &&
+                              (location.pathname === sibling.href ||
+                                location.pathname.startsWith(`${sibling.href}/`)),
+                          );
+
+                        const isSubActive = isMatch && !hasMoreSpecificSibling;
 
                         return (
                           <Link
@@ -149,7 +197,7 @@ export function RestaurantAdminSidebar({
 
             const isActive =
               location.pathname === item.href ||
-              (item.href?.endsWith("/dashboard") &&
+              (item.href?.endsWith(RESTAURANT_ADMIN_NAV_DEFAULTS.DASHBOARD_SUFFIX) &&
                 (location.pathname === basePath || location.pathname === `${basePath}/`));
 
             return (
@@ -158,22 +206,24 @@ export function RestaurantAdminSidebar({
                 to={item.href ?? "#"}
                 onClick={onNavigate}
                 className={cn(
-                  "relative flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all",
+                  "relative flex items-center rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors overflow-hidden",
                   isActive
                     ? "bg-[#fef3ec] text-[#9a3412]"
                     : "text-neutral-700 hover:bg-[#faf0e8]/60 hover:text-neutral-900",
                 )}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#9a3412]" />
+                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#9a3412]" />
                 )}
-                <Icon
-                  className={cn(
-                    "size-4 shrink-0 pl-0.5",
-                    isActive ? "text-[#9a3412]" : "text-neutral-600",
-                  )}
-                />
-                <span>{item.title}</span>
+                <div className="flex items-center gap-2.5 pl-1.5">
+                  <Icon
+                    className={cn(
+                      "size-4 shrink-0",
+                      isActive ? "text-[#9a3412]" : "text-neutral-600",
+                    )}
+                  />
+                  <span>{item.title}</span>
+                </div>
               </Link>
             );
           })}
@@ -182,7 +232,11 @@ export function RestaurantAdminSidebar({
 
       <RestaurantAdminUserProfile
         userName={user?.name}
-        userRole={user?.role ? user.role.replace(/_/g, " ") : "Restaurant Admin"}
+        userRole={
+          user?.role
+            ? user.role.replace(/_/g, " ")
+            : RESTAURANT_ADMIN_NAV_DEFAULTS.FALLBACK_ROLE
+        }
         initials={initials}
         onLogout={handleLogout}
       />

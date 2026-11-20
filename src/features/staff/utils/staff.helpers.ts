@@ -1,5 +1,8 @@
-import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
-import type { StaffInvitationStatus } from "@/features/staff/types/staff-invitation.types";
+import {
+  STAFF_INVITATION_STATUS,
+  STAFF_MESSAGES,
+  type StaffInvitationStatus,
+} from "@/features/staff/constants/staff.constants";
 import { formatDate } from "@/lib/utils/date";
 
 /**
@@ -23,8 +26,8 @@ export function isInvitationExpired(
   status: StaffInvitationStatus,
   expiresAt: string | Date,
 ): boolean {
-  if (status === "EXPIRED") return true;
-  if (status === "PENDING") {
+  if (status === STAFF_INVITATION_STATUS.EXPIRED) return true;
+  if (status === STAFF_INVITATION_STATUS.PENDING) {
     return new Date(expiresAt) < new Date();
   }
   return false;

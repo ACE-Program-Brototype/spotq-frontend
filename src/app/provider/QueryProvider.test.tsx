@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import QueryProvider, { shouldRetryQuery } from "./QueryProvider";
+import QueryProvider from "./QueryProvider";
+import { shouldRetryQuery } from "./QueryProvider.config";
 
 describe("QueryProvider retry policy", () => {
   describe("shouldRetryQuery", () => {

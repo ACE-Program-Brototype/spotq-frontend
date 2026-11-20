@@ -3,7 +3,7 @@
  * Reusable utility functions for formatting user display names and generating avatar initials.
  */
 
-import type { User } from "../types/auth.types";
+import type { User } from "@/features/auth/types/auth.types";
 
 /**
  * Returns a human-friendly display name for a user.

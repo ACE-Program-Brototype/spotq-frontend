@@ -52,12 +52,12 @@ export function RevenueBreakdownCard({
         <div className="h-3.5 w-full rounded-full bg-neutral-100 overflow-hidden flex">
           <div
             style={{ width: `${netPercent}%` }}
-            className="bg-emerald-600 transition-all duration-500"
+            className="bg-emerald-600 transition-[width] duration-500"
             title={`Net Revenue: ${netPercent}%`}
           />
           <div
             style={{ width: `${discountPercent}%` }}
-            className="bg-amber-500 transition-all duration-500"
+            className="bg-amber-500 transition-[width] duration-500"
             title={`Discounts: ${discountPercent}%`}
           />
         </div>

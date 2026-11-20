@@ -1,4 +1,4 @@
-import type { ApiAuthResponse, ApiUser } from "../types/auth.types";
+import type { ApiAuthResponse, ApiUser } from "@/features/auth/types/auth.types";
 import { mapApiAuthResponseToAuthResult, mapApiUserToUser } from "./auth.mapper";
 
 describe("auth.mapper", () => {

@@ -1,5 +1,5 @@
 import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
-import type { User } from "../types/auth.types";
+import type { User } from "@/features/auth/types/auth.types";
 import { useAuthStore } from "./auth.store";
 
 const mockUser: User = {

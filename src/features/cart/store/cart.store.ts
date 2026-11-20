@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import { CART_STORAGE_KEY } from "@/features/cart/constants/cart.constants";
+import {
+  CART_QUANTITY_LIMITS,
+  CART_STORAGE_KEY,
+} from "@/features/cart/constants/cart.constants";
 import type {
   AddCartItemInput,
   CartItem,
@@ -32,7 +35,10 @@ export const useCartStore = create<CartStore>()(
 
         addItem: (input: AddCartItemInput) => {
           const state = get();
-          const quantityToAdd = Math.max(1, input.quantity ?? 1);
+          const quantityToAdd = Math.min(
+            CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY,
+            Math.max(1, input.quantity ?? 1),
+          );
 
           // Single-restaurant cart validation
           if (
@@ -59,9 +65,22 @@ export const useCartStore = create<CartStore>()(
           let newItems: CartItem[];
 
           if (existingIndex >= 0) {
+            const existingItem = state.items[existingIndex];
+            const nextQuantity = existingItem.quantity + quantityToAdd;
+
+            if (nextQuantity > CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY) {
+              return {
+                success: false,
+                maxQuantityExceeded: true,
+                availableToAdd: Math.max(
+                  0,
+                  CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY - existingItem.quantity,
+                ),
+              };
+            }
+
             newItems = state.items.map((item, index) => {
               if (index !== existingIndex) return item;
-              const nextQuantity = item.quantity + quantityToAdd;
               return {
                 ...item,
                 quantity: nextQuantity,
@@ -103,7 +122,10 @@ export const useCartStore = create<CartStore>()(
         },
 
         confirmReplaceCartAndAdd: (input: AddCartItemInput) => {
-          const quantityToAdd = Math.max(1, input.quantity ?? 1);
+          const quantityToAdd = Math.min(
+            CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY,
+            Math.max(1, input.quantity ?? 1),
+          );
           const unitPrice = calculateUnitPrice(input);
           const addonIds = input.selectedAddons.map((a) => a.id);
           const cartItemId = generateCartItemId(
@@ -147,7 +169,14 @@ export const useCartStore = create<CartStore>()(
           const targetItem = state.items.find((item) => item.id === cartItemId);
           if (!targetItem) return;
 
-          const nextQuantity = targetItem.quantity + delta;
+          if (delta > 0 && targetItem.quantity >= CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY) {
+            return;
+          }
+
+          const nextQuantity = Math.min(
+            CART_QUANTITY_LIMITS.MAX_ITEM_QUANTITY,
+            targetItem.quantity + delta,
+          );
 
           if (nextQuantity <= 0) {
             const remainingItems = state.items.filter((item) => item.id !== cartItemId);

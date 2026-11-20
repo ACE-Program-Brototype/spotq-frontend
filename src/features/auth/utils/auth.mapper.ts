@@ -3,7 +3,7 @@
  * Maps raw backend API models to frontend domain models.
  */
 
-import type { ApiAuthResponse, ApiUser, AuthResult, User } from "../types/auth.types";
+import type { ApiAuthResponse, ApiUser, AuthResult, User } from "@/features/auth/types/auth.types";
 
 export const mapApiUserToUser = (apiUser: ApiUser): User => {
   const rawRole = apiUser.role || "";

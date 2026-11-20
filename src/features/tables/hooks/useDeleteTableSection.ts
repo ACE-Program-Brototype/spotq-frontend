@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TABLE_QUERY_KEYS, TABLE_SECTION_MESSAGES } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
+import { TABLE_QUERY_KEYS, TABLE_SECTION_MESSAGES } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
 
 export function useDeleteTableSection(restaurantId: string) {
   const queryClient = useQueryClient();

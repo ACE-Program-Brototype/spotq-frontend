@@ -37,4 +37,16 @@ if (typeof window !== "undefined") {
     // @ts-expect-error polyfill for jsdom
     window.PointerEvent = PointerEvent;
   }
+  if (!window.matchMedia) {
+    window.matchMedia = (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    });
+  }
 }

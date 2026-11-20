@@ -1,8 +1,9 @@
 import { apiClient } from "@/lib/api/client";
 import {
   APPLICATION_DEFAULTS,
+  APPLICATION_FILTER_STATUS,
   RESTAURANT_APPLICATION_ENDPOINTS,
-} from "../constants/restaurant-application.constants";
+} from "@/features/restaurants/constants/restaurant-application.constants";
 import type {
   ApproveApplicationResponse,
   GetRestaurantApplicationsParams,
@@ -11,7 +12,7 @@ import type {
   RejectApplicationResponse,
   RestaurantApplicationItem,
   SingleApplicationApiResponse,
-} from "../types/restaurant-application.types";
+} from "@/features/restaurants/types/restaurant-application.types";
 
 export interface NormalizedApplicationsListResult {
   restaurants: RestaurantApplicationItem[];
@@ -37,7 +38,7 @@ export const restaurantApplicationService = {
       limit: params.limit ?? APPLICATION_DEFAULTS.LIMIT,
     };
 
-    if (params.status && params.status !== "ALL") {
+    if (params.status && params.status !== APPLICATION_FILTER_STATUS.ALL) {
       searchParams.status = params.status;
     }
 

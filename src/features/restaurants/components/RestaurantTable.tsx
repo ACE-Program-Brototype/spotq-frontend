@@ -8,14 +8,14 @@ import {
   RESTAURANT_MESSAGES,
   RESTAURANT_PLANS,
   RESTAURANT_STATUS,
-} from "../constants/restaurant.constants";
+} from "@/features/restaurants/constants/restaurant.constants";
 import type {
   RestaurantListItem,
   RestaurantPlanType,
   RestaurantSortByType,
   RestaurantSortOrderType,
   RestaurantStatusType,
-} from "../types/restaurant.types";
+} from "@/features/restaurants/types/restaurant.types";
 
 export interface RestaurantTableProps {
   restaurants: RestaurantListItem[];

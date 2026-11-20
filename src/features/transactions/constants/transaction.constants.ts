@@ -3,7 +3,7 @@
  * Query keys, defaults, and filter option definitions.
  */
 
-import type { GetTransactionsParams } from "../types/transaction.types";
+import type { GetTransactionsParams } from "@/features/transactions/types/transaction.types";
 
 export const TRANSACTION_ENDPOINTS = {
   BASE: "payments/transactions",

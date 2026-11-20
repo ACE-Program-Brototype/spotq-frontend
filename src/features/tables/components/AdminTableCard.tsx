@@ -1,6 +1,6 @@
 import { Clock, Eye, Pencil, Users } from "lucide-react";
-import { statusLabels, statusStyles } from "../constants/table.constants";
-import type { TableItem } from "../types/table.types";
+import { statusLabels, statusStyles } from "@/features/tables/constants/table.constants";
+import type { TableItem } from "@/features/tables/types/table.types";
 
 type AdminTableCardProps = {
   /** The table data item */
@@ -17,6 +17,9 @@ type AdminTableCardProps = {
  * AdminTableCard
  *
  * Renders an administrative card tile for a restaurant dining table.
+ *
+ * @deprecated SpotQ domain strictly encompasses digital takeaway ordering and virtual queue ticketing.
+ * Dine-in table management is legacy and subject to platform deprecation guidelines.
  */
 export function AdminTableCard({ table, onView, onEdit, onEditDetails }: AdminTableCardProps) {
   return (

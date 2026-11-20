@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { getOrCreateDeviceId } from "../utils/device.utils";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import { getOrCreateDeviceId } from "@/features/auth/utils/device.utils";
 import { useLogoutMutation } from "./use-auth-mutations";
 import { useDeactivateDevice } from "./use-device";
 import { useLogout } from "./use-logout";
@@ -19,7 +19,7 @@ jest.mock("sonner", () => ({
 }));
 
 const mockClearAuth = jest.fn();
-jest.mock("../store/auth.store", () => ({
+jest.mock("@/features/auth/store/auth.store", () => ({
   useAuthStore: () => ({
     clearAuth: mockClearAuth,
   }),

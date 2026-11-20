@@ -2,24 +2,51 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { USER_STATUS } from "@/features/auth/constants/auth.constants";
+import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 import {
   getRestaurantVerificationStatus,
   type VerificationStatus,
 } from "@/features/auth/services/auth.service";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { VerificationApprovedView } from "../components/VerificationApprovedView";
-import { VerificationRejectedView } from "../components/VerificationRejectedView";
-import { VerificationUnderReviewView } from "../components/VerificationUnderReviewView";
+import { VerificationApprovedView } from "@/features/onboard/components/VerificationApprovedView";
+import { VerificationRejectedView } from "@/features/onboard/components/VerificationRejectedView";
+import { VerificationUnderReviewView } from "@/features/onboard/components/VerificationUnderReviewView";
+import {
+  ONBOARDING_MESSAGES,
+  ONBOARDING_STATUS,
+  ONBOARDING_TIMINGS,
+  ONBOARDING_VERIFICATION_STATUS,
+} from "@/features/onboard/constants/onboard.constants";
 
 export default function VerificationStatusPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const [status, setStatus] = useState<VerificationStatus>("UNDER_REVIEW");
+  const { handleLogout, isLoading: isLoggingOut } = useRestaurantLogout();
+  const [status, setStatus] = useState<VerificationStatus>(
+    ONBOARDING_VERIFICATION_STATUS.UNDER_REVIEW,
+  );
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const restaurantEmail = user?.email || "your email";
+  const normalizedStatus = (status || "").toUpperCase();
+  const isApproved =
+    normalizedStatus === ONBOARDING_VERIFICATION_STATUS.VERIFIED ||
+    normalizedStatus === USER_STATUS.APPROVED ||
+    normalizedStatus === USER_STATUS.ACTIVE;
+  const isRejected = normalizedStatus === ONBOARDING_VERIFICATION_STATUS.REJECTED;
+
+  useEffect(() => {
+    if (isApproved) {
+      const redirectTimer = setTimeout(() => {
+        navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
+      }, ONBOARDING_TIMINGS.REDIRECT_DELAY_MS);
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [isApproved, navigate]);
+
+  const restaurantEmail = user?.email || ONBOARDING_MESSAGES.DEFAULT_EMAIL_PLACEHOLDER;
   const restaurantId = user?.restaurantId || user?.id || user?._id;
 
   const fetchStatus = useCallback(
@@ -38,35 +65,35 @@ export default function VerificationStatusPage() {
           if (response.data.rejectionReason) {
             setRejectionReason(response.data.rejectionReason);
           }
-          if (fetchedStatus === "VERIFIED") {
+          const normalizedFetched = (fetchedStatus || "").toUpperCase();
+          if (
+            normalizedFetched === ONBOARDING_VERIFICATION_STATUS.VERIFIED ||
+            normalizedFetched === USER_STATUS.APPROVED ||
+            normalizedFetched === USER_STATUS.ACTIVE
+          ) {
             const currentUser = useAuthStore.getState().user;
-            if (currentUser && currentUser.status !== "VERIFIED") {
+            if (currentUser && currentUser.status !== normalizedFetched) {
               useAuthStore.getState().setUser({
                 ...currentUser,
-                status: "VERIFIED",
-                onboardingStatus: "COMPLETED",
+                status: normalizedFetched,
+                onboardingStatus: ONBOARDING_STATUS.COMPLETED,
               });
             }
-            toast.success("Application approved! Redirecting to subscription...");
-            setTimeout(() => {
-              navigate(RESTAURANT_ROUTES.SUBSCRIPTION, { replace: true });
-            }, 1200);
+            toast.success(ONBOARDING_MESSAGES.APPROVED_REDIRECTING);
           } else if (isManualRefresh) {
-            toast.info(
-              `Status refreshed: Application is ${fetchedStatus.replace("_", " ").toLowerCase()}.`,
-            );
+            toast.info(ONBOARDING_MESSAGES.STATUS_REFRESHED(fetchedStatus));
           }
         }
       } catch (err) {
         const errorMsg =
-          err instanceof Error ? err.message : "Failed to fetch verification status.";
+          err instanceof Error ? err.message : ONBOARDING_MESSAGES.FETCH_STATUS_FAILED;
         toast.error(errorMsg);
       } finally {
         setIsLoading(false);
         setIsRefreshing(false);
       }
     },
-    [restaurantId, navigate],
+    [restaurantId],
   );
 
   useEffect(() => {
@@ -86,8 +113,7 @@ export default function VerificationStatusPage() {
   };
 
   const handleSignOut = () => {
-    useAuthStore.getState().clearAuth();
-    navigate(RESTAURANT_ROUTES.LOGIN);
+    handleLogout();
   };
 
   if (isLoading) {
@@ -123,25 +149,27 @@ export default function VerificationStatusPage() {
   return (
     <div className="w-full max-w-2xl space-y-6">
       <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 shadow-xs sm:p-8">
-        {status === "VERIFIED" && (
+        {isApproved && (
           <VerificationApprovedView onProceedToSubscription={handleGoToSubscription} />
         )}
 
-        {status === "REJECTED" && (
+        {isRejected && (
           <VerificationRejectedView
             rejectionReason={rejectionReason}
             onEditApplication={handleEditApplication}
             onSignOut={handleSignOut}
+            isLoggingOut={isLoggingOut}
           />
         )}
 
-        {(status === "SUBMITTED" || status === "UNDER_REVIEW") && (
+        {!isApproved && !isRejected && (
           <VerificationUnderReviewView
             status={status}
             restaurantEmail={restaurantEmail}
             isRefreshing={isRefreshing}
             onCheckStatus={handleCheckStatus}
             onSignOut={handleSignOut}
+            isLoggingOut={isLoggingOut}
           />
         )}
       </div>

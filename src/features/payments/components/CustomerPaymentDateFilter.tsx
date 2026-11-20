@@ -36,15 +36,15 @@ export function CustomerPaymentDateFilter({
       {/* Start Date Input */}
       <div
         className={cn(
-          "flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-100 border border-neutral-200/60 transition-colors",
+          "flex items-center gap-1 sm:gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl bg-neutral-100 border border-neutral-200/60 transition-colors",
           "focus-within:ring-2 focus-within:ring-[#ff6b00]/30 focus-within:border-[#ff6b00]/50",
           disabled && "opacity-60 pointer-events-none",
         )}
       >
-        <Calendar className="size-3.5 text-neutral-400 shrink-0" />
+        <Calendar className="size-3 sm:size-3.5 text-neutral-400 shrink-0" />
         <label
           htmlFor="customer-payment-start-date"
-          className="text-xs font-semibold text-neutral-500 shrink-0 select-none cursor-pointer"
+          className="text-[11px] sm:text-xs font-semibold text-neutral-500 shrink-0 select-none cursor-pointer"
         >
           {CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_FROM}
         </label>
@@ -57,21 +57,21 @@ export function CustomerPaymentDateFilter({
           onChange={(e) => onStartDateChange(e.target.value)}
           aria-label={CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_START_LABEL}
           data-testid="payment-start-date-input"
-          className="bg-transparent text-xs font-semibold text-neutral-800 focus:outline-hidden cursor-pointer"
+          className="bg-transparent text-[11px] sm:text-xs font-semibold text-neutral-800 focus:outline-hidden cursor-pointer max-w-[105px] sm:max-w-none"
         />
       </div>
 
       {/* End Date Input */}
       <div
         className={cn(
-          "flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-100 border border-neutral-200/60 transition-colors",
+          "flex items-center gap-1 sm:gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl bg-neutral-100 border border-neutral-200/60 transition-colors",
           "focus-within:ring-2 focus-within:ring-[#ff6b00]/30 focus-within:border-[#ff6b00]/50",
           disabled && "opacity-60 pointer-events-none",
         )}
       >
         <label
           htmlFor="customer-payment-end-date"
-          className="text-xs font-semibold text-neutral-500 shrink-0 select-none cursor-pointer"
+          className="text-[11px] sm:text-xs font-semibold text-neutral-500 shrink-0 select-none cursor-pointer"
         >
           {CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_TO}
         </label>
@@ -84,7 +84,7 @@ export function CustomerPaymentDateFilter({
           onChange={(e) => onEndDateChange(e.target.value)}
           aria-label={CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_END_LABEL}
           data-testid="payment-end-date-input"
-          className="bg-transparent text-xs font-semibold text-neutral-800 focus:outline-hidden cursor-pointer"
+          className="bg-transparent text-[11px] sm:text-xs font-semibold text-neutral-800 focus:outline-hidden cursor-pointer max-w-[105px] sm:max-w-none"
         />
       </div>
 
@@ -95,7 +95,7 @@ export function CustomerPaymentDateFilter({
           onClick={onClear}
           disabled={disabled}
           data-testid="clear-date-filter-button"
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 rounded-xl transition-colors cursor-pointer select-none border border-neutral-200/60"
+          className="inline-flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1.5 text-[11px] sm:text-xs font-semibold text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200/70 rounded-lg sm:rounded-xl transition-colors cursor-pointer select-none border border-neutral-200/60"
           title={CUSTOMER_PAYMENT_MESSAGES.DATE_FILTER_CLEAR_TITLE}
         >
           <X className="size-3" />

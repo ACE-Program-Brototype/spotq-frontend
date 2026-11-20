@@ -3,7 +3,7 @@
  * Provides staff shift identity display, active notifications, and quick clock-out trigger.
  */
 
-import { Bell, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { STAFF_ROUTES } from "@/app/router/routes.constants";
@@ -12,22 +12,31 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useStaffProfile } from "@/features/profile/hooks/useStaffProfile";
+import { getInitials } from "@/features/profile/utils/profile.utils";
 import { cn } from "@/lib/utils/cn";
-import type { StaffNavbarProps } from "./types";
+import type { StaffNavbarProps } from "@/components/layout/types";
 
 export type { StaffNavbarProps };
 
-export function StaffNavbar({ unreadNotifications = 1, className, ...props }: StaffNavbarProps) {
+export function StaffNavbar({ className, ...props }: StaffNavbarProps) {
   const user = useAuthStore((state) => state.user);
   const { handleStaffLogout, isLoading } = useStaffLogout();
+  const { profile } = useStaffProfile();
 
-  const initials =
-    user?.name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2) ?? "JD";
+  const profileName =
+    profile?.fullName && profile.fullName !== PROFILE_MESSAGES.DEFAULT_NAME
+      ? profile.fullName
+      : null;
+
+  const displayName =
+    profileName ||
+    user?.fullName?.trim() ||
+    user?.name?.trim() ||
+    (user?.email ? user.email.split("@")[0] : "Staff Member");
+
+  const initials = getInitials(displayName, "ST");
 
   return (
     <header
@@ -50,7 +59,7 @@ export function StaffNavbar({ unreadNotifications = 1, className, ...props }: St
         <div className="min-w-0 overflow-hidden">
           <div className="flex items-center gap-1.5">
             <span className="truncate text-xs sm:text-sm font-bold text-neutral-900 leading-tight">
-              {user?.name ?? "John Doe"}
+              {displayName}
             </span>
             <span className="inline-flex shrink-0 items-center rounded-md bg-[#9a3412]/10 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-[#9a3412] uppercase tracking-wider">
               {user?.role?.replace("RESTAURANT_", "") ?? "STAFF"}
@@ -63,22 +72,6 @@ export function StaffNavbar({ unreadNotifications = 1, className, ...props }: St
       </Link>
 
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Notifications"
-          className="relative size-8 sm:size-9 text-neutral-600 hover:bg-[#eddcd4]/40 hover:text-neutral-900 rounded-full shrink-0"
-        >
-          <Bell className="size-4 sm:size-4.5" />
-          {unreadNotifications > 0 && (
-            <span className="absolute right-1 top-1 flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#9a3412] opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-[#9a3412]" />
-            </span>
-          )}
-        </Button>
-
         <ConfirmDialog
           trigger={
             <Button
@@ -92,7 +85,7 @@ export function StaffNavbar({ unreadNotifications = 1, className, ...props }: St
             </Button>
           }
           title="Clock Out & Logout"
-          description={`Are you sure you want to clock out and end your shift, ${user?.name || "Staff"}?`}
+          description={`Are you sure you want to clock out and end your shift, ${displayName}?`}
           confirmText="Clock Out"
           confirmVariant="destructive"
           isLoading={isLoading}

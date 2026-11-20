@@ -1,6 +1,7 @@
 import { OrderStatusDistributionCard } from "@/features/analytics/components/overview/OrderStatusDistributionCard";
 import { RevenueBreakdownCard } from "@/features/analytics/components/revenue/RevenueBreakdownCard";
 import { RevenueKpis } from "@/features/analytics/components/revenue/RevenueKpis";
+import { ANALYTICS_SECTION_STATUSES } from "@/features/analytics/constants/restaurant-analytics.constants";
 import { useRestaurantAnalyticsContext } from "@/features/analytics/layouts/RestaurantAnalyticsLayout";
 
 export default function RestaurantRevenueAnalyticsPage() {
@@ -12,7 +13,10 @@ export default function RestaurantRevenueAnalyticsPage() {
 
   const { overview, orderStatusBreakdown } = data;
 
-  const totalOrders = overview.orders.status === "AVAILABLE" ? overview.orders.totalOrderCount : 0;
+  const totalOrders =
+    overview.orders.status === ANALYTICS_SECTION_STATUSES.AVAILABLE
+      ? overview.orders.totalOrderCount
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -22,7 +26,7 @@ export default function RestaurantRevenueAnalyticsPage() {
       </section>
 
       {/* 2. Realization Stack & Status Breakdown */}
-      {overview.revenue.status === "AVAILABLE" && (
+      {overview.revenue.status === ANALYTICS_SECTION_STATUSES.AVAILABLE && (
         <section
           aria-label="Revenue Realization Details"
           className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"

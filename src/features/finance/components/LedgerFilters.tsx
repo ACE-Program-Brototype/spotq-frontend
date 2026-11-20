@@ -1,9 +1,9 @@
 import { CalendarDays, Search } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
-import { FINANCE_MESSAGES } from "../constants/finance.constants";
-import type { DatePreset } from "../types/finance.types";
-import { getTodayDateString } from "../utils/finance.utils";
+import { FINANCE_MESSAGES } from "@/features/finance/constants/finance.constants";
+import type { DatePreset } from "@/features/finance/types/finance.types";
+import { getTodayDateString } from "@/features/finance/utils/finance.utils";
 
 export interface LedgerFilterState {
   search: string;

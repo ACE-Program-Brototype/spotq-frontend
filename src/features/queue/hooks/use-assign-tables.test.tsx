@@ -3,12 +3,12 @@ import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { toast } from "sonner";
 import { TABLE_QUERY_KEYS } from "@/features/tables/constants/table.constants";
-import { QUEUE_QUERY_KEYS } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { AssignTablesResponse } from "../types/queue.types";
+import { QUEUE_QUERY_KEYS } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { AssignTablesResponse } from "@/features/queue/types/queue.types";
 import { useAssignTables } from "./use-assign-tables";
 
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 jest.mock("sonner", () => ({
   toast: {
     success: jest.fn(),

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { RESTAURANT_ORDERS_QUERY_KEYS } from "../constants/restaurant-orders.constants";
-import { restaurantOrdersService } from "../services/restaurant-orders.service";
+import { RESTAURANT_ORDERS_QUERY_KEYS } from "@/features/orders/constants/restaurant-orders.constants";
+import { restaurantOrdersService } from "@/features/orders/services/restaurant-orders.service";
 
 export function useRestaurantOrderDetail(restaurantId: string, orderId: string) {
   const normalizedRestaurantId = (restaurantId ?? "").trim();

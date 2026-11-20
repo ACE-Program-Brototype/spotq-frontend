@@ -19,12 +19,13 @@ import { Button } from "@/components/ui/button";
 import {
   APPLICATION_MESSAGES,
   APPLICATION_STATUS,
-} from "../../constants/restaurant-application.constants";
+} from "@/features/restaurants/constants/restaurant-application.constants";
+import { ONBOARDING_STATUS } from "@/features/restaurants/constants/restaurant.constants";
 import {
   useApproveApplication,
   useRejectApplication,
-} from "../../hooks/useApplicationDecisionMutation";
-import type { RestaurantApplicationItem } from "../../types/restaurant-application.types";
+} from "@/features/restaurants/hooks/useApplicationDecisionMutation";
+import type { RestaurantApplicationItem } from "@/features/restaurants/types/restaurant-application.types";
 import { RejectApplicationModal } from "./RejectApplicationModal";
 
 export interface ApplicationReviewHeaderProps {
@@ -156,7 +157,7 @@ export function ApplicationReviewHeader({ application }: ApplicationReviewHeader
                 </span>
               )}
 
-              {application.onboarding_status === "COMPLETED" ? (
+              {application.onboarding_status === ONBOARDING_STATUS.COMPLETED ? (
                 <Badge
                   variant="outline"
                   className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[11px] font-semibold"

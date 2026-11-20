@@ -1,12 +1,12 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
-import { useCustomerQueueSocket } from "../hooks/use-customer-queue-socket";
-import type { CustomerRingPayload } from "../types/ring-alert.types";
+import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
+import { useCustomerQueueSocket } from "@/features/queue/hooks/use-customer-queue-socket";
+import type { CustomerRingPayload } from "@/features/queue/types/ring-alert.types";
 import { CustomerRingAlertContainer } from "./CustomerRingAlertContainer";
 
-jest.mock("../hooks/use-customer-queue-socket");
+jest.mock("@/features/queue/hooks/use-customer-queue-socket");
 jest.mock("../utils/ring-sound.utils", () => ({
   ringMedia: {
     playChime: jest.fn(),

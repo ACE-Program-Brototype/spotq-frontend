@@ -10,7 +10,7 @@ import type {
   TransactionDetail,
   TransactionRefundDetails,
   TransactionStatus,
-} from "../types/transaction.types";
+} from "@/features/transactions/types/transaction.types";
 
 export interface ApiCustomerDetail {
   name?: string | null;

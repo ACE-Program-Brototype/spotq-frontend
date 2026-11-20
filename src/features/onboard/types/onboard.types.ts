@@ -1,4 +1,4 @@
-import type { BusinessInformationFormValues } from "../schemas/business-information.schema";
+import type { BusinessInformationFormValues } from "@/features/onboard/schemas/business-information.schema";
 
 export type BusinessInformation = BusinessInformationFormValues;
 

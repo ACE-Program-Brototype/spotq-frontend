@@ -3,17 +3,17 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { menuItemService } from "../services/menu-item.service";
-import { staffMenuService } from "../services/staff-menu.service";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
+import { staffMenuService } from "@/features/menu/services/staff-menu.service";
 import { useStaffMenuItems } from "./use-staff-menu-items";
 
-jest.mock("../services/staff-menu.service", () => ({
+jest.mock("@/features/menu/services/staff-menu.service", () => ({
   staffMenuService: {
     getStaffMenuItems: jest.fn(),
   },
 }));
 
-jest.mock("../services/menu-item.service", () => ({
+jest.mock("@/features/menu/services/menu-item.service", () => ({
   menuItemService: {
     updateMenuItemAvailability: jest.fn(),
   },

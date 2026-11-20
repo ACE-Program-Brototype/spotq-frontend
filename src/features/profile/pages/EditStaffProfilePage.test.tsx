@@ -6,11 +6,11 @@ import { toast } from "sonner";
 
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import { profileService } from "../services/profile.service";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { profileService } from "@/features/profile/services/profile.service";
 import EditStaffProfilePage from "./EditStaffProfilePage";
 
-jest.mock("../services/profile.service");
+jest.mock("@/features/profile/services/profile.service");
 
 jest.mock("sonner", () => ({
   toast: {

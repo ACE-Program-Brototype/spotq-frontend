@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { PageSkeleton } from "@/components/common/skeletons";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
 
@@ -40,5 +41,9 @@ export default function AuthLayout({ redirectTo }: AuthLayoutProps = {}) {
     );
   }
 
-  return <Outlet />;
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <Outlet />
+    </Suspense>
+  );
 }

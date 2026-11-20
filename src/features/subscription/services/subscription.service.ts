@@ -2,6 +2,7 @@ import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import {
   SUBSCRIPTION_ENDPOINTS,
+  SUBSCRIPTION_FILTER_STATUS,
   SUBSCRIPTION_HEADERS,
 } from "@/features/subscription/constants/subscription.constants";
 import type {
@@ -184,7 +185,7 @@ export const subscriptionService = {
     if (params.limit && params.limit > 0) {
       searchParams.set("limit", String(params.limit));
     }
-    if (params.status && params.status !== "ALL") {
+    if (params.status && params.status !== SUBSCRIPTION_FILTER_STATUS.ALL) {
       searchParams.set("status", params.status);
     }
 

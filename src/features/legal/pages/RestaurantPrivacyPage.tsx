@@ -138,17 +138,17 @@ export default function RestaurantPrivacyPage() {
             For privacy inquiries, data subject access requests, or questions regarding our partner
             data practices, please contact our Privacy Team at{" "}
             <a
-              href="mailto:privacy@spotq.com"
+              href="mailto:privacy@spotq.site"
               className="font-semibold text-orange-600 hover:underline"
             >
-              privacy@spotq.com
+              privacy@spotq.site
             </a>{" "}
             or reach partner support at{" "}
             <a
-              href="mailto:partners@spotq.com"
+              href="mailto:partners@spotq.site"
               className="font-semibold text-orange-600 hover:underline"
             >
-              partners@spotq.com
+              partners@spotq.site
             </a>
             .
           </p>

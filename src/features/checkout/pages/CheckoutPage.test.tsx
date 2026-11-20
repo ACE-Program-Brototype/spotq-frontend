@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { checkoutService } from "../services/checkout.service";
-import type { CheckoutDetailsData } from "../types/checkout.types";
+import { checkoutService } from "@/features/checkout/services/checkout.service";
+import type { CheckoutDetailsData } from "@/features/checkout/types/checkout.types";
 import { CheckoutPage } from "./CheckoutPage";
 
-jest.mock("../services/checkout.service", () => ({
+jest.mock("@/features/checkout/services/checkout.service", () => ({
   checkoutService: {
     getCheckoutDetails: jest.fn(),
     placeOrder: jest.fn(),
@@ -96,7 +96,7 @@ describe("CheckoutPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Order Details")).toBeInTheDocument();
       expect(screen.getByText("Wok-Tossed Hakka Noodles")).toBeInTheDocument();
-      expect(screen.getByText(/Ordering from Spice Garden Cafe/i)).toBeInTheDocument();
+      expect(screen.getByText(/Review your order from Spice Garden Cafe/i)).toBeInTheDocument();
     });
 
     expect(screen.getByText("Customer Details")).toBeInTheDocument();

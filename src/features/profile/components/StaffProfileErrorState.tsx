@@ -1,7 +1,7 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 
 interface StaffProfileErrorStateProps {
   message?: string;

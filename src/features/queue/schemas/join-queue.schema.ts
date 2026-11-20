@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PARTY_SIZE_LIMITS } from "../constants/queue.constants";
+import { PARTY_SIZE_LIMITS } from "@/features/queue/constants/queue.constants";
 
 /**
  * Validates a local phone number based on the selected country dialing prefix.

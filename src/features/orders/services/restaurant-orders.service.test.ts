@@ -3,7 +3,7 @@ import {
   RESTAURANT_ORDERS_DEFAULTS,
   RESTAURANT_ORDERS_ENDPOINTS,
   RESTAURANT_ORDERS_SERVICE_ERRORS,
-} from "../constants/restaurant-orders.constants";
+} from "@/features/orders/constants/restaurant-orders.constants";
 import { restaurantOrdersService } from "./restaurant-orders.service";
 
 jest.mock("@/lib/api/client", () => ({

@@ -109,7 +109,7 @@ export function StaffAcceptInvitationForm({
             <Input
               id="staff-reg-fullname"
               type="text"
-              placeholder="e.g. John Doe"
+              placeholder="Enter Your Name"
               disabled={isSubmitting}
               className="pl-10 h-10.5 rounded-xl border-[#eddcd4] bg-[#faf7f5]/40 text-xs focus:border-[#e8631b] focus:ring-1 focus:ring-[#e8631b]"
               {...register("fullname")}
@@ -124,7 +124,7 @@ export function StaffAcceptInvitationForm({
           <label htmlFor="staff-reg-phone" className="block text-xs font-semibold text-neutral-700">
             Phone Number <span className="text-rose-500">*</span>
           </label>
-          <div className="flex rounded-xl border border-[#eddcd4] bg-[#faf7f5]/40 overflow-hidden focus-within:border-[#e8631b] focus-within:ring-1 focus-within:ring-[#e8631b] transition-all">
+          <div className="flex rounded-xl border border-[#eddcd4] bg-[#faf7f5]/40 overflow-hidden focus-within:border-[#e8631b] focus-within:ring-1 focus-within:ring-[#e8631b] transition-colors">
             <div className="flex items-center gap-1.5 px-3 bg-[#fef3ec] border-r border-[#fae2d3] text-xs font-bold text-[#9a3412] select-none">
               <Phone className="size-3.5 text-[#e8631b]" />
               <span>+91</span>
@@ -133,7 +133,7 @@ export function StaffAcceptInvitationForm({
               id="staff-reg-phone"
               type="tel"
               maxLength={10}
-              placeholder="98765 43210"
+              placeholder="Enter Your Number"
               disabled={isSubmitting}
               className="border-0 bg-transparent h-10.5 text-xs focus-visible:ring-0 focus-visible:outline-none"
               {...register("phone")}
@@ -231,7 +231,7 @@ export function StaffAcceptInvitationForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-11 rounded-xl bg-gradient-to-r from-[#e8631b] to-[#ff6b00] hover:from-[#d45614] hover:to-[#ea580c] text-white font-bold text-xs shadow-md mt-4 transition-all"
+          className="w-full h-11 rounded-xl bg-gradient-to-r from-[#e8631b] to-[#ff6b00] hover:from-[#d45614] hover:to-[#ea580c] text-white font-bold text-xs shadow-md mt-4 transition-colors"
         >
           {isSubmitting ? (
             <div className="flex items-center justify-center gap-2">

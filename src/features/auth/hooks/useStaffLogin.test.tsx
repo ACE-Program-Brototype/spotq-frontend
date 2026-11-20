@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { toast } from "sonner";
 
-import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { useAuthStore } from "../store/auth.store";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useStaffLoginMutation, useStaffSelectRestaurantMutation } from "./use-auth-mutations";
 import { useStaffLogin } from "./useStaffLogin";
 

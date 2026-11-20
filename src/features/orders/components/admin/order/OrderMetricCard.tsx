@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils/cn";
 export interface OrderMetricCardProps {
   label: string;
   value: string | number;
+  fullValue?: string | number;
   icon: LucideIcon;
   subtitle?: string;
   trendText?: string;
@@ -16,6 +17,7 @@ export interface OrderMetricCardProps {
 export function OrderMetricCard({
   label,
   value,
+  fullValue,
   icon: Icon,
   subtitle,
   trendText,
@@ -50,9 +52,13 @@ export function OrderMetricCard({
       </div>
 
       <div className="mt-2 sm:mt-2.5">
-        <p className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-neutral-900 truncate">
+        <p
+          className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-neutral-900 truncate"
+          title={fullValue != null ? String(fullValue) : String(value)}
+        >
           {value}
         </p>
+
 
         {(trendText || subtitle) && (
           <div className="mt-1 flex flex-wrap items-center gap-1 text-[11px] sm:text-xs">

@@ -5,8 +5,8 @@
 
 import { DataTable } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
-import { useStaffMenuColumns } from "../hooks/use-staff-menu-columns";
-import type { StaffMenuItem, StaffMenuSortOption } from "../types/staff-menu-item.types";
+import { useStaffMenuColumns } from "@/features/menu/hooks/use-staff-menu-columns";
+import type { StaffMenuItem, StaffMenuSortOption } from "@/features/menu/types/staff-menu-item.types";
 
 export interface StaffMenuItemTableProps {
   items: StaffMenuItem[];
@@ -65,6 +65,10 @@ export function StaffMenuItemTable({
       getRowTestId={(item) => `staff-menu-item-row-${item.id}`}
       testId="staff-menu-item-table"
       theme="restaurant"
+      onRowClick={onViewDetails ? (item) => onViewDetails(item) : undefined}
+      rowClassName="cursor-pointer hover:bg-[#fef9f6] transition-colors"
+      containerClassName="overflow-x-auto min-w-0 overscroll-x-contain"
+      tableClassName="w-full min-w-[620px] lg:min-w-full"
       headerClassName="bg-[#faf7f5] text-neutral-700 border-b border-[#eddcd4]"
       emptyTitle="No staff menu items found"
       emptyDescription="No dishes match the active search or category filters."

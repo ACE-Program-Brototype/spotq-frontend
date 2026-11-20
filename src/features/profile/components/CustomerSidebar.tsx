@@ -7,11 +7,12 @@
 import { CreditCard, LogOut, ShoppingBag, User as UserIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { CustomerSidebarProps } from "../types/profile.types";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { CustomerSidebarProps } from "@/features/profile/types/profile.types";
 
 export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
   const location = useLocation();
@@ -60,7 +61,7 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
     <>
       <nav
         className={cn(
-          "grid w-full min-w-0 grid-cols-3 gap-2 overflow-hidden rounded-2xl border border-neutral-200/60 bg-neutral-50/70 p-2 shadow-2xs lg:hidden",
+          "grid w-full min-w-0 grid-cols-3 gap-1.5 overflow-hidden rounded-xl sm:rounded-2xl border border-neutral-200/60 bg-neutral-50/70 p-1.5 sm:p-2 shadow-2xs lg:hidden",
           className,
         )}
         aria-label="Customer Account Navigation Mobile"
@@ -74,14 +75,14 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
               key={item.label}
               to={item.href}
               className={cn(
-                "flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-xs font-semibold transition-colors select-none",
+                "flex min-w-0 items-center justify-center gap-1.5 rounded-lg sm:rounded-xl px-2 py-2 text-xs font-semibold transition-colors select-none",
                 isActive
                   ? "bg-[#ff6b00] text-white shadow-sm"
                   : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
               )}
             >
               <Icon
-                className={cn("size-4 shrink-0", isActive ? "text-white" : "text-neutral-500")}
+                className={cn("size-3.5 sm:size-4 shrink-0", isActive ? "text-white" : "text-neutral-500")}
               />
               <span>{item.label}</span>
             </Link>
@@ -133,15 +134,25 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="flex items-center justify-start gap-2.5 w-full rounded-2xl bg-neutral-200/70 px-4 py-2.5 text-xs font-semibold text-neutral-800 hover:bg-neutral-300/80 transition-colors disabled:opacity-60 cursor-pointer select-none"
-          >
-            <LogOut className="size-4 text-neutral-700" />
-            <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
-          </button>
+          <ConfirmDialog
+            trigger={
+              <button
+                type="button"
+                disabled={isLoggingOut}
+                className="flex items-center justify-start gap-2.5 w-full rounded-2xl bg-neutral-200/70 px-4 py-2.5 text-xs font-semibold text-neutral-800 hover:bg-neutral-300/80 transition-colors disabled:opacity-60 cursor-pointer select-none"
+              >
+                <LogOut className="size-4 text-neutral-700" />
+                <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
+              </button>
+            }
+            title="Log Out"
+            description="Are you sure you want to end your session?"
+            confirmText="Log Out"
+            confirmVariant="destructive"
+            isLoading={isLoggingOut}
+            loadingText="Logging out..."
+            onConfirm={handleLogout}
+          />
         </div>
       </aside>
     </>

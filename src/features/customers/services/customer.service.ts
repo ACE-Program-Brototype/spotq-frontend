@@ -3,7 +3,7 @@ import {
   CUSTOMER_DEFAULTS,
   CUSTOMER_ENDPOINTS,
   CUSTOMER_FILTER_STATUS,
-} from "../constants/customer.constants";
+} from "@/features/customers/constants/customer.constants";
 import type {
   Customer,
   CustomerDetailsApiResponse,
@@ -14,7 +14,7 @@ import type {
   RawCustomerDetails,
   UpdateCustomerStatusInput,
   UpdateCustomerStatusResponse,
-} from "../types/customer.types";
+} from "@/features/customers/types/customer.types";
 
 interface RawCustomerItem {
   id: string;

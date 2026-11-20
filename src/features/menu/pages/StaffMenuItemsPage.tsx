@@ -1,21 +1,21 @@
 /**
  * Staff Menu Items Page
  * Dedicated operational menu catalog for restaurant staff.
- * Provides real-time 86'd stock monitoring, category mapping, multi-attribute search, sorting, and variant stock toggling.
+ * Provides real-time stock monitoring, category mapping, multi-attribute search, sorting, and variant stock toggling.
  */
 
 import { AlertCircle, ChefHat, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { StaffMenuItemDetailModal } from "@/features/menu/components/StaffMenuItemDetailModal";
+import { StaffMenuItemFilters } from "@/features/menu/components/StaffMenuItemFilters";
+import { StaffMenuItemSkeleton } from "@/features/menu/components/StaffMenuItemSkeleton";
+import { StaffMenuItemTable } from "@/features/menu/components/StaffMenuItemTable";
+import { StaffMenuStatsCards } from "@/features/menu/components/StaffMenuStatsCards";
+import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import { useMenuCategories } from "@/features/menu/hooks/use-menu-categories";
+import { useStaffMenuItems } from "@/features/menu/hooks/use-staff-menu-items";
 import { cn } from "@/lib/utils/cn";
-import { StaffMenuItemDetailModal } from "../components/StaffMenuItemDetailModal";
-import { StaffMenuItemFilters } from "../components/StaffMenuItemFilters";
-import { StaffMenuItemSkeleton } from "../components/StaffMenuItemSkeleton";
-import { StaffMenuItemTable } from "../components/StaffMenuItemTable";
-import { StaffMenuStatsCards } from "../components/StaffMenuStatsCards";
-import { MENU_MESSAGES } from "../constants/menu.constants";
-import { useMenuCategories } from "../hooks/use-menu-categories";
-import { useStaffMenuItems } from "../hooks/use-staff-menu-items";
 
 export default function StaffMenuItemsPage() {
   const { categories } = useMenuCategories();
@@ -47,8 +47,6 @@ export default function StaffMenuItemsPage() {
     toggleAvailability,
     pendingItemIds,
     togglingItemId,
-    toggleVariantAvailability,
-    pendingVariantIds,
   } = useStaffMenuItems();
 
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -205,15 +203,11 @@ export default function StaffMenuItemsPage() {
         </div>
       )}
 
-      {/* Staff View Details & Variants Management Modal */}
+      {/* Staff View Details Modal */}
       <StaffMenuItemDetailModal
         isOpen={Boolean(selectedItemId)}
         item={activeItem}
         onClose={() => setSelectedItemId(null)}
-        onToggleVariant={toggleVariantAvailability}
-        pendingVariantIds={pendingVariantIds}
-        onToggleItemAvailability={toggleAvailability}
-        isItemToggling={pendingItemIds.has(activeItem?.id || "")}
       />
     </div>
   );

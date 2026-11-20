@@ -1,10 +1,10 @@
 import { Armchair, Check, Clock3, Users } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { AdminTablesList } from "../components/AdminTablesList";
-import { ADMIN_TABLE_LIMIT, TABLE_STATUS } from "../constants/table.constants";
-import { useRestaurantAdminTables } from "../hooks/useRestaurantAdminTables";
-import type { TableStatusIncludingAll } from "../types/table.types";
+import { AdminTablesList } from "@/features/tables/components/AdminTablesList";
+import { ADMIN_TABLE_LIMIT, TABLE_STATUS } from "@/features/tables/constants/table.constants";
+import { useRestaurantAdminTables } from "@/features/tables/hooks/useRestaurantAdminTables";
+import type { TableStatusIncludingAll } from "@/features/tables/types/table.types";
 
 export default function RestaurantTablePage() {
   const restaurantId = useAuthStore((state) => state.user?.restaurantId || "");
@@ -19,12 +19,15 @@ export default function RestaurantTablePage() {
   const totalPages = Math.max(1, Math.ceil(total / ADMIN_TABLE_LIMIT));
   const occupiedCount =
     stats?.occupied ??
-    tables.filter((table) => table.status === "OCCUPIED" || table.status === "PARTIAL_OCCUPIED")
-      .length;
+    tables.filter(
+      (table) =>
+        table.status === TABLE_STATUS.OCCUPIED ||
+        table.status === TABLE_STATUS.PARTIAL_OCCUPIED,
+    ).length;
   const availableCount =
-    stats?.available ?? tables.filter((table) => table.status === "AVAILABLE").length;
+    stats?.available ?? tables.filter((table) => table.status === TABLE_STATUS.AVAILABLE).length;
   const maintenanceCount =
-    stats?.maintenance ?? tables.filter((table) => table.status === "MAINTENANCE").length;
+    stats?.maintenance ?? tables.filter((table) => table.status === TABLE_STATUS.MAINTENANCE).length;
 
   const summary = [
     ["Total tables", stats?.totalTables ?? total, Armchair, "#f4eee9"],

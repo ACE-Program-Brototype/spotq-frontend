@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { PROFILE_ENDPOINTS, PROFILE_MESSAGES } from "../constants/profile.constants";
+import { PROFILE_ENDPOINTS, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 import { profileService } from "./profile.service";
 
 jest.mock("@/lib/api/client", () => ({

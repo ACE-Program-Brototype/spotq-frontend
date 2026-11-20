@@ -1,8 +1,8 @@
 import { type BeforeRetryHook, isHTTPError } from "ky";
 import { PUBLIC_AUTH_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { getOrRefreshAccessToken } from "../auth-refresh";
-import { redirectToPortalLogin } from "../portal-redirect";
+import { getOrRefreshAccessToken } from "@/lib/api/auth-refresh";
+import { redirectToPortalLogin } from "@/lib/api/portal-redirect";
 
 export const beforeRetry: BeforeRetryHook = async ({ request, error, retryCount }) => {
   const isHTTP = isHTTPError(error);

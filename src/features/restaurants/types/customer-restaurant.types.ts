@@ -116,6 +116,7 @@ export interface CustomerRestaurantQueue {
   hasJoinedAnyQueue?: boolean | null;
   hasJoinedThisRestaurantQueue?: boolean | null;
   isQueueStatusAvailable?: boolean;
+  queueEntryId?: string | null;
 }
 
 export interface CustomerRestaurantDetailsApiResponse {

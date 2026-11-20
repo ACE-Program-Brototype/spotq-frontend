@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils/cn";
-import { type RegisterFormValues, registerSchema } from "../schemas/register.schema";
+import { type RegisterFormValues, registerSchema } from "@/features/auth/schemas/register.schema";
 
 interface RegisterFormProps {
   onSubmit: (values: RegisterFormValues) => Promise<void> | void;
@@ -254,7 +254,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
         type="submit"
         size="lg"
         disabled={isLoading}
-        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
+        className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-[background-color,transform] font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm active:translate-y-[1px]"
       >
         {isLoading ? (
           <>

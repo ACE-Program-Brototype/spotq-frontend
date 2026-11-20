@@ -3,9 +3,9 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { UpdateStaffProfileFormData } from "../schemas/update-staff-profile.schema";
-import type { StaffProfile } from "../types/profile.types";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { UpdateStaffProfileFormData } from "@/features/profile/schemas/update-staff-profile.schema";
+import type { StaffProfile } from "@/features/profile/types/profile.types";
 
 interface StaffPersonalDetailsCardProps {
   register: UseFormRegister<UpdateStaffProfileFormData>;

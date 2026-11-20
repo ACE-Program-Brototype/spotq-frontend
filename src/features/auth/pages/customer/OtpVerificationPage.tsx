@@ -174,7 +174,7 @@ export default function OtpVerificationPage() {
               <Button
                 type="submit"
                 disabled={isResendLoading || !watchedEmail?.trim()}
-                className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-all font-semibold flex items-center justify-center gap-2 shadow-sm active:translate-y-[1px] cursor-pointer"
+                className="w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 transition-[background-color,transform] font-semibold flex items-center justify-center gap-2 shadow-sm active:translate-y-[1px] cursor-pointer"
               >
                 {isResendLoading ? (
                   <>
@@ -256,7 +256,7 @@ export default function OtpVerificationPage() {
                 type="button"
                 onClick={handleVerify}
                 disabled={otp.length !== 6 || isLoading || isResendLoading}
-                className="mt-5 w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 disabled:bg-spotq-orange/60 transition-all font-semibold flex items-center justify-center gap-2 shadow-sm active:translate-y-[1px] cursor-pointer"
+                className="mt-5 w-full h-12 rounded-xl bg-spotq-orange text-white hover:bg-spotq-orange/90 disabled:bg-spotq-orange/60 transition-[background-color,transform] font-semibold flex items-center justify-center gap-2 shadow-sm active:translate-y-[1px] cursor-pointer"
               >
                 {isLoading ? (
                   <>

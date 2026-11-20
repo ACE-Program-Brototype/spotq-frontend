@@ -2,9 +2,9 @@ import { AlertCircle, CheckCircle2, Table as TableIcon, Users, Wrench, X } from 
 import { useEffect } from "react";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
-import { getStaffStatusTransition, TABLE_STATUS_CONFIG } from "../constants/table.constants";
-import { useUpdateTableStatus } from "../hooks/useUpdateTableStatus";
-import type { TableItem } from "../types/table.types";
+import { getStaffStatusTransition, TABLE_STATUS_CONFIG } from "@/features/tables/constants/table.constants";
+import { useUpdateTableStatus } from "@/features/tables/hooks/useUpdateTableStatus";
+import type { TableItem } from "@/features/tables/types/table.types";
 import { TableStatusBadge } from "./TableStatusBadge";
 
 interface TableStatusModalProps {
@@ -15,6 +15,12 @@ interface TableStatusModalProps {
   sectionName?: string;
 }
 
+/**
+ * TableStatusModal Component
+ *
+ * @deprecated SpotQ domain strictly encompasses digital takeaway ordering and virtual queue ticketing.
+ * Dine-in table management is legacy and subject to platform deprecation guidelines.
+ */
 export function TableStatusModal({
   table,
   isOpen,

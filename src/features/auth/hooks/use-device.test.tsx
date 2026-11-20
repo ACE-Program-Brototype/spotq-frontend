@@ -1,17 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { DEVICE_QUERY_KEYS } from "../constants/auth.constants";
-import { deviceService } from "../services/device.service";
+import { DEVICE_QUERY_KEYS } from "@/features/auth/constants/auth.constants";
+import { deviceService } from "@/features/auth/services/device.service";
 import type {
   CustomerDeviceItem,
   CustomerDevicesResponse,
   DeactivateDeviceResponse,
   RegisterDeviceResponse,
-} from "../types/device.types";
+} from "@/features/auth/types/device.types";
 import { useCustomerDevices, useDeactivateDevice, useRegisterDevice } from "./use-device";
 
-jest.mock("../services/device.service", () => ({
+jest.mock("@/features/auth/services/device.service", () => ({
   deviceService: {
     registerDevice: jest.fn(),
     getDevices: jest.fn(),

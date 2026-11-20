@@ -8,10 +8,10 @@ import {
   completeRestaurantOnboarding,
 } from "@/features/auth/services/auth.service";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { ReviewBusinessInfoSection } from "../components/ReviewBusinessInfoSection";
-import { ReviewDocumentsSection } from "../components/ReviewDocumentsSection";
-import { ReviewLocationSection } from "../components/ReviewLocationSection";
-import { useOnboardStore } from "../store/onboard.store";
+import { ReviewBusinessInfoSection } from "@/features/onboard/components/ReviewBusinessInfoSection";
+import { ReviewDocumentsSection } from "@/features/onboard/components/ReviewDocumentsSection";
+import { ReviewLocationSection } from "@/features/onboard/components/ReviewLocationSection";
+import { useOnboardStore } from "@/features/onboard/store/onboard.store";
 
 export default function ReviewPage() {
   const navigate = useNavigate();

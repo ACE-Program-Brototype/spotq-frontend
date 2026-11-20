@@ -4,7 +4,6 @@
  */
 
 import {
-  Bell,
   ChevronDown,
   CreditCard,
   Grid,
@@ -22,12 +21,12 @@ import { Link, useLocation } from "react-router-dom";
 import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import type { AdminSidebarProps, NavItem } from "@/components/layout/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAdminLogout } from "@/features/auth/hooks/useAdminLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import type { AdminSidebarProps, NavItem } from "./types";
 
 export type { AdminSidebarProps };
 
@@ -66,14 +65,6 @@ const adminNavItems: NavItem[] = [
     icon: Landmark,
   },
   {
-    title: "Payments",
-    icon: CreditCard,
-    children: [
-      { title: "Order Payments", href: ADMIN_ROUTES.PAYMENTS.ORDERS },
-      { title: "Subscription Payments", href: ADMIN_ROUTES.PAYMENTS.SUBSCRIPTIONS },
-    ],
-  },
-  {
     title: "Campaigns",
     href: ADMIN_ROUTES.CAMPAIGNS,
     icon: Megaphone,
@@ -92,7 +83,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Restaurants: true,
-    Payments: false,
   });
 
   const toggleSection = (title: string) => {
@@ -148,7 +138,7 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
                     type="button"
                     onClick={() => toggleSection(item.title)}
                     className={cn(
-                      "flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all",
+                      "flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors",
                       isChildActive
                         ? "text-[#1e3a5f] font-semibold"
                         : "text-slate-600 hover:bg-slate-200/60 hover:text-slate-900",
@@ -169,9 +159,21 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
                   {isOpen && (
                     <div className="ml-8 mt-1 flex flex-col gap-1 border-l-2 border-slate-200/80 pl-3">
                       {item.children.map((sub) => {
-                        const isSubActive =
+                        const isMatch =
                           location.pathname === sub.href ||
                           location.pathname.startsWith(`${sub.href}/`);
+
+                        const hasMoreSpecificSibling =
+                          isMatch &&
+                          item.children?.some(
+                            (sibling) =>
+                              sibling.href !== sub.href &&
+                              sibling.href.length > sub.href.length &&
+                              (location.pathname === sibling.href ||
+                                location.pathname.startsWith(`${sibling.href}/`)),
+                          );
+
+                        const isSubActive = isMatch && !hasMoreSpecificSibling;
                         return (
                           <Link
                             key={sub.title}
@@ -207,7 +209,7 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
                 to={item.href ?? "#"}
                 onClick={onNavigate}
                 className={cn(
-                  "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-all shadow-xs",
+                  "flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-colors shadow-xs",
                   isActive
                     ? "bg-[#1e3a5f] text-white font-semibold shadow-md"
                     : "bg-transparent text-slate-600 hover:bg-slate-200/60 hover:text-slate-900 shadow-none",
@@ -238,15 +240,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
               </p>
             </div>
           </div>
-
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Notifications"
-            className="size-7 rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-900 shrink-0"
-          >
-            <Bell className="size-3.5" />
-          </Button>
         </div>
 
         <ConfirmDialog

@@ -8,15 +8,15 @@ import {
   QUEUE_WS_EVENTS,
   SOCKET_CONNECTION_STATUS,
   type SocketConnectionStatus,
-} from "../constants/websocket.constants";
+} from "@/features/queue/constants/websocket.constants";
 import type {
   QueueEntryCancelledPayload,
   QueueEntrySeatedPayload,
   QueueEntrySkippedPayload,
   QueuePositionUpdatedPayload,
-} from "../types/queue.types";
-import type { CustomerRingPayload } from "../types/ring-alert.types";
-import { ringMedia } from "../utils/ring-sound.utils";
+} from "@/features/queue/types/queue.types";
+import type { CustomerRingPayload } from "@/features/queue/types/ring-alert.types";
+import { ringMedia } from "@/features/queue/utils/ring-sound.utils";
 
 export type { SocketConnectionStatus };
 
@@ -48,7 +48,9 @@ export function useCustomerQueueSocket(
   const lastProcessedRingKeyRef = useRef<string | null>(null);
 
   const optionsRef = useRef(options);
-  optionsRef.current = options;
+  useEffect(() => {
+    optionsRef.current = options;
+  });
 
   const updateStatus = useCallback((status: SocketConnectionStatus) => {
     setConnectionStatus(status);
@@ -71,10 +73,8 @@ export function useCustomerQueueSocket(
             setResolvedToken(freshToken);
           }
         })
-        .catch((err) => {
-          if (env.isDev) {
-            console.warn("[Socket] Failed to refresh access token for customer queue socket:", err);
-          }
+        .catch(() => {
+          // Token refresh failure handled silently; socket reconnect handles auth retry
         });
     }
 
@@ -114,10 +114,7 @@ export function useCustomerQueueSocket(
 
     socketRef.current = socket;
 
-    const handleConnectError = (error: Error) => {
-      if (env.isDev) {
-        console.warn(`[Socket] Connection error: ${error.message}`);
-      }
+    const handleConnectError = () => {
       updateStatus(SOCKET_CONNECTION_STATUS.RECONNECTING);
     };
 
@@ -131,27 +128,14 @@ export function useCustomerQueueSocket(
       socket.emit(
         QUEUE_WS_EVENTS.JOIN_TICKET,
         { ticketId: queueEntryId },
-        (response?: { success: boolean; room?: string; error?: string }) => {
-          if (response?.success) {
-            if (env.isDev) {
-              console.log(
-                `[Socket] Joined customer room ${response.room || `ticket:${queueEntryId}`}`,
-              );
-            }
-          } else if (response?.error) {
-            if (env.isDev) {
-              console.warn(`[Socket] Failed to join ticket room: ${response.error}`);
-            }
-          }
+        () => {
+          // Room join callback
         },
       );
     };
 
-    const handleDisconnect = (reason: string) => {
+    const handleDisconnect = () => {
       updateStatus(SOCKET_CONNECTION_STATUS.DISCONNECTED);
-      if (env.isDev) {
-        console.log(`[Socket] Disconnected: ${reason}`);
-      }
     };
 
     socket.on(QUEUE_WS_EVENTS.CONNECT_ERROR, handleConnectError);

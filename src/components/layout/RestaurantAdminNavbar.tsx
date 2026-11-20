@@ -1,11 +1,11 @@
 /**
  * Restaurant Admin Navbar Component
- * Displays restaurant identification, global search, notifications indicator, and profile initials.
+ * Displays mobile menu toggle, branding, and interactive profile navigation.
  */
 
-import { Bell, Menu, Search, Utensils } from "lucide-react";
-import { useState } from "react";
-
+import { Menu, Utensils } from "lucide-react";
+import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/auth.store";
@@ -15,38 +15,31 @@ import type { RestaurantAdminNavbarProps } from "./types";
 export type { RestaurantAdminNavbarProps };
 
 export function RestaurantAdminNavbar({
-  restaurantName = "Basil Mandi",
+  restaurantName,
   onToggleSidebar,
   onSearch,
-  unreadNotifications = 1,
   className,
   ...props
 }: RestaurantAdminNavbarProps) {
   const user = useAuthStore((state) => state.user);
-  const [searchValue, setSearchValue] = useState("");
 
   const initials =
-    user?.name
+    (user?.name || user?.fullName)
       ?.split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2) ?? "JD";
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-    onSearch?.(e.target.value);
-  };
+      .slice(0, 2) ?? "RA";
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 flex h-16 w-full max-w-full items-center justify-between border-b border-[#f3e6de] bg-[#fffcf9] px-4 sm:px-6 lg:px-8 shadow-2xs box-border transition-all",
+        "sticky top-0 z-20 flex h-16 w-full max-w-full items-center justify-between border-b border-[#f3e6de] bg-[#fffcf9] px-3 sm:px-6 lg:px-8 shadow-2xs box-border transition-colors",
         className,
       )}
       {...props}
     >
-      <div className="flex items-center gap-3 sm:gap-6 flex-1 min-w-0 pr-2">
+      <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 min-w-0 pr-2">
         {onToggleSidebar && (
           <Button
             type="button"
@@ -60,58 +53,40 @@ export function RestaurantAdminNavbar({
           </Button>
         )}
 
-        <div className="flex items-center gap-2.5 lg:hidden shrink-0">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-[#e8631b] text-white shadow-xs">
-            <Utensils className="size-4.5" />
+        <div className="flex items-center gap-2 sm:gap-2.5 lg:hidden shrink-0">
+          <div className="flex size-8 sm:size-9 items-center justify-center rounded-xl bg-[#e8631b] text-white shadow-xs">
+            <Utensils className="size-4 sm:size-4.5" />
           </div>
           <div>
-            <span className="text-sm font-bold text-[#8a3b14]">SpotQ</span>
-            <p className="text-[10px] text-neutral-400">Admin Portal</p>
+            <span className="text-xs sm:text-sm font-bold text-[#8a3b14] leading-tight block">
+              SpotQ
+            </span>
+            <p className="text-[10px] text-neutral-400 leading-tight">Admin Portal</p>
           </div>
         </div>
 
-        <div className="hidden sm:block shrink-0">
-          <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#8a3b14]">
-            {restaurantName}
-          </h2>
-        </div>
-
-        <div className="relative max-w-md flex-1 hidden md:block">
-          <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-400" />
-          <input
-            type="text"
-            value={searchValue}
-            onChange={handleSearchChange}
-            placeholder="Search orders, menu, customers..."
-            className="h-9 w-full rounded-full border border-[#f0ded4] bg-[#fcf5f0]/80 pl-9 pr-4 text-xs text-neutral-800 placeholder:text-neutral-400 focus:border-[#e8631b] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#e8631b]/30 transition-all"
-          />
-        </div>
+        {restaurantName && (
+          <div className="hidden sm:block min-w-0">
+            <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#8a3b14] truncate max-w-[200px] sm:max-w-xs md:max-w-md">
+              {restaurantName}
+            </h2>
+          </div>
+        )}
       </div>
 
-      <div className="flex items-center gap-3 shrink-0">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Notifications"
-          className="relative size-8 text-neutral-600 hover:bg-[#fae2d3]/50 hover:text-neutral-900 rounded-full shrink-0"
+      <div className="flex items-center shrink-0">
+        <Link
+          to={RESTAURANT_ROUTES.PROFILE}
+          aria-label="View restaurant profile"
+          className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-neutral-800 hover:text-[#9a3412] hover:bg-[#fae2d3]/50 transition-colors"
         >
-          <Bell className="size-4" />
-          {unreadNotifications > 0 && (
-            <span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#e8631b]" />
-          )}
-        </Button>
-
-        <span className="h-4 w-px bg-[#eddcd4] hidden sm:block" />
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-neutral-800 hidden sm:inline">Profile</span>
-          <Avatar className="size-8 rounded-full bg-[#3d271d] text-white shadow-xs border border-[#eddcd4]">
+          <span className="text-xs font-semibold hidden sm:inline">Profile</span>
+          <Avatar className="size-8 rounded-full bg-[#3d271d] text-white shadow-xs border border-[#eddcd4] transition-transform hover:scale-105">
             <AvatarFallback className="bg-[#3d271d] text-white text-xs font-bold">
               {initials}
             </AvatarFallback>
           </Avatar>
-        </div>
+        </Link>
       </div>
     </header>
   );

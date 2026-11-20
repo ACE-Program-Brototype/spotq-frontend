@@ -1,4 +1,4 @@
-import type { StaffStatus } from "../constants/staff.constants";
+import type { StaffStatus } from "@/features/staff/constants/staff.constants";
 
 export interface StaffDetailRawData {
   id: string;

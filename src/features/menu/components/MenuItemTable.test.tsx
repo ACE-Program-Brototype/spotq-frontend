@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import type { MenuItemSummary } from "../types/menu-item.types";
+import type { MenuItemSummary } from "@/features/menu/types/menu-item.types";
 import { MenuItemTable } from "./MenuItemTable";
 
 function renderWithProviders(ui: React.ReactElement) {
@@ -53,26 +53,26 @@ describe("MenuItemTable", () => {
   it("renders menu items in the reusable data table with actions", () => {
     renderWithProviders(<MenuItemTable items={mockItems} />);
 
-    expect(screen.getByText("Paneer Tikka")).toBeInTheDocument();
-    expect(screen.getByText("Butter Chicken")).toBeInTheDocument();
-    expect(screen.getByText("Appetizers")).toBeInTheDocument();
-    expect(screen.getByText("Main Course")).toBeInTheDocument();
-    expect(screen.getByText("₹250.00")).toBeInTheDocument();
-    expect(screen.getByText("₹380.00")).toBeInTheDocument();
-    expect(screen.getByText("Veg")).toBeInTheDocument();
-    expect(screen.getByText("Non-Veg")).toBeInTheDocument();
-    expect(screen.getByText("In Stock")).toBeInTheDocument();
-    expect(screen.getByText("Out of Stock")).toBeInTheDocument();
-    expect(screen.getByText("Featured")).toBeInTheDocument();
+    expect(screen.getAllByText("Paneer Tikka")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Butter Chicken")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Appetizers")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Main Course")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("₹250.00")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("₹380.00")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Veg")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Non-Veg")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("In Stock")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Out of Stock")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Featured")[0]).toBeInTheDocument();
 
     // Verify Action eye links
-    expect(screen.getByRole("link", { name: "View details for Paneer Tikka" })).toHaveAttribute(
+    expect(screen.getAllByRole("link", { name: "View details for Paneer Tikka" })[0]).toHaveAttribute(
       "href",
       "/restaurant/menu/items/item-1",
     );
 
     // Verify Action edit links
-    expect(screen.getByRole("link", { name: "Edit Paneer Tikka" })).toHaveAttribute(
+    expect(screen.getAllByRole("link", { name: "Edit Paneer Tikka" })[0]).toHaveAttribute(
       "href",
       "/restaurant/menu/items/item-1/edit",
     );
@@ -81,20 +81,22 @@ describe("MenuItemTable", () => {
   it("renders empty state message when no items are found", () => {
     renderWithProviders(<MenuItemTable items={[]} />);
 
-    expect(screen.getByText("No menu items found")).toBeInTheDocument();
+    expect(screen.getAllByText("No menu items found")[0]).toBeInTheDocument();
     expect(
-      screen.getByText("No dishes or beverages match the selected filter criteria."),
+      screen.getAllByText("No dishes or beverages match the selected filter criteria.")[0],
     ).toBeInTheDocument();
   });
 
   it("switches to fallback icon declaratively when image fails to load", async () => {
     renderWithProviders(<MenuItemTable items={mockItems} />);
 
-    const imageElement = await screen.findByAltText("Butter Chicken");
-    expect(imageElement).toBeInTheDocument();
+    const imageElements = await screen.findAllByAltText("Butter Chicken");
+    expect(imageElements[0]).toBeInTheDocument();
 
-    // Trigger image loading error
-    fireEvent.error(imageElement);
+    // Trigger image loading error on all instances
+    for (const img of imageElements) {
+      fireEvent.error(img);
+    }
 
     // Image element is removed and fallback is rendered
     expect(screen.queryByAltText("Butter Chicken")).not.toBeInTheDocument();
@@ -105,7 +107,7 @@ describe("MenuItemTable", () => {
 
     renderWithProviders(<MenuItemTable items={mockItems} onDelete={onDeleteMock} />);
 
-    const deleteBtn = screen.getByRole("button", { name: "Delete Paneer Tikka" });
+    const deleteBtn = screen.getAllByRole("button", { name: "Delete Paneer Tikka" })[0];
     expect(deleteBtn).toBeInTheDocument();
 
     fireEvent.click(deleteBtn);

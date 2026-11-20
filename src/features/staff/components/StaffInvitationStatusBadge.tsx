@@ -1,12 +1,13 @@
 import { CheckCircle2, Clock, ShieldAlert } from "lucide-react";
-import type { StaffInvitation } from "../types/staff-invitation.types";
+import { STAFF_INVITATION_STATUS } from "@/features/staff/constants/staff.constants";
+import type { StaffInvitation } from "@/features/staff/types/staff-invitation.types";
 
 export function StaffInvitationStatusBadge({ invitation }: { invitation: StaffInvitation }) {
   const isExpired =
-    invitation.status === "EXPIRED" ||
-    (invitation.status === "PENDING" && new Date(invitation.expiresAt) < new Date());
+    invitation.status === STAFF_INVITATION_STATUS.EXPIRED ||
+    (invitation.status === STAFF_INVITATION_STATUS.PENDING && new Date(invitation.expiresAt) < new Date());
 
-  if (invitation.status === "ACCEPTED") {
+  if (invitation.status === STAFF_INVITATION_STATUS.ACCEPTED) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
         <CheckCircle2 className="size-3.5" />
@@ -14,7 +15,7 @@ export function StaffInvitationStatusBadge({ invitation }: { invitation: StaffIn
       </span>
     );
   }
-  if (invitation.status === "REVOKED") {
+  if (invitation.status === STAFF_INVITATION_STATUS.REVOKED) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
         <ShieldAlert className="size-3.5" />

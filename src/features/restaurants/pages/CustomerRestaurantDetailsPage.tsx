@@ -1,40 +1,106 @@
 import { ArrowLeft } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JoinQueueModal } from "@/features/queue/components/JoinQueueModal";
-import { RestaurantCover } from "../components/Customer/RestaurantCover";
-import { RestaurantMenuNavigation } from "../components/Customer/RestaurantMenuNavigation";
-import { RestaurantMenuSections } from "../components/Customer/RestaurantMenuSections";
-import { RestaurantOverview } from "../components/Customer/RestaurantOverview";
-import { useCustomerRestaurantDetails } from "../hooks/useCustomerRestaurantDetails";
-import type { CustomerRestaurantDetails } from "../types/customer-restaurant.types";
+import { useActiveCustomerQueue } from "@/features/queue/hooks/use-active-customer-queue";
+import type { ActiveCustomerTicket } from "@/features/queue/types/ring-alert.types";
+import { getActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
+import { RestaurantCover } from "@/features/restaurants/components/Customer/RestaurantCover";
+import { RestaurantMenuNavigation } from "@/features/restaurants/components/Customer/RestaurantMenuNavigation";
+import { RestaurantMenuSections } from "@/features/restaurants/components/Customer/RestaurantMenuSections";
+import { RestaurantOverview } from "@/features/restaurants/components/Customer/RestaurantOverview";
+import {
+  CUSTOMER_RESTAURANT_SECTIONS,
+  DOM_EVENTS,
+  RESTAURANT_DETAIL_SKELETON_CATEGORIES,
+  RESTAURANT_DETAIL_SKELETON_MENU_ITEMS,
+} from "@/features/restaurants/constants/customer-restaurant.constants";
+import { useCustomerRestaurantDetails } from "@/features/restaurants/hooks/useCustomerRestaurantDetails";
+import type { CustomerRestaurantDetails } from "@/features/restaurants/types/customer-restaurant.types";
 
 function RestaurantDetailsContent({ restaurant }: { restaurant: CustomerRestaurantDetails }) {
   const navigate = useNavigate();
-  const categories = useMemo(
-    () => [...(restaurant.menu ?? [])].sort((a, b) => a.displayOrder - b.displayOrder),
-    [restaurant.menu],
+  const { data: activeQueueResponse } = useActiveCustomerQueue();
+  const [activeTicket, setActiveTicket] = useState<ActiveCustomerTicket | null>(() =>
+    activeQueueResponse?.data ?? getActiveCustomerTicket(),
   );
-  const [activeId, setActiveId] = useState(categories[0]?.id ?? "overview");
+
+  useEffect(() => {
+    setActiveTicket(activeQueueResponse?.data ?? getActiveCustomerTicket());
+  }, [activeQueueResponse]);
+
+  useEffect(() => {
+    const handleStorage = () => {
+      setActiveTicket(getActiveCustomerTicket());
+    };
+    window.addEventListener(DOM_EVENTS.STORAGE, handleStorage);
+    return () => window.removeEventListener(DOM_EVENTS.STORAGE, handleStorage);
+  }, []);
+
+  const isJoinedThisQueue = Boolean(
+    (activeTicket && activeTicket.restaurantId === restaurant.restaurantId) ||
+      restaurant.queue?.hasJoinedThisRestaurantQueue,
+  );
+  const isJoinedOtherQueue = Boolean(
+    (activeTicket && activeTicket.restaurantId !== restaurant.restaurantId) ||
+      (restaurant.queue?.hasJoinedAnyQueue && !isJoinedThisQueue),
+  );
+  const activeQueueEntryId =
+    (activeTicket && activeTicket.restaurantId === restaurant.restaurantId
+      ? activeTicket.queueEntryId
+      : null) ?? restaurant.queue?.queueEntryId ?? null;
+
+  // Enrich restaurant.queue so menu items and checkout know the user is active in queue
+  const enrichedRestaurant = useMemo(() => {
+    if (!isJoinedThisQueue && !isJoinedOtherQueue) return restaurant;
+    return {
+      ...restaurant,
+      queue: {
+        ...restaurant.queue,
+        hasJoinedThisRestaurantQueue: isJoinedThisQueue,
+        hasJoinedAnyQueue: isJoinedThisQueue || isJoinedOtherQueue,
+        isGuestUser: false,
+        queueEntryId: activeQueueEntryId,
+      },
+    };
+  }, [restaurant, isJoinedThisQueue, isJoinedOtherQueue, activeQueueEntryId]);
+
+  const categories = useMemo(
+    () => [...(enrichedRestaurant.menu ?? [])].sort((a, b) => a.displayOrder - b.displayOrder),
+    [enrichedRestaurant.menu],
+  );
+  const [activeId, setActiveId] = useState(
+    categories[0]?.id ?? CUSTOMER_RESTAURANT_SECTIONS.OVERVIEW,
+  );
   const [isJoinQueueOpen, setIsJoinQueueOpen] = useState(false);
+
+  const handleQueueButtonClick = () => {
+    if (isJoinedThisQueue && activeQueueEntryId) {
+      navigate(CUSTOMER_ROUTES.QUEUE_STATUS(restaurant.restaurantId, activeQueueEntryId));
+    } else {
+      setIsJoinQueueOpen(true);
+    }
+  };
 
   return (
     <>
-      <RestaurantCover restaurant={restaurant} />
-      <div className="mt-7 grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <RestaurantCover restaurant={enrichedRestaurant} />
+      <div className="mt-7 grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)] min-w-0 max-w-full">
         <RestaurantMenuNavigation
           categories={categories}
-          restaurant={restaurant}
+          restaurant={enrichedRestaurant}
           activeId={activeId}
           onActiveChange={setActiveId}
-          onJoinQueueClick={() => setIsJoinQueueOpen(true)}
+          onJoinQueueClick={handleQueueButtonClick}
+          isJoinedThisQueue={isJoinedThisQueue}
+          isJoinedOtherQueue={isJoinedOtherQueue}
         />
         <div className="min-w-0 space-y-10">
-          <RestaurantMenuSections categories={categories} restaurant={restaurant} />
-          <RestaurantOverview restaurant={restaurant} />
+          <RestaurantMenuSections categories={categories} restaurant={enrichedRestaurant} />
+          <RestaurantOverview restaurant={enrichedRestaurant} />
         </div>
       </div>
 
@@ -70,17 +136,10 @@ function RestaurantDetailsSkeleton() {
         </div>
       </div>
 
-      <div className="mt-7 grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="mt-7 grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)] min-w-0 max-w-full">
         <aside className="hidden space-y-3 lg:block" aria-hidden="true">
           <Skeleton className="mb-5 h-5 w-32 bg-stone-200" />
-          {[
-            "category-one",
-            "category-two",
-            "category-three",
-            "category-four",
-            "category-five",
-            "category-six",
-          ].map((key) => (
+          {RESTAURANT_DETAIL_SKELETON_CATEGORIES.map((key) => (
             <Skeleton key={key} className="h-10 w-full rounded-xl bg-stone-100" />
           ))}
         </aside>
@@ -88,9 +147,8 @@ function RestaurantDetailsSkeleton() {
           <section className="space-y-5" aria-hidden="true">
             <Skeleton className="h-7 w-48 bg-stone-200" />
             <div className="grid gap-4 sm:grid-cols-2">
-              {["menu-item-one", "menu-item-two", "menu-item-three", "menu-item-four"].map(
-                (key) => (
-                  <div key={key} className="flex gap-4 rounded-2xl border border-stone-100 p-4">
+              {RESTAURANT_DETAIL_SKELETON_MENU_ITEMS.map((key) => (
+                <div key={key} className="flex gap-4 rounded-2xl border border-stone-100 p-4">
                     <Skeleton className="size-20 shrink-0 rounded-xl bg-stone-100" />
                     <div className="flex-1 space-y-3 py-1">
                       <Skeleton className="h-4 w-3/4 bg-stone-200" />

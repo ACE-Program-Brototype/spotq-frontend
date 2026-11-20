@@ -4,12 +4,12 @@ import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { useTables } from "@/features/tables/hooks/useTables";
 import type { TableItem } from "@/features/tables/types/table.types";
-import { queueService } from "../services/queue.service";
-import type { QueueEntry } from "../types/queue.types";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { QueueEntry } from "@/features/queue/types/queue.types";
 import { AssignTableModal } from "./AssignTableModal";
 
 jest.mock("@/features/tables/hooks/useTables");
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 jest.mock("sonner", () => ({
   toast: {
     success: jest.fn(),

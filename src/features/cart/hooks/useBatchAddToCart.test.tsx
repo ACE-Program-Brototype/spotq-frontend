@@ -2,12 +2,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import type React from "react";
 import { toast } from "sonner";
-import { cartService } from "../services/cart.service";
-import { useCartStore } from "../store/cart.store";
-import type { AddBatchCartItemsPayload } from "../types/cart.types";
+import { cartService } from "@/features/cart/services/cart.service";
+import { useCartStore } from "@/features/cart/store/cart.store";
+import type { AddBatchCartItemsPayload } from "@/features/cart/types/cart.types";
 import { useBatchAddToCart } from "./useBatchAddToCart";
 
-jest.mock("../services/cart.service", () => ({
+jest.mock("@/features/cart/services/cart.service", () => ({
   cartService: {
     batchAddToCart: jest.fn(),
   },

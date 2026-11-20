@@ -1,4 +1,4 @@
-import type { RestaurantSortByType, RestaurantSortOrderType } from "../types/restaurant.types";
+import type { RestaurantSortByType, RestaurantSortOrderType } from "@/features/restaurants/types/restaurant.types";
 
 export const RESTAURANT_ENDPOINTS = {
   ADMIN_LIST: "restaurants/admin/restaurants",
@@ -33,6 +33,13 @@ export const RESTAURANT_STATUS = {
   INACTIVE: "INACTIVE",
   BLOCKED: "BLOCKED",
 } as const;
+
+export const ONBOARDING_STATUS = {
+  COMPLETED: "COMPLETED",
+  PENDING: "PENDING",
+  IN_PROGRESS: "IN_PROGRESS",
+} as const;
+export type OnboardingStatus = (typeof ONBOARDING_STATUS)[keyof typeof ONBOARDING_STATUS];
 
 export const RESTAURANT_FILTER_STATUS = {
   ALL: "ALL",

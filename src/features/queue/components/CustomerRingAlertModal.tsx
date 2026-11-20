@@ -1,8 +1,8 @@
 import { BellRing, Check, MapPin, Sparkles, Utensils } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { RING_ALERT_MESSAGES } from "../constants/ring-alert.constants";
-import { ringMedia } from "../utils/ring-sound.utils";
+import { RING_ALERT_MESSAGES } from "@/features/queue/constants/ring-alert.constants";
+import { ringMedia } from "@/features/queue/utils/ring-sound.utils";
 
 export interface CustomerRingAlertModalProps {
   isOpen: boolean;

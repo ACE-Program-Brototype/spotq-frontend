@@ -1,6 +1,6 @@
 import { ArrowUpDown, RotateCcw, Search, X } from "lucide-react";
-import { SUBSCRIBER_FILTER_STATUS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
-import type { SubscriberFilterStatus } from "../types/subscriber.types";
+import { SUBSCRIBER_FILTER_STATUS, SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
+import type { SubscriberFilterStatus } from "@/features/subscribers/types/subscriber.types";
 
 export interface SubscriberFiltersProps {
   search: string;

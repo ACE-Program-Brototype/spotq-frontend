@@ -1,4 +1,4 @@
-import type { BusinessInformation } from "../types/onboard.types";
+import type { BusinessInformation } from "@/features/onboard/types/onboard.types";
 
 interface ReviewBusinessInfoSectionProps {
   businessInformation: BusinessInformation | null;

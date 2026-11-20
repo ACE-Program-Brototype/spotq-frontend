@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
-import type { RegisterFormValues } from "../schemas/register.schema";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import type { RegisterFormValues } from "@/features/auth/schemas/register.schema";
 import { useRegisterMutation } from "./use-auth-mutations";
 
 export const useRegister = () => {

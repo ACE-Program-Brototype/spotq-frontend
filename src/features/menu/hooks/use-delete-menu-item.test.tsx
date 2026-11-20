@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
-import { MENU_MESSAGES } from "../constants/menu.constants";
-import { menuItemService } from "../services/menu-item.service";
+import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
 import { useDeleteMenuItem } from "./use-delete-menu-item";
 
-jest.mock("../services/menu-item.service", () => ({
+jest.mock("@/features/menu/services/menu-item.service", () => ({
   menuItemService: {
     deleteMenuItem: jest.fn(),
   },

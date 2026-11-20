@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import {
   StaffPersonalDetailsCard,
   StaffProfileOverviewCard,
-} from "../components/StaffProfileCards";
-import { StaffProfileErrorState } from "../components/StaffProfileErrorState";
-import { StaffProfileSkeleton } from "../components/StaffProfileSkeleton";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useStaffProfile } from "../hooks/useStaffProfile";
+} from "@/features/profile/components/StaffProfileCards";
+import { StaffProfileErrorState } from "@/features/profile/components/StaffProfileErrorState";
+import { StaffProfileSkeleton } from "@/features/profile/components/StaffProfileSkeleton";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useStaffProfile } from "@/features/profile/hooks/useStaffProfile";
 
 export default function StaffProfilePage() {
   return (

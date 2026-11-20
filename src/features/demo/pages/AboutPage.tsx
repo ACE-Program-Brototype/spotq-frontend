@@ -7,7 +7,7 @@ import { ArrowRight, Clock, Heart, ShieldCheck, Sparkles, Store, Utensils } from
 import { Link } from "react-router-dom";
 import { CUSTOMER_ROUTES, RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button.variants";
 import { cn } from "@/lib/utils/cn";
 
 export function AboutPage() {

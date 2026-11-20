@@ -95,8 +95,8 @@ describe("AdminSubscribersPage", () => {
       expect(screen.getByText("Biryani Blues")).toBeInTheDocument();
     });
 
-    const viewBtn = screen.getByTestId("view-subscriber-btn-sub-101");
-    fireEvent.click(viewBtn);
+    const row = screen.getByTestId("subscriber-row-sub-101");
+    fireEvent.click(row);
 
     expect(mockNavigate).toHaveBeenCalledWith("/admin/subscribers/sub-101");
   });

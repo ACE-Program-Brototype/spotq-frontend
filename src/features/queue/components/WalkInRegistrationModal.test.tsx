@@ -2,10 +2,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { queueService } from "../services/queue.service";
+import { queueService } from "@/features/queue/services/queue.service";
 import { WalkInRegistrationModal } from "./WalkInRegistrationModal";
 
-jest.mock("../services/queue.service");
+jest.mock("@/features/queue/services/queue.service");
 
 describe("WalkInRegistrationModal", () => {
   let queryClient: QueryClient;

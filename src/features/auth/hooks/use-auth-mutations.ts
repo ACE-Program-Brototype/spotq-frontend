@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import type { ApiResponse } from "../services/auth.service";
 import {
   authService,
   loginStaff,
   logoutStaff,
   selectStaffRestaurant,
-} from "../services/auth.service";
+} from "@/features/auth/services/auth.service";
+import type { ApiResponse } from "@/types/api.types";
 import type {
   GoogleLoginResult,
   LoginInput,
@@ -20,7 +20,7 @@ import type {
   StaffSelectRestaurantInput,
   VerifyEmailResult,
   VerifyOtpInput,
-} from "../types/auth.types";
+} from "@/features/auth/types/auth.types";
 
 export const useLoginMutation = () => {
   return useMutation<LoginResult, Error, LoginInput>({

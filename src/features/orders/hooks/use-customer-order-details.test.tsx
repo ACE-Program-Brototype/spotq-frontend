@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
-import { orderService } from "../services/order.service";
-import type { CustomerOrderDetails } from "../types/customer-order-details.types";
+import { orderService } from "@/features/orders/services/order.service";
+import type { CustomerOrderDetails } from "@/features/orders/types/customer-order-details.types";
 import { useCustomerOrderDetails } from "./use-customer-order-details";
 
 const mockOrderDetails: CustomerOrderDetails = {
@@ -69,7 +69,7 @@ const mockOrderDetails: CustomerOrderDetails = {
   ],
 };
 
-jest.mock("../services/order.service", () => ({
+jest.mock("@/features/orders/services/order.service", () => ({
   orderService: {
     getCustomerOrderDetails: jest.fn(),
   },

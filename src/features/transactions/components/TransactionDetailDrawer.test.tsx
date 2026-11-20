@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useTransactionDetail } from "../hooks/useTransactionDetail";
+import { useTransactionDetail } from "@/features/transactions/hooks/useTransactionDetail";
 import { TransactionDetailDrawer } from "./TransactionDetailDrawer";
 
-jest.mock("../hooks/useTransactionDetail");
+jest.mock("@/features/transactions/hooks/useTransactionDetail");
 
 describe("TransactionDetailDrawer", () => {
   const mockOnClose = jest.fn();

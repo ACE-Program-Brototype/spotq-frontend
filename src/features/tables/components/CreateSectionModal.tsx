@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { CREATE_SECTION_MODAL_STRINGS } from "../constants/table.constants";
+import { CREATE_SECTION_MODAL_STRINGS } from "@/features/tables/constants/table.constants";
 
 const createSectionSchema = z.object({
   name: z

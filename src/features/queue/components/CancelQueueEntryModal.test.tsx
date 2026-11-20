@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { StaffLiveQueueEntry } from "../types/queue.types";
+import type { StaffLiveQueueEntry } from "@/features/queue/types/queue.types";
 import { CancelQueueEntryModal } from "./CancelQueueEntryModal";
 
 describe("CancelQueueEntryModal", () => {

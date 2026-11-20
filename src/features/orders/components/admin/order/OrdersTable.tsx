@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate, formatTime } from "@/lib/utils/date";
-import { RESTAURANT_ORDERS_MESSAGES } from "../../../constants/restaurant-orders.constants";
+import { RESTAURANT_ORDERS_MESSAGES } from "@/features/orders/constants/restaurant-orders.constants";
 import type {
   RestaurantOrderListItem,
   RestaurantOrderSortBy,
   RestaurantOrderSortOrder,
-} from "../../../types/restaurant-orders.types";
+} from "@/features/orders/types/restaurant-orders.types";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 
 export interface OrdersTableProps {

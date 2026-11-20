@@ -57,16 +57,16 @@ export function CustomerPaymentHistoryMobileCards({
             key={tx.transactionId}
             data-testid={`mobile-payment-card-${tx.transactionId}`}
             className={cn(
-              "flex flex-col gap-3 p-4 rounded-2xl bg-white border border-neutral-200/80 shadow-2xs transition-all",
+              "flex flex-col gap-2.5 sm:gap-3 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-neutral-200/80 shadow-2xs transition-all",
               tx._justSucceeded && "bg-emerald-50/60 ring-1 ring-emerald-300",
             )}
           >
             {/* Top Row: Order ID Link + Status Badge */}
-            <div className="flex items-center justify-between gap-2 border-b border-neutral-100 pb-2.5">
+            <div className="flex items-center justify-between gap-2 border-b border-neutral-100 pb-2 sm:pb-2.5">
               <Link
                 to={CUSTOMER_ROUTES.ORDER_DETAILS(tx.orderId)}
                 data-testid={`mobile-order-link-${tx.orderId}`}
-                className="text-sm font-black text-neutral-900 hover:text-[#ff6b00] underline-offset-4 hover:underline transition-colors"
+                className="text-xs sm:text-sm font-black text-neutral-900 hover:text-[#ff6b00] underline-offset-4 hover:underline transition-colors"
               >
                 {orderDisplayId}
               </Link>
@@ -76,25 +76,25 @@ export function CustomerPaymentHistoryMobileCards({
             {/* Middle Row: Date + Amount */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex flex-col">
-                <span className="text-[11px] font-medium text-neutral-400">
+                <span className="text-[10px] sm:text-[11px] font-medium text-neutral-400">
                   {CUSTOMER_PAYMENT_MESSAGES.TABLE_HEADER_DATE}
                 </span>
-                <span className="text-xs font-semibold text-neutral-600">
+                <span className="text-[11px] sm:text-xs font-semibold text-neutral-600">
                   {formatDate(tx.createdAt)}
                 </span>
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-[11px] font-medium text-neutral-400">
+                <span className="text-[10px] sm:text-[11px] font-medium text-neutral-400">
                   {CUSTOMER_PAYMENT_MESSAGES.TABLE_HEADER_AMOUNT}
                 </span>
-                <span className="text-base font-extrabold text-neutral-900">
+                <span className="text-sm sm:text-base font-extrabold text-neutral-900">
                   {formatCurrency(tx.amountInRupees)}
                 </span>
               </div>
             </div>
 
             {/* Bottom Row: Payment Method Tag + Full-Width CTA */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2 border-t border-neutral-100">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-2.5 pt-2 border-t border-neutral-100">
               <div className="flex items-center">
                 <CustomerPaymentMethodTag method={tx.paymentMethod} />
               </div>
@@ -108,7 +108,7 @@ export function CustomerPaymentHistoryMobileCards({
                     disabled={downloading}
                     onClick={() => onDownloadInvoice(tx)}
                     data-testid={`mobile-download-receipt-${tx.transactionId}`}
-                    className="w-full sm:w-auto h-9 rounded-xl border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-xs font-semibold px-4 gap-2 shadow-2xs cursor-pointer"
+                    className="w-full sm:w-auto h-8 sm:h-9 rounded-lg sm:rounded-xl border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] sm:text-xs font-semibold px-3 sm:px-4 gap-1.5 sm:gap-2 shadow-2xs cursor-pointer"
                   >
                     {downloading ? (
                       <Loader2 className="size-3.5 animate-spin text-neutral-600" />
@@ -130,7 +130,7 @@ export function CustomerPaymentHistoryMobileCards({
                     disabled={retrying}
                     onClick={() => onRetry(tx)}
                     data-testid={`mobile-retry-payment-${tx.transactionId}`}
-                    className="w-full sm:w-auto h-9 rounded-xl bg-[#ff6b00] hover:bg-[#e05e00] text-white text-xs font-bold px-4 gap-2 shadow-xs cursor-pointer"
+                    className="w-full sm:w-auto h-8 sm:h-9 rounded-lg sm:rounded-xl bg-[#ff6b00] hover:bg-[#e05e00] text-white text-[11px] sm:text-xs font-bold px-3 sm:px-4 gap-1.5 sm:gap-2 shadow-xs cursor-pointer"
                   >
                     <RotateCw className={cn("size-3.5", retrying && "animate-spin")} />
                     <span>
@@ -144,7 +144,7 @@ export function CustomerPaymentHistoryMobileCards({
                 {normalizedStatus === "FAILED" && isExpired && (
                   <div
                     data-testid={`mobile-expired-label-${tx.transactionId}`}
-                    className="w-full sm:w-auto text-center py-1.5 px-4 rounded-xl text-xs font-medium bg-neutral-100 text-neutral-400 border border-neutral-200 select-none cursor-not-allowed"
+                    className="w-full sm:w-auto text-center py-1 sm:py-1.5 px-3 sm:px-4 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-medium bg-neutral-100 text-neutral-400 border border-neutral-200 select-none cursor-not-allowed"
                   >
                     {CUSTOMER_PAYMENT_MESSAGES.ACTION_EXPIRED}
                   </div>
@@ -154,7 +154,7 @@ export function CustomerPaymentHistoryMobileCards({
                   <Link
                     to={CUSTOMER_ROUTES.ORDER_DETAILS(tx.orderId)}
                     data-testid={`mobile-refund-details-${tx.transactionId}`}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-xs font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100/70 border border-purple-200/60 py-2 px-4 rounded-xl transition-colors"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100/70 border border-purple-200/60 py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg sm:rounded-xl transition-colors"
                   >
                     <span>{CUSTOMER_PAYMENT_MESSAGES.ACTION_REFUND_DETAILS}</span>
                     <ArrowRight className="size-3.5" />

@@ -69,8 +69,7 @@ export const ensureServiceWorkerController =
         (await navigator.serviceWorker.register("/firebase-messaging-sw.js"));
       await navigator.serviceWorker.ready;
       return registration;
-    } catch (err) {
-      console.warn("Service Worker registration failed:", err);
+    } catch (_err) {
       return null;
     }
   };
@@ -114,8 +113,8 @@ export const unregisterPushNotifications = async (): Promise<void> => {
     if (messaging) {
       await unregister(messaging);
     }
-  } catch (err) {
-    console.warn("Error unregistering from FCM:", err);
+  } catch (_err) {
+    // Unregister error ignored
   }
 };
 

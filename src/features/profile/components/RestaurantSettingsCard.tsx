@@ -1,14 +1,25 @@
-import { Armchair, Check, Edit3, Loader2, QrCode, Sliders, Users, X, Zap } from "lucide-react";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Check, Loader2, Lock, Store, Users, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
+import {
+  QUEUE_PRO_PLAN_IDENTIFIERS,
+  RESTAURANT_SETTINGS_FIELDS,
+  RESTAURANT_SETTINGS_MESSAGES,
+  profileHooks,
+} from "@/features/profile/constants/profile.constants";
+import { useUpdateRestaurantProfile } from "@/features/profile/hooks/use-update-restaurant-profile";
 import type {
   RestaurantProfileData,
   RestaurantSettingsDetails,
   UpdateRestaurantProfilePayload,
-} from "../types/restaurant-profile.types";
+} from "@/features/profile/types/restaurant-profile.types";
+import { SUBSCRIPTION_QUERY_KEYS } from "@/features/subscription/constants/subscription.constants";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
+import { cn } from "@/lib/utils/cn";
 
 interface RestaurantSettingsCardProps {
   settings: RestaurantSettingsDetails;
@@ -16,51 +27,54 @@ interface RestaurantSettingsCardProps {
 }
 
 export function RestaurantSettingsCard({ settings, fullData }: RestaurantSettingsCardProps) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isOpened, setIsOpened] = useState(Boolean(settings.isOpened));
+  const [acceptsQueue, setAcceptsQueue] = useState(Boolean(settings.acceptsQueue));
 
-  const [acceptsQueue, setAcceptsQueue] = useState(settings.acceptsQueue);
-  const [acceptsQrOrders, setAcceptsQrOrders] = useState(settings.acceptsQrOrders);
-  const [loyaltyEnabled, setLoyaltyEnabled] = useState(settings.loyaltyEnabled);
-  const [autoAcceptQueue, setAutoAcceptQueue] = useState(settings.autoAcceptQueue);
-  const [seatingCapacity, setSeatingCapacity] = useState<number | "">(
-    settings.seatingCapacity ?? 0,
+  // Query subscription status to evaluate QueuePro entitlement
+  const { data: statusData } = useQuery({
+    queryKey: SUBSCRIPTION_QUERY_KEYS.RESTAURANT_STATUS,
+    queryFn: async () => {
+      try {
+        return await subscriptionService.fetchRestaurantStatus();
+      } catch {
+        return null;
+      }
+    },
+    staleTime: profileHooks.RESTAURANT_STATUS_STALE_TIME,
+  });
+
+  const planCode = (
+    statusData?.subscription?.planCode ??
+    statusData?.subscriptionPlanCode ??
+    ""
+  ).toUpperCase();
+  const hasQueuePro = QUEUE_PRO_PLAN_IDENTIFIERS.some((identifier) =>
+    planCode.includes(identifier),
   );
 
-  const updateMutation = useUpdateRestaurantProfile();
+  useEffect(() => {
+    if (settings.isOpened !== undefined) {
+      setIsOpened(Boolean(settings.isOpened));
+    }
+    setAcceptsQueue(Boolean(settings.acceptsQueue));
+  }, [settings]);
 
-  const handleStartEdit = () => {
-    setAcceptsQueue(settings.acceptsQueue);
-    setAcceptsQrOrders(settings.acceptsQrOrders);
-    setLoyaltyEnabled(settings.loyaltyEnabled);
-    setAutoAcceptQueue(settings.autoAcceptQueue);
-    setSeatingCapacity(settings.seatingCapacity ?? 0);
-    setIsEditing(true);
-  };
+  const updateMutation = useUpdateRestaurantProfile();
+  const isSaving = updateMutation.isPending;
 
   const handleCancel = () => {
-    setIsEditing(false);
+    setIsOpened(Boolean(settings.isOpened));
+    setAcceptsQueue(Boolean(settings.acceptsQueue));
   };
 
-  const capacityNum = Number(seatingCapacity);
-  const isCapacityValid =
-    seatingCapacity !== "" &&
-    !Number.isNaN(capacityNum) &&
-    Number.isInteger(capacityNum) &&
-    capacityNum >= 0;
-
-  const capacityError =
-    isEditing && !isCapacityValid ? "Seating capacity cannot be negative" : null;
+  const initialIsOpened = Boolean(settings.isOpened);
+  const initialAcceptsQueue = Boolean(settings.acceptsQueue);
 
   const isDirty =
-    (acceptsQueue !== settings.acceptsQueue ||
-      acceptsQrOrders !== settings.acceptsQrOrders ||
-      loyaltyEnabled !== settings.loyaltyEnabled ||
-      autoAcceptQueue !== settings.autoAcceptQueue ||
-      Number(seatingCapacity) !== (settings.seatingCapacity ?? 0)) &&
-    isCapacityValid;
+    isOpened !== initialIsOpened || (hasQueuePro && acceptsQueue !== initialAcceptsQueue);
 
   const handleSave = () => {
-    if (!isDirty || !isCapacityValid) return;
+    if (!isDirty || isSaving) return;
 
     const payload: UpdateRestaurantProfilePayload = {
       restaurant: {
@@ -74,11 +88,9 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
         averageCost: fullData.profile.averageCost,
       },
       settings: {
-        acceptsQueue,
-        acceptsQrOrders,
-        loyaltyEnabled,
-        autoAcceptQueue,
-        seatingCapacity: capacityNum,
+        ...fullData.settings,
+        isOpened,
+        acceptsQueue: hasQueuePro ? acceptsQueue : false,
       },
       businessHours: fullData.businessHours.map((bh) => ({
         dayOfWeek: bh.dayOfWeek,
@@ -89,104 +101,59 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
     };
 
     updateMutation.mutate(payload, {
-      onSuccess: () => {
-        setIsEditing(false);
+      onSuccess: (updatedData) => {
+        if (updatedData?.settings?.isOpened !== undefined) {
+          setIsOpened(Boolean(updatedData.settings.isOpened));
+        }
+        if (updatedData?.settings?.acceptsQueue !== undefined) {
+          setAcceptsQueue(Boolean(updatedData.settings.acceptsQueue));
+        }
       },
     });
   };
 
-  const isSaving = updateMutation.isPending;
-
-  const currentSettingsMap = {
-    acceptsQueue: isEditing ? acceptsQueue : settings.acceptsQueue,
-    acceptsQrOrders: isEditing ? acceptsQrOrders : settings.acceptsQrOrders,
-    loyaltyEnabled: isEditing ? loyaltyEnabled : settings.loyaltyEnabled,
-    autoAcceptQueue: isEditing ? autoAcceptQueue : settings.autoAcceptQueue,
-  };
-
-  const settingItems = [
-    {
-      key: "acceptsQueue",
-      title: "Accepts Queue",
-      description: "Allow customers to join virtual queue remotely or at door",
-      enabled: currentSettingsMap.acceptsQueue,
-      setter: setAcceptsQueue,
-      icon: Users,
-    },
-    {
-      key: "acceptsQrOrders",
-      title: "Accepts QR Orders",
-      description: "Enable table-side QR scanning and direct menu ordering",
-      enabled: currentSettingsMap.acceptsQrOrders,
-      setter: setAcceptsQrOrders,
-      icon: QrCode,
-    },
-    {
-      key: "loyaltyEnabled",
-      title: "Loyalty Enabled",
-      description: "Allow customers to earn and redeem SpotQ rewards points",
-      enabled: currentSettingsMap.loyaltyEnabled,
-      setter: setLoyaltyEnabled,
-      icon: Sliders,
-    },
-    {
-      key: "autoAcceptQueue",
-      title: "Auto Accept Queue",
-      description: "Automatically accept newly placed queue entries",
-      enabled: currentSettingsMap.autoAcceptQueue,
-      setter: setAutoAcceptQueue,
-      icon: Zap,
-    },
-  ];
-
   return (
     <div className="rounded-3xl border border-[#eddcd4] bg-white p-6 sm:p-8 shadow-2xs space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h3 className="text-lg sm:text-xl font-bold text-neutral-900">Restaurant Settings</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-neutral-900">
+            {RESTAURANT_SETTINGS_MESSAGES.TITLE}
+          </h3>
           <p className="text-xs text-neutral-500 mt-0.5">
-            Core operational preferences, seating capacity, and queue settings
+            {RESTAURANT_SETTINGS_MESSAGES.SUBTITLE}
           </p>
         </div>
 
-        {!isEditing ? (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleStartEdit}
-            className="rounded-xl border-[#eddcd4] bg-[#faf7f5] text-neutral-800 hover:bg-[#f3e6de] font-semibold text-xs h-9 px-4 shrink-0 cursor-pointer"
-          >
-            <Edit3 className="size-3.5 mr-1.5 text-[#e8631b]" />
-            <span>Edit Settings</span>
-          </Button>
-        ) : (
-          <div className="flex items-center gap-2 shrink-0">
+        {(isDirty || isSaving) && (
+          <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
             <Button
               type="button"
               variant="outline"
               onClick={handleCancel}
               disabled={isSaving}
+              data-testid="cancel-settings-button"
               className="rounded-xl border-neutral-200 text-neutral-700 hover:bg-neutral-100 font-semibold text-xs h-9 px-3.5"
             >
               <X className="size-3.5 mr-1" />
-              <span>Cancel</span>
+              <span>{RESTAURANT_SETTINGS_MESSAGES.CANCEL}</span>
             </Button>
 
             <Button
               type="button"
               onClick={handleSave}
-              disabled={isSaving || !isDirty || !isCapacityValid}
-              className="rounded-xl bg-[#e8631b] hover:bg-[#d55513] text-white font-semibold text-xs h-9 px-4"
+              disabled={isSaving}
+              data-testid="save-settings-button"
+              className="rounded-xl font-semibold text-xs h-9 px-4 transition-all bg-[#e8631b] hover:bg-[#d55513] text-white cursor-pointer shadow-xs disabled:opacity-60"
             >
               {isSaving ? (
                 <>
                   <Loader2 className="size-3.5 mr-1.5 animate-spin" />
-                  <span>Saving...</span>
+                  <span>{RESTAURANT_SETTINGS_MESSAGES.UPDATING}</span>
                 </>
               ) : (
                 <>
                   <Check className="size-3.5 mr-1.5" />
-                  <span>Save Settings</span>
+                  <span>{RESTAURANT_SETTINGS_MESSAGES.UPDATE_SETTINGS}</span>
                 </>
               )}
             </Button>
@@ -195,87 +162,116 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Operational Toggle Cards */}
-        {settingItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={item.key}
-              className="flex items-center justify-between gap-4 rounded-2xl border border-[#f3e6de] bg-[#fffcf9] p-4 transition-all"
-            >
-              <div className="flex items-start gap-3 min-w-0">
-                <div className="flex size-9 items-center justify-center rounded-xl bg-[#fef3ec] text-[#e8631b] shrink-0 mt-0.5">
-                  <Icon className="size-4.5" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-bold text-neutral-900 leading-tight">{item.title}</p>
-                  <p className="text-xs text-neutral-500 mt-0.5 leading-snug">{item.description}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <Switch
-                  checked={item.enabled}
-                  onChange={(e) => isEditing && item.setter(e.target.checked)}
-                  disabled={!isEditing || isSaving}
-                  aria-label={item.title}
-                  className={!isEditing ? "cursor-not-allowed opacity-80" : "cursor-pointer"}
-                />
-                <span className="text-xs font-bold text-neutral-600 min-w-8 text-right">
-                  {item.enabled ? "ON" : "OFF"}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Seating Capacity Input Card */}
-        <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#f3e6de] bg-[#fffcf9] p-4 transition-all">
-          <div className="flex items-start gap-3 min-w-0">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-[#fef3ec] text-[#e8631b] shrink-0 mt-0.5">
-              <Armchair className="size-4.5" />
+        {/* Store Open / Closed Status Card */}
+        <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#f3e6de] bg-[#fffcf9] p-5 transition-all">
+          <div className="flex items-start gap-3.5 min-w-0">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-[#fef3ec] text-[#e8631b] shrink-0 mt-0.5">
+              <Store className="size-5" />
             </div>
             <div className="min-w-0">
-              <label
-                htmlFor="seatingCapacity"
-                className="text-sm font-bold text-neutral-900 leading-tight block"
-              >
-                Seating Capacity
-              </label>
-              <p className="text-xs text-neutral-500 mt-0.5 leading-snug">
-                Total guest seating capacity
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold text-neutral-900 leading-tight">
+                  {RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title}
+                </p>
+                <span
+                  className={cn(
+                    "rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wide border",
+                    isOpened
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      : "bg-neutral-100 text-neutral-600 border-neutral-200",
+                  )}
+                >
+                  {isOpened
+                    ? RESTAURANT_SETTINGS_MESSAGES.STATUS_OPEN
+                    : RESTAURANT_SETTINGS_MESSAGES.STATUS_CLOSED}
+                </span>
+              </div>
+              <p className="text-xs text-neutral-500 mt-1 leading-snug">
+                {RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.description}
               </p>
-              {capacityError && (
-                <p className="text-[11px] font-medium text-red-500 mt-1">{capacityError}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <Switch
+              checked={isOpened}
+              onChange={(e) => setIsOpened(e.target.checked)}
+              disabled={isSaving}
+              aria-label={RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title}
+              className="cursor-pointer"
+            />
+          </div>
+        </div>
+
+        {/* Virtual Queue Acceptance Card (QueuePro gated) */}
+        <div
+          className={cn(
+            "flex items-center justify-between gap-4 rounded-2xl border p-5 transition-all",
+            hasQueuePro
+              ? "border-[#f3e6de] bg-[#fffcf9]"
+              : "border-neutral-200 bg-neutral-50/70",
+          )}
+        >
+          <div className="flex items-start gap-3.5 min-w-0">
+            <div
+              className={cn(
+                "flex size-10 items-center justify-center rounded-xl shrink-0 mt-0.5",
+                hasQueuePro
+                  ? "bg-[#fef3ec] text-[#e8631b]"
+                  : "bg-neutral-200/70 text-neutral-500",
+              )}
+            >
+              <Users className="size-5" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-sm font-bold text-neutral-900 leading-tight">
+                  {RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title}
+                </p>
+                {hasQueuePro ? (
+                  <span
+                    className={cn(
+                      "rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wide border",
+                      acceptsQueue
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-neutral-100 text-neutral-600 border-neutral-200",
+                    )}
+                  >
+                    {acceptsQueue
+                      ? RESTAURANT_SETTINGS_MESSAGES.STATUS_ENABLED
+                      : RESTAURANT_SETTINGS_MESSAGES.STATUS_DISABLED}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">
+                    <Lock className="size-2.5" />
+                    {RESTAURANT_SETTINGS_MESSAGES.QUEUE_PRO_REQUIRED_BADGE}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-neutral-500 mt-1 leading-snug">
+                {RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.description}
+              </p>
+              {!hasQueuePro && (
+                <div className="mt-1.5">
+                  <Link
+                    to={RESTAURANT_ROUTES.SUBSCRIPTION}
+                    className="inline-flex items-center text-[11px] font-semibold text-[#e8631b] hover:text-[#d55513] hover:underline"
+                  >
+                    {RESTAURANT_SETTINGS_MESSAGES.UPGRADE_LINK}
+                  </Link>
+                </div>
               )}
             </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {!isEditing ? (
-              <span className="text-xs font-bold text-neutral-800 px-3 py-1.5 rounded-xl bg-[#fef3ec] border border-[#f3e6de]">
-                {settings.seatingCapacity ?? 0} seats
-              </span>
-            ) : (
-              <div className="w-24">
-                <Input
-                  id="seatingCapacity"
-                  type="number"
-                  min={0}
-                  value={seatingCapacity}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSeatingCapacity(val === "" ? "" : Number(val));
-                  }}
-                  disabled={isSaving}
-                  aria-label="Seating Capacity"
-                  placeholder="50"
-                  className={`h-9 text-xs text-right font-bold rounded-xl ${
-                    capacityError ? "border-red-400 focus-visible:ring-red-400" : "border-[#eddcd4]"
-                  }`}
-                />
-              </div>
-            )}
+            <Switch
+              checked={hasQueuePro && acceptsQueue}
+              onChange={(e) => setAcceptsQueue(e.target.checked)}
+              disabled={!hasQueuePro || isSaving}
+              aria-label={RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title}
+              className={hasQueuePro ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
+            />
           </div>
         </div>
       </div>

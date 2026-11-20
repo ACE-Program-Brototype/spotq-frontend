@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { RegisterWalkInInput, RegisterWalkInResponse } from "../types/queue.types";
+import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { RegisterWalkInInput, RegisterWalkInResponse } from "@/features/queue/types/queue.types";
 
 interface UseRegisterWalkInOptions {
   onSuccess?: (response: RegisterWalkInResponse) => void;

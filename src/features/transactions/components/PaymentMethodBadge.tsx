@@ -5,7 +5,7 @@
 
 import { CreditCard, Landmark, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
-import type { PaymentMethod } from "../types/transaction.types";
+import type { PaymentMethod } from "@/features/transactions/types/transaction.types";
 
 interface PaymentMethodBadgeProps {
   method: PaymentMethod | string;

@@ -4,16 +4,19 @@ import {
   CreditCard,
   DollarSign,
   Grid,
-  Megaphone,
-  Receipt,
   Settings,
   ShoppingBag,
   Store,
-  Users,
   Utensils,
   Wallet,
 } from "lucide-react";
-import type { NavItem } from "./types";
+import type { NavItem } from "@/components/layout/types";
+
+export const RESTAURANT_ADMIN_NAV_DEFAULTS = {
+  FALLBACK_ROLE: "Restaurant Admin",
+  FALLBACK_INITIALS: "RA",
+  DASHBOARD_SUFFIX: "/dashboard",
+} as const;
 
 export function getAdminNavItems(basePath: string): NavItem[] {
   return [
@@ -34,11 +37,9 @@ export function getAdminNavItems(basePath: string): NavItem[] {
     },
     {
       title: "Restaurant",
-      href: `${basePath}/overview`,
+      href: `${basePath}/tables`,
       icon: Store,
       children: [
-        { title: "Overview", href: `${basePath}/overview` },
-        { title: "QR Management", href: `${basePath}/qr-management` },
         { title: "Table Sections", href: `${basePath}/tables/sections` },
         { title: "Tables", href: `${basePath}/tables` },
       ],
@@ -54,21 +55,9 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       href: `${basePath}/menu`,
       icon: Utensils,
       children: [
-        { title: "Overview", href: `${basePath}/menu/overview` },
         { title: "Categories", href: `${basePath}/menu/categories` },
         { title: "Items", href: `${basePath}/menu/items` },
         { title: "Modifiers", href: `${basePath}/menu/modifiers` },
-        { title: "Availability", href: `${basePath}/menu/availability` },
-      ],
-    },
-    {
-      title: "Customers",
-      href: `${basePath}/customers`,
-      icon: Users,
-      children: [
-        { title: "Directory", href: `${basePath}/customers/directory` },
-        { title: "Intelligence", href: `${basePath}/customers/intelligence` },
-        { title: "Analytics", href: `${basePath}/customers/analytics` },
       ],
     },
     {
@@ -81,49 +70,23 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       ],
     },
     {
-      title: "Payments",
-      href: `${basePath}/payments`,
-      icon: Receipt,
-      children: [
-        { title: "Overview", href: `${basePath}/payments/overview` },
-        { title: "History", href: `${basePath}/payments/history` },
-        { title: "Gateway", href: `${basePath}/payments/gateway` },
-        { title: "Refunds", href: `${basePath}/payments/refunds` },
-      ],
-    },
-    {
       title: "Wallet",
       href: `${basePath}/wallet`,
       icon: Wallet,
     },
     {
       title: "Finance",
-      href: `${basePath}/finance`,
+      href: `${basePath}/finance/transactions`,
       icon: DollarSign,
       children: [
-        { title: "Overview", href: `${basePath}/finance/overview` },
         { title: "Transactions", href: `${basePath}/finance/transactions` },
-        { title: "Revenue", href: `${basePath}/finance/revenue` },
-        { title: "Settlements", href: `${basePath}/finance/settlements` },
-      ],
-    },
-    {
-      title: "Marketing",
-      href: `${basePath}/marketing`,
-      icon: Megaphone,
-      children: [
-        { title: "Dashboard", href: `${basePath}/marketing/dashboard` },
-        { title: "Campaigns", href: `${basePath}/marketing/campaigns` },
-        { title: "Coupons", href: `${basePath}/marketing/coupons` },
-        { title: "Analytics", href: `${basePath}/marketing/analytics` },
       ],
     },
     {
       title: "Subscription",
-      href: `${basePath}/subscription`,
+      href: `${basePath}/settings/billing/history`,
       icon: CreditCard,
       children: [
-        { title: "Overview", href: `${basePath}/subscription` },
         { title: "Billing History", href: `${basePath}/settings/billing/history` },
       ],
     },
@@ -133,7 +96,6 @@ export function getAdminNavItems(basePath: string): NavItem[] {
       icon: Settings,
       children: [
         { title: "Account", href: `${basePath}/profile` },
-        { title: "Security", href: `${basePath}/settings/security` },
       ],
     },
   ];

@@ -7,9 +7,9 @@ import {
   CUSTOMER_STATUS,
   type CustomerSortOrderType,
   type CustomerStatusType,
-} from "../constants/customer.constants";
-import type { Customer } from "../types/customer.types";
-import { formatMemberSince, getCustomerInitials } from "../utils/customer.utils";
+} from "@/features/customers/constants/customer.constants";
+import type { Customer } from "@/features/customers/types/customer.types";
+import { formatMemberSince, getCustomerInitials } from "@/features/customers/utils/customer.utils";
 
 export interface CustomerTableProps {
   customers: Customer[];

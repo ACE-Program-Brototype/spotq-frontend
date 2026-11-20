@@ -1,7 +1,7 @@
 import { Phone, User } from "lucide-react";
 import type { UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import type { WalkInFormData } from "../schemas/walk-in.schema";
+import type { WalkInFormData } from "@/features/queue/schemas/walk-in.schema";
 
 interface WalkInGuestFieldsProps {
   register: UseFormRegister<WalkInFormData>;

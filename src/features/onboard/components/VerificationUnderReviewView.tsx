@@ -1,9 +1,14 @@
+import { LogOut } from "lucide-react";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { ONBOARDING_VERIFICATION_STATUS } from "@/features/onboard/constants/onboard.constants";
+
 export interface VerificationUnderReviewViewProps {
   status: string;
   restaurantEmail: string;
   isRefreshing: boolean;
   onCheckStatus: () => void;
   onSignOut: () => void;
+  isLoggingOut?: boolean;
 }
 
 export function VerificationUnderReviewView({
@@ -12,8 +17,9 @@ export function VerificationUnderReviewView({
   isRefreshing,
   onCheckStatus,
   onSignOut,
+  isLoggingOut = false,
 }: VerificationUnderReviewViewProps) {
-  const isSubmitted = status === "SUBMITTED";
+  const isSubmitted = status === ONBOARDING_VERIFICATION_STATUS.SUBMITTED;
 
   return (
     <>
@@ -176,13 +182,24 @@ export function VerificationUnderReviewView({
           )}
         </button>
 
-        <button
-          type="button"
-          onClick={onSignOut}
-          className="rounded-2xl border border-neutral-300 bg-white px-5 py-3.5 text-sm font-semibold text-neutral-700 shadow-xs transition-colors hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400"
-        >
-          Sign Out
-        </button>
+        <ConfirmDialog
+          trigger={
+            <button
+              type="button"
+              disabled={isLoggingOut}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white px-5 py-3.5 text-sm font-semibold text-neutral-700 shadow-xs transition-colors hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-400 disabled:opacity-60 cursor-pointer"
+            >
+              <LogOut className="size-4 text-neutral-500" />
+              <span>{isLoggingOut ? "Exiting..." : "Exit Onboarding"}</span>
+            </button>
+          }
+          title="Exit Onboarding"
+          description="Your application is queued and under review. You can log back in with your email at any time to check verification status."
+          confirmText="Exit & Log Out"
+          confirmVariant="destructive"
+          isLoading={isLoggingOut}
+          onConfirm={onSignOut}
+        />
       </div>
     </>
   );

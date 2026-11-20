@@ -144,6 +144,50 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "src"),
       },
     },
+    build: {
+      target: "es2022",
+      chunkSizeWarningLimit: 600,
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            if (
+              id.includes("node_modules/react/") ||
+              id.includes("node_modules/react-dom/") ||
+              id.includes("node_modules/react-router-dom/")
+            ) {
+              return "vendor-react";
+            }
+            if (
+              id.includes("node_modules/recharts/") ||
+              id.includes("node_modules/d3-") ||
+              id.includes("node_modules/victory-vendor/")
+            ) {
+              return "vendor-recharts";
+            }
+            if (
+              id.includes("node_modules/firebase/") ||
+              id.includes("node_modules/@firebase/")
+            ) {
+              return "vendor-firebase";
+            }
+            if (
+              id.includes("node_modules/@tanstack/") ||
+              id.includes("node_modules/ky/") ||
+              id.includes("node_modules/zustand/")
+            ) {
+              return "vendor-state";
+            }
+            if (
+              id.includes("node_modules/@base-ui/") ||
+              id.includes("node_modules/lucide-react/") ||
+              id.includes("node_modules/@icons-pack/")
+            ) {
+              return "vendor-ui";
+            }
+          },
+        },
+      },
+    },
     server: {
       proxy: proxyConfig,
     },

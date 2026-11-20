@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { CART_MESSAGES } from "../constants/cart.constants";
-import { cartService } from "../services/cart.service";
-import type { AddBatchCartItemsPayload, AddBatchCartItemsResponse } from "../types/cart.types";
+import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
+import { cartService } from "@/features/cart/services/cart.service";
+import type { AddBatchCartItemsPayload, AddBatchCartItemsResponse } from "@/features/cart/types/cart.types";
 
 export interface UseBatchAddToCartOptions {
   onSuccess?: (data: AddBatchCartItemsResponse) => void;

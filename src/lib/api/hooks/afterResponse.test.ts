@@ -1,9 +1,9 @@
 import type { NormalizedOptions } from "ky";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { redirectToPortalLogin } from "../portal-redirect";
+import { redirectToPortalLogin } from "@/lib/api/portal-redirect";
 import { afterResponse } from "./afterResponse";
 
-jest.mock("../portal-redirect", () => ({
+jest.mock("@/lib/api/portal-redirect", () => ({
   redirectToPortalLogin: jest.fn(),
 }));
 

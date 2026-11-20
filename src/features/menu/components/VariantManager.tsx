@@ -57,24 +57,25 @@ export function VariantManager({ form }: VariantManagerProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h4 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
-            <Layers className="size-4 text-[#e8631b]" />
+    <div className="space-y-3">
+      {/* Section Header */}
+      <div className="flex items-center justify-between gap-1.5 sm:gap-2 pb-2 border-b border-[#f3e6de] min-w-0">
+        <h4 className="text-xs sm:text-sm font-bold text-neutral-900 flex items-center gap-1.5 min-w-0">
+          <Layers className="size-3.5 sm:size-4 text-[#e8631b] shrink-0" />
+          <span className="truncate sm:overflow-visible">
             {MENU_MESSAGES.VARIANTS_SECTION_TITLE}
-          </h4>
-          <p className="text-xs text-neutral-500">{MENU_MESSAGES.VARIANTS_SECTION_DESC}</p>
-        </div>
+          </span>
+        </h4>
         <Button
           type="button"
           variant="outline"
           size="sm"
           onClick={handleAddVariant}
-          className="border-[#e5dcd6] hover:bg-[#fff9f4] hover:text-[#9a3412] text-xs font-semibold"
+          className="border-[#e5dcd6] hover:bg-[#fff9f4] hover:text-[#9a3412] text-[11px] sm:text-xs font-semibold h-7.5 sm:h-8 px-2 sm:px-2.5 shrink-0 shadow-2xs cursor-pointer"
         >
-          <Plus className="size-3.5 mr-1 text-[#e8631b]" />
-          {MENU_MESSAGES.ADD_VARIANT_BTN}
+          <Plus className="size-3 sm:size-3.5 mr-1 text-[#e8631b]" />
+          <span className="sm:hidden">Add Variant</span>
+          <span className="hidden sm:inline">{MENU_MESSAGES.ADD_VARIANT_BTN}</span>
         </Button>
       </div>
 
@@ -82,6 +83,7 @@ export function VariantManager({ form }: VariantManagerProps) {
         <p className="text-xs font-medium text-rose-500">{errors.variants.message}</p>
       )}
 
+      {/* Variant Cards List */}
       <div className="space-y-3">
         {fields.map((field, index) => {
           const variantErrors = errors.variants?.[index];
@@ -91,22 +93,75 @@ export function VariantManager({ form }: VariantManagerProps) {
           return (
             <div
               key={field.id}
-              className={`rounded-2xl border p-4 transition-all ${
+              className={`rounded-2xl border p-3.5 sm:p-4 transition-all space-y-3 ${
                 isDefault
-                  ? "border-[#e8631b] bg-[#fffaf5] shadow-xs"
+                  ? "border-[#e8631b]/80 bg-[#fffaf5] shadow-xs"
                   : "border-[#eddcd4] bg-white hover:border-[#dfcece]"
               }`}
             >
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
+              {/* Variant Card Header: Identity, Default Badge/Button, Availability, Delete */}
+              <div className="flex items-center justify-between gap-1.5 sm:gap-2 pb-2.5 border-b border-[#f3e6de]/70 min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-wrap">
+                  <span className="text-xs font-bold text-neutral-800">
+                    Variant #{index + 1}
+                  </span>
+
+                  {isDefault ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#e8631b] px-2 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-white shadow-2xs">
+                      <CheckCircle2 className="size-3" />
+                      Default Choice
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleSetDefault(index)}
+                      className="inline-flex items-center gap-1 rounded-full bg-neutral-100 hover:bg-[#fef3ec] hover:text-[#9a3412] px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-neutral-600 transition-colors cursor-pointer border border-neutral-200"
+                    >
+                      <CheckCircle2 className="size-3 text-neutral-400" />
+                      Set as Default
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                  {/* Availability Switch */}
+                  <div className="flex items-center gap-1 sm:gap-1.5 bg-white/80 rounded-lg px-1.5 sm:px-2 py-0.5 border border-[#eddcd4]">
+                    <span className="text-[10px] font-semibold text-neutral-600 hidden sm:inline">
+                      {isAvailable ? "In Stock" : "Out of Stock"}
+                    </span>
+                    <Switch
+                      checked={isAvailable}
+                      onChange={(e) => setValue(`variants.${index}.isAvailable`, e.target.checked)}
+                      aria-label={`Toggle availability for variant ${variants[index]?.name || index + 1}`}
+                    />
+                  </div>
+
+                  {/* Remove Variant Button */}
+                  {fields.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveVariant(index)}
+                      className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                      aria-label="Remove variant"
+                      title="Remove variant"
+                    >
+                      <Trash2 className="size-3.5 sm:size-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Variant Inputs Grid: 2 cols on mobile, 12 cols on desktop/laptop */}
+              <div className="grid grid-cols-2 md:grid-cols-12 gap-2.5 sm:gap-3 items-start">
                 {/* Variant Name */}
-                <div className="sm:col-span-3 space-y-1">
+                <div className="col-span-2 md:col-span-4 space-y-1">
                   <Label className="text-[11px] font-bold text-neutral-700">
                     {MENU_MESSAGES.VARIANT_NAME_LABEL} <span className="text-rose-500">*</span>
                   </Label>
                   <Input
                     placeholder={MENU_MESSAGES.VARIANT_NAME_PLACEHOLDER}
                     {...register(`variants.${index}.name`)}
-                    className="h-9 text-xs bg-neutral-50/50 focus:bg-white"
+                    className="h-9 text-xs sm:text-sm bg-neutral-50/50 focus:bg-white"
                   />
                   {variantErrors?.name && (
                     <p className="text-[10px] text-rose-500 font-medium">
@@ -116,14 +171,14 @@ export function VariantManager({ form }: VariantManagerProps) {
                 </div>
 
                 {/* Portion Size */}
-                <div className="sm:col-span-3 space-y-1">
+                <div className="col-span-1 md:col-span-3 space-y-1">
                   <Label className="text-[11px] font-bold text-neutral-700">
                     {MENU_MESSAGES.VARIANT_PORTION_LABEL} <span className="text-rose-500">*</span>
                   </Label>
                   <Input
                     placeholder={MENU_MESSAGES.VARIANT_PORTION_PLACEHOLDER}
                     {...register(`variants.${index}.portion`)}
-                    className="h-9 text-xs bg-neutral-50/50 focus:bg-white"
+                    className="h-9 text-xs sm:text-sm bg-neutral-50/50 focus:bg-white"
                   />
                   {variantErrors?.portion && (
                     <p className="text-[10px] text-rose-500 font-medium">
@@ -133,12 +188,12 @@ export function VariantManager({ form }: VariantManagerProps) {
                 </div>
 
                 {/* Price */}
-                <div className="sm:col-span-2 space-y-1">
+                <div className="col-span-1 md:col-span-2 space-y-1">
                   <Label className="text-[11px] font-bold text-neutral-700">
                     {MENU_MESSAGES.VARIANT_PRICE_LABEL} <span className="text-rose-500">*</span>
                   </Label>
                   <div className="relative">
-                    <span className="absolute left-2.5 top-2 text-xs font-semibold text-neutral-400">
+                    <span className="absolute left-2.5 top-2 text-xs font-bold text-neutral-400">
                       ₹
                     </span>
                     <Input
@@ -150,7 +205,7 @@ export function VariantManager({ form }: VariantManagerProps) {
                         setValueAs: (val) =>
                           val === "" || Number.isNaN(Number(val)) ? undefined : Number(val),
                       })}
-                      className="pl-6 h-9 text-xs bg-neutral-50/50 focus:bg-white"
+                      className="pl-6 h-9 text-xs sm:text-sm font-semibold bg-neutral-50/50 focus:bg-white"
                     />
                   </div>
                   {variantErrors?.price && (
@@ -161,7 +216,7 @@ export function VariantManager({ form }: VariantManagerProps) {
                 </div>
 
                 {/* SKU */}
-                <div className="sm:col-span-2 space-y-1">
+                <div className="col-span-2 md:col-span-3 space-y-1">
                   <Label className="text-[11px] font-bold text-neutral-700">
                     {MENU_MESSAGES.VARIANT_SKU_LABEL}
                   </Label>
@@ -169,52 +224,6 @@ export function VariantManager({ form }: VariantManagerProps) {
                     placeholder={MENU_MESSAGES.VARIANT_SKU_PLACEHOLDER}
                     {...register(`variants.${index}.sku`)}
                     className="h-9 text-xs uppercase bg-neutral-50/50 focus:bg-white"
-                  />
-                </div>
-
-                {/* Actions & Defaults */}
-                <div className="sm:col-span-2 flex items-center justify-between sm:justify-end gap-2 pt-5">
-                  <button
-                    type="button"
-                    onClick={() => handleSetDefault(index)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
-                      isDefault
-                        ? "bg-[#e8631b] text-white"
-                        : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                    }`}
-                  >
-                    <CheckCircle2 className="size-3" />
-                    {isDefault ? "Default" : "Set Default"}
-                  </button>
-
-                  {fields.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveVariant(index)}
-                      className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                      aria-label="Remove variant"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* In Stock toggle */}
-              <div className="mt-2.5 pt-2 border-t border-[#f3e6de]/60 flex items-center justify-between">
-                <span className="text-[11px] text-neutral-500 font-medium">
-                  {isDefault
-                    ? "Pre-selected choice for customers on checkout"
-                    : "Alternative portion size"}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-semibold text-neutral-700">
-                    {isAvailable ? "In Stock" : "86'd / Sold Out"}
-                  </span>
-                  <Switch
-                    checked={isAvailable}
-                    onChange={(e) => setValue(`variants.${index}.isAvailable`, e.target.checked)}
-                    aria-label={`Toggle availability for variant ${variants[index]?.name || index + 1}`}
                   />
                 </div>
               </div>

@@ -1,6 +1,7 @@
 /**
  * Constants and user-facing messages for customer and staff profile features.
  */
+import { SHORT_MONTH_NAMES } from "@/lib/constants/date.constants";
 
 export const PROFILE_MESSAGES = {
   // Customer Profile Messages
@@ -38,6 +39,7 @@ export const PROFILE_MESSAGES = {
     PHONE_REQUIRED: "Phone number is required.",
     OWNER_NAME_REQUIRED: "Owner name is required.",
     AVERAGE_COST_INVALID: "Average cost must be a valid positive number.",
+    SEATING_CAPACITY_NEGATIVE: "Seating capacity cannot be negative",
     HOURS_REQUIRED: (day: string) => `Please set valid open and close times for ${day}.`,
     HOURS_CHRONOLOGICAL: (day: string) => `Closing time must be after opening time for ${day}.`,
   },
@@ -101,26 +103,58 @@ export const DAYS_OF_WEEK = [
   { id: 7, label: "Sunday" },
 ] as const;
 
+export const DEFAULT_BUSINESS_HOURS = {
+  OPEN_TIME: "09:00",
+  CLOSE_TIME: "22:00",
+} as const;
+
+export const QUEUE_PRO_PLAN_IDENTIFIERS = ["QUEUE_PRO", "QUEUE PRO"] as const;
+
+export const RESTAURANT_SETTINGS_FIELDS = {
+  STORE_OPEN: {
+    key: "isOpened",
+    title: "Store Open Status",
+    description: "Open or close your restaurant for online takeaway ordering",
+  },
+  VIRTUAL_QUEUE: {
+    key: "acceptsQueue",
+    title: "Virtual Queue Acceptance",
+    description: "Allow customers to join virtual takeaway queues",
+  },
+} as const;
+
+export const RESTAURANT_SETTINGS_MESSAGES = {
+  TITLE: "Restaurant Settings",
+  SUBTITLE: "Manage store open/closed availability and virtual queue preferences",
+  QUEUE_PRO_REQUIRED_BADGE: "QueuePro Plan Required",
+  QUEUE_PRO_REQUIRED_HINT:
+    "Virtual queue management is exclusively available on the QueuePro subscription plan.",
+  UPGRADE_LINK: "Upgrade Plan →",
+  STATUS_OPEN: "OPEN",
+  STATUS_CLOSED: "CLOSED",
+  STATUS_ENABLED: "ENABLED",
+  STATUS_DISABLED: "DISABLED",
+  CANCEL: "Cancel",
+  UPDATE_SETTINGS: "Update Settings",
+  UPDATING: "Updating...",
+} as const;
+
 export const profileHooks = {
   STAFF_PROFILE_STALE_TIME: 5 * 60 * 1000,
   CUSTOMER_PROFILE_STALE_TIME: 5 * 60 * 1000,
   RESTAURANT_PROFILE_STALE_TIME: 5 * 60 * 1000,
+  RESTAURANT_STATUS_STALE_TIME: 60 * 1000,
 };
 
-export const MONTH_NAMES = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-] as const;
+export const MONTH_NAMES = SHORT_MONTH_NAMES;
+
+export const HTTP_STATUS = {
+  OK: 200,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+} as const;
 
 export const Gender = {
   MALE: "MALE",

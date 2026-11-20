@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/cn";
-import type { RestaurantOrderStatus } from "../../../types/restaurant-orders.types";
+import type { RestaurantOrderStatus } from "@/features/orders/types/restaurant-orders.types";
 
 interface OrderStatusBadgeProps {
   status: RestaurantOrderStatus | string;

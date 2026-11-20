@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useDeleteS3Object } from "@/hooks/useDeleteS3Object";
 import { STORAGE_MESSAGES } from "@/services/storage/storage.constants";
 import { uploadFile } from "@/services/storage/storage.service";
-import type { RestaurantImageItem } from "../types/onboard.types";
+import type { RestaurantImageItem } from "@/features/onboard/types/onboard.types";
 
 interface ImageUploadSectionProps {
   images: RestaurantImageItem[];
@@ -168,7 +168,7 @@ export default function ImageUploadSection({
         <div className="mt-4 space-y-2">
           {images.map((img, index) => (
             <div
-              key={img.objectKey || index}
+              key={img.objectKey || `${img.fileName}-${img.displayOrder}`}
               className="flex items-center justify-between rounded-xl border border-neutral-200 bg-white px-3 py-2 text-xs"
             >
               <div className="flex items-center gap-2.5 truncate">

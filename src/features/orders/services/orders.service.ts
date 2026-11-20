@@ -8,13 +8,13 @@ import {
   ORDER_DEFAULTS,
   ORDER_ENDPOINTS,
   ORDER_FILTER_STATUS,
-} from "../constants/orders.constants";
+} from "@/features/orders/constants/orders.constants";
 import type {
   GetOrderHistoryParams,
   OrderHistoryApiResponse,
   OrderHistoryItem,
   OrderPaginationData,
-} from "../types/orders.types";
+} from "@/features/orders/types/orders.types";
 
 export interface NormalizedOrderHistoryResult {
   orders: OrderHistoryItem[];

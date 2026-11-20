@@ -5,15 +5,16 @@
 
 import { Layers, Plus, RefreshCw } from "lucide-react";
 import { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button.variants";
 import { cn } from "@/lib/utils/cn";
-import { CategoryCard } from "../components/CategoryCard";
-import { CategoryListSkeleton } from "../components/CategoryListSkeleton";
-import { CreateCategoryModal } from "../components/CreateCategoryModal";
-import { EditCategoryModal } from "../components/EditCategoryModal";
-import { EmptyState, ErrorState } from "../components/MenuPageStateUI";
-import { useMenuCategories } from "../hooks/use-menu-categories";
-import type { MenuCategory } from "../types/menu-category.types";
+import { CategoryCard } from "@/features/menu/components/CategoryCard";
+import { CategoryListSkeleton } from "@/features/menu/components/CategoryListSkeleton";
+import { CreateCategoryModal } from "@/features/menu/components/CreateCategoryModal";
+import { EditCategoryModal } from "@/features/menu/components/EditCategoryModal";
+import { EmptyState, ErrorState } from "@/features/menu/components/MenuPageStateUI";
+import { useMenuCategories } from "@/features/menu/hooks/use-menu-categories";
+import type { MenuCategory } from "@/features/menu/types/menu-category.types";
 
 export default function RestaurantMenuCategoriesPage() {
   const { categories, restaurantId, isLoading, isError, refetch } = useMenuCategories();
@@ -49,17 +50,17 @@ export default function RestaurantMenuCategoriesPage() {
     if (categories.length === 0) {
       return (
         <EmptyState
-          icon={<Layers className="size-6" />}
+          icon={<Layers className="size-6 text-[#e8631b]" />}
           title="No categories found"
           description="No menu categories are currently available for this restaurant."
-          createLabel="Create Your First Category"
+          createLabel="Create Category"
           onCreateClick={() => setIsCreateModalOpen(true)}
         />
       );
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 min-w-0">
         {categories.map((category) => (
           <CategoryCard key={category.id} category={category} onEdit={handleEditClick} />
         ))}
@@ -68,11 +69,11 @@ export default function RestaurantMenuCategoriesPage() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6 sm:p-8 bg-[#faf7f5]/40 min-h-full">
+    <div className="flex-1 space-y-6 p-4 sm:p-6 lg:p-8 bg-[#faf7f5]/40 min-h-full min-w-0 max-w-full overflow-x-hidden">
       {/* Page Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#f3e6de] pb-6">
-        <div>
-          <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#f3e6de] pb-6 min-w-0">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Menu Categories</h1>
             <span className="rounded-full bg-[#fef3ec] px-2.5 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
               {categories.length} total
@@ -83,7 +84,7 @@ export default function RestaurantMenuCategoriesPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
           <Button
             type="button"
             variant="outline"

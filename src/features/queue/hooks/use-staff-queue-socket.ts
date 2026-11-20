@@ -28,7 +28,9 @@ export function useStaffQueueSocket(
   const socketRef = useRef<Socket | null>(null);
 
   const optionsRef = useRef(options);
-  optionsRef.current = options;
+  useEffect(() => {
+    optionsRef.current = options;
+  });
 
   useEffect(() => {
     let isCancelled = false;
@@ -148,6 +150,7 @@ export function useStaffQueueSocket(
     });
 
     return () => {
+      socket.off();
       socket.emit(QUEUE_WS_EVENTS.LEAVE_RESTAURANT, { restaurantId });
       socket.disconnect();
       socketRef.current = null;

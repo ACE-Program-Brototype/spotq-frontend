@@ -12,9 +12,12 @@ export type RestaurantOrderStatus =
   | "COMPLETED"
   | "CANCELLED";
 
-export type RestaurantOrderFilterStatus = "ALL" | RestaurantOrderStatus;
+import type {
+  OrderDateRangeFilter,
+  RestaurantOrderFilterStatus,
+} from "@/features/orders/constants/restaurant-orders.constants";
 
-export type OrderDateRangeFilter = "TODAY" | "LAST_7_DAYS" | "CUSTOM";
+export type { OrderDateRangeFilter, RestaurantOrderFilterStatus };
 
 export type OrderType = "DINE_IN" | "TAKEAWAY" | "PRE_ORDER";
 

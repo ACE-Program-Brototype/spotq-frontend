@@ -49,6 +49,8 @@ export type TableSectionAll = {
   name: string;
 };
 
+export type TableSection = TableSectionAll;
+
 export interface GetTablesResponse {
   mode: string;
   sections: TablesGroupedBySection;

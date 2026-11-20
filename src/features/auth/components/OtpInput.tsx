@@ -216,7 +216,7 @@ export function OtpInput({
             font-semibold
             text-gray-900
             outline-none
-            transition-all
+            transition-colors
 
             focus:border-spotq-orange
             focus:ring-2

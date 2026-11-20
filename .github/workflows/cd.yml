@@ -1,0 +1,95 @@
+
+name: Frontend Deployment
+
+on:
+  push:
+    branches:
+      - main
+      # REMOVE AFTER TESTING
+      - development
+      - fix/the-complete-UI-bug-fix
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout frontend source code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 3. Install pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      # 4. Configure pnpm dependency cache
+      - name: Configure pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # 5. Install dependencies
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 6. Install Infisical CLI
+      - name: Install Infisical CLI
+        run: |
+          curl -1sLf \
+            'https://artifacts-cli.infisical.com/setup.deb.sh' \
+            | sudo -E bash
+          sudo apt-get install -y infisical
+
+  
+      # 7. Authenticate, build and deploy
+      - name: Build and deploy
+        env:
+          INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+          INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          INFISICAL_PROJECT_ID: ${{ vars.INFISICAL_PROJECT_ID }}
+
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+        run: |
+          set -euo pipefail
+
+          # Authenticate using Universal Auth and obtain access token
+          export INFISICAL_TOKEN=$(infisical login \
+            --method=universal-auth \
+            --client-id="$INFISICAL_CLIENT_ID" \
+            --client-secret="$INFISICAL_CLIENT_SECRET" \
+            --silent \
+            --plain)
+
+          # Select Infisical environment based on Git branch
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            INFISICAL_ENV="prod"
+          else
+            INFISICAL_ENV="dev"
+          fi
+
+          # Build frontend with Infisical secrets
+          infisical run \
+            --token="$INFISICAL_TOKEN" \
+            --projectId="$INFISICAL_PROJECT_ID" \
+            --env="$INFISICAL_ENV" \
+            -- pnpm build
+
+          # Deploy to Cloudflare Pages
+          npx wrangler pages deploy dist \
+            --project-name=spotq-frontend \
+            --branch="$GITHUB_REF_NAME"

@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { useResendEmailOtp } from "./use-auth-mutations";
 
 export const useResendOtp = () => {

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { MenuCategory } from "../types/menu.types";
+import type { MenuCategory } from "@/features/menu/types/menu.types";
 import { StaffMenuItemFilters } from "./StaffMenuItemFilters";
 
 describe("StaffMenuItemFilters", () => {
@@ -45,13 +45,13 @@ describe("StaffMenuItemFilters", () => {
     render(<StaffMenuItemFilters {...defaultProps} />);
 
     expect(
-      screen.getByPlaceholderText(/Search items by name, description, variant or SKU.../i),
+      screen.getByPlaceholderText(/Search items by name, description, or variant/i),
     ).toBeInTheDocument();
     expect(screen.getByText("All Categories")).toBeInTheDocument();
     expect(screen.getByText("Starters")).toBeInTheDocument();
     expect(screen.getByText("Mains")).toBeInTheDocument();
     expect(screen.getByText("In Stock")).toBeInTheDocument();
-    expect(screen.getByText("86'd Items")).toBeInTheDocument();
+    expect(screen.getByText("Out of Stock")).toBeInTheDocument();
   });
 
   it("triggers category change when a category pill is clicked", () => {
@@ -64,7 +64,7 @@ describe("StaffMenuItemFilters", () => {
   it("triggers availability change when availability pill is clicked", () => {
     render(<StaffMenuItemFilters {...defaultProps} />);
 
-    fireEvent.click(screen.getByText("86'd Items"));
+    fireEvent.click(screen.getByText("Out of Stock"));
     expect(defaultProps.onAvailabilityChange).toHaveBeenCalledWith("UNAVAILABLE");
   });
 

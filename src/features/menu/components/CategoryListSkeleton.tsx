@@ -16,11 +16,11 @@ const SKELETON_ITEMS = [
 
 export function CategoryListSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 min-w-0">
       {SKELETON_ITEMS.map((id) => (
         <div
           key={id}
-          className="rounded-2xl border border-[#eddcd4] bg-white p-5 shadow-xs space-y-4"
+          className="rounded-2xl border border-[#eddcd4] bg-white p-4 sm:p-5 shadow-xs space-y-4 min-w-0 overflow-hidden"
         >
           <div className="flex items-center justify-between">
             <Skeleton className="h-5 w-28 rounded-lg bg-neutral-200" />

@@ -2,7 +2,7 @@ import { FileText, QrCode, Store, Users, Utensils } from "lucide-react";
 import type {
   CustomerOrderRestaurant,
   OrderingMode,
-} from "../../types/customer-order-details.types";
+} from "@/features/orders/types/customer-order-details.types";
 
 export interface OrderDiningContextCardProps {
   restaurant: CustomerOrderRestaurant;

@@ -16,11 +16,12 @@ export interface RestaurantProfileDetails {
 }
 
 export interface RestaurantSettingsDetails {
+  isOpened?: boolean;
   acceptsQueue: boolean;
-  acceptsQrOrders: boolean;
-  loyaltyEnabled: boolean;
-  autoAcceptQueue: boolean;
-  seatingCapacity: number;
+  acceptsQrOrders?: boolean;
+  loyaltyEnabled?: boolean;
+  autoAcceptQueue?: boolean;
+  seatingCapacity?: number;
 }
 
 export interface BusinessHoursItem {
@@ -54,10 +55,11 @@ export interface UpdateRestaurantProfileSectionInput {
 }
 
 export interface UpdateRestaurantSettingsInput {
-  acceptsQueue: boolean;
-  acceptsQrOrders: boolean;
-  loyaltyEnabled: boolean;
-  autoAcceptQueue: boolean;
+  isOpened?: boolean;
+  acceptsQueue?: boolean;
+  acceptsQrOrders?: boolean;
+  loyaltyEnabled?: boolean;
+  autoAcceptQueue?: boolean;
   seatingCapacity?: number;
 }
 

@@ -1,13 +1,17 @@
-import { ShoppingBag, Users } from "lucide-react";
+import { CheckCircle2, ShoppingBag, Users } from "lucide-react";
+import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  CUSTOMER_NAVIGATION_LABELS,
   CUSTOMER_QUEUE_BUTTON_LABELS,
+  CUSTOMER_RESTAURANT_SECTIONS,
   RESTAURANT_PLAN_TYPES,
-} from "../../constants/customer-restaurant.constants";
+} from "@/features/restaurants/constants/customer-restaurant.constants";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantMenuCategory,
-} from "../../types/customer-restaurant.types";
+} from "@/features/restaurants/types/customer-restaurant.types";
+import { cn } from "@/lib/utils/cn";
 
 interface RestaurantMenuNavigationProps {
   categories: CustomerRestaurantMenuCategory[];
@@ -15,6 +19,8 @@ interface RestaurantMenuNavigationProps {
   activeId: string;
   onActiveChange: (id: string) => void;
   onJoinQueueClick?: () => void;
+  isJoinedThisQueue?: boolean;
+  isJoinedOtherQueue?: boolean;
 }
 
 export function RestaurantMenuNavigation({
@@ -23,12 +29,16 @@ export function RestaurantMenuNavigation({
   activeId,
   onActiveChange,
   onJoinQueueClick,
+  isJoinedThisQueue: propIsJoinedThisQueue,
+  isJoinedOtherQueue: propIsJoinedOtherQueue,
 }: RestaurantMenuNavigationProps) {
   const planType = restaurant.subscriptionType ?? restaurant.type;
   const showQueueButton = planType === RESTAURANT_PLAN_TYPES.QUEUE_PRO;
   const isRestaurantOpen = (restaurant.isOpened ?? restaurant.settings?.isOpened) !== false;
-  const isJoinedThisQueue = Boolean(restaurant.queue?.hasJoinedThisRestaurantQueue);
-  const isJoinedOtherQueue = Boolean(restaurant.queue?.hasJoinedAnyQueue) && !isJoinedThisQueue;
+  const isJoinedThisQueue =
+    propIsJoinedThisQueue ?? Boolean(restaurant.queue?.hasJoinedThisRestaurantQueue);
+  const isJoinedOtherQueue =
+    propIsJoinedOtherQueue ?? (Boolean(restaurant.queue?.hasJoinedAnyQueue) && !isJoinedThisQueue);
   const queueButtonLabel = !isRestaurantOpen
     ? CUSTOMER_QUEUE_BUTTON_LABELS.RESTAURANT_CLOSED
     : isJoinedThisQueue
@@ -36,34 +46,52 @@ export function RestaurantMenuNavigation({
       : isJoinedOtherQueue
         ? CUSTOMER_QUEUE_BUTTON_LABELS.CANT_JOIN_QUEUE
         : CUSTOMER_QUEUE_BUTTON_LABELS.JOIN_QUEUE;
-  const scrollTo = (id: string) => {
+  const scrollTo = useCallback((id: string) => {
     onActiveChange(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+    if (typeof document !== "undefined") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [onActiveChange]);
 
   return (
     <aside className="h-fit space-y-3 lg:sticky lg:top-24">
       <div className="rounded-2xl border border-stone-200 bg-white p-3 shadow-sm">
-        <p className="px-3 pb-1 pt-2 text-sm font-bold text-stone-900">Explore menu</p>
+        <p className="px-3 pb-1 pt-2 text-sm font-bold text-stone-900">
+          {CUSTOMER_NAVIGATION_LABELS.EXPLORE_MENU}
+        </p>
         <p className="px-3 pb-3 text-xs text-stone-400">
-          {categories.length} {categories.length === 1 ? "category" : "categories"}
+          {categories.length}{" "}
+          {categories.length === 1
+            ? CUSTOMER_NAVIGATION_LABELS.CATEGORY_SINGULAR
+            : CUSTOMER_NAVIGATION_LABELS.CATEGORIES_PLURAL}
         </p>
         {categories.map((category) => (
           <button
             key={category.id}
             type="button"
             onClick={() => scrollTo(category.id)}
-            className={`mb-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition ${activeId === category.id ? "bg-[#ff6b00] text-white" : "text-stone-600 hover:bg-orange-50 hover:text-[#f26500]"}`}
+            title={category.name}
+            className={cn(
+              "mb-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition truncate block min-w-0 cursor-pointer",
+              activeId === category.id
+                ? "bg-[#ff6b00] text-white shadow-xs"
+                : "text-stone-600 hover:bg-orange-50 hover:text-[#f26500]",
+            )}
           >
-            {category.name}
+            <span className="truncate block">{category.name}</span>
           </button>
         ))}
         <button
           type="button"
-          onClick={() => scrollTo("overview")}
-          className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${activeId === "overview" ? "bg-orange-50 text-[#f26500]" : "text-stone-600 hover:bg-stone-50"}`}
+          onClick={() => scrollTo(CUSTOMER_RESTAURANT_SECTIONS.OVERVIEW)}
+          className={cn(
+            "w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition cursor-pointer",
+            activeId === CUSTOMER_RESTAURANT_SECTIONS.OVERVIEW
+              ? "bg-orange-50 text-[#f26500]"
+              : "text-stone-600 hover:bg-stone-50",
+          )}
         >
-          Overview &amp; hours
+          {CUSTOMER_NAVIGATION_LABELS.OVERVIEW_AND_HOURS}
         </button>
       </div>
       {showQueueButton && (
@@ -73,12 +101,20 @@ export function RestaurantMenuNavigation({
           disabled={
             !isRestaurantOpen ||
             !restaurant.settings?.acceptsQueue ||
-            isJoinedThisQueue ||
             isJoinedOtherQueue
           }
-          className="w-full rounded-xl bg-orange-600 font-bold text-white hover:bg-orange-700 disabled:bg-stone-300 cursor-pointer shadow-sm transition"
+          className={cn(
+            "w-full rounded-xl font-bold text-white shadow-sm transition cursor-pointer",
+            isJoinedThisQueue
+              ? "bg-emerald-600 hover:bg-emerald-700"
+              : "bg-orange-600 hover:bg-orange-700 disabled:bg-stone-300 disabled:cursor-not-allowed",
+          )}
         >
-          <Users className="mr-2 size-4" />
+          {isJoinedThisQueue ? (
+            <CheckCircle2 className="mr-2 size-4" />
+          ) : (
+            <Users className="mr-2 size-4" />
+          )}
           {queueButtonLabel}
         </Button>
       )}

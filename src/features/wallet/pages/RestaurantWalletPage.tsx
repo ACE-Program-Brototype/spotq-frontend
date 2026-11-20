@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BankAccountDialog } from "@/features/wallet/components/BankAccountDialog";
 import { WalletBalanceCard } from "@/features/wallet/components/WalletBalanceCard";
 import { WalletBankAccountCard } from "@/features/wallet/components/WalletBankAccountCard";
+import { WalletEmptyState } from "@/features/wallet/components/WalletEmptyState";
 import { WalletLedgerEntriesTable } from "@/features/wallet/components/WalletLedgerEntriesTable";
 import { WalletLoadingSkeleton } from "@/features/wallet/components/WalletLoadingSkeleton";
 import { WalletPageHeader } from "@/features/wallet/components/WalletPageHeader";
@@ -17,7 +18,7 @@ import {
 } from "@/features/wallet/hooks/useWallet";
 import { createIdempotencyKey } from "@/lib/api/idempotency";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import type { BankAccountFormValues } from "../schemas/bank-account.schema";
+import type { BankAccountFormValues } from "@/features/wallet/schemas/bank-account.schema";
 
 export default function RestaurantWalletPage() {
   const [ledgerFilters, setLedgerFilters] = useState({
@@ -31,7 +32,7 @@ export default function RestaurantWalletPage() {
   const ledgerSearch = useDebounce(ledgerFilters.searchInput, 300).trim();
   const [isBankDialogOpen, setBankDialogOpen] = useState(false);
   const [isWithdrawDialogOpen, setWithdrawDialogOpen] = useState(false);
-  const { data: wallet, isLoading, isError, error, refetch } = useWalletOverview();
+  const { data: wallet, isLoading, isError, error, refetch, isFetching } = useWalletOverview();
 
   const ledgerQuery = useWalletLedgerEntries({
     page: ledgerFilters.page,
@@ -74,17 +75,20 @@ export default function RestaurantWalletPage() {
   if (isLoading) return <WalletLoadingSkeleton />;
 
   if (isError || !wallet) {
+    const isNotFound =
+      error instanceof Error &&
+      (error.message.toLowerCase().includes("wallet not found") ||
+        error.message.toLowerCase().includes("not found"));
+
     return (
-      <main className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-        <section role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-6">
-          <h1 className="text-xl font-bold text-neutral-900">Unable to load wallet</h1>
-          <p className="mt-2 text-sm text-rose-800">
-            {error instanceof Error ? error.message : "Please try again."}
-          </p>
-          <Button type="button" variant="outline" className="mt-4" onClick={() => void refetch()}>
-            Try again
-          </Button>
-        </section>
+      <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 lg:px-8">
+        <WalletPageHeader />
+        <WalletEmptyState
+          isNotFound={isNotFound}
+          errorMessage={error instanceof Error ? error.message : undefined}
+          onRetry={() => void refetch()}
+          isRetrying={isFetching}
+        />
       </main>
     );
   }

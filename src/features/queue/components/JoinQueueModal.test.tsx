@@ -2,20 +2,20 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useJoinQueue } from "@/features/queue/hooks/use-join-queue";
+import { useQueueEta } from "@/features/queue/hooks/use-queue-eta";
+import { setActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
 import { getStoredFid } from "@/lib/firebase/firebase";
-import { useJoinQueue } from "../hooks/use-join-queue";
-import { useQueueEta } from "../hooks/use-queue-eta";
-import { setActiveCustomerTicket } from "../utils/active-queue.utils";
 import { JoinQueueModal } from "./JoinQueueModal";
 
-jest.mock("../hooks/use-queue-eta");
-jest.mock("../hooks/use-join-queue");
+jest.mock("@/features/queue/hooks/use-queue-eta");
+jest.mock("@/features/queue/hooks/use-join-queue");
 jest.mock("@/lib/firebase/firebase", () => ({
   ...jest.requireActual("@/lib/firebase/firebase"),
   getStoredFid: jest.fn(() => Promise.resolve(null)),
 }));
-jest.mock("../utils/active-queue.utils", () => ({
-  ...jest.requireActual("../utils/active-queue.utils"),
+jest.mock("@/features/queue/utils/active-queue.utils", () => ({
+  ...jest.requireActual("@/features/queue/utils/active-queue.utils"),
   setActiveCustomerTicket: jest.fn(),
 }));
 

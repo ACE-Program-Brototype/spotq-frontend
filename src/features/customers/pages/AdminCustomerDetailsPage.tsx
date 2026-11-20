@@ -1,15 +1,14 @@
-import { ArrowLeft, Calendar, Clock, Mail } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Mail, Phone } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ADMIN_ROUTES } from "@/app/router/routes.constants";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CustomerDetailsErrorState } from "../components/CustomerDetailsErrorState";
-import { CustomerDetailsSkeleton } from "../components/CustomerDetailsSkeleton";
-import { CustomerOrdersSection } from "../components/CustomerOrdersSection";
-import { CUSTOMER_MESSAGES, CUSTOMER_STATUS } from "../constants/customer.constants";
-import { useCustomerDetails } from "../hooks/use-customers";
-import { formatMemberSince, getCustomerInitials } from "../utils/customer.utils";
+import { CustomerDetailsErrorState } from "@/features/customers/components/CustomerDetailsErrorState";
+import { CustomerDetailsSkeleton } from "@/features/customers/components/CustomerDetailsSkeleton";
+import { CUSTOMER_MESSAGES, CUSTOMER_STATUS } from "@/features/customers/constants/customer.constants";
+import { useCustomerDetails } from "@/features/customers/hooks/use-customers";
+import { formatMemberSince, getCustomerInitials } from "@/features/customers/utils/customer.utils";
 
 export function AdminCustomerDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -125,29 +124,27 @@ export function AdminCustomerDetailsPage() {
               </Avatar>
               <div>
                 <h3 className="text-lg font-bold text-slate-900">{customer.fullName}</h3>
-                <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
-                  <Mail className="size-3.5 text-slate-400 shrink-0" />
-                  <span className="font-medium text-slate-700" data-testid="customer-email">
-                    {customer.email}
-                  </span>
+                <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                  <div className="flex items-center gap-1.5">
+                    <Mail className="size-3.5 text-slate-400 shrink-0" />
+                    <span className="font-medium text-slate-700" data-testid="customer-email">
+                      {customer.email}
+                    </span>
+                  </div>
+                  {customer.phone && (
+                    <div className="flex items-center gap-1.5">
+                      <Phone className="size-3.5 text-slate-400 shrink-0" />
+                      <span className="font-medium text-slate-700">
+                        {customer.phone}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center gap-2 rounded-lg bg-slate-100/80 px-3 py-2 text-xs text-slate-700 border border-slate-200/50 self-start sm:self-center">
-              <span className="font-semibold text-slate-500">
-                {CUSTOMER_MESSAGES.DETAILS_PAGE_CUSTOMER_ID_LABEL}:
-              </span>
-              <span
-                className="font-mono font-medium text-slate-800"
-                data-testid="customer-details-id"
-              >
-                {customer.id}
-              </span>
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             <div className="space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                 {CUSTOMER_MESSAGES.CARD_LABEL_MEMBER_SINCE}
@@ -177,12 +174,21 @@ export function AdminCustomerDetailsPage() {
                 <span className="truncate">{customer.email}</span>
               </div>
             </div>
+
+            <div className="space-y-1">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                {CUSTOMER_MESSAGES.CARD_LABEL_PHONE}
+              </p>
+              <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                <Phone className="size-3.5 text-slate-400 shrink-0" />
+                <span data-testid="customer-phone">
+                  {customer.phone || CUSTOMER_MESSAGES.PHONE_NOT_PROVIDED}
+                </span>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* Orders Section */}
-      <CustomerOrdersSection />
     </div>
   );
 }

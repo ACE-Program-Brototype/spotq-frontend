@@ -5,7 +5,8 @@
 
 import { Plus, RefreshCw, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button.variants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { AddonCard } from "@/features/menu/components/addon/AddonCard";
 import { AddonListSkeleton } from "@/features/menu/components/addon/AddonListSkeleton";
@@ -13,9 +14,10 @@ import { CreateAddonModal } from "@/features/menu/components/addon/CreateAddonMo
 import { DeleteAddonDialog } from "@/features/menu/components/addon/DeleteAddonDialog";
 import { EditAddonModal } from "@/features/menu/components/addon/EditAddonModal";
 import { useRestaurantAddons } from "@/features/menu/hooks/use-restaurant-addons";
+import { EmptyState, ErrorState } from "@/features/menu/components/MenuPageStateUI";
+import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 import type { MenuAddon } from "@/features/menu/types/menu.types";
 import { cn } from "@/lib/utils/cn";
-import { EmptyState, ErrorState } from "../components/MenuPageStateUI";
 
 export default function RestaurantMenuAddonsPage() {
   const user = useAuthStore((state) => state.user);
@@ -76,8 +78,8 @@ export default function RestaurantMenuAddonsPage() {
     if (isError) {
       return (
         <ErrorState
-          title="Failed to load add-ons"
-          description="We encountered a problem loading your modifiers and add-ons. Please check your connection and try again."
+          title={MENU_MESSAGES.RESTAURANT_ADDONS_ERROR_TITLE}
+          description={MENU_MESSAGES.RESTAURANT_ADDONS_ERROR_DESC}
           onRetry={refetch}
         />
       );
@@ -86,10 +88,10 @@ export default function RestaurantMenuAddonsPage() {
     if (addons.length === 0) {
       return (
         <EmptyState
-          icon={<Sparkles className="size-6" />}
-          title="No add-ons found"
-          description="No modifiers or complementary add-ons are currently available for this restaurant."
-          createLabel="Create Your First Add-on"
+          icon={<Sparkles className="size-6 text-[#e8631b]" />}
+          title={MENU_MESSAGES.RESTAURANT_ADDONS_EMPTY_TITLE}
+          description={MENU_MESSAGES.RESTAURANT_ADDONS_EMPTY_DESC}
+          createLabel={MENU_MESSAGES.RESTAURANT_ADDONS_CREATE_BTN}
           onCreateClick={() => setIsCreateModalOpen(true)}
         />
       );
@@ -113,20 +115,20 @@ export default function RestaurantMenuAddonsPage() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6 sm:p-8 bg-[#faf7f5]/40 min-h-full">
+    <div className="flex-1 space-y-4 sm:space-y-6 p-3.5 sm:p-6 lg:p-8 bg-[#faf7f5]/40 min-h-full min-w-0 max-w-full overflow-x-hidden">
       {/* Page Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#f3e6de] pb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#f3e6de] pb-4 sm:pb-6 min-w-0">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-              Modifiers &amp; Add-ons
+              {MENU_MESSAGES.RESTAURANT_ADDONS_TITLE}
             </h1>
             <span className="rounded-full bg-[#fef3ec] px-2.5 py-0.5 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
               {addons.length} total
             </span>
           </div>
           <p className="text-sm text-neutral-500 mt-1">
-            Manage complementary items, toppings, and extras available for your menu items.
+            {MENU_MESSAGES.RESTAURANT_ADDONS_SUBTITLE}
           </p>
         </div>
 
@@ -152,7 +154,7 @@ export default function RestaurantMenuAddonsPage() {
             )}
           >
             <Plus className="size-4" />
-            <span>Create Add-on</span>
+            <span>{MENU_MESSAGES.RESTAURANT_ADDONS_CREATE_BTN}</span>
           </Button>
         </div>
       </div>

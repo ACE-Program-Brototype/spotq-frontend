@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import type { DocumentsState, OnboardState } from "../types/onboard.types";
+import type { DocumentsState, OnboardState } from "@/features/onboard/types/onboard.types";
 
 const initialDocuments: DocumentsState = {
   fssai: null,

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { CUSTOMER_STATUS } from "../constants/customer.constants";
-import { useCustomerDetails, useUpdateCustomerStatus } from "../hooks/use-customers";
+import { CUSTOMER_STATUS } from "@/features/customers/constants/customer.constants";
+import { useCustomerDetails, useUpdateCustomerStatus } from "@/features/customers/hooks/use-customers";
 import { AdminCustomerDetailsPage } from "./AdminCustomerDetailsPage";
 
 const mockNavigate = jest.fn();
@@ -12,7 +12,7 @@ jest.mock("react-router-dom", () => ({
   useParams: () => mockParams,
 }));
 
-jest.mock("../hooks/use-customers", () => ({
+jest.mock("@/features/customers/hooks/use-customers", () => ({
   useCustomerDetails: jest.fn(),
   useUpdateCustomerStatus: jest.fn(),
 }));
@@ -70,9 +70,24 @@ describe("AdminCustomerDetailsPage", () => {
 
     expect(screen.getByTestId("customer-name")).toHaveTextContent("Alice Smith");
     expect(screen.getByTestId("customer-email")).toHaveTextContent("alice@example.com");
-    expect(screen.getByTestId("customer-details-id")).toHaveTextContent("cust-123");
+    expect(screen.getByTestId("customer-phone")).toHaveTextContent("+1234567890");
+    expect(screen.queryByTestId("customer-details-id")).not.toBeInTheDocument();
     expect(screen.getByTestId("customer-status-badge")).toHaveTextContent("ACTIVE");
     expect(screen.queryByTestId("customer-block-btn")).not.toBeInTheDocument();
+  });
+
+  it("should render fallback text when customer phone is null", () => {
+    (useCustomerDetails as jest.Mock).mockReturnValue({
+      data: { ...mockCustomer, phone: null },
+      isLoading: false,
+      isError: false,
+      error: null,
+      refetch: mockRefetch,
+    });
+
+    render(<AdminCustomerDetailsPage />);
+
+    expect(screen.getByTestId("customer-phone")).toHaveTextContent("Not provided");
   });
 
   it("should navigate back to /admin/customers when back button is clicked", () => {

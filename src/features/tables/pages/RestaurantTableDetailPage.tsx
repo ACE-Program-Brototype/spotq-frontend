@@ -17,13 +17,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { DeleteTableDialog } from "../components/DeleteTableDialog";
-import { EditTableModal } from "../components/EditTableModal";
-import { TABLE_SHAPE } from "../constants/table.constants";
-import { useDeleteTable } from "../hooks/useDeleteTable";
-import { useRestaurantTableDetails } from "../hooks/useRestaurantTableDetails";
-import { useUpdateTable } from "../hooks/useUpdateTable";
-import type { UpdateTableFormData } from "../schemas/update-table.schema";
+import { DeleteTableDialog } from "@/features/tables/components/DeleteTableDialog";
+import { EditTableModal } from "@/features/tables/components/EditTableModal";
+import { TABLE_SHAPE } from "@/features/tables/constants/table.constants";
+import { useDeleteTable } from "@/features/tables/hooks/useDeleteTable";
+import { useRestaurantTableDetails } from "@/features/tables/hooks/useRestaurantTableDetails";
+import { useUpdateTable } from "@/features/tables/hooks/useUpdateTable";
+import type { UpdateTableFormData } from "@/features/tables/schemas/update-table.schema";
 
 export default function RestaurantTableDetailPage() {
   const { tableId = "" } = useParams();

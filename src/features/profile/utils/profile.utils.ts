@@ -1,6 +1,6 @@
 import env from "@/config/env";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { StaffProfile, StaffProfileRawData } from "../types/profile.types";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { StaffProfile, StaffProfileRawData } from "@/features/profile/types/profile.types";
 
 /**
  * Formats a YYYY-MM-DD date string into a localized readable date (e.g. "April 12, 1995").

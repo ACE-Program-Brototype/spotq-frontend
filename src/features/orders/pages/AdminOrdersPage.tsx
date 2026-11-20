@@ -7,53 +7,61 @@
 import { AlertCircle, RefreshCw, ShoppingBag } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useDebounce } from "@/hooks/useDebounce";
-import { cn } from "@/lib/utils/cn";
-import { AdminOrderDetailModal } from "../components/admin/order/AdminOrderDetailModal";
+import { AdminOrderDetailModal } from "@/features/orders/components/admin/order/AdminOrderDetailModal";
+import { AdminOrdersFilters } from "@/features/orders/components/admin/order/AdminOrdersFilters";
+import { AdminOrdersMetrics } from "@/features/orders/components/admin/order/AdminOrdersMetrics";
+import { AdminOrdersTable } from "@/features/orders/components/admin/order/AdminOrdersTable";
 import {
+  ADMIN_DATE_PRESETS,
+  ADMIN_ORDER_FILTER_STATUS,
+  ADMIN_ORDERS_DEFAULTS,
+  ADMIN_ORDERS_MESSAGES,
+  ADMIN_PAYMENT_FILTER_STATUS,
   type AdminDatePreset,
-  AdminOrdersFilters,
-} from "../components/admin/order/AdminOrdersFilters";
-import { AdminOrdersMetrics } from "../components/admin/order/AdminOrdersMetrics";
-import { AdminOrdersTable } from "../components/admin/order/AdminOrdersTable";
-import { ADMIN_ORDERS_DEFAULTS, ADMIN_ORDERS_MESSAGES } from "../constants/admin-orders.constants";
-import { useAdminOrders } from "../hooks/use-admin-orders";
+} from "@/features/orders/constants/admin-orders.constants";
+import { useAdminOrders } from "@/features/orders/hooks/use-admin-orders";
 import type {
   AdminOrderFilterPaymentStatus,
   AdminOrderFilterStatus,
   AdminOrderListItem,
   AdminOrdersSortBy,
   AdminOrdersSortOrder,
-} from "../types/admin-orders.types";
+} from "@/features/orders/types/admin-orders.types";
+import { useDebounce } from "@/hooks/useDebounce";
+import { cn } from "@/lib/utils/cn";
 
 export default function AdminOrdersPage() {
   // ── State Management ──
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, ADMIN_ORDERS_DEFAULTS.SEARCH_DEBOUNCE_MS);
 
-  const [statusFilter, setStatusFilter] = useState<AdminOrderFilterStatus>("ALL");
+  const [statusFilter, setStatusFilter] = useState<AdminOrderFilterStatus>(
+    ADMIN_ORDER_FILTER_STATUS.ALL,
+  );
   const [paymentStatusFilter, setPaymentStatusFilter] =
-    useState<AdminOrderFilterPaymentStatus>("ALL");
-  const [datePreset, setDatePreset] = useState<AdminDatePreset>("ALL");
+    useState<AdminOrderFilterPaymentStatus>(ADMIN_PAYMENT_FILTER_STATUS.ALL);
+  const [datePreset, setDatePreset] = useState<AdminDatePreset>(ADMIN_DATE_PRESETS.ALL);
 
   const [sortBy, setSortBy] = useState<AdminOrdersSortBy>(ADMIN_ORDERS_DEFAULTS.SORT_BY);
   const [sortOrder, setSortOrder] = useState<AdminOrdersSortOrder>(
     ADMIN_ORDERS_DEFAULTS.SORT_ORDER,
   );
   const [currentPage, setCurrentPage] = useState<number>(ADMIN_ORDERS_DEFAULTS.PAGE);
+  const [limit, setLimit] = useState<number>(ADMIN_ORDERS_DEFAULTS.LIMIT);
+  const [restaurantFilter, setRestaurantFilter] = useState<string | undefined>(undefined);
 
   const [selectedOrder, setSelectedOrder] = useState<AdminOrderListItem | null>(null);
 
   // ── Compute Date Range Strings ──
   const dateParams = useMemo(() => {
-    if (datePreset === "TODAY") {
+    if (datePreset === ADMIN_DATE_PRESETS.TODAY) {
       const start = new Date();
       start.setHours(0, 0, 0, 0);
       const end = new Date();
       end.setHours(23, 59, 59, 999);
       return { startDate: start.toISOString(), endDate: end.toISOString() };
     }
-    if (datePreset === "LAST_7_DAYS") {
+    if (datePreset === ADMIN_DATE_PRESETS.LAST_7_DAYS) {
       const start = new Date();
       start.setDate(start.getDate() - 6);
       start.setHours(0, 0, 0, 0);
@@ -61,7 +69,7 @@ export default function AdminOrdersPage() {
       end.setHours(23, 59, 59, 999);
       return { startDate: start.toISOString(), endDate: end.toISOString() };
     }
-    if (datePreset === "LAST_30_DAYS") {
+    if (datePreset === ADMIN_DATE_PRESETS.LAST_30_DAYS) {
       const start = new Date();
       start.setDate(start.getDate() - 29);
       start.setHours(0, 0, 0, 0);
@@ -75,14 +83,16 @@ export default function AdminOrdersPage() {
   // ── TanStack Query Hook ──
   const { data, isLoading, isFetching, isError, error, refetch } = useAdminOrders({
     search: debouncedSearch.trim() || undefined,
-    status: statusFilter !== "ALL" ? statusFilter : undefined,
-    paymentStatus: paymentStatusFilter !== "ALL" ? paymentStatusFilter : undefined,
+    status: statusFilter !== ADMIN_ORDER_FILTER_STATUS.ALL ? statusFilter : undefined,
+    paymentStatus:
+      paymentStatusFilter !== ADMIN_PAYMENT_FILTER_STATUS.ALL ? paymentStatusFilter : undefined,
+    restaurantId: restaurantFilter,
     startDate: dateParams.startDate,
     endDate: dateParams.endDate,
     sortBy,
     sortOrder,
     page: currentPage,
-    limit: ADMIN_ORDERS_DEFAULTS.LIMIT,
+    limit,
   });
 
   // ── Filter & Sort Handlers ──
@@ -98,6 +108,16 @@ export default function AdminOrdersPage() {
 
   const handlePaymentStatusChange = useCallback((status: AdminOrderFilterPaymentStatus) => {
     setPaymentStatusFilter(status);
+    setCurrentPage(ADMIN_ORDERS_DEFAULTS.PAGE);
+  }, []);
+
+  const handleRestaurantChange = useCallback((restaurantId?: string) => {
+    setRestaurantFilter(restaurantId);
+    setCurrentPage(ADMIN_ORDERS_DEFAULTS.PAGE);
+  }, []);
+
+  const handleLimitChange = useCallback((newLimit: number) => {
+    setLimit(newLimit);
     setCurrentPage(ADMIN_ORDERS_DEFAULTS.PAGE);
   }, []);
 
@@ -121,9 +141,10 @@ export default function AdminOrdersPage() {
 
   const handleClearFilters = useCallback(() => {
     setSearchQuery("");
-    setStatusFilter("ALL");
-    setPaymentStatusFilter("ALL");
-    setDatePreset("ALL");
+    setStatusFilter(ADMIN_ORDER_FILTER_STATUS.ALL);
+    setPaymentStatusFilter(ADMIN_PAYMENT_FILTER_STATUS.ALL);
+    setRestaurantFilter(undefined);
+    setDatePreset(ADMIN_DATE_PRESETS.ALL);
     setSortBy(ADMIN_ORDERS_DEFAULTS.SORT_BY);
     setSortOrder(ADMIN_ORDERS_DEFAULTS.SORT_ORDER);
     setCurrentPage(ADMIN_ORDERS_DEFAULTS.PAGE);
@@ -131,11 +152,13 @@ export default function AdminOrdersPage() {
 
   const hasActiveFilters =
     Boolean(searchQuery.trim()) ||
-    statusFilter !== "ALL" ||
-    paymentStatusFilter !== "ALL" ||
-    datePreset !== "ALL" ||
+    statusFilter !== ADMIN_ORDER_FILTER_STATUS.ALL ||
+    paymentStatusFilter !== ADMIN_PAYMENT_FILTER_STATUS.ALL ||
+    restaurantFilter != null ||
+    datePreset !== ADMIN_DATE_PRESETS.ALL ||
     sortBy !== ADMIN_ORDERS_DEFAULTS.SORT_BY ||
     sortOrder !== ADMIN_ORDERS_DEFAULTS.SORT_ORDER;
+
 
   const orders = data?.orders ?? [];
   const pagination = data?.pagination ?? {
@@ -198,6 +221,8 @@ export default function AdminOrdersPage() {
         onStatusChange={handleStatusChange}
         paymentStatusFilter={paymentStatusFilter}
         onPaymentStatusChange={handlePaymentStatusChange}
+        restaurantFilter={restaurantFilter}
+        onRestaurantFilterChange={handleRestaurantChange}
         datePreset={datePreset}
         onDatePresetChange={handleDatePresetChange}
         onClearFilters={handleClearFilters}
@@ -246,8 +271,9 @@ export default function AdminOrdersPage() {
         currentPage={currentPage}
         totalPages={pagination.totalPages}
         totalOrders={pagination.totalOrders}
-        limit={pagination.limit}
+        limit={limit}
         onPageChange={setCurrentPage}
+        onLimitChange={handleLimitChange}
         onOrderClick={setSelectedOrder}
         sortBy={sortBy}
         sortOrder={sortOrder}

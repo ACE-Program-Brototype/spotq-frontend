@@ -1,11 +1,11 @@
 import type { SuccessResponse } from "@/components/common";
 import { apiClient } from "@/lib/api/client";
-import { FINANCE_ENDPOINTS } from "../constants/finance.constants";
+import { FINANCE_ENDPOINTS } from "@/features/finance/constants/finance.constants";
 import type {
   FinanceSummary,
   GetPlatformMasterLedgerInputDTO,
   LedgerPage,
-} from "../types/finance.types";
+} from "@/features/finance/types/finance.types";
 
 export type LedgerQuery = GetPlatformMasterLedgerInputDTO & { page: number; limit: number };
 

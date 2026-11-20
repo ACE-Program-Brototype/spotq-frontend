@@ -33,4 +33,15 @@ describe("createCategorySchema", () => {
     const result = createCategorySchema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
+
+  it("fails when category name exceeds 100 characters", () => {
+    const invalidData = {
+      name: "A".repeat(101),
+      description: "Description",
+      displayOrder: 0,
+      isActive: true,
+    };
+    const result = createCategorySchema.safeParse(invalidData);
+    expect(result.success).toBe(false);
+  });
 });

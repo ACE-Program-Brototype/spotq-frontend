@@ -31,11 +31,11 @@ export function CartSummary({
   return (
     <aside
       data-testid="cart-summary"
-      className="space-y-6 rounded-3xl border border-stone-200 bg-white p-6 shadow-xs"
+      className="space-y-4 sm:space-y-6 rounded-2xl sm:rounded-3xl border border-stone-200 bg-white p-4 sm:p-6 shadow-xs"
     >
-      <h2 className="text-lg font-bold text-stone-900">{CART_MESSAGES.ORDER_SUMMARY}</h2>
+      <h2 className="text-base sm:text-lg font-bold text-stone-900">{CART_MESSAGES.ORDER_SUMMARY}</h2>
 
-      <div className="space-y-3 text-sm text-stone-600">
+      <div className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm text-stone-600">
         <div className="flex justify-between">
           <span>{CART_MESSAGES.ITEMS}</span>
           <span data-testid="summary-total-count" className="font-semibold text-stone-900">
@@ -51,10 +51,10 @@ export function CartSummary({
           </span>
         </div>
 
-        <div className="border-t border-stone-200 pt-3">
-          <div className="flex justify-between text-base font-extrabold text-stone-900">
+        <div className="border-t border-stone-200 pt-2.5 sm:pt-3">
+          <div className="flex justify-between text-sm sm:text-base font-extrabold text-stone-900">
             <span>{CART_MESSAGES.TOTAL}</span>
-            <span data-testid="summary-total-amount" className="text-lg text-[#f26500]">
+            <span data-testid="summary-total-amount" className="text-base sm:text-lg text-[#f26500]">
               {formatCurrency(totalAmount)}
             </span>
           </div>
@@ -66,7 +66,7 @@ export function CartSummary({
           type="button"
           disabled={isProceeding || totalCount === 0}
           onClick={onProceedToCheckout}
-          className="w-full rounded-xl bg-[#ff6b00] py-3 text-sm font-bold text-white shadow-xs hover:bg-[#e05e00] disabled:opacity-50"
+          className="h-11 sm:h-12 w-full rounded-xl bg-[#ff6b00] py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#e05e00] disabled:opacity-50 cursor-pointer"
         >
           {isProceeding ? (
             <span className="flex items-center justify-center gap-2">
@@ -81,7 +81,7 @@ export function CartSummary({
           )}
         </Button>
 
-        <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:justify-between">
+        <div className="flex items-center justify-between gap-2 pt-1.5 sm:pt-2">
           <Link
             to={continueShoppingLink}
             onClick={onContinueShopping}
@@ -96,7 +96,7 @@ export function CartSummary({
             variant="ghost"
             size="sm"
             onClick={onClearCart}
-            className="text-xs text-stone-400 hover:bg-stone-50 hover:text-red-600"
+            className="h-8 px-2 text-xs text-stone-400 hover:bg-stone-50 hover:text-red-600 cursor-pointer"
           >
             <Trash2 className="mr-1 size-3.5" />
             {CART_MESSAGES.CLEAR_CART}

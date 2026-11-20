@@ -1,5 +1,6 @@
 import {
   STAFF_ENDPOINTS,
+  STAFF_FILTER_STATUS,
   STAFF_MESSAGES,
   type StaffStatus,
 } from "@/features/staff/constants/staff.constants";
@@ -74,7 +75,7 @@ export const staffMemberService = {
     const searchParams: Record<string, string | number> = {};
     if (params?.page) searchParams.page = params.page;
     if (params?.limit) searchParams.limit = params.limit;
-    if (params?.status && params.status !== "ALL") searchParams.status = params.status;
+    if (params?.status && params.status !== STAFF_FILTER_STATUS.ALL) searchParams.status = params.status;
     if (params?.search) searchParams.search = params.search;
     if (params?.sortBy) searchParams.sortBy = params.sortBy;
     if (params?.sortOrder) searchParams.sortOrder = params.sortOrder;

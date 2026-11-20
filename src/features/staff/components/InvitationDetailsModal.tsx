@@ -1,5 +1,6 @@
 import { Calendar, CheckCircle2, Clock, Mail, ShieldAlert, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { STAFF_INVITATION_STATUS } from "@/features/staff/constants/staff.constants";
 import type { StaffInvitation } from "@/features/staff/types/staff-invitation.types";
 import { cn } from "@/lib/utils/cn";
 import { formatDate } from "@/lib/utils/date";
@@ -22,26 +23,26 @@ export function InvitationDetailsModal({
   if (!isOpen || !invitation) return null;
 
   const isExpired =
-    invitation.status === "EXPIRED" ||
-    (invitation.status === "PENDING" && new Date(invitation.expiresAt) < new Date());
+    invitation.status === STAFF_INVITATION_STATUS.EXPIRED ||
+    (invitation.status === STAFF_INVITATION_STATUS.PENDING && new Date(invitation.expiresAt) < new Date());
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "ACCEPTED":
+      case STAFF_INVITATION_STATUS.ACCEPTED:
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
             <CheckCircle2 className="size-3.5" />
             Accepted
           </span>
         );
-      case "PENDING":
+      case STAFF_INVITATION_STATUS.PENDING:
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fef3ec] px-2.5 py-1 text-xs font-semibold text-[#9a3412] border border-[#fae2d3]">
             <span className="size-1.5 rounded-full bg-[#e8631b] animate-pulse" />
             Pending Acceptance
           </span>
         );
-      case "REVOKED":
+      case STAFF_INVITATION_STATUS.REVOKED:
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
             <ShieldAlert className="size-3.5" />
@@ -145,7 +146,7 @@ export function InvitationDetailsModal({
         {/* Modal Actions */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-[#f3e6de] bg-[#fffcf9]">
           <div>
-            {invitation.status === "PENDING" && onRevoke && (
+            {invitation.status === STAFF_INVITATION_STATUS.PENDING && onRevoke && (
               <Button
                 variant="outline"
                 size="sm"
@@ -161,7 +162,7 @@ export function InvitationDetailsModal({
           </div>
 
           <div className="flex items-center gap-2">
-            {invitation.status !== "ACCEPTED" && onResend && (
+            {invitation.status !== STAFF_INVITATION_STATUS.ACCEPTED && onResend && (
               <Button
                 size="sm"
                 onClick={() => {

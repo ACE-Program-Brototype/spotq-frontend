@@ -1,6 +1,6 @@
 import { CheckCircle2, IndianRupee, ShoppingBag, XCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
-import type { RestaurantOrderMetrics } from "../../../types/restaurant-orders.types";
+import type { RestaurantOrderMetrics } from "@/features/orders/types/restaurant-orders.types";
 import { OrderMetricCard } from "./OrderMetricCard";
 
 interface OrdersOverviewProps {

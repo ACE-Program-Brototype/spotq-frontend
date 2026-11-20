@@ -7,17 +7,17 @@ import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CustomerEmptyState } from "../components/CustomerEmptyState";
-import { CustomerFilters } from "../components/CustomerFilters";
-import { CustomerTable } from "../components/CustomerTable";
-import { CustomerTableSkeleton } from "../components/CustomerTableSkeleton";
+import { CustomerEmptyState } from "@/features/customers/components/CustomerEmptyState";
+import { CustomerFilters } from "@/features/customers/components/CustomerFilters";
+import { CustomerTable } from "@/features/customers/components/CustomerTable";
+import { CustomerTableSkeleton } from "@/features/customers/components/CustomerTableSkeleton";
 import {
   CUSTOMER_MESSAGES,
   CUSTOMER_STATUS,
   type CustomerStatusType,
-} from "../constants/customer.constants";
-import { useCustomers, useUpdateCustomerStatus } from "../hooks/use-customers";
-import type { Customer } from "../types/customer.types";
+} from "@/features/customers/constants/customer.constants";
+import { useCustomers, useUpdateCustomerStatus } from "@/features/customers/hooks/use-customers";
+import type { Customer } from "@/features/customers/types/customer.types";
 
 export function AdminCustomersPage() {
   const {

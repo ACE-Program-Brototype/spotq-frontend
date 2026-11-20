@@ -1,7 +1,12 @@
+import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import StaffAcceptInvitationPage from "@/features/auth/pages/staff/StaffAcceptInvitationPage";
 import RootLayout from "@/layouts/RootLayout";
-import NotFoundPage from "../pages/NotFoundPage";
+import RootRouteErrorBoundary from "./RootRouteErrorBoundary";
+
+const StaffAcceptInvitationPage = lazy(
+  () => import("@/features/auth/pages/staff/StaffAcceptInvitationPage"),
+);
+const NotFoundPage = lazy(() => import("@/app/pages/NotFoundPage"));
 import { adminRoutes } from "./admin/admin.routes";
 import { customerRoutes } from "./customer/customer.routes";
 import { restaurantRoutes } from "./restaurant/restaurant.routes";
@@ -17,6 +22,7 @@ const router = createBrowserRouter(
   [
     {
       Component: RootLayout,
+      ErrorBoundary: RootRouteErrorBoundary,
       children: [
         {
           path: ROOT_ROUTE_PATHS.SUBSCRIPTION,

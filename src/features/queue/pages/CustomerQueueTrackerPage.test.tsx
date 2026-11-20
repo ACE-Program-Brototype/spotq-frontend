@@ -1,15 +1,15 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
-import { ACTIVE_QUEUE_STORAGE_KEY } from "../constants/websocket.constants";
-import { useCustomerQueueSocket } from "../hooks/use-customer-queue-socket";
-import { useCustomerQueueStatus } from "../hooks/use-customer-queue-status";
-import { ringMedia } from "../utils/ring-sound.utils";
+import { ACTIVE_QUEUE_STORAGE_KEY } from "@/features/queue/constants/websocket.constants";
+import { useCustomerQueueSocket } from "@/features/queue/hooks/use-customer-queue-socket";
+import { useCustomerQueueStatus } from "@/features/queue/hooks/use-customer-queue-status";
+import { ringMedia } from "@/features/queue/utils/ring-sound.utils";
 import CustomerQueueTrackerPage from "./CustomerQueueTrackerPage";
 
-jest.mock("../hooks/use-customer-queue-status");
-jest.mock("../hooks/use-customer-queue-socket");
-jest.mock("../utils/ring-sound.utils", () => ({
+jest.mock("@/features/queue/hooks/use-customer-queue-status");
+jest.mock("@/features/queue/hooks/use-customer-queue-socket");
+jest.mock("@/features/queue/utils/ring-sound.utils", () => ({
   ringMedia: {
     playChime: jest.fn(),
     playAlarmSound: jest.fn(),
@@ -500,11 +500,11 @@ describe("CustomerQueueTrackerPage", () => {
       });
     });
 
-    expect(screen.getByText("Table Ready — Please Head to the Host Stand")).toBeInTheDocument();
+    expect(screen.getByText("Table Ready — Head to Host Stand")).toBeInTheDocument();
     expect(screen.getByRole("alertdialog")).toBeInTheDocument();
     expect(screen.getByText("Your Table is Ready!")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /silence alert/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Silence" }));
     expect(ringMedia.stopAll).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
   });
@@ -530,7 +530,7 @@ describe("CustomerQueueTrackerPage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Table Ready — Please Head to the Host Stand")).toBeInTheDocument();
+    expect(screen.getByText("Table Ready — Head to Host Stand")).toBeInTheDocument();
 
     act(() => {
       capturedSocketOptions.onSkipped?.({

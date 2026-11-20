@@ -1,9 +1,17 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
+import type { ReactNode } from "react";
+import { MemoryRouter } from "react-router-dom";
+import {
+  RESTAURANT_SETTINGS_FIELDS,
+  RESTAURANT_SETTINGS_MESSAGES,
+} from "@/features/profile/constants/profile.constants";
+import { useUpdateRestaurantProfile } from "@/features/profile/hooks/use-update-restaurant-profile";
 import type {
   RestaurantProfileData,
   RestaurantSettingsDetails,
-} from "../types/restaurant-profile.types";
+} from "@/features/profile/types/restaurant-profile.types";
+import { SUBSCRIPTION_QUERY_KEYS } from "@/features/subscription/constants/subscription.constants";
 import { RestaurantSettingsCard } from "./RestaurantSettingsCard";
 
 jest.mock("../hooks/use-update-restaurant-profile");
@@ -13,11 +21,9 @@ const mockUseUpdateRestaurantProfile = useUpdateRestaurantProfile as jest.Mocked
 >;
 
 const mockSettings: RestaurantSettingsDetails = {
+  isOpened: true,
   acceptsQueue: true,
   acceptsQrOrders: true,
-  loyaltyEnabled: false,
-  autoAcceptQueue: false,
-  seatingCapacity: 50,
 };
 
 const mockFullData: RestaurantProfileData = {
@@ -44,6 +50,29 @@ const mockFullData: RestaurantProfileData = {
   ],
 };
 
+const createTestWrapper = (hasQueuePro = true) => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  queryClient.setQueryData(SUBSCRIPTION_QUERY_KEYS.RESTAURANT_STATUS, {
+    subscriptionPlanCode: hasQueuePro ? "QUEUE_PRO" : "STARTER",
+    subscription: {
+      planCode: hasQueuePro ? "QUEUE_PRO" : "STARTER",
+    },
+  });
+
+  return ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>{children}</MemoryRouter>
+    </QueryClientProvider>
+  );
+};
+
 describe("RestaurantSettingsCard Component", () => {
   const mockMutate = jest.fn();
 
@@ -55,111 +84,85 @@ describe("RestaurantSettingsCard Component", () => {
     } as unknown as ReturnType<typeof useUpdateRestaurantProfile>);
   });
 
-  it("renders read-only settings view initially with seating capacity", () => {
-    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />);
+  it("renders store open status and virtual queue cards with initial values and hides action buttons", () => {
+    const wrapper = createTestWrapper(true);
+    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />, {
+      wrapper,
+    });
 
-    expect(screen.getByText("Restaurant Settings")).toBeInTheDocument();
-    expect(screen.getByText("50 seats")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /edit settings/i })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /save settings/i })).not.toBeInTheDocument();
+    expect(screen.getByText(RESTAURANT_SETTINGS_MESSAGES.TITLE)).toBeInTheDocument();
+    expect(screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title)).toBeChecked();
+    expect(screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title)).toBeChecked();
+
+    expect(screen.queryByTestId("save-settings-button")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("cancel-settings-button")).not.toBeInTheDocument();
   });
 
-  it("enters edit mode and disables save button when form is clean (AC23)", () => {
-    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />);
+  it("enables save button and displays cancel button when store open toggle changes", () => {
+    const wrapper = createTestWrapper(true);
+    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />, {
+      wrapper,
+    });
 
-    fireEvent.click(screen.getByRole("button", { name: /edit settings/i }));
+    const storeOpenSwitch = screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title);
+    fireEvent.click(storeOpenSwitch);
 
-    const saveButton = screen.getByRole("button", { name: /save settings/i });
-    expect(saveButton).toBeInTheDocument();
-    expect(saveButton).toBeDisabled();
-    expect(screen.getByLabelText("Seating Capacity")).toHaveValue(50);
+    const saveButton = screen.getByTestId("save-settings-button");
+    expect(saveButton).not.toBeDisabled();
+    expect(screen.getByTestId("cancel-settings-button")).toBeInTheDocument();
   });
 
-  it("enables save button when seating capacity is updated and disables when invalid", () => {
-    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />);
+  it("submits updated payload when changes are saved", () => {
+    const wrapper = createTestWrapper(true);
+    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />, {
+      wrapper,
+    });
 
-    fireEvent.click(screen.getByRole("button", { name: /edit settings/i }));
+    const queueSwitch = screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title);
+    fireEvent.click(queueSwitch);
 
-    const saveButton = screen.getByRole("button", { name: /save settings/i });
-    expect(saveButton).toBeDisabled();
-
-    const capacityInput = screen.getByLabelText("Seating Capacity");
-    fireEvent.change(capacityInput, { target: { value: "80" } });
-
+    const saveButton = screen.getByTestId("save-settings-button");
     expect(saveButton).not.toBeDisabled();
-
-    // Set valid seating capacity of 0
-    fireEvent.change(capacityInput, { target: { value: "0" } });
-    expect(saveButton).not.toBeDisabled();
-
-    // Set invalid seating capacity (<0)
-    fireEvent.change(capacityInput, { target: { value: "-5" } });
-    expect(screen.getByText("Seating capacity cannot be negative")).toBeInTheDocument();
-    expect(saveButton).toBeDisabled();
-  });
-
-  it("submits updated payload when dirty form is saved", () => {
-    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />);
-
-    fireEvent.click(screen.getByRole("button", { name: /edit settings/i }));
-
-    // Toggle Loyalty Enabled from false to true
-    const loyaltySwitch = screen.getByLabelText("Loyalty Enabled");
-    fireEvent.click(loyaltySwitch);
-
-    // Update seating capacity to 100
-    const capacityInput = screen.getByLabelText("Seating Capacity");
-    fireEvent.change(capacityInput, { target: { value: "100" } });
-
-    const saveButton = screen.getByRole("button", { name: /save settings/i });
-    expect(saveButton).not.toBeDisabled();
-
     fireEvent.click(saveButton);
 
     expect(mockMutate).toHaveBeenCalledTimes(1);
     expect(mockMutate).toHaveBeenCalledWith(
-      {
-        restaurant: mockFullData.restaurant,
-        profile: {
-          description: mockFullData.profile.description,
-          cuisineType: mockFullData.profile.cuisineType,
-          averageCost: mockFullData.profile.averageCost,
-        },
-        settings: {
-          acceptsQueue: true,
-          acceptsQrOrders: true,
-          loyaltyEnabled: true,
-          autoAcceptQueue: false,
-          seatingCapacity: 100,
-        },
-        businessHours: [
-          {
-            dayOfWeek: 1,
-            openTime: "11:00",
-            closeTime: "23:00",
-            isClosed: false,
-          },
-        ],
-      },
       expect.objectContaining({
-        onSuccess: expect.any(Function),
+        settings: expect.objectContaining({
+          isOpened: true,
+          acceptsQueue: false,
+        }),
       }),
     );
   });
 
-  it("resets edit state when cancel button is clicked", () => {
-    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />);
+  it("reverts changes and hides action buttons when cancel button is clicked", () => {
+    const wrapper = createTestWrapper(true);
+    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />, {
+      wrapper,
+    });
 
-    fireEvent.click(screen.getByRole("button", { name: /edit settings/i }));
+    const storeOpenSwitch = screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title);
+    fireEvent.click(storeOpenSwitch);
 
-    // Update seating capacity
-    const capacityInput = screen.getByLabelText("Seating Capacity");
-    fireEvent.change(capacityInput, { target: { value: "120" } });
+    const cancelButton = screen.getByTestId("cancel-settings-button");
+    expect(cancelButton).toBeInTheDocument();
+    fireEvent.click(cancelButton);
 
-    fireEvent.click(screen.getByRole("button", { name: /cancel/i }));
+    expect(screen.queryByTestId("save-settings-button")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("cancel-settings-button")).not.toBeInTheDocument();
+  });
 
-    expect(screen.getByRole("button", { name: /edit settings/i })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /save settings/i })).not.toBeInTheDocument();
-    expect(screen.getByText("50 seats")).toBeInTheDocument();
+  it("locks queue toggle and displays upgrade badge when restaurant lacks QueuePro", () => {
+    const wrapper = createTestWrapper(false);
+    render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />, {
+      wrapper,
+    });
+
+    expect(
+      screen.getByText(RESTAURANT_SETTINGS_MESSAGES.QUEUE_PRO_REQUIRED_BADGE),
+    ).toBeInTheDocument();
+    const queueSwitch = screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title);
+    expect(queueSwitch).toBeDisabled();
   });
 });

@@ -1,19 +1,21 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Suspense, useEffect, useState } from "react";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { RestaurantAdminNavbar } from "@/components/layout/RestaurantAdminNavbar";
 import { RestaurantAdminSidebar } from "@/components/layout/RestaurantAdminSidebar";
+import { PageSkeleton } from "@/components/common/skeletons";
 import { Button } from "@/components/ui/button";
+import { useRestaurantLogout } from "@/features/auth/hooks/useRestaurantLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { subscriptionService } from "@/features/subscription/services/subscription.service";
 
 export function RestaurantAdminLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const { user, clearAuth } = useAuthStore();
+  const { user } = useAuthStore();
+  const { handleLogout } = useRestaurantLogout();
 
   const { data: statusData, isLoading: isLoadingStatus } = useQuery({
     queryKey: ["restaurant-status"],
@@ -28,12 +30,6 @@ export function RestaurantAdminLayout() {
     }
   }, [isLoadingStatus, statusData, navigate]);
 
-  const handleLogout = () => {
-    clearAuth();
-    queryClient.clear();
-    navigate(RESTAURANT_ROUTES.LOGIN, { replace: true });
-  };
-
   if (isLoadingStatus) {
     return (
       <div className="flex min-h-screen w-full items-center justify-center bg-[#fffdfb]">
@@ -46,7 +42,7 @@ export function RestaurantAdminLayout() {
   }
 
   if (statusData && !statusData.isSubscriptionActive) {
-    return null;
+    return <Navigate to={RESTAURANT_ROUTES.SUBSCRIPTION} replace />;
   }
 
   const restaurantName = statusData?.restaurantName || user?.fullName || user?.name || "Restaurant";
@@ -92,8 +88,10 @@ export function RestaurantAdminLayout() {
           onToggleSidebar={() => setMobileDrawerOpen(true)}
         />
 
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 box-border overflow-y-auto">
-          <Outlet />
+        <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 box-border overflow-y-auto">
+          <Suspense fallback={<PageSkeleton />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

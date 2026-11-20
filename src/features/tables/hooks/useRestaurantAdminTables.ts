@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { TABLE_QUERY_KEYS, TABLE_STATUS } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
-import type { TableStatusIncludingAll } from "../types/table.types";
+import { TABLE_QUERY_KEYS, TABLE_STATUS } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
+import type { TableStatusIncludingAll } from "@/features/tables/types/table.types";
 
 interface RestaurantAdminTablesOptions {
   page: number;

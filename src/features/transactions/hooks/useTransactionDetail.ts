@@ -4,8 +4,8 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { TRANSACTIONS_QUERY_KEYS } from "../constants/transaction.constants";
-import { transactionService } from "../services/transaction.service";
+import { TRANSACTIONS_QUERY_KEYS } from "@/features/transactions/constants/transaction.constants";
+import { transactionService } from "@/features/transactions/services/transaction.service";
 
 export function useTransactionDetail(transactionId: string | null) {
   const isEnabled = Boolean(transactionId && transactionId.trim().length > 0);

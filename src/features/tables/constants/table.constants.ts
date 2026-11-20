@@ -2,7 +2,7 @@ import type {
   StaffUpdatableStatus,
   TableStatus,
   TableStatusTransitionRule,
-} from "../types/table.types";
+} from "@/features/tables/types/table.types";
 
 export const statusStyles: Record<TableStatus, string> = {
   AVAILABLE: "bg-emerald-50 text-emerald-700 ring-emerald-200",
@@ -55,8 +55,11 @@ export const TABLE_SERVICE_ERRORS = {
   RELEASE_FAILED: "Failed to release table occupancy. Please try again.",
 } as const;
 
+export const TABLE_NAME_MAX_LENGTH = 30;
+
 export const CREATE_TABLE_VALIDATION_MESSAGES = {
   TABLE_CODE_REQUIRED: "Table name or code is required",
+  TABLE_CODE_MAX: "Table name or code cannot exceed 30 characters",
   SECTION_REQUIRED: "Select a dining section",
   CAPACITY_NUMBER: "Seating capacity must be a number",
   CAPACITY_INTEGER: "Seating capacity must be a whole number",
@@ -66,6 +69,7 @@ export const CREATE_TABLE_VALIDATION_MESSAGES = {
 
 export const UPDATE_TABLE_VALIDATION_MESSAGES = {
   TABLE_CODE_REQUIRED: "Table name or code is required",
+  TABLE_CODE_MAX: "Table name or code cannot exceed 30 characters",
   SECTION_REQUIRED: "Select a dining section",
   CAPACITY_NUMBER: "Seating capacity must be a number",
   CAPACITY_INTEGER: "Seating capacity must be a whole number",

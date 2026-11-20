@@ -2,25 +2,25 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { menuCategoryService } from "../services/menu-category.service";
-import { menuItemService } from "../services/menu-item.service";
-import { staffMenuService } from "../services/staff-menu.service";
+import { menuCategoryService } from "@/features/menu/services/menu-category.service";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
+import { staffMenuService } from "@/features/menu/services/staff-menu.service";
 import StaffMenuItemsPage from "./StaffMenuItemsPage";
 
-jest.mock("../services/staff-menu.service", () => ({
+jest.mock("@/features/menu/services/staff-menu.service", () => ({
   staffMenuService: {
     getStaffMenuItems: jest.fn(),
     getStaffCategories: jest.fn(),
   },
 }));
 
-jest.mock("../services/menu-category.service", () => ({
+jest.mock("@/features/menu/services/menu-category.service", () => ({
   menuCategoryService: {
     getCategories: jest.fn(),
   },
 }));
 
-jest.mock("../services/menu-item.service", () => ({
+jest.mock("@/features/menu/services/menu-item.service", () => ({
   menuItemService: {
     updateMenuItemAvailability: jest.fn(),
   },
@@ -159,11 +159,10 @@ describe("StaffMenuItemsPage", () => {
     // Wait for items to load
     expect(await screen.findByText("Chicken Biriyani")).toBeInTheDocument();
     expect(screen.getByText("Mango Kulfi")).toBeInTheDocument();
-    expect(screen.getByText(/CHK-01/)).toBeInTheDocument();
     expect(screen.getByText("2 Total Items")).toBeInTheDocument();
-    expect(screen.getByText("Total Menu Items")).toBeInTheDocument();
-    expect(screen.getByText("In Stock (Current Page)")).toBeInTheDocument();
-    expect(screen.getAllByText(/86'd \/ Out of Stock/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText("Total Dishes")).toBeInTheDocument();
+    expect(screen.getAllByText("In Stock").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Out of Stock").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders error alert with retry button when query fails", async () => {

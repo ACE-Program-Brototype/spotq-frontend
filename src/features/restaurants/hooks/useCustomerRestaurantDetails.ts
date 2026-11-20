@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import {
   CUSTOMER_RESTAURANT_DEFAULTS,
   CUSTOMER_RESTAURANT_QUERY_KEYS,
-} from "../constants/customer-restaurant.constants";
-import { customerRestaurantService } from "../services/customer-restaurant.service";
+} from "@/features/restaurants/constants/customer-restaurant.constants";
+import { customerRestaurantService } from "@/features/restaurants/services/customer-restaurant.service";
 
 export function useCustomerRestaurantDetails(id: string) {
   return useQuery({

@@ -1,12 +1,12 @@
 import { apiClient } from "@/lib/api/client";
-import { DEVICE_ENDPOINTS } from "../constants/auth.constants";
+import { DEVICE_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import type {
   CustomerDevicesResponse,
   DeactivateDeviceResponse,
   RegisterDeviceRequest,
   RegisterDeviceResponse,
-} from "../types/device.types";
-import { buildDevicePayload } from "../utils/device.utils";
+} from "@/features/auth/types/device.types";
+import { buildDevicePayload } from "@/features/auth/utils/device.utils";
 
 export const deviceService = {
   /**

@@ -6,10 +6,14 @@
 
 import { AlertTriangle, Edit3, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { MENU_MESSAGES } from "../constants/menu.constants";
-import { useUpdateMenuCategory } from "../hooks/use-update-menu-category";
-import type { MenuCategory, MenuCategoryFormValues } from "../types/menu-category.types";
-import { MenuCategoryForm } from "./MenuCategoryForm";
+import { MenuCategoryForm } from "@/features/menu/components/MenuCategoryForm";
+import {
+  DOM_EVENTS,
+  KEYBOARD_KEYS,
+  MENU_MESSAGES,
+} from "@/features/menu/constants/menu.constants";
+import { useUpdateMenuCategory } from "@/features/menu/hooks/use-update-menu-category";
+import type { MenuCategory, MenuCategoryFormValues } from "@/features/menu/types/menu-category.types";
 
 export interface EditCategoryModalProps {
   isOpen: boolean;
@@ -47,13 +51,13 @@ export function EditCategoryModal({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === KEYBOARD_KEYS.ESCAPE) {
         handleClose();
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
+    return () => window.removeEventListener(DOM_EVENTS.KEY_DOWN, handleKeyDown);
   }, [isOpen, handleClose]);
 
   if (!isOpen || !category) return null;

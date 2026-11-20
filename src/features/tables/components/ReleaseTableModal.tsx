@@ -1,13 +1,12 @@
-import { AlertCircle, LogOut, Minus, Plus, Table as TableIcon, Users, X } from "lucide-react";
+import { AlertCircle, LogOut, Table as TableIcon, Users, X } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/common/LoadingIndicator";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DOM_EVENTS, KEYBOARD_KEYS } from "../constants/table.constants";
-import { useReleaseTable } from "../hooks/useReleaseTable";
-import type { TableItem } from "../types/table.types";
-import { TableStatusBadge } from "./TableStatusBadge";
+import { DOM_EVENTS, KEYBOARD_KEYS } from "@/features/tables/constants/table.constants";
+import { useReleaseTable } from "@/features/tables/hooks/useReleaseTable";
+import type { TableItem } from "@/features/tables/types/table.types";
+import { ReleaseTableOccupancyFields } from "@/features/tables/components/ReleaseTableOccupancyFields";
 
 interface ReleaseTableModalProps {
   table: TableItem | null;
@@ -20,6 +19,14 @@ interface ReleaseTableModalProps {
 const FOCUSABLE_SELECTOR =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/**
+ * ReleaseTableModal
+ *
+ * Implements releasing table occupancy modal.
+ *
+ * @deprecated SpotQ domain strictly encompasses digital takeaway ordering and virtual queue ticketing.
+ * Table management UI violates takeaway-only business scope and is preserved only for legacy compatibility.
+ */
 export function ReleaseTableModal({
   table,
   isOpen,
@@ -203,93 +210,17 @@ export function ReleaseTableModal({
               </div>
             )}
 
-            {/* Current Occupancy Showcase */}
-            <div className="flex items-center justify-between p-3.5 rounded-xl border border-[#eddcd4] bg-[#faf7f5]">
-              <div>
-                <span className="text-xs font-semibold text-neutral-600 block">Current Status</span>
-                <span className="text-[11px] text-neutral-500">
-                  {currentOccupancy} of {table.capacity} seats occupied
-                </span>
-              </div>
-              <TableStatusBadge status={table.status} size="sm" />
-            </div>
-
-            {/* Occupancy To Release Controls */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="occupancy-to-release-input"
-                  className="text-xs font-semibold text-neutral-700"
-                >
-                  Seats to Release
-                </label>
-                {currentOccupancy > 1 && (
-                  <button
-                    type="button"
-                    disabled={isPending}
-                    onClick={() => handleSeatsChange(String(currentOccupancy))}
-                    className="text-[11px] font-bold text-[#9a3412] hover:underline disabled:opacity-50"
-                  >
-                    Release All ({currentOccupancy})
-                  </button>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={isPending || parsedSeats <= 1}
-                  onClick={() => handleStep(-1)}
-                  aria-label="Decrease seats to release"
-                  className="h-10 w-10 p-0 rounded-xl border-[#eddcd4] shrink-0"
-                >
-                  <Minus className="size-4" />
-                </Button>
-
-                <Input
-                  id="occupancy-to-release-input"
-                  data-testid="occupancy-to-release-input"
-                  type="number"
-                  min={1}
-                  max={currentOccupancy}
-                  step={1}
-                  disabled={isPending}
-                  value={seatsInput}
-                  onChange={(e) => handleSeatsChange(e.target.value)}
-                  className="h-10 text-center font-bold text-sm rounded-xl border-[#eddcd4] focus-visible:border-[#9a3412] focus-visible:ring-[#fed7aa]"
-                />
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={isPending || parsedSeats >= currentOccupancy}
-                  onClick={() => handleStep(1)}
-                  aria-label="Increase seats to release"
-                  className="h-10 w-10 p-0 rounded-xl border-[#eddcd4] shrink-0"
-                >
-                  <Plus className="size-4" />
-                </Button>
-              </div>
-
-              {validationError ? (
-                <p
-                  role="alert"
-                  data-testid="release-validation-error"
-                  className="text-xs font-medium text-red-600"
-                >
-                  {validationError}
-                </p>
-              ) : remainingAfterRelease !== null ? (
-                <p className="text-[11px] text-neutral-500">
-                  {remainingAfterRelease === 0
-                    ? `Table will become Available (0/${table.capacity} occupied).`
-                    : `Remaining occupancy after release: ${remainingAfterRelease}/${table.capacity} (Partially Occupied).`}
-                </p>
-              ) : null}
-            </div>
+            <ReleaseTableOccupancyFields
+              table={table}
+              currentOccupancy={currentOccupancy}
+              parsedSeats={parsedSeats}
+              seatsInput={seatsInput}
+              isPending={isPending}
+              validationError={validationError}
+              remainingAfterRelease={remainingAfterRelease}
+              onSeatsChange={handleSeatsChange}
+              onStep={handleStep}
+            />
           </div>
 
           {/* Footer */}

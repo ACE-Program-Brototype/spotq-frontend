@@ -1,7 +1,8 @@
 import { AlertCircle, ArrowLeft, RefreshCw, ShieldAlert, UserX } from "lucide-react";
 import { Link } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button.variants";
 import { Card, CardContent } from "@/components/ui/card";
 import { STAFF_MESSAGES } from "@/features/staff/constants/staff.constants";
 import type { StaffDetailErrorStateProps } from "@/features/staff/types/staff-detail.types";

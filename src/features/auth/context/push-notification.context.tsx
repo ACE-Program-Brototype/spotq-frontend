@@ -64,8 +64,7 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
         toast.error(PUSH_NOTIFICATION_MESSAGES.BLOCKED_ERROR);
       }
       return false;
-    } catch (error) {
-      console.warn("Failed to enable push notifications:", error);
+    } catch (_error) {
       toast.error(PUSH_NOTIFICATION_MESSAGES.ENABLE_FAILED);
       return false;
     }
@@ -74,13 +73,15 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
   const registerDeviceMutate = registerDeviceMutation.mutate;
   const deactivateDeviceMutate = deactivateDeviceMutation.mutate;
 
+  // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
   useEffect(() => {
     if (!enabled || typeof navigator === "undefined" || !("permissions" in navigator)) return;
 
     let permissionStatus: PermissionStatus | null = null;
+    let isMounted = true;
 
     const handlePermissionChange = () => {
-      if (!permissionStatus) return;
+      if (!permissionStatus || !isMounted) return;
       const state = permissionStatus.state;
       const normalizedPermission: NotificationPermission =
         state === NOTIFICATION_PERMISSIONS.GRANTED
@@ -100,12 +101,14 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
     navigator.permissions
       .query({ name: NOTIFICATION_EVENTS.PERMISSION_NAME as PermissionName })
       .then((status) => {
+        if (!isMounted) return;
         permissionStatus = status;
         status.addEventListener(NOTIFICATION_EVENTS.CHANGE, handlePermissionChange);
       })
       .catch(() => {});
 
     return () => {
+      isMounted = false;
       if (permissionStatus) {
         permissionStatus.removeEventListener(NOTIFICATION_EVENTS.CHANGE, handlePermissionChange);
       }
@@ -194,9 +197,7 @@ export const usePushNotificationState = (enabled = true): PushNotificationContex
       currentPermission === NOTIFICATION_PERMISSIONS.GRANTED ||
       currentPermission === NOTIFICATION_PERMISSIONS.DEFAULT
     ) {
-      registerPushNotifications().catch((err) => {
-        console.warn("FCM registration error:", err);
-      });
+      void registerPushNotifications();
     }
 
     return () => {

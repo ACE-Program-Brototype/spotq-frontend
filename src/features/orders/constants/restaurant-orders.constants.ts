@@ -1,3 +1,47 @@
+export const ORDER_DATE_RANGE_FILTERS = {
+  TODAY: "TODAY",
+  LAST_7_DAYS: "LAST_7_DAYS",
+  CUSTOM: "CUSTOM",
+} as const;
+
+export type OrderDateRangeFilter =
+  (typeof ORDER_DATE_RANGE_FILTERS)[keyof typeof ORDER_DATE_RANGE_FILTERS];
+
+export const ORDER_DATE_RANGE_OPTIONS: readonly {
+  label: string;
+  value: OrderDateRangeFilter;
+}[] = [
+  { label: "Today", value: ORDER_DATE_RANGE_FILTERS.TODAY },
+  { label: "Last 7 Days", value: ORDER_DATE_RANGE_FILTERS.LAST_7_DAYS },
+  { label: "Custom Range", value: ORDER_DATE_RANGE_FILTERS.CUSTOM },
+] as const;
+
+export const RESTAURANT_ORDER_STATUS_FILTERS = {
+  ALL: "ALL",
+  PLACED: "PLACED",
+  CONFIRMED: "CONFIRMED",
+  PREPARING: "PREPARING",
+  READY: "READY",
+  SERVED: "SERVED",
+  COMPLETED: "COMPLETED",
+  CANCELLED: "CANCELLED",
+} as const;
+
+export type RestaurantOrderFilterStatus =
+  (typeof RESTAURANT_ORDER_STATUS_FILTERS)[keyof typeof RESTAURANT_ORDER_STATUS_FILTERS];
+
+export const RESTAURANT_ORDER_STATUS_FILTER_OPTIONS: readonly {
+  label: string;
+  value: RestaurantOrderFilterStatus;
+}[] = [
+  { label: "All Statuses", value: RESTAURANT_ORDER_STATUS_FILTERS.ALL },
+  { label: "Placed", value: RESTAURANT_ORDER_STATUS_FILTERS.PLACED },
+  { label: "Preparing", value: RESTAURANT_ORDER_STATUS_FILTERS.PREPARING },
+  { label: "Ready", value: RESTAURANT_ORDER_STATUS_FILTERS.READY },
+  { label: "Completed", value: RESTAURANT_ORDER_STATUS_FILTERS.COMPLETED },
+  { label: "Cancelled", value: RESTAURANT_ORDER_STATUS_FILTERS.CANCELLED },
+] as const;
+
 export const RESTAURANT_ORDERS_ENDPOINTS = {
   OVERVIEW: (restaurantId: string) => `orders/restaurants/${restaurantId}/orders/overview`,
   LIST: (restaurantId: string) => `orders/restaurants/${restaurantId}/orders`,

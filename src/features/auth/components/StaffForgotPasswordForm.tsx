@@ -41,7 +41,7 @@ export function StaffForgotPasswordForm() {
           id="staff-forgot-email"
           type="email"
           autoComplete="email"
-          placeholder="e.g., manager@spotq.com"
+          placeholder="e.g., manager@spotq.site"
           disabled={isPending}
           error={errors.email?.message}
           leadingIcon={<Mail className="size-4 text-gray-400" aria-hidden="true" />}

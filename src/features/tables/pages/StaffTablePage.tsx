@@ -10,15 +10,15 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { ReleaseTableModal } from "../components/ReleaseTableModal";
-import { TableCard } from "../components/TableCard";
-import { TableSectionTabs } from "../components/TableSectionTabs";
-import { TableSkeletonGrid } from "../components/TableSkeletonGrid";
-import { TableStatusModal } from "../components/TableStatusModal";
-import { TableSummaryBar } from "../components/TableSummaryBar";
-import { TABLE_MESSAGES, TABLE_STATUS } from "../constants/table.constants";
-import { useTables } from "../hooks/useTables";
-import type { TableItem, TableStatus } from "../types/table.types";
+import { ReleaseTableModal } from "@/features/tables/components/ReleaseTableModal";
+import { TableCard } from "@/features/tables/components/TableCard";
+import { TableSectionTabs } from "@/features/tables/components/TableSectionTabs";
+import { TableSkeletonGrid } from "@/features/tables/components/TableSkeletonGrid";
+import { TableStatusModal } from "@/features/tables/components/TableStatusModal";
+import { TableSummaryBar } from "@/features/tables/components/TableSummaryBar";
+import { TABLE_MESSAGES, TABLE_STATUS } from "@/features/tables/constants/table.constants";
+import { useTables } from "@/features/tables/hooks/useTables";
+import type { TableItem, TableStatus } from "@/features/tables/types/table.types";
 
 export default function StaffTablePage() {
   const user = useAuthStore((state) => state.user);

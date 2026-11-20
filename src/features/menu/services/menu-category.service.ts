@@ -4,13 +4,13 @@
  */
 
 import { apiClient } from "@/lib/api/client";
-import { MENU_ENDPOINTS } from "../constants/menu.constants";
+import { MENU_ENDPOINTS } from "@/features/menu/constants/menu.constants";
 import type {
   MenuCategoriesListApiResponse,
   MenuCategory,
   MenuCategoryApiResponse,
   UpdateMenuCategoryPayload,
-} from "../types/menu-category.types";
+} from "@/features/menu/types/menu-category.types";
 
 /**
  * Normalizes raw category response data into an array of MenuCategory objects.

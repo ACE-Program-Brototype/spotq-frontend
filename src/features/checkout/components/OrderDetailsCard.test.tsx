@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import type { CheckoutDetailsData } from "../types/checkout.types";
+import type { CheckoutDetailsData } from "@/features/checkout/types/checkout.types";
 import { OrderDetailsCard } from "./OrderDetailsCard";
 
 describe("OrderDetailsCard", () => {

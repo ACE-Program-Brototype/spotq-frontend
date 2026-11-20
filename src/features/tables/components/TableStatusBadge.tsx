@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils/cn";
-import { TABLE_STATUS_CONFIG } from "../constants/table.constants";
-import type { TableStatus } from "../types/table.types";
+import { TABLE_STATUS, TABLE_STATUS_CONFIG } from "@/features/tables/constants/table.constants";
+import type { TableStatus } from "@/features/tables/types/table.types";
 
 interface TableStatusBadgeProps {
   status: TableStatus;
@@ -53,7 +53,7 @@ export function TableStatusBadge({
             "rounded-full shrink-0",
             dotSizes[size],
             config.dotClass,
-            status === "AVAILABLE" && "animate-pulse",
+            status === TABLE_STATUS.AVAILABLE && "animate-pulse",
           )}
           aria-hidden="true"
         />

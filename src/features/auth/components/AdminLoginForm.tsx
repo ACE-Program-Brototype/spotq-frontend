@@ -42,7 +42,7 @@ export function AdminLoginForm() {
             id="admin-email"
             type="email"
             autoComplete="email"
-            placeholder="admin@spotq.com"
+            placeholder="admin@spotq.site"
             disabled={isPending}
             error={errors.email?.message}
             leadingIcon={<Mail className="size-4 text-muted-foreground" aria-hidden="true" />}

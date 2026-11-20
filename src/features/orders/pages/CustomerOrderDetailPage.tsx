@@ -113,50 +113,50 @@ export default function CustomerOrderDetailPage() {
   return (
     <div
       data-testid="customer-order-detail-page"
-      className="space-y-6 max-w-6xl mx-auto pb-16 print:p-0 print:max-w-none"
+      className="space-y-4 sm:space-y-6 max-w-6xl mx-auto pb-12 sm:pb-16 print:p-0 print:max-w-none"
     >
       {/* 1. Header & Navigation */}
-      <div className="flex flex-col gap-4 print:hidden">
+      <div className="flex flex-col gap-3 sm:gap-4 print:hidden">
         <div>
           <button
             type="button"
             data-testid="order-back-button"
             onClick={handleBack}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
           >
-            <ArrowLeft className="size-4" />
+            <ArrowLeft className="size-3.5 sm:size-4" />
             <span>Back to Orders</span>
           </button>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-neutral-100">
-          <div className="flex items-center gap-3">
-            <div className="flex size-11 items-center justify-center rounded-2xl bg-[#fef3ec] text-[#e8631b] border border-[#fae2d3] shadow-2xs shrink-0">
-              <Receipt className="size-5" />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-2 border-b border-neutral-100">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="flex size-9 sm:size-11 items-center justify-center rounded-xl sm:rounded-2xl bg-[#fef3ec] text-[#e8631b] border border-[#fae2d3] shadow-2xs shrink-0">
+              <Receipt className="size-4.5 sm:size-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2.5 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h1
                   data-testid="customer-order-number"
-                  className="text-xl sm:text-2xl font-black tracking-tight text-neutral-900 font-mono"
+                  className="text-lg sm:text-2xl font-black tracking-tight text-neutral-900 font-mono"
                 >
                   #{order.order_number}
                 </h1>
                 <span
                   data-testid="customer-order-status-badge"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${statusVariant.badgeClass}`}
+                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-bold border ${statusVariant.badgeClass}`}
                 >
                   {statusVariant.label}
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-xs text-neutral-500 mt-1 flex-wrap">
+              <div className="flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-neutral-500 mt-0.5 flex-wrap">
                 <span className="flex items-center gap-1 font-semibold text-neutral-700">
-                  <Store className="size-3.5 text-[#e8631b]" />
+                  <Store className="size-3 sm:size-3.5 text-[#e8631b]" />
                   <span>{order.restaurant?.name ?? "Restaurant"}</span>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <Calendar className="size-3.5 text-neutral-400" />
+                  <Calendar className="size-3 sm:size-3.5 text-neutral-400" />
                   <span>Placed {formatDate(order.created_at)}</span>
                 </span>
               </div>
@@ -164,7 +164,7 @@ export default function CustomerOrderDetailPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               type="button"
               variant="outline"

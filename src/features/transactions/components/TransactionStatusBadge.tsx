@@ -5,8 +5,8 @@
 
 import { AlertCircle, CheckCircle2, Clock, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
-import { TRANSACTION_MESSAGES } from "../constants/transaction-messages.constants";
-import type { TransactionStatus } from "../types/transaction.types";
+import { TRANSACTION_MESSAGES } from "@/features/transactions/constants/transaction-messages.constants";
+import type { TransactionStatus } from "@/features/transactions/types/transaction.types";
 
 interface TransactionStatusBadgeProps {
   status: TransactionStatus | string;

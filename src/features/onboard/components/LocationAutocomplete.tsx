@@ -5,7 +5,7 @@ import {
   mapLocationIqToAddress,
   searchLocationIQ,
 } from "@/services/locationiq/locationiq.service";
-import type { RestaurantAddress } from "../types/onboard.types";
+import type { RestaurantAddress } from "@/features/onboard/types/onboard.types";
 
 interface LocationAutocompleteProps {
   onSelectLocation: (address: RestaurantAddress) => void;

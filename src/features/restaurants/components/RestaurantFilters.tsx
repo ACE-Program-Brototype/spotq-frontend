@@ -9,8 +9,8 @@ import {
   type RestaurantFilterPlanType,
   type RestaurantFilterStatusType,
   type RestaurantSubscriptionActiveFilterType,
-} from "../constants/restaurant.constants";
-import type { RestaurantSortByType, RestaurantSortOrderType } from "../types/restaurant.types";
+} from "@/features/restaurants/constants/restaurant.constants";
+import type { RestaurantSortByType, RestaurantSortOrderType } from "@/features/restaurants/types/restaurant.types";
 
 export interface RestaurantFiltersProps {
   search: string;

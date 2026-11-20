@@ -10,6 +10,7 @@ import {
   type ForgotPasswordFormValues,
   forgotPasswordSchema,
 } from "@/features/auth/schemas/forgot-password.schema";
+import { cn } from "@/lib/utils/cn";
 
 export function AdminForgotPasswordForm() {
   const { mutate: sendOtp, isPending } = useAdminForgotPassword();
@@ -35,19 +36,27 @@ export function AdminForgotPasswordForm() {
         id="admin-forgot-email"
         label="Identity"
         error={errors.email?.message}
+        className="flex flex-col gap-2 space-y-0"
         labelClassName="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase"
       >
-        <FormInput
-          id="admin-forgot-email"
-          type="email"
-          autoComplete="email"
-          placeholder="admin@spotq.com"
-          disabled={isPending}
-          error={errors.email?.message}
-          leadingIcon={<Mail className="size-4 text-muted-foreground" aria-hidden="true" />}
-          className="h-9 rounded-none border-0 border-b border-border/80 bg-transparent pl-7 pr-0 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0 focus-visible:border-foreground"
-          {...register("email")}
-        />
+        <div
+          className={cn(
+            "relative flex items-center border-b border-border/80 pb-1 transition-colors focus-within:border-foreground",
+            errors.email && "border-destructive focus-within:border-destructive",
+          )}
+        >
+          <FormInput
+            id="admin-forgot-email"
+            type="email"
+            autoComplete="email"
+            placeholder="Enter Admin email"
+            disabled={isPending}
+            error={errors.email?.message}
+            leadingIcon={<Mail className="size-4 text-muted-foreground" aria-hidden="true" />}
+            className="h-9 ml-3 rounded-none border-0 bg-transparent pl-7 pr-0 text-sm shadow-none placeholder:text-muted-foreground/40 focus-visible:ring-0"
+            {...register("email")}
+          />
+        </div>
       </FormField>
 
       <SubmitButton

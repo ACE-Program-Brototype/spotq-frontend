@@ -3,11 +3,12 @@
  * Provides branding, global search, shopping cart access, notifications, and customer authentication links.
  */
 
-import { Bell, Home, LogOut, Search, ShoppingCart, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { LogOut, Search, ShoppingCart, User } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/hooks/use-logout";
@@ -19,7 +20,6 @@ export type { CustomerMobileNavProps, CustomerNavbarProps };
 
 export function CustomerNavbar({
   cartItemCount = 0,
-  unreadNotifications = 1,
   onSearch,
   className,
   ...props
@@ -29,14 +29,18 @@ export function CustomerNavbar({
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const isHomePage = location.pathname === CUSTOMER_ROUTES.HOME;
+
   const [searchQuery, setSearchQuery] = useState(
     location.pathname === CUSTOMER_ROUTES.HOME ? (searchParams.get("search") ?? "") : "",
   );
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
+  // Automatically close mobile search drawer if navigated to home
   useEffect(() => {
     if (location.pathname === CUSTOMER_ROUTES.HOME) {
       setSearchQuery(searchParams.get("search") ?? "");
+      setMobileSearchOpen(false);
     }
   }, [searchParams, location.pathname]);
 
@@ -57,6 +61,15 @@ export function CustomerNavbar({
     }
   };
 
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const val = searchQuery.trim();
+    navigate(
+      val ? `${CUSTOMER_ROUTES.HOME}?search=${encodeURIComponent(val)}` : CUSTOMER_ROUTES.HOME,
+    );
+    setMobileSearchOpen(false);
+  };
+
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && location.pathname !== CUSTOMER_ROUTES.HOME) {
       e.preventDefault();
@@ -64,6 +77,7 @@ export function CustomerNavbar({
       navigate(
         val ? `${CUSTOMER_ROUTES.HOME}?search=${encodeURIComponent(val)}` : CUSTOMER_ROUTES.HOME,
       );
+      setMobileSearchOpen(false);
     }
   };
 
@@ -79,7 +93,7 @@ export function CustomerNavbar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 w-full max-w-full border-b border-neutral-200/80 bg-white/95 backdrop-blur shadow-2xs box-border transition-all",
+        "sticky top-0 z-40 w-full max-w-full border-b border-neutral-200/80 bg-white/95 backdrop-blur shadow-2xs box-border transition-colors",
         className,
       )}
       {...props}
@@ -92,31 +106,35 @@ export function CustomerNavbar({
           <span className="text-xl font-extrabold tracking-tight text-[#ff6b00]">spotQ</span>
         </Link>
 
-        <div className="mx-6 hidden max-w-lg flex-1 md:block">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-neutral-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Search for your favorite food or restaurant..."
-              className="h-10 w-full rounded-full border border-neutral-200 bg-neutral-100/70 pl-11 pr-4 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-all focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
-            />
-          </div>
-        </div>
+        {!isHomePage && (
+          <form onSubmit={handleSearchSubmit} className="mx-6 hidden max-w-lg flex-1 md:block">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-neutral-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="Search for your favorite food or restaurant..."
+                className="h-10 w-full rounded-full border border-neutral-200 bg-neutral-100/70 pl-11 pr-4 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 transition-colors focus:border-[#ff6b00] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
+              />
+            </div>
+          </form>
+        )}
 
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Search"
-            onClick={() => setMobileSearchOpen((prev) => !prev)}
-            className="md:hidden text-neutral-700 hover:bg-neutral-100 rounded-full"
-          >
-            <Search className="size-5" />
-          </Button>
+          {!isHomePage && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Search"
+              onClick={() => setMobileSearchOpen((prev) => !prev)}
+              className="md:hidden text-neutral-700 hover:bg-neutral-100 rounded-full"
+            >
+              <Search className="size-5" />
+            </Button>
+          )}
 
           <Link
             to={CUSTOMER_ROUTES.CART}
@@ -128,17 +146,6 @@ export function CustomerNavbar({
               <span className="absolute -right-0.5 -top-0.5 flex size-4.5 items-center justify-center rounded-full bg-[#ff6b00] text-[10px] font-bold text-white shadow-xs">
                 {cartItemCount}
               </span>
-            )}
-          </Link>
-
-          <Link
-            to={CUSTOMER_ROUTES.NOTIFICATIONS}
-            aria-label="Notifications"
-            className="relative hidden sm:flex size-9 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors"
-          >
-            <Bell className="size-5" />
-            {unreadNotifications > 0 && (
-              <span className="absolute right-2 top-2 size-2 rounded-full bg-[#ff6b00] ring-2 ring-white" />
             )}
           </Link>
 
@@ -157,8 +164,11 @@ export function CustomerNavbar({
         </div>
       </div>
 
-      {mobileSearchOpen && (
-        <div className="border-t border-neutral-100 bg-neutral-50 px-4 py-2.5 md:hidden">
+      {!isHomePage && mobileSearchOpen && (
+        <form
+          onSubmit={handleSearchSubmit}
+          className="border-t border-neutral-100 bg-neutral-50 px-4 py-2.5 md:hidden"
+        >
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-400" />
             <input
@@ -170,7 +180,7 @@ export function CustomerNavbar({
               className="h-9 w-full rounded-full border border-neutral-200 bg-white pl-9 pr-4 text-xs text-neutral-800 placeholder:text-neutral-400 focus:border-[#ff6b00] focus:outline-none focus:ring-1 focus:ring-[#ff6b00]/30"
             />
           </div>
-        </div>
+        </form>
       )}
     </header>
   );
@@ -179,15 +189,42 @@ export function CustomerNavbar({
 function CustomerAccountMenu({ initials }: { initials: string }) {
   const { handleLogout, isLoading: isLoggingOut } = useLogout();
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close account menu dropdown on outside click or Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   return (
-    <div className="relative pl-1">
+    <div ref={menuRef} className="relative pl-1">
       <button
         type="button"
         aria-label="Open account menu"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
-        className="flex items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00]"
+        className="flex items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b00] cursor-pointer"
       >
         <Avatar className="size-8.5 bg-[#1c1714] text-white font-bold border border-neutral-200">
           <AvatarFallback className="bg-[#1c1714] text-white text-xs font-bold">
@@ -206,92 +243,34 @@ function CustomerAccountMenu({ initials }: { initials: string }) {
           </Link>
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={() => {
+              setIsOpen(false);
+              setShowLogoutConfirm(true);
+            }}
             disabled={isLoggingOut}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-60"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-60 cursor-pointer"
           >
             <LogOut className="size-4" />
             {isLoggingOut ? "Logging out..." : "Logout"}
           </button>
         </div>
       )}
+
+      <ConfirmDialog
+        open={showLogoutConfirm}
+        onOpenChange={setShowLogoutConfirm}
+        title="Log Out"
+        description="Are you sure you want to end your session?"
+        confirmText="Log Out"
+        confirmVariant="destructive"
+        isLoading={isLoggingOut}
+        loadingText="Logging out..."
+        onConfirm={handleLogout}
+      />
     </div>
   );
 }
 
-export function CustomerMobileNav({
-  cartItemCount = 0,
-  unreadNotifications = 0,
-  className,
-}: CustomerMobileNavProps) {
-  const location = useLocation();
-  const user = useAuthStore((state) => state.user);
-
-  const navTabs = [
-    {
-      label: "Home",
-      href: CUSTOMER_ROUTES.HOME,
-      icon: Home,
-    },
-    {
-      label: "Cart",
-      href: "/cart",
-      icon: ShoppingCart,
-      badge: cartItemCount,
-    },
-    {
-      label: "Notifications",
-      href: "/notifications",
-      icon: Bell,
-      badge: unreadNotifications,
-    },
-    {
-      label: "Profile",
-      href: user ? CUSTOMER_ROUTES.PROFILE.ROOT : CUSTOMER_ROUTES.AUTH.LOGIN,
-      icon: User,
-    },
-  ];
-
-  return (
-    <nav
-      aria-label="Customer Mobile Navigation"
-      className={cn(
-        "fixed bottom-0 left-0 right-0 z-40 flex h-16 w-full max-w-full items-center justify-around border-t border-neutral-200/80 bg-white px-2 shadow-lg md:hidden box-border select-none",
-        className,
-      )}
-    >
-      {navTabs.map((tab) => {
-        const Icon = tab.icon;
-        const isActive =
-          location.pathname === tab.href ||
-          (tab.href === CUSTOMER_ROUTES.HOME &&
-            (location.pathname === CUSTOMER_ROUTES.HOME || location.pathname === "/restaurants"));
-
-        return (
-          <Link
-            key={tab.label}
-            to={tab.href}
-            className={cn(
-              "relative flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-all",
-              isActive
-                ? "text-[#ff6b00] font-bold"
-                : "text-neutral-500 hover:text-neutral-800 font-medium",
-            )}
-          >
-            <div className="relative flex size-6 items-center justify-center">
-              <Icon className={cn("size-5 transition-transform", isActive && "scale-105")} />
-              {Boolean(tab.badge && tab.badge > 0) && (
-                <span className="absolute -top-1 -right-1.5 flex size-4 items-center justify-center rounded-full bg-[#ff6b00] text-[9px] font-bold text-white shadow-xs">
-                  {tab.badge}
-                </span>
-              )}
-            </div>
-            <span className="text-[10px] leading-tight">{tab.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
-  );
-}
+export { CustomerMobileNav } from "./CustomerMobileNav";
 
 export default CustomerNavbar;

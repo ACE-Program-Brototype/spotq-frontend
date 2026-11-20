@@ -1,6 +1,6 @@
 import { type BeforeErrorHook, isHTTPError } from "ky";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { redirectToPortalLogin } from "../portal-redirect";
+import { redirectToPortalLogin } from "@/lib/api/portal-redirect";
 
 export interface NormalizedApiErrorData {
   success?: boolean;

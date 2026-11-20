@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { SUBSCRIBER_QUERY_KEYS } from "../constants/subscriber.constants";
-import { subscriberService } from "../services/subscriber.service";
+import { SUBSCRIBER_QUERY_KEYS } from "@/features/subscribers/constants/subscriber.constants";
+import { subscriberService } from "@/features/subscribers/services/subscriber.service";
 
 export function useSubscriberDetails(subscriberId?: string) {
   return useQuery({

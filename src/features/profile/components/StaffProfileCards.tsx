@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
-import type { StaffProfile } from "../types/profile.types";
-import { formatDate, getInitials } from "../utils/profile.utils";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import type { StaffProfile } from "@/features/profile/types/profile.types";
+import { formatDate, getInitials } from "@/features/profile/utils/profile.utils";
 
 interface ProfileCardProps {
   profile: StaffProfile;

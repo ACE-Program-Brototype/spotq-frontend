@@ -8,7 +8,6 @@ export interface StatusFilterOption {
 export const SUBSCRIPTION_HISTORY_STATUS_OPTIONS: readonly StatusFilterOption[] = [
   { label: "All Statuses", value: "ALL" },
   { label: "Success", value: "SUCCESS" },
-  { label: "Created / Incomplete", value: "CREATED" },
   { label: "Failed", value: "FAILED" },
 ] as const;
 

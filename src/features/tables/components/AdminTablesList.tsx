@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
-import { ADMIN_TABLE_LIMIT, TABLE_STATUS } from "../constants/table.constants";
-import type { TableItem, TableStatusIncludingAll } from "../types/table.types";
+import { ADMIN_TABLE_LIMIT, TABLE_STATUS } from "@/features/tables/constants/table.constants";
+import type { TableItem, TableStatusIncludingAll } from "@/features/tables/types/table.types";
 import { AdminTableCard } from "./AdminTableCard";
 import { TableSkeletonGrid } from "./TableSkeletonGrid";
 import { TableStatusModal } from "./TableStatusModal";
@@ -33,6 +33,12 @@ type AdminTablesListProps = {
   onRetry: () => void;
 };
 
+/**
+ * AdminTablesList Component
+ *
+ * @deprecated SpotQ domain strictly encompasses digital takeaway ordering and virtual queue ticketing.
+ * Dine-in table management is legacy and subject to platform deprecation guidelines.
+ */
 export function AdminTablesList({
   restaurantId,
   tables,

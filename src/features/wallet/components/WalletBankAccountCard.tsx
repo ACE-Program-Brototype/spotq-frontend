@@ -1,7 +1,7 @@
 import { BadgeCheck, Building2, Landmark, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { WalletOverview } from "@/features/wallet/types/wallet.types";
-import { maskAccountNumber } from "../utils/wallet.utils";
+import { maskAccountNumber } from "@/features/wallet/utils/wallet.utils";
 
 export function WalletBankAccountCard({
   bankAccount,

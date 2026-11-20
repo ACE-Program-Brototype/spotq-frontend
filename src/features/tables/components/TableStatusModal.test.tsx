@@ -1,11 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type React from "react";
-import { tableService } from "../services/table.service";
-import type { TableItem } from "../types/table.types";
+import { tableService } from "@/features/tables/services/table.service";
+import type { TableItem } from "@/features/tables/types/table.types";
 import { TableStatusModal } from "./TableStatusModal";
 
-jest.mock("../services/table.service", () => ({
+jest.mock("@/features/tables/services/table.service", () => ({
   tableService: {
     updateTableStatus: jest.fn(),
   },

@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import { ORDER_DEFAULTS, ORDER_ENDPOINTS } from "../constants/orders.constants";
+import { ORDER_DEFAULTS, ORDER_ENDPOINTS } from "@/features/orders/constants/orders.constants";
 import { ordersService } from "./orders.service";
 
 jest.mock("@/lib/api/client", () => ({

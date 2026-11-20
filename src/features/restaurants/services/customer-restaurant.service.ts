@@ -2,7 +2,7 @@ import { apiClient } from "@/lib/api/client";
 import {
   CUSTOMER_RESTAURANT_DEFAULTS,
   CUSTOMER_RESTAURANT_ENDPOINTS,
-} from "../constants/customer-restaurant.constants";
+} from "@/features/restaurants/constants/customer-restaurant.constants";
 import type {
   CustomerRestaurantDetails,
   CustomerRestaurantDetailsApiResponse,
@@ -10,7 +10,7 @@ import type {
   CustomerRestaurantsApiResponse,
   CustomerRestaurantsListData,
   GetCustomerRestaurantsParams,
-} from "../types/customer-restaurant.types";
+} from "@/features/restaurants/types/customer-restaurant.types";
 
 export const customerRestaurantService = {
   async getRestaurantDetails(id: string): Promise<CustomerRestaurantDetails> {

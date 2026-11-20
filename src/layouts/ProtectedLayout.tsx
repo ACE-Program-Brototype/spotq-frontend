@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import {
   ADMIN_ROUTES,
@@ -6,6 +6,12 @@ import {
   RESTAURANT_ROUTES,
   STAFF_ROUTES,
 } from "@/app/router/routes.constants";
+import { PageSkeleton } from "@/components/common/skeletons";
+import {
+  ONBOARDING_STATUS,
+  USER_ROLES,
+  USER_STATUS,
+} from "@/features/auth/constants/auth.constants";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { Role } from "@/features/auth/types/auth.types";
 import { getRoleHome } from "@/features/auth/utils/auth.helpers";
@@ -46,7 +52,11 @@ export default function ProtectedLayout({
 
   if (!isAuthenticated) {
     if (location.pathname === redirectTo) {
-      return null;
+      return (
+        <Suspense fallback={<PageSkeleton />}>
+          <Outlet />
+        </Suspense>
+      );
     }
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
@@ -54,50 +64,69 @@ export default function ProtectedLayout({
   const normalizedRole = user?.role?.toUpperCase();
   const roleHome = getRoleHome(normalizedRole, user?.status, user?.onboardingStatus);
 
-  if (normalizedRole === "RESTAURANT_ADMIN" || normalizedRole === "RESTAURANT_OWNER") {
+  if (
+    normalizedRole === USER_ROLES.RESTAURANT_ADMIN ||
+    normalizedRole === USER_ROLES.RESTAURANT_OWNER
+  ) {
     const isVerifiedOrActive =
-      user?.status === "VERIFIED" || user?.status === "ACTIVE" || user?.status === "APPROVED";
+      user?.status === USER_STATUS.VERIFIED ||
+      user?.status === USER_STATUS.ACTIVE ||
+      user?.status === USER_STATUS.APPROVED;
 
     if (isVerifiedOrActive) {
       // Verified, active or approved restaurant admins can navigate restaurant pages without redirection
     } else if (
-      user?.status === "SUBMITTED" ||
-      user?.status === "UNDER_REVIEW" ||
-      user?.status === "REJECTED" ||
-      (user?.onboardingStatus === "COMPLETED" && user?.status !== "VERIFIED")
+      user?.status === USER_STATUS.SUBMITTED ||
+      user?.status === USER_STATUS.UNDER_REVIEW ||
+      user?.status === USER_STATUS.REJECTED ||
+      (user?.onboardingStatus === ONBOARDING_STATUS.COMPLETED &&
+        user?.status !== USER_STATUS.VERIFIED)
     ) {
       if (!location.pathname.startsWith(RESTAURANT_ROUTES.ONBOARDING.STATUS)) {
         return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.STATUS} replace />;
       }
     } else if (
-      user?.status === "PENDING" &&
+      user?.status === USER_STATUS.PENDING &&
       !location.pathname.startsWith(RESTAURANT_ROUTES.ONBOARDING.ROOT)
     ) {
       return <Navigate to={RESTAURANT_ROUTES.ONBOARDING.BUSINESS_INFORMATION} replace />;
     }
 
-    if (!location.pathname.startsWith(RESTAURANT_ROUTES.ROOT)) {
+    const isRestaurantPath =
+      location.pathname === RESTAURANT_ROUTES.ROOT ||
+      location.pathname.startsWith(`${RESTAURANT_ROUTES.ROOT}/`);
+
+    if (!isRestaurantPath) {
       if (location.pathname === roleHome) {
-        return null;
+        return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
       }
       return <Navigate to={roleHome} replace />;
     }
   }
 
-  if (normalizedRole === "ADMIN" && !location.pathname.startsWith(ADMIN_ROUTES.ROOT)) {
+  const isAdminPath =
+    location.pathname === ADMIN_ROUTES.ROOT ||
+    location.pathname.startsWith(`${ADMIN_ROUTES.ROOT}/`);
+  if (normalizedRole === USER_ROLES.ADMIN && !isAdminPath) {
     if (location.pathname === roleHome) {
-      return null;
+      return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
     }
     return <Navigate to={roleHome} replace />;
   }
 
+  const isStaffPath =
+    location.pathname === STAFF_ROUTES.ROOT ||
+    location.pathname.startsWith(`${STAFF_ROUTES.ROOT}/`);
+  const isStaffAllowedPath =
+    location.pathname === RESTAURANT_ROUTES.ROOT ||
+    location.pathname.startsWith(`${RESTAURANT_ROUTES.ROOT}/`);
   if (
-    (normalizedRole === "STAFF" || normalizedRole === "RESTAURANT_STAFF") &&
-    !location.pathname.startsWith(STAFF_ROUTES.ROOT) &&
-    !location.pathname.startsWith(RESTAURANT_ROUTES.ROOT)
+    (normalizedRole === USER_ROLES.STAFF || normalizedRole === USER_ROLES.RESTAURANT_STAFF) &&
+    !isStaffPath &&
+    !isStaffAllowedPath
   ) {
     if (location.pathname === roleHome) {
-      return null;
+      return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
     }
     return <Navigate to={roleHome} replace />;
   }
@@ -106,11 +135,15 @@ export default function ProtectedLayout({
     const isAllowed = allowedRoles.some((r) => r.toUpperCase() === normalizedRole);
     if (!isAllowed) {
       if (location.pathname === roleHome) {
-        return null;
+        return <Navigate to={CUSTOMER_ROUTES.HOME} replace />;
       }
       return <Navigate to={roleHome} state={{ from: location }} replace />;
     }
   }
 
-  return <Outlet />;
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <Outlet />
+    </Suspense>
+  );
 }

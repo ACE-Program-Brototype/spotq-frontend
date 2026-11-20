@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ringMedia } from "../utils/ring-sound.utils";
+import { ringMedia } from "@/features/queue/utils/ring-sound.utils";
 import { CustomerRingAlertModal } from "./CustomerRingAlertModal";
 
-jest.mock("../utils/ring-sound.utils", () => ({
+jest.mock("@/features/queue/utils/ring-sound.utils", () => ({
   ringMedia: {
     playChime: jest.fn(),
     playAlarmSound: jest.fn(),

@@ -1,22 +1,22 @@
 /**
  * Hook for fetching and managing restaurant menu items for staff.
  * Integrates with GET /restaurants/:restaurantId/staff/menu/items
- * Supports 86'd status tracking, category filtering, search, sorting, and pagination.
+ * Supports stock status tracking, category filtering, search, sorting, and pagination.
  */
 
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { useDebounce } from "@/lib/hooks/use-debounce";
-import { STAFF_MENU_ITEMS_QUERY_KEY } from "../constants/menu.constants";
-import { staffMenuService } from "../services/staff-menu.service";
+import { STAFF_MENU_ITEMS_QUERY_KEY } from "@/features/menu/constants/menu.constants";
+import { useStaffMenuMutations } from "@/features/menu/hooks/use-staff-menu-mutations";
+import { staffMenuService } from "@/features/menu/services/staff-menu.service";
 import type {
   StaffMenuAvailabilityFilter,
   StaffMenuItem,
   StaffMenuItemsQueryParams,
   StaffMenuSortOption,
-} from "../types/staff-menu-item.types";
-import { useStaffMenuMutations } from "./use-staff-menu-mutations";
+} from "@/features/menu/types/staff-menu-item.types";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 
 export interface UseStaffMenuItemsOptions {
   restaurantId?: string;

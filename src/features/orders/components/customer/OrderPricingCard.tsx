@@ -1,6 +1,6 @@
 import { Receipt } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
-import type { CustomerOrderPricing } from "../../types/customer-order-details.types";
+import type { CustomerOrderPricing } from "@/features/orders/types/customer-order-details.types";
 
 export interface OrderPricingCardProps {
   pricing: CustomerOrderPricing;

@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CUSTOMER_RESTAURANT_QUERY_KEYS } from "@/features/restaurants/constants/customer-restaurant.constants";
-import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { LeaveQueueData, LeaveQueueResponse } from "../types/queue.types";
-import { clearActiveCustomerTicket } from "../utils/active-queue.utils";
+import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { LeaveQueueData, LeaveQueueResponse } from "@/features/queue/types/queue.types";
+import { clearActiveCustomerTicket } from "@/features/queue/utils/active-queue.utils";
 
 export interface LeaveQueueVariables {
   restaurantId: string;

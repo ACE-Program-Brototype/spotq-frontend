@@ -4,13 +4,13 @@
  */
 
 import { apiClient } from "@/lib/api/client";
-import { MENU_ENDPOINTS } from "../constants/menu.constants";
-import type { MenuCategoriesListApiResponse, MenuCategory } from "../types/menu-category.types";
+import { MENU_ENDPOINTS } from "@/features/menu/constants/menu.constants";
+import type { MenuCategoriesListApiResponse, MenuCategory } from "@/features/menu/types/menu-category.types";
 import type {
   StaffMenuItemsApiResponse,
   StaffMenuItemsQueryParams,
   StaffMenuItemsResponse,
-} from "../types/staff-menu-item.types";
+} from "@/features/menu/types/staff-menu-item.types";
 import { normalizeCategoriesResponse } from "./menu-category.service";
 
 export const staffMenuService = {

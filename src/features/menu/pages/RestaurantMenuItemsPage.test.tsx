@@ -2,18 +2,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { menuCategoryService } from "../services/menu-category.service";
-import { menuItemService } from "../services/menu-item.service";
+import { menuCategoryService } from "@/features/menu/services/menu-category.service";
+import { menuItemService } from "@/features/menu/services/menu-item.service";
 import RestaurantMenuItemsPage from "./RestaurantMenuItemsPage";
 
-jest.mock("../services/menu-item.service", () => ({
+jest.mock("@/features/menu/services/menu-item.service", () => ({
   menuItemService: {
     getMenuItems: jest.fn(),
     deleteMenuItem: jest.fn(),
   },
 }));
 
-jest.mock("../services/menu-category.service", () => ({
+jest.mock("@/features/menu/services/menu-category.service", () => ({
   menuCategoryService: {
     getCategories: jest.fn(),
   },
@@ -105,7 +105,7 @@ describe("RestaurantMenuItemsPage", () => {
 
     // Verify Title & Badges
     expect(await screen.findByRole("heading", { name: "Menu Items" })).toBeInTheDocument();
-    expect(screen.getByText("Available In-Stock")).toBeInTheDocument();
+    expect(screen.getAllByText("In Stock")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Out of Stock").length).toBeGreaterThanOrEqual(1);
 
     // Verify Create Menu Item Button
@@ -114,9 +114,9 @@ describe("RestaurantMenuItemsPage", () => {
     expect(createButton).toHaveAttribute("href", "/restaurant/menu/items/create");
 
     // Verify Item in Table
-    expect(await screen.findByText("Crispy Corn")).toBeInTheDocument();
-    expect(screen.getByText("₹199.00")).toBeInTheDocument();
-    expect(screen.getByText("Featured")).toBeInTheDocument();
+    expect((await screen.findAllByText("Crispy Corn"))[0]).toBeInTheDocument();
+    expect(screen.getAllByText("₹199.00")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Featured")[0]).toBeInTheDocument();
   });
 
   it("renders error alert with retry button on query failure", async () => {
@@ -148,10 +148,10 @@ describe("RestaurantMenuItemsPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Crispy Corn")).toBeInTheDocument();
+    expect((await screen.findAllByText("Crispy Corn"))[0]).toBeInTheDocument();
 
     // Click delete action button on the row
-    const deleteActionButton = screen.getByRole("button", { name: "Delete Crispy Corn" });
+    const deleteActionButton = screen.getAllByRole("button", { name: "Delete Crispy Corn" })[0];
     expect(deleteActionButton).toBeInTheDocument();
     fireEvent.click(deleteActionButton);
 

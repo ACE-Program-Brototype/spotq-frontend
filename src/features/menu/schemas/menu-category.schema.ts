@@ -4,14 +4,14 @@
  */
 
 import { z } from "zod";
-import { MENU_MESSAGES } from "../constants/menu.constants";
+import { CATEGORY_NAME_MAX_LENGTH, MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
 
 export const menuCategorySchema = z.object({
   name: z
     .string({ message: MENU_MESSAGES.NAME_REQUIRED })
     .trim()
     .min(1, { message: MENU_MESSAGES.NAME_REQUIRED })
-    .max(255, { message: MENU_MESSAGES.NAME_MAX_LENGTH }),
+    .max(CATEGORY_NAME_MAX_LENGTH, { message: MENU_MESSAGES.NAME_MAX_LENGTH }),
   description: z
     .string()
     .trim()

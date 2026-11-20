@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { ordersService } from "../services/orders.service";
-import type { OrderHistoryItem } from "../types/orders.types";
+import { ordersService } from "@/features/orders/services/orders.service";
+import type { OrderHistoryItem } from "@/features/orders/types/orders.types";
 import { useOrderHistory } from "./use-order-history";
 
-jest.mock("../services/orders.service", () => ({
+jest.mock("@/features/orders/services/orders.service", () => ({
   ordersService: {
     getOrderHistory: jest.fn(),
   },

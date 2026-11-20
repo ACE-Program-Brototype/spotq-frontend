@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import type { NormalizedApiErrorData } from "@/lib/api/hooks/beforeError";
-import { AUTH_MESSAGES } from "../constants/auth.constants";
-import type { LoginFormValues } from "../schemas/login.schema";
-import { useAuthStore } from "../store/auth.store";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import type { LoginFormValues } from "@/features/auth/schemas/login.schema";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useLoginMutation } from "./use-auth-mutations";
 
 export const useLogin = () => {

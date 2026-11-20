@@ -2,12 +2,12 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { useUpdateRestaurantProfile } from "../hooks/use-update-restaurant-profile";
+import { useUpdateRestaurantProfile } from "@/features/profile/hooks/use-update-restaurant-profile";
 import type {
   RestaurantOverviewDetails,
   RestaurantProfileData,
   RestaurantProfileDetails,
-} from "../types/restaurant-profile.types";
+} from "@/features/profile/types/restaurant-profile.types";
 import { RestaurantOverviewCard } from "./RestaurantOverviewCard";
 
 jest.mock("sonner", () => ({
@@ -18,7 +18,7 @@ jest.mock("sonner", () => ({
 }));
 
 jest.mock("@/hooks/useFileUpload");
-jest.mock("../hooks/use-update-restaurant-profile");
+jest.mock("@/features/profile/hooks/use-update-restaurant-profile");
 
 const mockUseFileUpload = useFileUpload as jest.MockedFunction<typeof useFileUpload>;
 const mockUseUpdateRestaurantProfile = useUpdateRestaurantProfile as jest.MockedFunction<

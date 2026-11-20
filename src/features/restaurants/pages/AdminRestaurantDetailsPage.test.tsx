@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { restaurantService } from "../services/restaurant.service";
-import type { RestaurantDetails } from "../types/restaurant.types";
+import { restaurantService } from "@/features/restaurants/services/restaurant.service";
+import type { RestaurantDetails } from "@/features/restaurants/types/restaurant.types";
 import { AdminRestaurantDetailsPage } from "./AdminRestaurantDetailsPage";
 
-jest.mock("../services/restaurant.service", () => ({
+jest.mock("@/features/restaurants/services/restaurant.service", () => ({
   restaurantService: {
     getAdminRestaurantById: jest.fn(),
     blockRestaurant: jest.fn(),

@@ -9,8 +9,8 @@ import {
   PAYMENT_METHOD_FILTER,
   TRANSACTION_DEFAULTS,
   TRANSACTION_STATUS_FILTER,
-} from "../constants/transaction.constants";
-import type { GetTransactionsParams, TransactionFiltersState } from "../types/transaction.types";
+} from "@/features/transactions/constants/transaction.constants";
+import type { GetTransactionsParams, TransactionFiltersState } from "@/features/transactions/types/transaction.types";
 
 function formatIsoDateOnly(date: Date): string {
   const yyyy = date.getUTCFullYear();

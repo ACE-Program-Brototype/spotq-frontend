@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils/date";
-import type { RestaurantStaffMember } from "../../types/restaurant.types";
-import { getStaffInitials } from "../../utils/restaurant.utils";
+import type { RestaurantStaffMember } from "@/features/restaurants/types/restaurant.types";
+import { getStaffInitials } from "@/features/restaurants/utils/restaurant.utils";
 
 interface RestaurantStaffTabProps {
   staff?: RestaurantStaffMember[];

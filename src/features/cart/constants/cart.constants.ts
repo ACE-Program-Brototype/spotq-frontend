@@ -1,5 +1,10 @@
 export const CART_STORAGE_KEY = "spotq-cart-storage";
 
+export const CART_QUANTITY_LIMITS = {
+  MIN_ITEM_QUANTITY: 1,
+  MAX_ITEM_QUANTITY: 30,
+} as const;
+
 export const CART_ENDPOINTS = {
   BATCH_ITEMS: "carts/items/batch",
 } as const;
@@ -13,6 +18,7 @@ export const CART_MESSAGES = {
   ITEM_UNAVAILABLE: "This item is currently unavailable.",
   VARIANT_REQUIRED: "Please select a variant before adding this item to your cart.",
   ITEM_ADDED: "Item added to cart.",
+  MAX_QUANTITY_REACHED: "Maximum limit of 30 items reached for this order.",
   ITEM_UPDATED: "Cart updated.",
   ITEM_REMOVED: "Item removed from cart.",
   CART_CLEARED: "Cart has been cleared.",

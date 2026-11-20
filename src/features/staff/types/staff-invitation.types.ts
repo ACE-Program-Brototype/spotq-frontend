@@ -1,6 +1,7 @@
-import type { StaffStatus } from "@/features/staff/constants/staff.constants";
-
-export type StaffInvitationStatus = "PENDING" | "ACCEPTED" | "EXPIRED" | "REVOKED";
+import type {
+  StaffInvitationStatus,
+  StaffStatus,
+} from "@/features/staff/constants/staff.constants";
 
 export type StaffInvitationSortBy = "createdAt" | "expiresAt" | "email" | "status";
 export type StaffInvitationSortOrder = "asc" | "desc";

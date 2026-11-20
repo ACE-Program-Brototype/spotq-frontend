@@ -6,12 +6,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { Gender, PROFILE_MESSAGES } from "../constants/profile.constants";
-import { useCustomerProfile } from "../hooks/use-customer-profile";
-import type { CustomerProfile } from "../types/profile.types";
+import { Gender, PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
+import { useCustomerProfile } from "@/features/profile/hooks/use-customer-profile";
+import type { CustomerProfile } from "@/features/profile/types/profile.types";
 import { ViewProfilePage } from "./ViewProfilePage";
 
-jest.mock("../hooks/use-customer-profile");
+jest.mock("@/features/profile/hooks/use-customer-profile");
 
 const mockUseCustomerProfile = useCustomerProfile as jest.MockedFunction<typeof useCustomerProfile>;
 

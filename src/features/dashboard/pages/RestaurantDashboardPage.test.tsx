@@ -128,7 +128,7 @@ describe("RestaurantDashboardPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Welcome, Test Kitchen")).toBeInTheDocument();
-      expect(screen.getByText("QUEUE PRO")).toBeInTheDocument();
+      expect(screen.getByText("Renew Subscription")).toBeInTheDocument();
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });

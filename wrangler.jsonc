@@ -1,0 +1,9 @@
+{
+  "name": "spotq-frontend",
+  "compatibility_date": "2026-11-16",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}

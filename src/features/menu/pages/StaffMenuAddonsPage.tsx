@@ -6,10 +6,12 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { AddonCard } from "@/features/menu/components/addon/AddonCard";
 import { AddonListSkeleton } from "@/features/menu/components/addon/AddonListSkeleton";
 import { EmptyState, ErrorState } from "@/features/menu/components/MenuPageStateUI";
-import { MENU_MESSAGES } from "@/features/menu/constants/menu.constants";
+import {
+  ADDON_AVAILABILITY_FILTERS,
+  type AddonAvailabilityFilter,
+  MENU_MESSAGES,
+} from "@/features/menu/constants/menu.constants";
 import { useRestaurantAddons } from "@/features/menu/hooks/use-restaurant-addons";
-
-type AvailabilityFilter = "ALL" | "AVAILABLE" | "UNAVAILABLE";
 
 export default function StaffMenuAddonsPage() {
   const user = useAuthStore((state) => state.user);
@@ -19,7 +21,7 @@ export default function StaffMenuAddonsPage() {
     useRestaurantAddons(restaurantId);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState<AvailabilityFilter>("ALL");
+  const [filter, setFilter] = useState<AddonAvailabilityFilter>(ADDON_AVAILABILITY_FILTERS.ALL);
 
   // Summary counts
   const totalCount = addons.length;
@@ -40,8 +42,8 @@ export default function StaffMenuAddonsPage() {
       }
 
       // Stock filter
-      if (filter === "AVAILABLE" && !addon.isAvailable) return false;
-      if (filter === "UNAVAILABLE" && addon.isAvailable) return false;
+      if (filter === ADDON_AVAILABILITY_FILTERS.AVAILABLE && !addon.isAvailable) return false;
+      if (filter === ADDON_AVAILABILITY_FILTERS.UNAVAILABLE && addon.isAvailable) return false;
 
       return true;
     });
@@ -53,8 +55,8 @@ export default function StaffMenuAddonsPage() {
     if (isError) {
       return (
         <ErrorState
-          title="Failed to load add-ons"
-          description="We encountered a problem loading modifiers. Please check your connection and try again."
+          title={MENU_MESSAGES.STAFF_ADDONS_ERROR_TITLE}
+          description={MENU_MESSAGES.STAFF_ADDONS_ERROR_DESC}
           onRetry={refetch}
         />
       );
@@ -64,8 +66,8 @@ export default function StaffMenuAddonsPage() {
       return (
         <EmptyState
           icon={<Sparkles className="size-6 text-[#e8631b]" />}
-          title="No modifiers found"
-          description="No add-ons or modifiers are currently registered for this restaurant."
+          title={MENU_MESSAGES.STAFF_ADDONS_EMPTY_TITLE}
+          description={MENU_MESSAGES.STAFF_ADDONS_EMPTY_DESC}
         />
       );
     }
@@ -75,8 +77,8 @@ export default function StaffMenuAddonsPage() {
       return (
         <EmptyState
           icon={<AlertCircle className="size-6 text-[#e8631b]" />}
-          title="No results found"
-          description="No modifiers match your search or filter. Try adjusting your search keywords or switching filters to see other modifiers."
+          title={MENU_MESSAGES.STAFF_ADDONS_NO_RESULTS_TITLE}
+          description={MENU_MESSAGES.STAFF_ADDONS_NO_RESULTS_DESC}
         />
       );
     }
@@ -130,18 +132,24 @@ export default function StaffMenuAddonsPage() {
       </div>
 
       {/* Operational Stock Summary Cards */}
-      <div className="grid grid-cols-3 gap-3 sm:gap-4">
-        <div className="rounded-2xl border border-[#eddcd4] bg-white p-4 shadow-2xs">
-          <span className="text-xs font-semibold text-neutral-500">Total Add-ons</span>
-          <p className="text-xl sm:text-2xl font-black text-neutral-900 mt-0.5">{totalCount}</p>
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="rounded-xl sm:rounded-2xl border border-[#eddcd4] bg-white p-2.5 sm:p-4 shadow-2xs min-w-0">
+          <span className="text-[10px] sm:text-xs font-semibold text-neutral-500 truncate block">
+            Total Add-ons
+          </span>
+          <p className="text-base sm:text-2xl font-black text-neutral-900 mt-0.5">{totalCount}</p>
         </div>
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 shadow-2xs">
-          <span className="text-xs font-semibold text-emerald-800">In Stock</span>
-          <p className="text-xl sm:text-2xl font-black text-emerald-700 mt-0.5">{inStockCount}</p>
+        <div className="rounded-xl sm:rounded-2xl border border-emerald-200 bg-emerald-50/50 p-2.5 sm:p-4 shadow-2xs min-w-0">
+          <span className="text-[10px] sm:text-xs font-semibold text-emerald-800 truncate block">
+            In Stock
+          </span>
+          <p className="text-base sm:text-2xl font-black text-emerald-700 mt-0.5">{inStockCount}</p>
         </div>
-        <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-4 shadow-2xs">
-          <span className="text-xs font-semibold text-amber-800">86'd / Unavailable</span>
-          <p className="text-xl sm:text-2xl font-black text-amber-700 mt-0.5">{outOfStockCount}</p>
+        <div className="rounded-xl sm:rounded-2xl border border-rose-200 bg-rose-50/50 p-2.5 sm:p-4 shadow-2xs min-w-0">
+          <span className="text-[10px] sm:text-xs font-semibold text-rose-800 truncate block">
+            Out of Stock
+          </span>
+          <p className="text-base sm:text-2xl font-black text-rose-700 mt-0.5">{outOfStockCount}</p>
         </div>
       </div>
 
@@ -162,9 +170,9 @@ export default function StaffMenuAddonsPage() {
         <div className="inline-flex items-center gap-1.5 p-1 bg-[#faf7f5] rounded-xl border border-[#eddcd4]">
           <button
             type="button"
-            onClick={() => setFilter("ALL")}
+            onClick={() => setFilter(ADDON_AVAILABILITY_FILTERS.ALL)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              filter === "ALL"
+              filter === ADDON_AVAILABILITY_FILTERS.ALL
                 ? "bg-white text-[#9a3412] shadow-xs"
                 : "text-neutral-600 hover:text-neutral-900"
             }`}
@@ -173,9 +181,9 @@ export default function StaffMenuAddonsPage() {
           </button>
           <button
             type="button"
-            onClick={() => setFilter("AVAILABLE")}
+            onClick={() => setFilter(ADDON_AVAILABILITY_FILTERS.AVAILABLE)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              filter === "AVAILABLE"
+              filter === ADDON_AVAILABILITY_FILTERS.AVAILABLE
                 ? "bg-white text-emerald-700 shadow-xs"
                 : "text-neutral-600 hover:text-neutral-900"
             }`}
@@ -184,14 +192,14 @@ export default function StaffMenuAddonsPage() {
           </button>
           <button
             type="button"
-            onClick={() => setFilter("UNAVAILABLE")}
+            onClick={() => setFilter(ADDON_AVAILABILITY_FILTERS.UNAVAILABLE)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              filter === "UNAVAILABLE"
-                ? "bg-white text-amber-700 shadow-xs"
+              filter === ADDON_AVAILABILITY_FILTERS.UNAVAILABLE
+                ? "bg-white text-rose-700 shadow-xs"
                 : "text-neutral-600 hover:text-neutral-900"
             }`}
           >
-            86'd ({outOfStockCount})
+            Out of Stock ({outOfStockCount})
           </button>
         </div>
       </div>

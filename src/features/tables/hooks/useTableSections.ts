@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { TABLE_QUERY_KEYS } from "../constants/table.constants";
-import { tableService } from "../services/table.service";
+import { TABLE_QUERY_KEYS } from "@/features/tables/constants/table.constants";
+import { tableService } from "@/features/tables/services/table.service";
 
 export function useTableSections(restaurantId: string) {
   const normalizedRestaurantId = (restaurantId ?? "").trim();

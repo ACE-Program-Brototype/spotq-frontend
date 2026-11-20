@@ -3,11 +3,11 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import type React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { PROFILE_QUERY_KEYS } from "../constants/profile.constants";
-import { profileService } from "../services/profile.service";
+import { PROFILE_QUERY_KEYS } from "@/features/profile/constants/profile.constants";
+import { profileService } from "@/features/profile/services/profile.service";
 import { useUpdateStaffProfile } from "./use-update-staff-profile";
 
-jest.mock("../services/profile.service");
+jest.mock("@/features/profile/services/profile.service");
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({

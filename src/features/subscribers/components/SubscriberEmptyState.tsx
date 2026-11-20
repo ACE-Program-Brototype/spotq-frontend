@@ -1,6 +1,6 @@
 import { SearchX, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
+import { SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
 
 export interface SubscriberEmptyStateProps {
   isFiltered?: boolean;

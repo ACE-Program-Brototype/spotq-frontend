@@ -1,9 +1,9 @@
 import { type Column, DataTable } from "@/components/common/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils/date";
-import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "../constants/subscriber.constants";
-import type { SubscriberInvoice } from "../types/subscriber.types";
-import { formatPrice, getPaymentStatusBadgeClass } from "../utils/subscriber.utils";
+import { DATE_ONLY_FORMAT_OPTIONS, SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
+import type { SubscriberInvoice } from "@/features/subscribers/types/subscriber.types";
+import { formatPrice, getPaymentStatusBadgeClass } from "@/features/subscribers/utils/subscriber.utils";
 
 export interface SubscriberInvoicesTableProps {
   invoices: SubscriberInvoice[];

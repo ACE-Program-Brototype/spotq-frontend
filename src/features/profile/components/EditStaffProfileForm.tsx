@@ -7,16 +7,16 @@ import { toast } from "sonner";
 import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import { Button } from "@/components/ui/button";
 import { usePresignedUrl } from "@/hooks/usePresignedUrl";
-import { PROFILE_MESSAGES } from "../constants/profile.constants";
+import { PROFILE_MESSAGES } from "@/features/profile/constants/profile.constants";
 import {
   normalizeStaffPhone,
   type UpdateStaffProfileFormData,
   updateStaffProfileSchema,
   validateAvatarFile,
-} from "../schemas/update-staff-profile.schema";
-import { profileService } from "../services/profile.service";
-import type { EditStaffProfileFormProps, UpdateStaffProfileDto } from "../types/profile.types";
-import { getInitials } from "../utils/profile.utils";
+} from "@/features/profile/schemas/update-staff-profile.schema";
+import { profileService } from "@/features/profile/services/profile.service";
+import type { EditStaffProfileFormProps, UpdateStaffProfileDto } from "@/features/profile/types/profile.types";
+import { getInitials } from "@/features/profile/utils/profile.utils";
 import { StaffPersonalDetailsCard } from "./StaffPersonalDetailsCard";
 import { StaffProfileSidebarCard } from "./StaffProfileSidebarCard";
 

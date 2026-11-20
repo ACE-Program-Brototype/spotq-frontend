@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { TABLE_QUERY_KEYS } from "@/features/tables/constants/table.constants";
-import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "../constants/queue.constants";
-import { queueService } from "../services/queue.service";
-import type { AssignTablesInput, AssignTablesResponse } from "../types/queue.types";
+import { QUEUE_MESSAGES, QUEUE_QUERY_KEYS } from "@/features/queue/constants/queue.constants";
+import { queueService } from "@/features/queue/services/queue.service";
+import type { AssignTablesInput, AssignTablesResponse } from "@/features/queue/types/queue.types";
 
 interface UseAssignTablesOptions {
   onSuccess?: (response: AssignTablesResponse) => void;

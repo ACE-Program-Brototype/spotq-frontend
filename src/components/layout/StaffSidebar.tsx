@@ -3,92 +3,23 @@
  * Provides primary shift navigation, brand details, settings, and staff clock-out actions.
  */
 
-import {
-  HelpCircle,
-  LayoutDashboard,
-  LogOut,
-  Receipt,
-  Sparkles,
-  Table as TableIcon,
-  User,
-  UsersRound,
-  Utensils,
-} from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { STAFF_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import {
+  STAFF_NAV_ITEMS,
+  isStaffNavItemActive,
+} from "@/components/layout/staffNav.constants";
 import { Button } from "@/components/ui/button";
 import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
-import type { StaffNavItem, StaffSidebarProps } from "./types";
+import type { StaffSidebarProps } from "@/components/layout/types";
 
 export type { StaffSidebarProps };
-
-const staffNavItems: StaffNavItem[] = [
-  {
-    title: "Dashboard",
-    path: "/dashboard",
-    icon: LayoutDashboard,
-    mobileLabel: "Dashboard",
-  },
-  {
-    title: "Menu Items",
-    path: "/menu",
-    icon: Utensils,
-    mobileLabel: "Menu",
-  },
-  {
-    title: "Modifiers & Add-ons",
-    path: "/menu/addons",
-    icon: Sparkles,
-    mobileLabel: "Add-ons",
-  },
-  {
-    title: "Queue Management",
-    path: "/queue",
-    icon: UsersRound,
-    mobileLabel: "Queue",
-  },
-  {
-    title: "Table Management",
-    path: "/tables",
-    icon: TableIcon,
-    mobileLabel: "Tables",
-  },
-  {
-    title: "Order Management",
-    path: "/orders",
-    icon: Receipt,
-    mobileLabel: "Orders",
-  },
-];
-
-// to highlisgt which nav item is seleced. even if the url is
-// menu/item/varient/available the menu nav item needs to be selected
-export function isStaffNavItemActive(
-  pathname: string,
-  itemPath: string,
-  basePath: string,
-): boolean {
-  const fullHref = `${basePath}${itemPath}`;
-
-  if (itemPath === "/menu") {
-    return (
-      pathname === `${basePath}/menu` ||
-      pathname === `${basePath}/menu/items` ||
-      pathname.startsWith(`${basePath}/menu/items/`)
-    );
-  }
-
-  return (
-    pathname === fullHref ||
-    pathname.startsWith(`${fullHref}/`) ||
-    (itemPath === "/dashboard" && (pathname === basePath || pathname === `${basePath}/`))
-  );
-}
 
 export function StaffSidebar({
   className,
@@ -118,7 +49,7 @@ export function StaffSidebar({
         </div>
 
         <nav className="flex flex-col gap-1.5" aria-label="Restaurant Staff Navigation">
-          {staffNavItems.map((item) => {
+          {STAFF_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const fullHref = `${basePath}${item.path}`;
             const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
@@ -129,7 +60,7 @@ export function StaffSidebar({
                 to={fullHref}
                 onClick={onNavigate}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all shadow-2xs",
+                  "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors shadow-2xs",
                   isActive
                     ? "bg-[#fed7aa]/80 text-[#9a3412] font-bold shadow-xs"
                     : "bg-transparent text-neutral-600 hover:bg-[#eddcd4]/50 hover:text-neutral-900",
@@ -159,24 +90,12 @@ export function StaffSidebar({
           <span>Profile</span>
         </Link>
 
-        <Link
-          to={`${basePath}/support`}
-          onClick={onNavigate}
-          className={cn(
-            "flex items-center gap-3 rounded-xl px-3.5 py-2 text-xs font-medium text-neutral-600 hover:bg-[#eddcd4]/50 hover:text-neutral-900 transition-colors",
-            location.pathname.startsWith(`${basePath}/support`) && "font-bold text-neutral-900",
-          )}
-        >
-          <HelpCircle className="size-4 text-neutral-500" />
-          <span>Support</span>
-        </Link>
-
         <ConfirmDialog
           trigger={
             <Button
               variant="default"
               disabled={isLoading}
-              className="mt-2 w-full bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold shadow-sm transition-all rounded-xl h-10"
+              className="mt-2 w-full bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold shadow-sm transition-colors rounded-xl h-10"
             >
               <LogOut className="size-4 mr-2" />
               Clock Out
@@ -211,7 +130,7 @@ export function StaffMobileNav({
         className,
       )}
     >
-      {staffNavItems.map((item) => {
+      {STAFF_NAV_ITEMS.map((item) => {
         const Icon = item.icon;
         const fullHref = `${basePath}${item.path}`;
         const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
@@ -221,7 +140,7 @@ export function StaffMobileNav({
             key={item.mobileLabel}
             to={fullHref}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-all",
+              "flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-colors",
               isActive ? "text-[#9a3412] font-bold" : "text-neutral-500 hover:text-neutral-800",
             )}
           >

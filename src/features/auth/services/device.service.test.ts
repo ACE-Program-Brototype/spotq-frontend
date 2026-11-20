@@ -1,11 +1,11 @@
 import { apiClient } from "@/lib/api/client";
-import { DEVICE_ENDPOINTS } from "../constants/auth.constants";
+import { DEVICE_ENDPOINTS } from "@/features/auth/constants/auth.constants";
 import type {
   CustomerDeviceItem,
   CustomerDevicesResponse,
   DeactivateDeviceResponse,
   RegisterDeviceResponse,
-} from "../types/device.types";
+} from "@/features/auth/types/device.types";
 import { deviceService } from "./device.service";
 
 jest.mock("@/lib/api/client", () => ({

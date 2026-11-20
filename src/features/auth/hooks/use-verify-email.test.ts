@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 
-import { AUTH_MESSAGES } from "../constants/auth.constants";
-import { useAuthStore } from "../store/auth.store";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useVerifyEmailMutation } from "./use-auth-mutations";
 import { useVerifyOtp } from "./use-verify-email";
 
@@ -19,7 +19,7 @@ jest.mock("sonner", () => ({
   },
 }));
 
-jest.mock("../store/auth.store", () => ({
+jest.mock("@/features/auth/store/auth.store", () => ({
   useAuthStore: jest.fn(),
 }));
 

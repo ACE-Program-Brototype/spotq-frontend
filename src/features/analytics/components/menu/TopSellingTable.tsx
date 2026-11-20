@@ -66,7 +66,7 @@ export function TopSellingTable({
 
               return (
                 <tr
-                  key={item.menuItemId || `${item.name}-${index}`}
+                  key={item.menuItemId}
                   className="hover:bg-[#faf7f5]/80 transition-colors"
                 >
                   <td className="py-3 px-3.5 text-center font-bold text-neutral-400">
