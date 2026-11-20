@@ -2,7 +2,6 @@ import { AlertTriangle, RefreshCw } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CustomerGrowthCard } from "@/features/dashboard/components/admin/CustomerGrowthCard";
-import { ExportReportsModal } from "@/features/dashboard/components/admin/ExportReportsModal";
 import { OnboardingFunnelSection } from "@/features/dashboard/components/admin/OnboardingFunnelSection";
 import { PlatformDashboardHeader } from "@/features/dashboard/components/admin/PlatformDashboardHeader";
 import { PlatformFilterBar } from "@/features/dashboard/components/admin/PlatformFilterBar";
@@ -19,7 +18,6 @@ import type { PlatformDashboardFilters } from "@/features/dashboard/types/platfo
 
 export default function AdminDashboardPage() {
   const [filters, setFilters] = useState<PlatformDashboardFilters>(getDefaultFilters);
-  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   const { data, isLoading, isError, error, isFetching, refetch } =
     usePlatformAdminDashboardAnalytics(filters);
@@ -48,12 +46,11 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6 max-w-full pb-10">
-      {/* 1. Header with Last Synced & Export Action */}
+      {/* 1. Header with Last Synced & Refresh Action */}
       <PlatformDashboardHeader
         generatedAt={data?.generatedAt}
         isFetching={isFetching}
         onRefresh={() => void refetch()}
-        onExportClick={() => setIsExportModalOpen(true)}
       />
 
       {/* 2. Unified Timeline & Granularity Filter Bar */}
@@ -144,9 +141,6 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </section>
-
-      {/* Export Reports Modal (SCRUM-804 entry point) */}
-      <ExportReportsModal isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)} />
     </div>
   );
 }

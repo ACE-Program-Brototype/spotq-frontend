@@ -57,26 +57,10 @@ export const getDefaultFilters = (): PlatformDashboardFilters => {
   };
 };
 
-export const EXPORT_REPORT_TYPES = {
-  FINANCE: "finance",
-  GROWTH: "growth",
-  CUSTOMERS: "customers",
-} as const;
-
-export type ExportReportType = (typeof EXPORT_REPORT_TYPES)[keyof typeof EXPORT_REPORT_TYPES];
-
-export const EXPORT_FORMATS = {
-  CSV: "csv",
-  PDF: "pdf",
-} as const;
-
-export type ExportFormat = (typeof EXPORT_FORMATS)[keyof typeof EXPORT_FORMATS];
-
 export const PLATFORM_ANALYTICS_MESSAGES = {
   PAGE_TITLE: "Platform Analytics & Executive Dashboard",
   PAGE_SUBTITLE: "Real-time metrics, revenue performance, and restaurant growth analytics",
   REFRESH_BUTTON: "Refresh Analytics",
-  EXPORT_BUTTON: "Export reports",
   ERROR_TITLE: "Failed to load platform analytics",
   ERROR_DESCRIPTION:
     "There was an error communicating with the analytics aggregator. Please check your network and try again.",

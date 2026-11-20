@@ -84,7 +84,6 @@ describe("AdminDashboardPage", () => {
       screen.getByRole("heading", { name: /Platform Analytics & Executive Dashboard/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("Superadmin", { selector: "span" })).toBeInTheDocument();
-    expect(screen.getByText(/Export reports/i)).toBeInTheDocument();
 
     // 3 section titles
     expect(screen.getByText("Executive Overview")).toBeInTheDocument();
@@ -146,24 +145,6 @@ describe("AdminDashboardPage", () => {
     // Other services (Total Restaurants, Customer Growth) remain fully available
     expect(screen.getAllByText("142").length).toBeGreaterThan(0);
     expect(screen.getAllByText("12,500").length).toBeGreaterThan(0);
-  });
-
-  it("opens and closes the export reports modal without leaving dashboard", () => {
-    renderWithRouter(<AdminDashboardPage />);
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-    const exportBtn = screen.getByRole("button", { name: /Export reports/i });
-    fireEvent.click(exportBtn);
-
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByText("Export Analytics Reports")).toBeInTheDocument();
-    expect(screen.getByText(/Platform Finance & Revenue Ledger/i)).toBeInTheDocument();
-
-    const cancelBtn = screen.getByRole("button", { name: /Cancel/i });
-    fireEvent.click(cancelBtn);
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("renders full error state with retry button when query fails", () => {
