@@ -80,8 +80,6 @@ export function CustomerNavbar({
       setMobileSearchOpen(false);
     }
   };
-    }
-  };
 
   const displayName = user?.fullName || user?.name || user?.email?.split("@")[0] || "";
   const nameParts = displayName.trim().split(/\s+/).filter(Boolean);
