@@ -43,16 +43,14 @@ export function RestaurantAdminSidebar({
 
   const adminNavItems = getAdminNavItems(basePath);
 
-  // Find the active section based on current location (only for multi-child sections)
+  // Find the active section based on current location
   const activeSectionTitle = adminNavItems.find(
     (item) =>
-      item.children &&
-      item.children.length > 1 &&
-      item.children.some(
+      item.children?.some(
         (child) =>
           location.pathname === child.href ||
           location.pathname.startsWith(`${child.href}/`),
-      ),
+      ) || (item.href && location.pathname === item.href),
   )?.title;
 
   // Single open accordion section at a time
@@ -67,8 +65,24 @@ export function RestaurantAdminSidebar({
     }
   }, [activeSectionTitle]);
 
-  const toggleSection = (title: string) => {
-    setOpenSection((prev) => (prev === title ? null : title));
+  const handleSectionClick = (item: (typeof adminNavItems)[number]) => {
+    const firstChild = item.children?.[0];
+    const isCurrentlyOpen = openSection === item.title;
+    const isAlreadyOnFirstChild = Boolean(
+      firstChild && location.pathname === firstChild.href,
+    );
+
+    if (!isCurrentlyOpen) {
+      setOpenSection(item.title);
+    } else if (isAlreadyOnFirstChild) {
+      setOpenSection(null);
+      return;
+    }
+
+    if (firstChild?.href && location.pathname !== firstChild.href) {
+      navigate(firstChild.href);
+      onNavigate?.();
+    }
   };
 
   const initials =
@@ -95,9 +109,8 @@ export function RestaurantAdminSidebar({
         <nav className="flex flex-col gap-1" aria-label="Restaurant Admin Navigation">
           {adminNavItems.map((item) => {
             const Icon = item.icon;
-            const hasMultipleChildren = Boolean(item.children && item.children.length > 1);
 
-            if (hasMultipleChildren && item.children) {
+            if (item.children && item.children.length > 0) {
               const isChildActive = item.children.some(
                 (child) =>
                   location.pathname === child.href ||
@@ -111,7 +124,7 @@ export function RestaurantAdminSidebar({
                 <div key={item.title} className="flex flex-col">
                   <button
                     type="button"
-                    onClick={() => toggleSection(item.title)}
+                    onClick={() => handleSectionClick(item)}
                     className={cn(
                       "relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors overflow-hidden cursor-pointer",
                       isParentActive
@@ -182,22 +195,15 @@ export function RestaurantAdminSidebar({
               );
             }
 
-            const targetHref = item.children?.[0]?.href ?? item.href ?? "#";
-            const isSingleChildActive = Boolean(
-              item.children?.[0]?.href &&
-                (location.pathname === item.children[0].href ||
-                  location.pathname.startsWith(`${item.children[0].href}/`)),
-            );
-            const isDirectActive =
+            const isActive =
               location.pathname === item.href ||
               (item.href?.endsWith(RESTAURANT_ADMIN_NAV_DEFAULTS.DASHBOARD_SUFFIX) &&
                 (location.pathname === basePath || location.pathname === `${basePath}/`));
-            const isActive = isSingleChildActive || isDirectActive;
 
             return (
               <Link
                 key={item.title}
-                to={targetHref}
+                to={item.href ?? "#"}
                 onClick={onNavigate}
                 className={cn(
                   "relative flex items-center rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors overflow-hidden",
