@@ -84,7 +84,7 @@ describe("RestaurantSettingsCard Component", () => {
     } as unknown as ReturnType<typeof useUpdateRestaurantProfile>);
   });
 
-  it("renders store open status and virtual queue cards with initial values", () => {
+  it("renders store open status and virtual queue cards with initial values and hides action buttons", () => {
     const wrapper = createTestWrapper(true);
     render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />, {
       wrapper,
@@ -94,9 +94,7 @@ describe("RestaurantSettingsCard Component", () => {
     expect(screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.STORE_OPEN.title)).toBeChecked();
     expect(screen.getByLabelText(RESTAURANT_SETTINGS_FIELDS.VIRTUAL_QUEUE.title)).toBeChecked();
 
-    const saveButton = screen.getByTestId("save-settings-button");
-    expect(saveButton).toBeInTheDocument();
-    expect(saveButton).toBeDisabled();
+    expect(screen.queryByTestId("save-settings-button")).not.toBeInTheDocument();
     expect(screen.queryByTestId("cancel-settings-button")).not.toBeInTheDocument();
   });
 
@@ -138,7 +136,7 @@ describe("RestaurantSettingsCard Component", () => {
     );
   });
 
-  it("reverts changes when cancel button is clicked", () => {
+  it("reverts changes and hides action buttons when cancel button is clicked", () => {
     const wrapper = createTestWrapper(true);
     render(<RestaurantSettingsCard settings={mockSettings} fullData={mockFullData} />, {
       wrapper,
@@ -151,7 +149,7 @@ describe("RestaurantSettingsCard Component", () => {
     expect(cancelButton).toBeInTheDocument();
     fireEvent.click(cancelButton);
 
-    expect(screen.getByTestId("save-settings-button")).toBeDisabled();
+    expect(screen.queryByTestId("save-settings-button")).not.toBeInTheDocument();
     expect(screen.queryByTestId("cancel-settings-button")).not.toBeInTheDocument();
   });
 

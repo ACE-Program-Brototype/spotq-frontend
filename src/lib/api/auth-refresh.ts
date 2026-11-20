@@ -1,6 +1,7 @@
 import ky from "ky";
 
 import { ADMIN_ROUTES, RESTAURANT_ROUTES, STAFF_ROUTES } from "@/app/router/routes.constants";
+import env from "@/config/env";
 import {
   AUTH_ENDPOINTS,
   AUTH_REFRESH_ERRORS,
@@ -18,7 +19,7 @@ export const getOrRefreshAccessToken = async (): Promise<string> => {
   }
 
   refreshPromise = (async () => {
-    const API_URL = import.meta.env.VITE_API_BASE_URL;
+    const API_URL = import.meta.env.VITE_API_BASE_URL || env.apiUrl;
 
     if (!API_URL) {
       throw new Error(AUTH_REFRESH_ERRORS.MISSING_BASE_URL);

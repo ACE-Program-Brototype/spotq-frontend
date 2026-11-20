@@ -53,7 +53,9 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
   );
 
   useEffect(() => {
-    setIsOpened(Boolean(settings.isOpened));
+    if (settings.isOpened !== undefined) {
+      setIsOpened(Boolean(settings.isOpened));
+    }
     setAcceptsQueue(Boolean(settings.acceptsQueue));
   }, [settings]);
 
@@ -98,7 +100,16 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
       })),
     };
 
-    updateMutation.mutate(payload);
+    updateMutation.mutate(payload, {
+      onSuccess: (updatedData) => {
+        if (updatedData?.settings?.isOpened !== undefined) {
+          setIsOpened(Boolean(updatedData.settings.isOpened));
+        }
+        if (updatedData?.settings?.acceptsQueue !== undefined) {
+          setAcceptsQueue(Boolean(updatedData.settings.acceptsQueue));
+        }
+      },
+    });
   };
 
   return (
@@ -113,8 +124,8 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-          {isDirty && (
+        {(isDirty || isSaving) && (
+          <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
             <Button
               type="button"
               variant="outline"
@@ -126,33 +137,28 @@ export function RestaurantSettingsCard({ settings, fullData }: RestaurantSetting
               <X className="size-3.5 mr-1" />
               <span>{RESTAURANT_SETTINGS_MESSAGES.CANCEL}</span>
             </Button>
-          )}
 
-          <Button
-            type="button"
-            onClick={handleSave}
-            disabled={!isDirty || isSaving}
-            data-testid="save-settings-button"
-            className={cn(
-              "rounded-xl font-semibold text-xs h-9 px-4 transition-all",
-              isDirty && !isSaving
-                ? "bg-[#e8631b] hover:bg-[#d55513] text-white cursor-pointer shadow-xs"
-                : "bg-neutral-100 text-neutral-400 border border-neutral-200 cursor-not-allowed",
-            )}
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="size-3.5 mr-1.5 animate-spin" />
-                <span>{RESTAURANT_SETTINGS_MESSAGES.UPDATING}</span>
-              </>
-            ) : (
-              <>
-                <Check className="size-3.5 mr-1.5" />
-                <span>{RESTAURANT_SETTINGS_MESSAGES.UPDATE_SETTINGS}</span>
-              </>
-            )}
-          </Button>
-        </div>
+            <Button
+              type="button"
+              onClick={handleSave}
+              disabled={isSaving}
+              data-testid="save-settings-button"
+              className="rounded-xl font-semibold text-xs h-9 px-4 transition-all bg-[#e8631b] hover:bg-[#d55513] text-white cursor-pointer shadow-xs disabled:opacity-60"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                  <span>{RESTAURANT_SETTINGS_MESSAGES.UPDATING}</span>
+                </>
+              ) : (
+                <>
+                  <Check className="size-3.5 mr-1.5" />
+                  <span>{RESTAURANT_SETTINGS_MESSAGES.UPDATE_SETTINGS}</span>
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

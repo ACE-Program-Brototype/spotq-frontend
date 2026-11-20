@@ -4,7 +4,6 @@
  */
 
 import {
-  Bell,
   ChevronDown,
   CreditCard,
   Grid,
@@ -241,15 +240,6 @@ export function AdminSidebar({ className, onNavigate }: AdminSidebarProps) {
               </p>
             </div>
           </div>
-
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Notifications"
-            className="size-7 rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-900 shrink-0"
-          >
-            <Bell className="size-3.5" />
-          </Button>
         </div>
 
         <ConfirmDialog
