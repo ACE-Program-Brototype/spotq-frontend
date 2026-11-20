@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv, type Plugin } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
+import { pwaConfig } from "./pwa.config.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -136,7 +138,7 @@ export default defineConfig(({ mode }) => {
   }, {});
 
   return {
-    plugins: [react(), tailwindcss(), firebaseServiceWorkerPlugin(env)],
+    plugins: [react(), tailwindcss(), firebaseServiceWorkerPlugin(env), VitePWA(pwaConfig)],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "src"),
