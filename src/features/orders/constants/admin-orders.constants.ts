@@ -17,14 +17,25 @@ export const ADMIN_ORDERS_ENDPOINTS = {
 export const ADMIN_ORDERS_QUERY_KEYS = {
   ALL: ["admin", "orders"] as const,
   LIST: (params?: Record<string, unknown>) => ["admin", "orders", "list", params ?? {}] as const,
+  RESTAURANT_FILTER_OPTIONS: ["admin", "restaurants", "filter-select-options"] as const,
 } as const;
+
+export const ADMIN_ORDERS_RESTAURANT_FILTER_CONFIG = {
+  QUERY_KEY: ADMIN_ORDERS_QUERY_KEYS.RESTAURANT_FILTER_OPTIONS,
+  LIMIT: 100,
+  STALE_TIME_MS: 60_000,
+} as const;
+
+export const ADMIN_ORDERS_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type AdminOrdersPageSize = (typeof ADMIN_ORDERS_PAGE_SIZE_OPTIONS)[number];
 
 export const ADMIN_ORDERS_DEFAULTS = {
   PAGE: 1,
-  LIMIT: 25,
+  LIMIT: 25 as AdminOrdersPageSize,
+  PAGE_SIZE_OPTIONS: ADMIN_ORDERS_PAGE_SIZE_OPTIONS,
   SORT_BY: "createdAt" as AdminOrdersSortBy,
   SORT_ORDER: "desc" as AdminOrdersSortOrder,
-  SEARCH_DEBOUNCE_MS: 300,
+  SEARCH_DEBOUNCE_MS: 400,
   INITIAL_METRICS: {
     totalOrders: 0,
     ordersByStatus: {},
@@ -70,12 +81,12 @@ export const ADMIN_PAYMENT_STATUS_OPTIONS: {
   label: string;
   value: AdminOrderFilterPaymentStatus;
 }[] = [
-  { label: "All Payment States", value: "ALL" },
-  { label: "Paid", value: "PAID" },
-  { label: "Pending", value: "PENDING" },
-  { label: "Refunded", value: "REFUNDED" },
-  { label: "Failed", value: "FAILED" },
-];
+    { label: "All Payment States", value: "ALL" },
+    { label: "Paid", value: "PAID" },
+    { label: "Pending", value: "PENDING" },
+    { label: "Refunded", value: "REFUNDED" },
+    { label: "Failed", value: "FAILED" },
+  ];
 
 export const ADMIN_DATE_PRESETS = {
   ALL: "ALL",
@@ -98,7 +109,7 @@ export const ADMIN_ORDERS_MESSAGES = {
   PAGE_TITLE: "Platform Orders",
   PAGE_SUBTITLE: "System-wide order monitor, financial ledger summaries, and real-time statuses.",
   REFRESH_TITLE: "Refresh orders",
-  SEARCH_PLACEHOLDER: "Search by order #, ID, restaurant, or customer...",
+  SEARCH_PLACEHOLDER: "Search",
   NO_ORDERS_FOUND_TITLE: "No orders found",
   NO_ORDERS_FOUND_DESC: "Try adjusting your search query, status filters, or date range.",
   FETCH_ERROR_TITLE: "Failed to load platform orders",
@@ -127,10 +138,15 @@ export const ADMIN_ORDERS_METRICS_LABELS = {
 export const ADMIN_ORDERS_FILTER_LABELS = {
   STATUS: "Status:",
   PAYMENT: "Payment:",
+  RESTAURANT: "Restaurant:",
+  ROWS_PER_PAGE: "Rows per page:",
+  ALL_RESTAURANTS: "All Restaurants",
   MOBILE_STATUS_LABEL: "Order Status",
   MOBILE_PAYMENT_LABEL: "Payment Status",
+  MOBILE_RESTAURANT_LABEL: "Restaurant",
   MOBILE_STATUS_ARIA: "Filter by order status",
   MOBILE_PAYMENT_ARIA: "Filter by payment status",
+  MOBILE_RESTAURANT_ARIA: "Filter by restaurant",
 } as const;
 
 export const ADMIN_ORDERS_TABLE_COLUMNS = {

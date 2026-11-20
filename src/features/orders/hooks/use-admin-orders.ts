@@ -11,15 +11,17 @@ import type { GetAdminOrdersParams } from "@/features/orders/types/admin-orders.
 export interface UseAdminOrdersOptions {
   enabled?: boolean;
   refetchInterval?: number | false;
+  retry?: number | boolean;
 }
 
 export function useAdminOrders(params?: GetAdminOrdersParams, options?: UseAdminOrdersOptions) {
   return useQuery({
     queryKey: ADMIN_ORDERS_QUERY_KEYS.LIST(params as Record<string, unknown> | undefined),
-    queryFn: () => adminOrdersService.getAdminOrders(params),
+    queryFn: ({ signal }) => adminOrdersService.getAdminOrders(params, signal),
     enabled: options?.enabled ?? true,
     staleTime: 30_000,
     placeholderData: keepPreviousData,
     refetchInterval: options?.refetchInterval,
+    retry: options?.retry ?? 0,
   });
 }

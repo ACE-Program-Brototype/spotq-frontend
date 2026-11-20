@@ -17,7 +17,10 @@ export const adminOrdersService = {
    * Fetches paginated orders list with platform metrics and status distributions.
    * Endpoint: GET /api/v1/orders/admin
    */
-  async getAdminOrders(params?: GetAdminOrdersParams): Promise<AdminOrdersApiResponse["data"]> {
+  async getAdminOrders(
+    params?: GetAdminOrdersParams,
+    signal?: AbortSignal,
+  ): Promise<AdminOrdersApiResponse["data"]> {
     const searchParams: Record<string, string | number> = {
       page: params?.page ?? ADMIN_ORDERS_DEFAULTS.PAGE,
       limit: params?.limit ?? ADMIN_ORDERS_DEFAULTS.LIMIT,
@@ -64,6 +67,7 @@ export const adminOrdersService = {
     const response = await apiClient
       .get(ADMIN_ORDERS_ENDPOINTS.LIST, {
         searchParams,
+        ...(signal ? { signal } : {}),
       })
       .json<AdminOrdersApiResponse>();
 

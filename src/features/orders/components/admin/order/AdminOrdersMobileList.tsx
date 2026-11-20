@@ -1,7 +1,11 @@
 import { Eye } from "lucide-react";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
-import { ADMIN_ORDERS_TABLE_LABELS } from "@/features/orders/constants/admin-orders.constants";
+import {
+  ADMIN_ORDERS_FILTER_LABELS,
+  ADMIN_ORDERS_PAGE_SIZE_OPTIONS,
+  ADMIN_ORDERS_TABLE_LABELS,
+} from "@/features/orders/constants/admin-orders.constants";
 import type { AdminOrderListItem } from "@/features/orders/types/admin-orders.types";
 import { AdminPaymentStatusBadge } from "@/features/orders/components/admin/order/AdminPaymentStatusBadge";
 import { OrderStatusBadge } from "@/features/orders/components/admin/order/OrderStatusBadge";
@@ -15,6 +19,7 @@ interface AdminOrdersMobileListProps {
   totalOrders: number;
   limit: number;
   onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
   onOrderClick: (order: AdminOrderListItem) => void;
 }
 
@@ -25,6 +30,7 @@ export function AdminOrdersMobileList({
   totalOrders,
   limit,
   onPageChange,
+  onLimitChange,
   onOrderClick,
 }: AdminOrdersMobileListProps) {
   return (
@@ -93,7 +99,24 @@ export function AdminOrdersMobileList({
       })}
 
       {/* Mobile Pagination */}
-      <div className="pt-2">
+      <div className="pt-2 flex flex-col gap-2">
+        {onLimitChange && (
+          <div className="flex items-center justify-between text-xs text-slate-500 font-medium px-1">
+            <span>{ADMIN_ORDERS_FILTER_LABELS.ROWS_PER_PAGE}</span>
+            <select
+              value={limit}
+              onChange={(e) => onLimitChange(Number(e.target.value))}
+              aria-label={ADMIN_ORDERS_FILTER_LABELS.ROWS_PER_PAGE}
+              className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs font-semibold text-slate-700"
+            >
+              {ADMIN_ORDERS_PAGE_SIZE_OPTIONS.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

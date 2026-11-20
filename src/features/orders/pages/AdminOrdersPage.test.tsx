@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import AdminOrdersPage from "./AdminOrdersPage";
@@ -82,12 +83,20 @@ describe("AdminOrdersPage", () => {
     });
   });
 
-  const renderPage = () =>
-    render(
-      <MemoryRouter>
-        <AdminOrdersPage />
-      </MemoryRouter>,
+  const renderPage = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminOrdersPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
+  };
 
   it("renders page header, badge, title, and subtitle", () => {
     renderPage();

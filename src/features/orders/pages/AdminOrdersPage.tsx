@@ -47,6 +47,8 @@ export default function AdminOrdersPage() {
     ADMIN_ORDERS_DEFAULTS.SORT_ORDER,
   );
   const [currentPage, setCurrentPage] = useState<number>(ADMIN_ORDERS_DEFAULTS.PAGE);
+  const [limit, setLimit] = useState<number>(ADMIN_ORDERS_DEFAULTS.LIMIT);
+  const [restaurantFilter, setRestaurantFilter] = useState<string | undefined>(undefined);
 
   const [selectedOrder, setSelectedOrder] = useState<AdminOrderListItem | null>(null);
 
@@ -84,12 +86,13 @@ export default function AdminOrdersPage() {
     status: statusFilter !== ADMIN_ORDER_FILTER_STATUS.ALL ? statusFilter : undefined,
     paymentStatus:
       paymentStatusFilter !== ADMIN_PAYMENT_FILTER_STATUS.ALL ? paymentStatusFilter : undefined,
+    restaurantId: restaurantFilter,
     startDate: dateParams.startDate,
     endDate: dateParams.endDate,
     sortBy,
     sortOrder,
     page: currentPage,
-    limit: ADMIN_ORDERS_DEFAULTS.LIMIT,
+    limit,
   });
 
   // ── Filter & Sort Handlers ──
@@ -105,6 +108,16 @@ export default function AdminOrdersPage() {
 
   const handlePaymentStatusChange = useCallback((status: AdminOrderFilterPaymentStatus) => {
     setPaymentStatusFilter(status);
+    setCurrentPage(ADMIN_ORDERS_DEFAULTS.PAGE);
+  }, []);
+
+  const handleRestaurantChange = useCallback((restaurantId?: string) => {
+    setRestaurantFilter(restaurantId);
+    setCurrentPage(ADMIN_ORDERS_DEFAULTS.PAGE);
+  }, []);
+
+  const handleLimitChange = useCallback((newLimit: number) => {
+    setLimit(newLimit);
     setCurrentPage(ADMIN_ORDERS_DEFAULTS.PAGE);
   }, []);
 
@@ -130,6 +143,7 @@ export default function AdminOrdersPage() {
     setSearchQuery("");
     setStatusFilter(ADMIN_ORDER_FILTER_STATUS.ALL);
     setPaymentStatusFilter(ADMIN_PAYMENT_FILTER_STATUS.ALL);
+    setRestaurantFilter(undefined);
     setDatePreset(ADMIN_DATE_PRESETS.ALL);
     setSortBy(ADMIN_ORDERS_DEFAULTS.SORT_BY);
     setSortOrder(ADMIN_ORDERS_DEFAULTS.SORT_ORDER);
@@ -140,6 +154,7 @@ export default function AdminOrdersPage() {
     Boolean(searchQuery.trim()) ||
     statusFilter !== ADMIN_ORDER_FILTER_STATUS.ALL ||
     paymentStatusFilter !== ADMIN_PAYMENT_FILTER_STATUS.ALL ||
+    restaurantFilter != null ||
     datePreset !== ADMIN_DATE_PRESETS.ALL ||
     sortBy !== ADMIN_ORDERS_DEFAULTS.SORT_BY ||
     sortOrder !== ADMIN_ORDERS_DEFAULTS.SORT_ORDER;
@@ -206,6 +221,8 @@ export default function AdminOrdersPage() {
         onStatusChange={handleStatusChange}
         paymentStatusFilter={paymentStatusFilter}
         onPaymentStatusChange={handlePaymentStatusChange}
+        restaurantFilter={restaurantFilter}
+        onRestaurantFilterChange={handleRestaurantChange}
         datePreset={datePreset}
         onDatePresetChange={handleDatePresetChange}
         onClearFilters={handleClearFilters}
@@ -254,8 +271,9 @@ export default function AdminOrdersPage() {
         currentPage={currentPage}
         totalPages={pagination.totalPages}
         totalOrders={pagination.totalOrders}
-        limit={pagination.limit}
+        limit={limit}
         onPageChange={setCurrentPage}
+        onLimitChange={handleLimitChange}
         onOrderClick={setSelectedOrder}
         sortBy={sortBy}
         sortOrder={sortOrder}

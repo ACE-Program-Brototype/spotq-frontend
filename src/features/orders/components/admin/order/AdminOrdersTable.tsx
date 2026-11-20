@@ -10,7 +10,9 @@ import { toast } from "sonner";
 import { Pagination } from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import {
+  ADMIN_ORDERS_FILTER_LABELS,
   ADMIN_ORDERS_MESSAGES,
+  ADMIN_ORDERS_PAGE_SIZE_OPTIONS,
   ADMIN_ORDERS_SORT_BY,
   ADMIN_ORDERS_SORT_ORDER,
   ADMIN_ORDERS_TABLE_COLUMNS,
@@ -38,6 +40,7 @@ interface AdminOrdersTableProps {
   totalOrders: number;
   limit: number;
   onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
   onOrderClick: (order: AdminOrderListItem) => void;
   sortBy: AdminOrdersSortBy;
   sortOrder: AdminOrdersSortOrder;
@@ -54,6 +57,7 @@ export function AdminOrdersTable({
   totalOrders,
   limit,
   onPageChange,
+  onLimitChange,
   onOrderClick,
   sortBy,
   sortOrder,
@@ -266,7 +270,24 @@ export function AdminOrdersTable({
         </div>
 
         {/* Desktop Pagination */}
-        <div className="border-t border-slate-100 bg-white">
+        <div className="border-t border-slate-100 bg-white flex flex-col sm:flex-row sm:items-center justify-between px-4 py-2 gap-3">
+          {onLimitChange && (
+            <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+              <span>{ADMIN_ORDERS_FILTER_LABELS.ROWS_PER_PAGE}</span>
+              <select
+                value={limit}
+                onChange={(e) => onLimitChange(Number(e.target.value))}
+                aria-label={ADMIN_ORDERS_FILTER_LABELS.ROWS_PER_PAGE}
+                className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#0052cc] cursor-pointer"
+              >
+                {ADMIN_ORDERS_PAGE_SIZE_OPTIONS.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -274,6 +295,7 @@ export function AdminOrdersTable({
             pageSize={limit}
             onPageChange={onPageChange}
             theme="admin"
+            className="p-0 border-0 bg-transparent flex-1 justify-end"
           />
         </div>
       </div>
@@ -286,6 +308,7 @@ export function AdminOrdersTable({
         totalOrders={totalOrders}
         limit={limit}
         onPageChange={onPageChange}
+        onLimitChange={onLimitChange}
         onOrderClick={onOrderClick}
       />
     </div>
