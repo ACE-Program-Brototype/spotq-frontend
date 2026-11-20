@@ -65,6 +65,8 @@ export function StaffMenuItemTable({
       getRowTestId={(item) => `staff-menu-item-row-${item.id}`}
       testId="staff-menu-item-table"
       theme="restaurant"
+      onRowClick={onViewDetails ? (item) => onViewDetails(item) : undefined}
+      rowClassName="cursor-pointer hover:bg-[#fef9f6] transition-colors"
       containerClassName="overflow-x-auto min-w-0 overscroll-x-contain"
       tableClassName="w-full min-w-[620px] lg:min-w-full"
       headerClassName="bg-[#faf7f5] text-neutral-700 border-b border-[#eddcd4]"

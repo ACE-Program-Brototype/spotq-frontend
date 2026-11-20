@@ -205,7 +205,10 @@ export function useStaffMenuColumns({
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => onViewDetails(item)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onViewDetails(item);
+                  }}
                   className="h-8 w-8 p-0 text-neutral-500 hover:text-neutral-900 rounded-lg hover:bg-neutral-100"
                   aria-label={`View details for ${item.name}`}
                 >
