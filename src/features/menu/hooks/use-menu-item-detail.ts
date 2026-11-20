@@ -74,6 +74,24 @@ export function useMenuItemDetail(options?: UseMenuItemDetailOptions) {
     },
     onSuccess: (data) => {
       toast.success(data.isAvailable ? "Item marked as in stock" : "Item marked as out of stock");
+      if (restaurantId && itemId) {
+        queryClient.setQueriesData(
+          { queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId] },
+          (old: unknown) => {
+            if (!old) return old;
+            const oldObj = old as { items?: { id: string; isAvailable: boolean }[] };
+            if (oldObj.items && Array.isArray(oldObj.items)) {
+              return {
+                ...oldObj,
+                items: oldObj.items.map((it) =>
+                  it.id === itemId ? { ...it, isAvailable: data.isAvailable } : it,
+                ),
+              };
+            }
+            return old;
+          },
+        );
+      }
       queryClient.invalidateQueries({ queryKey: [MENU_ITEMS_QUERY_KEY] });
       queryClient.invalidateQueries({ queryKey: [STAFF_MENU_ITEMS_QUERY_KEY] });
       queryClient.invalidateQueries({ queryKey });

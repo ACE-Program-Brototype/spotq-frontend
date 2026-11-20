@@ -123,7 +123,9 @@ export function useStaffMenuColumns({
         header: "Live Status",
         sortable: Boolean(onSort),
         cell: ({ row: item }) => {
-          const isPending = pendingItemIds?.has(item.id) || togglingItemId === item.id;
+          const isPending = Boolean(
+            pendingItemIds?.has(item.id) || (togglingItemId && togglingItemId === item.id),
+          );
 
           return (
             <div className="flex flex-col gap-1 items-start">
@@ -165,7 +167,9 @@ export function useStaffMenuColumns({
         header: "Quick Actions",
         className: "text-right",
         cell: ({ row: item }) => {
-          const isPending = pendingItemIds?.has(item.id) || togglingItemId === item.id;
+          const isPending = Boolean(
+            pendingItemIds?.has(item.id) || (togglingItemId && togglingItemId === item.id),
+          );
 
           return (
             <div className="flex items-center justify-end gap-2">

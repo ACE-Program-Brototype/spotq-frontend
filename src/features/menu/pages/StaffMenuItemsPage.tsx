@@ -47,8 +47,6 @@ export default function StaffMenuItemsPage() {
     toggleAvailability,
     pendingItemIds,
     togglingItemId,
-    toggleVariantAvailability,
-    pendingVariantIds,
   } = useStaffMenuItems();
 
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -205,15 +203,11 @@ export default function StaffMenuItemsPage() {
         </div>
       )}
 
-      {/* Staff View Details & Variants Management Modal */}
+      {/* Staff View Details Modal */}
       <StaffMenuItemDetailModal
         isOpen={Boolean(selectedItemId)}
         item={activeItem}
         onClose={() => setSelectedItemId(null)}
-        onToggleVariant={toggleVariantAvailability}
-        pendingVariantIds={pendingVariantIds}
-        onToggleItemAvailability={toggleAvailability}
-        isItemToggling={pendingItemIds.has(activeItem?.id || "")}
       />
     </div>
   );

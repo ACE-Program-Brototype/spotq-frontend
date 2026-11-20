@@ -1,36 +1,27 @@
 /**
  * Staff Menu Item Detail Modal Component
- * Displays dish details and an interactive portion sizes/variants availability table for staff.
- * Allows instant toggling and restoring of individual variants without extra page navigation or backend changes.
+ * Displays dish details, pricing, and portion sizes for restaurant staff in read-only inspection mode.
+ * Operational stock availability toggling is managed directly on the primary menu listing page.
  */
 
-import { Loader2, Power, PowerOff, Sparkles, Tag, Utensils, X } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { Sparkles, Tag, Utensils, X } from "lucide-react";
+import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MenuItemVariantsCard } from "@/features/menu/components/item-detail/MenuItemVariantsCard";
 import type { MenuItemDetailVariant } from "@/features/menu/types/menu-item.types";
 import type { StaffMenuItem } from "@/features/menu/types/staff-menu-item.types";
-import { cn } from "@/lib/utils/cn";
 
 export interface StaffMenuItemDetailModalProps {
   isOpen: boolean;
   item: StaffMenuItem | null;
   onClose: () => void;
-  onToggleVariant: (itemId: string, variantId: string) => void;
-  pendingVariantIds?: Set<string>;
-  onToggleItemAvailability?: (item: StaffMenuItem) => void;
-  isItemToggling?: boolean;
 }
 
 export function StaffMenuItemDetailModal({
   isOpen,
   item,
   onClose,
-  onToggleVariant,
-  pendingVariantIds,
-  onToggleItemAvailability,
-  isItemToggling = false,
 }: StaffMenuItemDetailModalProps) {
   // Close modal on Escape key press
   useEffect(() => {
@@ -45,14 +36,6 @@ export function StaffMenuItemDetailModal({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
-
-  const handleToggleVariantInternal = useCallback(
-    (variantId: string) => {
-      if (!item) return;
-      onToggleVariant(item.id, variantId);
-    },
-    [item, onToggleVariant],
-  );
 
   if (!isOpen || !item) return null;
 
@@ -144,48 +127,11 @@ export function StaffMenuItemDetailModal({
           </button>
         </div>
 
-        {/* Global Dish Stock Toggle */}
-        {onToggleItemAvailability && (
-          <div className="flex items-center justify-between rounded-2xl bg-[#faf7f5] p-4 border border-[#eddcd4] gap-3 flex-wrap sm:flex-nowrap">
-            <div className="space-y-0.5">
-              <p className="text-xs font-bold text-neutral-800">Overall Dish Availability</p>
-              <p className="text-[11px] text-neutral-500">
-                Marking the dish out of stock will make it unavailable for ordering.
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              disabled={isItemToggling || item.isActive === false}
-              onClick={() => onToggleItemAvailability(item)}
-              className={cn(
-                "h-8 px-3 rounded-xl text-xs font-semibold border gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95 shrink-0",
-                item.isAvailable
-                  ? "border-rose-200 bg-rose-50/70 text-rose-700 hover:bg-rose-100"
-                  : "border-emerald-200 bg-emerald-50/70 text-emerald-700 hover:bg-emerald-100",
-                (isItemToggling || item.isActive === false) && "opacity-60 cursor-not-allowed",
-              )}
-            >
-              {isItemToggling ? (
-                <Loader2 className="size-3.5 animate-spin" />
-              ) : item.isAvailable ? (
-                <PowerOff className="size-3.5 text-rose-600" />
-              ) : (
-                <Power className="size-3.5 text-emerald-600" />
-              )}
-              <span>{item.isAvailable ? "Mark Out of Stock" : "Mark In Stock"}</span>
-            </Button>
-          </div>
-        )}
-
-        {/* Variants Section */}
+        {/* Variants Section (Read-only for Staff Details Modal) */}
         {adaptedVariants.length > 0 ? (
           <MenuItemVariantsCard
             variants={adaptedVariants}
             basePrice={item.basePrice}
-            onToggleVariant={handleToggleVariantInternal}
-            togglingVariantIds={pendingVariantIds}
             hideSku={true}
           />
         ) : (
@@ -193,8 +139,7 @@ export function StaffMenuItemDetailModal({
             <Sparkles className="size-6 text-[#e8631b] mx-auto" />
             <p className="text-xs font-semibold text-neutral-700">Single Portion Dish</p>
             <p className="text-[11px] text-neutral-500 max-w-sm mx-auto">
-              This dish does not have custom portions configured. Use the button above to toggle
-              dish availability.
+              This dish does not have custom portions configured.
             </p>
           </div>
         )}

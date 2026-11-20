@@ -62,7 +62,25 @@ export function useStaffMenuMutations({ restaurantId }: UseStaffMenuMutationsOpt
         err instanceof Error ? err.message : MENU_MESSAGES.ITEM_AVAILABILITY_UPDATE_FAILED,
       );
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
+      // Update value in cache with server-confirmed status to guarantee UI consistency
+      queryClient.setQueriesData(
+        { queryKey: [STAFF_MENU_ITEMS_QUERY_KEY, restaurantId] },
+        (old: unknown) => {
+          if (!old) return old;
+          const oldObj = old as { items?: StaffMenuItem[]; totalCount?: number };
+          if (oldObj.items && Array.isArray(oldObj.items)) {
+            return {
+              ...oldObj,
+              items: oldObj.items.map((item) =>
+                item.id === variables.itemId ? { ...item, isAvailable: data.isAvailable } : item,
+              ),
+            };
+          }
+          return old;
+        },
+      );
+
       toast.success(
         data.isAvailable
           ? MENU_MESSAGES.ITEM_MARKED_IN_STOCK
@@ -210,10 +228,7 @@ export function useStaffMenuMutations({ restaurantId }: UseStaffMenuMutationsOpt
     toggleAvailability,
     pendingItemIds,
     isTogglingAvailability: pendingItemIds.size > 0,
-    togglingItemId:
-      pendingItemIds.size > 0
-        ? Array.from(pendingItemIds)[0]
-        : toggleItemAvailabilityMutation.variables?.itemId || null,
+    togglingItemId: pendingItemIds.size > 0 ? Array.from(pendingItemIds)[0] : null,
     toggleVariantAvailability,
     pendingVariantIds,
   };
