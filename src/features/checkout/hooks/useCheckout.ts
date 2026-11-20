@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { CHECKOUT_VIEW_STATUS, type CheckoutViewStatus } from "../constants/checkout.constants";
 import { type CheckoutFormValues, checkoutFormSchema } from "../schemas/checkout-form.schema";
 import { checkoutService } from "../services/checkout.service";
@@ -46,6 +47,7 @@ export function useCheckout() {
   // 3. Razorpay integration hook
   const { launchPayment, isProcessingPayment } = useOrderRazorpay({
     onSuccess: (confirmedOrder) => {
+      useCartStore.getState().clearCart();
       setPlacedOrder(confirmedOrder);
       setViewStatus(CHECKOUT_VIEW_STATUS.SUCCESS);
     },
@@ -68,6 +70,7 @@ export function useCheckout() {
           email: authUser?.email || undefined,
         });
       } else {
+        useCartStore.getState().clearCart();
         setPlacedOrder(createdOrder);
         setViewStatus(CHECKOUT_VIEW_STATUS.SUCCESS);
       }

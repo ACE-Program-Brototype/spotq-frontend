@@ -25,5 +25,8 @@ describe("CheckoutFailurePage", () => {
 
     const retryLink = screen.getByRole("link", { name: /Retry Checkout/i });
     expect(retryLink).toHaveAttribute("href", "/checkout");
+
+    const returnLink = screen.getByRole("link", { name: /Return to Cart/i });
+    expect(returnLink).toHaveAttribute("href", "/cart");
   });
 });
