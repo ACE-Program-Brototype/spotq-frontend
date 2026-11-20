@@ -1,43 +1,47 @@
+import { lazy } from "react";
 import { Navigate, type RouteObject, useParams } from "react-router-dom";
 
-import {
-  RestaurantAnalyticsLayout,
-  RestaurantAnalyticsOverviewPage,
-  RestaurantMenuPerformancePage,
-  RestaurantRevenueAnalyticsPage,
-} from "@/features/analytics";
-import RestaurantEmailVerificationPage from "@/features/auth/pages/restaurant/RestaurantEmailVerification";
-import OtpVerificationPage from "@/features/auth/pages/restaurant/ResturantOtpVerification";
-import RestaurantDashboardPage from "@/features/dashboard/pages/RestaurantDashboardPage";
-import RestaurantPrivacyPage from "@/features/legal/pages/RestaurantPrivacyPage";
-import RestaurantTermsPage from "@/features/legal/pages/RestaurantTermsPage";
-import CreateMenuItemPage from "@/features/menu/pages/CreateMenuItemPage";
-import EditMenuItemPage from "@/features/menu/pages/EditMenuItemPage";
-import RestaurantMenuAddonsPage from "@/features/menu/pages/RestaurantMenuAddonsPage";
-import RestaurantMenuCategoriesPage from "@/features/menu/pages/RestaurantMenuCategoriesPage";
-import RestaurantMenuItemDetailPage from "@/features/menu/pages/RestaurantMenuItemDetailPage";
-import RestaurantMenuItemsPage from "@/features/menu/pages/RestaurantMenuItemsPage";
-import BusinessInformationPage from "@/features/onboard/pages/BusinessInformationPage";
-import DocumentsPage from "@/features/onboard/pages/DocumentsPage";
-import LocationPage from "@/features/onboard/pages/LocationPage";
-import ReviewPage from "@/features/onboard/pages/ReviewPage";
-import VerificationStatusPage from "@/features/onboard/pages/VerificationStatusPage";
-import RestaurantOrderDetailPage from "@/features/orders/pages/RestaurantOrderDetailPage";
-import RestaurantOrdersPage from "@/features/orders/pages/RestaurantOrdersPage";
-import RestaurantProfilePage from "@/features/profile/pages/RestaurantProfilePage";
-import RestaurantStaffDetailPage from "@/features/staff/pages/RestaurantStaffDetailPage";
-import RestaurantStaffInvitationsPage from "@/features/staff/pages/RestaurantStaffInvitationsPage";
-import RestaurantStaffPage from "@/features/staff/pages/RestaurantStaffPage";
-import BillingHistoryPage from "@/features/subscription/pages/BillingHistoryPage";
-import RestaurantSubscriptionPage from "@/features/subscription/pages/RestaurantSubscriptionPage";
-import SubscriptionFailurePage from "@/features/subscription/pages/SubscriptionFailurePage";
-import SubscriptionSuccessPage from "@/features/subscription/pages/SubscriptionSuccessPage";
-import CreateTablePage from "@/features/tables/pages/CreateTablePage";
-import RestaurantTableDetailPage from "@/features/tables/pages/RestaurantTableDetailPage";
-import RestaurantTablePage from "@/features/tables/pages/RestaurantTablePage";
-import RestaurantTableSectionsPage from "@/features/tables/pages/RestaurantTableSectionsPage";
-import { RestaurantTransactionsPage } from "@/features/transactions";
-import RestaurantWalletPage from "@/features/wallet/pages/RestaurantWalletPage";
+const RestaurantAnalyticsLayout = lazy(() => import("@/features/analytics/layouts/RestaurantAnalyticsLayout"));
+const RestaurantAnalyticsOverviewPage = lazy(() => import("@/features/analytics/pages/RestaurantAnalyticsOverviewPage"));
+const RestaurantMenuPerformancePage = lazy(() => import("@/features/analytics/pages/RestaurantMenuPerformancePage"));
+const RestaurantRevenueAnalyticsPage = lazy(() => import("@/features/analytics/pages/RestaurantRevenueAnalyticsPage"));
+const RestaurantEmailVerificationPage = lazy(() => import("@/features/auth/pages/restaurant/RestaurantEmailVerification"));
+const OtpVerificationPage = lazy(() => import("@/features/auth/pages/restaurant/ResturantOtpVerification"));
+const RestaurantDashboardPage = lazy(() => import("@/features/dashboard/pages/RestaurantDashboardPage"));
+const RestaurantPrivacyPage = lazy(() => import("@/features/legal/pages/RestaurantPrivacyPage"));
+const RestaurantTermsPage = lazy(() => import("@/features/legal/pages/RestaurantTermsPage"));
+const CreateMenuItemPage = lazy(() => import("@/features/menu/pages/CreateMenuItemPage"));
+const EditMenuItemPage = lazy(() => import("@/features/menu/pages/EditMenuItemPage"));
+const RestaurantMenuAddonsPage = lazy(() => import("@/features/menu/pages/RestaurantMenuAddonsPage"));
+const RestaurantMenuCategoriesPage = lazy(() => import("@/features/menu/pages/RestaurantMenuCategoriesPage"));
+const RestaurantMenuItemDetailPage = lazy(() => import("@/features/menu/pages/RestaurantMenuItemDetailPage"));
+const RestaurantMenuItemsPage = lazy(() => import("@/features/menu/pages/RestaurantMenuItemsPage"));
+const BusinessInformationPage = lazy(() => import("@/features/onboard/pages/BusinessInformationPage"));
+const DocumentsPage = lazy(() => import("@/features/onboard/pages/DocumentsPage"));
+const LocationPage = lazy(() => import("@/features/onboard/pages/LocationPage"));
+const ReviewPage = lazy(() => import("@/features/onboard/pages/ReviewPage"));
+const VerificationStatusPage = lazy(() => import("@/features/onboard/pages/VerificationStatusPage"));
+const RestaurantOrderDetailPage = lazy(() => import("@/features/orders/pages/RestaurantOrderDetailPage"));
+const RestaurantOrdersPage = lazy(() => import("@/features/orders/pages/RestaurantOrdersPage"));
+const RestaurantProfilePage = lazy(() => import("@/features/profile/pages/RestaurantProfilePage"));
+const RestaurantStaffDetailPage = lazy(() => import("@/features/staff/pages/RestaurantStaffDetailPage"));
+const RestaurantStaffInvitationsPage = lazy(() => import("@/features/staff/pages/RestaurantStaffInvitationsPage"));
+const RestaurantStaffPage = lazy(() => import("@/features/staff/pages/RestaurantStaffPage"));
+const BillingHistoryPage = lazy(() => import("@/features/subscription/pages/BillingHistoryPage"));
+const RestaurantSubscriptionPage = lazy(() => import("@/features/subscription/pages/RestaurantSubscriptionPage"));
+const SubscriptionFailurePage = lazy(() => import("@/features/subscription/pages/SubscriptionFailurePage"));
+const SubscriptionSuccessPage = lazy(() => import("@/features/subscription/pages/SubscriptionSuccessPage"));
+const CreateTablePage = lazy(() => import("@/features/tables/pages/CreateTablePage"));
+const RestaurantTableDetailPage = lazy(() => import("@/features/tables/pages/RestaurantTableDetailPage"));
+const RestaurantTablePage = lazy(() => import("@/features/tables/pages/RestaurantTablePage"));
+const RestaurantTableSectionsPage = lazy(() => import("@/features/tables/pages/RestaurantTableSectionsPage"));
+const RestaurantTransactionsPage = lazy(() =>
+  import("@/features/transactions/pages/RestaurantTransactionsPage").then((m) => ({
+    default: m.RestaurantTransactionsPage,
+  })),
+);
+const RestaurantWalletPage = lazy(() => import("@/features/wallet/pages/RestaurantWalletPage"));
+
 import AuthLayout from "@/layouts/AuthLayout";
 import OnboardLayout from "@/layouts/OnboardLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";

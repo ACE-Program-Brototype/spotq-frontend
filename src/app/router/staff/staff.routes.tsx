@@ -1,17 +1,20 @@
+import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
-import StaffForgotPasswordPage from "@/features/auth/pages/staff/StaffForgotPasswordPage";
-import StaffLoginPage from "@/features/auth/pages/staff/StaffLoginPage";
-import StaffResetPasswordPage from "@/features/auth/pages/staff/StaffResetPasswordPage";
-import StaffVerifyOtpPage from "@/features/auth/pages/staff/StaffVerifyOtpPage";
-import StaffDashboardPage from "@/features/dashboard/pages/StaffDashboardPage";
-import StaffMenuAddonsPage from "@/features/menu/pages/StaffMenuAddonsPage";
-import StaffMenuItemsPage from "@/features/menu/pages/StaffMenuItemsPage";
-import StaffOrderDetailPage from "@/features/orders/pages/StaffOrderDetailPage";
-import StaffOrdersPage from "@/features/orders/pages/StaffOrdersPage";
-import EditStaffProfilePage from "@/features/profile/pages/EditStaffProfilePage";
-import StaffProfilePage from "@/features/profile/pages/StaffProfilePage";
-import StaffQueuePage from "@/features/queue/pages/StaffQueuePage";
-import StaffTablePage from "@/features/tables/pages/StaffTablePage";
+
+const StaffForgotPasswordPage = lazy(() => import("@/features/auth/pages/staff/StaffForgotPasswordPage"));
+const StaffLoginPage = lazy(() => import("@/features/auth/pages/staff/StaffLoginPage"));
+const StaffResetPasswordPage = lazy(() => import("@/features/auth/pages/staff/StaffResetPasswordPage"));
+const StaffVerifyOtpPage = lazy(() => import("@/features/auth/pages/staff/StaffVerifyOtpPage"));
+const StaffDashboardPage = lazy(() => import("@/features/dashboard/pages/StaffDashboardPage"));
+const StaffMenuAddonsPage = lazy(() => import("@/features/menu/pages/StaffMenuAddonsPage"));
+const StaffMenuItemsPage = lazy(() => import("@/features/menu/pages/StaffMenuItemsPage"));
+const StaffOrderDetailPage = lazy(() => import("@/features/orders/pages/StaffOrderDetailPage"));
+const StaffOrdersPage = lazy(() => import("@/features/orders/pages/StaffOrdersPage"));
+const EditStaffProfilePage = lazy(() => import("@/features/profile/pages/EditStaffProfilePage"));
+const StaffProfilePage = lazy(() => import("@/features/profile/pages/StaffProfilePage"));
+const StaffQueuePage = lazy(() => import("@/features/queue/pages/StaffQueuePage"));
+const StaffTablePage = lazy(() => import("@/features/tables/pages/StaffTablePage"));
+
 import AuthLayout from "@/layouts/AuthLayout";
 import ProtectedLayout from "@/layouts/ProtectedLayout";
 import StaffAuthLayout from "@/layouts/StaffAuthLayout";
