@@ -7,6 +7,7 @@
 import { CreditCard, LogOut, ShoppingBag, User as UserIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { cn } from "@/lib/utils/cn";
@@ -133,15 +134,25 @@ export function CustomerSidebar({ profile, className }: CustomerSidebarProps) {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="flex items-center justify-start gap-2.5 w-full rounded-2xl bg-neutral-200/70 px-4 py-2.5 text-xs font-semibold text-neutral-800 hover:bg-neutral-300/80 transition-colors disabled:opacity-60 cursor-pointer select-none"
-          >
-            <LogOut className="size-4 text-neutral-700" />
-            <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
-          </button>
+          <ConfirmDialog
+            trigger={
+              <button
+                type="button"
+                disabled={isLoggingOut}
+                className="flex items-center justify-start gap-2.5 w-full rounded-2xl bg-neutral-200/70 px-4 py-2.5 text-xs font-semibold text-neutral-800 hover:bg-neutral-300/80 transition-colors disabled:opacity-60 cursor-pointer select-none"
+              >
+                <LogOut className="size-4 text-neutral-700" />
+                <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
+              </button>
+            }
+            title="Log Out"
+            description="Are you sure you want to end your session?"
+            confirmText="Log Out"
+            confirmVariant="destructive"
+            isLoading={isLoggingOut}
+            loadingText="Logging out..."
+            onConfirm={handleLogout}
+          />
         </div>
       </aside>
     </>

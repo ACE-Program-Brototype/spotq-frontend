@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/hooks/use-logout";
@@ -169,6 +170,7 @@ export function CustomerNavbar({
 function CustomerAccountMenu({ initials }: { initials: string }) {
   const { handleLogout, isLoading: isLoggingOut } = useLogout();
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close account menu dropdown on outside click or Escape key
@@ -224,7 +226,7 @@ function CustomerAccountMenu({ initials }: { initials: string }) {
             type="button"
             onClick={() => {
               setIsOpen(false);
-              handleLogout();
+              setShowLogoutConfirm(true);
             }}
             disabled={isLoggingOut}
             className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-60 cursor-pointer"
@@ -234,6 +236,18 @@ function CustomerAccountMenu({ initials }: { initials: string }) {
           </button>
         </div>
       )}
+
+      <ConfirmDialog
+        open={showLogoutConfirm}
+        onOpenChange={setShowLogoutConfirm}
+        title="Log Out"
+        description="Are you sure you want to end your session?"
+        confirmText="Log Out"
+        confirmVariant="destructive"
+        isLoading={isLoggingOut}
+        loadingText="Logging out..."
+        onConfirm={handleLogout}
+      />
     </div>
   );
 }
