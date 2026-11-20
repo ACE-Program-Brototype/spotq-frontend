@@ -1,10 +1,9 @@
 /**
  * Restaurant Admin Navbar Component
- * Displays restaurant identification, global search, and interactive profile navigation.
+ * Displays mobile menu toggle, branding, and interactive profile navigation.
  */
 
-import { Menu, Search, Utensils } from "lucide-react";
-import { useState } from "react";
+import { Menu, Utensils } from "lucide-react";
 import { Link } from "react-router-dom";
 import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -16,14 +15,13 @@ import type { RestaurantAdminNavbarProps } from "./types";
 export type { RestaurantAdminNavbarProps };
 
 export function RestaurantAdminNavbar({
-  restaurantName = "Basil Mandi",
+  restaurantName,
   onToggleSidebar,
   onSearch,
   className,
   ...props
 }: RestaurantAdminNavbarProps) {
   const user = useAuthStore((state) => state.user);
-  const [searchValue, setSearchValue] = useState("");
 
   const initials =
     (user?.name || user?.fullName)
@@ -33,11 +31,6 @@ export function RestaurantAdminNavbar({
       .toUpperCase()
       .slice(0, 2) ?? "RA";
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-    onSearch?.(e.target.value);
-  };
-
   return (
     <header
       className={cn(
@@ -46,7 +39,7 @@ export function RestaurantAdminNavbar({
       )}
       {...props}
     >
-      <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 flex-1 min-w-0 pr-2">
+      <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 min-w-0 pr-2">
         {onToggleSidebar && (
           <Button
             type="button"
@@ -72,22 +65,13 @@ export function RestaurantAdminNavbar({
           </div>
         </div>
 
-        <div className="hidden sm:block shrink-0">
-          <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#8a3b14] truncate max-w-[180px] lg:max-w-xs">
-            {restaurantName}
-          </h2>
-        </div>
-
-        <div className="relative max-w-md flex-1 hidden md:block">
-          <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-400" />
-          <input
-            type="text"
-            value={searchValue}
-            onChange={handleSearchChange}
-            placeholder="Search orders, menu, customers..."
-            className="h-9 w-full rounded-full border border-[#f0ded4] bg-[#fcf5f0]/80 pl-9 pr-4 text-xs text-neutral-800 placeholder:text-neutral-400 focus:border-[#e8631b] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#e8631b]/30 transition-colors"
-          />
-        </div>
+        {restaurantName && (
+          <div className="hidden sm:block min-w-0">
+            <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#8a3b14] truncate max-w-[200px] sm:max-w-xs md:max-w-md">
+              {restaurantName}
+            </h2>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center shrink-0">
