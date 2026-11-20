@@ -83,11 +83,11 @@ export const CheckoutFailurePage: React.FC<CheckoutFailurePageProps> = ({
             )}
 
             <Link
-              to={CUSTOMER_ROUTES.HOME}
+              to={CUSTOMER_ROUTES.CART}
               className="w-full sm:flex-1 h-11 rounded-xl border border-neutral-300 text-neutral-700 font-semibold text-xs hover:bg-neutral-50 inline-flex items-center justify-center transition-colors"
             >
               <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
-              Back to Menu
+              Return to Cart
             </Link>
           </div>
         </div>

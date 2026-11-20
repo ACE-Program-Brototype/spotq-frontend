@@ -25,7 +25,7 @@ describe("AuthLayout", () => {
     expect(screen.queryByText("Home Landing Page")).not.toBeInTheDocument();
   });
 
-  it("redirects customer to '/' by default when user is already authenticated", () => {
+  it("redirects customer to '/home' by default when user is already authenticated", () => {
     useAuthStore.getState().setUser({
       _id: "1",
       name: "Customer",
@@ -40,7 +40,7 @@ describe("AuthLayout", () => {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<div>Login Page Form</div>} />
           </Route>
-          <Route path="/" element={<div>Home Landing Page</div>} />
+          <Route path="/home" element={<div>Home Landing Page</div>} />
         </Routes>
       </MemoryRouter>,
     );

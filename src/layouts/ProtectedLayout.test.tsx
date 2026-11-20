@@ -49,7 +49,7 @@ describe("ProtectedLayout", () => {
     expect(screen.queryByText("Customer Home Page")).not.toBeInTheDocument();
   });
 
-  it("redirects logged-in CUSTOMER to '/' when accessing admin protected routes like '/admin/dashboard'", () => {
+  it("redirects logged-in CUSTOMER to '/home' when accessing admin protected routes like '/admin/dashboard'", () => {
     useAuthStore.getState().setUser({
       _id: "2",
       name: "Customer User",
@@ -64,7 +64,7 @@ describe("ProtectedLayout", () => {
           <Route element={<ProtectedLayout allowedRoles={["ADMIN"]} redirectTo="/admin/login" />}>
             <Route path="/admin/dashboard" element={<div>Admin Dashboard Content</div>} />
           </Route>
-          <Route path="/" element={<div>Customer Home Page</div>} />
+          <Route path="/home" element={<div>Customer Home Page</div>} />
         </Routes>
       </MemoryRouter>,
     );

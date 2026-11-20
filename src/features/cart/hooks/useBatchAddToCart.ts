@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CART_MESSAGES } from "@/features/cart/constants/cart.constants";
 import { cartService } from "@/features/cart/services/cart.service";
-import { useCartStore } from "@/features/cart/store/cart.store";
 import type { AddBatchCartItemsPayload, AddBatchCartItemsResponse } from "@/features/cart/types/cart.types";
 
 export interface UseBatchAddToCartOptions {
@@ -16,8 +15,6 @@ export function useBatchAddToCart(options?: UseBatchAddToCartOptions) {
   const mutation = useMutation<AddBatchCartItemsResponse, Error, AddBatchCartItemsPayload>({
     mutationFn: (payload: AddBatchCartItemsPayload) => cartService.batchAddToCart(payload),
     onSuccess: async (data) => {
-      useCartStore.getState().clearCart();
-      useCartStore.persist?.clearStorage?.();
       await queryClient.invalidateQueries({ queryKey: ["checkout", "details"] });
       options?.onSuccess?.(data);
     },

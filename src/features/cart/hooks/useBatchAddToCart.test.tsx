@@ -61,7 +61,7 @@ describe("useBatchAddToCart", () => {
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 
-  it("calls cartService.batchAddToCart, clears local cart storage, invalidates checkout cache, and invokes onSuccess callback", async () => {
+  it("calls cartService.batchAddToCart, preserves local cart storage, invalidates checkout cache, and invokes onSuccess callback", async () => {
     (cartService.batchAddToCart as jest.Mock).mockResolvedValueOnce(mockResponse);
     const invalidateSpy = jest.spyOn(queryClient, "invalidateQueries");
     const clearCartSpy = jest.spyOn(useCartStore.getState(), "clearCart");
@@ -74,7 +74,7 @@ describe("useBatchAddToCart", () => {
     });
 
     expect(cartService.batchAddToCart).toHaveBeenCalledWith(mockPayload);
-    expect(clearCartSpy).toHaveBeenCalled();
+    expect(clearCartSpy).not.toHaveBeenCalled();
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ["checkout", "details"] });
     expect(onSuccess).toHaveBeenCalledWith(mockResponse);
   });

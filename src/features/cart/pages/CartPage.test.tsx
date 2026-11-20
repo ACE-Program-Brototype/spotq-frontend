@@ -245,7 +245,7 @@ describe("CartPage", () => {
     expect(mockBatchAddToCart).not.toHaveBeenCalled();
   });
 
-  it("clears local cart and navigates to checkout on batchAddToCart success", async () => {
+  it("preserves local cart and navigates to checkout on batchAddToCart success", async () => {
     const user = userEvent.setup();
 
     useCartStore.getState().addItem({
@@ -276,7 +276,7 @@ describe("CartPage", () => {
       capturedBatchOnSuccess?.();
     });
 
-    expect(useCartStore.getState().items).toHaveLength(0);
+    expect(useCartStore.getState().items).toHaveLength(1);
     expect(mockNavigate).toHaveBeenCalledWith(CUSTOMER_ROUTES.CHECKOUT);
   });
 });

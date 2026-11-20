@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { checkoutService } from "@/features/checkout/services/checkout.service";
 import type { CheckoutDetailsData } from "@/features/checkout/types/checkout.types";
 import { CheckoutPage } from "./CheckoutPage";
@@ -44,6 +45,7 @@ describe("CheckoutPage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useCartStore.getState().clearCart();
     (checkoutService.getCheckoutDetails as jest.Mock).mockResolvedValue(mockCheckoutData);
     (checkoutService.placeOrder as jest.Mock).mockResolvedValue({
       success: true,
@@ -103,6 +105,19 @@ describe("CheckoutPage", () => {
   });
 
   it("submits order and renders in-memory success view on successful checkout", async () => {
+    useCartStore.getState().addItem({
+      restaurantId: "test-rest-id",
+      restaurantName: "Spice Garden Cafe",
+      menuItemId: "menu-1",
+      name: "Wok-Tossed Hakka Noodles",
+      basePrice: 200,
+      isVegetarian: true,
+      selectedVariant: null,
+      selectedAddons: [],
+      quantity: 2,
+    });
+    expect(useCartStore.getState().items).toHaveLength(1);
+
     renderComponent(["/checkout"]);
 
     await waitFor(() => {
@@ -135,12 +150,28 @@ describe("CheckoutPage", () => {
       expect(screen.getByText(/Order #ORD-9999/i)).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Track Live Orders/i })).toBeInTheDocument();
     });
+
+    // Verify cart is cleared on success
+    expect(useCartStore.getState().items).toHaveLength(0);
   });
 
-  it("renders in-memory failure view when order placement fails", async () => {
+  it("renders in-memory failure view and preserves cart items when order placement fails", async () => {
     (checkoutService.placeOrder as jest.Mock).mockRejectedValueOnce(
       new Error("Gateway connection timeout"),
     );
+
+    useCartStore.getState().addItem({
+      restaurantId: "test-rest-id",
+      restaurantName: "Spice Garden Cafe",
+      menuItemId: "menu-1",
+      name: "Wok-Tossed Hakka Noodles",
+      basePrice: 200,
+      isVegetarian: true,
+      selectedVariant: null,
+      selectedAddons: [],
+      quantity: 2,
+    });
+    expect(useCartStore.getState().items).toHaveLength(1);
 
     renderComponent(["/checkout"]);
 
@@ -163,6 +194,9 @@ describe("CheckoutPage", () => {
       expect(screen.getByText(/Checkout Was Not Completed/i)).toBeInTheDocument();
       expect(screen.getByText(/Gateway connection timeout/i)).toBeInTheDocument();
     });
+
+    // Verify cart items are preserved on failure
+    expect(useCartStore.getState().items).toHaveLength(1);
 
     // Click Retry Checkout to return to checkout form
     const retryBtn = screen.getByRole("button", { name: /Retry Checkout/i });

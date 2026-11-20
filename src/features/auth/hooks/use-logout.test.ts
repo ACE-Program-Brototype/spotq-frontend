@@ -75,7 +75,7 @@ describe("useLogout hook", () => {
     expect(mockLogoutMutateAsync).toHaveBeenCalled();
     expect(mockClearAuth).toHaveBeenCalled();
     expect(toast.success).toHaveBeenCalledWith(AUTH_MESSAGES.LOGOUT_SUCCESS);
-    expect(mockNavigate).toHaveBeenCalledWith("/login", { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
   });
 
   it("handles deactivation error gracefully and still finishes logout and redirect", async () => {
@@ -92,7 +92,7 @@ describe("useLogout hook", () => {
     expect(mockLogoutMutateAsync).toHaveBeenCalled();
     expect(mockClearAuth).toHaveBeenCalled();
     expect(toast.success).toHaveBeenCalledWith(AUTH_MESSAGES.LOGOUT_SUCCESS);
-    expect(mockNavigate).toHaveBeenCalledWith("/login", { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
   });
 
   it("handles logout mutation failure gracefully and still clears auth and redirects", async () => {
@@ -107,6 +107,6 @@ describe("useLogout hook", () => {
 
     expect(mockClearAuth).toHaveBeenCalled();
     expect(toast.success).toHaveBeenCalledWith(AUTH_MESSAGES.LOGOUT_SUCCESS);
-    expect(mockNavigate).toHaveBeenCalledWith("/login", { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
   });
 });

@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
 import { useLoginMutation } from "./use-auth-mutations";
 import { useLogin } from "./use-login";
@@ -64,7 +65,7 @@ describe("useLogin hook", () => {
       { id: "u-1", email: "user@example.com", role: "CUSTOMER" },
       "access-token-123",
     );
-    expect(mockNavigate).toHaveBeenCalledWith("/", { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith(CUSTOMER_ROUTES.HOME, { replace: true });
   });
 
   it("redirects unverified user to /verify-otp with prefilled email", async () => {

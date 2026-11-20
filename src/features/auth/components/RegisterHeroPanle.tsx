@@ -1,15 +1,21 @@
 import { UserPlus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 
 export const RegisterHeroPanel = () => {
   return (
     <div className="hidden md:flex md:w-1/2 bg-spotq-orange text-white p-12 flex-col justify-between relative overflow-hidden select-none">
-      <div className="flex items-center gap-3">
-        <div className="bg-white rounded-xl p-2 shadow-md">
+      <Link
+        to={CUSTOMER_ROUTES.LANDING}
+        className="flex items-center gap-3 group cursor-pointer hover:opacity-90 transition-opacity w-fit"
+        title="Go to SpotQ Home"
+      >
+        <div className="bg-white rounded-xl p-2 shadow-md group-hover:scale-105 transition-transform">
           <img src={spotqLogo} alt="SpotQ Logo" className="h-6 w-auto" />
         </div>
         <span className="font-bold text-xl tracking-wide">SpotQ</span>
-      </div>
+      </Link>
 
       <div className="space-y-8 max-w-md my-auto">
         <div className="space-y-4">

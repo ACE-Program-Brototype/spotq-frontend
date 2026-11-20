@@ -24,7 +24,7 @@ export const useLogout = () => {
     } finally {
       clearAuth();
       toast.success(AUTH_MESSAGES.LOGOUT_SUCCESS);
-      navigate(CUSTOMER_ROUTES.AUTH.LOGIN, { replace: true });
+      navigate(CUSTOMER_ROUTES.LANDING, { replace: true });
     }
   };
 

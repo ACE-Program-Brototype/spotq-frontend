@@ -9,6 +9,7 @@ import { useAuthStore } from "@/features/auth/store/auth.store";
 import { MAX_PARTY_SIZE, MIN_CUSTOM_PARTY_SIZE } from "@/features/queue/constants/queue.constants";
 import { useJoinQueue } from "@/features/queue/hooks/use-join-queue";
 import { useQueueEta } from "@/features/queue/hooks/use-queue-eta";
+import { getStoredFid } from "@/lib/firebase/firebase";
 import {
   formatFullPhone,
   type JoinQueueFormData,
@@ -145,12 +146,15 @@ export function JoinQueueModal({
 
     try {
       const fullPhone = formatFullPhone(data.countryCode, data.phone);
+      const fid = await getStoredFid();
+      console.log("[JoinQueue] Joining queue with FID:", fid);
 
       const response = await joinQueue({
         guestName: data.guestName,
         guestPhone: fullPhone,
         partySize: data.partySize,
         specialNotes: data.specialNotes,
+        ...(fid ? { fid } : {}),
       });
 
       const entry = response.data;

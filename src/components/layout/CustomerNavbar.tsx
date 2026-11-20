@@ -5,7 +5,7 @@
 
 import { LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
@@ -27,38 +27,59 @@ export function CustomerNavbar({
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const isHomePage = location.pathname === CUSTOMER_ROUTES.HOME;
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(
+    location.pathname === CUSTOMER_ROUTES.HOME ? (searchParams.get("search") ?? "") : "",
+  );
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   // Automatically close mobile search drawer if navigated to home
   useEffect(() => {
-    if (isHomePage) {
+    if (location.pathname === CUSTOMER_ROUTES.HOME) {
+      setSearchQuery(searchParams.get("search") ?? "");
       setMobileSearchOpen(false);
     }
-  }, [isHomePage]);
+  }, [searchParams, location.pathname]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
     onSearch?.(val);
+
+    if (location.pathname === CUSTOMER_ROUTES.HOME) {
+      const nextParams = new URLSearchParams(searchParams);
+      if (val.trim()) {
+        nextParams.set("search", val.trim());
+        nextParams.delete("page");
+      } else {
+        nextParams.delete("search");
+      }
+      setSearchParams(nextParams, { replace: true });
+    }
   };
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const val = searchQuery.trim();
-    navigate(val ? `/?search=${encodeURIComponent(val)}` : "/");
+    navigate(
+      val ? `${CUSTOMER_ROUTES.HOME}?search=${encodeURIComponent(val)}` : CUSTOMER_ROUTES.HOME,
+    );
     setMobileSearchOpen(false);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && location.pathname !== CUSTOMER_ROUTES.HOME) {
       e.preventDefault();
       const val = searchQuery.trim();
-      navigate(val ? `/?search=${encodeURIComponent(val)}` : "/");
+      navigate(
+        val ? `${CUSTOMER_ROUTES.HOME}?search=${encodeURIComponent(val)}` : CUSTOMER_ROUTES.HOME,
+      );
       setMobileSearchOpen(false);
+    }
+  };
     }
   };
 

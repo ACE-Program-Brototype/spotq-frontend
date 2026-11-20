@@ -57,11 +57,11 @@ export const CheckoutPage: React.FC = () => {
         {/* Navigation & Breadcrumb */}
         <div className="mb-2 sm:mb-2.5 flex items-center justify-between">
           <Link
-            to={CUSTOMER_ROUTES.HOME}
-            className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-neutral-500 hover:text-neutral-900 transition-colors"
+            to={CUSTOMER_ROUTES.CART}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-neutral-900 transition-colors"
           >
-            <ArrowLeft className="size-3" />
-            <span>Back to Menu</span>
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Cart</span>
           </Link>
 
           <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-medium text-neutral-400">

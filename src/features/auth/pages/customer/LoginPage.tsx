@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
 import spotqLogo from "@/assets/logos/spotq-logo.png";
@@ -74,7 +74,13 @@ export default function LoginPage() {
 
         <div className="w-full max-w-md mx-auto px-6 py-12 md:py-16 my-auto flex flex-col justify-center gap-8">
           <div className="flex justify-center md:hidden">
-            <img src={spotqLogo} alt="SpotQ Logo" className="h-12 w-auto object-contain" />
+            <Link
+              to={CUSTOMER_ROUTES.LANDING}
+              className="cursor-pointer hover:opacity-85 transition-opacity"
+              title="Go to SpotQ Home"
+            >
+              <img src={spotqLogo} alt="SpotQ Logo" className="h-12 w-auto object-contain" />
+            </Link>
           </div>
 
           <div className="text-center md:text-left space-y-1.5">
