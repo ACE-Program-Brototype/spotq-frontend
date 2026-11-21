@@ -4,30 +4,22 @@
  */
 
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  PAGINATION_ACTIVE_STYLES,
+  PAGINATION_DEFAULT_MESSAGES,
+  PAGINATION_MESSAGES,
+  PAGINATION_SELECT_FOCUS_RINGS,
+} from "@/components/common/constants";
 import { cn } from "@/lib/utils/cn";
 import type { PaginationProps } from "./types";
 
 export type { PaginationProps };
-
-export const PAGINATION_ACTIVE_STYLES = {
-  admin: "bg-[#0052cc] text-white hover:bg-[#0052cc]/90 shadow-sm",
-  restaurant: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-  customer: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-  brand: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-  dark: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
-} as const;
-
-export const PAGINATION_SELECT_FOCUS_RINGS = {
-  admin: "focus:ring-[#0052cc]",
-  restaurant: "focus:ring-[#ff6b00]",
-  customer: "focus:ring-[#ff6b00]",
-  brand: "focus:ring-[#ff6b00]",
-  dark: "focus:ring-slate-700",
-} as const;
-
-export const PAGINATION_DEFAULT_MESSAGES = {
-  ROWS_PER_PAGE: "Rows per page:",
-} as const;
+export {
+  PAGINATION_ACTIVE_STYLES,
+  PAGINATION_DEFAULT_MESSAGES,
+  PAGINATION_MESSAGES,
+  PAGINATION_SELECT_FOCUS_RINGS,
+};
 
 export function Pagination({
   currentPage,
@@ -145,7 +137,9 @@ export function Pagination({
             <span>{entriesText}</span>
           ) : (
             <span>
-              Page <strong className="font-semibold text-foreground">{safeCurrent}</strong> of{" "}
+              {PAGINATION_MESSAGES.PAGE}{" "}
+              <strong className="font-semibold text-foreground">{safeCurrent}</strong>{" "}
+              {PAGINATION_MESSAGES.OF}{" "}
               <strong className="font-semibold text-foreground">{safeTotal}</strong>
             </span>
           )}
@@ -158,7 +152,7 @@ export function Pagination({
             type="button"
             onClick={() => onPageChange(1)}
             disabled={disabled || isFirstPage}
-            aria-label="Go to first page"
+            aria-label={PAGINATION_MESSAGES.GO_TO_FIRST}
             className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
           >
             <ChevronsLeft className="size-4" />
@@ -169,7 +163,7 @@ export function Pagination({
           type="button"
           onClick={() => onPageChange(safeCurrent - 1)}
           disabled={disabled || isFirstPage}
-          aria-label="Previous page"
+          aria-label={PAGINATION_MESSAGES.GO_TO_PREVIOUS}
           className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
         >
           <ChevronLeft className="size-4" />
@@ -197,7 +191,7 @@ export function Pagination({
               onClick={() => onPageChange(p)}
               disabled={disabled || isActive}
               aria-current={isActive ? "page" : undefined}
-              aria-label={`Page ${p}`}
+              aria-label={`${PAGINATION_MESSAGES.PAGE} ${p}`}
               className={cn(
                 "flex size-8 items-center justify-center rounded-md text-xs font-medium transition-colors",
                 isActive
@@ -215,7 +209,7 @@ export function Pagination({
           type="button"
           onClick={() => onPageChange(safeCurrent + 1)}
           disabled={disabled || isLastPage}
-          aria-label="Next page"
+          aria-label={PAGINATION_MESSAGES.GO_TO_NEXT}
           className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
         >
           <ChevronRight className="size-4" />
@@ -226,7 +220,7 @@ export function Pagination({
             type="button"
             onClick={() => onPageChange(safeTotal)}
             disabled={disabled || isLastPage}
-            aria-label="Go to last page"
+            aria-label={PAGINATION_MESSAGES.GO_TO_LAST}
             className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
           >
             <ChevronsRight className="size-4" />
