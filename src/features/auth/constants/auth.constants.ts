@@ -1,0 +1,262 @@
+export const AUTH_STORAGE_KEYS = {
+  ACCESS_TOKEN: "access_token",
+  USER_DATA: "user_data",
+  IS_AUTHENTICATED: "is_authenticated",
+  REDIRECT_AFTER_LOGIN: "redirect_after_login",
+} as const;
+
+export const AUTH_ROLES = {
+  ADMIN: "PLATFORM_ADMIN",
+  RESTAURANT_ADMIN: "RESTAURANT_ADMIN",
+  STAFF: "STAFF",
+  CUSTOMER: "CUSTOMER",
+} as const;
+
+export const USER_ROLES = {
+  ADMIN: "ADMIN",
+  CUSTOMER: "CUSTOMER",
+  RESTAURANT_ADMIN: "RESTAURANT_ADMIN",
+  RESTAURANT_OWNER: "RESTAURANT_OWNER",
+  STAFF: "STAFF",
+  RESTAURANT_STAFF: "RESTAURANT_STAFF",
+} as const;
+export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
+
+export const USER_STATUS = {
+  PENDING: "PENDING",
+  ACTIVE: "ACTIVE",
+  APPROVED: "APPROVED",
+  VERIFIED: "VERIFIED",
+  SUBMITTED: "SUBMITTED",
+  UNDER_REVIEW: "UNDER_REVIEW",
+  REJECTED: "REJECTED",
+  BLOCKED: "BLOCKED",
+} as const;
+export type UserStatus = (typeof USER_STATUS)[keyof typeof USER_STATUS];
+
+export const ONBOARDING_STATUS = {
+  PENDING: "PENDING",
+  IN_PROGRESS: "IN_PROGRESS",
+  COMPLETED: "COMPLETED",
+} as const;
+export type OnboardingStatus = (typeof ONBOARDING_STATUS)[keyof typeof ONBOARDING_STATUS];
+
+export const AUTH_REFRESH_ERRORS = {
+  MISSING_BASE_URL: "VITE_API_BASE_URL is not configured.",
+  MISSING_ACCESS_TOKEN: "No access token returned from refresh endpoint.",
+} as const;
+
+export const AUTH_ROUTES = {
+  LOGIN: "/login",
+  REGISTER: "/register",
+  VERIFY_OTP: "/verify-otp",
+  FORGOT_PASSWORD: "/forgot-password",
+  RESET_PASSWORD: "/reset-password",
+  ADMIN_LOGIN: "/admin/login",
+  ADMIN_FORGOT_PASSWORD: "/admin/forgot-password",
+  ADMIN_RESET_PASSWORD: "/admin/reset-password",
+  RESTAURANT_LOGIN: "/restaurant/login",
+  RESTAURANT_REGISTER: "/restaurant/register",
+  RESTAURANT_VERIFY_OTP: "/restaurant/verify-otp",
+  RESTAURANT_FORGOT_PASSWORD: "/restaurant/forgot-password",
+  RESTAURANT_RESET_PASSWORD: "/restaurant/reset-password",
+  STAFF_LOGIN: "/staff/login",
+  STAFF_FORGOT_PASSWORD: "/staff/forgot-password",
+  STAFF_RESET_PASSWORD: "/staff/reset-password",
+  STAFF_ACCEPT_INVITATION: "/staff/accept-invitation",
+} as const;
+
+export const AUTH_MESSAGES = {
+  LOGIN_SUCCESS: "Login successful!",
+  ADMIN_LOGIN_SUCCESS: "Welcome back! Redirecting to dashboard…",
+  LOGOUT_SUCCESS: "Successfully logged out!",
+  ADMIN_LOGOUT_SUCCESS: "Logged out successfully.",
+  INVALID_CREDENTIALS: "Invalid email or password.",
+  ACCOUNT_BLOCKED: "Your account has been blocked.",
+  ACCOUNT_INACTIVE: "Your account is inactive.",
+  ACCOUNT_SUSPENDED: "Your account is suspended/inactive.",
+  CONNECTION_ERROR: "Unable to connect. Please check your connection and try again.",
+  GENERIC_ERROR: "Something went wrong. Please try again.",
+  UNEXPECTED_ERROR: "An unexpected error occurred. Please try again.",
+  LOGIN_FAILED: "Login failed. Please try again.",
+  LOGOUT_FAILED: "Logout encountered an issue.",
+
+  GOOGLE_SUCCESS: "Google Authentication successful!",
+  GOOGLE_FAILED: "Google authentication failed.",
+  GOOGLE_TRY_AGAIN: "Google authentication failed. Please try again.",
+
+  REGISTER_SUCCESS: "Registration successful",
+  OTP_RESEND_SUCCESS: "OTP resend successful",
+
+  OTP_SENT_SUCCESS: "OTP sent successfully to your email.",
+  OTP_RESENT_SUCCESS: "A new OTP has been sent to your email.",
+  OTP_VERIFIED_SUCCESS: "Identity verified successfully.",
+  EMAIL_NOT_VERIFIED_PROMPT: "Please verify your email before signing in.",
+  ENTER_VALID_EMAIL: "Please enter a valid email address.",
+  PASSWORD_RESET_SUCCESS: "Password reset successful! Please sign in with your new password.",
+  RESTAURANT_ONBOARD_SUCCESS:
+    "Restaurant onboarding submitted successfully! Your application is now under verification.",
+  STAFF_INVITATION_INVALID: "Invalid or expired invitation token.",
+  STAFF_INVITATION_ACCEPT_SUCCESS: "Invitation accepted successfully. Welcome to the team!",
+  STAFF_REGISTRATION_SUCCESS: "Registration successful! Welcome to SpotQ.",
+  STAFF_REGISTRATION_LOGIN_PROMPT:
+    "Registration completed successfully! Please sign in to your account.",
+  STAFF_REGISTRATION_FAILED: "Failed to accept invitation. Please try again.",
+  STAFF_INVITATION_MISSING_TOKEN: "No invitation token was provided in the URL.",
+  STAFF_INVITATION_VALIDATE_ERROR: "Could not validate the invitation link.",
+} as const;
+
+export const PUSH_NOTIFICATION_MESSAGES = {
+  UNSUPPORTED: "Push notifications are not supported in this browser.",
+  ENABLED_SUCCESS: "Notifications enabled successfully!",
+  BLOCKED_ERROR:
+    "Notifications are blocked in browser settings. Please enable them to receive updates.",
+  ENABLE_FAILED: "Could not enable notifications. Please try again.",
+  DEFAULT_TITLE: "SpotQ",
+} as const;
+
+export const NOTIFICATION_PERMISSIONS = {
+  GRANTED: "granted",
+  DENIED: "denied",
+  DEFAULT: "default",
+  UNSUPPORTED: "unsupported",
+} as const;
+
+export const NOTIFICATION_EVENTS = {
+  CHANGE: "change",
+  PERMISSION_NAME: "notifications",
+} as const;
+
+export const AUTH_ENDPOINTS = {
+  LOGIN: "auth/users/login",
+  GOOGLE_LOGIN: "auth/users/oauth/google",
+  LOGOUT: "auth/users/logout",
+  REFRESH_TOKEN: "auth/users/refresh-token",
+  REGISTER: "auth/users/register",
+  VERIFY_OTP: "auth/users/verify-email",
+  RESEND_EMAIL_OTP: "auth/users/resend-email-otp",
+  FORGOT_PASSWORD: "auth/users/forgot-password",
+  FORGOT_PASSWORD_VERIFY: "auth/users/forgot-password/verify",
+  FORGOT_PASSWORD_RESEND_OTP: "auth/users/forgot-password/resend-otp",
+  RESET_PASSWORD: "auth/users/reset-password",
+
+  ADMIN_LOGIN: "auth/admin/login",
+  ADMIN_REFRESH_TOKEN: "auth/admin/refresh-token",
+  ADMIN_LOGOUT: "auth/admin/logout",
+  ADMIN_FORGOT_PASSWORD: "auth/admin/forgot-password",
+  ADMIN_VERIFY_OTP: "auth/admin/forgot-password/verify",
+  ADMIN_RESEND_OTP: "auth/admin/forgot-password/resend-otp",
+  ADMIN_RESET_PASSWORD: "auth/admin/reset-password",
+
+  RESTAURANT_SEND_OTP: "auth/restaurants/otp",
+  RESTAURANT_RESEND_OTP: "auth/restaurants/otp/resend",
+  RESTAURANT_VERIFY_OTP: "auth/restaurants/otp/verify",
+  RESTAURANT_ONBOARD: "restaurants/onboarding",
+  RESTAURANT_REFRESH_TOKEN: "auth/restaurants/refresh-token",
+  RESTAURANT_VERIFICATION_STATUS: "restaurants/verification-status",
+
+  STAFF_LOGIN: "auth/restaurants/staff/login",
+  STAFF_SELECT_RESTAURANT: "auth/restaurants/staff/select-restaurant",
+  STAFF_REFRESH_TOKEN: "auth/restaurants/staff/refresh-token",
+  STAFF_LOGOUT: "auth/restaurants/staff/logout",
+  STAFF_FORGOT_PASSWORD: "auth/restaurants/staff/forgot-password",
+  STAFF_VERIFY_OTP: "auth/restaurants/staff/forgot-password/verify",
+  STAFF_RESEND_OTP: "auth/restaurants/staff/forgot-password/resend-otp",
+  STAFF_RESET_PASSWORD: "auth/restaurants/staff/reset-password",
+  STAFF_INVITATION_VALIDATE: "auth/restaurants/staff/invitations/validate",
+  STAFF_INVITATION_ACCEPT: "auth/restaurants/staff/invitations/accept",
+} as const;
+
+export const ADMIN_AUTH_ENDPOINTS = {
+  LOGIN: AUTH_ENDPOINTS.ADMIN_LOGIN,
+  REFRESH_TOKEN: AUTH_ENDPOINTS.ADMIN_REFRESH_TOKEN,
+  LOGOUT: AUTH_ENDPOINTS.ADMIN_LOGOUT,
+  FORGOT_PASSWORD: AUTH_ENDPOINTS.ADMIN_FORGOT_PASSWORD,
+  VERIFY_OTP: AUTH_ENDPOINTS.ADMIN_VERIFY_OTP,
+  RESEND_OTP: AUTH_ENDPOINTS.ADMIN_RESEND_OTP,
+  RESET_PASSWORD: AUTH_ENDPOINTS.ADMIN_RESET_PASSWORD,
+} as const;
+
+export const RESTAURANT_AUTH_ENDPOINTS = {
+  SEND_OTP: AUTH_ENDPOINTS.RESTAURANT_SEND_OTP,
+  RESEND_OTP: AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP,
+  VERIFY_OTP: AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP,
+  ONBOARD: AUTH_ENDPOINTS.RESTAURANT_ONBOARD,
+  REFRESH_TOKEN: AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN,
+} as const;
+
+export const STAFF_AUTH_ENDPOINTS = {
+  LOGIN: AUTH_ENDPOINTS.STAFF_LOGIN,
+  SELECT_RESTAURANT: AUTH_ENDPOINTS.STAFF_SELECT_RESTAURANT,
+  REFRESH_TOKEN: AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN,
+  LOGOUT: AUTH_ENDPOINTS.STAFF_LOGOUT,
+  FORGOT_PASSWORD: AUTH_ENDPOINTS.STAFF_FORGOT_PASSWORD,
+  VERIFY_OTP: AUTH_ENDPOINTS.STAFF_VERIFY_OTP,
+  RESEND_OTP: AUTH_ENDPOINTS.STAFF_RESEND_OTP,
+  RESET_PASSWORD: AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
+  INVITATION_VALIDATE: AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
+  INVITATION_ACCEPT: AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
+} as const;
+
+export const PUBLIC_AUTH_ENDPOINTS = [
+  AUTH_ENDPOINTS.LOGIN,
+  AUTH_ENDPOINTS.GOOGLE_LOGIN,
+  AUTH_ENDPOINTS.REFRESH_TOKEN,
+  AUTH_ENDPOINTS.REGISTER,
+  AUTH_ENDPOINTS.VERIFY_OTP,
+  AUTH_ENDPOINTS.RESEND_EMAIL_OTP,
+  AUTH_ENDPOINTS.FORGOT_PASSWORD,
+  AUTH_ENDPOINTS.FORGOT_PASSWORD_VERIFY,
+  AUTH_ENDPOINTS.FORGOT_PASSWORD_RESEND_OTP,
+  AUTH_ENDPOINTS.RESET_PASSWORD,
+  AUTH_ENDPOINTS.ADMIN_LOGIN,
+  AUTH_ENDPOINTS.ADMIN_REFRESH_TOKEN,
+  AUTH_ENDPOINTS.ADMIN_FORGOT_PASSWORD,
+  AUTH_ENDPOINTS.ADMIN_VERIFY_OTP,
+  AUTH_ENDPOINTS.ADMIN_RESEND_OTP,
+  AUTH_ENDPOINTS.ADMIN_RESET_PASSWORD,
+  AUTH_ENDPOINTS.RESTAURANT_SEND_OTP,
+  AUTH_ENDPOINTS.RESTAURANT_RESEND_OTP,
+  AUTH_ENDPOINTS.RESTAURANT_VERIFY_OTP,
+  AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN,
+  AUTH_ENDPOINTS.STAFF_LOGIN,
+  AUTH_ENDPOINTS.STAFF_SELECT_RESTAURANT,
+  AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN,
+  AUTH_ENDPOINTS.STAFF_LOGOUT,
+  AUTH_ENDPOINTS.STAFF_FORGOT_PASSWORD,
+  AUTH_ENDPOINTS.STAFF_VERIFY_OTP,
+  AUTH_ENDPOINTS.STAFF_RESEND_OTP,
+  AUTH_ENDPOINTS.STAFF_RESET_PASSWORD,
+  AUTH_ENDPOINTS.STAFF_INVITATION_VALIDATE,
+  AUTH_ENDPOINTS.STAFF_INVITATION_ACCEPT,
+  "payments/plans",
+] as const;
+
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const RESTAURANT_OTP_LENGTH = 6;
+export const RESTAURANT_RESEND_COOLDOWN_SECONDS = 60;
+export const RESTAURANT_MAX_ATTEMPTS_ERROR_CODE = "MAX_ATTEMPTS_EXCEEDED";
+export const CUSTOMER_OTP_COOLDOWN_SECONDS = 59;
+
+export const DEVICE_STORAGE_KEYS = {
+  DEVICE_ID: "spotq_device_id",
+} as const;
+
+export const DEVICE_ENDPOINTS = {
+  DEVICES: "users/me/devices",
+  DEVICE_BY_ID: (deviceId: string) => `users/me/devices/${encodeURIComponent(deviceId)}`,
+} as const;
+
+export const DEVICE_QUERY_KEYS = {
+  ALL: ["customer-devices"] as const,
+  LIST: () => [...DEVICE_QUERY_KEYS.ALL, "list"] as const,
+} as const;
+
+export const DEVICE_MESSAGES = {
+  REGISTER_SUCCESS: "Device registered successfully",
+  DEACTIVATE_SUCCESS: "Device deactivated successfully",
+  FETCH_SUCCESS: "Devices retrieved successfully",
+} as const;
+
+export const UUID_V4_TEMPLATE = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+export const APP_VERSION = "1.0.0";

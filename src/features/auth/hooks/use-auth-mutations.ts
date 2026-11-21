@@ -1,0 +1,77 @@
+import { useMutation } from "@tanstack/react-query";
+import {
+  authService,
+  loginStaff,
+  logoutStaff,
+  selectStaffRestaurant,
+} from "@/features/auth/services/auth.service";
+import type { ApiResponse } from "@/types/api.types";
+import type {
+  GoogleLoginResult,
+  LoginInput,
+  LoginResult,
+  LogoutResult,
+  RegisterInput,
+  RegisterResult,
+  ResendOtpInput,
+  StaffLoginInput,
+  StaffLoginResponse,
+  StaffLogoutRes,
+  StaffSelectRestaurantInput,
+  VerifyEmailResult,
+  VerifyOtpInput,
+} from "@/features/auth/types/auth.types";
+
+export const useLoginMutation = () => {
+  return useMutation<LoginResult, Error, LoginInput>({
+    mutationFn: (input) => authService.login(input),
+  });
+};
+
+export const useGoogleLoginMutation = () => {
+  return useMutation<GoogleLoginResult, Error, { idToken: string }>({
+    mutationFn: (input) => authService.googleLogin(input),
+  });
+};
+
+export const useLogoutMutation = () => {
+  return useMutation<LogoutResult, Error, void>({
+    mutationFn: () => authService.logout(),
+  });
+};
+
+export const useRegisterMutation = () => {
+  return useMutation<RegisterResult, Error, RegisterInput>({
+    mutationFn: (input) => authService.register(input),
+  });
+};
+
+export const useVerifyEmailMutation = () => {
+  return useMutation<VerifyEmailResult, Error, VerifyOtpInput>({
+    mutationFn: (input) => authService.verifyOtp(input),
+  });
+};
+
+export const useResendEmailOtp = () => {
+  return useMutation<ApiResponse, Error, ResendOtpInput>({
+    mutationFn: (input) => authService.resendEmailOtp(input),
+  });
+};
+
+export const useStaffLoginMutation = () => {
+  return useMutation<StaffLoginResponse, Error, StaffLoginInput>({
+    mutationFn: (input) => loginStaff(input),
+  });
+};
+
+export const useStaffSelectRestaurantMutation = () => {
+  return useMutation<StaffLoginResponse, Error, StaffSelectRestaurantInput>({
+    mutationFn: (input) => selectStaffRestaurant(input),
+  });
+};
+
+export const useStaffLogoutMutation = () => {
+  return useMutation<StaffLogoutRes, Error, void>({
+    mutationFn: () => logoutStaff(),
+  });
+};

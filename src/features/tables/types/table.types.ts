@@ -1,0 +1,141 @@
+export type TableStatus = "AVAILABLE" | "OCCUPIED" | "PARTIAL_OCCUPIED" | "MAINTENANCE";
+
+export type TableStatusIncludingAll = TableStatus | "ALL";
+
+export type StaffUpdatableStatus = "AVAILABLE" | "MAINTENANCE";
+
+export type TableShape = "CIRCLE" | "SQUARE";
+
+export interface RestaurantTableDetails {
+  tableId: string;
+  restaurantId: string;
+  sectionId: string;
+  sectionName: string;
+  tableCode: string;
+  capacity: number;
+  shape: TableShape;
+  currentOccupancy: number;
+  status: TableStatus;
+  createdAt: string;
+}
+
+export interface TableItem {
+  id: string;
+  tableCode: string;
+  capacity: number;
+  status: TableStatus;
+  sectionId: string;
+  tableShape: TableShape;
+  currentOccupancy: number;
+  isActive: boolean;
+  sectionName?: string;
+}
+
+export type AdminTables = {
+  tables: TableItem[];
+  stats: {
+    totalTables: number;
+    occupied: number;
+    available: number;
+    maintenance: number;
+  };
+  total: number;
+};
+
+export type TablesGroupedBySection = Record<string, TableItem[]>;
+
+export type TableSectionAll = {
+  id: string;
+  name: string;
+};
+
+export type TableSection = TableSectionAll;
+
+export interface GetTablesResponse {
+  mode: string;
+  sections: TablesGroupedBySection;
+}
+
+export interface GetTableSectionResponse {
+  mode: string;
+  sections: Array<TableSectionAll>;
+}
+
+export interface PaginatedTableSectionsData {
+  mode: "PAGINATED";
+  sections: TableSectionAll[];
+  total: number;
+}
+
+export interface CreateTableSectionPayload {
+  name: string;
+}
+
+export interface DeleteTableSectionResponse {
+  tableSectionId: string;
+  name: string;
+}
+
+export interface UpdateTableStatusInput {
+  tableId: string;
+  status: StaffUpdatableStatus;
+}
+
+export interface UpdateTableStatusPayload {
+  status: StaffUpdatableStatus;
+}
+
+export interface UpdateTableStatusResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data?: TableItem;
+}
+
+export interface CreateTablePayload {
+  tableCode: string;
+  capacity: number;
+  sectionId: string;
+  tableShape: TableShape;
+}
+
+export interface UpdateTablePayload {
+  tableCode?: string;
+  capacity?: number;
+  sectionId?: string;
+  type?: TableShape;
+}
+
+export type UpdateTableResponse = TableItem;
+
+export interface DeleteTableResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface TableStatusTransitionRule {
+  allowed: boolean;
+  targetStatus: StaffUpdatableStatus | null;
+  reason?: string;
+}
+
+export interface ReleaseTableEntryInput {
+  tableId: string;
+  occupancyToRelease: number;
+}
+
+export interface ReleaseTablesPayload {
+  tables: ReleaseTableEntryInput[];
+}
+
+export interface ReleasedTableSummary {
+  tableId: string;
+  tableCode: string;
+  status: TableStatus;
+  currentOccupancy: number;
+  capacity: number;
+}
+
+export interface ReleaseTablesResponse {
+  releasedTables: ReleasedTableSummary[];
+}

@@ -1,0 +1,309 @@
+/**
+ * Menu Feature Constants
+ * Centralized API endpoints, dietary options, validation messages, and UI labels.
+ */
+
+export const MENU_ENDPOINTS = {
+  ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/menu/items`,
+  STAFF_ITEMS: (restaurantId: string) => `restaurants/${restaurantId}/staff/menu/items`,
+  STAFF_CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/staff/menu/categories`,
+  ITEM_DETAIL: (restaurantId: string, itemId: string) =>
+    `restaurants/${restaurantId}/menu/items/${itemId}`,
+  ITEM_STATUS: (restaurantId: string, itemId: string) =>
+    `restaurants/${restaurantId}/menu/items/${itemId}/status`,
+  CATEGORIES: (restaurantId: string) => `restaurants/${restaurantId}/menu/categories`,
+  CATEGORY_DETAIL: (restaurantId: string, categoryId: string) =>
+    `restaurants/${restaurantId}/menu/categories/${categoryId}`,
+  CATEGORY_UPDATE: (restaurantId: string, categoryId: string) =>
+    `restaurants/${restaurantId}/menu/categories/${categoryId}`,
+  ADDONS: (restaurantId: string) => `restaurants/${restaurantId}/addons`,
+  ADDON_DETAIL: (restaurantId: string, addonId: string) =>
+    `restaurants/${restaurantId}/addons/${addonId}`,
+  VARIANT_STATUS: (restaurantId: string, itemId: string, variantId: string) =>
+    `restaurants/${restaurantId}/menu/items/${itemId}/variant/${variantId}/status`,
+} as const;
+
+export const MENU_ITEM_DETAIL_QUERY_KEY = "menu-item-detail" as const;
+
+export const CATEGORY_NAME_MAX_LENGTH = 100 as const;
+
+export const DIETARY_TYPES = ["VEG", "NON_VEG", "EGG"] as const;
+export type DietaryType = (typeof DIETARY_TYPES)[number];
+
+export const DIETARY_OPTIONS: Array<{
+  value: DietaryType;
+  label: string;
+  badgeClass: string;
+  activeBorder: string;
+  description: string;
+  dotColor: string;
+  borderColor: string;
+}> = [
+  {
+    value: "VEG",
+    label: "Veg",
+    badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    activeBorder: "border-emerald-600 bg-emerald-50/50",
+    description: "Contains plant-based and dairy ingredients, 100% vegetarian",
+    dotColor: "bg-emerald-600",
+    borderColor: "border-emerald-600",
+  },
+  {
+    value: "NON_VEG",
+    label: "Non-Veg",
+    badgeClass: "bg-rose-50 text-rose-700 border-rose-200",
+    activeBorder: "border-rose-600 bg-rose-50/50",
+    description: "Contains meat, poultry, seafood, or animal by-products",
+    dotColor: "bg-rose-600",
+    borderColor: "border-rose-600",
+  },
+  {
+    value: "EGG",
+    label: "Contains Egg",
+    badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+    activeBorder: "border-amber-600 bg-amber-50/50",
+    description: "Vegetarian preparation containing egg ingredients",
+    dotColor: "bg-amber-500",
+    borderColor: "border-amber-500",
+  },
+];
+
+export const MENU_MESSAGES = {
+  CREATE_ITEM_TITLE: "Create Menu Item",
+  CREATE_ITEM_SUBTITLE:
+    "Add a new dish to your catalog with customizable portion sizes, dietary preferences, and optional add-ons.",
+  ITEM_NAME_LABEL: "Item Name",
+  ITEM_NAME_PLACEHOLDER: "e.g., Crispy Chicken Burger, Margherita Pizza",
+  CATEGORY_LABEL: "Menu Category",
+  CATEGORY_PLACEHOLDER: "Select a category...",
+  NO_CATEGORIES_FOUND: "No categories created yet. Create one below.",
+  ADD_CATEGORY_BTN: "New Category",
+  DESCRIPTION_LABEL: "Description",
+  DESCRIPTION_PLACEHOLDER: "Describe ingredients, flavor profiles, and any preparation details...",
+  DIETARY_TYPE_LABEL: "Dietary Classification",
+  PREPARATION_TIME_LABEL: "Preparation Time (minutes)",
+  PREPARATION_TIME_PLACEHOLDER: "e.g., 15",
+  AVAILABILITY_LABEL: "Availability Status",
+  AVAILABILITY_ACTIVE_DESC: "Item is available for customers to order",
+  AVAILABILITY_INACTIVE_DESC: "Item is marked as sold out / temporarily unavailable",
+  IMAGE_LABEL: "Item Image",
+  IMAGE_DROPZONE_TEXT: "Click or drag and drop image here",
+  IMAGE_DROPZONE_HINT: "Supported formats: JPG, PNG, WebP up to 5MB",
+  IMAGE_UPLOADING: "Uploading image...",
+  IMAGE_UPLOAD_SUCCESS: "Image uploaded successfully",
+  IMAGE_REMOVE: "Remove image",
+
+  VARIANTS_SECTION_TITLE: "Portion Sizes & Variants",
+  VARIANTS_SECTION_DESC:
+    "Configure portion sizes and pricing. At least one default variant is required.",
+  ADD_VARIANT_BTN: "Add Portion / Variant",
+  VARIANT_NAME_LABEL: "Variant Name",
+  VARIANT_PORTION_LABEL: "Portion Size",
+  VARIANT_PRICE_LABEL: "Price (INR)",
+  VARIANT_SKU_LABEL: "SKU / Barcode",
+  VARIANT_DEFAULT_LABEL: "Default",
+  VARIANT_STATUS_LABEL: "In Stock",
+  VARIANT_NAME_PLACEHOLDER: "e.g., Regular, Large (16 inch)",
+  VARIANT_PORTION_PLACEHOLDER: "e.g., 1 Person, 2-3 Persons",
+  VARIANT_PRICE_PLACEHOLDER: "0.00",
+  VARIANT_SKU_PLACEHOLDER: "e.g., BUR-REG-01",
+
+  ADDONS_SECTION_TITLE: "Complementary Add-ons",
+  ADDONS_SECTION_DESC:
+    "Allow customers to customize their order with extra toppings, sauces, or sides.",
+  ADD_ADDON_BTN: "New Add-on",
+  NO_ADDONS_FOUND: "No add-ons available. Create one to allow customer customizations.",
+  SEARCH_ADDONS_PLACEHOLDER: "Search add-ons...",
+  PRICE_OVERRIDE_LABEL: "Custom Price",
+  PRICE_OVERRIDE_PLACEHOLDER: "Default price",
+
+  BTN_CANCEL: "Cancel",
+  BTN_SUBMIT: "Create Menu Item",
+  BTN_SUBMITTING: "Creating Menu Item...",
+  BTN_UPDATE: "Update Menu Item",
+  BTN_UPDATING: "Updating Menu Item...",
+  ITEM_CREATED_SUCCESS: "Menu item created successfully.",
+  ITEM_CREATE_FAILED: "Failed to create menu item. Please check the form and try again.",
+  EDIT_ITEM_TITLE: "Edit Menu Item",
+  EDIT_ITEM_SUBTITLE: "Update dish details, pricing, variants, and complementary add-ons.",
+  ITEM_UPDATED_SUCCESS: "Menu item updated successfully.",
+  ITEM_UPDATE_FAILED: "Failed to update menu item. Please check the form and try again.",
+
+  DELETE_ITEM_CONFIRM_TITLE: "Delete Menu Item",
+  DELETE_ITEM_CONFIRM_DESCRIPTION: (itemName?: string) =>
+    itemName
+      ? `Are you sure you want to delete "${itemName}"? This action will remove the item from customer menus and cannot be undone.`
+      : "Are you sure you want to delete this menu item? This action will remove the item from customer-facing menus and cannot be undone.",
+  BTN_DELETE: "Delete",
+  BTN_DELETING: "Deleting...",
+  ITEM_DELETED_SUCCESS: "Menu item deleted successfully.",
+  ITEM_DELETE_FAILED: "Failed to delete menu item.",
+  ITEM_FORBIDDEN: "You do not have permission to delete this menu item.",
+  ITEM_NOT_FOUND: "Menu item not found.",
+
+  MODAL_CREATE_CATEGORY_TITLE: "Create Menu Category",
+  MODAL_CREATE_CATEGORY_DESC:
+    "Organize your menu by creating a new category for appetizers, mains, beverages, etc.",
+  CATEGORY_NAME_LABEL: "Category Name",
+  CATEGORY_NAME_PLACEHOLDER: "e.g., Starters, Main Course, Beverages",
+  CATEGORY_DESC_LABEL: "Description",
+  CATEGORY_DESC_PLACEHOLDER: "e.g., Freshly baked appetizers and savory finger foods",
+  CATEGORY_ORDER_LABEL: "Display Order",
+  CATEGORY_ORDER_PLACEHOLDER: "0",
+  CATEGORY_ORDER_HINT: "Controls order of appearance on customer menus (lower numbers first).",
+  CATEGORY_STATUS_LABEL: "Active Category",
+  CATEGORY_STATUS_HINT: "Category and its items will be visible to customers.",
+  BTN_CREATE_CATEGORY: "Create Category",
+  BTN_CREATING_CATEGORY: "Creating...",
+  CATEGORY_CREATED_SUCCESS: "Menu category created successfully.",
+  CATEGORY_CREATE_FAILED: "Failed to create menu category.",
+
+  MODAL_CREATE_ADDON_TITLE: "Create New Add-on",
+  MODAL_CREATE_ADDON_DESC:
+    "Define a reusable add-on that can be linked across multiple dishes (e.g. Extra Cheese, Garlic Dip).",
+  ADDON_NAME_LABEL: "Add-on Name",
+  ADDON_NAME_PLACEHOLDER: "e.g., Extra Cheese, Truffle Dip",
+  ADDON_DESC_LABEL: "Description",
+  ADDON_DESC_PLACEHOLDER: "e.g., Double layer melted mozzarella cheese",
+  ADDON_PRICE_LABEL: "Standard Price (INR)",
+  ADDON_PRICE_PLACEHOLDER: "50",
+  ADDON_STATUS_LABEL: "Available",
+  ADDON_STATUS_HINT: "In stock and selectable during checkout.",
+  BTN_CREATE_ADDON: "Create Add-on",
+  BTN_CREATING_ADDON: "Creating...",
+  ADDON_CREATED_SUCCESS: "Add-on created successfully.",
+  ADDON_CREATE_FAILED: "Failed to create add-on.",
+
+  MODAL_EDIT_ADDON_TITLE: "Edit Add-on",
+  MODAL_EDIT_ADDON_DESC: "Update add-on details, pricing, and availability status.",
+  BTN_UPDATE_ADDON: "Save Changes",
+  BTN_UPDATING_ADDON: "Saving...",
+  ADDON_UPDATED_SUCCESS: "Add-on updated successfully.",
+  ADDON_UPDATE_FAILED: "Failed to update add-on.",
+  ADDON_MARKED_IN_STOCK: "Add-on marked as in stock",
+  ADDON_MARKED_OUT_OF_STOCK: "Add-on marked as out of stock",
+  ADDON_DELETED_SUCCESS: "Add-on deleted successfully.",
+  ADDON_DELETE_FAILED: "Failed to delete add-on.",
+  VARIANT_MARKED_IN_STOCK: "Variant marked as in stock",
+  VARIANT_MARKED_OUT_OF_STOCK: "Variant marked as out of stock",
+  VARIANT_AVAILABILITY_UPDATE_FAILED: "Failed to update variant availability status",
+  STAFF_ADDONS_TITLE: "Modifiers & Add-ons",
+  STAFF_ADDONS_SUBTITLE:
+    "Real-time stock monitoring and operational availability toggles for add-ons.",
+  STAFF_ADDONS_ERROR_TITLE: "Failed to load add-ons",
+  STAFF_ADDONS_ERROR_DESC:
+    "We encountered a problem loading modifiers. Please check your connection and try again.",
+  STAFF_ADDONS_EMPTY_TITLE: "No modifiers found",
+  STAFF_ADDONS_EMPTY_DESC:
+    "No add-ons or modifiers are currently registered for this restaurant.",
+  STAFF_ADDONS_NO_RESULTS_TITLE: "No results found",
+  STAFF_ADDONS_NO_RESULTS_DESC:
+    "No modifiers match your search or filter. Try adjusting your search keywords or switching filters to see other modifiers.",
+  RESTAURANT_ADDONS_TITLE: "Modifiers & Add-ons",
+  RESTAURANT_ADDONS_SUBTITLE:
+    "Manage complementary items, toppings, and extras available for your menu items.",
+  RESTAURANT_ADDONS_ERROR_TITLE: "Failed to load add-ons",
+  RESTAURANT_ADDONS_ERROR_DESC:
+    "We encountered a problem loading your modifiers and add-ons. Please check your connection and try again.",
+  RESTAURANT_ADDONS_EMPTY_TITLE: "No add-ons found",
+  RESTAURANT_ADDONS_EMPTY_DESC:
+    "No modifiers or complementary add-ons are currently available for this restaurant.",
+  RESTAURANT_ADDONS_CREATE_BTN: "Create Add-on",
+
+  VALIDATION_ITEM_NAME_REQUIRED: "Menu item name is required",
+  VALIDATION_ITEM_NAME_MAX: "Item name cannot exceed 255 characters",
+  VALIDATION_CATEGORY_REQUIRED: "Please select a category",
+  VALIDATION_DESCRIPTION_REQUIRED: "Description is required",
+  VALIDATION_DESCRIPTION_MAX: "Description cannot exceed 1000 characters",
+  VALIDATION_PREP_TIME_REQUIRED: "Preparation time is required",
+  VALIDATION_PREP_TIME_POSITIVE: "Preparation time must be a positive number",
+  VALIDATION_IMAGE_REQUIRED: "Menu item image is required",
+  VALIDATION_VARIANTS_MIN: "At least one variant is required",
+  VALIDATION_VARIANT_NAME_REQUIRED: "Variant name is required",
+  VALIDATION_VARIANT_PORTION_REQUIRED: "Portion size description is required",
+  VALIDATION_VARIANT_PRICE_REQUIRED: "Variant price is required",
+  VALIDATION_VARIANT_PRICE_POSITIVE: "Variant price must be greater than 0",
+  VALIDATION_VARIANT_PRICE_NON_NEGATIVE: "Price cannot be negative",
+  VALIDATION_ONE_DEFAULT_VARIANT: "Exactly one variant must be designated as the default",
+  VALIDATION_CATEGORY_NAME_REQUIRED: "Category name is required",
+  VALIDATION_CATEGORY_NAME_MAX: `Category name cannot exceed ${CATEGORY_NAME_MAX_LENGTH} characters`,
+  VALIDATION_CATEGORY_ORDER_INTEGER: "Display order must be an integer",
+  VALIDATION_ADDON_NAME_REQUIRED: "Add-on name is required",
+  VALIDATION_ADDON_PRICE_REQUIRED: "Add-on price is required",
+  VALIDATION_ADDON_PRICE_NON_NEGATIVE: "Add-on price cannot be negative",
+
+  UPDATE_SUCCESS: "Menu category updated successfully.",
+  UPDATE_ERROR: "Unable to update menu category. Please try again.",
+  NAME_REQUIRED: "Category name cannot be empty.",
+  NAME_MAX_LENGTH: `Category name must not exceed ${CATEGORY_NAME_MAX_LENGTH} characters.`,
+  DESCRIPTION_MAX_LENGTH: "Description must not exceed 1000 characters.",
+  DISPLAY_ORDER_INVALID: "Display order must be a valid non-negative integer.",
+  STATUS_INVALID: "Status must be valid.",
+  RESTAURANT_ID_REQUIRED: "Restaurant ID is required.",
+  FETCH_ERROR: "Failed to load menu categories.",
+  ITEMS_FETCH_ERROR: "Failed to load menu items.",
+  RESTAURANT_OR_ITEM_ID_REQUIRED: "Restaurant ID and Menu Item ID are required.",
+  LOADING_ITEM_DETAILS: "Loading menu item details...",
+  LOADING_BREADCRUMB: "Loading...",
+  EDIT_ITEM_FALLBACK_TITLE: "Edit Dish",
+  EDIT_ITEM_BREADCRUMB_PREFIX: "Edit: ",
+  EDIT_ITEM_ERROR_TITLE: "Failed to Load Menu Item",
+  EDIT_ITEM_ERROR_FALLBACK: "The requested menu item could not be found or failed to load.",
+  BTN_RETURN_TO_ITEMS: "Return to Menu Items",
+  BACK_TO_CATALOG: "Back to Catalog",
+  STAFF_ITEMS_FETCH_ERROR:
+    "Failed to load staff menu items. Please check your connection and try again.",
+  STAFF_MENU_TITLE: "Staff Menu Directory",
+  STAFF_MENU_SUBTITLE:
+    "Real-time menu catalog with live stock tracking, portion pricing, and category management.",
+  NO_STAFF_MENU_ITEMS: "No menu items found.",
+  NO_STAFF_MENU_ITEMS_DESC: "No menu items match your search or filter criteria.",
+  CLEAR_FILTERS_BTN: "Clear Filters",
+  ITEM_AVAILABILITY_UPDATE_FAILED: "Failed to update item availability",
+  ITEM_MARKED_IN_STOCK: "Item marked as in stock",
+  ITEM_MARKED_OUT_OF_STOCK: "Item marked as out of stock",
+} as const;
+
+export const MENU_CATEGORIES_QUERY_KEY = "menu-categories" as const;
+export const MENU_ITEMS_QUERY_KEY = "menu-items" as const;
+export const STAFF_MENU_ITEMS_QUERY_KEY = "staff-menu-items" as const;
+
+export const KEYBOARD_KEYS = {
+  ESCAPE: "Escape",
+  TAB: "Tab",
+} as const;
+
+export const DOM_EVENTS = {
+  KEY_DOWN: "keydown",
+  MOUSE_DOWN: "mousedown",
+} as const;
+
+export const CATEGORY_FORM_FIELDS = {
+  NAME: "name",
+  DESCRIPTION: "description",
+  DISPLAY_ORDER: "displayOrder",
+  IS_ACTIVE: "isActive",
+} as const;
+
+export const CREATE_CATEGORY_DEFAULT_VALUES = {
+  name: "",
+  description: "",
+  displayOrder: 0,
+  isActive: true,
+} as const;
+
+export const MENU_ITEM_FILTER_STATUS = {
+  ALL: "ALL",
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+export type MenuItemFilterStatus =
+  (typeof MENU_ITEM_FILTER_STATUS)[keyof typeof MENU_ITEM_FILTER_STATUS];
+
+export const ADDON_AVAILABILITY_FILTERS = {
+  ALL: "ALL",
+  AVAILABLE: "AVAILABLE",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+export type AddonAvailabilityFilter =
+  (typeof ADDON_AVAILABILITY_FILTERS)[keyof typeof ADDON_AVAILABILITY_FILTERS];

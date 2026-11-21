@@ -1,0 +1,44 @@
+/**
+ * Authentication Response Data Mappers
+ * Maps raw backend API models to frontend domain models.
+ */
+
+import type { ApiAuthResponse, ApiUser, AuthResult, User } from "@/features/auth/types/auth.types";
+
+export const mapApiUserToUser = (apiUser: ApiUser): User => {
+  const rawRole = apiUser.role || "";
+  const normalizedRole = (
+    rawRole.toUpperCase() === "ADMIN" || rawRole.toUpperCase() === "PLATFORM_ADMIN"
+      ? "ADMIN"
+      : rawRole.toUpperCase()
+  ) as User["role"];
+
+  return {
+    id: apiUser.id || apiUser._id,
+    fullName: apiUser.full_name || apiUser.name,
+    email: apiUser.email,
+    role: normalizedRole || "CUSTOMER",
+    phone: apiUser.phone ?? "",
+    status: apiUser.status,
+    onboardingStatus: apiUser.onboardingStatus || apiUser.onboarding_status,
+    createdAt: apiUser.created_at ?? new Date().toISOString(),
+    updatedAt: apiUser.updated_at ?? new Date().toISOString(),
+  };
+};
+
+export const mapApiAuthResponseToAuthResult = (response: ApiAuthResponse): AuthResult => {
+  const data = response?.data;
+
+  return {
+    success: response.success,
+    statusCode: response.statusCode,
+    message: response.message,
+    data:
+      data?.user && data?.access_token
+        ? {
+            user: mapApiUserToUser(data.user),
+            accessToken: data.access_token,
+          }
+        : undefined,
+  };
+};

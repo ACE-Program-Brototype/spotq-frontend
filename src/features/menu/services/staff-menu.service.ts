@@ -1,0 +1,117 @@
+/**
+ * Staff Menu Service
+ * Consumes GET /restaurants/:restaurantId/staff/menu/items for staff operational view.
+ */
+
+import { apiClient } from "@/lib/api/client";
+import { MENU_ENDPOINTS } from "@/features/menu/constants/menu.constants";
+import type { MenuCategoriesListApiResponse, MenuCategory } from "@/features/menu/types/menu-category.types";
+import type {
+  StaffMenuItemsApiResponse,
+  StaffMenuItemsQueryParams,
+  StaffMenuItemsResponse,
+} from "@/features/menu/types/staff-menu-item.types";
+import { normalizeCategoriesResponse } from "./menu-category.service";
+
+export const staffMenuService = {
+  /**
+   * Fetches real-time operational menu items for restaurant staff.
+   * Calls: GET /api/v1/restaurants/{restaurantId}/staff/menu/items
+   */
+  async getStaffMenuItems(
+    restaurantId: string,
+    params?: StaffMenuItemsQueryParams,
+  ): Promise<StaffMenuItemsResponse> {
+    if (!restaurantId) {
+      return {
+        restaurantId: "",
+        page: 1,
+        limit: 10,
+        totalCount: 0,
+        totalPages: 0,
+        items: [],
+      };
+    }
+
+    const searchParams: Record<string, string | number | boolean> = {};
+
+    if (params?.page) searchParams.page = params.page;
+    if (params?.limit) searchParams.limit = params.limit;
+    if (params?.search && params.search.trim() !== "") {
+      searchParams.search = params.search.trim();
+    }
+    if (params?.categoryId && params.categoryId !== "ALL") {
+      searchParams.categoryId = params.categoryId;
+    }
+    if (typeof params?.isAvailable === "boolean") {
+      searchParams.isAvailable = params.isAvailable;
+    }
+    if (typeof params?.includeInactive === "boolean") {
+      searchParams.includeInactive = params.includeInactive;
+    }
+    if (typeof params?.includeVariants === "boolean") {
+      searchParams.includeVariants = params.includeVariants;
+    }
+    if (params?.sortBy) {
+      searchParams.sortBy = params.sortBy;
+    }
+    if (params?.sortOrder) {
+      searchParams.sortOrder = params.sortOrder;
+    }
+
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.STAFF_ITEMS(restaurantId), {
+        searchParams: Object.keys(searchParams).length > 0 ? searchParams : undefined,
+      })
+      .json<StaffMenuItemsApiResponse>();
+
+    return (
+      response.data ?? {
+        restaurantId,
+        page: params?.page || 1,
+        limit: params?.limit || 10,
+        totalCount: 0,
+        totalPages: 0,
+        items: [],
+      }
+    );
+  },
+
+  /**
+   * Fetches menu categories for restaurant staff.
+   * Calls: GET /api/v1/restaurants/{restaurantId}/staff/menu/categories
+   */
+  async getStaffCategories(restaurantId: string): Promise<MenuCategory[]> {
+    if (!restaurantId) return [];
+
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.STAFF_CATEGORIES(restaurantId))
+      .json<MenuCategoriesListApiResponse>();
+
+    return normalizeCategoriesResponse(response?.data, restaurantId);
+  },
+
+  /**
+   * Toggles variant availability status for restaurant staff.
+   * path is PATCH /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}/variant/{variantId}/status
+   */
+  async updateMenuItemVariantStatus(
+    restaurantId: string,
+    menuItemId: string,
+    variantId: string,
+  ): Promise<{ isAvailable: boolean }> {
+    if (!restaurantId || !menuItemId || !variantId) {
+      throw new Error("Restaurant ID, Menu Item ID, and Variant ID are required.");
+    }
+
+    const response = await apiClient
+      .patch(MENU_ENDPOINTS.VARIANT_STATUS(restaurantId, menuItemId, variantId))
+      .json<{ success: boolean; message?: string; data?: { isAvailable: boolean } }>();
+
+    if (!response.success || !response.data || typeof response.data.isAvailable !== "boolean") {
+      throw new Error(response.message || "Failed to update variant availability status");
+    }
+
+    return response.data;
+  },
+};

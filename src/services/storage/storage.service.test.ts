@@ -1,0 +1,337 @@
+import { apiClient } from "@/lib/api/client";
+import { STORAGE_ENDPOINTS, STORAGE_MESSAGES } from "./storage.constants";
+import {
+  deleteS3Object,
+  getPresignedDownloadUrl,
+  getPresignedUrl,
+  uploadFile,
+  uploadFileToS3,
+} from "./storage.service";
+
+jest.mock("@/lib/api/client", () => ({
+  apiClient: {
+    get: jest.fn(),
+    post: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+
+describe("storage.service", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("getPresignedUrl", () => {
+    it("requests presigned URL from backend and returns data", async () => {
+      const mockResponse = {
+        success: true,
+        data: {
+          uploadUrl: "https://s3.amazonaws.com/test-bucket/test.pdf",
+          s3ObjectKey: "restaurants/res-123/documents/uuid_test.pdf",
+          expiresInSeconds: 900,
+        },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const request = {
+        entity_type: "restaurants",
+        entity_id: "res-123",
+        file_name: "test.pdf",
+        content_type: "application/pdf",
+        file_category: "DOCUMENTS",
+        file_size: 1024,
+      };
+
+      const result = await getPresignedUrl(request);
+
+      expect(apiClient.post).toHaveBeenCalledWith(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+        json: request,
+      });
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it("throws error if response is unsuccessful", async () => {
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+          message: "Unauthorized entity access",
+        }),
+      });
+
+      const request = {
+        entity_type: "restaurants",
+        entity_id: "res-123",
+        file_name: "test.pdf",
+        content_type: "application/pdf",
+        file_category: "DOCUMENTS",
+        file_size: 1024,
+      };
+
+      await expect(getPresignedUrl(request)).rejects.toThrow("Unauthorized entity access");
+    });
+  });
+
+  describe("uploadFileToS3", () => {
+    let mockXHR: {
+      open: jest.Mock;
+      setRequestHeader: jest.Mock;
+      send: jest.Mock;
+      upload: { onprogress?: (event: ProgressEvent) => void };
+      status: number;
+      statusText: string;
+      onload: () => void;
+    };
+
+    beforeEach(() => {
+      mockXHR = {
+        open: jest.fn(),
+        setRequestHeader: jest.fn(),
+        send: jest.fn(),
+        upload: {},
+        status: 200,
+        statusText: "OK",
+        onload: () => {},
+      };
+
+      // @ts-expect-error Mocking global XMLHttpRequest
+      global.XMLHttpRequest = jest.fn(() => mockXHR);
+    });
+
+    it("sends PUT request to uploadUrl with file and content type", async () => {
+      const file = new File(["dummy content"], "test.pdf", { type: "application/pdf" });
+      const uploadPromise = uploadFileToS3("https://s3.amazonaws.com/upload", file);
+
+      mockXHR.onload();
+
+      await expect(uploadPromise).resolves.toBeUndefined();
+      expect(mockXHR.open).toHaveBeenCalledWith("PUT", "https://s3.amazonaws.com/upload", true);
+      expect(mockXHR.setRequestHeader).toHaveBeenCalledWith("Content-Type", "application/pdf");
+      expect(mockXHR.send).toHaveBeenCalledWith(file);
+    });
+
+    it("rejects when S3 returns non-2xx status", async () => {
+      const file = new File(["dummy content"], "test.pdf", { type: "application/pdf" });
+      const uploadPromise = uploadFileToS3("https://s3.amazonaws.com/upload", file);
+
+      mockXHR.status = 403;
+      mockXHR.statusText = "Forbidden";
+      mockXHR.onload();
+
+      await expect(uploadPromise).rejects.toThrow("S3 upload failed with status 403: Forbidden");
+    });
+
+    it("rejects with sanitized message on network error", async () => {
+      const mockXHRNetworkError = {
+        open: jest.fn(),
+        setRequestHeader: jest.fn(),
+        send: jest.fn(),
+        upload: {},
+        status: 0,
+        statusText: "",
+        onerror: () => {},
+      };
+
+      // @ts-expect-error Mocking global XMLHttpRequest
+      global.XMLHttpRequest = jest.fn(() => mockXHRNetworkError);
+
+      const file = new File(["dummy content"], "test.pdf", { type: "application/pdf" });
+      const uploadPromise = uploadFileToS3("https://s3.amazonaws.com/upload", file);
+
+      mockXHRNetworkError.onerror();
+
+      await expect(uploadPromise).rejects.toThrow(
+        "Network error occurred during file upload. Please check your network connection and try again.",
+      );
+    });
+  });
+
+  describe("uploadFile", () => {
+    it("orchestrates presigned URL request and direct S3 upload", async () => {
+      const mockPresigned = {
+        success: true,
+        data: {
+          uploadUrl: "https://s3.amazonaws.com/upload-target",
+          s3ObjectKey: "restaurants/res-100/documents/uuid_doc.pdf",
+          expiresInSeconds: 900,
+        },
+      };
+
+      (apiClient.post as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockPresigned),
+      });
+
+      let instanceXHR: {
+        open: jest.Mock;
+        setRequestHeader: jest.Mock;
+        send: jest.Mock;
+        upload: { onprogress?: (event: ProgressEvent) => void };
+        status: number;
+        onload: () => void;
+      };
+      // @ts-expect-error Mocking global XMLHttpRequest
+      global.XMLHttpRequest = jest.fn(() => {
+        instanceXHR = {
+          open: jest.fn(),
+          setRequestHeader: jest.fn(),
+          send: jest.fn(() => {
+            setTimeout(() => instanceXHR.onload(), 0);
+          }),
+          upload: {},
+          status: 200,
+          onload: () => {},
+        };
+        return instanceXHR;
+      });
+
+      const file = new File(["test file content"], "doc.pdf", { type: "application/pdf" });
+
+      const result = await uploadFile({
+        file,
+        entityType: "restaurants",
+        entityId: "res-100",
+        fileCategory: "DOCUMENTS",
+      });
+
+      expect(result).toEqual({
+        s3ObjectKey: "restaurants/res-100/documents/uuid_doc.pdf",
+        fileName: "doc.pdf",
+      });
+    });
+  });
+
+  describe("getPresignedDownloadUrl", () => {
+    it("throws error if key is empty or blank", async () => {
+      await expect(getPresignedDownloadUrl("")).rejects.toThrow("Object key is required");
+      await expect(getPresignedDownloadUrl("   ")).rejects.toThrow("Object key is required");
+    });
+
+    it("returns key directly if it starts with http:// or https://", async () => {
+      const httpUrl = "http://example.com/avatar.png";
+      const httpsUrl = "https://example.com/avatar.png";
+
+      expect(await getPresignedDownloadUrl(httpUrl)).toBe(httpUrl);
+      expect(await getPresignedDownloadUrl(httpsUrl)).toBe(httpsUrl);
+      expect(apiClient.get).not.toHaveBeenCalled();
+    });
+
+    it("fetches presigned download URL from storage endpoint for key", async () => {
+      const mockResponse = {
+        success: true,
+        data: {
+          download_url: "https://s3.amazonaws.com/bucket/avatar.png?sig=xyz",
+          expires_in_seconds: 900,
+        },
+      };
+
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await getPresignedDownloadUrl("staff/avatars/avatar1.png");
+
+      expect(apiClient.get).toHaveBeenCalledWith(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+        searchParams: { key: "staff/avatars/avatar1.png" },
+      });
+      expect(result).toBe("https://s3.amazonaws.com/bucket/avatar.png?sig=xyz");
+    });
+
+    it("extracts S3 key from full unsigned S3 URL and requests presigned download URL", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: {
+            download_url: "https://s3.amazonaws.com/bucket/staff/avatars/avatar2.png?sig=abc",
+            expires_in_seconds: 900,
+          },
+        }),
+      });
+
+      const result = await getPresignedDownloadUrl(
+        "https://spotq-restaurant-files.s3.ap-south-1.amazonaws.com/staff/avatars/avatar2.png",
+      );
+
+      expect(apiClient.get).toHaveBeenCalledWith(STORAGE_ENDPOINTS.PRESIGNED_URL, {
+        searchParams: { key: "staff/avatars/avatar2.png" },
+      });
+      expect(result).toBe("https://s3.amazonaws.com/bucket/staff/avatars/avatar2.png?sig=abc");
+    });
+
+    it("throws error when API returns success: false", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+          message: "Key not found in bucket",
+        }),
+      });
+
+      await expect(getPresignedDownloadUrl("staff/avatars/non-existent.png")).rejects.toThrow(
+        "Key not found in bucket",
+      );
+    });
+
+    it("throws fallback error when download_url is missing in response", async () => {
+      (apiClient.get as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          data: {},
+        }),
+      });
+
+      await expect(getPresignedDownloadUrl("staff/avatars/invalid.png")).rejects.toThrow(
+        "Failed to retrieve presigned download URL.",
+      );
+    });
+  });
+
+  describe("deleteS3Object", () => {
+    it("returns early without making network call if key is empty", async () => {
+      await deleteS3Object("");
+      await deleteS3Object("   ");
+
+      expect(apiClient.delete).not.toHaveBeenCalled();
+    });
+
+    it("sends DELETE request with object key search parameters", async () => {
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: true,
+          message: "S3 object deleted successfully",
+        }),
+      });
+
+      await deleteS3Object("restaurants/123/images/photo.jpg");
+
+      expect(apiClient.delete).toHaveBeenCalledWith(STORAGE_ENDPOINTS.S3_OBJECT, {
+        searchParams: { key: "restaurants/123/images/photo.jpg" },
+      });
+    });
+
+    it("throws error when API returns success: false", async () => {
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+          message: "Forbidden entity access",
+        }),
+      });
+
+      await expect(deleteS3Object("restaurants/123/images/photo.jpg")).rejects.toThrow(
+        "Forbidden entity access",
+      );
+    });
+
+    it("throws fallback error when API fails without custom message", async () => {
+      (apiClient.delete as jest.Mock).mockReturnValue({
+        json: jest.fn().mockResolvedValue({
+          success: false,
+        }),
+      });
+
+      await expect(deleteS3Object("restaurants/123/images/photo.jpg")).rejects.toThrow(
+        STORAGE_MESSAGES.FAILED_TO_DELETE_S3_OBJECT,
+      );
+    });
+  });
+});

@@ -1,0 +1,156 @@
+/**
+ * Restaurant Route Paths and Navigation Helpers
+ * Single source of truth for all /restaurant/* routes.
+ */
+
+// Relative route paths used in React Router route definitions
+export const RESTAURANT_ROUTE_PATHS = {
+  TERMS: "terms",
+  PRIVACY: "privacy",
+
+  AUTH: {
+    LOGIN: "login",
+    VERIFY: "verify",
+  },
+
+  SUBSCRIPTION: {
+    INDEX: "subscription",
+    SUCCESS: "subscription/success",
+    FAILURE: "subscription/failure",
+  },
+
+  ONBOARDING: {
+    ROOT: "onboarding",
+    STATUS: "status",
+    BUSINESS_INFORMATION: "business-information",
+    DOCUMENTS: "documents",
+    LOCATION: "location",
+    REVIEW: "review",
+  },
+
+  DASHBOARD: "dashboard",
+  ANALYTICS: {
+    ROOT: "analytics",
+    REVENUE: "revenue",
+    MENU: "menu",
+  },
+  ORDERS: {
+    ROOT: "orders",
+    DETAIL: ":orderId",
+  },
+  PROFILE: "profile",
+  SETTINGS_ACCOUNT: "settings/account",
+  SETTINGS_BILLING_HISTORY: "settings/billing/history",
+
+  STAFF: {
+    ROOT: "staff",
+    INVITATIONS: "invitations",
+    DETAIL: ":staffId",
+    EDIT: ":staffId/edit",
+  },
+
+  MENU: {
+    ROOT: "menu",
+    CATEGORIES: "categories",
+    MODIFIERS: "modifiers",
+    ITEMS: "items",
+    CREATE: "items/create",
+    DETAIL: "items/:itemId",
+    EDIT: "items/:itemId/edit",
+  },
+
+  TABLE: {
+    ROOT: "tables",
+    SECTIONS: "sections",
+    CREATE: "create",
+    VIEW: ":tableId",
+  },
+  WALLET: {
+    ROOT: "wallet",
+  },
+
+  FINANCE: {
+    ROOT: "finance",
+    TRANSACTIONS: "finance/transactions",
+  },
+  PAYMENTS_HISTORY: "payments/history",
+  TRANSACTIONS: "transactions",
+} as const;
+
+// Absolute paths and route builders for navigate() and <Link to="..." />
+export const RESTAURANT_ROUTES = {
+  ROOT: "/restaurant",
+
+  TERMS: "/restaurant/terms",
+  PRIVACY: "/restaurant/privacy",
+
+  // Auth
+  LOGIN: "/restaurant/login",
+  VERIFY: "/restaurant/verify",
+
+  // Subscription
+  SUBSCRIPTION: "/restaurant/subscription",
+  SUBSCRIPTION_SUCCESS: "/restaurant/subscription/success",
+  SUBSCRIPTION_FAILURE: "/restaurant/subscription/failure",
+
+  // Onboarding
+  ONBOARDING: {
+    ROOT: "/restaurant/onboarding",
+    STATUS: "/restaurant/onboarding/status",
+    BUSINESS_INFORMATION: "/restaurant/onboarding/business-information",
+    DOCUMENTS: "/restaurant/onboarding/documents",
+    LOCATION: "/restaurant/onboarding/location",
+    REVIEW: "/restaurant/onboarding/review",
+  },
+
+  // Admin Dashboard & Settings
+  DASHBOARD: "/restaurant/dashboard",
+  ANALYTICS: {
+    ROOT: "/restaurant/analytics",
+    REVENUE: "/restaurant/analytics/revenue",
+    MENU: "/restaurant/analytics/menu",
+  },
+  ORDERS: {
+    ROOT: "/restaurant/orders",
+    DETAIL_PATTERN: "/restaurant/orders/:orderId",
+    DETAIL: (orderId: string) => `/restaurant/orders/${orderId}`,
+  },
+  PROFILE: "/restaurant/profile",
+  SETTINGS_ACCOUNT: "/restaurant/settings/account",
+  SETTINGS_BILLING_HISTORY: "/restaurant/settings/billing/history",
+
+  // Staff Management
+  STAFF: {
+    ROOT: "/restaurant/staff",
+    INVITATIONS: "/restaurant/staff/invitations",
+    DETAIL_PATTERN: "/restaurant/staff/:staffId",
+    DETAIL: (staffId: string) => `/restaurant/staff/${staffId}`,
+    EDIT: (staffId: string) => `/restaurant/staff/${staffId}/edit`,
+  },
+
+  // Menu Management
+  MENU: {
+    ROOT: "/restaurant/menu",
+    CATEGORIES: "/restaurant/menu/categories",
+    MODIFIERS: "/restaurant/menu/modifiers",
+    ITEMS: "/restaurant/menu/items",
+    CREATE: "/restaurant/menu/items/create",
+    DETAIL_PATTERN: "/restaurant/menu/items/:itemId",
+    DETAIL: (itemId: string) => `/restaurant/menu/items/${itemId}`,
+    EDIT: (itemId: string) => `/restaurant/menu/items/${itemId}/edit`,
+  },
+
+  TABLE: {
+    ROOT: "/restaurant/tables",
+    SECTIONS: "/restaurant/tables/sections",
+    CREATE: "/restaurant/tables/create",
+    VIEW: (tableId: string) => `/restaurant/tables/${tableId}`,
+  },
+
+  // Finance & Transactions
+  FINANCE: {
+    ROOT: "/restaurant/finance",
+    TRANSACTIONS: "/restaurant/finance/transactions",
+  },
+  TRANSACTIONS: "/restaurant/transactions",
+} as const;

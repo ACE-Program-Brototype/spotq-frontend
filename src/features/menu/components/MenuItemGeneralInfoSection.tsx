@@ -1,0 +1,176 @@
+import { Clock } from "lucide-react";
+import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  DIETARY_OPTIONS,
+  type DietaryType,
+  MENU_MESSAGES,
+} from "@/features/menu/constants/menu.constants";
+import type { CreateMenuItemFormData } from "@/features/menu/schemas/create-menu-item.schema";
+import type { MenuCategory } from "@/features/menu/types/menu.types";
+
+export interface MenuItemGeneralInfoSectionProps {
+  register: UseFormRegister<CreateMenuItemFormData>;
+  errors: FieldErrors<CreateMenuItemFormData>;
+  categories: MenuCategory[];
+  isLoadingCategories: boolean;
+  currentDietaryType?: DietaryType;
+  isAvailable?: boolean;
+  setValue: UseFormSetValue<CreateMenuItemFormData>;
+}
+
+export function MenuItemGeneralInfoSection({
+  register,
+  errors,
+  categories,
+  isLoadingCategories,
+  currentDietaryType,
+  isAvailable = true,
+  setValue,
+}: MenuItemGeneralInfoSectionProps) {
+  return (
+    <div className="rounded-2xl border border-[#eddcd4] bg-white p-3.5 sm:p-5 shadow-xs">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4.5">
+        {/* Dish Name */}
+        <div className="space-y-1.5 md:col-span-2">
+          <Label htmlFor="item-name" className="text-xs font-semibold text-neutral-800">
+            {MENU_MESSAGES.ITEM_NAME_LABEL} <span className="text-rose-500">*</span>
+          </Label>
+          <Input
+            id="item-name"
+            placeholder={MENU_MESSAGES.ITEM_NAME_PLACEHOLDER}
+            {...register("name")}
+            className="h-9 sm:h-10 text-xs sm:text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
+          />
+          {errors.name && (
+            <p className="text-xs font-medium text-rose-500">{errors.name.message}</p>
+          )}
+        </div>
+
+        {/* Category */}
+        <div className="space-y-1.5">
+          <Label htmlFor="item-category" className="text-xs font-semibold text-neutral-800">
+            {MENU_MESSAGES.CATEGORY_LABEL} <span className="text-rose-500">*</span>
+          </Label>
+          <select
+            id="item-category"
+            {...register("categoryId")}
+            disabled={isLoadingCategories}
+            className="w-full h-9 sm:h-10 px-3 rounded-lg border border-[#e5dcd6] bg-neutral-50/50 focus:bg-white text-xs sm:text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#e8631b]/20 cursor-pointer"
+          >
+            <option value="">{MENU_MESSAGES.CATEGORY_PLACEHOLDER}</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+          {errors.categoryId && (
+            <p className="text-xs font-medium text-rose-500">{errors.categoryId.message}</p>
+          )}
+        </div>
+
+        {/* Preparation Time */}
+        <div className="space-y-1.5">
+          <Label htmlFor="item-prep-time" className="text-xs font-semibold text-neutral-800">
+            {MENU_MESSAGES.PREPARATION_TIME_LABEL} <span className="text-rose-500">*</span>
+          </Label>
+          <div className="relative">
+            <Clock className="absolute left-3 top-2.5 size-3.5 sm:size-4 text-neutral-400" />
+            <Input
+              id="item-prep-time"
+              type="number"
+              min="0"
+              placeholder={MENU_MESSAGES.PREPARATION_TIME_PLACEHOLDER}
+              {...register("preparationTime", {
+                setValueAs: (v) => (v === "" || v === null ? undefined : Number(v)),
+              })}
+              className="pl-8.5 sm:pl-9 h-9 sm:h-10 text-xs sm:text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6]"
+            />
+          </div>
+          {errors.preparationTime && (
+            <p className="text-xs font-medium text-rose-500">{errors.preparationTime.message}</p>
+          )}
+        </div>
+
+        {/* Description */}
+        <div className="space-y-1.5 md:col-span-2">
+          <Label htmlFor="item-description" className="text-xs font-semibold text-neutral-800">
+            {MENU_MESSAGES.DESCRIPTION_LABEL} <span className="text-rose-500">*</span>
+          </Label>
+          <Textarea
+            id="item-description"
+            rows={3}
+            placeholder={MENU_MESSAGES.DESCRIPTION_PLACEHOLDER}
+            {...register("description")}
+            className="text-xs sm:text-sm bg-neutral-50/50 focus:bg-white border-[#e5dcd6] resize-none"
+          />
+          {errors.description && (
+            <p className="text-xs font-medium text-rose-500">{errors.description.message}</p>
+          )}
+        </div>
+
+        {/* Dietary Type Selection */}
+        <div className="space-y-2 md:col-span-2">
+          <Label className="text-xs font-semibold text-neutral-800">
+            {MENU_MESSAGES.DIETARY_TYPE_LABEL}
+          </Label>
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 md:gap-3 min-w-0 pt-0.5">
+            {DIETARY_OPTIONS.map((opt) => {
+              const isSelected = currentDietaryType === opt.value;
+              return (
+                <label
+                  key={opt.value}
+                  title={opt.description}
+                  className={`group relative flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl border transition-all cursor-pointer select-none text-center sm:text-left min-w-0 overflow-hidden ${
+                    isSelected
+                      ? "border-[#e8631b] bg-[#fffaf5] shadow-2xs ring-1 ring-[#e8631b]/20"
+                      : "border-[#e5dcd6] bg-white hover:bg-neutral-50/80 hover:border-neutral-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="dietaryType"
+                    value={opt.value}
+                    checked={isSelected}
+                    onChange={() => setValue("dietaryType", opt.value)}
+                    className="sr-only"
+                  />
+                  <span
+                    className={`inline-flex items-center justify-center size-3.5 sm:size-4 border ${opt.borderColor} p-0.5 rounded-xs bg-white shrink-0`}
+                  >
+                    <span className={`size-1.5 sm:size-2 rounded-full ${opt.dotColor}`} />
+                  </span>
+                  <span className="min-w-0 flex-1 text-center sm:text-left">
+                    <span className="block text-[10px] sm:text-xs font-semibold text-neutral-800 leading-tight truncate sm:overflow-visible">
+                      <span className="sm:hidden">{opt.value === "EGG" ? "Egg" : opt.label}</span>
+                      <span className="hidden sm:inline">{opt.label}</span>
+                    </span>
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Active Status */}
+        <div className="md:col-span-2 flex items-center justify-between rounded-xl border border-[#fae2d3] bg-[#fffaf5] px-3.5 py-2.5 gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-bold text-neutral-900">{MENU_MESSAGES.AVAILABILITY_LABEL}</p>
+            <p className="text-[11px] text-neutral-500">
+              {isAvailable ? "Available to order on takeaway menu" : "Hidden from takeaway menu"}
+            </p>
+          </div>
+          <Switch
+            checked={isAvailable}
+            onChange={(e) => setValue("isAvailable", e.target.checked)}
+            aria-label="Item availability toggle"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

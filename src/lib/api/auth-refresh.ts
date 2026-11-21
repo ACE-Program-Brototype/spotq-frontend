@@ -1,0 +1,109 @@
+import ky from "ky";
+
+import { ADMIN_ROUTES, RESTAURANT_ROUTES, STAFF_ROUTES } from "@/app/router/routes.constants";
+import env from "@/config/env";
+import {
+  AUTH_ENDPOINTS,
+  AUTH_REFRESH_ERRORS,
+  USER_ROLES,
+} from "@/features/auth/constants/auth.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
+import type { ApiUser } from "@/features/auth/types/auth.types";
+import { mapApiUserToUser } from "@/features/auth/utils/auth.mapper";
+
+let refreshPromise: Promise<string> | null = null;
+
+export const getOrRefreshAccessToken = async (): Promise<string> => {
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  refreshPromise = (async () => {
+    const API_URL = import.meta.env.VITE_API_BASE_URL || env.apiUrl;
+
+    if (!API_URL) {
+      throw new Error(AUTH_REFRESH_ERRORS.MISSING_BASE_URL);
+    }
+
+    const currentUser = useAuthStore.getState().user;
+    let currentRole = currentUser?.role;
+
+    if (!currentRole && typeof window !== "undefined") {
+      const path = window.location.pathname;
+      if (path === ADMIN_ROUTES.ROOT || path.startsWith(`${ADMIN_ROUTES.ROOT}/`)) {
+        currentRole = USER_ROLES.ADMIN;
+      } else if (path === RESTAURANT_ROUTES.ROOT || path.startsWith(`${RESTAURANT_ROUTES.ROOT}/`)) {
+        currentRole = USER_ROLES.RESTAURANT_ADMIN;
+      } else if (path === STAFF_ROUTES.ROOT || path.startsWith(`${STAFF_ROUTES.ROOT}/`)) {
+        currentRole = USER_ROLES.STAFF;
+      } else {
+        currentRole = USER_ROLES.CUSTOMER;
+      }
+    }
+
+    const normalizedRole = currentRole?.toUpperCase();
+
+    let refreshEndpoint: string;
+
+    switch (normalizedRole) {
+      case USER_ROLES.ADMIN:
+        refreshEndpoint = AUTH_ENDPOINTS.ADMIN_REFRESH_TOKEN;
+        break;
+
+      case USER_ROLES.RESTAURANT_STAFF:
+      case USER_ROLES.STAFF:
+        refreshEndpoint = AUTH_ENDPOINTS.STAFF_REFRESH_TOKEN;
+        break;
+
+      case USER_ROLES.RESTAURANT_ADMIN:
+      case USER_ROLES.RESTAURANT_OWNER:
+        refreshEndpoint = AUTH_ENDPOINTS.RESTAURANT_REFRESH_TOKEN;
+        break;
+
+      default:
+        refreshEndpoint = AUTH_ENDPOINTS.REFRESH_TOKEN;
+        break;
+    }
+
+    const response = await ky
+      .post(refreshEndpoint, {
+        prefix: API_URL,
+        credentials: "include",
+      })
+      .json<{
+        data?: {
+          access_token?: string;
+          accessToken?: string;
+          user?: ApiUser;
+        };
+      }>();
+
+    const newAccessToken = response.data?.accessToken || response.data?.access_token;
+
+    if (!newAccessToken) {
+      throw new Error(AUTH_REFRESH_ERRORS.MISSING_ACCESS_TOKEN);
+    }
+
+    const mappedUser = response.data?.user ? mapApiUserToUser(response.data.user) : null;
+    const user = mappedUser
+      ? {
+          ...mappedUser,
+          role: currentRole ?? mappedUser.role,
+        }
+      : currentUser;
+
+    if (user) {
+      useAuthStore.getState().setAuth(user, newAccessToken);
+    } else {
+      useAuthStore
+        .getState()
+        .setAuth({ email: "", role: currentRole || USER_ROLES.CUSTOMER }, newAccessToken);
+    }
+
+    return newAccessToken;
+  })().finally(() => {
+    refreshPromise = null;
+  });
+
+  return refreshPromise;
+};

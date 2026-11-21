@@ -1,0 +1,8 @@
+packages:
+  - '.'
+
+allowBuilds:
+  '@firebase/util': true
+  '@swc/core': true
+  protobufjs: true
+  unrs-resolver: true

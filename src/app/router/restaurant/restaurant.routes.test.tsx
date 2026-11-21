@@ -1,0 +1,373 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen } from "@testing-library/react";
+import type { ComponentType } from "react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { useAuthStore } from "@/features/auth/store/auth.store";
+import { restaurantRoutes } from "./restaurant.routes";
+
+jest.mock("@/features/subscription/services/subscription.service", () => ({
+  subscriptionService: {
+    fetchPlans: jest.fn().mockResolvedValue([]),
+    createOrder: jest.fn(),
+    verifyPayment: jest.fn(),
+    fetchRestaurantStatus: jest.fn().mockResolvedValue({
+      restaurantId: "res-1",
+      restaurantName: "Test Restaurant",
+      verificationStatus: "APPROVED",
+      isSubscriptionActive: true,
+      subscriptionPlanCode: "QUEUE_PRO",
+      subscriptionEndsAt: "2027-09-10T00:00:00.000Z",
+      navigationTarget: "/restaurant/dashboard",
+    }),
+  },
+  subscriptionApi: {
+    fetchPlans: jest.fn().mockResolvedValue([]),
+    createOrder: jest.fn(),
+    verifyPayment: jest.fn(),
+    fetchRestaurantStatus: jest.fn().mockResolvedValue({
+      restaurantId: "res-1",
+      restaurantName: "Test Restaurant",
+      verificationStatus: "APPROVED",
+      isSubscriptionActive: true,
+      subscriptionPlanCode: "QUEUE_PRO",
+      subscriptionEndsAt: "2027-09-10T00:00:00.000Z",
+      navigationTarget: "/restaurant/dashboard",
+    }),
+  },
+}));
+
+describe("restaurantRoutes structure and protection", () => {
+  let queryClient: QueryClient;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    useAuthStore.getState().clearAuth();
+  });
+
+  it("defines terms routes, privacy routes, auth layout routes, and protected layout routes", () => {
+    expect(restaurantRoutes).toHaveLength(4);
+
+    expect(restaurantRoutes[0].path).toBe("terms");
+    expect(restaurantRoutes[1].path).toBe("privacy");
+
+    const authGroup = restaurantRoutes[2];
+    expect(authGroup.children?.map((child) => child.path)).toEqual(["login", "verify"]);
+
+    const protectedGroup = restaurantRoutes[3];
+    expect(protectedGroup).toBeDefined();
+    expect(protectedGroup.children).toBeDefined();
+    expect(protectedGroup.children?.[0].path).toBe("subscription");
+    expect(protectedGroup.children?.[1].path).toBe("subscription/success");
+    expect(protectedGroup.children?.map((child) => child.path ?? "admin-layout")).toContain(
+      "onboarding",
+    );
+
+    const adminLayout = protectedGroup.children?.[4];
+    expect(adminLayout?.children).toBeDefined();
+
+    const staffGroup = adminLayout?.children?.find((c) => c.path === "staff");
+    expect(staffGroup).toBeDefined();
+    expect(staffGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(staffGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([
+      "invitations",
+      ":staffId",
+      ":staffId/edit",
+    ]);
+
+    const menuGroup = adminLayout?.children?.find((c) => c.path === "menu");
+    expect(menuGroup).toBeDefined();
+    expect(menuGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(menuGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([
+      "items",
+      "items/create",
+      "items/:itemId",
+      "items/:itemId/edit",
+      "categories",
+      "modifiers",
+    ]);
+
+    const ordersGroup = adminLayout?.children?.find((c) => c.path === "orders");
+    expect(ordersGroup).toBeDefined();
+    expect(ordersGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(ordersGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([":orderId"]);
+
+    const analyticsGroup = adminLayout?.children?.find((c) => c.path === "analytics");
+    expect(analyticsGroup).toBeDefined();
+    expect(analyticsGroup?.children?.some((c) => c.index === true)).toBe(true);
+    expect(analyticsGroup?.children?.map((c) => c.path).filter(Boolean)).toEqual([
+      "revenue",
+      "menu",
+    ]);
+  });
+
+  it("redirects unauthenticated user accessing protected restaurant subscription route", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/subscription"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
+
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
+                return Layout ? (
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
+                      if (child.children) {
+                        return (
+                          <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
+                            {child.children.map((nested) => {
+                              const NestedComp = nested.Component as ComponentType | undefined;
+                              return (
+                                <Route
+                                  key={nested.path}
+                                  path={nested.path}
+                                  element={NestedComp ? <NestedComp /> : null}
+                                />
+                              );
+                            })}
+                          </Route>
+                        );
+                      }
+                      return (
+                        <Route
+                          key={childKey}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
+                ) : null;
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Restaurant Email Verification")).toBeInTheDocument();
+  });
+
+  it("redirects unauthenticated user accessing protected restaurant dashboard route", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
+
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
+                return Layout ? (
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
+                      if (child.children) {
+                        return (
+                          <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
+                            {child.children.map((nested) => {
+                              const NestedComp = nested.Component as ComponentType | undefined;
+                              return (
+                                <Route
+                                  key={nested.path}
+                                  path={nested.path}
+                                  element={NestedComp ? <NestedComp /> : null}
+                                />
+                              );
+                            })}
+                          </Route>
+                        );
+                      }
+                      return (
+                        <Route
+                          key={childKey}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
+                ) : null;
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Restaurant Email Verification")).toBeInTheDocument();
+  });
+
+  it("allows authenticated RESTAURANT_ADMIN user to access /restaurant/dashboard", async () => {
+    useAuthStore.getState().setUser({
+      _id: "res-1",
+      name: "Owner",
+      email: "owner@restaurant.com",
+      role: "RESTAURANT_ADMIN",
+      created_at: "2026-08-30T10:00:00.000Z",
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
+
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
+                return Layout ? (
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
+                      if (child.children) {
+                        return (
+                          <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
+                            {child.children.map((nested) => {
+                              const NestedComp = nested.Component as ComponentType | undefined;
+                              return (
+                                <Route
+                                  key={nested.path}
+                                  path={nested.path}
+                                  element={NestedComp ? <NestedComp /> : null}
+                                />
+                              );
+                            })}
+                          </Route>
+                        );
+                      }
+                      return (
+                        <Route
+                          key={childKey}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
+                ) : null;
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Welcome/i)).toBeInTheDocument();
+  });
+
+  it("allows authenticated RESTAURANT_OWNER user to access /restaurant/dashboard", async () => {
+    useAuthStore.getState().setUser({
+      _id: "res-2",
+      name: "Owner User",
+      email: "owner-user@restaurant.com",
+      role: "RESTAURANT_OWNER",
+      created_at: "2026-08-30T10:00:00.000Z",
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/restaurant/dashboard"]}>
+          <Routes>
+            <Route path="/restaurant">
+              <Route path="login" element={<div>Restaurant Email Verification</div>} />
+              {restaurantRoutes.map((route) => {
+                const Layout = route.Component as ComponentType | undefined;
+                const groupKey =
+                  route.id ?? route.path ?? (Layout?.displayName || Layout?.name || "route-group");
+
+                if (!route.children) {
+                  return Layout ? (
+                    <Route key={groupKey} path={route.path} element={<Layout />} />
+                  ) : null;
+                }
+
+                return Layout ? (
+                  <Route key={groupKey} element={<Layout />}>
+                    {route.children?.map((child) => {
+                      const ChildComp = child.Component as ComponentType | undefined;
+                      const childKey =
+                        child.id ??
+                        child.path ??
+                        (ChildComp?.displayName || ChildComp?.name || "route-child");
+                      if (child.children) {
+                        return (
+                          <Route key={childKey} element={ChildComp ? <ChildComp /> : null}>
+                            {child.children.map((nested) => {
+                              const NestedComp = nested.Component as ComponentType | undefined;
+                              return (
+                                <Route
+                                  key={nested.path}
+                                  path={nested.path}
+                                  element={NestedComp ? <NestedComp /> : null}
+                                />
+                              );
+                            })}
+                          </Route>
+                        );
+                      }
+                      return (
+                        <Route
+                          key={childKey}
+                          path={child.path}
+                          element={ChildComp ? <ChildComp /> : null}
+                        />
+                      );
+                    })}
+                  </Route>
+                ) : null;
+              })}
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Welcome/i)).toBeInTheDocument();
+  });
+});

@@ -1,0 +1,47 @@
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { CUSTOMER_ROUTES } from "@/app/router/routes.constants";
+import { AUTH_MESSAGES } from "@/features/auth/constants/auth.constants";
+import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useGoogleLoginMutation } from "./use-auth-mutations";
+
+export const useGoogleAuth = (destination: string = CUSTOMER_ROUTES.HOME) => {
+  const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
+
+  const googleLoginMutation = useGoogleLoginMutation();
+
+  const handleGoogleSuccess = useCallback(
+    async (response: { credential: string }) => {
+      try {
+        const res = await googleLoginMutation.mutateAsync({
+          idToken: response.credential,
+        });
+
+        if (res.success && res.data) {
+          toast.success(AUTH_MESSAGES.GOOGLE_SUCCESS);
+
+          setAuth(res.data.user, res.data.accessToken);
+
+          navigate(destination, {
+            replace: true,
+          });
+
+          return;
+        }
+
+        toast.error(res.message || AUTH_MESSAGES.GOOGLE_FAILED);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : AUTH_MESSAGES.GOOGLE_FAILED;
+        toast.error(message);
+      }
+    },
+    [googleLoginMutation, setAuth, navigate, destination],
+  );
+
+  return {
+    handleGoogleSuccess,
+    isLoading: googleLoginMutation.isPending,
+  };
+};

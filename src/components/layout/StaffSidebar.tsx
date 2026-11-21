@@ -1,0 +1,163 @@
+/**
+ * Staff Sidebar Navigation Component
+ * Provides primary shift navigation, brand details, settings, and staff clock-out actions.
+ */
+
+import { LogOut, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+
+import { STAFF_ROUTES } from "@/app/router/routes.constants";
+import spotqLogo from "@/assets/logos/spotq-logo.png";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import {
+  STAFF_NAV_ITEMS,
+  isStaffNavItemActive,
+} from "@/components/layout/staffNav.constants";
+import { Button } from "@/components/ui/button";
+import { useStaffLogout } from "@/features/auth/hooks/useStaffLogout";
+import { useAuthStore } from "@/features/auth/store/auth.store";
+import { cn } from "@/lib/utils/cn";
+import type { StaffSidebarProps } from "@/components/layout/types";
+
+export type { StaffSidebarProps };
+
+export function StaffSidebar({
+  className,
+  onNavigate,
+  basePath = STAFF_ROUTES.ROOT,
+}: StaffSidebarProps) {
+  const location = useLocation();
+  const user = useAuthStore((state) => state.user);
+  const { handleStaffLogout, isLoading } = useStaffLogout();
+
+  return (
+    <aside
+      className={cn(
+        "flex h-full min-h-full w-64 flex-col justify-between bg-[#faf7f5] border-r border-[#eddcd4] px-4 py-6 select-none overflow-y-auto",
+        className,
+      )}
+    >
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-3 px-2">
+          <div className="flex size-11 items-center justify-center rounded-2xl bg-white shadow-xs border border-[#eddcd4]">
+            <img src={spotqLogo} alt="SpotQ Logo" className="size-6 object-contain" />
+          </div>
+          <div>
+            <span className="text-lg font-black tracking-tight text-[#9a3412]">SpotQ</span>
+            <p className="text-[11px] font-medium text-neutral-500">Hospitality Management</p>
+          </div>
+        </div>
+
+        <nav className="flex flex-col gap-1.5" aria-label="Restaurant Staff Navigation">
+          {STAFF_NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const fullHref = `${basePath}${item.path}`;
+            const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
+
+            return (
+              <Link
+                key={item.title}
+                to={fullHref}
+                onClick={onNavigate}
+                className={cn(
+                  "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors shadow-2xs",
+                  isActive
+                    ? "bg-[#fed7aa]/80 text-[#9a3412] font-bold shadow-xs"
+                    : "bg-transparent text-neutral-600 hover:bg-[#eddcd4]/50 hover:text-neutral-900",
+                )}
+              >
+                <Icon
+                  className={cn("size-4.5", isActive ? "text-[#9a3412]" : "text-neutral-500")}
+                />
+                <span>{item.title}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      <div className="flex flex-col gap-3 pt-4 border-t border-[#eddcd4]">
+        <Link
+          to={`${basePath}/profile`}
+          onClick={onNavigate}
+          className={cn(
+            "flex items-center gap-3 rounded-xl px-3.5 py-2 text-xs font-medium text-neutral-600 hover:bg-[#eddcd4]/50 hover:text-neutral-900 transition-colors",
+            location.pathname.startsWith(`${basePath}/profile`) &&
+              "font-bold text-[#9a3412] bg-[#fed7aa]/50 shadow-2xs",
+          )}
+        >
+          <User className="size-4 text-neutral-500" />
+          <span>Profile</span>
+        </Link>
+
+        <ConfirmDialog
+          trigger={
+            <Button
+              variant="default"
+              disabled={isLoading}
+              className="mt-2 w-full bg-[#9a3412] hover:bg-[#7c2d12] text-white font-bold shadow-sm transition-colors rounded-xl h-10"
+            >
+              <LogOut className="size-4 mr-2" />
+              Clock Out
+            </Button>
+          }
+          title="Clock Out"
+          description={`Are you sure you want to clock out, ${user?.name || "Staff"}? Your shift will end.`}
+          confirmText="Clock Out"
+          confirmVariant="destructive"
+          isLoading={isLoading}
+          onConfirm={handleStaffLogout}
+        />
+      </div>
+    </aside>
+  );
+}
+
+export function StaffMobileNav({
+  basePath = STAFF_ROUTES.ROOT,
+  className,
+}: {
+  basePath?: string;
+  className?: string;
+}) {
+  const location = useLocation();
+
+  return (
+    <nav
+      aria-label="Mobile Navigation"
+      className={cn(
+        "fixed bottom-0 left-0 right-0 z-40 flex h-16 w-full max-w-full items-center justify-around border-t border-[#eddcd4] bg-white px-2 shadow-lg lg:hidden box-border",
+        className,
+      )}
+    >
+      {STAFF_NAV_ITEMS.map((item) => {
+        const Icon = item.icon;
+        const fullHref = `${basePath}${item.path}`;
+        const isActive = isStaffNavItemActive(location.pathname, item.path, basePath);
+
+        return (
+          <Link
+            key={item.mobileLabel}
+            to={fullHref}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 py-1 px-3 text-center transition-colors",
+              isActive ? "text-[#9a3412] font-bold" : "text-neutral-500 hover:text-neutral-800",
+            )}
+          >
+            <div
+              className={cn(
+                "flex size-7 items-center justify-center rounded-xl transition-colors",
+                isActive ? "bg-[#fed7aa]/60" : "bg-transparent",
+              )}
+            >
+              <Icon className="size-4.5" />
+            </div>
+            <span className="text-[10px] leading-none">{item.mobileLabel}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
+export default StaffSidebar;

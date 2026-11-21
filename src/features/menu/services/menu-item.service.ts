@@ -1,0 +1,183 @@
+/**
+ * Menu Item Service
+ * Handles API communication for restaurant menu items via SpotQ HTTP client.
+ */
+
+import { MENU_ITEM_FILTER_STATUS } from "@/features/menu/constants/menu.constants";
+import { apiClient } from "@/lib/api/client";
+import { MENU_ENDPOINTS } from "@/features/menu/constants/menu.constants";
+import type {
+  GetMenuItemApiResponse,
+  ListMenuItemsApiResponse,
+  ListMenuItemsData,
+  ListMenuItemsQueryParams,
+  MenuItemDetail,
+} from "@/features/menu/types/menu-item.types";
+
+export const menuItemService = {
+  /**
+   * Fetches paginated list of menu items along with summary statistics.
+   * Calls: GET /api/v1/restaurants/{restaurantId}/menu/items
+   */
+  async getMenuItems(
+    restaurantId: string,
+    params?: ListMenuItemsQueryParams,
+  ): Promise<ListMenuItemsData> {
+    if (!restaurantId) {
+      return {
+        stats: {
+          totalCategories: 0,
+          totalMenuItems: 0,
+          availableItems: 0,
+          outOfStockItems: 0,
+        },
+        items: [],
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 0,
+          hasNextPage: false,
+          hasPrevPage: false,
+        },
+      };
+    }
+
+    const searchParams: Record<string, string | number | boolean> = {};
+
+    if (params?.page) searchParams.page = params.page;
+    if (params?.limit) searchParams.limit = params.limit;
+    if (params?.search && params.search.trim() !== "") searchParams.search = params.search.trim();
+    if (params?.categoryId && params.categoryId !== "ALL")
+      searchParams.categoryId = params.categoryId;
+    if (params?.status && params.status !== MENU_ITEM_FILTER_STATUS.ALL) searchParams.status = params.status;
+    if (
+      params?.minPrice !== undefined &&
+      params.minPrice !== null &&
+      !Number.isNaN(params.minPrice)
+    )
+      searchParams.minPrice = params.minPrice;
+    if (
+      params?.maxPrice !== undefined &&
+      params.maxPrice !== null &&
+      !Number.isNaN(params.maxPrice)
+    )
+      searchParams.maxPrice = params.maxPrice;
+
+    if (params?.isVegetarian !== undefined && params.isVegetarian !== null)
+      searchParams.isVegetarian = params.isVegetarian;
+    if (params?.isFeatured !== undefined && params.isFeatured !== null)
+      searchParams.isFeatured = params.isFeatured;
+    if (params?.sortBy) searchParams.sortBy = params.sortBy;
+    if (params?.sortOrder) searchParams.sortOrder = params.sortOrder;
+
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.ITEMS(restaurantId), {
+        searchParams: Object.keys(searchParams).length > 0 ? searchParams : undefined,
+      })
+      .json<ListMenuItemsApiResponse>();
+
+    return (
+      response.data ?? {
+        stats: {
+          totalCategories: 0,
+          totalMenuItems: 0,
+          availableItems: 0,
+          outOfStockItems: 0,
+        },
+        items: [],
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 0,
+          hasNextPage: false,
+          hasPrevPage: false,
+        },
+      }
+    );
+  },
+
+  /**
+   * Fetches single menu item detail by ID.
+   * Calls: GET /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}
+   */
+  async getMenuItem(restaurantId: string, menuItemId: string): Promise<MenuItemDetail> {
+    if (!restaurantId || !menuItemId) {
+      throw new Error("Restaurant ID and Menu Item ID are required.");
+    }
+
+    const response = await apiClient
+      .get(MENU_ENDPOINTS.ITEM_DETAIL(restaurantId, menuItemId))
+      .json<GetMenuItemApiResponse | { data?: MenuItemDetail } | MenuItemDetail>();
+
+    const data = "data" in response && response.data ? response.data : (response as MenuItemDetail);
+
+    return data;
+  },
+
+  async getMenuItemById(restaurantId: string, menuItemId: string): Promise<MenuItemDetail> {
+    return this.getMenuItem(restaurantId, menuItemId);
+  },
+
+  /**
+   * Updates menu item availability status.
+   * Calls: PATCH /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}/status
+   */
+  async updateMenuItemAvailability(
+    restaurantId: string,
+    menuItemId: string,
+    isAvailable: boolean,
+  ): Promise<{ isAvailable: boolean }> {
+    if (!restaurantId || !menuItemId) {
+      throw new Error("Restaurant ID and Menu Item ID are required.");
+    }
+
+    const response = await apiClient
+      .patch(MENU_ENDPOINTS.ITEM_STATUS(restaurantId, menuItemId), {
+        json: { isAvailable },
+      })
+      .json<{ success: boolean; message?: string; data?: { isAvailable: boolean } }>();
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to update menu item availability");
+    }
+
+    return response.data ?? { isAvailable };
+  },
+
+  /**
+   * Soft deletes a menu item.
+   * Calls: DELETE /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}
+   */
+  async deleteMenuItem(restaurantId: string, menuItemId: string): Promise<void> {
+    if (!restaurantId || !menuItemId) {
+      throw new Error("Restaurant ID and Menu Item ID are required to delete a menu item.");
+    }
+    await apiClient.delete(MENU_ENDPOINTS.ITEM_DETAIL(restaurantId, menuItemId));
+  },
+
+  /**
+   * Toggles variant availability status
+   * path is PATCH /api/v1/restaurants/{restaurantId}/menu/items/{menuItemId}/variant/{variantId}/status
+   */
+  async updateMenuItemVariantStatus(
+    restaurantId: string,
+    menuItemId: string,
+    variantId: string,
+  ): Promise<{ isAvailable: boolean }> {
+    if (!restaurantId || !menuItemId || !variantId) {
+      throw new Error("Restaurant ID, Menu Item ID, and Variant ID are required.");
+    }
+
+    const response = await apiClient
+      .patch(MENU_ENDPOINTS.VARIANT_STATUS(restaurantId, menuItemId, variantId))
+      .json<{ success: boolean; message?: string; data?: { isAvailable: boolean } }>();
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to update variant availability status");
+    }
+
+    return response.data ?? { isAvailable: true };
+  },
+};

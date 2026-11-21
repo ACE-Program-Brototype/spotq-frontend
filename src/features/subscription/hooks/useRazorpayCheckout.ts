@@ -1,0 +1,169 @@
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { RESTAURANT_ROUTES } from "@/app/router/routes.constants";
+import { SUBSCRIPTION_MESSAGES } from "@/features/subscription/constants/subscription.constants";
+import { subscriptionService } from "@/features/subscription/services/subscription.service";
+import type {
+  RazorpayInstance,
+  RazorpayOptions,
+  RazorpayPaymentSuccessResponse,
+  UseRazorpayCheckoutOptions,
+} from "@/features/subscription/types/subscription.types";
+import { loadRazorpayScript } from "@/lib/utils/razorpay";
+
+export { loadRazorpayScript };
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
+
+export function useRazorpayCheckout({
+  onSuccess,
+  onError,
+  onAlreadyActive,
+}: UseRazorpayCheckoutOptions = {}) {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const startCheckout = async (planId: string) => {
+    if (isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      setSelectedPlanId(planId);
+
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded || !window.Razorpay) {
+        throw new Error(SUBSCRIPTION_MESSAGES.SCRIPT_LOAD_ERROR);
+      }
+
+      const orderData = await subscriptionService.createOrder(planId);
+
+      const options: RazorpayOptions = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "SpotQ",
+        description: `${orderData.plan.name} Subscription`,
+        order_id: orderData.orderId,
+        prefill: {
+          name: orderData.restaurant.name || "",
+          email: orderData.restaurant.email || "",
+          contact: orderData.restaurant.phone || "",
+        },
+        theme: {
+          color: "#ea580c",
+        },
+        handler: async (paymentResponse: RazorpayPaymentSuccessResponse) => {
+          try {
+            const verificationResult = await subscriptionService.verifyPayment({
+              razorpayOrderId: paymentResponse.razorpay_order_id,
+              razorpayPaymentId: paymentResponse.razorpay_payment_id,
+              razorpaySignature: paymentResponse.razorpay_signature,
+            });
+
+            toast.success(SUBSCRIPTION_MESSAGES.PAYMENT_VERIFIED_SUCCESS);
+            onSuccess?.(verificationResult);
+          } catch (err) {
+            const message =
+              err instanceof Error ? err.message : SUBSCRIPTION_MESSAGES.PAYMENT_VERIFY_FAILED;
+            toast.error(message);
+            onError?.(err instanceof Error ? err : new Error(message));
+          } finally {
+            if (isMountedRef.current) {
+              setIsProcessing(false);
+              setSelectedPlanId(null);
+            }
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            if (isMountedRef.current) {
+              setIsProcessing(false);
+              setSelectedPlanId(null);
+            }
+            toast.info(SUBSCRIPTION_MESSAGES.PAYMENT_CANCELLED);
+          },
+        },
+      };
+
+      const razorpayInstance = new window.Razorpay(options);
+      // react-doctor-disable-next-line react-doctor/effect-needs-cleanup
+      razorpayInstance.on?.("payment.failed", (response) => {
+        if (isMountedRef.current) {
+          setIsProcessing(false);
+          setSelectedPlanId(null);
+        }
+        const failureMessage =
+          response?.error?.description ||
+          response?.error?.reason ||
+          SUBSCRIPTION_MESSAGES.PAYMENT_VERIFY_FAILED;
+        toast.error(failureMessage);
+        onError?.(new Error(failureMessage));
+      });
+      razorpayInstance.open();
+    } catch (err: unknown) {
+      if (isMountedRef.current) {
+        setIsProcessing(false);
+        setSelectedPlanId(null);
+      }
+
+      let message: string = SUBSCRIPTION_MESSAGES.ORDER_CREATION_FAILED;
+      let isAlreadyActive = false;
+
+      if (err && typeof err === "object" && "response" in err) {
+        try {
+          const body = (await (err as { response: Response }).response.json()) as {
+            message?: string;
+            code?: string;
+          };
+          if (body?.message) message = body.message;
+          if (
+            message.toLowerCase().includes("already has an active subscription") ||
+            message.toLowerCase().includes("active subscription") ||
+            body?.code === "CONFLICT"
+          ) {
+            isAlreadyActive = true;
+          }
+        } catch {}
+      } else if (err instanceof Error) {
+        message = err.message;
+        if (
+          message.toLowerCase().includes("already has an active subscription") ||
+          message.toLowerCase().includes("active subscription")
+        ) {
+          isAlreadyActive = true;
+        }
+      }
+
+      if (isAlreadyActive) {
+        toast.info(SUBSCRIPTION_MESSAGES.ALREADY_ACTIVE_REDIRECT);
+        if (onAlreadyActive) {
+          onAlreadyActive();
+        } else {
+          window.location.assign(RESTAURANT_ROUTES.DASHBOARD);
+        }
+        return;
+      }
+
+      toast.error(message);
+      onError?.(err instanceof Error ? err : new Error(message));
+    }
+  };
+
+  return {
+    startCheckout,
+    isProcessing,
+    selectedPlanId,
+  };
+}
