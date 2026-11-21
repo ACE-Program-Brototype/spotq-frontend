@@ -9,10 +9,8 @@ import {
   Grid,
   Landmark,
   LogOut,
-  Megaphone,
   ShoppingBag,
   Store,
-  Tag,
   Users,
 } from "lucide-react";
 import { useState } from "react";
@@ -63,16 +61,6 @@ const adminNavItems: NavItem[] = [
     title: "Finance Overview",
     href: ADMIN_ROUTES.FINANCE,
     icon: Landmark,
-  },
-  {
-    title: "Campaigns",
-    href: ADMIN_ROUTES.CAMPAIGNS,
-    icon: Megaphone,
-  },
-  {
-    title: "Coupons",
-    href: ADMIN_ROUTES.COUPONS,
-    icon: Tag,
   },
 ];
 

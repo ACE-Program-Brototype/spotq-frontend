@@ -1,4 +1,3 @@
-export * from "./ComingSoonPage";
 export * from "./ConfirmDialog";
 export * from "./constants";
 export * from "./ErrorBoundary";
