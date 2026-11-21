@@ -76,11 +76,7 @@ jobs:
             --plain)
 
           # Select Infisical environment based on Git branch
-          if [ "$GITHUB_REF_NAME" = "main" ]; then
-            INFISICAL_ENV="prod"
-          else
-            INFISICAL_ENV="dev"
-          fi
+          INFISICAL_ENV="dev"
 
           # Build frontend with Infisical secrets
           infisical run \
