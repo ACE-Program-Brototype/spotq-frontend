@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { ADMIN_ORDERS_MESSAGES } from "@/features/orders/constants/admin-orders.constants";
 import AdminOrdersPage from "./AdminOrdersPage";
 
 const mockOrders = [
@@ -132,7 +133,7 @@ describe("AdminOrdersPage", () => {
     renderPage();
 
     expect(
-      screen.getByPlaceholderText("Search by order #, ID, restaurant, or customer..."),
+      screen.getByPlaceholderText(ADMIN_ORDERS_MESSAGES.SEARCH_PLACEHOLDER),
     ).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "All Statuses" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Placed" })).toBeInTheDocument();
