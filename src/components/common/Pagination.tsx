@@ -9,6 +9,26 @@ import type { PaginationProps } from "./types";
 
 export type { PaginationProps };
 
+export const PAGINATION_ACTIVE_STYLES = {
+  admin: "bg-[#0052cc] text-white hover:bg-[#0052cc]/90 shadow-sm",
+  restaurant: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
+  customer: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
+  brand: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
+  dark: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
+} as const;
+
+export const PAGINATION_SELECT_FOCUS_RINGS = {
+  admin: "focus:ring-[#0052cc]",
+  restaurant: "focus:ring-[#ff6b00]",
+  customer: "focus:ring-[#ff6b00]",
+  brand: "focus:ring-[#ff6b00]",
+  dark: "focus:ring-slate-700",
+} as const;
+
+export const PAGINATION_DEFAULT_MESSAGES = {
+  ROWS_PER_PAGE: "Rows per page:",
+} as const;
+
 export function Pagination({
   currentPage,
   totalPages,
@@ -17,7 +37,7 @@ export function Pagination({
   pageSize = 10,
   pageSizeOptions,
   onPageSizeChange,
-  pageSizeLabel = "Rows per page:",
+  pageSizeLabel = PAGINATION_DEFAULT_MESSAGES.ROWS_PER_PAGE,
   siblingCount = 1,
   showFirstLast = false,
   theme = "admin",
@@ -70,13 +90,7 @@ export function Pagination({
 
   const pages = getPageNumbers();
 
-  const activeStyles = {
-    admin: "bg-[#0052cc] text-white hover:bg-[#0052cc]/90 shadow-sm",
-    restaurant: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-    customer: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-    brand: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-    dark: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
-  }[activeTheme];
+  const activeStyles = PAGINATION_ACTIVE_STYLES[activeTheme];
 
   let entriesText: string | null = null;
   if (typeof totalItems === "number") {
@@ -92,13 +106,7 @@ export function Pagination({
   const isFirstPage = safeCurrent <= 1;
   const isLastPage = safeCurrent >= safeTotal;
 
-  const selectFocusRing = {
-    admin: "focus:ring-[#0052cc]",
-    restaurant: "focus:ring-[#ff6b00]",
-    customer: "focus:ring-[#ff6b00]",
-    brand: "focus:ring-[#ff6b00]",
-    dark: "focus:ring-slate-700",
-  }[activeTheme];
+  const selectFocusRing = PAGINATION_SELECT_FOCUS_RINGS[activeTheme];
 
   return (
     <nav
