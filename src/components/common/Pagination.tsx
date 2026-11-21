@@ -4,10 +4,22 @@
  */
 
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  PAGINATION_ACTIVE_STYLES,
+  PAGINATION_DEFAULT_MESSAGES,
+  PAGINATION_MESSAGES,
+  PAGINATION_SELECT_FOCUS_RINGS,
+} from "@/components/common/constants";
 import { cn } from "@/lib/utils/cn";
 import type { PaginationProps } from "./types";
 
 export type { PaginationProps };
+export {
+  PAGINATION_ACTIVE_STYLES,
+  PAGINATION_DEFAULT_MESSAGES,
+  PAGINATION_MESSAGES,
+  PAGINATION_SELECT_FOCUS_RINGS,
+};
 
 export function Pagination({
   currentPage,
@@ -15,6 +27,9 @@ export function Pagination({
   onPageChange,
   totalItems,
   pageSize = 10,
+  pageSizeOptions,
+  onPageSizeChange,
+  pageSizeLabel = PAGINATION_DEFAULT_MESSAGES.ROWS_PER_PAGE,
   siblingCount = 1,
   showFirstLast = false,
   theme = "admin",
@@ -67,13 +82,7 @@ export function Pagination({
 
   const pages = getPageNumbers();
 
-  const activeStyles = {
-    admin: "bg-[#0052cc] text-white hover:bg-[#0052cc]/90 shadow-sm",
-    restaurant: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-    customer: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-    brand: "bg-[#ff6b00] text-white hover:bg-[#e05e00] shadow-sm",
-    dark: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
-  }[activeTheme];
+  const activeStyles = PAGINATION_ACTIVE_STYLES[activeTheme];
 
   let entriesText: string | null = null;
   if (typeof totalItems === "number") {
@@ -89,6 +98,8 @@ export function Pagination({
   const isFirstPage = safeCurrent <= 1;
   const isLastPage = safeCurrent >= safeTotal;
 
+  const selectFocusRing = PAGINATION_SELECT_FOCUS_RINGS[activeTheme];
+
   return (
     <nav
       aria-label="Pagination"
@@ -98,17 +109,41 @@ export function Pagination({
       )}
       {...props}
     >
-      <div className="text-xs text-muted-foreground">
-        {entriesText ? (
-          <span>{entriesText}</span>
-        ) : (
-          <span>
-            Page
-            <strong className="font-semibold text-foreground">{safeCurrent}</strong>
-            of
-            <strong className="font-semibold text-foreground">{safeTotal}</strong>
-          </span>
+      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-xs text-muted-foreground">
+        {pageSizeOptions && pageSizeOptions.length > 0 && onPageSizeChange && (
+          <div className="flex items-center gap-2 font-medium text-slate-500">
+            <span>{pageSizeLabel}</span>
+            <select
+              value={effectivePageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              disabled={disabled}
+              aria-label={pageSizeLabel}
+              className={cn(
+                "h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 cursor-pointer disabled:opacity-50",
+                selectFocusRing,
+              )}
+            >
+              {pageSizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
+
+        <div>
+          {entriesText ? (
+            <span>{entriesText}</span>
+          ) : (
+            <span>
+              {PAGINATION_MESSAGES.PAGE}{" "}
+              <strong className="font-semibold text-foreground">{safeCurrent}</strong>{" "}
+              {PAGINATION_MESSAGES.OF}{" "}
+              <strong className="font-semibold text-foreground">{safeTotal}</strong>
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-1">
@@ -117,7 +152,7 @@ export function Pagination({
             type="button"
             onClick={() => onPageChange(1)}
             disabled={disabled || isFirstPage}
-            aria-label="Go to first page"
+            aria-label={PAGINATION_MESSAGES.GO_TO_FIRST}
             className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
           >
             <ChevronsLeft className="size-4" />
@@ -128,7 +163,7 @@ export function Pagination({
           type="button"
           onClick={() => onPageChange(safeCurrent - 1)}
           disabled={disabled || isFirstPage}
-          aria-label="Previous page"
+          aria-label={PAGINATION_MESSAGES.GO_TO_PREVIOUS}
           className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
         >
           <ChevronLeft className="size-4" />
@@ -156,7 +191,7 @@ export function Pagination({
               onClick={() => onPageChange(p)}
               disabled={disabled || isActive}
               aria-current={isActive ? "page" : undefined}
-              aria-label={`Page ${p}`}
+              aria-label={`${PAGINATION_MESSAGES.PAGE} ${p}`}
               className={cn(
                 "flex size-8 items-center justify-center rounded-md text-xs font-medium transition-colors",
                 isActive
@@ -174,7 +209,7 @@ export function Pagination({
           type="button"
           onClick={() => onPageChange(safeCurrent + 1)}
           disabled={disabled || isLastPage}
-          aria-label="Next page"
+          aria-label={PAGINATION_MESSAGES.GO_TO_NEXT}
           className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
         >
           <ChevronRight className="size-4" />
@@ -185,7 +220,7 @@ export function Pagination({
             type="button"
             onClick={() => onPageChange(safeTotal)}
             disabled={disabled || isLastPage}
-            aria-label="Go to last page"
+            aria-label={PAGINATION_MESSAGES.GO_TO_LAST}
             className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:pointer-events-none transition-colors"
           >
             <ChevronsRight className="size-4" />

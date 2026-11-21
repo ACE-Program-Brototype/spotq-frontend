@@ -1,5 +1,5 @@
-export * from "./ComingSoonPage";
 export * from "./ConfirmDialog";
+export * from "./constants";
 export * from "./ErrorBoundary";
 export * from "./form";
 export * from "./LoadingIndicator";

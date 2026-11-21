@@ -1,4 +1,7 @@
-import type { RestaurantSortByType, RestaurantSortOrderType } from "@/features/restaurants/types/restaurant.types";
+import type {
+  RestaurantSortByType,
+  RestaurantSortOrderType,
+} from "@/features/restaurants/types/restaurant.types";
 
 export const RESTAURANT_ENDPOINTS = {
   ADMIN_LIST: "restaurants/admin/restaurants",
@@ -12,9 +15,13 @@ export const RESTAURANT_QUERY_KEYS = {
   ADMIN_DETAILS: (id?: string) => ["admin", "restaurant", id] as const,
 } as const;
 
+export const RESTAURANT_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type RestaurantPageSize = (typeof RESTAURANT_PAGE_SIZE_OPTIONS)[number];
+
 export const RESTAURANT_DEFAULTS = {
   PAGE: 1,
   LIMIT: 10,
+  PAGE_SIZE_OPTIONS: RESTAURANT_PAGE_SIZE_OPTIONS,
   SEARCH_DEBOUNCE_MS: 350,
   SORT_BY: "created_at" as RestaurantSortByType,
   SORT_ORDER: "desc" as RestaurantSortOrderType,
@@ -155,4 +162,5 @@ export const RESTAURANT_MESSAGES = {
   // Toasts
   TOAST_COPY_ID_SUCCESS: "Restaurant ID copied to clipboard",
   TOAST_COPY_ID_ERROR: "Failed to copy ID",
+  ROWS_PER_PAGE: "Rows per page:",
 } as const;

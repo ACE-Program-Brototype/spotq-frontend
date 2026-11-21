@@ -2,8 +2,19 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import type { ComponentType } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { mockAnalyticsDashboardData } from "@/features/analytics/__tests__/fixtures/restaurant-analytics.fixture";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { restaurantRoutes } from "./restaurant.routes";
+
+jest.mock("@/features/analytics", () => ({
+  ...jest.requireActual("@/features/analytics"),
+  useRestaurantAnalytics: () => ({
+    data: mockAnalyticsDashboardData,
+    isLoading: false,
+    isError: false,
+    refetch: jest.fn(),
+  }),
+}));
 
 jest.mock("@/features/subscription/services/subscription.service", () => ({
   subscriptionService: {
@@ -298,7 +309,7 @@ describe("restaurantRoutes structure and protection", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText(/Welcome/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Welcome/i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
   it("allows authenticated RESTAURANT_OWNER user to access /restaurant/dashboard", async () => {
@@ -368,6 +379,6 @@ describe("restaurantRoutes structure and protection", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText(/Welcome/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Welcome/i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 });

@@ -2,10 +2,16 @@ import { AlertCircle, RotateCcw } from "lucide-react";
 import { DataTable, Pagination } from "@/components/common";
 import type { Column } from "@/components/common/table";
 import { Button } from "@/components/ui/button";
-import { FINANCE_MESSAGES } from "@/features/finance/constants/finance.constants";
-import type { MasterLedgerEntry } from "@/features/finance/types/finance.types";
 import { FinanceLedgerMobileCard } from "@/features/finance/components/FinanceLedgerMobileCard";
-import { LedgerFilters, type LedgerFiltersProps } from "@/features/finance/components/LedgerFilters";
+import {
+  LedgerFilters,
+  type LedgerFiltersProps,
+} from "@/features/finance/components/LedgerFilters";
+import {
+  FINANCE_MESSAGES,
+  FINANCE_PAGE_SIZE_OPTIONS,
+} from "@/features/finance/constants/finance.constants";
+import type { MasterLedgerEntry } from "@/features/finance/types/finance.types";
 
 interface FinanceLedgerProps {
   entries: MasterLedgerEntry[];
@@ -18,6 +24,7 @@ interface FinanceLedgerProps {
   filters: LedgerFiltersProps;
   restaurantMap?: Map<string, string>;
   onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
   onRowClick: (entry: MasterLedgerEntry) => void;
   onRetry: () => void;
   onResetFilters: () => void;
@@ -34,6 +41,7 @@ export function FinanceLedger({
   filters,
   restaurantMap,
   onPageChange,
+  onLimitChange,
   onRowClick,
   onRetry,
   onResetFilters,
@@ -131,6 +139,9 @@ export function FinanceLedger({
           currentPage={page}
           totalPages={totalPages}
           pageSize={pageSize}
+          pageSizeOptions={FINANCE_PAGE_SIZE_OPTIONS}
+          onPageSizeChange={onLimitChange}
+          pageSizeLabel={FINANCE_MESSAGES.ROWS_PER_PAGE}
           onPageChange={onPageChange}
           disabled={loading}
           theme="admin"

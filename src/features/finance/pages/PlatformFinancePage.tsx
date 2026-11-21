@@ -1,8 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import type { Column } from "@/components/common/table";
-import { useDebounce } from "@/lib/hooks/use-debounce";
-import { cn } from "@/lib/utils/cn";
 import { FinanceDetailDrawer } from "@/features/finance/components/FinanceDetailDrawer";
 import { FinanceLedger } from "@/features/finance/components/FinanceLedger";
 import { FinancePageHeader } from "@/features/finance/components/FinancePageHeader";
@@ -17,10 +15,21 @@ import {
 import { useFinanceLedger } from "@/features/finance/hooks/useFinanceLedger";
 import { useFinanceSummary } from "@/features/finance/hooks/useFinanceSummary";
 import { financeService } from "@/features/finance/services/finance.service";
-import { restaurantService } from "@/features/restaurants/services/restaurant.service";
-import type { DatePreset, LedgerEntryType, MasterLedgerEntry } from "@/features/finance/types/finance.types";
+import type {
+  DatePreset,
+  LedgerEntryType,
+  MasterLedgerEntry,
+} from "@/features/finance/types/finance.types";
 import { getDateRange, getErrorMessage } from "@/features/finance/utils/finance.utils";
-import { formatDate, formatPaise, typeLabels, typeStyles } from "@/features/finance/utils/finance-display.utils";
+import {
+  formatDate,
+  formatPaise,
+  typeLabels,
+  typeStyles,
+} from "@/features/finance/utils/finance-display.utils";
+import { restaurantService } from "@/features/restaurants/services/restaurant.service";
+import { useDebounce } from "@/lib/hooks/use-debounce";
+import { cn } from "@/lib/utils/cn";
 
 export type { DatePreset } from "@/features/finance/types/finance.types";
 
@@ -33,6 +42,7 @@ export default function PlatformFinancePage() {
     customStart: "",
     customEnd: "",
     page: 1,
+    limit: FINANCE_PAGE_SIZE,
   });
   // Debounce free-text search to avoid fetching on every keystroke.
   const debouncedSearch = useDebounce(filters.search, 300);
@@ -48,12 +58,12 @@ export default function PlatformFinancePage() {
   const ledgerParams = useMemo(
     () => ({
       page: filters.page,
-      limit: FINANCE_PAGE_SIZE,
+      limit: filters.limit ?? FINANCE_PAGE_SIZE,
       ...(filters.type !== "ALL" && { type: filters.type as LedgerEntryType }),
       ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
       ...range,
     }),
-    [debouncedSearch, filters.page, filters.type, range],
+    [debouncedSearch, filters.limit, filters.page, filters.type, range],
   );
   const ledgerQuery = useFinanceLedger(ledgerParams);
   const summary = summaryQuery.data;
@@ -143,11 +153,7 @@ export default function PlatformFinancePage() {
           row.restaurantName ||
           (row.restaurantId ? restaurantMap.get(row.restaurantId) : null) ||
           (row.restaurantId ? "SpotQ Partner Venue" : "SpotQ Platform");
-        return (
-          <span className="text-xs font-semibold text-slate-800 break-words">
-            {name}
-          </span>
-        );
+        return <span className="text-xs font-semibold text-slate-800 break-words">{name}</span>;
       },
     },
     {
@@ -200,6 +206,7 @@ export default function PlatformFinancePage() {
       customStart: "",
       customEnd: "",
       page: 1,
+      limit: FINANCE_PAGE_SIZE,
     });
   };
 
@@ -220,7 +227,7 @@ export default function PlatformFinancePage() {
         columns={columns}
         totalPages={totalPages}
         page={filters.page}
-        pageSize={FINANCE_PAGE_SIZE}
+        pageSize={filters.limit ?? FINANCE_PAGE_SIZE}
         loading={ledgerQuery.isPending || ledgerQuery.isFetching}
         error={ledgerError}
         restaurantMap={restaurantMap}
@@ -234,6 +241,7 @@ export default function PlatformFinancePage() {
           setFilters,
         }}
         onPageChange={(page) => setFilters((state) => ({ ...state, page }))}
+        onLimitChange={(limit) => setFilters((state) => ({ ...state, limit, page: 1 }))}
         onRowClick={setSelected}
         onRetry={refresh}
         onResetFilters={resetFilters}

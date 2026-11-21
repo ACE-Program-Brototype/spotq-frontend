@@ -35,9 +35,13 @@ export const CUSTOMER_SORT_ORDER = {
 
 export type CustomerSortOrderType = (typeof CUSTOMER_SORT_ORDER)[keyof typeof CUSTOMER_SORT_ORDER];
 
+export const CUSTOMER_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type CustomerPageSize = (typeof CUSTOMER_PAGE_SIZE_OPTIONS)[number];
+
 export const CUSTOMER_DEFAULTS = {
   PAGE: 1,
   LIMIT: 20,
+  PAGE_SIZE_OPTIONS: CUSTOMER_PAGE_SIZE_OPTIONS,
   SORT_BY: CUSTOMER_SORT_BY.CREATED_AT,
   SORT_ORDER: CUSTOMER_SORT_ORDER.DESC,
   FILTER_STATUS: CUSTOMER_FILTER_STATUS.ALL,
@@ -101,5 +105,5 @@ export const CUSTOMER_MESSAGES = {
   CARD_LABEL_CONTACT_EMAIL: "Contact Email",
   CARD_LABEL_PHONE: "Mobile Number",
   PHONE_NOT_PROVIDED: "Not provided",
+  ROWS_PER_PAGE: "Rows per page:",
 } as const;
-
