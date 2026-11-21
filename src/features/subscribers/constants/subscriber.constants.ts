@@ -32,9 +32,13 @@ export const SUBSCRIBER_SORT_ORDER = {
   DESC: "desc",
 } as const;
 
+export const SUBSCRIBER_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type SubscriberPageSize = (typeof SUBSCRIBER_PAGE_SIZE_OPTIONS)[number];
+
 export const SUBSCRIBER_DEFAULTS = {
   PAGE: 1,
   LIMIT: 10,
+  PAGE_SIZE_OPTIONS: SUBSCRIBER_PAGE_SIZE_OPTIONS,
   SORT_BY: SUBSCRIBER_SORT_BY.CREATED_AT,
   SORT_ORDER: SUBSCRIBER_SORT_ORDER.DESC,
   FILTER_STATUS: SUBSCRIBER_FILTER_STATUS.ALL,
@@ -118,4 +122,5 @@ export const SUBSCRIBER_MESSAGES = {
   INV_HEADER_PAID_AT: "Paid At",
   INV_HEADER_DATE: "Date",
   NOT_APPLICABLE: "-",
+  ROWS_PER_PAGE: "Rows per page:",
 } as const;

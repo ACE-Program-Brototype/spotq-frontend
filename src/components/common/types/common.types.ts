@@ -6,12 +6,18 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import type { ButtonVariant } from "@/components/ui/button.variants";
 
+export const COMMON_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type CommonPageSize = (typeof COMMON_PAGE_SIZE_OPTIONS)[number];
+
 export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {
   currentPage: number;
   totalPages?: number;
   onPageChange: (page: number) => void;
   totalItems?: number;
   pageSize?: number;
+  pageSizeOptions?: readonly number[] | number[];
+  onPageSizeChange?: (pageSize: number) => void;
+  pageSizeLabel?: string;
   siblingCount?: number;
   showFirstLast?: boolean;
   theme?: "admin" | "restaurant" | "customer" | "brand" | "dark";

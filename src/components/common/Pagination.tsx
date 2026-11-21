@@ -15,6 +15,9 @@ export function Pagination({
   onPageChange,
   totalItems,
   pageSize = 10,
+  pageSizeOptions,
+  onPageSizeChange,
+  pageSizeLabel = "Rows per page:",
   siblingCount = 1,
   showFirstLast = false,
   theme = "admin",
@@ -89,6 +92,14 @@ export function Pagination({
   const isFirstPage = safeCurrent <= 1;
   const isLastPage = safeCurrent >= safeTotal;
 
+  const selectFocusRing = {
+    admin: "focus:ring-[#0052cc]",
+    restaurant: "focus:ring-[#ff6b00]",
+    customer: "focus:ring-[#ff6b00]",
+    brand: "focus:ring-[#ff6b00]",
+    dark: "focus:ring-slate-700",
+  }[activeTheme];
+
   return (
     <nav
       aria-label="Pagination"
@@ -98,17 +109,39 @@ export function Pagination({
       )}
       {...props}
     >
-      <div className="text-xs text-muted-foreground">
-        {entriesText ? (
-          <span>{entriesText}</span>
-        ) : (
-          <span>
-            Page
-            <strong className="font-semibold text-foreground">{safeCurrent}</strong>
-            of
-            <strong className="font-semibold text-foreground">{safeTotal}</strong>
-          </span>
+      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-xs text-muted-foreground">
+        {pageSizeOptions && pageSizeOptions.length > 0 && onPageSizeChange && (
+          <div className="flex items-center gap-2 font-medium text-slate-500">
+            <span>{pageSizeLabel}</span>
+            <select
+              value={effectivePageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              disabled={disabled}
+              aria-label={pageSizeLabel}
+              className={cn(
+                "h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 cursor-pointer disabled:opacity-50",
+                selectFocusRing,
+              )}
+            >
+              {pageSizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
+
+        <div>
+          {entriesText ? (
+            <span>{entriesText}</span>
+          ) : (
+            <span>
+              Page <strong className="font-semibold text-foreground">{safeCurrent}</strong> of{" "}
+              <strong className="font-semibold text-foreground">{safeTotal}</strong>
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-1">

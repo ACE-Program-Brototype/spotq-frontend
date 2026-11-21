@@ -7,8 +7,12 @@ export const LEDGER_ENTRY_TYPE = {
 } as const;
 
 export const FINANCE_PAGE_SIZE = 10;
+export const FINANCE_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type FinancePageSize = (typeof FINANCE_PAGE_SIZE_OPTIONS)[number];
+
 export const FINANCE_DEFAULTS = {
   PAGE_SIZE: 10,
+  PAGE_SIZE_OPTIONS: FINANCE_PAGE_SIZE_OPTIONS,
   STALE_TIME_MS: 60 * 1000,
 } as const;
 export const DEFAULT_FINANCE_DATE_PRESET = "LAST_30_DAYS";
@@ -21,6 +25,7 @@ export const FINANCE_MESSAGES = {
   LEDGER_END_DATE_BEFORE_START: "End date must be on or after the start date.",
   RETRY: "Retry",
   RETRYING: "Retrying...",
+  ROWS_PER_PAGE: "Rows per page:",
 } as const;
 export const FINANCE_ENDPOINTS = {
   SUMMARY: "/payments/admin/finance/summary",
