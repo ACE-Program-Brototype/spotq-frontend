@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SubscriberFilters } from "@/features/subscribers/components/SubscriberFilters";
 import { SubscriberTable } from "@/features/subscribers/components/SubscriberTable";
-import { SUBSCRIBER_MESSAGES } from "@/features/subscribers/constants/subscriber.constants";
+import {
+  SUBSCRIBER_MESSAGES,
+  SUBSCRIBER_PAGE_SIZE_OPTIONS,
+} from "@/features/subscribers/constants/subscriber.constants";
 import { useSubscribers } from "@/features/subscribers/hooks/use-subscribers";
 import type { SubscriberSummary } from "@/features/subscribers/types/subscriber.types";
 
@@ -20,6 +23,7 @@ export function AdminSubscribersPage() {
     page,
     setPage,
     limit,
+    setLimit,
     status,
     setStatus,
     search,
@@ -112,6 +116,9 @@ export function AdminSubscribersPage() {
                 totalPages={pagination.totalPages}
                 totalItems={pagination.totalItems}
                 pageSize={limit}
+                pageSizeOptions={SUBSCRIBER_PAGE_SIZE_OPTIONS}
+                onPageSizeChange={setLimit}
+                pageSizeLabel={SUBSCRIBER_MESSAGES.ROWS_PER_PAGE}
                 theme="admin"
                 onPageChange={setPage}
               />

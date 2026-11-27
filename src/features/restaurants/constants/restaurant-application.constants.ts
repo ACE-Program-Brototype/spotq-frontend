@@ -16,9 +16,13 @@ export const RESTAURANT_APPLICATION_QUERY_KEYS = {
   DETAILS: (id?: string) => ["admin", "restaurant-application", id] as const,
 } as const;
 
+export const APPLICATION_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export type ApplicationPageSize = (typeof APPLICATION_PAGE_SIZE_OPTIONS)[number];
+
 export const APPLICATION_DEFAULTS = {
   PAGE: 1,
   LIMIT: 10,
+  PAGE_SIZE_OPTIONS: APPLICATION_PAGE_SIZE_OPTIONS,
   SEARCH_DEBOUNCE_MS: 350,
   SORT_BY: "created_at" as ApplicationSortByType,
   SORT_ORDER: "desc" as ApplicationSortOrderType,
@@ -109,4 +113,5 @@ export const APPLICATION_MESSAGES = {
   REJECT_CANCEL_BUTTON: "Cancel",
   REJECT_SUCCESS: "Restaurant application has been rejected.",
   REJECT_ERROR: "Failed to reject restaurant application. Please try again.",
+  ROWS_PER_PAGE: "Rows per page:",
 } as const;

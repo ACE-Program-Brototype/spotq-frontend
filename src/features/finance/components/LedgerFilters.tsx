@@ -12,6 +12,7 @@ export interface LedgerFilterState {
   customStart: string;
   customEnd: string;
   page: number;
+  limit?: number;
 }
 
 export interface LedgerFiltersProps {

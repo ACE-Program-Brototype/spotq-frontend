@@ -5,9 +5,6 @@ on:
   push:
     branches:
       - main
-      # REMOVE AFTER TESTING
-      - development
-      - fix/the-complete-UI-bug-fix
 
 permissions:
   contents: read

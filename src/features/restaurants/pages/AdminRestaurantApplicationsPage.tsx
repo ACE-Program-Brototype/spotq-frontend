@@ -6,7 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RestaurantApplicationFilters } from "@/features/restaurants/components/applications/RestaurantApplicationFilters";
 import { RestaurantApplicationTable } from "@/features/restaurants/components/applications/RestaurantApplicationTable";
 import { RestaurantEmptyState } from "@/features/restaurants/components/RestaurantEmptyState";
-import { APPLICATION_MESSAGES } from "@/features/restaurants/constants/restaurant-application.constants";
+import {
+  APPLICATION_MESSAGES,
+  APPLICATION_PAGE_SIZE_OPTIONS,
+} from "@/features/restaurants/constants/restaurant-application.constants";
 import { useRestaurantApplications } from "@/features/restaurants/hooks/useRestaurantApplications";
 import type { ApplicationSortByType } from "@/features/restaurants/types/restaurant-application.types";
 
@@ -20,6 +23,7 @@ export function AdminRestaurantApplicationsPage() {
     page,
     setPage,
     limit,
+    setLimit,
     status,
     setStatus,
     search,
@@ -145,6 +149,9 @@ export function AdminRestaurantApplicationsPage() {
                 totalPages={pagination.total_pages}
                 totalItems={pagination.total}
                 pageSize={limit}
+                pageSizeOptions={APPLICATION_PAGE_SIZE_OPTIONS}
+                onPageSizeChange={setLimit}
+                pageSizeLabel={APPLICATION_MESSAGES.ROWS_PER_PAGE}
                 theme="admin"
                 onPageChange={setPage}
               />

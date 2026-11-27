@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
   SUBSCRIBER_DEFAULTS,
   SUBSCRIBER_FILTER_STATUS,
@@ -10,6 +9,7 @@ import {
 } from "@/features/subscribers/constants/subscriber.constants";
 import { subscriberService } from "@/features/subscribers/services/subscriber.service";
 import type { SubscriberFilterStatus } from "@/features/subscribers/types/subscriber.types";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 
 export interface UseSubscribersOptions {
   initialPage?: number;
@@ -22,7 +22,7 @@ export interface UseSubscribersOptions {
 
 export function useSubscribers(options?: UseSubscribersOptions) {
   const [page, setPage] = useState<number>(options?.initialPage ?? SUBSCRIBER_DEFAULTS.PAGE);
-  const limit = options?.initialLimit ?? SUBSCRIBER_DEFAULTS.LIMIT;
+  const [limit, setLimit] = useState<number>(options?.initialLimit ?? SUBSCRIBER_DEFAULTS.LIMIT);
   const [status, setStatus] = useState<SubscriberFilterStatus>(
     options?.initialStatus ?? SUBSCRIBER_DEFAULTS.FILTER_STATUS,
   );
@@ -69,6 +69,11 @@ export function useSubscribers(options?: UseSubscribersOptions) {
 
   const handleSearchChange = (newSearch: string) => {
     setSearch(newSearch);
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
   };
 
   const handleStatusChange = (newStatus: SubscriberFilterStatus) => {
@@ -119,6 +124,7 @@ export function useSubscribers(options?: UseSubscribersOptions) {
     page,
     setPage,
     limit,
+    setLimit: handleLimitChange,
     status,
     setStatus: handleStatusChange,
     search,

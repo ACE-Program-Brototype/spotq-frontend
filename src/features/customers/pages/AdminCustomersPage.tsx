@@ -13,6 +13,7 @@ import { CustomerTable } from "@/features/customers/components/CustomerTable";
 import { CustomerTableSkeleton } from "@/features/customers/components/CustomerTableSkeleton";
 import {
   CUSTOMER_MESSAGES,
+  CUSTOMER_PAGE_SIZE_OPTIONS,
   CUSTOMER_STATUS,
   type CustomerStatusType,
 } from "@/features/customers/constants/customer.constants";
@@ -29,6 +30,7 @@ export function AdminCustomersPage() {
     page,
     setPage,
     limit,
+    setLimit,
     status,
     setStatus,
     search,
@@ -154,6 +156,9 @@ export function AdminCustomersPage() {
                 totalPages={pagination.totalPages}
                 totalItems={pagination.total}
                 pageSize={limit}
+                pageSizeOptions={CUSTOMER_PAGE_SIZE_OPTIONS}
+                onPageSizeChange={setLimit}
+                pageSizeLabel={CUSTOMER_MESSAGES.ROWS_PER_PAGE}
                 theme="admin"
                 onPageChange={setPage}
               />

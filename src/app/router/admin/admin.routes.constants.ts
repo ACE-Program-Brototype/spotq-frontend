@@ -27,8 +27,6 @@ export const ADMIN_ROUTE_PATHS = {
     ORDERS: "payments/orders",
     SUBSCRIPTIONS: "payments/subscriptions",
   },
-  CAMPAIGNS: "campaigns",
-  COUPONS: "coupons",
 } as const;
 
 // Absolute paths and route builders for navigate() and <Link to="..." />
@@ -59,6 +57,4 @@ export const ADMIN_ROUTES = {
     ORDERS: "/admin/payments/orders",
     SUBSCRIPTIONS: "/admin/payments/subscriptions",
   },
-  CAMPAIGNS: "/admin/campaigns",
-  COUPONS: "/admin/coupons",
 } as const;
